@@ -109,10 +109,8 @@ public final class XmlDefinerUtils {
 	 * DTD/XSD + secure processing
 	 * 
 	 * @return {@link SchemaFactory}
-	 * @throws SAXException
-	 *                      in case of exception
 	 */
-	public SchemaFactory getSecureSchemaFactory() throws SAXException {
+	public SchemaFactory getSecureSchemaFactory() {
 		return secureSchemaFactoryBuilder.build();
 	}
 	
@@ -149,10 +147,8 @@ public final class XmlDefinerUtils {
 	 * 
 	 * @param validator
 	 *                  the validator to be configured
-	 * @throws SAXException
-	 *                      in case of exception
 	 */
-	public void configure(Validator validator) throws SAXException {
+	public void configure(Validator validator) {
 		secureValidatorConfigurator.configure(validator);
 	}
 

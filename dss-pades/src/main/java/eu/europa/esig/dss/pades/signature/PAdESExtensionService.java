@@ -87,7 +87,8 @@ public class PAdESExtensionService {
         if (Utils.isCollectionNotEmpty(signatures)) {
             List<TimestampToken> signatureTimestamps = getSignatureTimestamps(signatures);
             if (Utils.isCollectionEmpty(signatureTimestamps)) {
-                LOG.info("The found signatures does not have a T-level. Validation data incorporation skipped.", document.getName());
+                LOG.info("The found signatures within the document with name '{}' do not have a T-level. " +
+                        "Validation data incorporation skipped.", document.getName());
                 return document;
             }
 

@@ -25,11 +25,24 @@ import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
+/**
+ * Creates a {@code TypeStrategy}
+ *
+ */
 public final class TypeStrategyFactory {
 
+	/**
+	 * Default constructor
+	 */
 	private TypeStrategyFactory() {
 	}
 
+	/**
+	 * Creates a {@code TypeStrategy} from the certificate
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 * @return {@link TypeStrategy}
+	 */
 	public static TypeStrategy createTypeFromCert(CertificateWrapper signingCertificate) {
 		if (EIDASUtils.isPostEIDAS(signingCertificate.getNotBefore())) {
 			return new TypeByCertificatePostEIDAS(signingCertificate);
@@ -38,10 +51,27 @@ public final class TypeStrategyFactory {
 		}
 	}
 
-	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, TypeStrategy typeInCert) {
+	/**
+	 * Creates a {@code TypeStrategy} from a Trusted Service
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param qualified {@link CertificateQualifiedStatus}
+	 * @param typeInCert {@link TypeStrategy}
+	 * @return {@link TypeStrategy}
+	 */
+	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService,
+												CertificateQualifiedStatus qualified, TypeStrategy typeInCert) {
 		return new TypeByTL(trustedService, qualified, typeInCert);
 	}
 
+	/**
+	 * Creates a {@code TypeStrategy} from a certificate and Trusted Service
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 * @param caQcTrustedService {@link TrustedServiceWrapper}
+	 * @param qualified {@link CertificateQualifiedStatus}
+	 * @return {@link TypeStrategy}
+	 */
 	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
 			CertificateQualifiedStatus qualified) {
 		TypeStrategy typeFromCert = createTypeFromCert(signingCertificate);

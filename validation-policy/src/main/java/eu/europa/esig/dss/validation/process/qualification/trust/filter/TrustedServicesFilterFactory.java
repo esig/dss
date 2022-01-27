@@ -20,52 +20,115 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+
 import java.util.Date;
 import java.util.Set;
 
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-
+/**
+ * Creates a {@code TrustedServiceFilter}
+ *
+ */
 public final class TrustedServicesFilterFactory {
 
+	/**
+	 * Default constructor
+	 */
 	private TrustedServicesFilterFactory() {
 	}
 
+	/**
+	 * Creates a TrustedService filter by 'granted' status
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByGranted() {
 		return new GrantedServiceFilter();
 	}
 
+	/**
+	 * Creates a TrustedService filter by 'CA/QC' identifier
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByCaQc() {
 		return new CaQcServiceFilter();
 	}
 
+	/**
+	 * Creates a TrustedService filter by 'TSA/QTST' identifier
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByQTST() {
 		return new QTSTServiceFilter();
 	}
 
+	/**
+	 * Creates a TrustedService filter by date
+	 *
+	 * @param date {@link Date} to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByDate(Date date) {
 		return new ServiceByDateFilter(date);
 	}
 
+	/**
+	 * Creates a TrustedService filter by country code
+	 *
+	 * @param countryCode {@link String} to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByCountry(String countryCode) {
 		return new ServiceByCountryFilter(countryCode);
 	}
 
+	/**
+	 * Creates a TrustedService filter by country codes
+	 *
+	 * @param countryCodes a set of {@link String}s to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByCountries(Set<String> countryCodes) {
 		return new ServiceByCountryFilter(countryCodes);
 	}
 
+	/**
+	 * Creates a TrustedService filter by urls
+	 *
+	 * @param urls a set of {@link String}s to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByUrls(Set<String> urls) {
 		return new ServiceByTLUrlFilter(urls);
 	}
 
+	/**
+	 * Creates a TrustedService filter by end-entity certificate
+	 *
+	 * @param endEntityCertificate {@link CertificateWrapper} to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createUniqueServiceFilter(CertificateWrapper endEntityCertificate) {
 		return new UniqueServiceFilter(endEntityCertificate);
 	}
 
+	/**
+	 * Creates a TrustedService filter by consistency
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createConsistentServiceFilter() {
 		return new FullyConsistentServiceFilter();
 	}
 
+	/**
+	 * Creates a TrustedService filter by the type as in the given certificate
+	 *
+	 * @param certificate {@link CertificateWrapper} to filter trusted services by its type
+	 * @return {@link TrustedServiceFilter}
+	 */
 	public static TrustedServiceFilter createFilterByCertificateType(CertificateWrapper certificate) {
 		return new ServiceByCertificateTypeFilter(certificate);
 	}

@@ -60,7 +60,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
         item = super.verifyRevocationData(item, revocationWrapper);
 
         Boolean validity = revocationDataValidityMap.get(revocationWrapper);
-        if (validity) {
+        if (Boolean.TRUE.equals(validity)) {
             CertificateWrapper revocationIssuer = revocationWrapper.getSigningCertificate();
 
             if (revocationIssuer != null) {
@@ -81,7 +81,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
                     validity = poe.isPOEExistInRange(revocationIssuer.getId(),
                             revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter());
 
-                    if (validity) {
+                    if (Boolean.TRUE.equals(validity)) {
                         acceptableCertificateRevocations.add(revocationWrapper);
                         result.getAcceptableRevocationId().add(revocationWrapper.getId());
                     }
@@ -108,17 +108,17 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     }
 
     private ChainItem<XmlCRS> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-        return new RevocationIssuerTrustedCheck(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
+        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
     }
 
     private ChainItem<XmlCRS> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
-        return new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result, revocationIssuer, poe,
+        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe,
                 getWarnLevelConstraint());
     }
 
     @Override
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
-        return new PastValidationAcceptableRevocationDataAvailable(i18nProvider, result,
+        return new PastValidationAcceptableRevocationDataAvailable<>(i18nProvider, result,
                 acceptableCertificateRevocations, getFailLevelConstraint());
     }
 

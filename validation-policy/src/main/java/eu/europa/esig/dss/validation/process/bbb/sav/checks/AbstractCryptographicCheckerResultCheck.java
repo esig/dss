@@ -79,8 +79,13 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 			switch (constraint.getLevel()) {
 				case INFORM:
 					messages.addAll(conclusion.getInfos());
+					messages.addAll(conclusion.getWarnings());
+					messages.addAll(conclusion.getErrors());
+					break;
 				case WARN:
 					messages.addAll(conclusion.getWarnings());
+					messages.addAll(conclusion.getErrors());
+					break;
 				case FAIL:
 					messages.addAll(conclusion.getErrors());
 					break;

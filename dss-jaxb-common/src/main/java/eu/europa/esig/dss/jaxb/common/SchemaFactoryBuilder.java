@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.jaxb.common;
 
+import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
@@ -96,13 +98,21 @@ public class SchemaFactoryBuilder extends AbstractFactoryBuilder<SchemaFactory> 
 	}
 
 	@Override
-	protected void setSecurityFeature(SchemaFactory factory, String feature, Boolean value) throws Exception {
-		factory.setFeature(feature, value);
+	protected void setSecurityFeature(SchemaFactory factory, String feature, Boolean value) throws SecurityConfigurationException {
+		try {
+			factory.setFeature(feature, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 	@Override
-	protected void setSecurityAttribute(SchemaFactory factory, String attribute, Object value) throws Exception {
-		factory.setProperty(attribute, value);
+	protected void setSecurityAttribute(SchemaFactory factory, String attribute, Object value) throws SecurityConfigurationException {
+		try {
+			factory.setProperty(attribute, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 }

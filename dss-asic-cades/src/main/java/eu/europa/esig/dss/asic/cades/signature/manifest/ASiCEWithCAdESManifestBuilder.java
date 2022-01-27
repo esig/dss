@@ -69,8 +69,8 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
 	 * @param documentUri {@link String} filename of the document associated with the manifest
 	 */
-	public ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent,
-										 final DigestAlgorithm digestAlgorithm, final String documentUri) {
+	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
+											final String documentUri) {
 		this.asicContent = asicContent;
 		this.digestAlgorithm = digestAlgorithm;
 		this.documentUri = documentUri;

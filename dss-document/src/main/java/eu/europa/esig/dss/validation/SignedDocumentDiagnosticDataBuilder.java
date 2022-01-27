@@ -145,7 +145,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	@Override
-	public SignedDocumentDiagnosticDataBuilder usedRevocations(Set<RevocationToken> usedRevocations) {
+	public SignedDocumentDiagnosticDataBuilder usedRevocations(Set<RevocationToken<?>> usedRevocations) {
 		return (SignedDocumentDiagnosticDataBuilder) super.usedRevocations(usedRevocations);
 	}
 

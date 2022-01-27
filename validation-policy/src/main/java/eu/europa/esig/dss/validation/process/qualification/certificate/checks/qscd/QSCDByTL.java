@@ -28,13 +28,30 @@ import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualific
 
 import java.util.List;
 
+/**
+ * Extracts QCSD status from a Trusted Service
+ *
+ */
 class QSCDByTL implements QSCDStrategy {
 
+	/** Trusted Service to extract QSCD status from */
 	private final TrustedServiceWrapper trustedService;
+
+	/** Qualification status of the certificate */
 	private final CertificateQualifiedStatus qualified;
+
+	/** QSCD strategy to be used */
 	private final QSCDStrategy qscdFromCertificate;
 
-	public QSCDByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
+	/**
+	 * Default constructor
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param qualified {@link CertificateQualifiedStatus}
+	 * @param qscdFromCertificate {@link QSCDStrategy}
+	 */
+	public QSCDByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified,
+					QSCDStrategy qscdFromCertificate) {
 		this.trustedService = trustedService;
 		this.qualified = qualified;
 		this.qscdFromCertificate = qscdFromCertificate;

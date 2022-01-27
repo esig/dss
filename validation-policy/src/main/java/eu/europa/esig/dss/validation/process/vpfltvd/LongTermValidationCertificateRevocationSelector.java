@@ -87,8 +87,7 @@ public class LongTermValidationCertificateRevocationSelector extends Certificate
             }
         }
 
-        boolean allowedBBB = revocationBBBConclusion != null &&
-                ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBBConclusion);
+        boolean allowedBBB = ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBBConclusion);
 
         Boolean validity = revocationDataValidityMap.get(revocationWrapper);
         if (validity == null) {
@@ -125,7 +124,7 @@ public class LongTermValidationCertificateRevocationSelector extends Certificate
     }
 
     private ChainItem<XmlCRS> revocationBasicValidationAcceptable(String revocationId, XmlConclusion revocationBBBConclusion) {
-        return new RevocationDataAcceptableCheck(i18nProvider, result, revocationId, revocationBBBConclusion, getWarnLevelConstraint());
+        return new RevocationDataAcceptableCheck<>(i18nProvider, result, revocationId, revocationBBBConclusion, getWarnLevelConstraint());
     }
 
     @Override

@@ -58,6 +58,12 @@ public class ValidationProcessUtils {
 
 	/** The prefix used for "urn:oid:" definition as per RFC 3061 */
 	private static final String URN_OID_PREFIX = "urn:oid:";
+
+	/**
+	 * Empty constructor
+	 */
+	private ValidationProcessUtils() {
+	}
 	
 	/**
 	 * Verifies if the revocation check is required for the OCSP Responder's certificate
@@ -251,20 +257,36 @@ public class ValidationProcessUtils {
 		if (bbb != null) {
 			XmlXCV xcv = bbb.getXCV();
 			if (xcv != null) {
-				for (XmlSubXCV subXCV : xcv.getSubXCV()) {
-					if (certificateId.equals(subXCV.getId())) {
-						XmlCRS crs = subXCV.getCRS();
-						if (crs != null) {
-							List<XmlRAC> racs = crs.getRAC();
-							if (Utils.isCollectionNotEmpty(racs)) {
-								for (XmlRAC rac : racs) {
-									if (revocationDataId.equals(rac.getId())) {
-										return rac;
-									}
-								}
-							}
+				XmlSubXCV subXCV = getXmlSubXCVForId(xcv.getSubXCV(), certificateId);
+				if (subXCV != null) {
+					XmlCRS crs = subXCV.getCRS();
+					if (crs != null) {
+						List<XmlRAC> racs = crs.getRAC();
+						XmlRAC rac = getXmlRACForId(racs, revocationDataId);
+						if (rac != null) {
+							return rac;
 						}
 					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private static XmlSubXCV getXmlSubXCVForId(List<XmlSubXCV> subXCVs, String tokenId) {
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (tokenId.equals(subXCV.getId())) {
+				return subXCV;
+			}
+		}
+		return null;
+	}
+
+	private static XmlRAC getXmlRACForId(List<XmlRAC> racs, String tokenId) {
+		if (Utils.isCollectionNotEmpty(racs)) {
+			for (XmlRAC rac : racs) {
+				if (tokenId.equals(rac.getId())) {
+					return rac;
 				}
 			}
 		}

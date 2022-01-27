@@ -48,7 +48,7 @@ public abstract class AbstractTransform implements DSSTransform {
 	 *
 	 * @param algorithm {@link String} algorithm url
 	 */
-	public AbstractTransform(String algorithm) {
+	protected AbstractTransform(String algorithm) {
 		this.algorithm = algorithm;
 	}
 
@@ -58,7 +58,7 @@ public abstract class AbstractTransform implements DSSTransform {
 	 * @param xmlDSigNamespace {@link DSSNamespace}
 	 * @param algorithm {@link String}
 	 */
-	public AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
+	protected AbstractTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		this.namespace = xmlDSigNamespace;
 		this.algorithm = algorithm;
 	}

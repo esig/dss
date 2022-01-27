@@ -172,8 +172,8 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 					"A new color profile '{}' has been added.", outputCondition);
 
 		} else {
-			LOG.warn("Color space '{}' is not supported. Be aware: the produced PDF may be not compatible with PDF/A.");
-			return;
+			LOG.warn("Color space '{}' is not supported. Be aware: the produced PDF may be not compatible with PDF/A.",
+					colorSpaceName);
 		}
 	}
 	

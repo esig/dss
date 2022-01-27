@@ -166,20 +166,14 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 			for (NonEmptyMultiLangURIType uriAndLang : tspInformationURI.getURI()) {
 				String lang = uriAndLang.getLang();
 				// Collect 1st / lang
-				if (result.get(lang) == null) {
-					result.put(lang, uriAndLang.getValue());
-				}
+				result.computeIfAbsent(lang, k -> uriAndLang.getValue());
 			}
 		}
 		return result;
 	}
 
 	private void addEntry(Map<String, List<String>> result, final String lang, final String value) {
-		List<String> resultsByLang = result.get(lang);
-		if (resultsByLang == null) {
-			resultsByLang = new ArrayList<>();
-			result.put(lang, resultsByLang);
-		}
+		List<String> resultsByLang = result.computeIfAbsent(lang, k -> new ArrayList<>());
 		resultsByLang.add(value);
 	}
 

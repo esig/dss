@@ -468,10 +468,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// <ds:KeyInfo>
-		final Element keyInfoDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.KEY_INFO);
-		signatureDom.appendChild(keyInfoDom);		
+		final Element keyInfoElement = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.KEY_INFO);
+		signatureDom.appendChild(keyInfoElement);
 		if (params.isSignKeyInfo()) {
-			keyInfoDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), KEYINFO_SUFFIX + deterministicId);
+			keyInfoElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), KEYINFO_SUFFIX + deterministicId);
 		}
 		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
 		List<CertificateToken> certificates = certSelector.getCertificates();
@@ -480,19 +480,19 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			for (CertificateToken token : certificates) {
 				// <ds:X509Data>
 				final Element x509DataDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.X509_DATA);
-				keyInfoDom.appendChild(x509DataDom);
+				keyInfoElement.appendChild(x509DataDom);
 				addSubjectAndCertificate(x509DataDom, token);
 			}
 		} else {
 			// <ds:X509Data>
 			final Element x509DataDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.X509_DATA);
-			keyInfoDom.appendChild(x509DataDom);
+			keyInfoElement.appendChild(x509DataDom);
 			for (CertificateToken token : certificates) {
 				addCertificate(x509DataDom, token);
 			}
 		}
 		
-		this.keyInfoDom = keyInfoDom;
+		this.keyInfoDom = keyInfoElement;
 		
 	}
 

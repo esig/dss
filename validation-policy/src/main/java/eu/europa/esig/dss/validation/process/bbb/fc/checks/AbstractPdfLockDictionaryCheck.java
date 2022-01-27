@@ -31,7 +31,7 @@ public abstract class AbstractPdfLockDictionaryCheck extends ChainItem<XmlFC> {
      * @param pdfLockDictionary {@link XmlPDFLockDictionary}
      * @param constraint {@link LevelConstraint}
      */
-    public AbstractPdfLockDictionaryCheck(I18nProvider i18nProvider, XmlFC result,
+    protected AbstractPdfLockDictionaryCheck(I18nProvider i18nProvider, XmlFC result,
                                           SignatureWrapper signature, XmlPDFLockDictionary pdfLockDictionary,
                                           LevelConstraint constraint) {
         super(i18nProvider, result, constraint);

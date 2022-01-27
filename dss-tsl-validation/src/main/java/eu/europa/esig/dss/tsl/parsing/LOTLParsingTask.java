@@ -27,6 +27,7 @@ import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSLSchemeInformationType;
@@ -108,7 +109,7 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 	private void extractSigningCertificatesAnnouncementURL(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate = lotlSource.getSigningCertificatesAnnouncementPredicate();
 		if (signingCertificatesAnnouncementPredicate != null) {
-			List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate).map(t -> t.getValue())
+			List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate).map(NonEmptyMultiLangURIType::getValue)
 					.collect(Collectors.toList());
 			if (Utils.isCollectionNotEmpty(uris)) {
 				if (uris.size() > 1) {
@@ -121,7 +122,7 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 
 	private void extractPivotURLs(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		if (lotlSource.isPivotSupport()) {
-			List<String> uris = schemeInformationURI.getURI().stream().filter(new PivotSchemeInformationURI()).map(t -> t.getValue())
+			List<String> uris = schemeInformationURI.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
 					.collect(Collectors.toList());
 			result.setPivotURLs(uris);
 		}

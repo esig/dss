@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +36,8 @@ public class OCSPFirstRevocationDataLoadingStrategy extends RevocationDataLoadin
     private static final Logger LOG = LoggerFactory.getLogger(OCSPFirstRevocationDataLoadingStrategy.class);
 
     @Override
-    public RevocationToken<Revocation> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
-        RevocationToken result = checkOCSP(certificateToken, issuerToken);
+    public RevocationToken<?> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
+        RevocationToken<?> result = checkOCSP(certificateToken, issuerToken);
         if (result != null) {
             return result;
         }

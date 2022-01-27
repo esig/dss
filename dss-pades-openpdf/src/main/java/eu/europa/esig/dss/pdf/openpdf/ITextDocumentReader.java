@@ -252,7 +252,6 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				annotationBox = ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageBox, pageRotation);
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
-				pdfAnnotation.setSigned(isSigned(annotDictionary));
 				return pdfAnnotation;
 			}
 		}
@@ -298,11 +297,6 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			return pdfString.toString();
 		}
 		return null;
-	}
-	
-	private boolean isSigned(PdfDictionary annotDictionary) {
-		PdfObject pdfObject = annotDictionary.get(PdfName.V);
-		return pdfObject != null;
 	}
 
 	@Override

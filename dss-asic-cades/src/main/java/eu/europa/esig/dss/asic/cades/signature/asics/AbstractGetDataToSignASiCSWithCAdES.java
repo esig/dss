@@ -52,33 +52,15 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 	}
 
 	/**
-	 * Returns the expected signature document filename
-	 *
-	 * @return {@link String} signature document filename
-	 */
-	protected String getSignatureFileName() {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
-		}
-		return SIGNATURE_FILENAME;
-	}
-
-	/**
-	 * Returns the timestamp filename
-	 *
-	 * @return {@link String} timestamp filename
-	 */
-	protected String getTimestampFileName() {
-		return TIMESTAMP_FILENAME;
-	}
-
-	/**
 	 * Returns the name of a signature file
 	 *
 	 * @return {@link String}
 	 */
 	public String getSignatureFilename() {
-		return getSignatureFileName();
+		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
+			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
+		}
+		return SIGNATURE_FILENAME;
 	}
 
 	/**
@@ -87,7 +69,7 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 	 * @return {@link String}
 	 */
 	public String getTimestampFilename() {
-		return getTimestampFileName();
+		return TIMESTAMP_FILENAME;
 	}
 
 }

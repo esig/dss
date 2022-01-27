@@ -29,10 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Abstract class verifying the validity of the Trusted List
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public abstract class AbstractTrustedListCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Trusted List validation result */
 	private final XmlTLAnalysis tlAnalysis;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlConstraintsConclusion} result
+	 * @param tlAnalysis {@link XmlTLAnalysis}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	protected AbstractTrustedListCheck(I18nProvider i18nProvider, T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint, tlAnalysis.getId());
 

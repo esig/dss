@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -32,13 +30,28 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-public class IsQualificationConflictDetected extends ChainItem<XmlValidationCertificateQualification> {
+import java.util.Set;
 
+/**
+ * Verifies if there is no conflict in certificate qualification determination result
+ * based on a use of different TrustedServices
+ *
+ */
+public class IsNoQualificationConflictDetected extends ChainItem<XmlValidationCertificateQualification> {
+
+	/** Set of obtained {@code CertificateQualification}s from various TrustedServices */
 	private final Set<CertificateQualification> certificateQualificationsAtTime;
 
-	public IsQualificationConflictDetected(I18nProvider i18nProvider,
-			XmlValidationCertificateQualification result,
-			Set<CertificateQualification> certificateQualificationsAtTime, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param certificateQualificationsAtTime set of {@link CertificateQualification}s
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public IsNoQualificationConflictDetected(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+					Set<CertificateQualification> certificateQualificationsAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificateQualificationsAtTime = certificateQualificationsAtTime;
 	}

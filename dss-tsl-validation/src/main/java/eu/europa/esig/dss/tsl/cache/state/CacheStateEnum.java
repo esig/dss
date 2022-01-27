@@ -41,7 +41,7 @@ public enum CacheStateEnum implements CacheState {
 		}
 
 		@Override
-		public void error(CacheContext cacheContext, CachedException exception) {
+		public void error(CacheContext cacheContext, CachedExceptionWrapper exception) {
 			cacheContext.error(exception);
 		}
 
@@ -136,7 +136,7 @@ public enum CacheStateEnum implements CacheState {
 	}
 
 	@Override
-	public void error(CacheContext cacheContext, CachedException exception) {
+	public void error(CacheContext cacheContext, CachedExceptionWrapper exception) {
 		throw new IllegalStateException("Cannot store error");
 	}
 

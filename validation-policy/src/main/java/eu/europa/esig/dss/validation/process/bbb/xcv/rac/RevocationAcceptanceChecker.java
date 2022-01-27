@@ -52,8 +52,6 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfS
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -76,9 +74,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	/** Internal set of processed tokens (avoids infinite loop) */
 	private final Set<String> validatedTokens;
 
-	/** Defines the map between certificates in the chain and their latest valid revocation data */
-	private final Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap;
-
 	/**
 	 * Default constructor
 	 *
@@ -98,7 +93,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		this.controlTime = controlTime;
 		this.policy = policy;
 		this.validatedTokens = validatedTokens;
-		this.certificateRevocationMap = new HashMap<>();
 
 		result.setId(revocationData.getId());
 		result.setRevocationThisUpdate(revocationData.getThisUpdate());
@@ -174,12 +168,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 					item = item.setNextItem(checkCertificateRevocationSelectorResult(xmlCRS, subContext));
 
-					CertificateRevocationWrapper latestRevocationData = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
-
-					if (latestRevocationData != null) {
-						certificateRevocationMap.put(revocationCertificate, latestRevocationData);
-					}
-
 				}
 				
 			}
@@ -229,11 +217,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> certificateIntact(CertificateWrapper certificate) {
 		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
-		return new SignatureIntactWithIdCheck(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
+		return new SignatureIntactWithIdCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
 	private ChainItem<XmlRAC> selfSigned(CertificateWrapper certificate) {
-		return new CertificateSelfSignedCheck(i18nProvider, result, certificate, getWarnLevelConstraint());
+		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {

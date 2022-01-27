@@ -121,7 +121,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the revocation data is available, FALSE otherwise
 	 */
 	public boolean isRevocationDataAvailable() {
-		return certificate.getRevocations() != null && certificate.getRevocations().size() > 0;
+		return certificate.getRevocations() != null && !certificate.getRevocations().isEmpty();
 	}
 
 	/**
@@ -378,7 +378,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isTrustedListReached() {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
-		return tsps != null && tsps.size() > 0;
+		return tsps != null && !tsps.isEmpty();
 	}
 
 	/**
@@ -427,7 +427,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private List<String> getValues(List<XmlLangAndValue> langAndValues) {
-		return langAndValues.stream().map(t -> t.getValue()).collect(Collectors.toList());
+		return langAndValues.stream().map(XmlLangAndValue::getValue).collect(Collectors.toList());
 	}
 
 	/**

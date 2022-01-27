@@ -20,24 +20,37 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 
+import java.util.List;
+
+/**
+ * Checks whether there are CA/QC TrustedServices at control time
+ *
+ */
 public class CaQcCheck extends ChainItem<XmlValidationCertificateQualification> {
 
+	/** List of {@code TrustedServiceWrapper}s at control time */
 	private final List<TrustedServiceWrapper> trustServicesAtTime;
 
-	public CaQcCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustServicesAtTime, 
-			LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CaQcCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+					 List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustServicesAtTime = trustServicesAtTime;

@@ -24,10 +24,20 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 
+/**
+ * Returns QSCD status for a certificate before eIDAS
+ *
+ */
 class QSCDByCertificatePreEIDAS implements QSCDStrategy {
 
+	/** Certificate to get QSCD status for */
 	private final CertificateWrapper certificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificate {@link CertificateWrapper}
+	 */
 	public QSCDByCertificatePreEIDAS(CertificateWrapper certificate) {
 		this.certificate = certificate;
 	}

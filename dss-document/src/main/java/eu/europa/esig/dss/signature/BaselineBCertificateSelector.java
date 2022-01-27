@@ -41,7 +41,7 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 	private final CertificateVerifier certificateVerifier;
 
 	/** The SignatureParameters */
-	private final AbstractSignatureParameters parameters;
+	private final AbstractSignatureParameters<?> parameters;
 
 	/**
 	 * The default constructor
@@ -49,7 +49,7 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 	 * @param certificateVerifier {@link CertificateVerifier}
 	 * @param parameters {@link AbstractSignatureParameters}
 	 */
-	public BaselineBCertificateSelector(CertificateVerifier certificateVerifier, AbstractSignatureParameters parameters) {
+	public BaselineBCertificateSelector(CertificateVerifier certificateVerifier, AbstractSignatureParameters<?> parameters) {
 		super(parameters.getSigningCertificate(), parameters.getCertificateChain());
 		this.certificateVerifier = certificateVerifier;
 		this.parameters = parameters;

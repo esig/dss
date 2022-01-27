@@ -25,22 +25,43 @@ import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.CertificateType;
 
+/**
+ * This class is used to determine the certificate qualification based on the given qualification parameters
+ *
+ */
 public final class CertQualificationMatrix {
 
+	/**
+	 * Empty constrictor
+	 */
 	private CertQualificationMatrix() {
 	}
 
+	/** Not qualified certificate */
 	private static final int NOT_QC = 0;
+
+	/** Qualified certificate */
 	private static final int QC = 1;
 
+	/** Certificate for eSig */
 	private static final int ESIG = 0;
+
+	/** Certificate for eSeal */
 	private static final int ESEAL = 1;
+
+	/** Certificate for Web Authentication */
 	private static final int WSA = 2;
+
+	/** Certificate type is unknown */
 	private static final int UNKNOWN = 3;
 
+	/** Certificate is not for QSCD */
 	private static final int NOT_QSCD = 0;
+
+	/** Certificate is for QSCD */
 	private static final int QSCD = 1;
 
+	/** Cached cube-array containing qualification results for different sets of parameters */
 	private static final CertificateQualification[][][] QUALIFS = new CertificateQualification[2][4][2];
 
 	static {
@@ -67,6 +88,14 @@ public final class CertQualificationMatrix {
 
 	}
 
+	/**
+	 * Returns the certificate's qualification status based on the given parameters
+	 *
+	 * @param qc {@link CertificateQualifiedStatus}
+	 * @param type {@link CertificateType}
+	 * @param qscd {@link QSCDStatus}
+	 * @return {@link CertificateQualification}
+	 */
 	public static CertificateQualification getCertQualification(CertificateQualifiedStatus qc, CertificateType type, QSCDStatus qscd) {
 		return QUALIFS[getInt(CertificateQualifiedStatus.isQC(qc))][getInt(type)][getInt(QSCDStatus.isQSCD(qscd))];
 	}

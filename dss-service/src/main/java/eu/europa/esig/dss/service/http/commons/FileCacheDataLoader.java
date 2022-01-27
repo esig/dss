@@ -255,7 +255,16 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	public boolean remove(String url) {
 		final String fileName = DSSUtils.getNormalizedString(url);
 		final File file = getCacheFile(fileName);
-		return file.delete();
+		if (file.exists()) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Deleting the file corresponding to URL '{}'...", url);
+			}
+			return file.delete();
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Unable to remove the file corresponding to URL '{}'! The file does not exist.", url);
+		}
+		return false;
 	}
 
 	/**

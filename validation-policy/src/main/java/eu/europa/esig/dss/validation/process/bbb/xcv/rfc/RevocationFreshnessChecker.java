@@ -51,7 +51,7 @@ import java.util.Date;
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	/** Defines the name of th revocation position */
-	private final static MessageTag REVOCATION_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
+	private static final MessageTag REVOCATION_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
 
 	/** Revocation data to check */
 	private final RevocationWrapper revocationData;

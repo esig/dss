@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -146,7 +145,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * The class to extract a list of {@code SignatureScope}s from a signature
 	 */
-	protected final SignatureScopeFinder signatureScopeFinder;
+	protected final SignatureScopeFinder<?> signatureScopeFinder;
 
 	/**
 	 * Provides methods to extract a policy content by its identifier
@@ -193,7 +192,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @param signatureScopeFinder {@link SignatureScopeFinder}
 	 */
-	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
+	protected SignedDocumentValidator(SignatureScopeFinder<?> signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
 
@@ -922,16 +921,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
 		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
 				signatureId.equals(identifierProvider.getIdAsString(signature));
-	}
-
-	/**
-	 * Gets digest of a document
-	 *
-	 * @param document {@link DSSDocument}
-	 * @return {@link Digest}
-	 */
-	protected Digest getDigest(DSSDocument document) {
-		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(document.getDigest(getDefaultDigestAlgorithm())));
 	}
 
 }

@@ -9,36 +9,38 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class EnsureXmlSamplesSynchronizedTest {
 
     @Test
     void constraint() throws Exception {
-        ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/main/asciidoc/_samples/constraint.xml"));
+        assertNotNull(ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/main/asciidoc/_samples/constraint.xml")));
     }
 
     @Test
     void simpleReport() throws Exception {
-        SimpleReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/simple-report-example.xml"));
+        assertNotNull(SimpleReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/simple-report-example.xml")));
     }
 
     @Test
     void detailedReport() throws Exception {
-        DetailedReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/detailed-report-example.xml"));
+        assertNotNull(DetailedReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/detailed-report-example.xml")));
     }
 
     @Test
     void detailedReportTimestamp() throws Exception {
-        DetailedReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/timestamp-detailed-report-example.xml"));
+        assertNotNull(DetailedReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/timestamp-detailed-report-example.xml")));
     }
 
     @Test
     void diagnosticData() throws Exception {
-        DiagnosticDataFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/diagnostic-data-example.xml"));
+        assertNotNull(DiagnosticDataFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/diagnostic-data-example.xml")));
     }
 
     @Test
     void etsiVR() throws Exception {
-        ValidationReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/etsi-validation-report-example.xml"));
+        assertNotNull(ValidationReportFacade.newFacade().unmarshall(new File("src/main/asciidoc/_samples/etsi-validation-report-example.xml")));
     }
 
 }

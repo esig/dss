@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Set;
  * by defined AIA URI within a {@code eu.europa.esig.dss.model.x509.CertificateToken}
  *
  */
-public interface AIASource {
+public interface AIASource extends Serializable {
 
     /**
      * Loads a set of {@code CertificateToken}s accessed by AIA URIs from the provided {@code certificateToken}

@@ -47,7 +47,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESOCSPSource.class);
 
 	/** Represents the unsigned 'etsiU' header */
-	private transient final JAdESEtsiUHeader etsiUHeader;
+	private final transient JAdESEtsiUHeader etsiUHeader;
 
 	/**
 	 * Default constructor
@@ -118,23 +118,25 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 
 	private void extractOCSPValues(Map<?, ?> rVals, RevocationOrigin origin) {
 		List<?> ocspVals = DSSJsonUtils.getAsList(rVals, JAdESHeaderParameterNames.OCSP_VALS);
-		if (ocspVals instanceof List) {
-			if (Utils.isCollectionNotEmpty(ocspVals)) {
-				for (Object item : ocspVals) {
-					Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
-					if (Utils.isMapNotEmpty(pkiOb)) {
-						String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
-						if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-							String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
-							if (Utils.isStringNotEmpty(val)) {
-								add(val, origin);
-							}
+		if (Utils.isCollectionNotEmpty(ocspVals)) {
+			for (Object item : ocspVals) {
+				Map<?, ?> pkiOb = DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.PKI_OB);
+				extractOCSPFromPkiOb(pkiOb, origin);
+			}
+		}
+	}
 
-						} else {
-							LOG.warn("Unsupported encoding '{}'", encoding);
-						}
-					}
+	private void extractOCSPFromPkiOb(Map<?, ?> pkiOb, RevocationOrigin origin) {
+		if (Utils.isMapNotEmpty(pkiOb)) {
+			String encoding = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.ENCODING);
+			if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
+				String val = DSSJsonUtils.getAsString(pkiOb, JAdESHeaderParameterNames.VAL);
+				if (Utils.isStringNotEmpty(val)) {
+					add(val, origin);
 				}
+
+			} else {
+				LOG.warn("Unsupported encoding '{}'", encoding);
 			}
 		}
 	}

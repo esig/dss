@@ -33,7 +33,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
@@ -59,10 +58,10 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
 	/** The JWS Signature to extract certificates from */
-	private transient final JWS jws;
+	private final transient JWS jws;
 
 	/** Represents the unsigned 'etsiU' header */
-	private transient final JAdESEtsiUHeader etsiUHeader;
+	private final transient JAdESEtsiUHeader etsiUHeader;
 
 	/**
 	 * Default constructor
@@ -335,7 +334,6 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
-
 		CertificateRef signingCertRef = null;
 		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
 		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
@@ -350,35 +348,36 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		}
 
 		if (signingCertRef != null) {
-			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
-
 			CertificateValidity bestCertificateValidity = null;
 			// check all certificates against the signingCert ref and find the best one
 			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
 			for (final CertificateValidity certificateValidity : certificateValidityList) {
-				certificateValidity.setDigestPresent(signingCertRef != null && signingCertRef.getCertDigest() != null);
-				certificateValidity.setIssuerSerialPresent(kidCertRef != null && kidCertRef.getCertificateIdentifier() != null);
-
-				CertificateToken certificateToken = certificateValidity.getCertificateToken();
-				if (certificateToken != null) {
-					if (signingCertRef != null) {
-						certificateValidity.setDigestEqual(matcher.matchByDigest(certificateToken, signingCertRef));
-					}
-					if (kidCertRef != null) {
-						certificateValidity.setSerialNumberEqual(matcher.matchBySerialNumber(certificateToken, kidCertRef));
-						certificateValidity.setDistinguishedNameEqual(matcher.matchByIssuerName(certificateToken, kidCertRef));
-					}
-				}
-				if (certificateValidity.isValid()) {
+				if (isValid(certificateValidity, signingCertRef, kidCertRef)) {
 					bestCertificateValidity = certificateValidity;
 				}
 			}
-
 			if (bestCertificateValidity != null) {
 				candidates.setTheCertificateValidity(bestCertificateValidity);
 			}
 		}
+	}
 
+	private boolean isValid(CertificateValidity certificateValidity,
+							CertificateRef signingCertRef, CertificateRef kidCertRef) {
+		certificateValidity.setDigestPresent(signingCertRef != null && signingCertRef.getCertDigest() != null);
+		certificateValidity.setIssuerSerialPresent(kidCertRef != null && kidCertRef.getCertificateIdentifier() != null);
+
+		CertificateToken certificateToken = certificateValidity.getCertificateToken();
+		if (certificateToken != null) {
+			if (signingCertRef != null) {
+				certificateValidity.setDigestEqual(certificateMatcher.matchByDigest(certificateToken, signingCertRef));
+			}
+			if (kidCertRef != null) {
+				certificateValidity.setSerialNumberEqual(certificateMatcher.matchBySerialNumber(certificateToken, kidCertRef));
+				certificateValidity.setDistinguishedNameEqual(certificateMatcher.matchByIssuerName(certificateToken, kidCertRef));
+			}
+		}
+		return certificateValidity.isValid();
 	}
 
 	private Digest getSigningCertificateDigest() {

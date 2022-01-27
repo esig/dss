@@ -23,6 +23,10 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
 
+/**
+ * Filters TrustedServices by CA/QC type
+ *
+ */
 public class CaQcServiceFilter extends AbstractTrustedServiceFilter {
 
 	@Override

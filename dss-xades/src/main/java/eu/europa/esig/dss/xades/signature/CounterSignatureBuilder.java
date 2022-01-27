@@ -60,7 +60,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(CounterSignatureBuilder.class);
 
 	/** The default prefix for a counter signature id */
-	private final static String COUNTER_SIGNATURE_PREFIX = "CS-";
+	private static final String COUNTER_SIGNATURE_PREFIX = "CS-";
 
 	/**
 	 * Default constructor

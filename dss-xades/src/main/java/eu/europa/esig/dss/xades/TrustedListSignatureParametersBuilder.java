@@ -48,10 +48,10 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	 * The EXCLUSIVE canonicalization shall be used
 	 * See TS 119 612 "B.1 The Signature element"
 	 */
-	private final static String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
+	private static final String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
 
 	/** The default prefix for an enveloped signature reference id */
-	private final static String DEFAULT_REFERENCE_PREFIX = "ref-enveloped-signature";
+	private static final String DEFAULT_REFERENCE_PREFIX = "ref-enveloped-signature";
 	
 	/**
 	 * The XML Trusted List document

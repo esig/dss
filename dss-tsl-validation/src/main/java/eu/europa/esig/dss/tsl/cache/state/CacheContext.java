@@ -99,23 +99,23 @@ public interface CacheContext {
 	/**
 	 * Store the exception for its occurrence time
 	 * 
-	 * @param exception an instance of {@link CachedException}
+	 * @param exception an instance of {@link CachedExceptionWrapper}
 	 */
-	void error(CachedException exception);
+	void error(CachedExceptionWrapper exception);
 
 	/**
 	 * Store the last occurrence of this exception
 	 * 
-	 * @param updatedException an instance of {@link CachedException}
+	 * @param updatedException an instance of {@link CachedExceptionWrapper}
 	 */
-	void errorUpdateDate(CachedException updatedException);
+	void errorUpdateDate(CachedExceptionWrapper updatedException);
 	
 	/**
 	 * Returns the met exception
 	 * 
 	 * @return an object with the exception and its occurrence time
 	 */
-	CachedException getException();
+	CachedExceptionWrapper getException();
 	
 	/**
 	 * Returns TRUE if the cache is in TO_BE_DELETED status

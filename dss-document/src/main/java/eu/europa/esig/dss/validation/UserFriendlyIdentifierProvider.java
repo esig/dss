@@ -51,7 +51,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Creates an identifier for a given token by the template:
@@ -267,10 +266,10 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             return getIdAsStringForCertRef((CertificateRef) object);
 
         } else if (object instanceof RevocationRef) {
-            return getIdAsStringForRevRef((RevocationRef) object);
+            return getIdAsStringForRevRef((RevocationRef<?>) object);
 
         } else if (object instanceof EncapsulatedRevocationTokenIdentifier) {
-            return getIdAsStringForRevTokenIdentifier((EncapsulatedRevocationTokenIdentifier) object);
+            return getIdAsStringForRevTokenIdentifier((EncapsulatedRevocationTokenIdentifier<?>) object);
 
         }
         LOG.warn("The class '{}' is not supported! Return the original identifier for the object.", object.getClass());
@@ -456,8 +455,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     private Long getDuplicatesNumber(String builtId, String dssId) {
         return generatedTokenIdsMap.entrySet().stream()
-                .filter(e -> !dssId.equals(e.getKey()) && builtId.equals(e.getValue()))
-                .collect(Collectors.counting());
+                .filter(e -> !dssId.equals(e.getKey()) && builtId.equals(e.getValue())).count();
     }
 
     private String getTokenPrefix(Token token) {

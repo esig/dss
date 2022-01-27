@@ -115,7 +115,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // crit cannot be empty
-        List<Object> critList = (List<Object>) crit;
+        List<?> critList = (List<?>) crit;
         if (Utils.isCollectionEmpty(critList)) {
             LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
             return false;
@@ -178,7 +178,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // Additional requirement (c)
         for (EtsiUComponent etsiUComponent :
                 DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.SIG_TST)) {
-            Map<?, ?> sigTst =  DSSJsonUtils.toMap(etsiUComponent.getValue(), JAdESHeaderParameterNames.SIG_TST);
+            Map<?, ?> sigTst = DSSJsonUtils.toMap(etsiUComponent.getValue(), JAdESHeaderParameterNames.SIG_TST);
             List<?> tstTokens = DSSJsonUtils.getAsList(sigTst, JAdESHeaderParameterNames.TST_TOKENS);
             if (tstTokens.size() != 1) {
                 LOG.warn("sigTst shall contain only one electronic timestamp for JAdES-BASELINE-T signature (requirement (c))!");

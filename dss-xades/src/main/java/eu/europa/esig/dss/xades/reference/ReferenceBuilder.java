@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -218,7 +218,7 @@ public class ReferenceBuilder {
 			Element manifestElement = manifestDoc.getDocumentElement();
 			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
-			reference.setTransforms(Arrays.asList(xmlTransform));
+			reference.setTransforms(Collections.singletonList(xmlTransform));
 
 		} else if (signatureParameters.isEmbedXML()) {
 			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
@@ -227,14 +227,14 @@ public class ReferenceBuilder {
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
-			reference.setTransforms(Arrays.asList(xmlTransform));
+			reference.setTransforms(Collections.singletonList(xmlTransform));
 
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
 			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
 
 			DSSTransform base64Transform = new Base64Transform(signatureParameters.getXmldsigNamespace());
-			reference.setTransforms(Arrays.asList(base64Transform));
+			reference.setTransforms(Collections.singletonList(base64Transform));
 		}
 		return reference;
 	}
@@ -294,22 +294,17 @@ public class ReferenceBuilder {
 				List<DSSTransform> transforms = reference.getTransforms();
 				if (Utils.isCollectionNotEmpty(transforms)) {
 					for (DSSTransform transform : transforms) {
-						switch (transform.getAlgorithm()) {
-							case Transforms.TRANSFORM_BASE64_DECODE:
-								if (signatureParameters.isEmbedXML()) {
-									throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
-								} else if (signatureParameters.isManifestSignature()) {
-									throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-								} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-									throw new IllegalArgumentException(referenceWrongMessage +
-											String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
-								} else if (transforms.size() > 1) {
-									throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
-								}
-								break;
-							default:
-								// do nothing
-								break;
+						if (Transforms.TRANSFORM_BASE64_DECODE.equals(transform.getAlgorithm())) {
+							if (signatureParameters.isEmbedXML()) {
+								throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+							} else if (signatureParameters.isManifestSignature()) {
+								throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+							} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
+								throw new IllegalArgumentException(referenceWrongMessage +
+										String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
+							} else if (transforms.size() > 1) {
+								throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
+							}
 						}
 					}
 

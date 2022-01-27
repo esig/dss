@@ -58,10 +58,7 @@ public class TimestampCoherenceOrderCheck extends ChainItem<XmlValidationProcess
 
 	@Override
 	protected boolean process() {
-		if (Utils.collectionSize(timestamps) <= 1 || checkTimestampCoherenceOrderByType()) {
-			return true;
-		}
-		return false;
+		return Utils.collectionSize(timestamps) <= 1 || checkTimestampCoherenceOrderByType();
 	}
 	
 	private boolean checkTimestampCoherenceOrderByType() {

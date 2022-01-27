@@ -23,14 +23,13 @@ package eu.europa.esig.dss.spi.x509.aia;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class is used to download certificates by AIA Urls from online resources
  *
  */
-public interface OnlineAIASource extends AIASource, Serializable {
+public interface OnlineAIASource extends AIASource {
 
     /**
      * Sets the data loader to be used to download a certificate token by AIA

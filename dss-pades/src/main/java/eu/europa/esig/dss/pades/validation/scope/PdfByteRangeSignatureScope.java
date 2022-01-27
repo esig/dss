@@ -42,7 +42,7 @@ public abstract class PdfByteRangeSignatureScope extends SignatureScope {
 	 * @param byteRange {@link ByteRange}
 	 * @param digest {@link Digest}
 	 */
-	public PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
+	protected PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
 		super(name, digest);
 		this.byteRange = byteRange;
 	}

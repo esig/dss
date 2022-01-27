@@ -59,7 +59,7 @@ public class XSDValidationException extends RuntimeException {
 	@Override
 	public String getMessage() {
 		List<String> allMessages = getAllMessages();
-		if (allMessages != null && allMessages.size() > 0) {
+		if (allMessages != null && !allMessages.isEmpty()) {
 			return allMessages.toString();
 		}
 		return null;

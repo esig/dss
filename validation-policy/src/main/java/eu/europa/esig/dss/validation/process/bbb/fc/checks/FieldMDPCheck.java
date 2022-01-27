@@ -27,11 +27,6 @@ public class FieldMDPCheck extends AbstractPdfLockDictionaryCheck {
     }
 
     @Override
-    protected boolean process() {
-        return super.process();
-    }
-
-    @Override
     protected MessageTag getMessageTag() {
         return MessageTag.BBB_FC_ISVAFMDPD;
     }

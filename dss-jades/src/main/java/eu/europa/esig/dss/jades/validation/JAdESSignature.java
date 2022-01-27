@@ -49,7 +49,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -231,7 +230,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
 		Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
@@ -254,7 +252,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
 		List<CommitmentTypeIndication> result = new ArrayList<>();
@@ -478,7 +475,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 							final List<?> noticeNumbers = DSSJsonUtils.getAsList(noticeRef, JAdESHeaderParameterNames.NOTICE_NUMBERS);
 							if (Utils.isCollectionNotEmpty(noticeNumbers)) {
 								userNotice.setNoticeNumbers(DSSJsonUtils.toListOfNumbers(noticeNumbers)
-										.stream().mapToInt(i -> i.intValue()).toArray());
+										.stream().mapToInt(Number::intValue).toArray());
 							}
 						}
 						final String explTest = DSSJsonUtils.getAsString(spUserNotice, JAdESHeaderParameterNames.EXPL_TEXT);
@@ -950,8 +947,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return signedDataHashMap;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	private List<String> getSignedDataUriList() {
 		Map<?, ?> signatureDetached = jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.SIG_D);
 		if (Utils.isMapNotEmpty(signatureDetached)) {
@@ -960,8 +956,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return Collections.emptyList();
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	private List<String> getSignedDataHashList() {
 		Map<?, ?> signatureDetached = jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.SIG_D);
 		if (Utils.isMapNotEmpty(signatureDetached)) {
@@ -1094,7 +1089,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+	protected JAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new JAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 	

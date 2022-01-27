@@ -27,7 +27,6 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +40,7 @@ import java.util.Set;
  * Abstract repository AIA source
  *
  */
-public abstract class RepositoryAIASource implements AIASource, Serializable {
+public abstract class RepositoryAIASource implements AIASource {
 
     private static final long serialVersionUID = -8629948836670094079L;
 

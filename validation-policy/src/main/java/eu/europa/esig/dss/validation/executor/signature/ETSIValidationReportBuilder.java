@@ -136,7 +136,7 @@ import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -162,10 +162,10 @@ public class ETSIValidationReportBuilder {
 	private final DetailedReport detailedReport;
 
 	/** Map between signature Ids and the respective {@code SignatureIdentifierType}s */
-	private Map<String, SignatureIdentifierType> signatureIdentifierMap = new HashMap<>();
+	private final Map<String, SignatureIdentifierType> signatureIdentifierMap = new HashMap<>();
 
 	/** Map between token Ids and the respective {@code ValidationObjectType}s */
-	private Map<String, ValidationObjectType> validationObjectMap = new HashMap<>();
+	private final Map<String, ValidationObjectType> validationObjectMap = new HashMap<>();
 
 	/**
 	 * Default constructor
@@ -348,8 +348,7 @@ public class ETSIValidationReportBuilder {
 			List<XmlConstraint> constraints = signingCertificateXCV.getConstraint();
 			for (XmlConstraint xmlConstraint : constraints) {
 				if ("BBB_XCV_PSEUDO_USE".equals(xmlConstraint.getName().getKey())) {
-					XmlStatus status = xmlConstraint.getStatus();
-					return status;
+					return xmlConstraint.getStatus();
 				}
 			}
 		}
@@ -377,7 +376,7 @@ public class ETSIValidationReportBuilder {
 	}
 
 	private VOReferenceType getVOReference(ValidationObjectType validationObject) {
-		return getVOReference(Arrays.asList(validationObject));
+		return getVOReference(Collections.singletonList(validationObject));
 	}
 
 	private VOReferenceType getVOReference(List<ValidationObjectType> validationObjects) {
@@ -635,7 +634,7 @@ public class ETSIValidationReportBuilder {
 		return createOrphanToken(orphanRevocation, objectType);
 	}
 	
-	private ValidationObjectType createOrphanToken(OrphanTokenWrapper orphanToken, ObjectType objectType) {
+	private ValidationObjectType createOrphanToken(OrphanTokenWrapper<?> orphanToken, ObjectType objectType) {
 		ValidationObjectType validationObject = validationObjectMap.get(orphanToken.getId());
 		if (validationObject == null) {
 			validationObject = objectFactory.createValidationObjectType();
@@ -831,9 +830,7 @@ public class ETSIValidationReportBuilder {
 		if (Utils.collectionSize(signerDocuments) == 1) {
 			SignerDataWrapper signerDocument = signerDocuments.get(0);
 			DigestAlgAndValueType digestAlgAndValueType = getDigestAlgAndValueType(signerDocument.getDigestAlgoAndValue());
-			if (digestAlgAndValueType != null) {
-				signersDocumentType.getContent().add(objectFactory.createSignersDocumentTypeDigestAlgAndValue(digestAlgAndValueType));
-			}
+			signersDocumentType.getContent().add(objectFactory.createSignersDocumentTypeDigestAlgAndValue(digestAlgAndValueType));
 		}
 
 		final List<ValidationObjectType> validationObjectList = new ArrayList<>();
@@ -972,22 +969,6 @@ public class ETSIValidationReportBuilder {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(validationObjectTypes)));
 		}
-	}
-	
-	private List<String> getRelatedCertsIds(List<RelatedCertificateWrapper> certs) {
-		return certs.stream().map(RelatedCertificateWrapper::getId).collect(Collectors.toList());
-	}
-	
-	private List<String> getOrphanCertsIds(List<OrphanCertificateWrapper> certs) {
-		return certs.stream().map(OrphanCertificateWrapper::getId).collect(Collectors.toList());
-	}
-	
-	private List<String> getRelatedRevocationIds(List<RelatedRevocationWrapper> revocations) {
-		return revocations.stream().map(RelatedRevocationWrapper::getId).collect(Collectors.toList());
-	}
-	
-	private List<String> getOrphanRevocationIds(List<OrphanRevocationWrapper> revocations) {
-		return revocations.stream().map(OrphanRevocationWrapper::getId).collect(Collectors.toList());
 	}
 
 	private void addAttributeCertificateRefs(SignatureAttributesType sigAttributes, FoundCertificatesProxy foundCertificates) {
@@ -1321,7 +1302,7 @@ public class ETSIValidationReportBuilder {
 	private void addProductionPlace(SignatureAttributesType sigAttributes, SignatureWrapper sigWrapper) {
 		SASignatureProductionPlaceType sigProductionPlace = objectFactory.createSASignatureProductionPlaceType();
 
-		/**
+		/*
 		 * A.9.5 PAdES
 		 * 
 		 * For PAdES signatures as specified in ETSI EN 319 142-1 [i.3] and ETSI EN 319
@@ -1335,7 +1316,7 @@ public class ETSIValidationReportBuilder {
 			} else {
 				return;
 			}
-			/**
+			/*
 			 * XAdES, CAdES, JAdES
 			 */
 		} else if (sigWrapper.isSignatureProductionPlacePresent()) {

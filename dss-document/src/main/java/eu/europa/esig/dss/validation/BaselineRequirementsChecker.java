@@ -171,8 +171,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     }
 
     private boolean isAllRevocationDataPresent() {
-        ValidationContext validationContext = getValidationContext();
-        return validationContext.checkAllRequiredRevocationDataPresent();
+        return getValidationContext().checkAllRequiredRevocationDataPresent();
     }
 
     /**
@@ -255,9 +254,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         SignaturePolicy signaturePolicyIdentifier = signature.getSignaturePolicy();
         if (signaturePolicyIdentifier != null) {
             Digest digest = signaturePolicyIdentifier.getDigest();
-            if (digest != null && digest.getAlgorithm() != null) {
-                return true;
-            }
+            return digest != null && digest.getAlgorithm() != null;
         }
         return false;
     }

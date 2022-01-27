@@ -51,7 +51,10 @@ public class DataToSignASiCSWithXAdESHelper extends AbstractGetDataToSignASiCS i
 
 	@Override
 	public String getSignatureFilename() {
-		return getSignatureFileName(asicParameters);
+		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
+			return "META-INF/" + asicParameters.getSignatureFileName();
+		}
+		return "META-INF/signatures.xml";
 	}
 
 	@Override
@@ -62,19 +65,6 @@ public class DataToSignASiCSWithXAdESHelper extends AbstractGetDataToSignASiCS i
 	@Override
 	public List<DSSDocument> getToBeSigned() {
 		return asicContent.getSignedDocuments();
-	}
-
-	/**
-	 * Returns the signature filename
-	 *
-	 * @param asicParameters {@link ASiCParameters}
-	 * @return {@link String}
-	 */
-	protected String getSignatureFileName(final ASiCParameters asicParameters) {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return "META-INF/" + asicParameters.getSignatureFileName();
-		}
-		return "META-INF/signatures.xml";
 	}
 
 	@Override

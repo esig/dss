@@ -221,7 +221,7 @@ public class DetailedReportMessageCollector {
 
 	private List<Message> convert(Collection<XmlMessage> messages) {
 		if (messages != null) {
-			return messages.stream().map(m -> convert(m)).collect(Collectors.toList());
+			return messages.stream().map(this::convert).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}

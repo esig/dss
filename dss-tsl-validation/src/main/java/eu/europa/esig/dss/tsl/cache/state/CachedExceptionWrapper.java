@@ -26,9 +26,10 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * Defines the error for a cache record
+ * Wraps an exception for a cache record
+ *
  */
-public class CachedException {
+public class CachedExceptionWrapper {
 
 	/** The first occurrence date of the exception */
 	private final Date date = new Date();
@@ -44,7 +45,7 @@ public class CachedException {
 	 *
 	 * @param exception {@link Exception}
 	 */
-	public CachedException(Exception exception) {
+	public CachedExceptionWrapper(Exception exception) {
 		Objects.requireNonNull(exception);
 		this.exception = exception;
 	}

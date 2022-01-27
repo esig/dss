@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -156,8 +157,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		List<DSSDocument> detachedContents = getDetachedContents(asicContent, openDocument);
 
 		for (DSSDocument signature : signatureDocuments) {
-			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, null, openDocument);
-			xadesParameters.getContext().setDetachedContents(detachedContents);
+			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, Collections.emptyList(), openDocument);
+			xadesParameters.setDetachedContents(detachedContents);
 
 			DSSDocument extendedDocument = getXAdESService().extendDocument(signature, xadesParameters);
 			extendedDocument.setName(signature.getName());

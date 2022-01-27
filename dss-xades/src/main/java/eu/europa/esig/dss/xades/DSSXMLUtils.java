@@ -190,8 +190,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransform(final String transformURI) {
-		final boolean added = transforms.add(transformURI);
-		return added;
+		return transforms.add(transformURI);
 	}
 
 	/**
@@ -202,8 +201,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		final boolean added = canonicalizers.add(c14nAlgorithmURI);
-		return added;
+		return canonicalizers.add(c14nAlgorithmURI);
 	}
 
 	/**
@@ -215,8 +213,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransformWithNodeSetOutput(final String transformURI) {
-		final boolean added = transformsWithNodeSetOutput.add(transformURI);
-		return added;
+		return transformsWithNodeSetOutput.add(transformURI);
 	}
 	
 	/**
@@ -592,10 +589,8 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
-			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
-					return item.getTextContent();
-				}
+			if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
+				return item.getTextContent();
 			}
 		}
 		return null;

@@ -33,6 +33,10 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Date;
 
+/**
+ * Verifies whether the result of {@code MessageImprintDigestAlgorithmValidation} is valid
+ *
+ */
 public class MessageImprintDigestAlgorithmValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
 
     /** The timestamp to check */

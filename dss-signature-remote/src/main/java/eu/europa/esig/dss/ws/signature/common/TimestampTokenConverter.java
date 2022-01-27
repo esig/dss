@@ -44,6 +44,12 @@ public class TimestampTokenConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(TimestampTokenConverter.class);
 
 	/**
+	 * Empty constructor
+	 */
+	private TimestampTokenConverter() {
+	}
+
+	/**
 	 * Converts a list of {@code TimestampDTO}s to a list of {@link TimestampToken}s
 	 *
 	 * @param timestampDTOs list of {@code TimestampDTO}s

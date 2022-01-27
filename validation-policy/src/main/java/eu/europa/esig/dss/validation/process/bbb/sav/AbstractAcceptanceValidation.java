@@ -82,7 +82,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
-	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
+	protected AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
 										ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSAV());
 		this.token = token;
@@ -91,26 +91,52 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		this.validationPolicy = validationPolicy;
 	}
 
+	/**
+	 * Checks whether a signing-certificate signed attribute is present
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> signingCertificateAttributePresent() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
 		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks if only one signing-certificate signed attribute is present
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> unicitySigningCertificateAttribute() {
 		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
 		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks whether a signing-certificate signed attribute is valid to the determined signing certificate
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> signingCertificateReferencesValidity() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
 		return new SigningCertificateReferencesValidityCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks if all certificates in a signing certificate chain are references
+	 * within signing-certificate signed attribute
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> allCertificatesInPathReferenced() {
 		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
 		return new AllCertificatesInPathReferencedCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Verifies cryptographic validity of signature references and signing-certificate signed attribute
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> cryptographic() {
 		ChainItem<XmlSAV> firstItem;
 		
@@ -164,7 +190,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 					continue;
 				}
 
-				XmlCC dacResult = getSigningCertificateDigestCryptographicCheckResult(certificateRefWrapper);;
+				XmlCC dacResult = getSigningCertificateDigestCryptographicCheckResult(certificateRefWrapper);
 
 				item = item.setNextItem(signingCertificateRefDigestAlgoCheckResult(certificateRefWrapper, dacResult));
 
@@ -181,7 +207,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	}
 	
 	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {
-		return new CryptographicCheckerResultCheck<>(i18nProvider, result, token, currentTime, position, ccResult, constraint);
+		return new CryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, ccResult, constraint);
 	}
 	
 	private ChainItem<XmlSAV> digestAlgorithmCheckResult(XmlDigestMatcher digestMatcher, XmlCC ccResult,
@@ -193,7 +219,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	private ChainItem<XmlSAV> signingCertificateRefDigestAlgoCheckResult(CertificateRefWrapper certificateRefWrapper,
 																		 XmlCC ccResult) {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestAlgorithmConstraint(context);
-		return new SigningCertificateRefDigestCryptographicCheckerResultCheck(i18nProvider, result,
+		return new SigningCertificateRefDigestCryptographicCheckerResultCheck<>(i18nProvider, result,
 				currentTime, certificateRefWrapper, ccResult, constraint);
 	}
 

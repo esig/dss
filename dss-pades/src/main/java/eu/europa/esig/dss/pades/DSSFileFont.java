@@ -108,8 +108,8 @@ public class DSSFileFont extends AbstractDSSFont {
 	
 	private Font deriveJavaFont() {
 		try (InputStream is = fileFont.openStream()) {
-			Font javaFont = Font.createFont(Font.TRUETYPE_FONT, is);
-			return javaFont.deriveFont(size);
+			Font font = Font.createFont(Font.TRUETYPE_FONT, is);
+			return font.deriveFont(size);
 		} catch (IOException | FontFormatException e) {
 			throw new DSSException(String.format("The Java font cannot be instantiated. Reason : %s", e.getMessage()), e);
 		}

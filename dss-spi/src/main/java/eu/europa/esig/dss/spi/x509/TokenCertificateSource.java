@@ -155,7 +155,6 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 					throw new IllegalStateException("More than one current CertificateIdentifier");
 				}
 				current = signerIdentifier;
-				break;
 			}
 		}
 		return current;

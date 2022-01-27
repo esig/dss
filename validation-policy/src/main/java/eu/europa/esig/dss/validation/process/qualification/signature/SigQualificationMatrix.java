@@ -24,25 +24,57 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
+/**
+ * Builds a signature qualification result based on the given parameters
+ *
+ */
 public final class SigQualificationMatrix {
 
+	/**
+	 * Empty constructor
+	 */
 	private SigQualificationMatrix() {
 	}
 
+	/** Not AdES signature */
 	private static final int NOT_ADES = 0;
+
+	/** AdES signature */
 	private static final int ADES = 1;
+
+	/** Intermediate AdES signature */
 	private static final int INDETERMINATE_ADES = 2;
 
+	/** Signature with qualified certificate for eSignature with QSCD */
 	private static final int QCERT_FOR_ESIG_QSCD = 0;
+
+	/** Signature with qualified certificate for eSeal with QSCD */
 	private static final int QCERT_FOR_ESEAL_QSCD = 1;
+
+	/** Signature with qualified certificate for eSignature */
 	private static final int QCERT_FOR_ESIG = 2;
+
+	/** Signature with qualified certificate for eSeal */
 	private static final int QCERT_FOR_ESEAL = 3;
+
+	/** Signature with qualified certificate for Web Authentication */
 	private static final int QCERT_FOR_WSA = 4;
+
+	/** Signature with certificate for eSignature */
 	private static final int CERT_FOR_ESIG = 5;
+
+	/** Signature with certificate for eSeal */
 	private static final int CERT_FOR_ESEAL = 6;
+
+	/** Signature with certificate for Web Authentication */
 	private static final int CERT_FOR_WSA = 7;
+
+	/** Not applicable */
 	private static final int NA = 8;
 
+	/**
+	 * Double array containing the relationship between qualification parameters and the final signature qualification
+	 */
 	private static final SignatureQualification[][] QUALIFS = new SignatureQualification[3][9];
 
 	static {
@@ -91,6 +123,13 @@ public final class SigQualificationMatrix {
 
 	}
 
+	/**
+	 * Gets signature qualification based on the given parameters
+	 *
+	 * @param ades {@link Indication} representing the final result of EN 319 102-1 AdES validation process
+	 * @param certQualification {@link CertificateQualification} of the certificate used to create the signature
+	 * @return {@link SignatureQualification}
+	 */
 	public static SignatureQualification getSignatureQualification(Indication ades, CertificateQualification certQualification) {
 		return QUALIFS[getInt(ades)][getInt(certQualification)];
 	}

@@ -32,14 +32,28 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageImprintCrypto
 import java.util.Date;
 
 /**
+ * Verifies cryptographical validity of a DigestAlgorithm used for message-imprint creation
  *
  */
 public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 
-	protected final DigestAlgorithm digestAlgorithm;
-	protected final Date currentTime;
-	protected final CryptographicConstraint constraint;
+	/** DigestAlgorithm to be verified */
+	private final DigestAlgorithm digestAlgorithm;
 
+	/** The validation time */
+	private final Date currentTime;
+
+	/** Set of cryptographical constraint to validate against */
+	private final CryptographicConstraint constraint;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTime {@link Date}
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param constraint {@link CryptographicConstraint}
+	 */
 	public MessageImprintDigestAlgorithmValidation(I18nProvider i18nProvider, Date currentTime,
 			DigestAlgorithm digestAlgorithm, CryptographicConstraint constraint) {
 		super(i18nProvider, new XmlSAV());
@@ -58,7 +72,7 @@ public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 		firstItem = messageImprintCryptographic();
 	}
 
-	protected ChainItem<XmlSAV> messageImprintCryptographic() {
+	private ChainItem<XmlSAV> messageImprintCryptographic() {
 		return new MessageImprintCryptographicCheck(i18nProvider, digestAlgorithm, result, currentTime, constraint);
 	}
 

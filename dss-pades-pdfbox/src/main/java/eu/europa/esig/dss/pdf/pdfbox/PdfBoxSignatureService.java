@@ -177,8 +177,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signDocumentAndReturnDigest(parameters, signatureValue, outputStream, documentReader.getPDDocument());
 			DSSDocument doc = new InMemoryDocument(outputStream.toByteArray());
 			return getNewSignatureFieldScreenshot(doc, parameters, originalAnnotations);
-		} catch (IOException e) {
-			throw new DSSException(e);
+
+		} catch (Exception e) {
+			throw new DSSException(String.format(
+					"An error occurred while building a signature field preview : %s", e.getMessage()), e);
 		}
 	}
 
@@ -202,12 +204,20 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				}
 			}
 
-			AnnotationBox fieldBox = newField.getAnnotationBox();
-			AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox.getHeight());
+			if (newField != null) {
+				AnnotationBox fieldBox = newField.getAnnotationBox();
+				AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox.getHeight());
 
-			BufferedImage page = reader.generateImageScreenshot(parameters.getImageParameters().getFieldParameters().getPage());
-			BufferedImage annotationRepresentation = page.getSubimage(Math.round((box.getMaxX() - box.getWidth())), Math.round((box.getMaxY() - box.getHeight())), Math.round(box.getWidth()), Math.round(box.getHeight()));
-			return ImageUtils.toDSSDocument(annotationRepresentation);
+				BufferedImage page = reader.generateImageScreenshot(parameters.getImageParameters().getFieldParameters().getPage());
+				BufferedImage annotationRepresentation = page.getSubimage(
+						Math.round((box.getMaxX() - box.getWidth())), Math.round((box.getMaxY() - box.getHeight())),
+						Math.round(box.getWidth()), Math.round(box.getHeight()));
+				return ImageUtils.toDSSDocument(annotationRepresentation);
+
+			} else {
+				throw new DSSException("Internal error : unable to extract a new signature field!");
+			}
+
 		}
 	}
 

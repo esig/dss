@@ -24,11 +24,24 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
+/**
+ * Gets a {@code QualificationStrategy} to detect qualification strategy for a certificate
+ *
+ */
 public final class QualificationStrategyFactory {
 
+	/**
+	 * Empty constructor
+	 */
 	private QualificationStrategyFactory() {
 	}
 
+	/**
+	 * Creates {@code QualificationStrategy} from the certificate
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 * @return {@link QualificationStrategy}
+	 */
 	public static QualificationStrategy createQualificationFromCert(CertificateWrapper signingCertificate) {
 		if (EIDASUtils.isPostEIDAS(signingCertificate.getNotBefore())) {
 			return new QualificationByCertificatePostEIDAS(signingCertificate);
@@ -37,11 +50,27 @@ public final class QualificationStrategyFactory {
 		}
 	}
 
-	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService, QualificationStrategy qualifiedInCert) {
+	/**
+	 * Creates {@code QualificationStrategy} from the Trusted Service
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param qualifiedInCert {@link QualificationStrategy}
+	 * @return {@link QualificationStrategy}
+	 */
+	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService,
+																  QualificationStrategy qualifiedInCert) {
 		return new QualificationByTL(trustedService, qualifiedInCert);
 	}
 
-	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService) {
+	/**
+	 * Creates {@code QualificationStrategy} from the certificate and Trusted Service
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 * @param caQcTrustedService {@link TrustedServiceWrapper}
+	 * @return {@link QualificationStrategy}
+	 */
+	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate,
+																		 TrustedServiceWrapper caQcTrustedService) {
 		QualificationStrategy qcFromCert = createQualificationFromCert(signingCertificate);
 		return createQualificationFromTL(caQcTrustedService, qcFromCert);
 	}

@@ -232,13 +232,14 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         timestampTokens.addAll(getTimestampsX1());
         timestampTokens.addAll(getTimestampsX2());
 
-        final List<TimestampToken> archiveTimestamps = new ArrayList<>(getArchiveTimestamps());
-        archiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
-        archiveTimestamps.addAll(getDetachedTimestamps()); // can be a detached timestamp for ASiC with CAdES
-        archiveTimestamps.sort(new TimestampTokenComparator());
-        if (archiveTimestamps.size() > 0) {
-            for (int ii = 0; ii < archiveTimestamps.size() - 1; ii++) {
-                TimestampToken timestampToken = archiveTimestamps.get(ii);
+        final List<TimestampToken> allArchiveTimestamps = new ArrayList<>();
+        allArchiveTimestamps.addAll(getArchiveTimestamps());
+        allArchiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
+        allArchiveTimestamps.addAll(getDetachedTimestamps()); // can be a detached timestamp for ASiC with CAdES
+        allArchiveTimestamps.sort(new TimestampTokenComparator());
+        if (Utils.isCollectionNotEmpty(allArchiveTimestamps)) {
+            for (int ii = 0; ii < allArchiveTimestamps.size() - 1; ii++) {
+                TimestampToken timestampToken = allArchiveTimestamps.get(ii);
                 timestampTokens.add(timestampToken);
             }
         }
@@ -374,19 +375,11 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 }
                 signatureTimestamps.addAll(timestampTokens);
 
-            } else if (isCompleteCertificateRef(unsignedAttribute)) {
+            } else if (isCompleteCertificateRef(unsignedAttribute) || isAttributeCertificateRef(unsignedAttribute)) {
                 addReferences(unsignedPropertiesReferences, getTimestampedCertificateRefs(unsignedAttribute));
                 continue;
 
-            } else if (isAttributeCertificateRef(unsignedAttribute)) {
-                addReferences(unsignedPropertiesReferences, getTimestampedCertificateRefs(unsignedAttribute));
-                continue;
-
-            } else if (isCompleteRevocationRef(unsignedAttribute)) {
-                addReferences(unsignedPropertiesReferences, getTimestampedRevocationRefs(unsignedAttribute));
-                continue;
-
-            } else if (isAttributeRevocationRef(unsignedAttribute)) {
+            } else if (isCompleteRevocationRef(unsignedAttribute) || isAttributeRevocationRef(unsignedAttribute)) {
                 addReferences(unsignedPropertiesReferences, getTimestampedRevocationRefs(unsignedAttribute));
                 continue;
 
@@ -413,19 +406,11 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 }
                 sigAndRefsTimestamps.addAll(timestampTokens);
 
-            } else if (isCertificateValues(unsignedAttribute)) {
+            } else if (isCertificateValues(unsignedAttribute) || isAttrAuthoritiesCertValues(unsignedAttribute)) {
                 addReferences(unsignedPropertiesReferences, getTimestampedCertificateValues(unsignedAttribute));
                 continue;
 
-            } else if (isRevocationValues(unsignedAttribute)) {
-                addReferences(unsignedPropertiesReferences, getTimestampedRevocationValues(unsignedAttribute));
-                continue;
-
-            } else if (isAttrAuthoritiesCertValues(unsignedAttribute)) {
-                addReferences(unsignedPropertiesReferences, getTimestampedCertificateValues(unsignedAttribute));
-                continue;
-
-            } else if (isAttributeRevocationValues(unsignedAttribute)) {
+            } else if (isRevocationValues(unsignedAttribute) || isAttributeRevocationValues(unsignedAttribute)) {
                 addReferences(unsignedPropertiesReferences, getTimestampedRevocationValues(unsignedAttribute));
                 continue;
 

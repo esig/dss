@@ -79,6 +79,8 @@ public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 		signatureParameters.setContactInfo("Jira");
 
 		service = new PAdESService(getOfflineCertificateVerifier());
+
+		super.signAndVerify();
 	}
 
 	@Override

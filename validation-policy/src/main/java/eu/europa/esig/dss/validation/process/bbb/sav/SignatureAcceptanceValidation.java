@@ -178,12 +178,12 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
 	}
 
-	protected ChainItem<XmlSAV> keyIdentifierPresent() {
+	private ChainItem<XmlSAV> keyIdentifierPresent() {
 		LevelConstraint constraint = validationPolicy.getKeyIdentifierPresent(context);
 		return new KeyIdentifierPresentCheck(i18nProvider, result, token, constraint);
 	}
 
-	protected ChainItem<XmlSAV> keyIdentifierMatch() {
+	private ChainItem<XmlSAV> keyIdentifierMatch() {
 		LevelConstraint constraint = validationPolicy.getKeyIdentifierMatch(context);
 		return new KeyIdentifierMatchCheck(i18nProvider, result, token, constraint);
 	}
@@ -230,7 +230,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
 		LevelConstraint constraint = validationPolicy.getContentTimestampMessageImprintConstraint(context);
-		return new TimestampMessageImprintCheck(i18nProvider, result, contentTimestamp, constraint);
+		return new TimestampMessageImprintCheck<>(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> countersignature() {

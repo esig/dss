@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -44,16 +46,19 @@ public class MultiThreadsTokenIssuerSelectorTest {
     public void test() {
         ExecutorService executor = Executors.newFixedThreadPool(100);
 
-        List<Future> futures = new ArrayList<>();
+        List<Future<TestConcurrent.Result>> futures = new ArrayList<>();
 
         for (int i = 0; i < 1000; i++) {
             futures.add(executor.submit(new TestConcurrent()));
         }
 
-        for (Future future : futures) {
+        TestConcurrent.Result result;
+        for (Future<TestConcurrent.Result> future : futures) {
             try {
-                future.get();
+                result = future.get();
                 assertTrue(future.isDone());
+                validate(result);
+
             } catch (Exception e) {
                 fail(e);
             }
@@ -64,29 +69,66 @@ public class MultiThreadsTokenIssuerSelectorTest {
         executor.shutdown();
     }
 
-    private static class TestConcurrent implements Runnable {
+    private void validate(TestConcurrent.Result result) {
+        for (CertificateToken certificateToken : result.nullableResults) {
+            assertNull(certificateToken);
+        }
+        assertEquals(certificateToken1, result.certificateToken1);
+        assertEquals(certificateToken2, result.certificateToken2);
+        assertEquals(certificateToken3, result.certificateToken3);
+        assertEquals(certificateToken4, result.certificateToken4);
+
+        assertEquals(3, result.externalCa.size());
+        for (CertificateToken certificateToken : result.externalCa) {
+            assertEquals(externalCa, certificateToken);
+        }
+
+        assertEquals(1, result.externalCaAlternative.size());
+        for (CertificateToken certificateToken : result.externalCaAlternative) {
+            assertEquals(externalCaAlternative, certificateToken);
+        }
+    }
+
+    private static class TestConcurrent implements Callable<TestConcurrent.Result> {
 
         @Override
-        public void run() {
+        public Result call() throws Exception {
+            Result result = new Result();
+
             List<CertificateToken> candidates = Arrays.asList(certificateToken1, certificateToken2, certificateToken3, certificateToken4);
 
-			assertEquals(null, new TokenIssuerSelector(certificateToken1, candidates).getIssuer());
-			assertEquals(null, new TokenIssuerSelector(certificateToken2, candidates).getIssuer());
-			assertEquals(certificateToken3, new TokenIssuerSelector(certificateToken3, candidates).getIssuer());
-			assertEquals(certificateToken4, new TokenIssuerSelector(certificateToken4, candidates).getIssuer());
+            result.nullableResults.add(new TokenIssuerSelector(certificateToken1, candidates).getIssuer());
+            result.nullableResults.add(new TokenIssuerSelector(certificateToken2, candidates).getIssuer());
+            result.nullableResults.add(new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken4)).getIssuer());
+            result.nullableResults.add(new TokenIssuerSelector(certificateToken3, null).getIssuer());
+            result.nullableResults.add(new TokenIssuerSelector(certificateToken3, Collections.emptyList()).getIssuer());
 
-			assertEquals(certificateToken1, new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken1, certificateToken2, certificateToken4)).getIssuer());
-			assertEquals(certificateToken2, new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken2, certificateToken4)).getIssuer());
-			assertEquals(null, new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken4)).getIssuer());
+            result.certificateToken1 = new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken1, certificateToken2, certificateToken4)).getIssuer();
+            result.certificateToken2 = new TokenIssuerSelector(certificateToken3, Arrays.asList(certificateToken2, certificateToken4)).getIssuer();
+            result.certificateToken3 = new TokenIssuerSelector(certificateToken3, candidates).getIssuer();
+            result.certificateToken4 = new TokenIssuerSelector(certificateToken4, candidates).getIssuer();
 
-			assertEquals(null, new TokenIssuerSelector(certificateToken3, null).getIssuer());
-			assertEquals(null, new TokenIssuerSelector(certificateToken3, Collections.emptyList()).getIssuer());
+            result.externalCa.add(new TokenIssuerSelector(rootCa, Arrays.asList(externalCa)).getIssuer());
+            result.externalCa.add(new TokenIssuerSelector(rootCa, Arrays.asList(externalCa, externalCaAlternative)).getIssuer());
+            result.externalCa.add(new TokenIssuerSelector(rootCa, Arrays.asList(externalCaAlternative, externalCa)).getIssuer());
 
+            result.externalCaAlternative.add(new TokenIssuerSelector(rootCa, Arrays.asList(externalCaAlternative)).getIssuer());
 
-            assertEquals(externalCa, new TokenIssuerSelector(rootCa, Arrays.asList(externalCa)).getIssuer());
-            assertEquals(externalCaAlternative, new TokenIssuerSelector(rootCa, Arrays.asList(externalCaAlternative)).getIssuer());
-            assertEquals(externalCa, new TokenIssuerSelector(rootCa, Arrays.asList(externalCa, externalCaAlternative)).getIssuer());
-            assertEquals(externalCa, new TokenIssuerSelector(rootCa, Arrays.asList(externalCaAlternative, externalCa)).getIssuer());
+            return result;
+        }
+
+        private static class Result {
+
+            private List<CertificateToken> nullableResults = new ArrayList<>();
+
+            private CertificateToken certificateToken1;
+            private CertificateToken certificateToken2;
+            private CertificateToken certificateToken3;
+            private CertificateToken certificateToken4;
+
+            private List<CertificateToken> externalCa = new ArrayList<>();
+            private List<CertificateToken> externalCaAlternative = new ArrayList<>();
+
         }
 
     }
