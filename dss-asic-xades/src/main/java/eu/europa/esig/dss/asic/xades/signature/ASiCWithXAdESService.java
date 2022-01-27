@@ -132,7 +132,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		final DSSDocument asicSignature = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate());
 		asicSignature.setName(getFinalDocumentName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return asicSignature;
 	}
 
@@ -157,7 +157,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		for (DSSDocument signature : signatureDocuments) {
 			XAdESSignatureParameters xadesParameters = getXAdESParameters(parameters, null, openDocument);
-			xadesParameters.setDetachedContents(detachedContents);
+			xadesParameters.getContext().setDetachedContents(detachedContents);
 
 			DSSDocument extendedDocument = getXAdESService().extendDocument(signature, xadesParameters);
 			extendedDocument.setName(signature.getName());

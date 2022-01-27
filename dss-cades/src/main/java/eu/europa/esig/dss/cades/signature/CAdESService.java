@@ -144,7 +144,7 @@ public class CAdESService extends
 
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-			parameters.setDetachedContents(Arrays.asList(toSignDocument));
+			parameters.getContext().setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
@@ -171,7 +171,7 @@ public class CAdESService extends
 			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return signature;
 	}
 

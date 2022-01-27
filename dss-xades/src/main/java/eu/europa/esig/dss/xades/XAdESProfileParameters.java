@@ -20,22 +20,28 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.ProfileParameters;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.xades.reference.DSSReference;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
- * This class manages the internal variables used in the process of creating of a signature and which allows to
- * accelerate the generation.
- *
- * NOTE: Currently used only for XAdES.
+ * This class is used to accelerate signature creation process for XAdES.
  *
  */
-public class ProfileParameters implements Serializable {
+public class XAdESProfileParameters extends ProfileParameters {
 
 	private static final long serialVersionUID = 2655781283234085565L;
 
-	/** The XAdES creation profile */
+	/**
+	 * The id created in a deterministic way based on the filled parameters to use in the signature file
+	 */
+	private String deterministicId;
+
+	/**
+	 * The XAdES creation profile
+	 */
 	private SignatureProfile profile;
 
 	/**
@@ -47,6 +53,29 @@ public class ProfileParameters implements Serializable {
 	 * Indicates the type of the operation to be done
 	 */
 	private SigningOperation operationKind;
+
+	/**
+	 * List of references created by a reference builder
+	 */
+	private List<DSSReference> references;
+
+	/**
+	 * Gets the deterministic id
+	 *
+	 * @return {@link String}
+	 */
+	public String getDeterministicId() {
+		return deterministicId;
+	}
+
+	/**
+	 * Sets the deterministic id
+	 *
+	 * @param deterministicId {@link String}
+	 */
+	public void setDeterministicId(String deterministicId) {
+		this.deterministicId = deterministicId;
+	}
 
 	/**
 	 * Returns the current Profile used to generate the signature or its extension
@@ -101,6 +130,23 @@ public class ProfileParameters implements Serializable {
 	 */
 	public void setOperationKind(SigningOperation operationKind) {
 		this.operationKind = operationKind;
+	}
+	/**
+	 * Returns a list of references to be incorporated to the signature
+	 *
+	 * @return a list of {@link DSSReference}s
+	 */
+	public List<DSSReference> getReferences() {
+		return references;
+	}
+
+	/**
+	 * Sets a list of references to be incorporated into the signature
+	 *
+	 * @param references a list of {@link DSSReference}s
+	 */
+	public void setReferences(List<DSSReference> references) {
+		this.references = references;
 	}
 
 }

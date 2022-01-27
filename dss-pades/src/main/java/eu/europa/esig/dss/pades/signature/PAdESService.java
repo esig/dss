@@ -215,7 +215,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			signature = extension.extendSignatures(signature, parameters);
 		}
 
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signature;
 	}

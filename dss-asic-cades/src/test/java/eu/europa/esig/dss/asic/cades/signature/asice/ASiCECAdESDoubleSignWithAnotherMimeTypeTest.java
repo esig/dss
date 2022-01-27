@@ -157,7 +157,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
                     .build(asicContent, parameters);
 
             CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-            cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+            cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
 
             DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
             return getCAdESService().getDataToSign(toBeSigned, cadesParameters);
@@ -171,7 +171,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
             ASiCParameters asicParameters = parameters.aSiC();
 
             CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-            cadesParameters.setDetachedContents(dataToSignHelper.getDetachedContents());
+            cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
 
             DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
             if (ASiCContainerType.ASiC_E == asicParameters.getContainerType()) {
@@ -186,7 +186,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
 
             final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
             asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
-            parameters.reinitDeterministicId();
+            parameters.reinit();
             return asicContainer;
         }
 

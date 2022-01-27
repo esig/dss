@@ -178,11 +178,13 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		if (signatureExtension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
 					Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-				parameters.setDetachedContents(toSignDocuments);
+				parameters.getContext().setDetachedContents(toSignDocuments);
 			}
 			signatureExtension.setOperationKind(SigningOperation.SIGN);
 			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
 		}
+
+		parameters.reinit();
 		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,
 				parameters.getSignatureLevel()));
 		signedDocument.setMimeType(jadesBuilder.getMimeType());
@@ -350,6 +352,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
+		parameters.reinit();
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN,
 				parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());

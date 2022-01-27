@@ -18,20 +18,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 
-import java.io.FileInputStream;
 import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class DeterministicIdGenerationTest {
+public class DeterministicIdGenerationTest extends PKIFactoryAccess {
 
 	private CertificateToken signingCert;
 
@@ -40,7 +39,7 @@ public class DeterministicIdGenerationTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		signingCert = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/certificates/ec.europa.eu.crt"));
+		signingCert = getSigningCert();
 	}
 
 	@RepeatedTest(10)
@@ -48,18 +47,18 @@ public class DeterministicIdGenerationTest {
 
 		Calendar calendar = Calendar.getInstance();
 
-		SignatureParameters params = new SignatureParameters();
+		XAdESSignatureParameters params = new XAdESSignatureParameters();
 		params.setSigningCertificate(signingCert);
 		params.bLevel().setSigningDate(calendar.getTime());
-		String deterministicId1 = params.getDeterministicId();
+		String deterministicId1 = params.getContext().getDeterministicId();
 
-		params = new SignatureParameters();
+		params = new XAdESSignatureParameters();
 		params.bLevel().setSigningDate(calendar.getTime());
 		String deterministicId2 = params.getDeterministicId();
 
 		calendar.add(Calendar.MILLISECOND, 1);
 
-		params = new SignatureParameters();
+		params = new XAdESSignatureParameters();
 		params.setSigningCertificate(signingCert);
 		params.bLevel().setSigningDate(calendar.getTime());
 		String deterministicId3 = params.getDeterministicId();
@@ -68,9 +67,9 @@ public class DeterministicIdGenerationTest {
 		assertNotEquals(deterministicId1, deterministicId3);
 	}
 
-	@SuppressWarnings("serial")
-	private static class SignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
-
+	@Override
+	protected String getSigningAlias() {
+		return GOOD_USER;
 	}
 
 }
