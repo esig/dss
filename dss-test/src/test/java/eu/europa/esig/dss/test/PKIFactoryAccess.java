@@ -77,7 +77,7 @@ public abstract class PKIFactoryAccess {
 			PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password");
 			
 			dataSource = new JdbcDataSource();
-			dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
+			dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to initialize from pki-factory.properties", e);
 		}

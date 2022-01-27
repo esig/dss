@@ -60,9 +60,9 @@
 
 		<awaitility.version>4.1.1</awaitility.version>
 		<mockito.version>3.12.4</mockito.version>
-		<h2database.version>1.4.200</h2database.version>
 		<jackson.version>2.13.0</jackson.version>
 		<fop-core.version>2.6</fop-core.version>
+		<h2database.version>2.1.210</h2database.version>
 
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
