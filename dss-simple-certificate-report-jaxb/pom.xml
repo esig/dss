@@ -65,7 +65,7 @@
 			                    <plugin>
 			                        <groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
 			                        <artifactId>jaxb-xew-plugin</artifactId>
-									<version>1.9</version>
+									<version>1.11</version>
 			                    </plugin>
 			                </plugins>
 						</configuration>
@@ -75,7 +75,7 @@
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.4</version>
+						<version>2.3.5</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -121,7 +121,7 @@
 		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop-core</artifactId>
-			<version>2.4</version>
+			<version>2.7</version>
 		    <scope>test</scope>
 			<exclusions>
 				<exclusion>

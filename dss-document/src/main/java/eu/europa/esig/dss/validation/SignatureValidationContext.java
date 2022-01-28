@@ -1225,7 +1225,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	public Set<RevocationToken<?>> getProcessedRevocations() {
+	public Set<RevocationToken> getProcessedRevocations() {
 		return Collections.unmodifiableSet(processedRevocations);
 	}
 

@@ -164,8 +164,8 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		if ((qt != null) && Utils.isCollectionNotEmpty(qt.getQualificationElement())) {
 			for (QualificationElementType qualificationElement : qt.getQualificationElement()) {
 				List<String> qualifiers = extractQualifiers(qualificationElement);
-				Condition condition = getCondition(qualificationElement.getCriteriaList());
-				if (Utils.isCollectionNotEmpty(qualifiers) && (condition != null)) {
+				if (Utils.isCollectionNotEmpty(qualifiers)) {
+					Condition condition = getCondition(qualificationElement.getCriteriaList());
 					return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
 				}
 			}
