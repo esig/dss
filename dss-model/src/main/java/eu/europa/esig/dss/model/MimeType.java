@@ -99,6 +99,7 @@ public class MimeType implements Serializable {
 		fileExtensions.put("html", HTML);
 
 		fileExtensions.put("pkcs7", PKCS7);
+		fileExtensions.put("p7m", PKCS7);
 		fileExtensions.put("p7s", PKCS7);
 
 		fileExtensions.put("pdf", PDF);

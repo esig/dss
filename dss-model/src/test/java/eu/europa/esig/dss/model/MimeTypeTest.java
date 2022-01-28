@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.model;
 
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
 
 public class MimeTypeTest {
 	
@@ -55,6 +55,7 @@ public class MimeTypeTest {
 		assertEquals(MimeType.PDF, MimeType.fromFileName("pades.pdf"));
 		assertEquals(MimeType.PKCS7, MimeType.fromFileName("cades.p7s"));
 		assertEquals(MimeType.PKCS7, MimeType.fromFileName("CADES.P7S"));
+		assertEquals(MimeType.PKCS7, MimeType.fromFileName("cades.p7m"));
 		assertEquals(MimeType.BINARY, MimeType.fromFileName("binaries"));
 		assertEquals(MimeType.BINARY, MimeType.fromFileName("new.folder/binaries"));
 		
@@ -66,7 +67,7 @@ public class MimeTypeTest {
 	public void getExtensionTest() {
 		assertEquals("txt", MimeType.getExtension(MimeType.TEXT));
 		assertEquals("pdf", MimeType.getExtension(MimeType.PDF));
-		assertEquals("p7s", MimeType.getExtension(MimeType.PKCS7));
+		assertEquals("zip", MimeType.getExtension(MimeType.ZIP));
 		
 		MimeType newMimeType = new MimeType("new/mimeType", "new");
 		assertEquals("new", MimeType.getExtension(newMimeType));
