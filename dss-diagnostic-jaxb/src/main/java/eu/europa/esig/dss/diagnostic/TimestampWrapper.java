@@ -323,8 +323,9 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return list of {@link OrphanTokenWrapper}s
 	 */
-	public List<OrphanTokenWrapper<?>> getAllTimestampedOrphanTokens() {
-		List<OrphanTokenWrapper<?>> timestampedObjectIds = new ArrayList<>();
+	@SuppressWarnings("rawtypes")
+	public List<OrphanTokenWrapper> getAllTimestampedOrphanTokens() {
+		List<OrphanTokenWrapper> timestampedObjectIds = new ArrayList<>();
 		timestampedObjectIds.addAll(getTimestampedOrphanCertificates());
 		timestampedObjectIds.addAll(getTimestampedOrphanRevocations());
 		return timestampedObjectIds;

@@ -416,8 +416,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return Collections.emptyList();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);
 	}
@@ -487,7 +487,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *
 	 * @return {@link BaselineRequirementsChecker}
 	 */
-	protected BaselineRequirementsChecker<?> getBaselineRequirementsChecker() {
+	@SuppressWarnings("rawtypes")
+	protected BaselineRequirementsChecker getBaselineRequirementsChecker() {
 		if (baselineRequirementsChecker == null) {
 			baselineRequirementsChecker = createBaselineRequirementsChecker();
 		}
@@ -499,7 +500,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *
 	 * @return {@link BaselineRequirementsChecker}
 	 */
-	protected abstract BaselineRequirementsChecker<?> createBaselineRequirementsChecker();
+	@SuppressWarnings("rawtypes")
+	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker();
 
 	/**
 	 * Checks if the signature is conformant to AdES-BASELINE-B level

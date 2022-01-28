@@ -49,6 +49,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.validation.ReferenceValidation;
@@ -1089,7 +1090,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected JAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
+	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new JAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 	

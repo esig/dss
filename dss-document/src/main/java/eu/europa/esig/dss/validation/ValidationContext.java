@@ -228,7 +228,7 @@ public interface ValidationContext {
 	 *
 	 * @return The list of RevocationToken(s)
 	 */
-	Set<RevocationToken<?>> getProcessedRevocations();
+	Set<RevocationToken> getProcessedRevocations();
 
 	/**
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
