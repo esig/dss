@@ -36,6 +36,9 @@ import org.w3c.dom.NodeList;
 
 import java.util.List;
 
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_X;
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_XL;
+
 /**
  * This class represents the implementation of XAdES level -X extension.
  *
@@ -55,7 +58,7 @@ public class XAdESLevelX extends XAdESLevelC {
 
 	/**
 	 * Adds SigAndRefsTimeStamp segment to UnsignedSignatureProperties<br>
-	 * The time-stamp is placed on the the digital signature (ds:Signature element), the time-stamp(s) present in the
+	 * The time-stamp is placed on the digital signature (ds:Signature element), the time-stamp(s) present in the
 	 * XAdES-T form, the certification path references and the revocation status references.
 	 *
 	 * A XAdES-X form MAY contain several SigAndRefsTimeStamp elements, obtained from different TSAs.
@@ -92,8 +95,7 @@ public class XAdESLevelX extends XAdESLevelC {
 	}
 
 	private boolean xLevelExtensionRequired(SignatureLevel signatureLevel) {
-		return !xadesSignature.hasXProfile() || SignatureLevel.XAdES_X.equals(signatureLevel) ||
-				SignatureLevel.XAdES_XL.equals(signatureLevel);
+		return XAdES_X.equals(signatureLevel) || XAdES_XL.equals(signatureLevel) || !xadesSignature.hasXProfile();
 	}
 
 	private void removeOldTimestamps() {
@@ -117,9 +119,11 @@ public class XAdESLevelX extends XAdESLevelC {
 	 */
 	private void assertExtendSignatureToXPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.XAdES_X.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES XL"));
+		if ((XAdES_X.equals(signatureLevel) && (xadesSignature.hasAProfile() ||
+				(xadesSignature.hasXLProfile() && !xadesSignature.areAllSelfSignedCertificates()) )) ||
+				(XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) ) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with higher level.", signatureLevel));
 		}
 	}
 

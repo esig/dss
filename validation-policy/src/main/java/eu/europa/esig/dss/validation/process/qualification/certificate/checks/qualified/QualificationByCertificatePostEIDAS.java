@@ -24,10 +24,20 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Gets certificate qualification status after eIDAS
+ *
+ */
 class QualificationByCertificatePostEIDAS implements QualificationStrategy {
 
+	/** Certificate to get qualification status for */
 	private final CertificateWrapper signingCertificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 */
 	public QualificationByCertificatePostEIDAS(CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}

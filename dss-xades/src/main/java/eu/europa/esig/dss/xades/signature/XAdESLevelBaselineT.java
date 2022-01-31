@@ -49,7 +49,7 @@ import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.ProfileParameters;
+import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
@@ -66,8 +66,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -110,7 +110,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		Objects.requireNonNull(dssDocument, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 		this.params = params;
-		final ProfileParameters context = params.getContext();
+		final XAdESProfileParameters context = params.getContext();
 		if (LOG.isInfoEnabled()) {
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
@@ -136,7 +136,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			for (AdvancedSignature signature : signatures) {
 				if (signatureId.equals(signature.getDAIdentifier())) {
-					signaturesToExtend = Arrays.asList(signature);
+					signaturesToExtend = Collections.singletonList(signature);
 					break;
 				}
 			}
@@ -198,25 +198,31 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 
+			// The timestamp must be added only if there is no one or the extension -T level is being created
+			if (!tLevelExtensionRequired()) {
+				continue;
+			}
+
 			assertExtendSignatureToTPossible();
 			assertSignatureValid(xadesSignature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!xadesSignature.hasTProfile() || XAdES_BASELINE_T.equals(params.getSignatureLevel())) {
-				signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
-				final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-				final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-				final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
-				final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-				final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
-				createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
+			final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
+			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
+			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
+			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
 
-				unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
-			}
+			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		}
+	}
+
+	private boolean tLevelExtensionRequired() {
+		return XAdES_BASELINE_T.equals(params.getSignatureLevel()) || !xadesSignature.hasTProfile();
 	}
 
 	/**
@@ -224,9 +230,10 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	private void assertExtendSignatureToTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTProfile() || xadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signature is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES LT"));
+		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTAProfile() ||
+				((xadesSignature.hasLTProfile() || xadesSignature.hasCProfile()) && !xadesSignature.areAllSelfSignedCertificates()) )) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
 		}
 	}
 
@@ -321,7 +328,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		final Element crlValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementCRLValues());
 
-		for (final RevocationToken revocationToken : crlTokens) {
+		for (final RevocationToken<?> revocationToken : crlTokens) {
 			final byte[] encodedCRL = revocationToken.getEncoded();
 			final String base64EncodedCRL = Utils.toBase64(encodedCRL);
 			DomUtils.addTextElement(documentDom, crlValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedCRLValue(), base64EncodedCRL);
@@ -351,7 +358,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 		final Element ocspValuesDom = DomUtils.addElement(documentDom, parentDom, getXadesNamespace(), getCurrentXAdESElements().getElementOCSPValues());
 
-		for (final RevocationToken revocationToken : ocspTokens) {
+		for (final RevocationToken<?> revocationToken : ocspTokens) {
 			final byte[] encodedOCSP = revocationToken.getEncoded();
 			final String base64EncodedOCSP = Utils.toBase64(encodedOCSP);
 			DomUtils.addTextElement(documentDom, ocspValuesDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedOCSPValue(), base64EncodedOCSP);
@@ -481,7 +488,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			String id = "1";
 			final List<TimestampToken> archiveTimestamps = xadesSignature.getArchiveTimestamps();
-			if (archiveTimestamps.size() > 0) {
+			if (Utils.isCollectionNotEmpty(archiveTimestamps)) {
 				final TimestampToken timestampToken = archiveTimestamps.get(archiveTimestamps.size() - 1);
 				id = timestampToken.getDSSIdAsString();
 			}

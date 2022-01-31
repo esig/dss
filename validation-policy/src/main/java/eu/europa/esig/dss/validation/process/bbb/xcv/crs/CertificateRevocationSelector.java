@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.bbb.xcv.crs;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
@@ -19,8 +39,10 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevoca
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This class validates revocation data for a given certificate and returns the latest valid entry
@@ -40,6 +62,9 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     /** This map contains validation results of the revocation data processing */
     protected final Map<RevocationWrapper, Boolean> revocationDataValidityMap = new HashMap<>();
 
+    /** Internal set of processed tokens (avoids infinite loop) */
+    private final Set<String> validatedTokens;
+
     /** The latest acceptable certificate revocation, to be returned after the selector execution */
     private CertificateRevocationWrapper latestCertificateRevocation;
 
@@ -53,11 +78,28 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
      */
     public CertificateRevocationSelector(I18nProvider i18nProvider, CertificateWrapper certificate, Date currentTime,
                                          ValidationPolicy validationPolicy) {
+        this(i18nProvider, certificate, currentTime, validationPolicy, new HashSet<>());
+    }
+
+    /**
+     * Constructor with a set of validated tokens
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param certificate {@link CertificateWrapper}
+     * @param currentTime {@link Date} validation time
+     * @param validationPolicy {@link ValidationPolicy}
+     * @param validatedTokens a set of token {@link String} identifiers that have been already processed
+     */
+    public CertificateRevocationSelector(I18nProvider i18nProvider, CertificateWrapper certificate, Date currentTime,
+                                         ValidationPolicy validationPolicy, Set<String> validatedTokens) {
         super(i18nProvider, new XmlCRS());
         this.certificate = certificate;
         this.currentTime = currentTime;
         this.validationPolicy = validationPolicy;
+        this.validatedTokens = validatedTokens;
+
         result.setId(certificate.getId());
+        this.validatedTokens.add(certificate.getId());
     }
 
     @Override
@@ -73,9 +115,9 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
 
             item = verifyRevocationData(item, revocationWrapper);
 
-            if (revocationDataValidityMap.get(revocationWrapper) && (latestCertificateRevocation == null ||
-                    (revocationWrapper.getProductionDate() != null &&
-                            latestCertificateRevocation.getProductionDate().before(revocationWrapper.getProductionDate())))) {
+            if (Boolean.TRUE.equals(revocationDataValidityMap.get(revocationWrapper)) &&
+                    (latestCertificateRevocation == null || (revocationWrapper.getProductionDate() != null &&
+                                    latestCertificateRevocation.getProductionDate().before(revocationWrapper.getProductionDate())) )) {
                 latestCertificateRevocation = revocationWrapper;
             }
         }
@@ -132,7 +174,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
      */
     protected XmlRAC getRevocationAcceptanceValidationResult(CertificateRevocationWrapper revocationWrapper) {
         RevocationAcceptanceChecker rac = new RevocationAcceptanceChecker(
-                i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy);
+                i18nProvider, certificate, revocationWrapper, currentTime, validationPolicy, validatedTokens);
         XmlRAC racResult = rac.execute();
 
         result.getRAC().add(racResult);
@@ -155,6 +197,11 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
         return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
     }
 
+    /**
+     * Checks whether the acceptable revocation data is available
+     *
+     * @return {@link ChainItem}
+     */
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
         return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, latestCertificateRevocation, getFailLevelConstraint());
     }

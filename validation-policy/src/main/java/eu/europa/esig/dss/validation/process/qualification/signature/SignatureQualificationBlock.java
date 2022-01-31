@@ -91,8 +91,6 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	 *
 	 * @param i18nProvider
 	 *  				{@link I18nProvider}
-	 * @param signatureId
-	 *  				{@link String} representing the if of a signature to be validated
 	 * @param etsi319102validation {@link XmlConstraintsConclusionWithProofOfExistence}
 	 *  				result of signature validation process as in EN 319 102-1
 	 * @param signingCertificate
@@ -100,7 +98,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	 * @param tlAnalysis
 	 *  				a list of performed {@link XmlTLAnalysis}
 	 */
-	public SignatureQualificationBlock(I18nProvider i18nProvider, String signatureId,
+	public SignatureQualificationBlock(I18nProvider i18nProvider,
 									   XmlConstraintsConclusionWithProofOfExistence etsi319102validation,
 									   CertificateWrapper signingCertificate, List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlValidationSignatureQualification());
@@ -246,8 +244,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 		for (XmlValidationCertificateQualification certQualAtTime : result.getValidationCertificateQualification()) {
 			collectAllMessages(conclusion, certQualAtTime.getConclusion());
 		}
-		for (XmlTLAnalysis tlAnalysis : relatedTLAnalyses) {
-			collectAllMessages(conclusion, tlAnalysis.getConclusion());
+		for (XmlTLAnalysis relatedTLAnalysis : relatedTLAnalyses) {
+			collectAllMessages(conclusion, relatedTLAnalysis.getConclusion());
 		}
 	}
 

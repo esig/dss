@@ -21,75 +21,125 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
-import eu.europa.esig.dss.pades.PAdESUtils;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
-import org.bouncycastle.asn1.ASN1Encodable;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.ocsp.OCSPResponse;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.bouncycastle.cert.ocsp.OCSPException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * OCSPSource that retrieves the OCSPResp from a PAdES Signature
  *
  */
 @SuppressWarnings("serial")
-public class PAdESOCSPSource extends PdfDssDictOCSPSource {
+public class PAdESOCSPSource extends OfflineOCSPSource {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESOCSPSource.class);
+	/** CMS OCSP source */
+	private final PdfCmsOCSPSource cmsOCSPSource;
 
-	/** The name of the corresponding VRI dictionary */
-	private final String vriDictionaryName;
+	/** DSS dictionary OCSP source */
+	private final PdfDssDictOCSPSource dssDictOCSPSource;
 
 	/**
 	 * The default constructor
 	 *
-	 * @param dssDictionary {@link PdfDssDict}
+	 * @param pdfSignatureRevision {@link PdfSignatureRevision}
 	 * @param vriDictionaryName {@link String} the corresponding VRI dictionary name to extract
 	 * @param signedAttributes {@link AttributeTable}
 	 */
-	public PAdESOCSPSource(PdfDssDict dssDictionary, final String vriDictionaryName,
-			AttributeTable signedAttributes) {
+	public PAdESOCSPSource(PdfSignatureRevision pdfSignatureRevision, final String vriDictionaryName,
+						  AttributeTable signedAttributes) {
 		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
-		this.vriDictionaryName = vriDictionaryName;
-		extractDSSOCSPs(dssDictionary);
-		extractVRIOCSPs(dssDictionary);
-		extractOCSPArchivalValues(signedAttributes);
-	}
-
-	private void extractOCSPArchivalValues(AttributeTable signedAttributes) {
-		if (signedAttributes != null) {
-			final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
-			if (attValue != null) {
-				RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchival(attValue);
-				if (revocationArchival != null) {
-					for (final OCSPResponse ocspResponse : revocationArchival.getOcspVals()) {
-						try {
-							BasicOCSPResp basicOCSPResponse = DSSASN1Utils.toBasicOCSPResp(ocspResponse);
-							addBinary(OCSPResponseBinary.build(basicOCSPResponse),
-									RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-						} catch (OCSPException e) {
-							LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}",
-									e.getMessage());
-						}
-					}
-				}
-			}
-		}
+		this.cmsOCSPSource = new PdfCmsOCSPSource(signedAttributes);
+		this.dssDictOCSPSource = new PdfDssDictOCSPSource(pdfSignatureRevision.getCompositeDssDictionary().getOcspSource(),
+				pdfSignatureRevision.getDssDictionary(), vriDictionaryName);
 	}
 
 	@Override
-	protected void extractVRIOCSPs(PdfVRIDict vriDictionary) {
-		if (vriDictionary != null && vriDictionaryName.equals(vriDictionary.getName())) {
-			super.extractVRIOCSPs(vriDictionary);
+	public List<RevocationToken<OCSP>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerToken) {
+		List<RevocationToken<OCSP>> revocationTokens = new ArrayList<>();
+		revocationTokens.addAll(cmsOCSPSource.getRevocationTokens(certificateToken, issuerToken));
+		revocationTokens.addAll(dssDictOCSPSource.getRevocationTokens(certificateToken, issuerToken));
+		return revocationTokens;
+	}
+
+	/**
+	 * Returns a map of all OCSP entries contained in DSS dictionary or into nested
+	 * VRI dictionaries
+	 *
+	 * @return a map of OCSP binaries with their object ids
+	 */
+	public Map<Long, OCSPResponseBinary> getOcspMap() {
+		return dssDictOCSPSource.getOcspMap();
+	}
+
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier<OCSP>> getDSSDictionaryBinaries() {
+		return dssDictOCSPSource.getDSSDictionaryBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<OCSP>> getDSSDictionaryTokens() {
+		return dssDictOCSPSource.getDSSDictionaryTokens();
+	}
+
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier<OCSP>> getVRIDictionaryBinaries() {
+		return dssDictOCSPSource.getVRIDictionaryBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<OCSP>> getVRIDictionaryTokens() {
+		return dssDictOCSPSource.getVRIDictionaryTokens();
+	}
+
+	@Override
+	public List<EncapsulatedRevocationTokenIdentifier<OCSP>> getADBERevocationValuesBinaries() {
+		return cmsOCSPSource.getADBERevocationValuesBinaries();
+	}
+
+	@Override
+	public List<RevocationToken<OCSP>> getADBERevocationValuesTokens() {
+		return dssDictOCSPSource.getADBERevocationValuesTokens();
+	}
+
+	@Override
+	public Map<EncapsulatedRevocationTokenIdentifier<OCSP>, Set<RevocationOrigin>> getAllRevocationBinariesWithOrigins() {
+		Map<EncapsulatedRevocationTokenIdentifier<OCSP>, Set<RevocationOrigin>> result = new HashMap<>();
+		populateMapWithSet(result, cmsOCSPSource.getAllRevocationBinariesWithOrigins());
+		populateMapWithSet(result, dssDictOCSPSource.getAllRevocationBinariesWithOrigins());
+		return result;
+	}
+
+	@Override
+	public Map<RevocationToken<OCSP>, Set<RevocationOrigin>> getAllRevocationTokensWithOrigins() {
+		Map<RevocationToken<OCSP>, Set<RevocationOrigin>> result = new HashMap<>();
+		populateMapWithSet(result, cmsOCSPSource.getAllRevocationTokensWithOrigins());
+		populateMapWithSet(result, dssDictOCSPSource.getAllRevocationTokensWithOrigins());
+		return result;
+	}
+
+	private <R extends Object> void populateMapWithSet(Map<R, Set<RevocationOrigin>> mapToPopulate,
+													   Map<R, Set<RevocationOrigin>> mapToAdd) {
+		for (Map.Entry<R, Set<RevocationOrigin>> entry : mapToAdd.entrySet()) {
+			Set<RevocationOrigin> revocationOrigins = mapToPopulate.get(entry.getKey());
+			if (revocationOrigins == null) {
+				revocationOrigins = new HashSet<>();
+			}
+			revocationOrigins.addAll(entry.getValue());
+			mapToPopulate.put(entry.getKey(), revocationOrigins);
 		}
 	}
 

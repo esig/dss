@@ -20,25 +20,50 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * This class is used to check whether the given certificate contains qualification identifiers
+ *
+ */
 public final class QCTypeIdentifiers {
 
+	/**
+	 * Empty constructor
+	 */
 	private QCTypeIdentifiers() {
 	}
 
+	/**
+	 * Checks whether the certificate contains a QC for eSignature qualifier (oid "0.4.0.1862.1.6.1")
+	 *
+	 * @param certificate {@link CertificateWrapper} to check
+	 * @return TRUE if the certificate contains "qc-type-esign" qualifier, FALSE otherwise
+	 */
 	public static boolean isQCTypeEsign(CertificateWrapper certificate) {
 		return hasQCTypeOID(certificate, QCType.QCT_ESIGN);
 	}
 
+	/**
+	 * Checks whether the certificate contains a QC for eSeal qualifier (oid "0.4.0.1862.1.6.2")
+	 *
+	 * @param certificate {@link CertificateWrapper} to check
+	 * @return TRUE if the certificate contains "qc-type-eseal" qualifier, FALSE otherwise
+	 */
 	public static boolean isQCTypeEseal(CertificateWrapper certificate) {
 		return hasQCTypeOID(certificate, QCType.QCT_ESEAL);
 	}
 
+	/**
+	 * Checks whether the certificate contains a QC for Web Authentication qualifier (oid "0.4.0.1862.1.6.3")
+	 *
+	 * @param certificate {@link CertificateWrapper} to check
+	 * @return TRUE if the certificate contains "qc-type-web" qualifier, FALSE otherwise
+	 */
 	public static boolean isQCTypeWeb(CertificateWrapper certificate) {
 		return hasQCTypeOID(certificate, QCType.QCT_WEB);
 	}

@@ -109,17 +109,14 @@ public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
 
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
-				documentList = signature.getSignedDocumentsByUri(false);
+				documentList = signature.getSignedDocumentsByHTTPHeaderName();
 				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, true);
 				sigDOctets = httpHeadersPayloadBuilder.build();
 				break;
 			case OBJECT_ID_BY_URI:
 			case OBJECT_ID_BY_URI_HASH:
-				documentList = signature.getSignedDocumentsByUri(true);
-				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList);
-				if (Utils.isArrayNotEmpty(sigDOctets) && !signature.getJws().isRfc7797UnencodedPayload()) {
-					sigDOctets = DSSJsonUtils.toBase64Url(sigDOctets).getBytes();
-				}
+				documentList = signature.getSignedDocumentsForObjectIdByUriMechanism();
+				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList, !signature.getJws().isRfc7797UnencodedPayload());
 				break;
 			default:
 				LOG.warn("Unsupported SigDMechanism '{}' has been found!", sigDMechanism);

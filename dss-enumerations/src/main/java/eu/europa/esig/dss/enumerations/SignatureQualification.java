@@ -159,20 +159,42 @@ public enum SignatureQualification implements UriBasedEnum {
 		}
 	}
 
+	/** User-friendly name (abbreviation) of the qualification */
 	private final String readable;
+
+	/** Description of the enumeration */
 	private final String label;
+
+	/** Unique URI */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param readable {@link String}
+	 * @param label {@link String}
+	 * @param uri {@link String}
+	 */
 	SignatureQualification(String readable, String label, String uri) {
 		this.readable = readable;
 		this.label = label;
 		this.uri = uri;
 	}
 
+	/**
+	 * Gets user-friendly name of the enumeration
+	 *
+	 * @return {@link String}
+	 */
 	public String getReadable() {
 		return readable;
 	}
 
+	/**
+	 * Gets description of the enumeration
+	 *
+	 * @return {@link String}
+	 */
 	public String getLabel() {
 		return label;
 	}

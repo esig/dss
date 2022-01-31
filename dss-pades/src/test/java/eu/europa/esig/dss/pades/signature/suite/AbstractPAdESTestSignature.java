@@ -214,7 +214,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getBaseObject());
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));

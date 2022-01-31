@@ -126,6 +126,7 @@ public class ASiCEXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 		
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
 		DSSDocument ltaXAdES = service.extendDocument(counterSignedSignature, signatureParameters);
 		

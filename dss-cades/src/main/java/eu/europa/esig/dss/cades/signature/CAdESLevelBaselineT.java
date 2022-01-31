@@ -25,7 +25,6 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -40,6 +39,8 @@ import org.bouncycastle.cms.SignerInformation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.CAdES_BASELINE_T;
 
 /**
  * This class holds the CAdES-T signature profile; it supports the inclusion of the mandatory unsigned
@@ -91,8 +92,8 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 													  CAdESSignatureParameters parameters,
 													  SignatureRequirementsChecker signatureRequirementsChecker) {
 		final CAdESSignature cadesSignature = newCAdESSignature(signedData, signerInformation, parameters.getDetachedContents());
-		if (!cadesSignature.hasTProfile() || SignatureLevel.CAdES_BASELINE_T.equals(parameters.getSignatureLevel())) {
-			assertExtendSignatureLevelTPossible(cadesSignature);
+		if (tLevelExtensionRequired(cadesSignature, parameters)) {
+			assertExtendSignatureLevelTPossible(cadesSignature, parameters);
 			signatureRequirementsChecker.assertSigningCertificateIsValid(cadesSignature);
 
 			AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
@@ -103,19 +104,25 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		return signerInformation;
 	}
 
+	private boolean tLevelExtensionRequired(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
+		return CAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !cadesSignature.hasTProfile();
+	}
+
 	/**
 	 * Checks if the signature extension is possible
 	 *
 	 * @param cadesSignature {@link CAdESSignature}
 	 */
-	private void assertExtendSignatureLevelTPossible(CAdESSignature cadesSignature) {
-		final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-		if (cadesSignature.hasLTAProfile()) {
-			throw new IllegalInputException(String.format(exceptionMessage, "CAdES LTA"));
+	private void assertExtendSignatureLevelTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
+		final String exceptionMessage = "Cannot extend signature to '%s'. The signedData is already extended with %s.";
+		if (CAdES_BASELINE_T.equals(parameters.getSignatureLevel()) && (cadesSignature.hasLTAProfile() ||
+				(cadesSignature.hasLTProfile() && !cadesSignature.areAllSelfSignedCertificates()) )) {
+			throw new IllegalInputException(String.format(exceptionMessage, parameters.getSignatureLevel(), "LT level"));
 		}
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation());
 		if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
-			throw new IllegalInputException(String.format(exceptionMessage, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
+			throw new IllegalInputException(String.format(exceptionMessage,
+					parameters.getSignatureLevel(), PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
 		}
 	}
 

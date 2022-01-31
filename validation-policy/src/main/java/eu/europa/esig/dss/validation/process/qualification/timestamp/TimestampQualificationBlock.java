@@ -158,7 +158,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	
 				item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
 	
-				if (grantedAtDateServices.size() > 0) {
+				if (Utils.isCollectionNotEmpty(grantedAtDateServices)) {
 					tstQualif = TimestampQualification.QTSA;
 				} else {
 					tstQualif = TimestampQualification.TSA;
@@ -203,8 +203,8 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 
 	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
-		for (XmlTLAnalysis tlAnalysis : relatedTLAnalyses) {
-			collectAllMessages(conclusion, tlAnalysis.getConclusion());
+		for (XmlTLAnalysis relatedTLAnalysis : relatedTLAnalyses) {
+			collectAllMessages(conclusion, relatedTLAnalysis.getConclusion());
 		}
 	}
 

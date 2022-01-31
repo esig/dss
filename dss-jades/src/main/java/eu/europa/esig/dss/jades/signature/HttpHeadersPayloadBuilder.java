@@ -196,17 +196,10 @@ public class HttpHeadersPayloadBuilder {
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			boolean digestDocumentFound = false;
 			for (DSSDocument document : detachedContents) {
-				if (!(document instanceof HTTPHeader)) {
-					throw new IllegalArgumentException("The documents to sign must have "
-							+ "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
-				}
-				if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+				boolean digestHTTPHeaderDocument = checkIfDigestHTTPHeaderDocument(document);
+				if (digestHTTPHeaderDocument) {
 					if (digestDocumentFound) {
 						throw new IllegalArgumentException("Only one 'Digest' header or HTTPHeaderDigest object is allowed!");
-					}
-					if (!(document instanceof HTTPHeaderDigest) && isTimestamp) {
-						throw new IllegalArgumentException("Unable to compute message-imprint for a Timestamp! "
-								+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
 					}
 					digestDocumentFound = true;
 				}
@@ -214,6 +207,21 @@ public class HttpHeadersPayloadBuilder {
 		} else {
 			throw new IllegalArgumentException("Unable to compute HTTPHeaders payload! The list of detached documents is empty.");
 		}
+	}
+
+	private boolean checkIfDigestHTTPHeaderDocument(DSSDocument document) {
+		if (!(document instanceof HTTPHeader)) {
+			throw new IllegalArgumentException("The documents to sign must have "
+					+ "a type of HTTPHeader for 'sigD' HttpHeaders mechanism!");
+		}
+		if (DSSJsonUtils.HTTP_HEADER_DIGEST.equals(document.getName())) {
+			if (!(document instanceof HTTPHeaderDigest) && isTimestamp) {
+				throw new IllegalArgumentException("Unable to compute message-imprint for a Timestamp! "
+						+ "'Digest' header must be an instance of HTTPHeaderDigest class.");
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

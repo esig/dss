@@ -25,6 +25,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfTemplate;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
@@ -51,8 +52,9 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 		} else {
-			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
-			appearance.setVisibleSignature(iTextRectangle, fieldParameters.getPage());
+			AnnotationBox annotationBox = toAnnotationBox(dimensionAndPosition);
+			annotationBox = getRotatedAnnotationRelativelyPageRotation(annotationBox);
+			appearance.setVisibleSignature(toITextRectangle(annotationBox), fieldParameters.getPage());
 		}
 		
 		float x = dimensionAndPosition.getImageX();
@@ -60,13 +62,15 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		float width = dimensionAndPosition.getImageWidth();
 		float height = dimensionAndPosition.getImageHeight();
 
-		if (ImageRotationUtils.isSwapOfDimensionsRequired(dimensionAndPosition.getGlobalRotation())) {
+		int finalRotation = getFinalRotation(dimensionAndPosition.getGlobalRotation(), getPageRotation());
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(finalRotation)) {
 			x = dimensionAndPosition.getImageY();
 			y = dimensionAndPosition.getImageX();
 		}
 		image.setAbsolutePosition(x, y);
 		image.scaleAbsolute(width, height);
-		image.setRotationDegrees((float) (ImageRotationUtils.ANGLE_360 - dimensionAndPosition.getGlobalRotation())); // opposite rotation
+
+		image.setRotationDegrees((float) ImageRotationUtils.ANGLE_360 - finalRotation); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
 		Rectangle boundingBox = layer.getBoundingBox();

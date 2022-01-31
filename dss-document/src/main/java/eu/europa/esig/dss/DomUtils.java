@@ -109,7 +109,7 @@ public final class DomUtils {
 	private static final XPathFactory factory = XPathFactory.newInstance();
 
 	/** Map containing the defined namespaces */
-	private static NamespaceContextMap namespacePrefixMapper;
+	private static final NamespaceContextMap namespacePrefixMapper;
 
 	static {
 		namespacePrefixMapper = new NamespaceContextMap();
@@ -260,7 +260,7 @@ public final class DomUtils {
 	 * 
 	 * @param bytes
 	 *            the binaries to be tested
-	 * @return true if the binaries is a XML
+	 * @return true if the binaries represent an XML
 	 */
 	public static boolean isDOM(final byte[] bytes) {
 		try {
@@ -277,7 +277,7 @@ public final class DomUtils {
 	 * 
 	 * @param inputStream {@link InputStream} to be tested
 	 * @return true if the document is an XML
-	 * @deprecated since 5.10. Use isDOM(DSSDocument dssDocument) or isDOM(byte[] bytes)
+	 * @deprecated since 5.10. Use {@code isDOM(DSSDocument dssDocument)} or {@code isDOM(byte[] bytes)}
 	 *                         for a fast failure in case of invalid XML document (this does not verify XML preamble).
 	 */
 	@Deprecated
@@ -313,7 +313,7 @@ public final class DomUtils {
 	 * @param namespace
 	 *            the used namespace for the attribute
 	 * @param attribute
-	 *            the attribute the be added
+	 *            the attribute to be added
 	 * @param value
 	 *            the value for the given attribute
 	 */
@@ -818,6 +818,33 @@ public final class DomUtils {
 				excludeCommentsRecursively(childNode);
 			}
 		}
+	}
+
+	/**
+	 * This method browses through {@code element} looking for a namespace with the target {@code uri}
+	 * and returns {@code DSSNamespace} if found
+	 *
+	 * @param element {@link Element} to search for a namespace in
+	 * @param uri {@link String} URI of the namespace to look for
+	 * @return {@link DSSNamespace} if the target namespace has been found, null otherwise
+	 */
+	public static DSSNamespace browseRecursivelyForNamespaceWithUri(final Element element, String uri) {
+		final String namespaceURI = element.getNamespaceURI();
+		if (uri.equals(namespaceURI)) {
+			final String prefix = element.getPrefix();
+			return new DSSNamespace(namespaceURI, prefix);
+		}
+		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
+			final Node childNode = element.getChildNodes().item(ii);
+			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element child = (Element) childNode;
+				DSSNamespace namespace = browseRecursivelyForNamespaceWithUri(child, uri);
+				if (namespace != null) {
+					return namespace;
+				}
+			}
+		}
+		return null;
 	}
 
 }

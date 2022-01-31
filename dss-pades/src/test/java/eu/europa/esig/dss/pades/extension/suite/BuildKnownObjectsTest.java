@@ -98,7 +98,7 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		padesService.setTspSource(getGoodTsa());
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
-		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
+		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendSignature = padesService.extendDocument(dssDocument, parameters);
 		
 		validator = new PDFDocumentValidator(extendSignature);

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.signature.checks;
 
-import java.util.Set;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -31,11 +29,28 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.Set;
+
+/**
+ * Verifies whether acceptable Trusted Lists have been found
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class AcceptableTrustedListPresenceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** Set of URLs of acceptable Trusted Lists */
 	private final Set<String> validTLUrls;
 
-	public AcceptableTrustedListPresenceCheck(I18nProvider i18nProvider, T result, Set<String> validTLUrls, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlConstraintsConclusion}
+	 * @param validTLUrls a set of URL {@link String}s of acceptable Trusted Lists
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public AcceptableTrustedListPresenceCheck(I18nProvider i18nProvider, T result, Set<String> validTLUrls,
+											  LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.validTLUrls = validTLUrls;

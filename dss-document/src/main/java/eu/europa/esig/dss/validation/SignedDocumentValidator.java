@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -146,7 +145,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * The class to extract a list of {@code SignatureScope}s from a signature
 	 */
-	protected final SignatureScopeFinder signatureScopeFinder;
+	protected final SignatureScopeFinder<?> signatureScopeFinder;
 
 	/**
 	 * Provides methods to extract a policy content by its identifier
@@ -193,7 +192,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @param signatureScopeFinder {@link SignatureScopeFinder}
 	 */
-	protected SignedDocumentValidator(SignatureScopeFinder signatureScopeFinder) {
+	protected SignedDocumentValidator(SignatureScopeFinder<?> signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
 	}
 
@@ -427,7 +426,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		LOG.info("Document validation...");
 		assertConfigurationValid();
 
-		final XmlDiagnosticData diagnosticData = prepareDiagnosticDataBuilder().build();
+		final XmlDiagnosticData diagnosticData = getDiagnosticData();
 
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
@@ -438,6 +437,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected void assertConfigurationValid() {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 		Objects.requireNonNull(document, "Document is not provided to the validator");
+	}
+
+	/**
+	 * This method retrieves {@code XmlDiagnosticData} containing all information relevant
+	 * for the validation process, including the certificate and revocation tokens obtained
+	 * from online resources, e.g. AIA, CRL, OCSP (when applicable).
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
+	public final XmlDiagnosticData getDiagnosticData() {
+		return prepareDiagnosticDataBuilder().build();
 	}
 
 	/**
@@ -779,9 +789,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
 				findTimestampScopes(timestampToken, timestampScopeFinder);
 			}
-			for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
-				findTimestampScopes(timestampToken, timestampScopeFinder);
-			}
 		}
 	}
 
@@ -914,16 +921,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
 		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
 				signatureId.equals(identifierProvider.getIdAsString(signature));
-	}
-
-	/**
-	 * Gets digest of a document
-	 *
-	 * @param document {@link DSSDocument}
-	 * @return {@link Digest}
-	 */
-	protected Digest getDigest(DSSDocument document) {
-		return new Digest(getDefaultDigestAlgorithm(), Utils.fromBase64(document.getDigest(getDefaultDigestAlgorithm())));
 	}
 
 }

@@ -20,21 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -50,6 +39,16 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
 	
@@ -99,7 +98,7 @@ public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
 		
 		
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleSignedDocument);
-        ASiCExtractResult result = extractor.extract();
+        ASiCContent result = extractor.extract();
         
         assertEquals(3, result.getAllDocuments().size());
         assertEquals(0, result.getAllManifestDocuments().size());
@@ -108,7 +107,7 @@ public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
         assertEquals(0, result.getManifestDocuments().size());
         assertNotNull(result.getMimeTypeDocument());
         assertEquals(1, result.getSignedDocuments().size());
-        assertNotNull(result.getRootContainer());
+        assertNotNull(result.getAsicContainer());
         assertEquals(1, result.getSignatureDocuments().size());
         assertEquals(0, result.getTimestampDocuments().size());
         assertEquals(0, result.getUnsupportedDocuments().size());

@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.pades.validation.PdfDssDictCRLSource;
-import eu.europa.esig.dss.pades.validation.PdfDssDictCertificateSource;
-import eu.europa.esig.dss.pades.validation.PdfDssDictOCSPSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
@@ -38,6 +39,9 @@ import java.util.Objects;
 public class PdfDocDssRevision implements PdfRevision {
 	
 	private static final long serialVersionUID = -1369264311522424583L;
+
+	/** The composite DSS dictionary combined from all /DSS revisions' content */
+	private final PdfCompositeDssDictionary compositeDssDictionary;
 
 	/** The DSS dictionary from the revision */
 	private final PdfDssDict dssDictionary;
@@ -56,8 +60,10 @@ public class PdfDocDssRevision implements PdfRevision {
 	 *
 	 * @param dssDictionary {@link PdfDssDict}
 	 */
-	public PdfDocDssRevision(final PdfDssDict dssDictionary) {
+	public PdfDocDssRevision(final PdfCompositeDssDictionary compositeDssDictionary, final PdfDssDict dssDictionary) {
+		Objects.requireNonNull(compositeDssDictionary, "Composite DSS dictionary cannot be null!");
 		Objects.requireNonNull(dssDictionary, "The dssDictionary cannot be null!");
+		this.compositeDssDictionary = compositeDssDictionary;
 		this.dssDictionary = dssDictionary;
 	}
 
@@ -95,7 +101,7 @@ public class PdfDocDssRevision implements PdfRevision {
 	 */
 	public PdfDssDictCertificateSource getCertificateSource() {
 		if (certificateSource == null) {
-			certificateSource = new PdfDssDictCertificateSource(dssDictionary);
+			certificateSource = new PdfDssDictCertificateSource(compositeDssDictionary.getCertificateSource(), dssDictionary);
 		}
 		return certificateSource;
 	}
@@ -107,7 +113,7 @@ public class PdfDocDssRevision implements PdfRevision {
 	 */
 	public PdfDssDictCRLSource getCRLSource() {
 		if (crlSource == null) {
-			crlSource = new PdfDssDictCRLSource(dssDictionary);
+			crlSource = new PdfDssDictCRLSource(compositeDssDictionary.getCrlSource(), dssDictionary);
 		}
 		return crlSource;
 	}
@@ -119,7 +125,7 @@ public class PdfDocDssRevision implements PdfRevision {
 	 */
 	public PdfDssDictOCSPSource getOCSPSource() {
 		if (ocspSource == null) {
-			ocspSource = new PdfDssDictOCSPSource(dssDictionary);
+			ocspSource = new PdfDssDictOCSPSource(compositeDssDictionary.getOcspSource(), dssDictionary);
 		}
 		return ocspSource;
 	}

@@ -83,14 +83,26 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
 
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
+        int signatureWithVriCounter = 0;
+        int signatureWithoutVriCounter = 0;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            boolean containsVri = false;
             FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
             List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
             for (OrphanCertificateWrapper certificateWrapper : orphanCertificates) {
                 assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.DSS_DICTIONARY));
-                assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.VRI_DICTIONARY));
+                if (certificateWrapper.getOrigins().contains(CertificateOrigin.VRI_DICTIONARY)) {
+                    containsVri = true;
+                }
+            }
+            if (containsVri) {
+                ++signatureWithVriCounter;
+            } else {
+                ++signatureWithoutVriCounter;
             }
         }
+        assertEquals(1, signatureWithVriCounter);
+        assertEquals(1, signatureWithoutVriCounter);
     }
 
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {

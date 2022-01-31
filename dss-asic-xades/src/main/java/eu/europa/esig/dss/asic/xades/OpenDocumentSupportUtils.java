@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.ArrayList;
@@ -52,25 +52,36 @@ public final class OpenDocumentSupportUtils {
 	 * contained in the package whose relative path starts with "external-data/"
 	 * should be omitted.
 	 *
-	 * @param extractResult {@link ASiCExtractResult}
+	 * @param asicContent {@link ASiCContent}
 	 * @return the list of covered documents
 	 */
-	public static List<DSSDocument> getOpenDocumentCoverage(ASiCExtractResult extractResult) {
+	public static List<DSSDocument> getOpenDocumentCoverage(ASiCContent asicContent) {
 		List<DSSDocument> docs = new ArrayList<>();
-		docs.add(extractResult.getMimeTypeDocument());
-		docs.addAll(extractResult.getSignedDocuments());
-		docs.addAll(extractResult.getManifestDocuments());
-		docs.addAll(extractResult.getArchiveManifestDocuments());
-		docs.addAll(extractResult.getTimestampDocuments());
-		docs.addAll(extractResult.getUnsupportedDocuments());
+		docs.add(asicContent.getMimeTypeDocument());
+		docs.addAll(asicContent.getSignedDocuments());
+		docs.addAll(asicContent.getManifestDocuments());
+		docs.addAll(asicContent.getArchiveManifestDocuments());
+		docs.addAll(asicContent.getTimestampDocuments());
+		docs.addAll(asicContent.getUnsupportedDocuments());
 
 		List<DSSDocument> result = new ArrayList<>();
 		for (DSSDocument doc : docs) {
-			if (!doc.getName().startsWith(EXTERNAL_DATA)) {
+			if (!isExternalDataDocument(doc)) {
 				result.add(doc);
 			}
 		}
 
 		return result;
 	}
+
+	/**
+	 * Verifies whether the document is located within "external-data/" folder within the archive
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is within the "external-data/" folder, FALSE otherwise
+	 */
+	public static boolean isExternalDataDocument(DSSDocument document) {
+		return document.getName() != null && document.getName().startsWith(EXTERNAL_DATA);
+	}
+
 }

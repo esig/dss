@@ -45,15 +45,37 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * This class verifies the final qualification of a certificate,
+ * processing its validation at issuance and validation time
+ *
+ */
 public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
+	/** Certificate's BasicBuildingBlock's conclusion */
 	private final XmlConclusion buildingBlocksConclusion;
+
+	/** Validation time */
 	private final Date validationTime;
+
+	/** The certificate to determine qualification for */
 	private final CertificateWrapper signingCertificate;
+
+	/** List of validation results for all Trusted Lists */
 	private final List<XmlTLAnalysis> tlAnalysis;
 
-	public CertificateQualificationBlock(I18nProvider i18nProvider, XmlConclusion buildingBlocksConclusion, Date validationTime, CertificateWrapper signingCertificate,
-			List<XmlTLAnalysis> tlAnalysis) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param buildingBlocksConclusion {@link XmlConclusion} of BBB for the validating certificate
+	 * @param validationTime {@link Date} validation time
+	 * @param signingCertificate {@link CertificateWrapper} to be validated
+	 * @param tlAnalysis a list of {@link XmlTLAnalysis}
+	 */
+	public CertificateQualificationBlock(I18nProvider i18nProvider, XmlConclusion buildingBlocksConclusion,
+										 Date validationTime, CertificateWrapper signingCertificate,
+										 List<XmlTLAnalysis> tlAnalysis) {
 		super(i18nProvider, new XmlCertificate());
 		Objects.requireNonNull(validationTime, "The validationTime shall be provided!");
 		Objects.requireNonNull(signingCertificate, "The signingCertificate shall be provided!");

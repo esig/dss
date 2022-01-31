@@ -123,11 +123,14 @@ public class ASiCWithCAdESManifestParser {
 	
 	private static MimeType getMimeType(Element element) {
 		try {
-			return MimeType.fromMimeTypeString(element.getAttribute(ASiCAttribute.MIME_TYPE.getAttributeName()));
+			String mimeTypeString = element.getAttribute(ASiCAttribute.MIME_TYPE.getAttributeName());
+			if (Utils.isStringNotBlank(mimeTypeString)) {
+				return MimeType.fromMimeTypeString(mimeTypeString);
+			}
 		} catch (DSSException e) {
 			LOG.warn("Cannot extract MimeType for a reference. Reason : [{}]", e.getMessage());
-			return null;
 		}
+		return null;
 	}
 	
 	private static DigestAlgorithm getDigestAlgorithm(Element dataObjectReference) {

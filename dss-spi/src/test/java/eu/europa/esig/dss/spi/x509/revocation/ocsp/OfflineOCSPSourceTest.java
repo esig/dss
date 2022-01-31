@@ -242,9 +242,6 @@ public class OfflineOCSPSourceTest {
 		CertificateRef certificateRef = allCertificateRefs.iterator().next();
 		assertNotNull(certificateRef.getResponderId());
 		assertNotNull(certificateRef.getResponderId().getSki());
-
-		revocationTokens = ocspSource.getRevocationTokens(toCheckToken, toCheckToken);
-		assertEquals(0, revocationTokens.size());
 	}
 
 	@Test

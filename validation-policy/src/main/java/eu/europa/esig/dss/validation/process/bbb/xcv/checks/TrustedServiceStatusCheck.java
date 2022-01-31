@@ -112,7 +112,6 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 	protected MessageTag getErrorMessageTag() {
 		switch (context) {
 		case SIGNATURE:
-			return MessageTag.XCV_TSL_ESP_SIG_ANS;
 		case COUNTER_SIGNATURE:
 			return MessageTag.XCV_TSL_ESP_SIG_ANS;
 		case TIMESTAMP:

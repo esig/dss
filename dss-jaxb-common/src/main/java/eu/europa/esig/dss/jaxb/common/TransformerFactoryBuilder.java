@@ -20,15 +20,21 @@
  */
 package eu.europa.esig.dss.jaxb.common;
 
+import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerFactory;
 
 /**
  * Builds a {@code TransformerFactory}
+ *
  */
 public class TransformerFactoryBuilder extends AbstractFactoryBuilder<TransformerFactory> {
-	
-	private TransformerFactoryBuilder() {
+
+	/**
+	 * Default constructor
+	 */
+	protected TransformerFactoryBuilder() {
 		enableFeature(XMLConstants.FEATURE_SECURE_PROCESSING);
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
@@ -49,12 +55,17 @@ public class TransformerFactoryBuilder extends AbstractFactoryBuilder<Transforme
 	 * @return {@link TransformerFactory}
 	 */
 	public TransformerFactory build() {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		TransformerFactory transformerFactory = instantiateFactory();
 		setSecurityFeatures(transformerFactory);
 		setSecurityAttributes(transformerFactory);
 		return transformerFactory;
 	}
 	
+	@Override
+	protected TransformerFactory instantiateFactory() {
+		return TransformerFactory.newInstance();
+	}
+
 	@Override
 	public TransformerFactoryBuilder enableFeature(String feature) {
 		return (TransformerFactoryBuilder) super.enableFeature(feature);
@@ -76,13 +87,21 @@ public class TransformerFactoryBuilder extends AbstractFactoryBuilder<Transforme
 	}
 
 	@Override
-	protected void setSecurityFeature(TransformerFactory factory, String feature, Boolean value) throws Exception {
-		factory.setFeature(feature, value);
+	protected void setSecurityFeature(TransformerFactory factory, String feature, Boolean value) throws SecurityConfigurationException {
+		try {
+			factory.setFeature(feature, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 	@Override
-	protected void setSecurityAttribute(TransformerFactory factory, String attribute, Object value) throws IllegalArgumentException {
-		factory.setAttribute(attribute, value);
+	protected void setSecurityAttribute(TransformerFactory factory, String attribute, Object value) throws SecurityConfigurationException {
+		try {
+			factory.setAttribute(attribute, value);
+		} catch (Exception e) {
+			throw new SecurityConfigurationException(e);
+		}
 	}
 
 }

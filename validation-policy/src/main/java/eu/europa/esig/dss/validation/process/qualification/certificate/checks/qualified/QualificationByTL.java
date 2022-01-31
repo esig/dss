@@ -20,19 +20,32 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.GrantedServiceFilter;
 
+import java.util.List;
+
+/**
+ * Gets certificate qualification status base on information extracted from a TrustedService
+ *
+ */
 class QualificationByTL implements QualificationStrategy {
 
+	/** Trusted Service to get qualification status from */
 	private final TrustedServiceWrapper trustedService;
+
+	/** Qualification strategy to be used */
 	private final QualificationStrategy qualifiedInCert;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param qualifiedInCert {@link QualificationStrategy}
+	 */
 	public QualificationByTL(TrustedServiceWrapper trustedService, QualificationStrategy qualifiedInCert) {
 		this.trustedService = trustedService;
 		this.qualifiedInCert = qualifiedInCert;

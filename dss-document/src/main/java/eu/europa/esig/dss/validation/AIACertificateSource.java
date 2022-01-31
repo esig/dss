@@ -22,8 +22,9 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,17 +87,13 @@ public class AIACertificateSource extends CommonCertificateSource {
 			for (CertificateToken candidate : candidates) {
 				addCertificate(candidate);
 			}
-			for (CertificateToken candidate : candidates) {
-				if (certificate.isSignedBy(candidate)) {
-					if (!certificate.getIssuerX500Principal().equals(candidate.getSubject().getPrincipal())) {
-						LOG.info("There is AIA extension, but the issuer subject name and subject name does not match.");
-						LOG.info("CERT ISSUER    : {}", certificate.getIssuer().getCanonical());
-						LOG.info("ISSUER SUBJECT : {}", candidate.getSubject().getCanonical());
-					}
-					return candidate;
-				}
+
+			CertificateToken issuer = new TokenIssuerSelector(certificate, candidates).getIssuer();
+			if (issuer == null) {
+				LOG.warn("The retrieved certificate(s) using AIA do not sign the certificate with Id : {}.",
+						certificate.getDSSIdAsString());
 			}
-			LOG.warn("The retrieved certificate(s) using AIA does not sign the certificate {}.", certificate.getAbbreviation());
+			return issuer;
 		}
 		return null;
 	}
@@ -121,6 +118,9 @@ public class AIACertificateSource extends CommonCertificateSource {
 			} else if (!candidatePublicKey.equals(commonPublicKey)) {
 				return null;
 
+			}
+			if (certificate.getIssuerX500Principal().equals(candidate.getSubject().getPrincipal())) {
+				bestMatch = candidate;
 			}
 			if (candidate.isValidOn(certificate.getCreationDate())) {
 				bestMatch = candidate;

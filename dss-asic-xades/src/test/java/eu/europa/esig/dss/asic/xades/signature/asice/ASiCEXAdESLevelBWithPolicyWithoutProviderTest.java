@@ -35,7 +35,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCEXAdESLevelBWithPolicyWithoutProviderTest extends AbstractASiCEXAdESTestSignature {
@@ -63,11 +62,6 @@ public class ASiCEXAdESLevelBWithPolicyWithoutProviderTest extends AbstractASiCE
 		signatureParameters.bLevel().setSignaturePolicy(policy);
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-	}
-
-	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
 	}
 
 	@Override

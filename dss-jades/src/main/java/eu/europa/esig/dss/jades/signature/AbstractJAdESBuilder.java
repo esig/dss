@@ -101,7 +101,7 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 				LOG.trace("The payload of created signature -> {}", new String(payloadBytes));
 				LOG.trace("The base64 payload of created signature -> {}", Utils.toBase64(payloadBytes));
 			}
-			jws.setPayloadBytes(payloadBytes);
+			jws.setPayloadOctets(payloadBytes);
 		}
 	}
 

@@ -30,14 +30,21 @@ import java.util.List;
 
 /**
  * Contains utils for LOTL/TL parsing
+ *
  */
 public class ParsingUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ParsingUtils.class);
+
+	/**
+	 * Empty constructor
+	 */
+	private ParsingUtils() {
+	}
 	
 	/**
 	 * Extracts XML LOTL Pointer from a parsing cache of a pivot
-	 * @param parsingCacheDTO {@link ParsingCacheDTO} to extrac value from
+	 * @param parsingCacheDTO {@link ParsingCacheDTO} to extract value from
 	 * @return {@link OtherTSLPointer} XML LOTL Pointer
 	 */
 	public static OtherTSLPointer getXMLLOTLPointer(final ParsingCacheDTO parsingCacheDTO) {

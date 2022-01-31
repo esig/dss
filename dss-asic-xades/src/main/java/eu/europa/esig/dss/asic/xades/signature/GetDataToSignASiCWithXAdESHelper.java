@@ -32,24 +32,17 @@ public interface GetDataToSignASiCWithXAdESHelper extends GetDataToSignHelper {
 
 	/**
 	 * Returns a list of documents to be signed
-	 * (XAdES allows to sign multiple files)
+	 * (XAdES allows signing multiple files)
 	 *
 	 * @return a list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getToBeSigned();
-	/**
-	 * Returns the signature document
-	 * (used for parallel signatures)
-	 *
-	 * @return {@link DSSDocument}
-	 */
-	DSSDocument getExistingSignature();
 
 	/**
-	 * Returns the root document (used for OpenDocument files)
+	 * This method returns whether the concerned container represents an OpenDocument type
 	 *
-	 * @return {@link DSSDocument}
+	 * @return TRUE if the handling container is an OpenDocument, FALSE otherwise
 	 */
-	DSSDocument getRootDocument();
+	boolean isOpenDocument();
 	
 }

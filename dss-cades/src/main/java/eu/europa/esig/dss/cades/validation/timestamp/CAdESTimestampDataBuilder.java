@@ -146,8 +146,8 @@ public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
 			}
 			// Method is common to Type 1 and Type 2
 			data.write(getTimestampX2DataBytes());
-			byte[] byteArray = data.toByteArray();
-			return byteArray;
+			return data.toByteArray();
+
 		} catch (IOException e) {
 			throw new DSSException(String.format("An error occurred while generating message-imprint for " +
 					"escTimeStamp token. Reason : %s", e.getMessage()), e);

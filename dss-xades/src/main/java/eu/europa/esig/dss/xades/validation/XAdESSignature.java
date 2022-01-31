@@ -856,8 +856,36 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	/**
-	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature, what is the
-	 * proof -C profile existence
+	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
+	 *
+	 * @return true if BES Profile is detected
+	 */
+	public boolean hasBESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedBESProfile();
+	}
+
+	/**
+	 * Checks the presence of SignaturePolicyIdentifier element in the signature,
+	 * what is the proof -EPES profile existence
+	 *
+	 * @return true if EPES Profile is detected
+	 */
+	public boolean hasEPESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedEPESProfile();
+	}
+
+	/**
+	 * Checks the presence of SignatureTimeStamp element in the signature, what is the proof -T profile existence
+	 *
+	 * @return true if T Profile is detected
+	 */
+	public boolean hasExtendedTProfile() {
+		return getBaselineRequirementsChecker().hasExtendedTProfile();
+	}
+
+	/**
+	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature,
+	 * what is the proof -C profile existence
 	 *
 	 * @return true if C Profile is detected
 	 */
@@ -1370,18 +1398,29 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
-		if (!hasBProfile()) {
+		if (!hasBESProfile()) {
 			return SignatureLevel.XML_NOT_ETSI;
 		}
-		if (!hasTProfile()) {
-			return SignatureLevel.XAdES_BASELINE_B;
+
+		boolean baselineProfile = hasBProfile();
+
+		if (!hasExtendedTProfile()) {
+			if (baselineProfile) {
+				return SignatureLevel.XAdES_BASELINE_B;
+			} else if (hasEPESProfile()) {
+				return SignatureLevel.XAdES_EPES;
+			}
+			return SignatureLevel.XAdES_BES;
 		}
 
-		if (hasLTProfile()) {
+		baselineProfile = baselineProfile && hasTProfile();
+
+		if (baselineProfile && hasLTProfile()) {
 			if (hasLTAProfile()) {
 				return SignatureLevel.XAdES_BASELINE_LTA;
 			}
 			return SignatureLevel.XAdES_BASELINE_LT;
+
 		} else if (hasCProfile()) {
 			if (hasXLProfile()) {
 				if (hasAProfile()) {
@@ -1395,9 +1434,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				return SignatureLevel.XAdES_X;
 			}
 			return SignatureLevel.XAdES_C;
-		} else {
-			return SignatureLevel.XAdES_BASELINE_T;
+
+		} else if (hasXLProfile()) {
+			if (hasAProfile()) {
+				return SignatureLevel.XAdES_A; // XAdES-E-A can be built on XAdES-E-T directly
+			}
+			return SignatureLevel.XAdES_LT;
 		}
+
+		return baselineProfile ? SignatureLevel.XAdES_BASELINE_T : SignatureLevel.XAdES_T;
 	}
 
 	@Override

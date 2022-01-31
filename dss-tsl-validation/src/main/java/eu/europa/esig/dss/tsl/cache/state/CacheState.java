@@ -67,6 +67,6 @@ public interface CacheState {
 	 * @param exception
 	 *                     the wrapped met exception
 	 */
-	void error(CacheContext cacheContext, CachedException exception);
+	void error(CacheContext cacheContext, CachedExceptionWrapper exception);
 
 }

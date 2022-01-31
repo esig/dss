@@ -120,8 +120,7 @@ public class CAdESService extends
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
 		CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
@@ -145,7 +144,7 @@ public class CAdESService extends
 
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
 		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-			parameters.setDetachedContents(Arrays.asList(toSignDocument));
+			parameters.getContext().setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
@@ -156,11 +155,11 @@ public class CAdESService extends
 		final CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
 				signerInfoGeneratorBuilder, originalCmsSignedData);
 
-		final DSSDocument toSignData = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
-		final CMSTypedData content = CMSUtils.getContentToBeSigned(toSignData);
+		final CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 
 		final boolean encapsulate = !SignaturePackaging.DETACHED.equals(packaging);
-		final CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
+		CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
+		cmsSignedData = CMSUtils.populateDigestAlgorithmSet(cmsSignedData, originalCmsSignedData);
 		DSSDocument signature = new CMSSignedDocument(cmsSignedData);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
@@ -172,7 +171,7 @@ public class CAdESService extends
 			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		return signature;
 	}
 
@@ -258,7 +257,7 @@ public class CAdESService extends
 	 *
 	 * @param parameters
 	 *            set of driving signing parameters
-	 * @return {@code CAdESSignatureExtension} related to the predefine profile
+	 * @return {@code CAdESSignatureExtension} related to the pre-defined profile
 	 */
 	private CAdESSignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
@@ -271,7 +270,8 @@ public class CAdESService extends
 			case CAdES_BASELINE_LTA:
 				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
 			default:
-				throw new IllegalArgumentException("Unsupported signature format : " + signatureLevel);
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
 	}
 
@@ -323,10 +323,11 @@ public class CAdESService extends
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 
-		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(document);
+		CMSSignedData originalCmsSignedData = DSSUtils.toCMSSignedData(document);
 
 		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
-		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(cmsSignedData, signaturePolicyStore);
+		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(originalCmsSignedData, signaturePolicyStore);
+		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData);
 		
 		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);
 		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -34,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -110,18 +113,8 @@ public final class ASiCUtils {
 	 * @return {@link String} MimeType
 	 */
 	public static String getMimeTypeString(final ASiCParameters asicParameters) {
-		final String asicParameterMimeType = asicParameters.getMimeType();
-		String mimeTypeString;
-		if (Utils.isStringBlank(asicParameterMimeType)) {
-			if (isASiCE(asicParameters)) {
-				mimeTypeString = MimeType.ASICE.getMimeTypeString();
-			} else {
-				mimeTypeString = MimeType.ASICS.getMimeTypeString();
-			}
-		} else {
-			mimeTypeString = asicParameterMimeType;
-		}
-		return mimeTypeString;
+		final MimeType mimeType = getMimeType(asicParameters);
+		return mimeType.getMimeTypeString();
 	}
 
 	/**
@@ -135,6 +128,16 @@ public final class ASiCUtils {
 			return getZipComment(ASiCUtils.getMimeTypeString(asicParameters));
 		}
 		return Utils.EMPTY_STRING;
+	}
+
+	/**
+	 * Returns a ZIP Comment String from the provided {@code MimeType}
+	 *
+	 * @param mimeType {@link MimeType}
+	 * @return {@link String} zip comment
+	 */
+	public static String getZipComment(final MimeType mimeType) {
+		return getZipComment(mimeType.getMimeTypeString());
 	}
 
 	/**
@@ -212,6 +215,9 @@ public final class ASiCUtils {
 	 * @return {@link MimeType}
 	 */
 	public static MimeType getMimeType(ASiCParameters asicParameters) {
+		if (Utils.isStringNotBlank(asicParameters.getMimeType())) {
+			return MimeType.fromMimeTypeString(asicParameters.getMimeType());
+		}
 		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
 	}
 	
@@ -239,7 +245,7 @@ public final class ASiCUtils {
 	 * @param filenames a list of file names
 	 * @return TRUE if the list of filename contains a signature file(s)
 	 */
-	public static boolean areFilesContainSignatures(List<String> filenames) {
+	public static boolean filesContainSignatures(List<String> filenames) {
 		for (String filename : filenames) {
 			if (isSignature(filename)) {
 				return true;
@@ -566,6 +572,98 @@ public final class ASiCUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * This method searches for a document in a {@code documentList} with
+	 * a name of {@code newDocumentVersion} and  replaces the found entry with the updated version
+	 * or adds the document to the given list if no such entry has been found
+	 *
+	 * @param documentList a list of {@link DSSDocument}s
+	 * @param newDocument {@link DSSDocument} to add
+	 */
+	public static void addOrReplaceDocument(List<DSSDocument> documentList, DSSDocument newDocument) {
+		for (int i = 0; i < documentList.size(); i++) {
+			if (newDocument.getName().equals(documentList.get(i).getName())) {
+				documentList.set(i, newDocument);
+				return;
+			}
+		}
+		documentList.add(newDocument);
+	}
+
+	/**
+	 * This method is used to ensure the mimetype file and zip-comment are present within the given {@code ASiCContent}.
+	 * If the entry is not defined, a new value if created from {@code ASiCParameters}.
+	 *
+	 * @param asicContent {@link ASiCContent} to ensure a valid structure in
+	 * @param asicParameters {@link ASiCParameters} to use to create missing entries
+	 * @return {@link ASiCContent}
+	 */
+	public static ASiCContent ensureMimeTypeAndZipComment(ASiCContent asicContent, ASiCParameters asicParameters) {
+		MimeType mimeType = getMimeType(asicContent, asicParameters);
+		if (asicContent.getMimeTypeDocument() == null) {
+			DSSDocument mimetypeDocument = createMimetypeDocument(mimeType);
+			asicContent.setMimeTypeDocument(mimetypeDocument);
+		}
+		String zipComment = getZipComment(asicContent, asicParameters, mimeType);
+		if (Utils.isStringEmpty(asicContent.getZipComment())) {
+			asicContent.setZipComment(zipComment);
+		}
+		return asicContent;
+	}
+
+	private static MimeType getMimeType(ASiCContent asicContent, ASiCParameters asicParameters) {
+		MimeType mimeType = null;
+		DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
+		if (mimeTypeDocument != null) {
+			// re-use the same mime-type when extending a container
+			mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
+		}
+		if (mimeType == null) {
+			Objects.requireNonNull(asicParameters, "ASiCParameters shall be present for the requested operation!");
+			mimeType = ASiCUtils.getMimeType(asicParameters);
+		}
+		return mimeType;
+	}
+
+	private static String getZipComment(ASiCContent asicContent, ASiCParameters asicParameters, MimeType mimeType) {
+		String zipComment = asicContent.getZipComment();
+		if (Utils.isStringNotEmpty(zipComment)) {
+			return zipComment;
+		} else if (asicParameters != null && asicParameters.isZipComment()) {
+			return ASiCUtils.getZipComment(mimeType);
+		}
+		return Utils.EMPTY_STRING;
+	}
+
+	private static DSSDocument createMimetypeDocument(final MimeType mimeType) {
+		final byte[] mimeTypeBytes = mimeType.getMimeTypeString().getBytes(StandardCharsets.UTF_8);
+		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
+	}
+
+	/**
+	 * This method retrieves signed document from a root level of the container (used for ASiC-E container)
+	 *
+	 * @param asicContent {@link ASiCContent} representing the container structure
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public static List<DSSDocument> getRootLevelSignedDocuments(ASiCContent asicContent) {
+		List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
+		if (Utils.isCollectionEmpty(signedDocuments)) {
+			return Collections.emptyList();
+
+		} else if (Utils.collectionSize(signedDocuments) == 1) {
+			return signedDocuments;
+		}
+
+		List<DSSDocument> rootDocuments = new ArrayList<>();
+		for (DSSDocument document : signedDocuments) {
+			if (document.getName() != null && !document.getName().contains("/")) {
+				rootDocuments.add(document);
+			}
+		}
+		return rootDocuments;
 	}
 
 }

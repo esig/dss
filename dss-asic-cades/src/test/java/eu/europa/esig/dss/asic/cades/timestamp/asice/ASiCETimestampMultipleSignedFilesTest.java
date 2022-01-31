@@ -93,6 +93,13 @@ public class ASiCETimestampMultipleSignedFilesTest extends AbstractASiCWithCAdES
     }
 
     @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        super.checkSignatureLevel(diagnosticData);
+
+        assertEquals(SignatureLevel.CAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
     protected void checkTimestamps(DiagnosticData diagnosticData) {
         super.checkTimestamps(diagnosticData);
 

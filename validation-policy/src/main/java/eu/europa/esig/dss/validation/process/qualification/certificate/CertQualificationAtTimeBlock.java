@@ -39,11 +39,11 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.Ce
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.CertificateTypeCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsAbleToSelectOneTrustService;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsQualificationConflictDetected;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsNoQualificationConflictDetected;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QSCDCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QualifiedCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ServiceConsistencyCheck;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.TrustedCertificateMatchTrustServiceCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.TrustedCertificateMatchTrustedServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategy;
@@ -59,22 +59,51 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Verifies certificate's qualification at the given time
+ *
+ */
 public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificateQualification> {
 
+	/** The time type to get the qualification at */
 	private final ValidationTime validationTime;
+
+	/** The time to check against */
 	private final Date date;
+
+	/** Certificate to get qualification for */
 	private final CertificateWrapper signingCertificate;
+
+	/** List of CA/QC TrustedServices */
 	private final List<TrustedServiceWrapper> caqcServices;
 
+	/** Internal cached variable, representing the qualification result */
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
-	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> caqcServices) {
+	/**
+	 * Constructor to instantiate the validation at the certificate's issuance time
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param validationTime {@link ValidationTime}
+	 * @param signingCertificate {@link CertificateWrapper} to get qualification for
+	 * @param caqcServices list of {@link TrustedServiceWrapper}s
+	 */
+	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime,
+										CertificateWrapper signingCertificate, List<TrustedServiceWrapper> caqcServices) {
 		this(i18nProvider, validationTime, null, signingCertificate, caqcServices);
 	}
 
-	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, Date date, CertificateWrapper signingCertificate,
-			List<TrustedServiceWrapper> caqcServices) {
+	/**
+	 * Constructor to instantiate the validation at the validation time
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param validationTime {@link ValidationTime}
+	 * @param date {@link Date}
+	 * @param signingCertificate {@link CertificateWrapper} to get qualification for
+	 * @param caqcServices list of {@link TrustedServiceWrapper}s
+	 */
+	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, Date date,
+										CertificateWrapper signingCertificate, List<TrustedServiceWrapper> caqcServices) {
 		super(i18nProvider, new XmlValidationCertificateQualification());
 		result.setId(signingCertificate.getId());
 
@@ -137,10 +166,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			// 4. Simulate with all CA/QC (granted + withdrawn) to detect conflict
 			Set<CertificateQualification> results = new HashSet<>();
 			for (TrustedServiceWrapper trustedService : caqcServicesAtTime) {
-				CertificateQualificationCalculation calculator = new CertificateQualificationCalculation(signingCertificate, trustedService);
+				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(signingCertificate, trustedService);
 				results.add(calculator.getQualification());
 			}
-			item = item.setNextItem(isConflictDetected(results));
+			item = item.setNextItem(isNoConflictDetected(results));
 
 			// interrupt in case of conflict
 			if (results.size() > 1) {
@@ -175,7 +204,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		TrustedServiceWrapper selectedTrustService = !caqcServicesAtTime.isEmpty() ? caqcServicesAtTime.get(0) : null;
 
 		// 8. Trusted certificate matches the trust service properties ?
-		item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
+		item = item.setNextItem(isTrustedCertificateMatchTrustedService(selectedTrustService));
 
 		// 9. QC?
 		QualificationStrategy qcStrategy = QualificationStrategyFactory.createQualificationFromCertAndTL(signingCertificate, selectedTrustService);
@@ -207,8 +236,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new CaQcCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isConflictDetected(Set<CertificateQualification> certificateQualificationsAtTime) {
-		return new IsQualificationConflictDetected(i18nProvider, result, certificateQualificationsAtTime, getFailLevelConstraint());
+	private ChainItem<XmlValidationCertificateQualification> isNoConflictDetected(Set<CertificateQualification> certificateQualificationsAtTime) {
+		return new IsNoQualificationConflictDetected(i18nProvider, result, certificateQualificationsAtTime, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> caqcServicesAtTime) {
@@ -233,8 +262,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new ServiceConsistencyCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
+	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustedService(TrustedServiceWrapper selectedTrustService) {
+		return new TrustedCertificateMatchTrustedServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(CertificateQualifiedStatus qualifiedStatus) {

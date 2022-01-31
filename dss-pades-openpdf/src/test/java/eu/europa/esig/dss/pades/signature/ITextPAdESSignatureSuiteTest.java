@@ -27,6 +27,7 @@ import eu.europa.esig.dss.pades.signature.suite.InvisibleSignatureFieldSignTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleLTAValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
@@ -58,6 +59,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprin
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoChangesPermittedTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignDocumentsConsequentlyTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithRevokedCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignatureParametersSerializationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignedAssertionTest;
@@ -91,7 +93,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class,
 		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class,
 		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
-		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class })
+		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
+		PAdESSignDocumentsConsequentlyTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }

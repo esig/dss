@@ -26,9 +26,23 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
+/**
+ * Verifies whether the validation of aTrusted Lists is conclusive
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class AcceptableTrustedListCheck<T extends XmlConstraintsConclusion> extends AbstractTrustedListCheck<T> {
 
-	public AcceptableTrustedListCheck(I18nProvider i18nProvider, T result, XmlTLAnalysis tlAnalysis, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlConstraintsConclusion}
+	 * @param tlAnalysis {@link XmlTLAnalysis}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public AcceptableTrustedListCheck(I18nProvider i18nProvider, T result, XmlTLAnalysis tlAnalysis,
+									  LevelConstraint constraint) {
 		super(i18nProvider, result, tlAnalysis, constraint);
 	}
 

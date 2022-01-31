@@ -598,6 +598,10 @@
 	<xs:simpleType name="SignatureFormat" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XML-NOT-ETSI" />
+			<xs:enumeration value="XAdES-BES" />
+			<xs:enumeration value="XAdES-EPES" />
+			<xs:enumeration value="XAdES-T" />
+			<xs:enumeration value="XAdES-LT" />
 			<xs:enumeration value="XAdES-C" />
 			<xs:enumeration value="XAdES-X" />
 			<xs:enumeration value="XAdES-XL" />
@@ -607,6 +611,10 @@
 			<xs:enumeration value="XAdES-BASELINE-T" />
 			<xs:enumeration value="XAdES-BASELINE-B" />
 			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-BES" />
+			<xs:enumeration value="CAdES-EPES" />
+			<xs:enumeration value="CAdES-T" />
+			<xs:enumeration value="CAdES-LT" />
 			<xs:enumeration value="CAdES-C" />
 			<xs:enumeration value="CAdES-X" />
 			<xs:enumeration value="CAdES-XL" />

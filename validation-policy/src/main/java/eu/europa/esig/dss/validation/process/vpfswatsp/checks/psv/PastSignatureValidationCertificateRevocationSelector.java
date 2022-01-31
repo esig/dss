@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -60,7 +80,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
         item = super.verifyRevocationData(item, revocationWrapper);
 
         Boolean validity = revocationDataValidityMap.get(revocationWrapper);
-        if (validity) {
+        if (Boolean.TRUE.equals(validity)) {
             CertificateWrapper revocationIssuer = revocationWrapper.getSigningCertificate();
 
             if (revocationIssuer != null) {
@@ -81,7 +101,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
                     validity = poe.isPOEExistInRange(revocationIssuer.getId(),
                             revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter());
 
-                    if (validity) {
+                    if (Boolean.TRUE.equals(validity)) {
                         acceptableCertificateRevocations.add(revocationWrapper);
                         result.getAcceptableRevocationId().add(revocationWrapper.getId());
                     }
@@ -108,17 +128,17 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     }
 
     private ChainItem<XmlCRS> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-        return new RevocationIssuerTrustedCheck(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
+        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
     }
 
     private ChainItem<XmlCRS> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
-        return new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result, revocationIssuer, poe,
+        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe,
                 getWarnLevelConstraint());
     }
 
     @Override
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
-        return new PastValidationAcceptableRevocationDataAvailable(i18nProvider, result,
+        return new PastValidationAcceptableRevocationDataAvailable<>(i18nProvider, result,
                 acceptableCertificateRevocations, getFailLevelConstraint());
     }
 

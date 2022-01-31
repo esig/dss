@@ -198,4 +198,28 @@ public class RevocationWrapper extends AbstractTokenProxy {
 		return revocation.getSourceAddress();
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof RevocationWrapper))
+			return false;
+		AbstractTokenProxy other = (AbstractTokenProxy) obj;
+		if (getId() == null) {
+			if (other.getId() != null) {
+				return false;
+			}
+		} else if (!getId().equals(other.getId())) {
+			return false;
+		}
+		return true;
+	}
+
 }

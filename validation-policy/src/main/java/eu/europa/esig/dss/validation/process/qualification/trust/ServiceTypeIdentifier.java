@@ -275,11 +275,26 @@ public enum ServiceTypeIdentifier {
 	 */
 	UNSPECIFIED("unspecified", "http://uri.etsi.org/TrstSvc/Svctype/unspecified", false, true);
 
+	/** Identifier label */
 	private final String shortName;
+
+	/** Identifier URI */
 	private final String uri;
+
+	/** Identifier qualified status */
 	private final boolean qualified;
+
+	/** Whether identifier is for national use */
 	private final boolean national;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param shortName {@link String}
+	 * @param uri {@link String}
+	 * @param qualified whether the identifier corresponds to a qualifier
+	 * @param national whether the identifier corresponds to a national status
+	 */
 	ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
 		this.shortName = shortName;
 		this.uri = uri;
@@ -287,26 +302,58 @@ public enum ServiceTypeIdentifier {
 		this.national = national;
 	}
 
+	/**
+	 * Gets identifier's label
+	 *
+	 * @return {@link String}
+	 */
 	public String getShortName() {
 		return shortName;
 	}
 
+	/**
+	 * Gets identifier's URI
+	 *
+	 * @return {@link String}
+	 */
 	public String getUri() {
 		return uri;
 	}
 
+	/**
+	 * Gets whether identifier corresponds to a qualified status
+	 *
+	 * @return TRUE if qualified, FALSE otherwise
+	 */
 	public boolean isQualified() {
 		return qualified;
 	}
 
+	/**
+	 * Gets whether identifier corresponds to a national status
+	 *
+	 * @return TRUE if national, FALSE otherwise
+	 */
 	public boolean isNational() {
 		return national;
 	}
 
+	/**
+	 * Checks whether the {@code serviceTypeIdentifier} is CA/QC
+	 *
+	 * @param serviceTypeIdentifier {@link String} identifier to check
+	 * @return TRUE of the identifier is CA/QC, FALSE otherwise
+	 */
 	public static boolean isCaQc(String serviceTypeIdentifier) {
 		return CA_QC.getUri().equals(serviceTypeIdentifier);
 	}
 
+	/**
+	 * Checks whether the {@code serviceTypeIdentifier} is TSA/QTST
+	 *
+	 * @param serviceTypeIdentifier {@link String} identifier to check
+	 * @return TRUE of the identifier is TSA/QTST, FALSE otherwise
+	 */
 	public static boolean isQTST(String serviceTypeIdentifier) {
 		return TSA_QTST.getUri().equals(serviceTypeIdentifier);
 	}

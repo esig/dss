@@ -38,13 +38,31 @@ import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLWellSi
 
 import java.util.Date;
 
+/**
+ * This class is used to perform validation of a Trusted List
+ *
+ */
 public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
+	/** Trusted list to be validated */
 	private final XmlTrustedList currentTL;
+
+	/** Validation time */
 	private final Date currentTime;
+
+	/** The signature validation policy */
 	private final ValidationPolicy policy;
 
-	public TLValidationBlock(I18nProvider i18nProvider, XmlTrustedList currentTL, Date currentTime, ValidationPolicy policy) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param currentTL {@link XmlTrustedList}
+	 * @param currentTime {@link Date}
+	 * @param policy {@link ValidationPolicy}
+	 */
+	public TLValidationBlock(I18nProvider i18nProvider, XmlTrustedList currentTL, Date currentTime,
+							 ValidationPolicy policy) {
 		super(i18nProvider, new XmlTLAnalysis());
 
 		result.setCountryCode(currentTL.getCountryCode());

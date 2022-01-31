@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import java.util.Collections;
-import java.util.Set;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * This class is used to filter trusted services by the TL Url.
@@ -32,12 +32,23 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class ServiceByTLUrlFilter extends AbstractTrustedServiceFilter {
 
+	/** Set of TL URLs to filter by */
 	private final Set<String> tlUrls;
 
+	/**
+	 * Constructor to instantiate the filter with a single TL URL
+	 *
+	 * @param tlUrl {@link String}
+	 */
 	public ServiceByTLUrlFilter(String tlUrl) {
 		this(Collections.singleton(tlUrl));
 	}
 
+	/**
+	 * Constructor to instantiate the filter with a set of TL URLs
+	 *
+	 * @param tlUrls a set of {@link String}s
+	 */
 	public ServiceByTLUrlFilter(Set<String> tlUrls) {
 		this.tlUrls = tlUrls;
 	}

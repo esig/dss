@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
@@ -33,6 +35,8 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.List;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_LT;
 
 /**
  * PAdES Baseline LT signature
@@ -60,7 +64,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-		assertExtendSignaturePossible(signatures);
+		assertExtendSignaturePossible(signatures, parameters);
 
 		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();
 		PdfValidationDataContainer validationData = documentValidator.getValidationData(signatures, detachedTimestamps);
@@ -69,11 +73,15 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		return signatureService.addDssDictionary(extendedDocument, validationData, parameters.getPasswordProtection());
 	}
 
-	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures) {
+	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures, PAdESSignatureParameters parameters) {
 		for (AdvancedSignature signature : signatures) {
-			if (signature.areAllSelfSignedCertificates()) {
-				throw new IllegalInputException("Cannot extend the signature. " +
-						"The signature contains only self-signed certificate chains!");
+			final PAdESSignature padesSignature = (PAdESSignature) signature;
+			final SignatureLevel signatureLevel = parameters.getSignatureLevel();
+			if (PAdES_BASELINE_LT.equals(signatureLevel) && padesSignature.hasLTAProfile()) {
+				throw new IllegalInputException(String.format(
+						"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
+			} else if (padesSignature.areAllSelfSignedCertificates()) {
+				throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 			}
 		}
 	}

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.tsl.function;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
+import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ public class SchemeInformationURIPredicatesTest {
 
 	@Test
 	public void pivotLOTL() {
-		List<String> pivotUrls = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new PivotSchemeInformationURI()).map(t -> t.getValue())
+		List<String> pivotUrls = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
 				.collect(Collectors.toList());
 		assertEquals(4, pivotUrls.size());
 
@@ -75,12 +76,12 @@ public class SchemeInformationURIPredicatesTest {
 		String currentPivotOjUrl = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
 
 		List<String> list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(currentPivotOjUrl))
-				.map(t -> t.getValue()).collect(Collectors.toList());
+				.map(NonEmptyMultiLangURIType::getValue).collect(Collectors.toList());
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));
 
 		String otherOJUrl = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG";
-		list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(otherOJUrl)).map(t -> t.getValue())
+		list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(otherOJUrl)).map(NonEmptyMultiLangURIType::getValue)
 				.collect(Collectors.toList());
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));

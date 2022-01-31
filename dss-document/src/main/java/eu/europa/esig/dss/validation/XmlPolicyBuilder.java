@@ -165,7 +165,9 @@ public class XmlPolicyBuilder {
 		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
 		if (signaturePolicyContent != null) {
 			Digest recalculatedDigest = validationResult.getDigest();
-			xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest));
+			if (recalculatedDigest != null) {
+				xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest));
+			}
 		}
 		return xmlSignaturePolicyStore;
 	}

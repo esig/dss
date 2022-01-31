@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,6 +77,11 @@ public class CAdESLevelLTAWithSignaturePolicyStoreExtensionTest extends Abstract
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+		CAdESTimestampParameters archiveTimeStampParameters = new CAdESTimestampParameters();
+		archiveTimeStampParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+		signatureParameters.setArchiveTimestampParameters(archiveTimeStampParameters);
 
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -110,6 +116,21 @@ public class CAdESLevelLTAWithSignaturePolicyStoreExtensionTest extends Abstract
 		assertNotNull(extractedSPS.getSpDocSpecification());
 		assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());
 		assertArrayEquals(DSSUtils.toByteArray(POLICY_CONTENT), DSSUtils.toByteArray(extractedSPS.getSignaturePolicyContent()));
+
+		Set<DigestAlgorithm> messageDigestAlgorithms = cadesSignature.getMessageDigestAlgorithms();
+		assertEquals(2, messageDigestAlgorithms.size());
+
+		boolean sha256Found = false;
+		boolean sha512Found = false;
+		for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+			if (DigestAlgorithm.SHA256.equals(digestAlgorithm)) {
+				sha256Found = true;
+			} else if (DigestAlgorithm.SHA512.equals(digestAlgorithm)) {
+				sha512Found = true;
+			}
+		}
+		assertTrue(sha256Found);
+		assertTrue(sha512Found);
 	}
 	
 	@Override

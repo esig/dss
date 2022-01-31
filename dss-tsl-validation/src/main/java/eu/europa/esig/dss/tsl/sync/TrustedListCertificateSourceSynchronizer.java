@@ -187,11 +187,7 @@ public class TrustedListCertificateSourceSynchronizer {
 
 	private void addCertificate(Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts, CertificateToken certificate,
 			TrustProperties trustProperties) {
-		List<TrustProperties> list = trustPropertiesByCerts.get(certificate);
-		if (list == null) {
-			list = new ArrayList<>();
-			trustPropertiesByCerts.put(certificate, list);
-		}
+		List<TrustProperties> list = trustPropertiesByCerts.computeIfAbsent(certificate, k -> new ArrayList<>());
 		if (!list.contains(trustProperties)) {
 			list.add(trustProperties);
 		}

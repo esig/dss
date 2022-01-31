@@ -40,7 +40,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
@@ -127,7 +126,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getSignerInformation());
+			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getVRIKey(), getSignerInformation());
 		}
 		return offlineCertificateSource;
 	}
@@ -135,7 +134,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureCRLSource;
 	}
@@ -143,7 +142,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
 	}
@@ -282,7 +281,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 

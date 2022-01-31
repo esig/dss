@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -34,7 +33,7 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.xades.ProfileParameters;
+import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -114,7 +113,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		assertMultiDocumentsAllowed(parameters);
 		assertDocumentsValid(toSignDocuments);
-		parameters.setDetachedContents(toSignDocuments);
+		parameters.getContext().setDetachedContents(toSignDocuments);
 		return getDataToSign(toSignDocuments.get(0), parameters);
 	}
 
@@ -129,7 +128,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		assertSigningCertificateValid(parameters);
 		parameters.getContext().setOperationKind(SigningOperation.SIGN);
 		SignatureProfile profile;
-		final ProfileParameters context = parameters.getContext();
+		final XAdESProfileParameters context = parameters.getContext();
 		if (context.getProfile() != null) {
 			profile = context.getProfile();
 		} else {
@@ -142,14 +141,14 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 				List<DSSDocument> detachedContents = new ArrayList<>();
 				detachedContents.add(toSignDocument);
-				parameters.setDetachedContents(detachedContents);
+				parameters.getContext().setDetachedContents(detachedContents);
 			}
 			result = extension.extendSignatures(result, parameters);
 		}
 
-		// The deterministic id is reset between two consecutive signing operations. It prevents having two
-		// signatures with the same Id within the same document.
-		parameters.reinitDeterministicId();
+		// The internal parameters (e.g. deterministic Id) are reset between two consecutive signing operations.
+		// It prevents sharing two signatures the same cached data.
+		parameters.reinit();
 		result.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return result;
 	}
@@ -164,7 +163,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		assertMultiDocumentsAllowed(parameters);
 		assertDocumentsValid(toSignDocuments);
-		parameters.setDetachedContents(toSignDocuments);
+		parameters.getContext().setDetachedContents(toSignDocuments);
 		return signDocument(toSignDocuments.get(0), parameters, signatureValue);
 	}
 
@@ -181,7 +180,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			dssDocument.setName(getFinalFileName(toExtendDocument, SigningOperation.EXTEND, parameters.getSignatureLevel()));
 			return dssDocument;
 		}
-		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel().name());
+		throw new UnsupportedOperationException(
+				String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 	}
 
 	@Override
@@ -228,7 +228,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 			extensionLTA.setTspSource(tspSource);
 			return extensionLTA;
 		default:
-			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 	}
 
@@ -303,7 +304,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
 		final DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
-		parameters.setDetachedContents(Arrays.asList(signatureValueToSign));
+		parameters.getContext().setDetachedContents(Arrays.asList(signatureValueToSign));
 
 		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
 		parameters.setReferences(Collections.singletonList(counterSignatureReference));
@@ -311,7 +312,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		final DSSDocument counterSignature = signDocument(signatureValueToSign, parameters, signatureValue);
 		final DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		

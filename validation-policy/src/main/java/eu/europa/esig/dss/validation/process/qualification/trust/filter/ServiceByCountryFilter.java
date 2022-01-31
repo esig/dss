@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import java.util.Collections;
-import java.util.Set;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * This class is used to filter trusted services by country code(s).
@@ -35,12 +35,24 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class ServiceByCountryFilter extends AbstractTrustedServiceFilter {
 
+
+	/** Country codes to filter by */
 	private final Set<String> countryCodes;
 
+	/**
+	 * Constructor to instantiate the filter by a single country code
+	 *
+	 * @param countryCode {@link String}
+	 */
 	public ServiceByCountryFilter(String countryCode) {
 		this(Collections.singleton(countryCode));
 	}
 
+	/**
+	 * Constructor to instantiate the filter by a set of single country codes
+	 *
+	 * @param countryCodes a set of {@link String}s
+	 */
 	public ServiceByCountryFilter(Set<String> countryCodes) {
 		this.countryCodes = countryCodes;
 	}

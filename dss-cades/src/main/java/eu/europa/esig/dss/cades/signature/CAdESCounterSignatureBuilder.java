@@ -35,12 +35,20 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.ValidationData;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +58,8 @@ import java.util.Objects;
  * The class to build a CAdES counter signature
  */
 public class CAdESCounterSignatureBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESCounterSignatureBuilder.class);
 
 	/** The certificateVerifier to use */
 	private final CertificateVerifier certificateVerifier;
@@ -91,6 +101,7 @@ public class CAdESCounterSignatureBuilder {
 				parameters, signatureValue, null);
 
 		CMSSignedData updatedCMSSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, new SignerInformationStore(updatedSignerInfo));
+		updatedCMSSignedData = CMSUtils.populateDigestAlgorithmSet(updatedCMSSignedData, originalCMSSignedData);
 		updatedCMSSignedData = addNewCertificates(updatedCMSSignedData, parameters);
 		return new CMSSignedDocument(updatedCMSSignedData);
 	}
@@ -117,16 +128,58 @@ public class CAdESCounterSignatureBuilder {
 				result.add(SignerInformation.addCounterSigners(signerInformation, counterSignatureSignerInfoStore));
 
 			} else if (signerInformation.getCounterSignatures().size() > 0) {
-				List<SignerInformation> updatedSignerInformations = getUpdatedSignerInformations(originalCMSSignedData,
+				List<SignerInformation> updatedCounterSigners = getUpdatedSignerInformations(originalCMSSignedData,
 						signerInformation.getCounterSignatures(), parameters, signatureValue, cades);
-				result.add(SignerInformation.addCounterSigners(signerInformation, new SignerInformationStore(updatedSignerInformations)));
-				
+				result.add(replaceCounterSigners(signerInformation, updatedCounterSigners));
+
 			} else {
 				result.add(signerInformation);
 			}
 		}
 
 		return result;
+	}
+
+	private SignerInformation replaceCounterSigners(SignerInformation signerInformation, List<SignerInformation> updatedCounterSigners) {
+		ASN1EncodableVector attrs = new ASN1EncodableVector();
+		Attribute counterSignatureAttribute = getUpdatedCounterSignatureAttribute(updatedCounterSigners);
+
+		AttributeTable currentUnsignedAttributes = signerInformation.getUnsignedAttributes();
+		ASN1EncodableVector currentASN1EncodableVector = currentUnsignedAttributes.toASN1EncodableVector();
+		for (int i = 0; i < currentASN1EncodableVector.size(); i++) {
+			ASN1Encodable asn1Encodable = currentASN1EncodableVector.get(i);
+			if (isCounterSignatureAttribute(asn1Encodable)) {
+				attrs.add(counterSignatureAttribute);
+			} else {
+				attrs.add(asn1Encodable);
+			}
+		}
+
+		return SignerInformation.replaceUnsignedAttributes(signerInformation, new AttributeTable(attrs));
+	}
+
+	private boolean isCounterSignatureAttribute(ASN1Encodable asn1Encodable) {
+		try {
+			Attribute attribute = Attribute.getInstance(asn1Encodable);
+			return CMSAttributes.counterSignature.equals(attribute.getAttrType());
+
+		} catch (Exception e) {
+			String errorMessage = "Unable to instantiate Attribute. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
+			return false;
+		}
+	}
+
+	private Attribute getUpdatedCounterSignatureAttribute(List<SignerInformation> updatedCounterSigners) {
+		ASN1EncodableVector signers = new ASN1EncodableVector();
+		for (SignerInformation counterSigner : updatedCounterSigners) {
+			signers.add(counterSigner.toASN1Structure());
+		}
+		return new Attribute(CMSAttributes.counterSignature, new DERSet(signers));
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

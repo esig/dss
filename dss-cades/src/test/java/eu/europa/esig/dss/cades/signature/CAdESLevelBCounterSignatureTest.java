@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -34,11 +36,13 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -68,6 +72,7 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		return signatureParameters;
 	}
 
@@ -79,6 +84,7 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setLocality("Kehlen");
 		signatureParameters.bLevel().setSignerLocation(signerLocation);
@@ -89,6 +95,28 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
+	}
+
+	@Override
+	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
+		super.checkAdvancedSignatures(signatures);
+		assertEquals(1, signatures.size());
+
+		CAdESSignature cadesSignature = (CAdESSignature) signatures.get(0);
+		Set<DigestAlgorithm> messageDigestAlgorithms = cadesSignature.getMessageDigestAlgorithms();
+		assertEquals(2, messageDigestAlgorithms.size());
+
+		boolean sha256Found = false;
+		boolean sha512Found = false;
+		for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
+			if (DigestAlgorithm.SHA256.equals(digestAlgorithm)) {
+				sha256Found = true;
+			} else if (DigestAlgorithm.SHA512.equals(digestAlgorithm)) {
+				sha512Found = true;
+			}
+		}
+		assertTrue(sha256Found);
+		assertTrue(sha512Found);
 	}
 
 	@Override

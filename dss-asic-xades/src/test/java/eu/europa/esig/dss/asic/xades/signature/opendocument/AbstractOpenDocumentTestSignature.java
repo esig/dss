@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -117,7 +117,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractPkiFacto
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(getOriginalDocuments().get(0));
-		ASiCExtractResult extractOriginal = extractor.extract();
+		ASiCContent extractOriginal = extractor.extract();
 		
 		AbstractASiCContainerValidator asicValidator = (AbstractASiCContainerValidator) validator;
 		List<DSSDocument> signedDocuments = asicValidator.getSignedDocuments();

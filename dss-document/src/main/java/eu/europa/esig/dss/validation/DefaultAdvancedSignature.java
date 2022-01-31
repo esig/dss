@@ -143,7 +143,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * Performs a conformance check for the signature to a given profile
 	 */
-	private BaselineRequirementsChecker baselineRequirementsChecker;
+	private transient BaselineRequirementsChecker<?> baselineRequirementsChecker;
 
 	/**
 	 * Cached instance of the signing certificate token
@@ -387,11 +387,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 			// This ensures that the variable signatureCryptographicVerification has been initialized
 			signatureCryptographicVerification = getSignatureCryptographicVerification();
 			final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
-			if (theCertificateValidity != null) {
-				if (theCertificateValidity.isValid()) {
-					final CertificateToken signingCertificateToken = theCertificateValidity.getCertificateToken();
-					return signingCertificateToken;
-				}
+			if (theCertificateValidity != null && theCertificateValidity.isValid()) {
+				return theCertificateValidity.getCertificateToken();
 			}
 			final CertificateValidity theBestCandidate = candidatesForSigningCertificate.getTheBestCandidate();
 			if (theBestCandidate != null) {
@@ -419,8 +416,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return Collections.emptyList();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
 		signatureScopes = signatureScopeFinder.findSignatureScope(this);
 	}
@@ -490,6 +487,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *
 	 * @return {@link BaselineRequirementsChecker}
 	 */
+	@SuppressWarnings("rawtypes")
 	protected BaselineRequirementsChecker getBaselineRequirementsChecker() {
 		if (baselineRequirementsChecker == null) {
 			baselineRequirementsChecker = createBaselineRequirementsChecker();
@@ -502,6 +500,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 *
 	 * @return {@link BaselineRequirementsChecker}
 	 */
+	@SuppressWarnings("rawtypes")
 	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker();
 
 	/**

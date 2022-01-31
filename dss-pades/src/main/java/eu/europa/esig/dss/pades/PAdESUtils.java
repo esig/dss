@@ -34,6 +34,8 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -48,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -298,6 +301,31 @@ public final class PAdESUtils {
 		}
 
 		return sigFieldPermissions;
+	}
+
+	/**
+	 * Returns a list of VRI dictionaries, corresponding to the given signature (VRI) SHA-1 name
+	 *
+	 * NOTE: {@code vriName} can be null. In this case all /VRI dictionaries are returned
+	 *
+	 * @param pdfDssDict {@link PdfDssDict} to extract /VRI dictionaries from
+	 * @param vriName {@link String} name of the /VRI dictionary to retrieve (optional)
+	 * @return list of {@link PdfVRIDict}s
+	 */
+	public static List<PdfVRIDict> getVRIsWithName(PdfDssDict pdfDssDict, String vriName) {
+		List<PdfVRIDict> vris = pdfDssDict.getVRIs();
+		if (Utils.isCollectionEmpty(vris)) {
+			return Collections.emptyList();
+		}
+		if (vriName == null) {
+			return vris;
+		}
+		for (PdfVRIDict vriDict : vris) {
+			if (vriName.equals(vriDict.getName())) {
+				return Collections.singletonList(vriDict);
+			}
+		}
+		return Collections.emptyList();
 	}
 
 }

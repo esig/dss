@@ -205,7 +205,7 @@ public class DetailedReport {
 	 */
 	public String getFirstSignatureId() {
 		List<String> result = getSignatureIds();
-		if (result.size() > 0) {
+		if (!result.isEmpty()) {
 			return result.get(0);
 		}
 		return null;
@@ -617,7 +617,7 @@ public class DetailedReport {
 	 */
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
 		List<XmlCertificate> certificates = getCertificates();
-		if (certificates == null || certificates.size() == 0) {
+		if (certificates == null || certificates.isEmpty()) {
 			throw new UnsupportedOperationException("Only supported in report for certificate");
 		}
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
@@ -717,7 +717,7 @@ public class DetailedReport {
 			XmlXCV xcv = basicBuildingBlocks.getXCV();
 			if (xcv != null) {
 				List<XmlSubXCV> subXCVs = xcv.getSubXCV();
-				if (subXCVs != null && subXCVs.size() > 0) {
+				if (subXCVs != null && !subXCVs.isEmpty()) {
 					return subXCVs.get(0);
 				}
 			}

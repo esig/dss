@@ -75,8 +75,7 @@ public class PdfModificationDetectionUtils {
 	}
 
 	/**
-	 * Checks if the given {@code annotationBox} overlaps with
-	 * {@code otherAnnotations}
+	 * Checks if the given {@code annotationBox} overlaps with {@code pdfAnnotations}
 	 * 
 	 * @param annotationBox  {@link AnnotationBox} to check
 	 * @param pdfAnnotations a list of {@link PdfAnnotation} to validate against

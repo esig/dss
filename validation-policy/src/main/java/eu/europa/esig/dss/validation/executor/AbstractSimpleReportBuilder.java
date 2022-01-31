@@ -53,7 +53,7 @@ public abstract class AbstractSimpleReportBuilder {
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param detailedReport {@link DetailedReport}
 	 */
-	public AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData,
+	protected AbstractSimpleReportBuilder(Date currentTime, ValidationPolicy policy, DiagnosticData diagnosticData,
 									   DetailedReport detailedReport) {
 		this.currentTime = currentTime;
 		this.policy = policy;

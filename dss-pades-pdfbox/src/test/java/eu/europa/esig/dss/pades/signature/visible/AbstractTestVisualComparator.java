@@ -28,6 +28,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -36,12 +37,14 @@ import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -79,30 +82,53 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	protected void drawAndCompareExplicitly() throws IOException {
 		getService().setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		DSSDocument defaultDrawerPdf = sign("default");
+
 		getService().setPdfObjFactory(new PdfBoxNativeObjectFactory());
 		DSSDocument nativeDrawerPdf = sign("native");
+
 		compareAnnotations(defaultDrawerPdf, nativeDrawerPdf);
 		compareVisualSimilarity(defaultDrawerPdf, nativeDrawerPdf);
+		assertTrue(arePdfDocumentsVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
 
-		assertTrue(areVisuallyEqual(defaultDrawerPdf, nativeDrawerPdf));
+		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
+		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
+
+		assertFalse(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(getDocumentToSign(), 1)));
+		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(nativeDrawerPdf, 1)));
 	}
 
-	public static boolean areVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
-		BufferedImage img1 = getRendering(dssDoc1);
-		BufferedImage img2 = getRendering(dssDoc2);
+	protected boolean arePdfDocumentsVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
+		return compareBufferedImages(getScreenshotWithDpi(dssDoc1), getScreenshotWithDpi(dssDoc2));
+	}
+
+	private BufferedImage getScreenshotWithDpi(DSSDocument dssDoc) throws IOException {
+		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
+			PDFRenderer renderer = new PDFRenderer(doc);
+			return renderer.renderImageWithDPI(0, DPI);
+		}
+	}
+
+	protected boolean areImagesVisuallyEqual(DSSDocument dssImage1, DSSDocument dssImage2) throws IOException {
+		return compareBufferedImages(toBufferedImage(dssImage1), toBufferedImage(dssImage2));
+	}
+
+	private BufferedImage toBufferedImage(DSSDocument dssImageDocument) {
+		try (InputStream is = dssImageDocument.openStream()) {
+			return ImageIO.read(is);
+		} catch (Exception e) {
+			fail(e);
+			return null;
+		}
+	}
+
+	private boolean compareBufferedImages(BufferedImage img1, BufferedImage img2) {
 		if (ImageUtils.imageDimensionsEqual(img1, img2)) {
 			BufferedImage outImg = new BufferedImage(img1.getWidth(), img1.getHeight(), BufferedImage.TYPE_INT_RGB);
 			int diffAmount = ImageUtils.drawSubtractionImage(img1, img2, outImg);
 			return diffAmount == 0;
 		}
 		return false;
-	}
-
-	private static BufferedImage getRendering(DSSDocument dssDoc) throws IOException {
-		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
-			PDFRenderer renderer = new PDFRenderer(doc);
-			return renderer.renderImageWithDPI(0, DPI);
-		}
 	}
 
 	protected DSSDocument sign(String docName) throws IOException {

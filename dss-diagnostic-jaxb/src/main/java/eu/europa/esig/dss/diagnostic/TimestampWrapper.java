@@ -323,6 +323,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	 * 
 	 * @return list of {@link OrphanTokenWrapper}s
 	 */
+	@SuppressWarnings("rawtypes")
 	public List<OrphanTokenWrapper> getAllTimestampedOrphanTokens() {
 		List<OrphanTokenWrapper> timestampedObjectIds = new ArrayList<>();
 		timestampedObjectIds.addAll(getTimestampedOrphanCertificates());
@@ -493,7 +494,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
 			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && fields.size() > 0) {
+			if (fields != null && !fields.isEmpty()) {
 				return fields.iterator().next().getName();
 			}
 		}
@@ -510,7 +511,7 @@ public class TimestampWrapper extends AbstractTokenProxy {
 		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
 		if (pdfRevision != null) {
 			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && fields.size() > 0) {
+			if (fields != null && !fields.isEmpty()) {
 				for (XmlPDFSignatureField signatureField : fields) {
 					names.add(signatureField.getName());
 				}

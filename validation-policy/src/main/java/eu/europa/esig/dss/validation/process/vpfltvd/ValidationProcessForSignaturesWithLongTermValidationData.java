@@ -394,21 +394,20 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		
 		/*
-		 * 9) If the signature acceptance validation process returns PASSED, the SVA shall go to the next step. Otherwise,
-		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation
-		 * Process. 
+		 * 9) If the signature acceptance validation process returns PASSED, the SVA shall go to the next step.
+		 * Otherwise, the SVA shall return the indication and sub-indication returned by
+		 * the Signature Acceptance Validation Process.
 		 */
 		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
 		
 		/*
-		 * 10) Data extraction: the process shall return the success indication PASSED, the certificate chain obtained in step 2
-		 * and best-signature-time.
-		 * In addition, the process should return additional information extracted from the signature and/or used by the
-		 * intermediate steps.
-		 * In particular, the process should return intermediate results such as the validation results of any signature
-		 * time-stamp token. 
+		 * 10) Data extraction: the process shall return the success indication PASSED,
+		 * the certificate chain obtained in step 2 and best-signature-time.
+		 * In addition, the process should return additional information extracted from the signature and/or
+		 * used by the intermediate steps.
+		 * In particular, the process should return intermediate results such as the validation results
+		 * of any signature time-stamp token.
 		 */
-
 		result.setProofOfExistence(bestSignatureTime);
 	}
 
@@ -423,7 +422,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampMessageImprint(TimestampWrapper timestampWrapper) {
-		return new TimestampMessageImprintCheck(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+		return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
@@ -449,7 +448,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				XmlRFC xmlRFC = rfc.execute();
 				result.getRFC().add(xmlRFC);
 
-				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC, currentContext, subContext));
+				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC));
 
 				if (!isValid(xmlRFC)) {
 					break;
@@ -460,9 +459,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return item;
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult, Context context, SubContext subContext) {
-		LevelConstraint constraint = policy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResultCheck<XmlValidationProcessLongTermData>(i18nProvider, result, rfcResult, constraint) {
+	private ChainItem<XmlValidationProcessLongTermData> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
+		return new RevocationFreshnessCheckerResultCheck<XmlValidationProcessLongTermData>(i18nProvider, result, rfcResult, getFailLevelConstraint()) {
 			@Override
 			protected Indication getFailedIndicationForConclusion() {
 				return Indication.INDETERMINATE;

@@ -37,13 +37,13 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -61,6 +61,7 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -267,6 +268,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to build message-digest : %s", e.getMessage()), e);
 		}
+	}
+
+	@Override
+	public DSSDocument previewPageWithVisualSignature(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
+	public DSSDocument previewSignatureField(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
 	}
 
 	@Override
@@ -514,7 +525,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			
 			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
 			
-			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
+			stp.addSignature(parameters.getFieldId(), parameters.getPage(),
 					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 
 			stp.close();
@@ -526,8 +537,22 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException("Unable to add a signature field", e);
 		}
 	}
-	
-    private byte[] getPasswordBinary(String currentPassword) {
+
+	@Override
+	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int rotation) {
+		fieldAnnotationBox = super.toPdfPageCoordinates(fieldAnnotationBox, pageBox, rotation);
+		return ImageRotationUtils.rotateRelativelyWrappingBox(fieldAnnotationBox, pageBox, rotation);
+	}
+
+	@Override
+	protected void checkSignatureFieldAgainstPageDimensions(AnnotationBox signatureFieldBox, AnnotationBox pageBox, int pageRotation) {
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(pageRotation)) {
+			pageBox = ImageRotationUtils.swapDimensions(pageBox);
+		}
+		super.checkSignatureFieldAgainstPageDimensions(signatureFieldBox, pageBox, pageRotation);
+	}
+
+	private byte[] getPasswordBinary(String currentPassword) {
         byte[] password = null;
         if (currentPassword != null) {
             password = currentPassword.getBytes();

@@ -63,8 +63,8 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
     @Override
     public void extendAndVerify() throws Exception {
         Exception exception = assertThrows(AlertException.class, () -> extendSignature(document));
-        assertTrue( exception.getMessage().contains(
-                "The signing certificate has been expired and there is no POE during its validity range."));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
+                "there is no POE during its validity range :"));
 
         certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
 

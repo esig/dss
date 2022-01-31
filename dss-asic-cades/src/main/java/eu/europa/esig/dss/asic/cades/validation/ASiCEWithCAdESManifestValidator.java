@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -67,36 +68,27 @@ public class ASiCEWithCAdESManifestValidator {
 			return manifestEntries;
 		}
 		for (ManifestEntry entry : manifestEntries) {
-			
 			if (entry.getDigest() != null) {
-				for (DSSDocument signedDocument : signedDocuments) {
-					
-					if (entry.getFileName().equals(signedDocument.getName())) {
-						entry.setFound(true);
-						String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
-						if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
-							entry.setIntact(true);
-							
-						} else {
-							LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
-							LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
-							LOG.warn("Computed : '{}'", computedDigest);
-							
-						}
-						break;
-						
+				DSSDocument signedDocument = DSSUtils.getDocumentWithName(signedDocuments, entry.getFileName());
+				if (signedDocument != null) {
+					entry.setFound(true);
+					String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
+					if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+						entry.setIntact(true);
+					} else {
+						LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
+						LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
+						LOG.warn("Computed : '{}'", computedDigest);
 					}
 				}
 				
 			} else {
 				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
-				
 			}
 			
 			if (!entry.isFound()) {
 				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
 			}
-			
 		}
 		
 		return manifestEntries;

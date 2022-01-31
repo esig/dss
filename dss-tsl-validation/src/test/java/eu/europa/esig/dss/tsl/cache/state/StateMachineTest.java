@@ -101,7 +101,7 @@ public class StateMachineTest {
 		cachedEntry.sync();
 
 		cachedEntry.expire();
-		cachedEntry.error(new CachedException(new IllegalArgumentException("Unable to parse")));
+		cachedEntry.error(new CachedExceptionWrapper(new IllegalArgumentException("Unable to parse")));
 		assertNotNull(cachedEntry.getLastStateTransitionTime());
 
 		assertTrue(cachedEntry.isError());

@@ -20,27 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DLSet;
-import org.bouncycastle.asn1.cms.SignedData;
-import org.bouncycastle.asn1.cms.SignerInfo;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -60,6 +39,26 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DLSet;
+import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.cms.SignerInfo;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSignature {
 
@@ -122,7 +121,7 @@ public class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSi
 			assertEquals(PKCSObjectIdentifiers.signedData, oid);
 
 			ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
-			SignedData signedData = SignedData.getInstance(taggedObj.getObject());
+			SignedData signedData = SignedData.getInstance(taggedObj.getBaseObject());
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			assertEquals(1, signerInfosAsn1.size());

@@ -130,6 +130,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
@@ -267,7 +268,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
+		return new SignaturePolicyProvider();
 	}
 
 	protected List<DSSDocument> getDetachedContents() {
@@ -563,9 +564,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_T:
+			case XAdES_T:
 			case XAdES_C:
 			case XAdES_X:
 			case CAdES_BASELINE_T:
+			case CAdES_T:
+			case CAdES_C:
+			case CAdES_X:
 			case JAdES_BASELINE_T:
 			case PAdES_BASELINE_T:
 				return true;
@@ -577,8 +582,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineLT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_LT:
+			case XAdES_LT:
 			case XAdES_XL:
 			case CAdES_BASELINE_LT:
+			case CAdES_LT:
+			case CAdES_XL:
 			case JAdES_BASELINE_LT:
 			case PAdES_BASELINE_LT:
 				return true;
@@ -592,6 +600,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			case XAdES_BASELINE_LTA:
 			case XAdES_A:
 			case CAdES_BASELINE_LTA:
+			case CAdES_A:
 			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
 				return true;
@@ -1035,6 +1044,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isStructuralValidationValid());
 			if (Utils.isCollectionNotEmpty(signature.getStructuralValidationMessages())) {
 				fail("Structural validation failure: " + signature.getStructuralValidationMessages().toString());
 			}
@@ -1278,7 +1288,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestMethod());
+		DigestMethodType digestMethod = signatureIdentifier.getDigestAlgAndValue().getDigestMethod();
+		assertNotNull(digestMethod);
+		assertNotNull(digestMethod.getAlgorithm());
+		assertNotNull(DigestAlgorithm.forXML(digestMethod.getAlgorithm()));
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestValue());
 		assertNotNull(signatureIdentifier.getSignatureValue());
 	}

@@ -44,9 +44,9 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1TaggedObject;
@@ -157,7 +157,7 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 
 			logger.info("TAGGED OBJ : " + taggedObj.toString());
 
-			ASN1Primitive object = taggedObj.getObject();
+			ASN1Object object = taggedObj.getBaseObject();
 			logger.info("OBJ : " + object.toString());
 
 			SignedData signedData = SignedData.getInstance(object);
@@ -242,7 +242,7 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 
 			ASN1TaggedObject taggedContent = ASN1TaggedObject.getInstance(seqEncapsulatedInfo.getObjectAt(1));
 
-			ASN1OctetString contentOctetString = ASN1OctetString.getInstance(taggedContent.getObject());
+			ASN1OctetString contentOctetString = ASN1OctetString.getInstance(taggedContent.getBaseObject());
 			String content = new String(contentOctetString.getOctets());
 			assertEquals(HELLO_WORLD, content);
 			logger.info("CONTENT : " + content);

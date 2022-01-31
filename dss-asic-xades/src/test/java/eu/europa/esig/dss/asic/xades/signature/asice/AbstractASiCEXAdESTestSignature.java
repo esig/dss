@@ -20,22 +20,28 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.List;
-
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCTestSignature;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCEXAdESTestSignature extends
 		AbstractASiCTestSignature<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
@@ -60,6 +66,45 @@ public abstract class AbstractASiCEXAdESTestSignature extends
 	@Override
 	protected boolean isBaselineLTA() {
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
+	}
+	@Override
+	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
+		ASiCWithXAdESContainerExtractor containerExtractor = new ASiCWithXAdESContainerExtractor(new InMemoryDocument(byteArray));
+		ASiCContent asicContent = containerExtractor.extract();
+		checkExtractedContent(asicContent);
+
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));
+		checkManifests(signatureDocuments, asicContent.getAllManifestDocuments());
+	}
+
+	protected void checkExtractedContent(ASiCContent asicContent) {
+		assertNotNull(asicContent);
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
+		assertNotNull(asicContent.getMimeTypeDocument());
+		if (getSignatureParameters().aSiC().isZipComment()) {
+			assertTrue(Utils.isStringNotBlank(asicContent.getZipComment()));
+		}
+	}
+
+	protected void checkManifests(List<DSSDocument> signatures, List<DSSDocument> manifestDocuments) {
+		assertEquals(1, manifestDocuments.size());
+
+		for (DSSDocument signatureDocument : signatures) {
+			ManifestFile manifestFile = new ASiCEWithXAdESManifestParser(signatureDocument, manifestDocuments.get(0)).getManifest();
+			assertNotNull(manifestFile);
+
+			assertNotNull(manifestFile.getFilename());
+			assertNotNull(manifestFile.getSignatureFilename());
+			assertTrue(Utils.isCollectionNotEmpty(manifestFile.getEntries()));
+			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+				assertNotNull(manifestEntry.getFileName());
+				assertNotNull(manifestEntry.getMimeType());
+				assertTrue(Utils.isStringNotEmpty(manifestEntry.getMimeType().getMimeTypeString()));
+			}
+		}
 	}
 	
 	@Override

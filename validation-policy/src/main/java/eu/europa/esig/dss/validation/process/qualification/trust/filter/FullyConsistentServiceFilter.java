@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Filters fully consistent TrustedServices (all relevant parameters shall be consistent)
+ *
+ */
 public class FullyConsistentServiceFilter implements TrustedServiceFilter {
 
 	@Override

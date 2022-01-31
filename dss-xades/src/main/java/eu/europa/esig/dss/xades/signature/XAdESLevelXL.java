@@ -35,6 +35,8 @@ import org.w3c.dom.Element;
 import java.util.List;
 import java.util.Set;
 
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_XL;
+
 /**
  * XL profile of XAdES signature
  *
@@ -67,7 +69,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (xadesSignature.hasLTAProfile()) {
+			if (!xlLevelExtensionRequired()) {
 				continue;
 			}
 			
@@ -89,7 +91,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (xadesSignature.hasLTAProfile()) {
+			if (!xlLevelExtensionRequired()) {
 				continue;
 			}
 
@@ -114,14 +116,18 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	}
 
+	private boolean xlLevelExtensionRequired() {
+		return XAdES_XL.equals(params.getSignatureLevel()) || !xadesSignature.hasAProfile();
+	}
+
 	/**
 	 * Checks if the extension is possible.
 	 */
 	private void assertExtendSignatureToXLPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.XAdES_XL.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signature is already extended with [%s]!";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES A"));
+		if (XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with A level.", signatureLevel));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}

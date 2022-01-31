@@ -20,21 +20,21 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.xades.signature.asice.AbstractASiCEXAdESTestSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CrossedASiCContainerTypeTest extends AbstractASiCEXAdESTestSignature {
 
@@ -58,8 +58,8 @@ public class CrossedASiCContainerTypeTest extends AbstractASiCEXAdESTestSignatur
 	@Test
 	@Override
 	public void signAndVerify() {
-		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> super.signAndVerify());
-		assertEquals("Original container type 'ASiC-S' vs parameter : 'ASiC-E'", exception.getMessage());
+		IllegalInputException exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+		assertEquals("The provided container of type 'ASiC-S' does not correspond the expected format 'ASiC-E'!", exception.getMessage());
 	}
 
 	@Override

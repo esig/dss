@@ -24,6 +24,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -146,7 +147,9 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		ZipEntry entry = getNextValidEntry(zis);
 		if (entry != null) {
 			DSSDocument currentDocument = getCurrentDocument(zis, containerSize);
+			String fileName = entry.getName();
 			currentDocument.setName(entry.getName());
+			currentDocument.setMimeType(MimeType.fromFileName(fileName));
 			return currentDocument;
 		}
 		return null;

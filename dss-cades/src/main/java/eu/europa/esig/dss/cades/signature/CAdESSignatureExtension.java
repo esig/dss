@@ -60,8 +60,8 @@ import java.util.Objects;
 
 /**
  * Base class for extending a CAdESSignature.
+ *
  */
-
 abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureExtension.class);
@@ -94,12 +94,20 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	@Override
 	public CMSSignedDocument extendSignatures(final DSSDocument signatureToExtend, final CAdESSignatureParameters parameters) {
 		LOG.trace("EXTEND SIGNATURES.");
-		try (InputStream inputStream = signatureToExtend.openStream()) {
-			final CMSSignedData cmsSignedData = new CMSSignedData(inputStream);
-			final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
-			return new CMSSignedDocument(extendCMSSignedData);
-		} catch (IOException | CMSException e) {
-			throw new IllegalInputException(String.format("Cannot parse CMS data. Reason : %s", e.getMessage()), e);
+		final CMSSignedData cmsSignedData = getCMSSignedData(signatureToExtend);
+		final CMSSignedData extendCMSSignedData = extendCMSSignatures(cmsSignedData, parameters);
+		return new CMSSignedDocument(extendCMSSignedData);
+	}
+
+	private CMSSignedData getCMSSignedData(DSSDocument document) {
+		if (document instanceof CMSSignedDocument) {
+			return ((CMSSignedDocument) document).getCMSSignedData();
+		} else {
+			try (InputStream inputStream = document.openStream()) {
+				return new CMSSignedData(inputStream);
+			} catch (IOException | CMSException e) {
+				throw new IllegalInputException(String.format("Cannot parse CMS data. Reason : %s", e.getMessage()), e);
+			}
 		}
 	}
 
@@ -184,7 +192,8 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 */
 	protected CMSSignedData replaceSigners(CMSSignedData cmsSignedData, List<SignerInformation> newSignerInformationList) {
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		return CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		CMSSignedData updatedCmsSignedData = CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		return CMSUtils.populateDigestAlgorithmSet(updatedCmsSignedData, cmsSignedData);
 	}
 	
 	/**
@@ -196,9 +205,11 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * @param detachedContents a list of detached {@link DSSDocument}s
 	 * @return created {@link CAdESSignature}
 	 */
-	protected CAdESSignature newCAdESSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation, List<DSSDocument> detachedContents) {
+	protected CAdESSignature newCAdESSignature(CMSSignedData cmsSignedData, SignerInformation signerInformation,
+											   List<DSSDocument> detachedContents) {
 		final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(detachedContents);
+		cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
 		return cadesSignature;
 	}
 

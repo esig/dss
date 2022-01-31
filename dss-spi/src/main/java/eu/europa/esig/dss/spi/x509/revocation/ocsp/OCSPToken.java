@@ -117,6 +117,10 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 		
 		checkSignatureValidity(issuer);
+		
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("OCSPToken created : {})", getDSSIdAsString());
+		}
 	}
 
 	private void extractStatusInfo(SingleResp bestSingleResp) {

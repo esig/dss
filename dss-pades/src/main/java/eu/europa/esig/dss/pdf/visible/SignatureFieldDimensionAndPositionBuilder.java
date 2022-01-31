@@ -134,7 +134,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
         int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), pageRotation);
         dimensionAndPosition.setGlobalRotation(rotation);
         if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
-            pageBox = new AnnotationBox(0, 0, pageBox.getMaxY(), pageBox.getMaxX());
+            pageBox = ImageRotationUtils.swapDimensions(pageBox);
         }
     }
 
@@ -318,32 +318,28 @@ public class SignatureFieldDimensionAndPositionBuilder {
                                                        float width, float height, float padding) throws IllegalArgumentException {
         float doublePadding = 2 * padding;
 
-        AnnotationBox estimatedTextBox;
+        float boxWidth = width - doublePadding;
+        float boxHeight = height - doublePadding;
         if (imageParameters.getImage() != null) {
             switch (textParameters.getSignerTextPosition()) {
                 case LEFT:
                 case RIGHT:
-                    estimatedTextBox = new AnnotationBox(0, 0,
-                            width - dimensionAndPosition.getImageWidth() - doublePadding, height - doublePadding);
+                    boxWidth = width - dimensionAndPosition.getImageWidth() - doublePadding;
                     break;
                 case TOP:
                 case BOTTOM:
-                    estimatedTextBox = new AnnotationBox(0, 0,
-                            width - doublePadding, height - dimensionAndPosition.getImageHeight() - doublePadding);
+                    boxHeight = height - dimensionAndPosition.getImageHeight() - doublePadding;
                     break;
                 default:
                     throw new IllegalArgumentException(String.format("The SignerTextPosition '%s' is not supported!",
                             textParameters.getSignerTextPosition()));
             }
-        } else {
-            estimatedTextBox = new AnnotationBox(0, 0, width - doublePadding, height - doublePadding);
         }
-
-        if (estimatedTextBox.getWidth() <= 0 || estimatedTextBox.getHeight() <= 0) {
+        if (boxWidth <= 0 || boxHeight <= 0) {
             throw new IllegalArgumentException("Unable to create a visual signature. The signature field box is too small!");
         }
 
-        return estimatedTextBox;
+        return new AnnotationBox(0, 0, boxWidth, boxHeight);
     }
 
     private AnnotationBox computeTextDimension(String text, float fontSize) {

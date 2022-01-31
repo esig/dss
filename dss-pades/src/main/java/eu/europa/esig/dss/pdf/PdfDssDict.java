@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 import java.io.Serializable;
 import java.util.List;
@@ -41,11 +41,11 @@ public interface PdfDssDict extends Serializable {
 	Map<Long, CRLBinary> getCRLs();
 
 	/**
-	 * Returns a map of unique identifiers and BasicOCSPResponses
+	 * Returns a map of unique identifiers and {@code OCSPResponseBinary}s
 	 * 
-	 * @return a map of identifiers and {@link BasicOCSPResp}s
+	 * @return a map of identifiers and {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary}s
 	 */
-	Map<Long, BasicOCSPResp> getOCSPs();
+	Map<Long, OCSPResponseBinary> getOCSPs();
 
 	/**
 	 * Returns a map of unique identifiers and Certificate Tokens

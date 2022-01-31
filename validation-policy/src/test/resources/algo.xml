@@ -523,7 +523,7 @@
     </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845">
-            <ProductionTime>2019-09-23T14:25:28Z</ProductionTime>
+            <ProductionTime>2019-09-23T14:25:27Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ZcWkLqzwFY+Wy+zKeXWPmYKUaWySHo75Ghud7FI6u2Q=</DigestValue>

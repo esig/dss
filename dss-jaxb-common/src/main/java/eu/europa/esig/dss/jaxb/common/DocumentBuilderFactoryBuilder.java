@@ -38,7 +38,7 @@ public class DocumentBuilderFactoryBuilder extends AbstractFactoryBuilder<Docume
     /**
      * Default constructor building a secure pre-configured instance of {@code DocumentBuilderFactoryBuilder}
      */
-    private DocumentBuilderFactoryBuilder() {
+    protected DocumentBuilderFactoryBuilder() {
         enableFeature("http://xml.org/sax/features/namespaces"); // .setNamespaceAware(true)
         // XInclude is set to "false" by default. Enforcing of the feature value can throw an exception
         // if the implementation does not support the property
@@ -70,10 +70,15 @@ public class DocumentBuilderFactoryBuilder extends AbstractFactoryBuilder<Docume
      * @return {@link DocumentBuilderFactory}
      */
     public DocumentBuilderFactory build() {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory documentBuilderFactory = instantiateFactory();
         setSecurityFeatures(documentBuilderFactory);
         setSecurityAttributes(documentBuilderFactory);
         return documentBuilderFactory;
+    }
+
+    @Override
+    protected DocumentBuilderFactory instantiateFactory() {
+        return DocumentBuilderFactory.newInstance();
     }
 
     @Override

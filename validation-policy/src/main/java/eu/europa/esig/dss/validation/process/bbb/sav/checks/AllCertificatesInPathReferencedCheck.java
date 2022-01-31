@@ -61,7 +61,7 @@ public class AllCertificatesInPathReferencedCheck extends ChainItem<XmlSAV> {
 	protected boolean process() {
 		List<RelatedCertificateWrapper> relatedSigningCertificates = token.foundCertificates()
 				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		List<String> signingCertificateIds = relatedSigningCertificates.stream().map(c -> c.getId()).collect(Collectors.toList());
+		List<String> signingCertificateIds = relatedSigningCertificates.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 
 		for (CertificateWrapper certificate : token.getCertificateChain()) {
 			if (!signingCertificateIds.contains(certificate.getId())) {

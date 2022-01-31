@@ -378,7 +378,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampMessageImprint(TimestampWrapper timestampWrapper) {
-		return new TimestampMessageImprintCheck(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+		return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {

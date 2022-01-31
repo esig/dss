@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -74,9 +73,8 @@ public interface ValidationContext {
 	 *
 	 * @param revocationToken an instance of {@code RevocationToken} revocation
 	 *                        tokens to verify
-	 * @param <R> {@link RevocationToken}
 	 */
-	<R extends Revocation> void addRevocationTokenForVerification(final RevocationToken<R> revocationToken);
+	void addRevocationTokenForVerification(final RevocationToken<?> revocationToken);
 
 	/**
 	 * Adds a new certificate token to the list of tokens to verify. If the certificate token has already been added
@@ -228,7 +226,7 @@ public interface ValidationContext {
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the
 	 * given document.
 	 *
-	 * @return The list of CertificateToken(s)
+	 * @return The list of RevocationToken(s)
 	 */
 	Set<RevocationToken> getProcessedRevocations();
 
@@ -236,7 +234,7 @@ public interface ValidationContext {
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
 	 * document.
 	 *
-	 * @return The list of CertificateToken(s)
+	 * @return The list of TimestampTokens(s)
 	 */
 	Set<TimestampToken> getProcessedTimestamps();
 

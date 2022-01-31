@@ -69,10 +69,18 @@ public interface PdfDocumentReader extends Closeable {
 	/**
 	 * Returns a page box dimensions
 	 * 
-	 * @param page number
+	 * @param page number of a page to get annotation box of
 	 * @return {@link AnnotationBox} representing page dimensions
 	 */
 	AnnotationBox getPageBox(int page);
+
+	/**
+	 * This method returns a corresponding page's rotation within the document
+	 *
+	 * @param page number of a page to get rotation of
+	 * @return rotation degrees
+	 */
+	int getPageRotation(int page);
 	
 	/**
 	 * Retrieves all annotations found in the document

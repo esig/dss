@@ -71,7 +71,7 @@ public abstract class OrphanTokenWrapper<T extends XmlOrphanToken> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((orphanToken == null) ? 0 : orphanToken.getId().hashCode());
+		result = prime * result + orphanToken.getId().hashCode();
 		return result;
 	}
 
@@ -83,15 +83,10 @@ public abstract class OrphanTokenWrapper<T extends XmlOrphanToken> {
 			return false;
 		if (!(obj instanceof OrphanTokenWrapper))
 			return false;
-		OrphanTokenWrapper other = (OrphanTokenWrapper) obj;
+		OrphanTokenWrapper<?> other = (OrphanTokenWrapper<?>) obj;
 		if (getId() == null) {
-			if (other.getId() != null) {
-				return false;
-			}
-		} else if (!getId().equals(other.getId())) {
-			return false;
-		}
-		return true;
+			return other.getId() == null;
+		} else return getId().equals(other.getId());
 	}
 	
 	@Override

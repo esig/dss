@@ -50,6 +50,12 @@ public class SantuarioInitializer {
 	private static boolean alreadyInitialized = false;
 
 	/**
+	 * Empty constructor
+	 */
+	private SantuarioInitializer() {
+	}
+
+	/**
 	 * Method isInitialized
 	 * 
 	 * @return true if the library is already initialized.

@@ -30,11 +30,27 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 
+/**
+ * Checks whether the certificate was for QSCD at validation time
+ *
+ */
 public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> {
 
+	/** Certificate QSCD status at validation time */
 	private final QSCDStatus qscdStatus;
+
+	/** Validation time type */
 	private final ValidationTime validationTime;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param qscdStatus {@link QSCDStatus}
+	 * @param validationTime {@link ValidationTime}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public QSCDCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, QSCDStatus qscdStatus, 
 			ValidationTime validationTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

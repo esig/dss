@@ -76,9 +76,11 @@ public class XAdESCounterSignatureParameters extends XAdESSignatureParameters im
 
 	@Override
 	public String getDeterministicId() {
+		String deterministicId = getContext().getDeterministicId();
 		if (deterministicId == null) {
 			final TokenIdentifier identifier = (getSigningCertificate() == null ? null : getSigningCertificate().getDSSId());
 			deterministicId = DSSUtils.getCounterSignatureDeterministicId(bLevel().getSigningDate(), identifier, signatureIdToCounterSign);
+			getContext().setDeterministicId(deterministicId);
 		}
 		return deterministicId;
 	}

@@ -385,10 +385,20 @@ public interface ValidationPolicy {
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if RevocationFreshness for a given
+	 * @return {@code TimeConstraint} if RevocationFreshness for a given
 	 *         context element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getCertificateRevocationFreshnessConstraint(Context context, SubContext subContext);
+	TimeConstraint getRevocationFreshnessConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns revocation data's freshness for nextUpdate check constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if RevocationFreshnessNextUpdate for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getRevocationFreshnessNextUpdateConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate's not revoked constraint
@@ -881,14 +891,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint();
-
-	/**
-	 * Returns RevocationFreshness constraint if present in the policy, null otherwise
-	 *
-	 * @return {@code TimeConstraint} if RevocationFreshness element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	TimeConstraint getRevocationFreshnessConstraint();
 
 	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise

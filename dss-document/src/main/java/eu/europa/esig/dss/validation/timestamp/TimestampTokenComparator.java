@@ -37,46 +37,50 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 
 	@Override
 	public int compare(TimestampToken tst1, TimestampToken tst2) {
-		
-		int result = tst1.getGenerationTime().compareTo(tst2.getGenerationTime());
-		
+		int result = compareByGenerationTime(tst1, tst2);
 		if (result == 0) {
-			TimestampType tst1Type = tst1.getTimeStampType();
-			TimestampType tst2Type = tst2.getTimeStampType();
-			result = tst1Type.compare(tst2Type);
+			result = compareByTokenType(tst1, tst2);
 		}
-
 		if (result == 0) {
-			ManifestFile tst1ManifestFile = tst1.getManifestFile();
-			ManifestFile tst2ManifestFile = tst2.getManifestFile();
-			if (tst1ManifestFile != null && tst1ManifestFile.isDocumentCovered(tst2.getFileName())) {
-				result = 1;
-			} else if (tst2ManifestFile != null && tst2ManifestFile.isDocumentCovered(tst1.getFileName())) {
-				result = -1;
-			}
+			result = compareByManifest(tst1, tst2);
 		}
-		
 		if (result == 0) {
-			if (isCoveredByTimestamp(tst1, tst2)) {
-				result = -1;
-			} else if (isCoveredByTimestamp(tst2, tst1)) {
-				result = 1;
-			}
+			result = compareByCoverage(tst1, tst2);
 		}
-
 		if (result == 0) {
-			List<TimestampedReference> tst1References = tst1.getTimestampedReferences();
-			List<TimestampedReference> tst2References = tst2.getTimestampedReferences();
-			if (tst1References != null && tst2References != null) {
-				if (tst1References.size() < tst2References.size()) {
-					result = -1;
-				} else if (tst1References.size() > tst2References.size()) {
-					result = 1;
-				}
-			}
+			result = compareByTimestampedReferences(tst1, tst2);
 		}
-		
 		return result;
+	}
+
+	private int compareByGenerationTime(TimestampToken tst1, TimestampToken tst2) {
+		return tst1.getGenerationTime().compareTo(tst2.getGenerationTime());
+	}
+
+	private int compareByTokenType(TimestampToken tst1, TimestampToken tst2) {
+		TimestampType tst1Type = tst1.getTimeStampType();
+		TimestampType tst2Type = tst2.getTimeStampType();
+		return tst1Type.compare(tst2Type);
+	}
+
+	private int compareByManifest(TimestampToken tst1, TimestampToken tst2) {
+		ManifestFile tst1ManifestFile = tst1.getManifestFile();
+		ManifestFile tst2ManifestFile = tst2.getManifestFile();
+		if (tst1ManifestFile != null && tst1ManifestFile.isDocumentCovered(tst2.getFileName())) {
+			return  1;
+		} else if (tst2ManifestFile != null && tst2ManifestFile.isDocumentCovered(tst1.getFileName())) {
+			return -1;
+		}
+		return 0;
+	}
+
+	private int compareByCoverage(TimestampToken tst1, TimestampToken tst2) {
+		if (isCoveredByTimestamp(tst1, tst2)) {
+			return -1;
+		} else if (isCoveredByTimestamp(tst2, tst1)) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	private boolean isCoveredByTimestamp(TimestampToken tst1, TimestampToken tst2) {
@@ -87,6 +91,19 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 			}
 		}
 		return false;
+	}
+
+	private int compareByTimestampedReferences(TimestampToken tst1, TimestampToken tst2) {
+		List<TimestampedReference> tst1References = tst1.getTimestampedReferences();
+		List<TimestampedReference> tst2References = tst2.getTimestampedReferences();
+		if (tst1References != null && tst2References != null) {
+			if (tst1References.size() < tst2References.size()) {
+				return -1;
+			} else if (tst1References.size() > tst2References.size()) {
+				return 1;
+			}
+		}
+		return 0;
 	}
 
 }

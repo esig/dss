@@ -293,13 +293,13 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-		return new RevocationIssuerTrustedCheck(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
+		return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationIssuerValidityRange(CertificateRevocationWrapper usedCertificateRevocation,
 															   SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationIssuerNotExpiredConstraint(context, subContext);
-		return new RevocationIssuerValidityRangeCheck(i18nProvider, result, usedCertificateRevocation, currentTime, constraint);
+		return new RevocationIssuerValidityRangeCheck<>(i18nProvider, result, usedCertificateRevocation, currentTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
@@ -333,8 +333,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 	
 	private ChainItem<XmlSubXCV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
-		LevelConstraint constraint = validationPolicy.getCertificateRevocationFreshnessConstraint(context, subContext);
-		return new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, rfcResult, constraint);
+		return new RevocationFreshnessCheckerResultCheck<>(i18nProvider, result, rfcResult, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> surname(CertificateWrapper certificate, SubContext subContext) {
@@ -404,7 +403,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> selfSigned(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSelfSignedConstraint(context, subContext);
-		return new CertificateSelfSignedCheck(i18nProvider, result, certificate, constraint);
+		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificatePolicyIds(CertificateWrapper certificate, SubContext subContext) {

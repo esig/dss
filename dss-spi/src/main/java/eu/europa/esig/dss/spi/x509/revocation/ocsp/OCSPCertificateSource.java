@@ -28,7 +28,6 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
-import eu.europa.esig.dss.spi.x509.CertificateTokenRefMatcher;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
@@ -67,7 +66,7 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		this.basicOCSPResp = basicOCSPResp;
 		
 		extractCertificateTokens();
-		extractCertificatRefs();
+		extractCertificateRefs();
 	}
 	
 	private void extractCertificateTokens() {
@@ -77,7 +76,7 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 		}
 	}
 
-	private void extractCertificatRefs() {
+	private void extractCertificateRefs() {
 		final ResponderId responderId = DSSRevocationUtils.getDSSResponderId(basicOCSPResp.getResponderId());
 		CertificateRef signingCertificateRef = new CertificateRef();
 		signingCertificateRef.setResponderId(responderId);
@@ -98,29 +97,27 @@ public class OCSPCertificateSource extends RevocationCertificateSource {
 	}
 	
 	private CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateToken certificateIssuer) {
-		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
+		CandidatesForSigningCertificate candidates = new CandidatesForSigningCertificate();
 		
-		candidatesForSigningCertificate.add(new CertificateValidity(certificateIssuer));
+		candidates.add(new CertificateValidity(certificateIssuer));
 		for (CertificateToken certificateToken : getCertificates()) {
-			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+			candidates.add(new CertificateValidity(certificateToken));
 		}
 		
 		List<CertificateRef> signingCertificateRefs = getCertificateRefsByOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(signingCertificateRefs)) {
-			CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
-			
 			CertificateRef signingCertificateRef = signingCertificateRefs.iterator().next();
-			for (CertificateValidity certificateValidity : candidatesForSigningCertificate.getCertificateValidityList()) {
+			for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
 				certificateValidity.setResponderIdPresent(signingCertificateRef.getResponderId() != null);
 
 				CertificateToken certificateToken = certificateValidity.getCertificateToken();
 				if (certificateToken != null) {
-					certificateValidity.setResponderIdMatch(matcher.matchByResponderId(certificateToken, signingCertificateRef));
+					certificateValidity.setResponderIdMatch(certificateMatcher.matchByResponderId(certificateToken, signingCertificateRef));
 				}
 			}
 		}
 		
-		return candidatesForSigningCertificate;
+		return candidates;
 	}
 	
 	@Override

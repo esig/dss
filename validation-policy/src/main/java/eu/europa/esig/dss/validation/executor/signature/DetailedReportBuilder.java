@@ -141,8 +141,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				// Signature qualification
 				CertificateWrapper signingCertificate = signature.getSigningCertificate();
 				if (signingCertificate != null) {
-					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(i18nProvider, signature.getId(), validation,
-							signingCertificate, tlAnalysis);
+					SignatureQualificationBlock qualificationBlock = new SignatureQualificationBlock(
+							i18nProvider, validation, signingCertificate, tlAnalysis);
 					signatureAnalysis.setValidationSignatureQualification(qualificationBlock.execute());
 				}
 
@@ -269,47 +269,54 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 	
 	private void collectIndications(XmlDetailedReport detailedReport) {
-		
 		for (Serializable xmlObject : detailedReport.getSignatureOrTimestampOrCertificate()) {
 			if (xmlObject instanceof XmlSignature) {
-				XmlSignature xmlSignature = (XmlSignature) xmlObject;
-				collectIndications(xmlSignature.getConclusion());
-				collectIndications(xmlSignature.getValidationProcessBasicSignature());
-				collectIndications(xmlSignature.getValidationProcessLongTermData());
-				collectIndications(xmlSignature.getValidationProcessArchivalData());
-				for (XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
-					collectIndications(xmlTimestamp.getValidationProcessTimestamp());
-				}
+				collectIndications((XmlSignature) xmlObject);
 			} else if (xmlObject instanceof XmlTimestamp) {
-				XmlTimestamp xmlTimestamp = (XmlTimestamp) xmlObject;
-				collectIndications(xmlTimestamp.getValidationProcessTimestamp());
+				collectIndications((XmlTimestamp) xmlObject);
 			}
 		}
-		
 		for (XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
-			collectIndications(bbb.getFC());
-			collectIndications(bbb.getISC());
-			collectIndications(bbb.getVCI());
-			collectIndications(bbb.getXCV());
-			if (bbb.getXCV() != null) {
-				for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
-					collectIndications(subXCV);
-					collectIndications(subXCV.getRFC());
-					collectIndications(subXCV.getCRS());
-					if (subXCV.getCRS() != null) {
-						for (XmlRAC rac : subXCV.getCRS().getRAC()) {
-							collectIndications(rac);
-						}
+			collectIndications(bbb);
+		}
+	}
+
+	private void collectIndications(XmlSignature xmlSignature) {
+		collectIndications(xmlSignature.getConclusion());
+		collectIndications(xmlSignature.getValidationProcessBasicSignature());
+		collectIndications(xmlSignature.getValidationProcessLongTermData());
+		collectIndications(xmlSignature.getValidationProcessArchivalData());
+		for (XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
+			collectIndications(xmlTimestamp);
+		}
+	}
+
+	private void collectIndications(XmlTimestamp xmlTimestamp) {
+		collectIndications(xmlTimestamp.getValidationProcessTimestamp());
+	}
+
+	private void collectIndications(XmlBasicBuildingBlocks bbb) {
+		collectIndications(bbb.getFC());
+		collectIndications(bbb.getISC());
+		collectIndications(bbb.getVCI());
+		collectIndications(bbb.getXCV());
+		if (bbb.getXCV() != null) {
+			for (XmlSubXCV subXCV : bbb.getXCV().getSubXCV()) {
+				collectIndications(subXCV);
+				collectIndications(subXCV.getRFC());
+				collectIndications(subXCV.getCRS());
+				if (subXCV.getCRS() != null) {
+					for (XmlRAC rac : subXCV.getCRS().getRAC()) {
+						collectIndications(rac);
 					}
 				}
 			}
-			collectIndications(bbb.getCV());
-			collectIndications(bbb.getSAV());
-			collectIndications(bbb.getPSV());
-			collectIndications(bbb.getPCV());
-			collectIndications(bbb.getVTS());
 		}
-		
+		collectIndications(bbb.getCV());
+		collectIndications(bbb.getSAV());
+		collectIndications(bbb.getPSV());
+		collectIndications(bbb.getPCV());
+		collectIndications(bbb.getVTS());
 	}
 	
 	private void collectIndications(XmlConstraintsConclusion xmlConstraintsConclusion) {

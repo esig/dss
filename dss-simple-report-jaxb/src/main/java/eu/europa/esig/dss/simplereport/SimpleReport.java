@@ -153,7 +153,7 @@ public class SimpleReport {
 	 */
 	public String getFirstSignatureId() {
 		final List<String> signatureIdList = getSignatureIdList();
-		if (signatureIdList.size() > 0) {
+		if (!signatureIdList.isEmpty()) {
 			return signatureIdList.get(0);
 		}
 		return null;
@@ -166,7 +166,7 @@ public class SimpleReport {
 	 */
 	public String getFirstTimestampId() {
 		final List<String> timestampIdList = getTimestampIdList();
-		if (timestampIdList.size() > 0) {
+		if (!timestampIdList.isEmpty()) {
 			return timestampIdList.get(0);
 		}
 		return null;
@@ -310,7 +310,7 @@ public class SimpleReport {
 
 	private List<Message> convert(Collection<XmlMessage> messages) {
 		if (messages != null) {
-			return messages.stream().map(m -> convert(m)).collect(Collectors.toList());
+			return messages.stream().map(this::convert).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}
@@ -378,8 +378,7 @@ public class SimpleReport {
 
 	/**
 	 * If the signature validation is TOTAL_PASSED, the result date is the date from
-	 * when a signature extension is useful (all certificates can be covered by an
-	 * usable revocation data).
+	 * when a signature extension is useful (all certificates can be covered by a usable revocation data).
 	 * 
 	 * @param signatureId the signature id
 	 * @return the minimal useful date for a signature extension (or null)

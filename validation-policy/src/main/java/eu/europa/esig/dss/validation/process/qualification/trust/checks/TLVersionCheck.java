@@ -34,15 +34,34 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
+/**
+ * Checks whether the version of the Trusted List is acceptable
+ *
+ */
 public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLVersionCheck.class);
 
+	/** Trusted List to check */
 	private final XmlTrustedList currentTL;
+
+	/** Validation time */
 	private final Date currentTime;
+
+	/** Constraint defining the acceptable version number */
 	private final ValueConstraint constraint;
 
-	public TLVersionCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime, ValueConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlTLAnalysis}
+	 * @param currentTl {@link XmlTrustedList}
+	 * @param currentTime {@link Date}
+	 * @param constraint {@link ValueConstraint}
+	 */
+	public TLVersionCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime,
+						  ValueConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTL = currentTl;
 		this.currentTime = currentTime;

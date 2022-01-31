@@ -91,8 +91,8 @@ public class CAdESServiceTest extends PKIFactoryAccess {
         assertEquals("SignatureLevel must be defined!", exception.getMessage());
         
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Unsupported signature format : XAdES-BASELINE-B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
         
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         signAndValidate(documentToSign, signatureParameters);
@@ -173,12 +173,12 @@ public class CAdESServiceTest extends PKIFactoryAccess {
         assertEquals("SignatureLevel must be defined!", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        exception = assertThrows(IllegalArgumentException.class, () ->  extendAndValidate(signedDocument, extensionParameters));
-        assertEquals("Unsupported signature format : XAdES-BASELINE-B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () ->  extendAndValidate(signedDocument, extensionParameters));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-        exception = assertThrows(IllegalArgumentException.class, () -> extendAndValidate(signedDocument, extensionParameters));
-        assertEquals("Unsupported signature format : CAdES-BASELINE-B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () -> extendAndValidate(signedDocument, extensionParameters));
+        assertEquals("Unsupported signature format 'CAdES-BASELINE-B' for extension.", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
         extendAndValidate(signedDocument, extensionParameters);

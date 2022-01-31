@@ -30,8 +30,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import javax.security.auth.x500.X500Principal;
 import java.math.BigInteger;
 
 /**
@@ -39,6 +42,11 @@ import java.math.BigInteger;
  */
 public final class XAdESCertificateRefExtractionUtils {
 
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESCertificateRefExtractionUtils.class);
+
+	/**
+	 * Singleton
+	 */
 	private XAdESCertificateRefExtractionUtils() {
 	}
 
@@ -83,19 +91,39 @@ public final class XAdESCertificateRefExtractionUtils {
 	}
 
 	private static SignerIdentifier getCertificateIdentifierV1(Element certRefElement, XAdESPaths xadesPaths) {
-		SignerIdentifier signerIdentifier = new SignerIdentifier();
+		X500Principal issuerName = null;
+		BigInteger serialNumber = null;
 
 		final Element issuerNameEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
 		if (issuerNameEl != null) {
-			signerIdentifier.setIssuerName(DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent()));
+			issuerName = DSSUtils.getX500PrincipalOrNull(issuerNameEl.getTextContent());
 		}
 
 		final Element serialNumberEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
 		if (serialNumberEl != null) {
-			final String serialNumberText = serialNumberEl.getTextContent();
-			signerIdentifier.setSerialNumber(new BigInteger(Utils.trim(serialNumberText)));
+			String serialNumberText = serialNumberEl.getTextContent();
+			serialNumberText = Utils.trim(serialNumberText);
+			if (Utils.isStringDigits(serialNumberText)) {
+				serialNumber = new BigInteger(serialNumberText);
+
+			} else {
+				if (LOG.isDebugEnabled()) {
+					LOG.warn("Unable to parse SerialNumber from 'CertIDTypeV1' element. Not a numeric! " +
+							"Obtained text : '{}'", serialNumberText);
+				} else {
+					LOG.warn("Unable to parse SerialNumber from 'CertIDTypeV1' element. Not a numeric!");
+				}
+			}
 		}
 
+		if (issuerName == null || serialNumber == null) {
+			LOG.warn("Unable to build a SignerIdentifier from CertIDTypeV2!");
+			return null;
+		}
+
+		SignerIdentifier signerIdentifier = new SignerIdentifier();
+		signerIdentifier.setIssuerName(issuerName);
+		signerIdentifier.setSerialNumber(serialNumber);
 		return signerIdentifier;
 	}
 
@@ -107,8 +135,15 @@ public final class XAdESCertificateRefExtractionUtils {
 		}
 
 		final String textContent = issuerSerialV2Element.getTextContent();
-		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
-		return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+
+		try {
+			IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
+			return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+		} catch (Exception e) {
+			LOG.warn("An error occurred while parsing IssuerSerialV2 from CertIDTypeV2 element! " +
+							"Reason : {}", e.getMessage(), e);
+			return null;
+		}
 	}
 
 }

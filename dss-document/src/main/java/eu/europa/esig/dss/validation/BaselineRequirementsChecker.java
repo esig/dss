@@ -47,10 +47,11 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     /** The signature object */
     protected final AS signature;
 
-    /**
-     * The offline copy of a CertificateVerifier
-     */
+    /** The offline copy of a CertificateVerifier */
     private final CertificateVerifier offlineCertificateVerifier;
+
+    /** Cached ValidationContext object to ensure validation is processed only once */
+    private ValidationContext validationContext;
 
     /**
      * Default constructor
@@ -90,6 +91,25 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
      * @return TRUE if the signature has a BASELINE-LTA profile, FALSE otherwise
      */
     public abstract boolean hasBaselineLTAProfile();
+
+    /**
+     * Checks whether signature timestamps have been created before expiration of the signing-certificate
+     * used to create the signature
+     *
+     * @return TRUE if the available signature-time-stamps have been created
+     *         before expiration of the signing certificate, FALSE otherwise
+     */
+    protected boolean signatureTimestampsCreatedBeforeSignCertExpiration() {
+        CertificateToken signingCertificate = signature.getSigningCertificateToken();
+        if (signingCertificate != null && signingCertificate.getNotAfter() != null) {
+            for (TimestampToken timestampToken : signature.getSignatureTimestamps()) {
+                if (signingCertificate.getNotAfter().before(timestampToken.getGenerationTime())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * Checks the minimal requirement to satisfy T-profile for AdES signatures
@@ -133,13 +153,13 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         boolean minimalLTRequirement = !allSelfSigned && !emptyRevocation;
         if (minimalLTRequirement) {
             // check presence of all revocation data
-            return isAllRevocationDataPresent(offlineCertificateVerifier);
+            return isAllRevocationDataPresent();
         }
         return minimalLTRequirement;
     }
 
     /**
-     * Returns a list of certificate sources with an exception of the last archive timestamp if available
+     * Returns a list of certificate sources with an exception to the last archive timestamp if applicable
      *
      * @return {@link ListCertificateSource}
      */
@@ -150,18 +170,29 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         return certificateSource;
     }
 
-    private boolean isAllRevocationDataPresent(CertificateVerifier offlineCertificateVerifier) {
-        SignatureValidationContext validationContext = new SignatureValidationContext();
-        validationContext.initialize(offlineCertificateVerifier);
+    private boolean isAllRevocationDataPresent() {
+        return getValidationContext().checkAllRequiredRevocationDataPresent();
+    }
 
-        validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
-        validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
-        validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
+    /**
+     * Returns a validated validation context
+     *
+     * @return {@link ValidationContext}
+     */
+    protected ValidationContext getValidationContext() {
+        if (validationContext == null) {
+            validationContext = new SignatureValidationContext();
+            validationContext.initialize(offlineCertificateVerifier);
 
-        addSignatureForVerification(validationContext, signature);
+            validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
+            validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
+            validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
 
-        validationContext.validate();
-        return validationContext.checkAllRequiredRevocationDataPresent();
+            addSignatureForVerification(validationContext, signature);
+
+            validationContext.validate();
+        }
+        return validationContext;
     }
 
     private void addSignatureForVerification(ValidationContext validationContext, AdvancedSignature signature) {
@@ -181,9 +212,6 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         }
         for (TimestampToken timestampToken : signature.getTimestampSource().getAllTimestampsExceptLastArchiveTimestamp()) {
             validationContext.addTimestampTokenForVerification(timestampToken);
-        }
-        for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
-            addSignatureForVerification(validationContext, counterSignature);
         }
     }
 
@@ -226,9 +254,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
         SignaturePolicy signaturePolicyIdentifier = signature.getSignaturePolicy();
         if (signaturePolicyIdentifier != null) {
             Digest digest = signaturePolicyIdentifier.getDigest();
-            if (digest != null && digest.getAlgorithm() != null) {
-                return true;
-            }
+            return digest != null && digest.getAlgorithm() != null;
         }
         return false;
     }

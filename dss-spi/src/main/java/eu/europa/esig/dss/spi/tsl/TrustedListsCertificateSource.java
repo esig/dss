@@ -98,7 +98,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
 		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
 		super.reset();
-		trustPropertiesByCerts.forEach((certificateToken, trustPropertiesList) -> addCertificate(certificateToken, trustPropertiesList));
+		trustPropertiesByCerts.forEach(this::addCertificate);
 	}
 	
 	private void addCertificate(CertificateToken certificateToken, List<TrustProperties> trustPropertiesList) {

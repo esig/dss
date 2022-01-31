@@ -307,7 +307,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private ChainItem<XmlPSV> poeExistNotAfterCARevocationTimeCheck(Collection<CertificateRevocationWrapper> certificateRevocations,
 																	Date caRevocationTime) {
-		return new POENotAfterCARevocationTimeCheck(i18nProvider, result, certificateRevocations,
+		return new POENotAfterCARevocationTimeCheck<>(i18nProvider, result, certificateRevocations,
 				caRevocationTime, poe, getFailLevelConstraint());
 	}
 

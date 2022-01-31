@@ -64,6 +64,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTes
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
+import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7SubFilterValidAndInvalidTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7WithSha1SubFilterTest;
 import eu.europa.esig.dss.pades.validation.suite.PolicyZeroHashTest;
@@ -108,7 +109,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithAddedPageTest.class, PAdESWithRemovedPagesTest.class, DSS2258Test.class, TimestampedAndSignedTest.class, DSS2155Test.class,
 		DSS2451Test.class, PAdESOverwrittenDSSDictTest.class, DSS2471Test.class, PAdESWithCrossCertificateOCSPsTest.class,
 		PAdESEnvelopingOtherPdfTest.class, PdfPkcs7WithSha1SubFilterTest.class, DSS2513Test.class, DSS2513LTTest.class,
-		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class })
+		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
+		PdfPkcs7SubFilterValidAndInvalidTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

@@ -1,13 +1,35 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
+import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,9 +88,9 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
                     }
 
                     PdfDssDictOCSPSource ocspSource = dssRevision.getOCSPSource();
-                    Map<Long, BasicOCSPResp> storedOcspResps = ocspSource.getOcspMap();
-                    for (Map.Entry<Long, BasicOCSPResp> ocspEntry : storedOcspResps.entrySet()) {
-                        final OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(ocspEntry.getValue());
+                    Map<Long, OCSPResponseBinary> storedOcspResps = ocspSource.getOcspMap();
+                    for (Map.Entry<Long, OCSPResponseBinary> ocspEntry : storedOcspResps.entrySet()) {
+                        OCSPResponseBinary ocspResponseBinary = ocspEntry.getValue();
                         String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
                         if (!knownObjects.containsKey(tokenKey)) { // keeps the really first occurrence
                             knownObjects.put(tokenKey, ocspEntry.getKey());

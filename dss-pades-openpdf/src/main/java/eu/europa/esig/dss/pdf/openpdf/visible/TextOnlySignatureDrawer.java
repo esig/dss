@@ -27,11 +27,14 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfTemplate;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,8 +69,9 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		if (Utils.isStringNotBlank(signatureFieldId)) {
 			appearance.setVisibleSignature(signatureFieldId);
 		} else {
-			Rectangle iTextRectangle = toITextRectangle(dimensionAndPosition);
-			appearance.setVisibleSignature(iTextRectangle, parameters.getFieldParameters().getPage()); // defines signature field borders
+			AnnotationBox annotationBox = toAnnotationBox(dimensionAndPosition);
+			annotationBox = getRotatedAnnotationRelativelyPageRotation(annotationBox);
+			appearance.setVisibleSignature(toITextRectangle(annotationBox), parameters.getFieldParameters().getPage()); // defines signature field borders
 		}
 
 		drawText(dimensionAndPosition);
@@ -123,9 +127,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		PdfTemplate layer = appearance.getLayer(2);
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
 
-		Rectangle textRectangle = new Rectangle(dimensionAndPosition.getTextBoxX(), dimensionAndPosition.getTextBoxY(),
-				dimensionAndPosition.getTextBoxWidth() + dimensionAndPosition.getTextBoxX(),
-				dimensionAndPosition.getTextBoxHeight() + dimensionAndPosition.getTextBoxY());
+		Rectangle textRectangle = getTextBoxRectangle(dimensionAndPosition);
 		textRectangle.setBackgroundColor(textParameters.getBackgroundColor());
 		layer.rectangle(textRectangle);
 
@@ -136,6 +138,9 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		String[] lines = iTextFontMetrics.getLines(text);
 		
 		layer.beginText();
+
+		rotateText(layer, dimensionAndPosition.getBoxWidth(), dimensionAndPosition.getBoxHeight(),
+				dimensionAndPosition.getGlobalRotation());
 		
 		// compute initial position
 		float x = dimensionAndPosition.getTextX();
@@ -168,6 +173,52 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		
 		layer.endText();
+	}
+
+	private Rectangle getTextBoxRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {
+		AnnotationBox signatureFieldAnnotationBox = toAnnotationBox(dimensionAndPosition);
+		// Main field is returned pre-rotated
+		VisualSignatureRotation rotation = parameters.getRotation();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
+			signatureFieldAnnotationBox = ImageRotationUtils.swapDimensions(signatureFieldAnnotationBox);
+		}
+		AnnotationBox textBox = new AnnotationBox(dimensionAndPosition.getTextBoxX(), dimensionAndPosition.getTextBoxY(),
+				dimensionAndPosition.getTextBoxWidth() + dimensionAndPosition.getTextBoxX(),
+				dimensionAndPosition.getTextBoxHeight() + dimensionAndPosition.getTextBoxY());
+		int finalRotation = getFinalRotation(dimensionAndPosition.getGlobalRotation(), getPageRotation());
+		textBox = ImageRotationUtils.rotateRelativelyWrappingBox(textBox, signatureFieldAnnotationBox, finalRotation);
+		return toITextRectangle(textBox);
+	}
+
+	private void rotateText(PdfTemplate layer, float width, float height, int globalRotation) {
+		int pageRotation = getPageRotation();
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(pageRotation)) {
+			float temp = height;
+			height = width;
+			width = temp;
+		}
+		// OpenPDF does not rotate signature automatically to the page's rotation
+		int finalRotation = getFinalRotation(globalRotation, pageRotation);
+		double theta = Math.toRadians((double) ImageRotationUtils.ANGLE_360 - finalRotation);
+		float cosTheta = (float)Math.cos(theta);
+		float sinTheta = (float)Math.sin(theta);
+		switch (finalRotation) {
+			case ImageRotationUtils.ANGLE_90:
+				layer.setTextMatrix(cosTheta, sinTheta, -sinTheta, cosTheta, 0, height);
+				break;
+			case ImageRotationUtils.ANGLE_180:
+				layer.setTextMatrix(cosTheta, sinTheta, -sinTheta, cosTheta, width, height);
+				break;
+			case ImageRotationUtils.ANGLE_270:
+				layer.setTextMatrix(cosTheta, sinTheta, -sinTheta, cosTheta, width, 0);
+				break;
+			case ImageRotationUtils.ANGLE_0:
+			case ImageRotationUtils.ANGLE_360:
+				// do nothing
+				break;
+			default:
+				throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+		}
 	}
 
 }

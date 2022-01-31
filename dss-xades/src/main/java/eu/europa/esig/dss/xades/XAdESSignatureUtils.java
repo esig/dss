@@ -22,11 +22,13 @@ package eu.europa.esig.dss.xades;
 
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.apache.xml.security.signature.Reference;
@@ -43,6 +45,12 @@ import java.util.List;
 public final class XAdESSignatureUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignatureUtils.class);
+
+	/**
+	 * Empty constructor
+	 */
+	private XAdESSignatureUtils() {
+	}
 	
 	/**
 	 * Returns list of original signed documents
@@ -137,6 +145,24 @@ public final class XAdESSignatureUtils {
 			LOG.debug("An error occurred during an attempt to extract signed manifest. Reason : {}", e.getMessage());
 		}
 		return null;
+	}
+
+	/**
+	 * This method verifies whether the ds:KeyInfo element is signed by the signature
+	 *
+	 * @param signature {@link XAdESSignature} to verify
+	 * @return TRUE if ds:KeyInfo element is signed, FALSE otherwise
+	 */
+	public static boolean isKeyInfoCovered(XAdESSignature signature) {
+		List<ReferenceValidation> referenceValidations = signature.getReferenceValidations();
+		if (Utils.isCollectionNotEmpty(referenceValidations)) {
+			for (ReferenceValidation referenceValidation : referenceValidations) {
+				if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

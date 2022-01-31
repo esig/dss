@@ -22,8 +22,18 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 
+/**
+ * A strategy to extract a pseudo {@code String} from a given certificate
+ *
+ */
 public interface PseudoStrategy {
 
+	/**
+	 * Gets pseudo for the certificate
+	 *
+	 * @param certificate {@link CertificateWrapper} to get pseudo for
+	 * @return {@link String}
+	 */
 	String getPseudo(CertificateWrapper certificate);
 
 }

@@ -220,7 +220,7 @@ public class DSSJsonUtils {
 	/**
 	 * Returns the decoded binary for a base64url encoded string
 	 * 
-	 * @param base64UrlEncoded the tring to decoded
+	 * @param base64UrlEncoded the String to be decoded
 	 * @return the decoded binary
 	 */
 	public static byte[] fromBase64Url(String base64UrlEncoded) {
@@ -353,13 +353,14 @@ public class DSSJsonUtils {
 	public static Digest getDigest(Map<?, ?> digestValueAndAlgo) {
 		try {
 			if (Utils.isMapNotEmpty(digestValueAndAlgo)) {
-				String digestAlgoURI = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_ALG);
-				String digestValueBase64 = (String) digestValueAndAlgo.get(JAdESHeaderParameterNames.DIG_VAL);
+				String digestAlgoURI = getAsString(digestValueAndAlgo, JAdESHeaderParameterNames.DIG_ALG);
+				String digestValueBase64 = getAsString(digestValueAndAlgo, JAdESHeaderParameterNames.DIG_VAL);
 				if (Utils.isStringNotEmpty(digestAlgoURI) && Utils.isStringNotEmpty(digestValueBase64)) {
 					return new Digest(DigestAlgorithm.forJAdES(digestAlgoURI),
 							DSSJsonUtils.fromBase64Url(digestValueBase64));
 				}
 			}
+
 		} catch (Exception e) {
 			LOG.warn("Unable to extract Digest Algorithm and Value. Reason : {}", e.getMessage(), e);
 		}
@@ -482,25 +483,44 @@ public class DSSJsonUtils {
 	 * Concatenates document octets to a single byte array
 	 * 
 	 * @param documents a list of {@link DSSDocument}s to concatenate
+	 * @param isBase64UrlEncoded defines whether the document octets shall be base64url-encoded
 	 * @return a byte array of document octets
 	 */
-	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents) {
+	public static byte[] concatenateDSSDocuments(List<DSSDocument> documents, boolean isBase64UrlEncoded) {
 		if (Utils.isCollectionEmpty(documents)) {
 			throw new IllegalArgumentException("Unable to build a JWS Payload. Reason : the detached content is not provided!");
 		}
 		if (documents.size() == 1) {
-			return DSSUtils.toByteArray(documents.get(0));
+			return getDocumentOctets(documents.get(0), isBase64UrlEncoded);
 		}
 
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			for (DSSDocument document : documents) {
-				baos.write(DSSUtils.toByteArray(document));
+				baos.write(getDocumentOctets(document, isBase64UrlEncoded));
 			}
 			return baos.toByteArray();
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to build a JWS Payload. Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method returns binaries of the {@code document} to be used for payload computation,
+	 * depending on the {@code isBase64UrlEncoded} parameter.
+	 * When {@code isBase64UrlEncoded} is set to TRUE, returns base64url-encoded binaries of the {@code document}.
+	 * When {@code isBase64UrlEncoded} is set to FALSE, returns original octets of the document.
+	 *
+	 * @param document {@link DSSDocument} to get octets from
+	 * @param isBase64UrlEncoded defines whether return base64url-encoded octets
+	 * @return octets of the provided {@link DSSDocument}
+	 */
+	public static byte[] getDocumentOctets(DSSDocument document, boolean isBase64UrlEncoded) {
+		byte[] octets = DSSUtils.toByteArray(document);
+		if (isBase64UrlEncoded) {
+			octets = DSSJsonUtils.toBase64Url(octets).getBytes();
+		}
+		return octets;
 	}
 	
 	/**
@@ -560,7 +580,12 @@ public class DSSJsonUtils {
 		if (unprotected == null) {
 			return Collections.emptyList();
 		}
-		return (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		Object etsiU = unprotected.get(JAdESHeaderParameterNames.ETSI_U);
+		if (!(etsiU instanceof List)) {
+			LOG.warn("Unable to extract 'etsiU' header : the obtained entry is not an array!");
+			return Collections.emptyList();
+		}
+		return (List<Object>) etsiU;
 	}
 	
 	/**
@@ -827,29 +852,21 @@ public class DSSJsonUtils {
 	 */
 	public static SpDocSpecification parseSPDocSpecification(Object spDocSpecificationObject) {
 		try {
-			if (spDocSpecificationObject instanceof Map) {
-				Map<String, Object> spDSpec = (Map<String, Object>) spDocSpecificationObject;
-				if (Utils.isMapEmpty(spDSpec)) {
-					LOG.warn("The {} element is empty!", JAdESHeaderParameterNames.SP_DSPEC);
-					return null;
-				}
-				SpDocSpecification spDocSpecification = new SpDocSpecification();
-				String id = (String) spDSpec.get(JAdESHeaderParameterNames.ID);
-				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
-				spDocSpecification.setDescription((String) spDSpec.get(JAdESHeaderParameterNames.DESC));
-				Object docRefs = spDSpec.get(JAdESHeaderParameterNames.DOC_REFS);
-				if (docRefs instanceof List) {
-					List<String> docRefsList = (List<String>) docRefs;
-					spDocSpecification.setDocumentationReferences(docRefsList.toArray(new String[0]));
-				} else {
-					LOG.warn("The {} element shall be an instance of the List class!", JAdESHeaderParameterNames.DOC_REFS);
-				}
-				return spDocSpecification;
-
-			} else {
-				LOG.warn("A component of unsupported class '{}' found inside an '{}' array!",
-						spDocSpecificationObject.getClass(), JAdESHeaderParameterNames.SP_DSPEC);
+			Map<?, ?> spDSpec = toMap(spDocSpecificationObject, JAdESHeaderParameterNames.SP_DSPEC);
+			if (Utils.isMapEmpty(spDSpec)) {
+				LOG.warn("The {} element is empty!", JAdESHeaderParameterNames.SP_DSPEC);
+				return null;
 			}
+			SpDocSpecification spDocSpecification = new SpDocSpecification();
+			String id = getAsString(spDSpec, JAdESHeaderParameterNames.ID);
+			spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+			String desc = getAsString(spDSpec, JAdESHeaderParameterNames.DESC);
+			spDocSpecification.setDescription(desc);
+			List<?> docRefsList = getAsList(spDSpec, JAdESHeaderParameterNames.DOC_REFS);
+			if (Utils.isCollectionNotEmpty(docRefsList)) {
+				spDocSpecification.setDocumentationReferences(docRefsList.toArray(new String[0]));
+			}
+			return spDocSpecification;
 
 		} catch (Exception e) {
 			LOG.warn("An error occurred during '{}' component parsing : {}", JAdESHeaderParameterNames.SP_DSPEC, e.getMessage(), e);
@@ -941,6 +958,262 @@ public class DSSJsonUtils {
 			throw new IllegalInputException(String.format(
 					"Unable to extract key set from a JOSE header! Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Gets a value from the {@code map} under the given {@code key} as {@code Boolean}
+	 *
+	 * @param map {@link Map} to extract the value from
+	 * @param key {@link String} key
+	 * @return {@link Boolean} value when found, null otherwise
+	 */
+	public static Boolean getAsBoolean(Map<?, ?> map, String key) {
+		return toBoolean(map.get(key), key);
+	}
+	/**
+	 * Method safely converts {@code Object} to {@code Boolean} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link Boolean} if able to convert, null value otherwise
+	 */
+	public static Boolean toBoolean(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof Boolean) {
+			return (Boolean) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The Boolean type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The Boolean type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The Boolean type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The Boolean type is expected!");
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets a value from the {@code map} under the given {@code key} as {@code String}
+	 *
+	 * @param map {@link Map} to extract the value from
+	 * @param key {@link String} key
+	 * @return {@link String} value when found, empty string otherwise
+	 */
+	public static String getAsString(Map<?, ?> map, String key) {
+		return toString(map.get(key), key);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code String} if possible
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link String} if able to convert, empty string otherwise
+	 */
+	public static String toString(Object object) {
+		return toString(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code String} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link String} if able to convert, empty string otherwise
+	 */
+	public static String toString(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof String) {
+			return (String) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The String type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The String type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The String type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The String type is expected!");
+			}
+		}
+
+		return Utils.EMPTY_STRING;
+	}
+
+	/**
+	 * Gets a value from the {@code map} under the given {@code key} as {@code Map}
+	 *
+	 * @param map {@link Map} to extract the value from
+	 * @param key {@link String} key
+	 * @return {@link Map} value when found, empty map otherwise
+	 */
+	public static Map<?, ?> getAsMap(Map<?, ?> map, String key) {
+		return toMap(map.get(key), key);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code Map} if possible.
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link Map} if able to convert, empty map otherwise
+	 */
+	public static Map<?, ?> toMap(Object object) {
+		return toMap(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code Map} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link Map} if able to convert, empty map otherwise
+	 */
+	public static Map<?, ?> toMap(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof Map) {
+			return (Map<?, ?>) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The JSON Object type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The JSON Object type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The JSON Object type is expected!",object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The JSON Object type is expected!");
+			}
+		}
+
+		return Collections.emptyMap();
+	}
+
+	/**
+	 * Gets a value from the {@code map} under the given {@code key} as {@code List}
+	 *
+	 * @param map {@link Map} to extract the value from
+	 * @param key {@link String} key
+	 * @return {@link List} value when found, empty list otherwise
+	 */
+	public static List<?> getAsList(Map<?, ?> map, String key) {
+		return toList(map.get(key), key);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code List} if possible.
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link List} if able to convert, empty map otherwise
+	 */
+	public static List<?> toList(Object object) {
+		return toList(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code List} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link List} if able to convert, empty map otherwise
+	 */
+	public static List<?> toList(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof List) {
+			return (List<?>) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The JSON Array type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The JSON Array type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The JSON Array type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The JSON Array type is expected!");
+			}
+		}
+
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Converts a list of objects to a list of {@code String}s
+	 *
+	 * @param list a list of {@link Object}s
+	 * @return list of {@link String}s
+	 */
+	public static List<String> toListOfStrings(List<?> list) {
+		List<String> listOfStrings = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(list)) {
+			for (Object item : list) {
+				String str = toString(item);
+				if (Utils.isStringNotEmpty(str)) {
+					listOfStrings.add(str);
+				} else {
+					LOG.warn("An empty String entry within a JSON Object has been skipped.");
+				}
+			}
+		}
+		return listOfStrings;
+	}
+
+	/**
+	 * Converts a list of objects to a list of {@code Number}s
+	 *
+	 * @param list a list of {@link Object}s
+	 * @return list of {@link Number}s
+	 */
+	public static List<Number> toListOfNumbers(List<?> list) {
+		List<Number> listOfNumbers = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(list)) {
+			for (Object item : list) {
+				if (item instanceof Number) {
+					Number num = (Number) item;
+					listOfNumbers.add(num);
+
+				} else {
+					if (LOG.isDebugEnabled()) {
+						LOG.warn("Unable to process an obtained item with value : '{}'. The Number type is expected!", item);
+					} else {
+						LOG.warn("Unable to process an obtained item. The Number type is expected!");
+					}
+				}
+			}
+		}
+		return listOfNumbers;
 	}
 
 }

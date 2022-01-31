@@ -107,8 +107,9 @@ public class DSS1788NoCertProvidedTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		// The SigningCertificate shall be present in ds:KeyInfo
-		assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		super.checkSignatureLevel(diagnosticData);
+		// The SigningCertificate shall be present in ds:KeyInfo -> not baseline
+		assertEquals(SignatureLevel.XAdES_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override

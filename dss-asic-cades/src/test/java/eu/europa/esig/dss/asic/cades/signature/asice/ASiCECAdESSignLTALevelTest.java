@@ -20,23 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -54,6 +42,17 @@ import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 	
@@ -102,9 +101,8 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 		assertArchiveTimestampFound(diagnosticData);
 		validateSignatures(diagnosticData.getSignatures());
 		
-		
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleSignedDocument);
-        ASiCExtractResult result = extractor.extract();
+        ASiCContent result = extractor.extract();
         
         assertEquals(11, result.getAllDocuments().size());
         assertEquals(4, result.getAllManifestDocuments().size());
@@ -113,7 +111,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         assertEquals(2, result.getManifestDocuments().size());
         assertNotNull(result.getMimeTypeDocument());
         assertEquals(2, result.getSignedDocuments().size());
-        assertNotNull(result.getRootContainer());
+        assertNotNull(result.getAsicContainer());
         assertEquals(2, result.getSignatureDocuments().size());
         assertEquals(2, result.getTimestampDocuments().size());
         assertEquals(0, result.getUnsupportedDocuments().size());
@@ -121,7 +119,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         for (DSSDocument archiveManifest : result.getArchiveManifestDocuments()) {
         	if ("META-INF/ASiCArchiveManifest.xml".equals(archiveManifest.getName())) {
         		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
-        		assertEquals(7, manifestFile.getEntries().size());
+        		assertEquals(8, manifestFile.getEntries().size());
         		ManifestEntry rootFile = manifestFile.getRootFile();
         		assertNotNull(rootFile);
         		ManifestFile rootManifestFile = getManifestFileByName(rootFile.getFileName(), result.getArchiveManifestDocuments());

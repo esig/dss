@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Set;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -34,6 +27,13 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESWithOrphanOcspCertRefsTest extends AbstractPAdESTestValidation {
 
@@ -59,17 +59,12 @@ public class PAdESWithOrphanOcspCertRefsTest extends AbstractPAdESTestValidation
 		
 		assertNull(revocationWrapper.getSigningCertificate());
 		assertTrue(Utils.isCollectionEmpty(revocationWrapper.getCertificateChain()));
-
-		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
-		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}
 	
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());
-		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size());
+		assertEquals(1, diagnosticData.getAllOrphanCertificateReferences().size()); // OCSPResponder
 		assertEquals(0, diagnosticData.getAllOrphanRevocationObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
 	}

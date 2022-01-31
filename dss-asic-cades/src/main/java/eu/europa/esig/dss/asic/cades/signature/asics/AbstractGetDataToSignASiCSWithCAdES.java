@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.asics.AbstractGetDataToSignASiCS;
@@ -42,18 +43,20 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 	/**
 	 * The default constructor
 	 *
+	 * @param asicContent {@link ASiCContent}
 	 * @param asicParameters {@link ASiCParameters}
 	 */
-	protected AbstractGetDataToSignASiCSWithCAdES(final ASiCParameters asicParameters) {
+	protected AbstractGetDataToSignASiCSWithCAdES(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+		super(asicContent);
 		this.asicParameters = asicParameters;
 	}
 
 	/**
-	 * Returns the expected signature document filename
+	 * Returns the name of a signature file
 	 *
-	 * @return {@link String} signature document filename
+	 * @return {@link String}
 	 */
-	protected String getSignatureFileName() {
+	public String getSignatureFilename() {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
 			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
 		}
@@ -61,11 +64,11 @@ public abstract class AbstractGetDataToSignASiCSWithCAdES extends AbstractGetDat
 	}
 
 	/**
-	 * Returns the timestamp filename
+	 * Returns the name of the timestamp file
 	 *
-	 * @return {@link String} timestamp filename
+	 * @return {@link String}
 	 */
-	protected String getTimestampFileName() {
+	public String getTimestampFilename() {
 		return TIMESTAMP_FILENAME;
 	}
 

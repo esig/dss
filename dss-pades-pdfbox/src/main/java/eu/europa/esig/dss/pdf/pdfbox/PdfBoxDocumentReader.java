@@ -49,6 +49,7 @@ import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,6 +255,12 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
+	public int getPageRotation(int page) {
+		PDPage pdPage = getPDPage(page);
+		return pdPage.getRotation();
+	}
+
+	@Override
 	public List<PdfAnnotation> getPdfAnnotations(int page) throws IOException {
 		List<PdfAnnotation> annotations = new ArrayList<>();
 		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
@@ -288,7 +295,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					pdRect.getUpperRightX(), pdRect.getUpperRightY());
 			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
-			pdfAnnotation.setSigned(isSigned(pdAnnotation));
 			return pdfAnnotation;
 		}
 		return null;
@@ -298,14 +304,10 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		return pdAnnotation.getCOSObject().getString(COSName.T);
 	}
 
-	private boolean isSigned(PDAnnotation pdAnnotation) {
-		COSObject sigDicObject = pdAnnotation.getCOSObject().getCOSObject(COSName.V);
-		return sigDicObject != null;
-	}
-
 	@Override
 	public BufferedImage generateImageScreenshot(int page) throws IOException {
-		return PdfBoxUtils.generateBufferedImageScreenshot(pdDocument, page);
+		PDFRenderer renderer = new PDFRenderer(pdDocument);
+		return renderer.renderImage(page - ImageUtils.DEFAULT_FIRST_PAGE);
 	}
 
 	@Override

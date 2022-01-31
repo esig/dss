@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -77,7 +78,7 @@ public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV>
 		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates
 				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
-		List<String> certificateChainIds = token.getCertificateChain().stream().map(c -> c.getId()).collect(Collectors.toList());
+		List<String> certificateChainIds = token.getCertificateChain().stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 		
 		for (RelatedCertificateWrapper signingCertificate : relatedSigningCertificates) {
 			if (!certificateChainIds.contains(signingCertificate.getId())) {

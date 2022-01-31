@@ -29,10 +29,24 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+/**
+ * Checks whether a Trusted List has been reached for the given certificate chain
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class TrustedListReachedForCertificateChainCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** End-entity certificate */
 	private final CertificateWrapper signingCertificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlConstraintsConclusion}
+	 * @param signingCertificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public TrustedListReachedForCertificateChainCheck(I18nProvider i18nProvider, T result, 
 			CertificateWrapper signingCertificate, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

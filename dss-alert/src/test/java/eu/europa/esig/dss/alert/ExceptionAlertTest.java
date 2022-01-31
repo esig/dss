@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.alert;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.alert.status.MessageStatus;
+import eu.europa.esig.dss.alert.status.ObjectStatus;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.alert.status.Status;
 
 public class ExceptionAlertTest {
 	
@@ -35,7 +35,8 @@ public class ExceptionAlertTest {
 	
 	@Test
 	public void throwExceptionAlertTest() {
-		Status status = new Status(EXCEPTION_MESSAGE);
+		MessageStatus status = new MessageStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
 		
 		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
 		AlertException alertException = assertThrows(AlertException.class, () -> exceptionAlert.alert(status));
@@ -44,7 +45,7 @@ public class ExceptionAlertTest {
 
 	@Test
 	public void throwNothing() {
-		Status status = new Status(null);
+		MessageStatus status = new MessageStatus();
 
 		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
 		exceptionAlert.alert(status);
@@ -54,12 +55,31 @@ public class ExceptionAlertTest {
 
 	@Test
 	public void silenceMode() {
-		Status status = new Status(EXCEPTION_MESSAGE);
+		MessageStatus status = new MessageStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
 
 		SilentOnStatusAlert silence = new SilentOnStatusAlert();
 		silence.alert(status);
 
 		assertNotNull(status);
+	}
+
+	@Test
+	public void throwExceptionAlertWithSubMessagesTest() {
+		ObjectStatus status = new ObjectStatus();
+		status.setMessage(EXCEPTION_MESSAGE);
+
+		String objectOneError = "Cannot process the object!";
+		status.addRelatedObjectIdentifierAndErrorMessage("id-12345", objectOneError);
+
+		String objectTwoError = "Parsing error!";
+		status.addRelatedObjectIdentifierAndErrorMessage("id-abcd", objectTwoError);
+
+		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
+		AlertException alertException = assertThrows(AlertException.class, () -> exceptionAlert.alert(status));
+		assertTrue(alertException.getMessage().contains(EXCEPTION_MESSAGE));
+		assertTrue(alertException.getMessage().contains(objectOneError));
+		assertTrue(alertException.getMessage().contains(objectTwoError));
 	}
 
 }

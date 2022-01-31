@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf.visible;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -39,6 +40,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -54,6 +56,9 @@ import java.util.Iterator;
 public class ImageUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImageUtils.class);
+
+	/** The default name for a screenshot document */
+	private static final String SCREENSHOT_PNG_NAME = "screenshot.png";
 
 	/**
 	 * Contains supported transparent color spaces
@@ -241,6 +246,22 @@ public class ImageUtils {
 	}
 
 	/**
+	 * Transforms a {@code BufferedImage} to {@code DSSDocument}
+	 *
+	 * @param bufferedImage {@link BufferedImage} to convert
+	 * @return {@link DSSDocument}
+	 */
+	public static DSSDocument toDSSDocument(BufferedImage bufferedImage) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			ImageIO.write(bufferedImage, "png", baos);
+			return new InMemoryDocument(baos.toByteArray(), SCREENSHOT_PNG_NAME, MimeType.PNG);
+		} catch (IOException e) {
+			throw new DSSException(
+					String.format("Unable to convert BufferedImage to DSSDocument. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	/**
 	 * Reads the image document and returns a {@code BufferedImage}
 	 *
 	 * @param imageDocument {@link DSSDocument} image document to read
@@ -286,7 +307,7 @@ public class ImageUtils {
 		return raster.getNumBands() == 4; // number of parameters for CMYK color scheme per pixel
 	}
 
-	private static BufferedImage convertCMYKToRGB(Raster raster) throws IOException {
+	private static BufferedImage convertCMYKToRGB(Raster raster) {
 		int width = raster.getWidth();
 		int height = raster.getHeight();
 		BufferedImage rgbImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

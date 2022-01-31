@@ -30,6 +30,7 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class RemoteDocumentConverter {
 			}
 			return dssDocuments;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**

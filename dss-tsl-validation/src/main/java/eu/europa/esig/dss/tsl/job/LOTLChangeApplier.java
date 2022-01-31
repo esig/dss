@@ -81,7 +81,7 @@ public class LOTLChangeApplier {
 	private Map<String, List<CertificateToken>> getTLPointers(ParsingCacheDTO parsingResult) {
 		List<OtherTSLPointer> tlOtherPointers = parsingResult.getTlOtherPointers();
 		if (Utils.isCollectionNotEmpty(tlOtherPointers)) {
-			return tlOtherPointers.stream().collect(Collectors.toMap(OtherTSLPointer::getLocation, s -> s.getCertificates()));
+			return tlOtherPointers.stream().collect(Collectors.toMap(OtherTSLPointer::getLocation, OtherTSLPointer::getCertificates));
 		}
 		return Collections.emptyMap();
 	}
