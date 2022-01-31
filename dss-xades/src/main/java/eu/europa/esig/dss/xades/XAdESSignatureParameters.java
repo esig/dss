@@ -389,6 +389,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *
 	 * @return {@link XAdESProfileParameters}
 	 */
+	@Override
 	public XAdESProfileParameters getContext() {
 		if (context == null) {
 			context = new XAdESProfileParameters();
