@@ -64,15 +64,16 @@ NOTE: All listed commands must be executed from the project directory via a Comm
 
 This installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
 
-In addition to the general build, the framework provides a list of custom profiles, allowing a customized behavior:
+In addition to the general build, the framework provides a list of various profiles, allowing a customized behavior:
 
-* quick - disables unit tests and java-doc check, in order to process the build as quick as possible (takes 2-3 minutes).
-* slow-tests - executes all tests, including time-consuming unit tests.
-* owasp - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
-* jdk19-plus - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
-* spotless - used to add a licence header into project files.
+* *quick* - disables unit tests and java-doc validation, in order to process the build as quick as possible (takes 1-2 minutes). *This profile cannot be used for a primary DSS build* (see below).
+* *quick-init* - is similar to the `quick` profile. Disables java-doc validation for all modules and unit tests excluding some modules which have dependencies on their test classes. *Can be used for the primary build of DSS*.
+* *slow-tests* - executes all tests, including time-consuming unit tests.
+* *owasp* - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
+* *jdk19-plus* - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
+* *spotless* - used to add a licence header into project files.
 
-WARNING: Some modules (e.g. `dss-utils`, `dss-crl-parser`, etc., see ch. <<SpecificModules>>) still have to be built completely when using the `quick` profile.
+WARNING: Some modules (e.g. `dss-utils`, `dss-crl-parser`, etc., see ch. <<SpecificModules>>) have to be built completely, as other modules are dependent on their test classes. Therefore, for the first build of DSS, the profile `quick-init` should be chosen rather than `quick` profile.
 
 In order to run a build with a specific profile, the following command must be executed:
 
@@ -138,7 +139,7 @@ Download links for the Standalone Application (Windows x64):
 
 The build of the project can be done similarly to the DSS Core framework build with the command `mvn clean install`.
 
-Please, ensure that you build modules that you really need. Ignore, build failures for non-required modules.
+NOTE: Please ensure that you build modules that you really need. Ignore build failures for non-required modules.
 
 ====== DSS Web Application build
 
