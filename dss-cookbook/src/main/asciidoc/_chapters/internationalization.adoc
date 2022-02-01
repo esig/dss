@@ -33,4 +33,4 @@ In order to provide a custom translation, a new file must be created inside `src
 * XX - an abbreviation of a target language;
 * YY - a country code.
 
-For example, for a French language a file with a name `dss-messages_fr.properties` need to be created, or `dss-messages_fr_FR.properties` to use it only in France local.
+For example, for a French language a file with a name `dss-messages_fr.properties` should be created, or `dss-messages_fr_FR.properties` to use it only in France local.

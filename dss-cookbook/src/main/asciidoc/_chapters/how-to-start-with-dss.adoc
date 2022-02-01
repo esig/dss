@@ -145,9 +145,9 @@ NOTE: Please ensure that you build modules that you really need. Ignore build fa
 
 To build the DSS Web Application the following modules are required:
 
-* dss-mock-tsa;
-* dss-demo-webapp;
-* dss-demo-bundle.
+* `dss-mock-tsa`;
+* `dss-demo-webapp`;
+* `dss-demo-bundle`.
 
 After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
 
@@ -179,9 +179,9 @@ mvn clean install -P run-integration-test
 
 In order to build the standalone application, the following modules are required:
 
-* dss-mock-tsa;
-* dss-standalone-app;
-* dss-standalone-package.
+* `dss-mock-tsa`;
+* `dss-standalone-app`;
+* `dss-standalone-package`.
 
 If the build is successful, you will be able to find out the following containers in the directory `/dss-standalone-app-package/target/`:
 

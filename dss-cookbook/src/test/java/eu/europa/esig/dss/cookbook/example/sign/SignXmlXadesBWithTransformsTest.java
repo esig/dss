@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.CommitmentType;
@@ -57,6 +47,14 @@ import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.XMLSignature;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	
@@ -83,9 +81,15 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			DSSTransform canonicalization = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS);
 			// end::demoCanonicalizationTransform[]
 			transforms.add(canonicalization);
-			
-			// Assign reference to the document
+
+			// Initialize signature parameters
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+			// tag::demoReference[]
 			List<DSSReference> references = new ArrayList<>();
+			// Initialize and configure ds:Reference based on the provided signer document
 			DSSReference dssReference = new DSSReference();
 			dssReference.setContents(toSignDocument);
 			dssReference.setId("r-" + toSignDocument.getName());
@@ -94,13 +98,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setUri("");
 			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 			references.add(dssReference);
-
-			// Initialize signature parameters
-			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			// set references
 			parameters.setReferences(references);
+			// end::demoReference[]
 
 			// end::demo[]
 			

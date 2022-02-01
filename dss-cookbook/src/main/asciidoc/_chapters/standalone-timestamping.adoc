@@ -14,7 +14,7 @@ The following Document Signature Services support the standalone timestamping :
 DSS also provides a validation service for timestamped documents.
 
 === Timestamping a PDF
-For PAdES, the timestamp shall not be added to the already existing signature like it is the case for example for XAdES. Otherwise, the PAdES signature could not be validated anymore. Instead, a standalone timestamp can be used, creating a new revision.
+When timestamping a PDF document, a standalone timestamp can be used, creating a new revision. This algorithm ensures that no existing signature nor timestamp will not be broken, for example because of adding the timestamp to the existing CMS signature (as it can be done in CAdES or XAdES, for instance). The same timestamping procedure is used for timestamping a PDF document without embedded signatures.
 
 The code below illustrates a time-stamping process for a PDF document.
 
@@ -26,7 +26,9 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/Timestamp
 
 === Timestamping with a container (ASiC)
 
-Standalone time assertions can be used in both `ASiC-E` and `ASiC-S`. When time assertions are used, the difference between the two types of containers is that for `ASiC-E` a Manifest file is created in order to list the multiple data objects included in the `ASiC-E` container.
+Standalone time assertions can be used in both `ASiC-S` and `ASiC-E` containers:
+* In `ASiC-S` a timestamp is created on the original document or a ZIP-archive containing the original documents;
+* In `ASiC-E` a timestamp is created on a Manifest file listing the multiple data objects included in the container.
 
 A typical example illustrating a time-stamping process that encapsulates the provided documents and the generated time-stamp to an ASiC-E container can be found below
 

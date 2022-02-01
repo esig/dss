@@ -18,9 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cookbook.example.snippets;
-
-import java.util.List;
+package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -33,7 +31,9 @@ import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
 import eu.europa.esig.dss.ws.server.signing.rest.RestSignatureTokenConnectionImpl;
 import eu.europa.esig.dss.ws.server.signing.rest.client.RestSignatureTokenConnection;
 
-public class RestServerSigningSnippet {
+import java.util.List;
+
+public class RestServerSigningServiceSnippet {
 	
 	@SuppressWarnings("unused")
 	public void demo() {

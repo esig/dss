@@ -21,10 +21,10 @@ The different formats of the digital signature make possible to cover a wide ran
 
 To ensure interoperability of electronic signatures in the EU, the eIDAS Regulation has declared through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) that the advanced electronic signatures in the EU shall comply with the baseline standards defined by the following ETSI technical specifications:
 
-* XAdES Baseline Profile: ETSI TS 103171 v.2.1.1
-* CAdES Baseline Profile: ETSI TS 103173 v.2.2.1
-* PAdES Baseline Profile: ETSI TS 103172 v.2.2.2
-* ASiC Baseline Profile: ETSI TS 103174 v.2.2.1
+* XAdES Baseline Profile: ETSI TS 103171 v.2.1.1;
+* CAdES Baseline Profile: ETSI TS 103173 v.2.2.1;
+* PAdES Baseline Profile: ETSI TS 103172 v.2.2.2;
+* ASiC Baseline Profile: ETSI TS 103174 v.2.2.1.
 
 The baseline profile for a certain signature format provides the basic features required to assure interoperability in the EU for that format. Each baseline profile defines four different levels that correspond to the four signature classes described in the ETSI standard EN 319 102-1 (cf. <<R09>>) and which are described in the following section.
 
@@ -63,7 +63,7 @@ All the material or references to material required for validating the signature
 * AdES-BASELINE-*LTA*: Profile implementing the signature class _Signature providing Long Term Availability and Integrity of Validation Material_ +
 By using periodical timestamping (e.g. each year), the availability or integrity of the validation data is maintained. The validity could be limited due to cryptographic obsolescence of the algorithms, keys and parameters used, or due to expiration or revocation of the validation material. The `AdES-BASELINE-LTA` augmentation adds additional time-stamps for archiving signatures in a way that they are still protected, but also to be able to prove that the signatures were valid at the time when the used cryptographic algorithms were considered safe. Additional validation data can be included too.
 
-NOTE: The old levels -E-BES and -E-EPES are not supported anymore when signing. The old levels -E-C, -E-X, -E-XL, -E-A are supported only for XAdES.
+NOTE: The use of extended profiles on signature creation, such as -E-C, -E-X, -E-XL, -E-A, is supported only for XAdES.
 
 The following schema from the ETSI standard EN 319 102-1 (cf. <<R09>>) illustrates the different classes.
 
@@ -85,7 +85,7 @@ The following types of packaging can be defined for various signature formats:
 
 image::sig-creation-packaging.jpg[packaging, width="100%", height="100%"]
 
-More information about packaging use in combination with available formats can be found in <<SignatureProfileGuide>>.
+More information about packaging use in combination with available formats can be found in the <<SignatureProfileGuide>>.
 
 [[SignatureProfileGuide]]
 ===== Signature profile guide
@@ -165,8 +165,6 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 
 13+|*Ed25519*
 
-| XAdES | | | | | | | | | | | |
-
 | CAdES | | | | | icon:check-circle[role="lime"] | | | | | | |
 
 13+|*DSA*
@@ -174,8 +172,6 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 | XAdES | icon:check-circle[role="lime"] | | icon:check-circle[role="lime"] | | | | | | | | |
 
 | CAdES | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | |
-
-| JAdES | | | | | | | | | | | |
 
 13+|*HMAC*
 
@@ -186,20 +182,17 @@ NOTE: SmartCards/HSMs don't allow signing with all digest algorithms. Please ref
 | JAdES | | | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | | | | | | |
 |=====
 
-
-
-
 [[DSSDocuments]]
 === Representation of documents in DSS
 
 DSS allows creation of different kinds of DSSDocument :
 
-* `InMemoryDocument` : fully loads the document in memory. This type of DSSDocument can be instantiated with an array of bytes or an InputStream.
+* `InMemoryDocument` : fully loads the document in memory. This type of `DSSDocument` can be instantiated with an array of bytes or an InputStream.
 * `FileDocument` : created from an existing local file.
 * `DigestDocument` : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures).
-* `CMSSignedDocument` : an internal implementation of a DSSDocument, loading a CMS Signed Data object.
+* `CMSSignedDocument` : an internal implementation of a `DSSDocument`, loading a CMS Signed Data object.
 * `HTTPHeader` : represents an HTTP Header used as a signed object within a JAdES implementation (see <<JAdESDetachedPackaging, JAdES Detached Packaging>>).
-* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another DSSDocument (e.g. from binaries, digest document, etc.).
+* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another `DSSDocument` (e.g. from binaries, digest document, etc.).
 
 // TODO: 2 examples to be created - CMSSignedDocumentTest.java and HTTPHeaderDigestTest.java
 
@@ -230,13 +223,13 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocument
 [[SignatureTokens]]
 === Signature tokens
 
-The DSS framework is able to create signatures using different keystores: PKCS#11, PKCS#12, JKS, MS CAPI and Apple Keystore. To be independent of the signing media, the DSS framework uses an interface named SignatureTokenConnection to manage different implementations of the signing process. All tokens extend the `AbstractSignatureTokenConnection` abstract class that allows executing complete signature operation (digest and encryption on the token) or raw signature operation (external digest and encryption on the token).
+The DSS framework is able to create signatures using different keystores: PKCS#11, PKCS#12, JKS, MS CAPI and Apple Keystore. To be independent of the signing media, the DSS framework uses an interface named `SignatureTokenConnection` to manage different implementations of the signing process. All token implementations provided within the framework extend the `AbstractSignatureTokenConnection` abstract class that allows executing complete signature operation (digest and encryption on the token) or raw signature operation (external digest and encryption on the token).
 
 This design also allows other card providers/adopters to create their own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
 
 ==== PKCS#11
 
-PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class `Pkcs11SignatureToken`. It requires some installed drivers (dll, sso,...).
+PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class `Pkcs11SignatureToken`. It requires some installed drivers (dll, sso, etc.).
 [source,java,indent=0]
 .Pkcs11SignatureToken usage
 ----
@@ -256,7 +249,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snip
 
 ==== MS CAPI
 
-If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then you can use the MSCAPISignatureToken class to sign the documents.
+If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then you can use the `MSCAPISignatureToken` class to sign the documents.
 [source,java,indent=0]
 .MSCAPISignatureToken usage
 ----
@@ -267,7 +260,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnip
 
 Since DSS 5.10 a new class `AppleSignatureToken` is provided within the source code allowing to access a Keychain store in a MacOS environment.
 
-WARNING: The API does not use keys from a smartcard, as opposite to the MS CAPI implementation.
+WARNING: The API does not access keys from a smartcard, as opposite to the MS CAPI implementation.
 
 
 [source,java,indent=0]
@@ -277,7 +270,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleKeych
 ----
 
 ==== Java Key Store
-The JKSSignatureToken class allows signing with a Java Key Store (.jks file).
+The `JKSSignatureToken` class allows signing with a Java Key Store (.jks file).
 
 [source,java,indent=0]
 .JKSSignatureToken usage
@@ -288,7 +281,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JKSSnippet
 ==== Other Implementations
 NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
 
-As you can see, it is easy to add another implementation of the SignatureTokenConnection, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
+As you can see, it is easy to add another implementation of the `SignatureTokenConnection`, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
 
 
 [[SignatureCreationInDSS]]
@@ -310,11 +303,12 @@ The alternative is to use the following 4 steps:
 . Sign the DTBSR to obtain the signature value;
 . Sign the document (add the signature value).
 
+[[SignatureCreationThreeSteps]]
 ==== Signature creation in 3 stateless methods
 Usually, the signature creation is done using the 3 stateless methods approach.
 
 DSS fully manages the first and last steps of the document signature process.
-The signature operation (signing the DTBS or the DTBSR respectively) needs to be specified. DSS offers some implementations in the dss-token module. During this step, the signing keys are not retrieved. Instead, a communication channel that allows sending the DTBS/DTBSR to the keys is opened.
+The signature operation (signing the DTBS) needs to be specified. DSS offers some implementations in the `dss-token` module. During this step, the signing keys are not retrieved. Instead, a communication channel that allows sending the DTBS to the keys is opened.
 
 The following code presents the three stateless steps.
 
@@ -329,23 +323,26 @@ The first step uses the `getDataToSign()` method, which receives the following a
 * the document to be signed;
 * the previously selected settings.
 
-This step returns the DTBS. In the case of a XAdES, it corresponds to the https://www.w3.org/TR/xmldsig-core1/#sec-SignedInfo[SignedInfo XMLDSig] element. For XAdES and CAdES, the DTBS is composed of the digest of the original document and the signed attributes. For JAdES, it is not the case.
+This step returns the DTBS. In the case of a XAdES, it corresponds to the https://www.w3.org/TR/xmldsig-core1/#sec-SignedInfo[SignedInfo XMLDSig] element. Usually the DTBS is composed of the digest of the original document and the signed attributes (i.e. XAdES or CAdES).
 
 The second step is a call to the function `sign()`, which is invoked on the object token representing the KeyStore and not on the service. This method takes three parameters:
 
-* the array of bytes that must be signed. It is obtained by the previous method invocation.
-* the algorithm used to create the digest. There is the choice between, for example, SHA256 and SHA512. This list is not exhaustive. For an exhaustive list see https://github.com/esig/dss/blob/master/dss-enumerations/src/main/java/eu/europa/esig/dss/enumerations/DigestAlgorithm.java[this class].
-* the private key entry.
+* Array of bytes that must be signed. It is obtained by the previous method invocation.
+* Algorithm used to create the digest. There is the choice between, for example, SHA256 and SHA512. This list is not exhaustive. For an exhaustive list see https://github.com/esig/dss/blob/master/dss-enumerations/src/main/java/eu/europa/esig/dss/enumerations/DigestAlgorithm.java[this class].
+* Private key entry.
 
 The third and last step of this process is the integration of the signature value in the signature and linking of that one to the signed document based on the selected packaging method. This is done using the method `signDocument()` on the service. It requires three parameters:
 
-* the document to sign;
-* the signature parameters (the same as the ones used in the first step);
-* the value of the signature obtained in the previous step.
+* Document to sign;
+* Signature parameters (the same as the ones used in the first step);
+* Value of the signature obtained in the previous step.
 
 This separation into three steps allows use cases where different environments have their precise responsibilities: specifically the distinction between communicating with the token and executing the business logic.
 
+[[SignatureCreationFourSteps]]
 ==== Signature creation in 4 stateless methods
+
+The main difference in this approach is that the digest of DTBS (i.e. DTBSR) is computed separately from a SignatureValue creation.
 
 The following code presents the alternative with four stateless steps.
 
@@ -369,8 +366,7 @@ The step that signs the digest with a raw signature (eg: NONEwithECDSA) and retu
 * the DTBSR.
 * the private key entry.
 
-
-=== Creating a XAdES baseline B signature
+=== Creating a Baseline B-level signature
 The simplest way to address the digital signature passes through the XAdES format. Indeed, it allows visualization of the signature content with a simple text editor. Thus, it becomes much easier to make the connection between theoretical concepts and their implementation. Before embarking on the use of the DSS framework, it is advisable to read the following documents:
 
 * XAdES Specifications (cf. <<R01>>).
@@ -379,7 +375,6 @@ The referenced specifications define the following:
 
 * To digitally sign a document, a signing certificate (that proves the signer's identity) and the access to its associated private key is needed.
 * To digitally validate a signed document the signer's certificate containing the public key is needed. To give a more colourful example: when a digitally signed document is sent to a given person or organization in order to be validated, the certificate with the public key, associated to the private key used to create the signature, must also be provided.
-
 
 To start, let's take a simple XML document:
 
@@ -398,7 +393,7 @@ For our example, we will use the ENVELOPED packaging.
 
 To write our Java code, we still need to specify the type of KeyStore to use for signing our document. In other words, we need to specify where the private key can be found. To know more about the use of the different signature tokens, please consult the <<SignatureTokens>> section.
 
-In our example the class: `Pkcs12SignatureToken` will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains a private key accompanying the X.509 public key certificate and protected by a password. The certificate chain can also be included in this file.
+In this example the class `Pkcs12SignatureToken` will be used. A file in PKCS#12 format must be provided to the constructor of the class. It contains a private key accompanying the X.509 public key certificate and protected by a password. The certificate chain can also be included in this file.
 
 NOTE: It is possible to generate dummy certificates and their chains with OpenSSL. Please visit http://www.openssl.org/ for more details and http://dss.nowina.lu/pki-factory/keystore/list to access dummy certificates and their chains.
 
@@ -410,7 +405,7 @@ This is the complete code example that allows you to sign an XML document:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBTest.java[tags=demo]
 ----
 
-To summarize, signing a document in DSS requires to
+To summarize, signing a document in DSS requires to:
 
 * Create an object based on the `SerializableSignatureParameters` class. Generally, the number of specified parameters depends on the format, profile and level of the signature. This object also defines some default parameters.
 * Choose the level, packaging and signature digest algorithm.
@@ -418,10 +413,9 @@ To summarize, signing a document in DSS requires to
 * Instantiate the adequate signature service based on the format of the signature. In our case it is an XML file, so we will instantiate a XAdES service.
 * Carry out the signature process (three or four steps). in our case, the process of signing takes place in three stages.
 
-
 The encryption algorithm is determined by the private key and therefore shall not be compelled by the setter of the signature parameters object. It would cause an inconsistency in the signature making its validation impossible. This setter can be used in a particular context where the signing process is distributed on different machines and the private key is known only to the signature value creation process.
 
-Setting the signing certificate and the certificate chain shall always be done. They can be set even if the private key is only known to the signature value creation process and there is no access to the private key at DTBS preparation.
+Setting the signing certificate and the certificate chain should always be done. They can be set even if the private key is only known to the signature value creation process and there is no access to the private key at DTBS preparation.
 However, of course, the signing certificate shall be associated to the private key that will be used at the signature value creation step.
 Integrating the certificate chain in the signature simplifies the build of a prospective certificate chain during the validation process.
 
@@ -448,67 +442,57 @@ Unsigned attributes are not obligatory and can be added after the signature crea
 [%header,cols="7*<.<", orientation=landscape]
 |===
   2+|                                                          |DSS classes and methods                                 |XAdES                                |CAdES                                    |PAdES                                                      |JAdES
-.28+|B-Level    .26+|Signed attributes                         |setSigningDate                                                       |SigningTime                          |signing-time                             |/                                                          |sigT
+.26+|B-Level    .24+|Signed attributes                         |class BLevelParameters +
+                                                                #setSigningDate                                         |SigningTime                          |signing-time                             |/                                                          |sigT
                                                                |/                                                       |/                                    |signing-certificate                      |signing-certificate                                        |/
-                                                               |class xxxSignatureParameters +
-                                                                (class AbstractSignatureParameters) +
-                                                                setSigningCertificate +
-                                                                getSigningCertificate                                   |SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#o / sigX5ts
+                                                               |#setSigningCertificate                                  |SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#o / sigX5ts
                                                                |class BLevelParameters +
-                                                                setClaimedSignerRoles +
-                                                                getClaimedSignerRoles                                   |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
+                                                                #setClaimedSignerRoles                                  |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
                                                                |/                                                       |DataObjectFormat                     |/                                        |/                                                          |/
                                                                |class BLevelParameters +
-                                                                setCommitmentTypeIndications +
-                                                                getCommitmentTypeIndications                            |CommitmentTypeIndication             |commitment-type-indication               |commitment-type-indication                                 |srCms
+                                                                #setCommitmentTypeIndications                           |CommitmentTypeIndication             |commitment-type-indication               |commitment-type-indication                                 |srCms
                                                                |class BLevelParameters +
-                                                                (class SignerLocation) +
-                                                                setSignerLocation +
-                                                                getSignerLocation                                       |SignatureProductionPlaceV2           |signer-location                          |entry with key Location in the Signature Dictionary        |sigPl
-                                                               |For XAdES only: class AllDataObjectsTimeStampBuilder +
-                                                                setContentTimestamps +
-                                                                getContentTimestamps                    |AllDataObjectsTimeStamp              |/                                        |/                                                          |adoTst
-                                                               |/                                                       |IndividualDataObjectsTimeStamp       |/                                        |/                                                          |/
-                                                               |class Policy +
-                                                                setId +
-                                                                getId       |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
-                                                               |?                                                       |/                                    |content-type                             |content-type                                               |/
-                                                               |?                                                       |/                                    |message-digest                           |message-digest                                             |/
-                                                               |?                                                       |/                                    |content-hints                            |/                                                          |/
-                                                               |?                                                       |/                                    |mime-type                                |/                                                          |/
-                                                               |?                                                       |/                                    |content-time-stamp                       |content-time-stamp                                         |/
-                                                               |?                                                       |/                                    |content-reference                        |/                                                          |/
-                                                               |?                                                       |/                                    |content-identifier                       |/                                                          |/
-                                                               |?                                                       |/                                    |/                                        |/                                                          |alg
-                                                               |?                                                       |/                                    |/                                        |/                                                          |cty
-                                                               |?                                                       |/                                    |/                                        |/                                                          |kid
+                                                                #setSignerLocation                                      |SignatureProductionPlaceV2           |signer-location                          |entry with key Location in the Signature Dictionary        |sigPl
+                                                               |#setContentTimestamps                                   |AllDataObjectsTimeStamp              |content-time-stamp                       |content-time-stamp                                         |adoTst
+                                                               |For XAdES only:
+                                                                #setContentTimestamps                                   |IndividualDataObjectsTimeStamp       |/                                        |/                                                          |/
+                                                               |class BLevelParameters +
+                                                                #setSignaturePolicy                                     |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
+                                                               |/                                                       |/                                    |content-type                             |content-type                                               |/
+                                                               |/                                                       |Reference                            |message-digest                           |message-digest                                             |/
+                                                               |#setContentHintsType +
+                                                                #setContentHintsDescription                             |/                                    |content-hints                            |/                                                          |/
+                                                               |DSSDocument.setMimeType                                 |DataObjectFormat/MimeType            |mime-type                                |/                                                          |cty
+                                                               |/                                                       |/                                    |content-reference                        |/                                                          |/
+                                                               |#setContentIdentifierPrefix +
+                                                                #setContentIdentifierSuffix                             |/                                    |content-identifier                       |/                                                          |/
+                                                               |#setEncryptionAlgorithm +
+                                                                #setDigestAlgorithm                                     |SignatureMethod                      |/                                        |/                                                          |alg
+                                                               |#setIncludeKeyIdentifier                                |/                                    |/                                        |/                                                          |kid
                                                                |?                                                       |/                                    |/                                        |/                                                          |x5u
-                                                               |?                                                       |/                                    |/                                        |/                                                          |x5c
+                                                               |#setCertificateChain                                    |KeyInfo/X509Data                     |/                                        |/                                                          |x5c
                                                                |?                                                       |/                                    |/                                        |/                                                          |crit
-                                                               |?                                                       |/                                    |/                                        |/                                                          |x5t#S256
-                                                               |?                                                       |/                                    |/                                        |/                                                          |sigD
-                                                               |?                                                       |/                                    |/                                        |/                                                          |b64
+                                                               |#setSigningCertificateDigestMethod +
+                                                                 (DigestAlgorithm.SHA256)                               |/                                    |/                                        |/                                                          |x5t#S256
+                                                               |#setSigDMechanism                                       |/                                    |/                                        |/                                                          |sigD
+                                                               |#setBase64UrlEncodedPayload                             |/                                    |/                                        |/                                                          |b64
 
 
-                .2+|Unsigned attributes                        |classes XAdESCounterSignatureParameters +
-                                                                CAdESCounterSignatureParameters +
-                                                                JAdESCounterSignatureParameters                         |CounterSignature                     |countersignature                         |/                                                          |cSig
-                                                               |class SignaturePolicyStore +
-                                                                class xxxService: +
-                                                                addSignaturePolicyStore                                 |SignaturePolicyStore                 |signature-policy-store                   |/                                                          |sigPSt
-.2+|T-Level     .2+|Unsigned attributes                        |class xxxSignatureParameters +
-                                                                getSignatureTimestampParameters                         |SignatureTimeStamp                   |signature-time-stamp                     |signature-time-stamp                                       |sigTst
-                                                               |?                                                       |/                                    |/                                        |document-time-stamp                                        |/
-.5+|LT-Level    .5+|Unsigned attributes                        |?                                                       |CertificateValues                    |/                                        |/                                                          |xVals
-                                                               |?                                                       |AttrAuthoritiesCertValues            |/                                        |/                                                          |axVals
-                                                               |?                                                       |RevocationValues                     |/                                        |/                                                          |rVals
-                                                               |?                                                       |AttributeRevocationValues            |/                                        |/                                                          |arVals
-                                                               |?                                                       |TimeStampValidationData              |/                                        |/                                                          |tstVD
-.2+|LTA-Level   .2+|Unsigned attributes                        |class xxxSignatureParameters +
-                                                                getArchiveTimestampParameters +
-                                                                for PAdES only: setArchiveTimestampParameters           |ArchiveTimeStamp                     |archive-time-stamp-v3 +
-                                                                                                                                                               -> ats-hash-index-v3                     |document-time-stamp                                        |arcTst
-                                                               |?                                                       |RenewedDigests                       |/                                        |/                                                          |/
+                .2+|Unsigned attributes                        |class *AdESService +
+                                                                #getDataToBeCounterSigned +
+                                                                #counterSignSignature                                   |CounterSignature                     |countersignature                         |/                                                          |cSig
+                                                               |class *AdESService: +
+                                                                #addSignaturePolicyStore                                |SignaturePolicyStore                 |signature-policy-store                   |/                                                          |sigPSt
+|T-Level           |Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_T) +
+                                                                #setSignatureTimestampParameters                        |SignatureTimeStamp                   |signature-time-stamp                     |signature-time-stamp                                       |sigTst
+.5+|LT-Level    .5+|Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_LT)                   |CertificateValues                    |/                                        |/                                                          |xVals
+                                                               |#setSignatureLevel(*AdES_BASELINE_LT)                   |RevocationValues                     |/                                        |/                                                          |rVals
+                                                               |/                                                       |AttrAuthoritiesCertValues            |/                                        |/                                                          |axVals
+                                                               |/                                                       |AttributeRevocationValues            |/                                        |/                                                          |arVals
+                                                               |/                                                       |TimeStampValidationData              |/                                        |/                                                          |tstVD
+.2+|LTA-Level   .2+|Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_LTA) +
+                                                                #setArchiveTimestampParameters                          |ArchiveTimeStamp                     |archive-time-stamp-v3                    |document-time-stamp                                        |arcTst
+                                                               |/                                                       |RenewedDigests                       |/                                        |/                                                          |/
 |===
 
 [.portrait]
@@ -608,25 +592,47 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBE
 ==== Trust Anchor Inclusion Policy
 In DSS, it is possible to indicate whether to include or not the certificate related to the trust anchor in the signature. Refer to section <<TrustAnchors>> for information on trust anchors.
 
-By default, when a BASELINE-B signature is constructed the trust anchor is not included, only the certificates previous to the trust anchor are included.
+By default, when a `BASELINE-B` signature is constructed the trust anchor is not included, only the certificates previous to the trust anchor are included.
 When a `BASELINE-LT` signature is constructed the trust anchor is included.
 
-It is possible to indicate to the framework that the certificate related to the trust anchor should be included to the signature even at the BASELINE-B level. The setter `setTrustAnchorBPPolicy(trustAnchorBPPolicy)` of the `BLevelParameters` class should be used for this purpose.
+It is possible to indicate to the framework that the certificate related to the trust anchor should be included to the signature even at the `BASELINE-B` level. The setter `setTrustAnchorBPPolicy(trustAnchorBPPolicy)` of the `BLevelParameters` class should be used for this purpose.
 
 By default, the argument `trustAnchorBPPolicy` is set to true so that only the certificates previous to the trust anchor are included. It should be set to false in order to include all certificates, including the trust anchor.
 
-//TODO: add an example of how this (method/class) could be used
+[source,java,indent=0]
+.Use of Trust Anchor Inclusion Policy parameter
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoTrustAnchorBPPolicy]
+----
 
-
-==== [Other parameters]
+==== Other parameters
 // TODO: there are only a few parameters mentioned for the moment. Some more need to be added.
 
 ===== XAdES
-For XAdES the following parameters shall also be present from BASELINE-B level on:
 
-* ds:KeyInfo/X509Data
-* ds:SignedInfo/ds:CanonicalizationMethod
-* ds:Reference (and ds:Reference/ds:Transforms may be present)
+====== Canonicalization parameters
+
+Before computing digests on an XML element, a canonicalization should be performed.
+
+DSS allows defining canonicalization algorithms to be used on signature or timestamp creation:
+
+[source,java,indent=0]
+.Use of canonicalization algorithm parameters
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoCanonicalization]
+----
+
+====== References
+
+In order to compute digest for original document(s) in a custom way, a class `DSSReference` can be used to define a `ds:Reference` element's content:
+
+[source,java,indent=0]
+.DSSReference definition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoReference]
+----
+
+For more information about `DSSReference` configuration, please refer the section <<RefTransformations>>.
 
 ===== PAdES
 The framework allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>) and allows the insertion of a visible signature to an existing field.
@@ -650,12 +656,12 @@ DSS allows creation of sequential signatures according to the PAdES formats (cf.
 [source,java,indent=0]
 .Sequential signatures creation
 ----
-include::{sourcetestdir}
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/MultipleSignPadesBTest.java[tags=demo]
 ----
 
 === Counter signatures
 
-DSS allows creation of counter signatures according to the corresponding AdES formats (cf. <<CounterSignatures>>).
+DSS allows creation of counter signatures in accordance with corresponding AdES formats (cf. <<CounterSignatures>>).
 
 NOTE: A counter signature does not provide a Proof Of Existence for a signed signature! Use signature augmentation / timestamping for this purpose.
 

@@ -44,7 +44,7 @@ import java.util.List;
  */
 public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	/** The cryptographic constrain position to be validated */
+	/** The cryptographic constraint position to be validated */
 	protected final MessageTag position;
 
 	/** Cryptographic Check result */

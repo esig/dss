@@ -12,7 +12,7 @@ Revocation data management is an essential part in the lifecycle of a digital ce
 
 DSS provides utilities for processing and validation of both CRL and OCSP tokens, containing a revocation information about a certificate (see <<CRLsAndOCSP>> for more information on CRLs and OCSP)
 
-For every certificate, the validity has to be checked via CRL or OCSP responses. The information may originate from different CRLSources or OCSPSources:
+For every certificate, the validity has to be checked via CRL or OCSP responses. The information may originate from different CRL or OCSP sources.
 For easing the usage of such sources, DSS implements a `CRLSource` and `OCSPSource` interfaces (which inherit from `RevocationSource`), which offer a generic and uniform way of accessing CRL and OCSP sources, respectively. Furthermore, a caching mechanism can be easily attached to those sources, optimizing the access time to revocation information by reducing network connections to online servers.
 
 The interface `CRLSource` defines the method which returns a `CRLToken` for the given certificate/issuer certificate couple:
@@ -104,9 +104,9 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSource
 
 Other revocation sources find the status of a certificate either from a list stored locally or using the information contained in the advanced signature or online way. Here is the list of sources already implemented in the DSS framework:
 
-* CRL sources
-** `OfflineCRLSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and CRL contents are injected by its sub-classes :
-*** `CMSCRLSource` : Extracts CRLs and CRL references from a CMS Signed Data :
+* CRL sources:
+** `OfflineCRLSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and CRL contents are injected by its sub-classes:
+*** `CMSCRLSource` : Extracts CRLs and CRL references from a CMS Signed Data:
 **** `CAdESCRLSource` : Sub-class of `CMSCRLSource` for a CAdES Signature;
 **** `TimestampCRLSource`: Sub-class of `CMSCRLSource` for a Timestamp token (RFC 3161);
 *** `PAdESCRLSource` : Extracts CRLs and CRL references from a PAdES signature.
@@ -115,9 +115,9 @@ Other revocation sources find the status of a certificate either from a list sto
 ** `OnlineCRLSource` : Retrieves CRL files from online sources with the CRL Distribution Points information from the certificate.
 ** `JdbcCacheCrlSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid CRL entries to a defined `DataSource'` and retrieve them locally.
 
-* OCSP sources
-** `OfflineOCSPSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and OCSP responses are injected by its sub-classes :
-*** `CMSOCSPSource` : Extracts OCSP responses and OCSP references from a CMS Signed Data :
+* OCSP sources:
+** `OfflineOCSPSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and OCSP responses are injected by its sub-classes:
+*** `CMSOCSPSource` : Extracts OCSP responses and OCSP references from a CMS Signed Data:
 **** `CAdESOCSPSource` : Sub-class of `CMSOCSPSource` for a CAdES Signature;
 **** `TimestampOCSPSource`: Sub-class of `CMSOCSPSource` for a Timestamp token (RFC 3161);
 *** `PAdESOCSPSource` : Extracts OCSP responses and OCSP references from a PAdES signature.
@@ -129,7 +129,7 @@ Other revocation sources find the status of a certificate either from a list sto
 [[RevocationLoadingStrategy]]
 === Revocation data loading strategy
 
-Since version 5.9, DSS allows the use of a RevocationDataLoadingStrategy. The latter defines logic for loading OCSP or CRL data. Two strategies are available in the core package of DSS:
+Since version 5.9, DSS allows the use of a `RevocationDataLoadingStrategy`. The latter defines logic for loading OCSP or CRL data. Two strategies are available in the core package of DSS:
 
 * `OCSPFirstRevocationDataLoadingStrategy`: loads OCSP first, if not available or the response is invalid, then tries to load CRL and returns the first succeeded result. This strategy is used by default for revocation retrieving.
 * `CRLFirstRevocationDataLoadingStrategy`: fetches firstly CRL response, if not available, tries OCSP and returns the first succeeded result.

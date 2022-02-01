@@ -46,24 +46,24 @@ public class CertificateVerifierSnippet {
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
-		// The AIA source is used to collect certificates from external resources (AIA)
-		cv.setAIASource(aiaSource);
+		// The trusted certificate source is used to provide trusted certificates
+		// (the trust anchors where the certificate chain building should stop)
+		cv.setTrustedCertSources(trustedCertSource);
 
 		// The adjunct certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)
 		cv.setAdjunctCertSources(adjunctCertSource);
 
-		// The trusted certificate source is used to provide trusted certificates 
-		// (the trust anchors where the certificate chain building should stop)
-		cv.setTrustedCertSources(trustedCertSource);
-
-		// The CRL Source to be used for external accesses (can be configured with a
-		// cache,...)
-		cv.setCrlSource(crlSource);
+		// The AIA source is used to collect certificates from external resources (AIA)
+		cv.setAIASource(aiaSource);
 
 		// The OCSP Source to be used for external accesses (can be configured with a
 		// cache,...)
 		cv.setOcspSource(ocspSource);
+
+		// The CRL Source to be used for external accesses (can be configured with a
+		// cache,...)
+		cv.setCrlSource(crlSource);
 		
 		// Sets the default digest algorithm that will be used for digest calculation
 		// of tokens used during the validation process. 

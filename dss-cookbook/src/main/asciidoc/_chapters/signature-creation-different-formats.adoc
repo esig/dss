@@ -329,7 +329,7 @@ DSS framework has some restrictions on the containers you can generate, dependin
 |Binary |ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
 |===
 
-Typical examples of the source code for signing a document using ASiC-S based on XAdES-BASELINE-B and ASiC-E based on XAdES-BASELINE-B can be found in sections <<ASiC-S>> and <<ASiC-E>> respectively.
+Typical examples of the source code for signing a document using `ASiC-S` based on `XAdES-BASELINE-B` and `ASiC-E` based on `XAdES-BASELINE-B` can be found in sections <<ASiC-S>> and <<ASiC-E>> respectively.
 
 You need to pass only few parameters to the service. Other parameters, although they are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on the DETACHED packaging no matter the packaging that was specified.
 

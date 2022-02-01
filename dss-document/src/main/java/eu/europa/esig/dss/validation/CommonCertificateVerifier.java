@@ -159,8 +159,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	/**
-	 * This constructor allows to create {@code CommonCertificateVerifier} without {@code DataLoader}. It means that
-	 * only a profile -B signatures can be created.
+	 * This constructor allows creating of {@code CommonCertificateVerifier} without {@code DataLoader}.
+	 * It means that only a -B profile signature can be created.
 	 *
 	 * @param simpleCreationOnly
 	 *            if true the {@code CommonCertificateVerifier} will not contain {@code AIASource}.

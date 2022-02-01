@@ -38,9 +38,11 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
@@ -80,6 +82,37 @@ public class Snippets {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		// end::demoSignatureLevel[]
+
+		// tag::demoTrustAnchorBPPolicy[]
+
+		// Enforce inclusion of trust anchors into the signature
+		parameters.bLevel().setTrustAnchorBPPolicy(false);
+
+		// end::demoTrustAnchorBPPolicy[]
+
+		// tag::demoCanonicalization[]
+
+		// Sets canonicalization algorithm to be used for digest computation for the ds:Reference referencing
+		// xades:SingedProperties element
+		parameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+
+		// Sets canonicalization algorithm to be used for digest computation for the ds:SignedInfo element
+		parameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+
+		// Defines canonicalization algorithm to be used for formatting ds:KeyInfo element
+		// NOTE: ds:KeyInfo shall be a signed property in order for the method to take effect
+		parameters.setKeyInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+		// To be used to enforce signing of ds:KeyInfo element
+		parameters.setSignKeyInfo(true);
+
+		// It is also possible to define canonicalization algorithm for a timestamp
+		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
+		// ...
+		timestampParameters.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+		// Set timestamp parameters to the signature parameters, e.g. for archival timestamp:
+		parameters.setArchiveTimestampParameters(timestampParameters);
+
+		// end::demoCanonicalization[]
 
 		CertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());

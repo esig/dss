@@ -71,14 +71,35 @@ public class OCSPSourceSnippet {
 		// end::demo-online[]
 
 		// tag::demo-cached[]
+		// Creates an instance of JdbcCacheOCSPSource
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
+
+		// Initialize the JdbcCacheConnector
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+
+		// Set the JdbcCacheConnector
 		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
+
+		// Allows definition of an alternative dataLoader to be used to access a revocation
+		// from online sources if a requested revocation is not present in the repository or has been expired (see below).
 		cacheOCSPSource.setProxySource(onlineOCSPSource);
-		Long threeMinutes = (long) (60 * 3);
-		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes); // default nextUpdateDelay (if not defined in the revocation data)
+
+		// All setters accept values in seconds
+		Long threeMinutes = (long) (60 * 3); // seconds * minutes
+
+		// If "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay"
+		// will be used in order to determine when a new revocation data should be requested.
+		// If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay",
+		// then a revocation data will be retrieved from the repository source, otherwise a new revocation data
+		// will be requested from a proxiedSource.
+		// Default : null (a new revocation data will be requested of "nestUpdate" field is not defined).
+		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes);
+
+		// Creates an SQL table
 		cacheOCSPSource.initTable();
-		OCSPToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, certificateToken);
+
+		// Extract OCSP for a certificate
+		OCSPToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo-cached[]
 
 	}

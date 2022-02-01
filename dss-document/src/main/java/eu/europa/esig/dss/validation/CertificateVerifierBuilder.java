@@ -40,7 +40,7 @@ public class CertificateVerifierBuilder {
 	}
 
 	/**
-	 * Builds a compete copy of the {@code certificateVerifier}
+	 * Builds a complete copy of the {@code certificateVerifier}
 	 *
 	 * @return {@link CertificateVerifier} copy
 	 */

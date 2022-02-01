@@ -6,6 +6,11 @@
 
 == Generic information
 
+=== The Project
+
+The *DSS (Digital Signature Service)* project is an open-source software library, aimed at providing implementation of the standards for Advanced Electronic Signature creation, augmentation and validation in line with European legislation and the eIDAS Regulation in particular.
+
+This project is available in *Java* language.
 
 === Purpose of the document
 

@@ -12,7 +12,7 @@ DSS offers REST and SOAP web services.
 The different webservices are :
 
 * *Signature webservices* (`dss-signature-soap` / `dss-signature-rest`) and their clients: expose methods to allow signing and augmenting or counter-signing a signature from a client.
-* *Server-signing webservice* (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients: expose methods to retrieve keys from a server (PKCS#11, PKCS#12, HSM,...) and to sign the digest on the server side.
+* *Server-signing webservice* (`dss-server-signing-soap` / `dss-server-signing-rest`) and their clients: expose methods to retrieve keys from a server (PKCS#11, PKCS#12, HSM, etc.) and to sign the digest on the server side.
 * *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
 * *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
 * *Timestamp webservices* (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients: expose methods to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digest calculation.
@@ -26,6 +26,7 @@ Additionally, we also provide a https://github.com/esig/dss/tree/master/dss-cook
 [[REST]]
 === REST
 
+[[RestSignatureService]]
 ==== REST signature service
 
 This service exposes several methods taking as input one or more document and having as output a signed data object (possibly a timestamped document):
@@ -33,12 +34,12 @@ This service exposes several methods taking as input one or more document and ha
 [source,java,indent=0]
 .Rest signature service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestSignatureServiceSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestSignatureServiceSnippet.java[tags=demo]
 ----
 
 ===== Get data to sign
 
-The method allows retrieving the data to be signed. The user sends the document to be signed, the parameters (signature level,...) and the certificate chain.
+The method allows retrieving the data to be signed. The user sends the document to be signed, the parameters (signature level, etc.) and the certificate chain.
 
 WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
 
@@ -111,19 +112,20 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/curl-request.adoc[Request]
 
-==== REST server signature service
+[[RestServerSigningService]]
+==== REST server signing service
 
-This service also exposes some methods for server signing operations.:
+This service also exposes some methods for server signing operations:
 
 [source,java,indent=0]
 .Rest server signing service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/RestServerSigningSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestServerSigningServiceSnippet.java[tags=demo]
 ----
 
 ===== Get keys
 
-This method allows retrieving of all available keys on the server side (PKCS#11, PKCS#12, HSM,...). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
+This method allows retrieving of all available keys on the server side (PKCS#11, PKCS#12, HSM, etc.). All keys will have an alias, a signing certificate and its chain. The alias will be used in following steps.
 
 Samples:
 
@@ -154,9 +156,16 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/curl-request.adoc[Request]
 
+[[RestValidationService]]
 ==== REST validation service
 
 DSS provides also a module for documents validation.
+
+[source,java,indent=0]
+.Rest validation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestValidationServiceSnippet.java[tags=demo]
+----
 
 ===== Validate a document
 
@@ -180,7 +189,16 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-original-documents/1/curl-request.adoc[Request]
 
+[[RestCertificateValidationService]]
 ==== REST certificate validation service
+
+The certificate validation service is used for validation of a certificate with the respective certificate chain.
+
+[source,java,indent=0]
+.Rest certificate validation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestCertificateValidationServiceSnippet.java[tags=demo]
+----
 
 ===== Validate a certificate
 
@@ -193,7 +211,16 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/validate-cert/1/curl-request.adoc[Request]
 
-==== REST remote timestamp service
+[[RestTimestampService]]
+==== REST timestamp service
+
+This service implements a timestamp creation.
+
+[source,java,indent=0]
+.Rest timestamp service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestTimestampServiceSnippet.java[tags=demo]
+----
 
 ===== Get Timestamp Response
 
@@ -208,4 +235,64 @@ Samples:
 
 [[SOAP]]
 === SOAP
-// TODO: similar examples to the ones on REST to be created !!!
+The use of SOAP webServices is very similar to the <<REST>> implementation explained above. The main difference is the used implementation of the service. All methods, used parameters and output objects are aligned between both REST and SOAP implementations.
+
+==== SOAP signature service
+
+SOAP signature service's client is initialized using `SoapDocumentSignatureService` class.
+
+[source,java,indent=0]
+.Soap signature service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapSignatureServiceSnippet.java[tags=demo]
+----
+
+The use of the client is similar to <<RestSignatureService>>.
+
+==== SOAP server signing service
+
+SOAP server signing service's client is initialized using `SoapSignatureTokenConnection` class.
+
+[source,java,indent=0]
+.Soap server signing service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapServerSigningServiceSnippet.java[tags=demo]
+----
+
+The use of the client is similar to <<RestServerSigningService>>.
+
+==== SOAP validation service
+
+SOAP validation service's client is initialized using `SoapDocumentValidationService` class.
+
+[source,java,indent=0]
+.Soap validation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapValidationServiceSnippet.java[tags=demo]
+----
+
+The use of the client is similar to <<RestValidationService>>.
+
+==== SOAP certificate validation service
+
+SOAP validation service's client is initialized using `SoapCertificateValidationService` class.
+
+[source,java,indent=0]
+.Soap certificate validation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapCertificateValidationServiceSnippet.java[tags=demo]
+----
+
+The use of the client is similar to <<RestCertificateValidationService>>.
+
+==== SOAP timestamp service
+
+SOAP validation service's client is initialized using `SoapTimestampService` class.
+
+[source,java,indent=0]
+.Soap timestamp service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapTimestampServiceSnippet.java[tags=demo]
+----
+
+The use of the client is similar to <<RestTimestampService>>.

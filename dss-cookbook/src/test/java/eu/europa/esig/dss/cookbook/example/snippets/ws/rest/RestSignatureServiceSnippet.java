@@ -18,9 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cookbook.example.snippets;
-
-import java.io.File;
+package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -45,6 +43,8 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 import eu.europa.esig.dss.ws.signature.rest.RestDocumentSignatureServiceImpl;
 import eu.europa.esig.dss.ws.signature.rest.client.RestDocumentSignatureService;
 
+import java.io.File;
+
 public class RestSignatureServiceSnippet extends CookbookTools {
 	
 	@SuppressWarnings("unused")
@@ -56,10 +56,10 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 			
 			// tag::demo[]
 			
-			// Initializes the rest client
+			// Initialize the rest client
 			RestDocumentSignatureService restClient = new RestDocumentSignatureServiceImpl();
 			
-			// Defines RemoteSignatureParameters
+			// Define RemoteSignatureParameters
 			RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 			parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 			parameters.setSigningCertificate(new RemoteCertificate(privateKey.getCertificate().getEncoded()));
@@ -70,32 +70,32 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 			FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 			RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
 			
-			// computes the digest to be signed
+			// Compute the digest to be signed
 			ToBeSignedDTO dataToSign = restClient.getDataToSign(new DataToSignOneDocumentDTO(toSignDocument, parameters));
 	
-			// Creates a SignOneDocumentDTO
+			// Create a SignOneDocumentDTO
 			SignatureValue signatureValue = signingToken.sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, privateKey);
 			SignOneDocumentDTO signDocument = new SignOneDocumentDTO(toSignDocument, parameters,
 					new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
 			
-			// Adds the signature value to the document
+			// Add the signature value to the document
 			RemoteDocument signedDocument = restClient.signDocument(signDocument);
 	
 			// Define the extension parameters
 			RemoteSignatureParameters extendParameters = new RemoteSignatureParameters();
 			extendParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 	
-			// Extends the existing signature
+			// Extend the existing signature
 			RemoteDocument extendedDocument = restClient.extendDocument(new ExtendDocumentDTO(signedDocument, extendParameters));
 			
-			// Defines timestamp parameters
+			// Define timestamp parameters
 			RemoteTimestampParameters remoteTimestampParameters = new RemoteTimestampParameters();
 			remoteTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 			
-			// Defines a Timestamp document DTO
+			// Define a Timestamp document DTO
 			TimestampOneDocumentDTO timestampOneDocumentDTO = new TimestampOneDocumentDTO(extendedDocument, remoteTimestampParameters);
 			
-			// Timestamps a provided document (available for PDF, ASiC-E and ASiC-S container formats)
+			// Timestamp a provided document (available for PDF, ASiC-E and ASiC-S container formats)
 			RemoteDocument timestampedDocument = restClient.timestampDocument(timestampOneDocumentDTO);
 			
 			// end::demo[]

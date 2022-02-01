@@ -1061,14 +1061,6 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getAcceptedMimeTypeContentsConstraint();
 
 	/**
-	 * Returns AllFilesSigned constraint if present in the policy, null otherwise
-	 *
-	 * @return {@code LevelConstraint} if AllFilesSigned element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	LevelConstraint getAllFilesSignedConstraint();
-
-	/**
 	 * Returns ManifestFilePresent constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if ManifestFilePresent element is present
@@ -1083,6 +1075,14 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getSignedFilesPresentConstraint();
+
+	/**
+	 * Returns AllFilesSigned constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if AllFilesSigned element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAllFilesSignedConstraint();
 
 	/**
 	 * Returns FullScope constraint if present in the policy, null otherwise

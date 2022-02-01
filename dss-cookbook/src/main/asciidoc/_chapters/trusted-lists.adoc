@@ -12,7 +12,7 @@
 
 The `TLValidationJob` allows downloading, parsing and validating the Trusted List(s) (TL) (cf. <<EUTL>>) and List(s) Of Trusted Lists (LOTL) (cf. <<LOTL>>). Once the task is done, its result is stored in the `TrustedListsCertificateSource`. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
 
-Trusted lists are stored on the file system. That offers the possibility to run in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
+Trusted lists are stored in the file system. That offers the possibility to run the validation job in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
 
 In the next sections the different configurations will be covered.
 
@@ -49,10 +49,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 [[DSSFileLoader]]
 ==== DSSFileLoader
 
-The `FileCacheDataLoader` is used to download the trusted list contents on the file-system. Two different configurations are needed. Both of them share the same folder :
+The `FileCacheDataLoader` is used to download the trusted list contents in the file system. Two different configurations are needed. Both of them share the same folder:
 
-* *offline refresh* : disabled download from Internet and unlimited cache expiration
-* *online refresh* : enabled download from Internet and limited cache expiration
+* *offline refresh*: disabled download from Internet and unlimited cache expiration
+* *online refresh*: enabled download from Internet and limited cache expiration
 
 [source,java,indent=0]
 .Offline and Online refresh configuration
@@ -62,14 +62,14 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== The SynchronizationStrategy
 
-The `SynchronizationStrategy` defines which are the trusted lists or list of trusted lists to be synchronized. By default, DSS synchronizes all of them. By default, DSS does not reject any trusted lists (e.g. expired, invalid,  etc.). The content is trusted and a warning is added in a signature / certificate validation.
+The `SynchronizationStrategy` defines the trusted lists or list(s) of trusted lists to be synchronized. By default, DSS synchronizes all of them and DSS does not reject any trusted lists (e.g. expired, invalid, etc.). The default behavior can be customized with implementation of the `SynchronizationStrategy`.
 
-DSS provides two implementations:
+DSS provides two implementations within the framework:
 
 * `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
 * `AcceptAllStrategy` (default) - accepts all Trusted List, whatever the validation status is.
 
-The default behaviour is configurable via a strategy with the interface `SynchronizationStrategy` :
+An example of a custom implementation of `SynchronizationStrategy` can be found below:
 
 [source,java,indent=0]
 .Example of a custom  SynchronizationStrategy
@@ -79,7 +79,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== The CacheCleaner
 
-The `CacheCleaner` specifies how DSS clears the cache (e.g. in case of expired URL, etc.). Two cleaning options are available : memory and file-system.
+The `CacheCleaner` specifies how DSS clears the cache (e.g. in case of expired URL, etc.). Two cleaning options are available : memory and file system.
 
 [source,java,indent=0]
 .CacheCleaner Configuration
@@ -90,7 +90,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 [[AlertingTL]]
 ==== Alerting from TL Loading
 
-DSS allows running of custom alerts in some situations (e.g.: invalid TL signature, LOTL location change, etc.). Alert works with two concepts: detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
+DSS allows running of custom alerts in some situations (e.g. invalid TL signature, LOTL location change, etc.). Alert works with two concepts: detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
 
 [source,java,indent=0]
 .Examples of Alerting
@@ -108,7 +108,7 @@ The following predicates are provided within the framework:
 
 * `EULOTLOtherTSLPointer` - filters the EU LOTL pointer;
 * `EUTLOtherTSLPointer` - filters the EU TL pointers;
-* `MimetypeOtherTSLPointer` - filters TL pointers by a MimeType (e.g. XML only);
+* `MimetypeOtherTSLPointer` - filters TL pointers by a MimeType (e.g. to filter XML files only);
 * `XMLOtherTSLPointer` - filters XML TL pointers;
 * `PDFOtherTSLPointer` - filters PDF TL pointers;
 * `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
@@ -121,7 +121,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== Executor Service
 
-An Executor Service parameter allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on.
+An Executor Service allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on.
 
 [source,java,indent=0]
 .Executor Service
@@ -144,7 +144,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLO
 The TL / LOTL loading in DSS works as below :
 
 * Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded);
-* Analyze introduced changes and expired cache entries (new TL URLs, new signing certificates for a TL,...);
+* Analyze introduced changes and expired cache entries (new TL URLs, new signing certificates for a TL, etc.);
 * Create TLSources from the retrieved LOTLs;
 * Combine these TLSources with independent TLSources (from the configuration);
 * Download / parse / validate all TLs (multi-threaded);
@@ -154,7 +154,7 @@ The TL / LOTL loading in DSS works as below :
 * If the cache cleaner is configured, execute it;
 * If the debug is enabled, print in the log the cache status.
 
-The refresh can be called with the offline or the online loader and run exactly the same code
+The refresh can be called with the offline or the online loader and run exactly the same code:
 
 [source,java,indent=0]
 .How to refresh the Trusted List(s) and Lists of Trusted Lists
@@ -180,7 +180,7 @@ The `SunCertPathBuilderException` means that the certificate establishing the se
 . Go to 'Details' tab and choose 'Copy to File...'.
 . Process the 'Certificate Export Wizard', by saving the certificate in one of '.CER' formats. Store the file in your file system. For us it will create a file 'ee.cer'.
 . Run 'Command Prompt' with administrator permissions (right click -> 'Run As Administrator').
-. Execute the following line (ensure that 'keytool' is installed) :
+. Execute the following line (ensure that 'keytool' is installed):
 
 .Certificate import
 [source,ruby]
@@ -198,7 +198,7 @@ NOTE: This described algorithm is not only one available solution, if you have d
 
 ==== TLValidationJobSummary
 
-The class `TLValidationJobSummary` contains all processed data about the download (time, error,...), the parsing (extracted information, parsing error,...) and the signature validation (signing certificate, signing time,...).
+The class `TLValidationJobSummary` contains all processed data about the download (time, error, etc.), the parsing (extracted information, parsing error, etc.) and the signature validation (signing certificate, signing time, etc.).
 
 [source,java,indent=0]
 .How to retrieve the information about the TLValidationJob process
@@ -217,7 +217,7 @@ An eIDAS XML node linked to the status of the Trusted List is included in the DS
 
 === Using non-EU trusted lists
 
-Non-EU trusted lists are supported by DSS. However, there are a few constraints
+Non-EU trusted lists are supported by DSS. However, there are a few limitations:
 
 * Non-EU trusted lists shall have the same XML structure as EU TLs, i.e. they shall be compliant with the XSD schema.
 * There is no guarantee for a proper qualification determination as the non-EU TL shall also be compliant with EU regulations.

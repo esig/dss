@@ -31,7 +31,7 @@ WARNING: At least one implementation shall be chosen.
 
 The module `dss-utils` offers an interface with utility methods to operate on String, Collection, I/O, etc. DSS framework provides two different implementations with the same behaviour :
 
-* `dss-utils-apache-commons`: this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec).
+* `dss-utils-apache-commons`: this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
 * `dss-utils-google-guava`: this module uses Google Guava (recommended on Android).
 
 If your integration includes `dss-utils`, you will need to select an implementation. For example, to choose the `dss-utils-apache-commons` implementation within a Maven project you need to define the following:
@@ -116,7 +116,7 @@ For each provided operation, DSS requires a `CertificateVerifier` object. This o
 
 The trusted certificates can be shared between multiple threads because these certificates are static. This means they don't require more analysis. Their status won't evolve. For these certificates, DSS doesn't need to collect issuer certificate and/or their revocation data.
 
-In opposition, the adjunct certificates cannot be shared. These certificates concern a specific signature/validation operation. This parameter is used to provide missing certificate(s). When DSS is unable to build the complete certificate path with the provided certificates (as signature parameters or embedded within a signature), it is possible to inject certificates that are not present. These certificates are not necessarily trusted and may require future "modifications" like revocation data collection,...
+In opposition, the adjunct certificates cannot be shared. These certificates concern a specific signature/validation operation. This parameter is used to provide missing certificate(s). When DSS is unable to build the complete certificate path with the provided certificates (as signature parameters or embedded within a signature), it is possible to inject certificates that are not present. These certificates are not necessarily trusted and may require future "modifications" like revocation data collection, etc.
 
 ==== Caching
 
@@ -129,35 +129,35 @@ See section <<CachingUseCases>> of the Annex for complete examples of caching re
 
 DSS provides the following JAXB modules with a harmonized structure :
 
-* `dss-policy-jaxb` - defines validation policy JAXB model
-* `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model
-* `dss-detailed-report-jaxb` - defines Detailed Report JAXB model
-* `dss-simple-report-jaxb` - defines Simple Report JAXB model
-* `dss-simple-certificate-report-jaxb` - defines Certificate Simple Report JAXB model
+* `dss-policy-jaxb` - defines validation policy JAXB model;
+* `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model;
+* `dss-detailed-report-jaxb` - defines Detailed Report JAXB model;
+* `dss-simple-report-jaxb` - defines Simple Report JAXB model;
+* `dss-simple-certificate-report-jaxb` - defines Certificate Simple Report JAXB model.
 
 All modules share the same logic and have the following structure (where &#42;&#42;&#42; is a model name):
 
-`*_dss-&#42;&#42;&#42;-jaxb_*`::
-`*_src/main/java_*`:::
-`*_eu.europa.esig.dss.&#42;&#42;&#42;_*`::::
-** `*_&#42;&#42;&#42;.java_*` - wrapper(s) which eases the JAXB manipulation
-** `*_..._*`
-** `*_&#42;&#42;&#42;Facade.java_*` - class which allows marshalling/unmarshalling of jaxb objects, generation of HTML/PDF content, etc.
-** `*_&#42;&#42;&#42;XmlDefiner.java_*` - class which contains the model definition (XSD, XSLT references, ObjectFactory)
-** `*_jaxb_*` - generated on compile time
-*** `*_Xml&#42;&#42;&#42;.java_*` - JAXB model
-*** `*_..._*`
-`*_src/main/resources_*`:::
-`*_xsd_*`::::
-** `*_&#42;&#42;&#42;.xsd_*` - XML Schema (XSD) for the Detailed Report model
-** `*_binding.xml_*` - XJC instructions to generate the JAXB model from the XSD
-`*_xslt_*`::::
-** `*_html_*`
-*** 	`*_&#42;&#42;&#42;.xslt_*` - XML Stylesheet for the HTML generation
-** `*_pdf_*`
-***	`*_&#42;&#42;&#42;.xslt_*` - XML Stylesheet for the PDF generation
+`*dss-&#42;&#42;&#42;-jaxb*`::
+`_/src/main/java_`:::
+`_eu.europa.esig.dss.&#42;&#42;&#42;_`::::
+** `&#42;&#42;&#42;.java` - wrapper(s) which eases the JAXB manipulation
+** `...`
+** `&#42;&#42;&#42;Facade.java` - class which allows marshalling/unmarshalling of jaxb objects, generation of HTML/PDF content, etc.
+** `&#42;&#42;&#42;XmlDefiner.java` - class which contains the model definition (XSD, XSLT references, ObjectFactory)
+** `_/jaxb_` - generated on compile time
+*** `Xml&#42;&#42;&#42;.java` - JAXB model
+*** `...`
+`_/src/main/resources_`:::
+`_/xsd_`::::
+** `&#42;&#42;&#42;.xsd` - XML Schema (XSD) for the Detailed Report model
+** `binding.xml` - XJC instructions to generate the JAXB model from the XSD
+`_/xslt_`::::
+** `_/html_`
+*** `&#42;&#42;&#42;.xslt` - XML Stylesheet for the HTML generation
+** `_/pdf_`
+***	`&#42;&#42;&#42;.xslt` - XML Stylesheet for the PDF generation
 
-In the main classes, a `Facade` is present to quickly operate with the JAXB objects (eg: marshall, unmarshall, generate the HTML/PDF, validate the XML structure,...).
+In the main classes, a `Facade` is present to quickly operate with the JAXB objects (e.g. marshall, unmarshall, generate the HTML/PDF, validate the XML structure, etc.).
 
 [source,java,indent=0]
 .DetailedReportFacade usage
@@ -175,7 +175,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 ==== Creating a trusted list
 
-It is possible to programatically create or/and edit an XML Trusted List using the JAXB module.
+It is possible to programmatically create or/and edit an XML Trusted List using the JAXB module.
 
 Below is an example of how to use JAXB modules to create a trusted list (not complete solution):
 
@@ -235,7 +235,11 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Stylesheet
 ==== Diagnostic data stylesheets
 The `dss-diagnostic-jaxb` module contains an XSLT stylesheet that creates an SVG image from an XML document in order to visually represent the signature at validation time.
 
-//TODO add code of how to create an SVG image during signature validation
+[source,java,indent=0]
+.SVG generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SVGGenerationSnippet.java[tags=demo]
+----
 
 [[xmlSecurities]]
 === XML securities

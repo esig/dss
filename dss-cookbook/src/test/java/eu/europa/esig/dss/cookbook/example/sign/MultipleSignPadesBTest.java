@@ -5,36 +5,35 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultipleSignXadesBTest extends CookbookTools {
+public class MultipleSignPadesBTest extends CookbookTools {
 
     private String signingAlias;
 
     @Test
-    public void signXAdESBaselineB() throws Exception {
+    public void signPAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument
-        prepareXmlDoc();
+        preparePdfDoc();
 
-        // Initialize a CertificateVerifier and a XAdESService
+        // Initialize a CertificateVerifier and a PAdESService
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
-        XAdESService service = new XAdESService(commonCertificateVerifier);
+        PAdESService service = new PAdESService(commonCertificateVerifier);
 
         DSSDocument signedDocument;
         DSSDocument doubleSignedDocument;
@@ -46,11 +45,8 @@ public class MultipleSignXadesBTest extends CookbookTools {
         // Load the user token to create the first signature
         try (SignatureTokenConnection goodUserToken = getPkcs12Token()) {
 
-            // Preparing parameters for the XAdES signature
-            XAdESSignatureParameters parameters = initSignatureParameters();
-
-            // ENVELOPED SignaturePackaging should be used for a parallel signature creation
-            parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+            // Preparing parameters for the PAdES signature
+            PAdESSignatureParameters parameters = initSignatureParameters();
 
             // Set the signing certificate and a certificate chain for the used token
             DSSPrivateKeyEntry privateKey = goodUserToken.getKeys().get(0);
@@ -67,11 +63,8 @@ public class MultipleSignXadesBTest extends CookbookTools {
         // Load the second user token
         try (SignatureTokenConnection rsaUserToken = getPkcs12Token()) {
 
-            // Preparing parameters for the XAdES signature
-            XAdESSignatureParameters parameters = initSignatureParameters();
-
-            // ENVELOPED SignaturePackaging should be used for a parallel signature creation
-            parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+            // Preparing parameters for the PAdES signature
+            PAdESSignatureParameters parameters = initSignatureParameters();
 
             // Set the signing certificate and a certificate chain for the used token
             DSSPrivateKeyEntry privateKey = rsaUserToken.getKeys().get(0);
@@ -99,9 +92,9 @@ public class MultipleSignXadesBTest extends CookbookTools {
 
     }
 
-    private XAdESSignatureParameters initSignatureParameters() {
-        XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-        parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+    private PAdESSignatureParameters initSignatureParameters() {
+        PAdESSignatureParameters parameters = new PAdESSignatureParameters();
+        parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         return parameters;
     }
@@ -112,3 +105,4 @@ public class MultipleSignXadesBTest extends CookbookTools {
     }
 
 }
+

@@ -6,8 +6,6 @@
 
 == Electronic signatures and DSS
 
-DSS (Digital Signature Services) is an open-source software library for electronic signature creation, augmentation and validation. DSS supports the creation, augmentation and verification of interoperable and secure electronic signatures in line with European legislation. In particular, DSS aims to follow the eIDAS Regulation and related standards closely.
-
 === EU legislation
 In the European Union the following legislation have had a considerable impact on the topic of electronic and digital signatures:
 
@@ -24,9 +22,9 @@ A Trust Service Provider (TSP) is a natural or legal person who provides one or 
 
 Given that a TSP can provide a combination of trust services, a TSP can take one or more of the following roles
 
-* a certificate issuer (CA)
-* a time-stamp issuer (TSA)
-* a signature verifier (VA)
+* a certificate issuer (CA);
+* a time-stamp issuer (TSA);
+* a signature verifier (VA);
 * …
 
 A TSP can be either a qualified or non-qualified trust service provider. All TSPs no matter if qualified or not have the following obligations and requirements
@@ -53,9 +51,6 @@ Some aspects are specific to QTSPs and follow from the requirements of eIDAS
 * Providing legal certainty;
 * Presumption of the integrity of the data;
 * …
-
-
-
 
 === Electronic and digital signatures
 The terms “Electronic Signature” and “Digital Signature” are often used interchangeably however they are very disctinct concetps as "electronic signature" is a legal concept, whereas "digital signature" is a technical concept that is used to provide a concrete instance of electronic signatures.
@@ -181,7 +176,7 @@ Trusted lists can be used in a similar way to trust stores in that one can use, 
 
 [[LOTL]]
 ===== List of Trusted Lists (LOTL)
-A List of Trusted Lists (LOTL) is a list that contains
+A List of Trusted Lists (LOTL) is a list that contains:
 
 * links towards all the published EU MS Trusted Lists;
 * the certificates used to verify the signatures of these trusted lists.
@@ -197,7 +192,7 @@ When the LOTL-signing certificates or the location of the LOTL changes, the modi
 [[CertificatePathValidation]]
 ==== Certificate Chain and Certification Path Validation
 
-The certificate path validation is an algorithm that seeks to verify the binding between the public key and the subject of a certificate, using trust anchor information. The complete processing is described in https://datatracker.ietf.org/doc/html/rfc5280#section-6.1[RFC 5280 section 6.1], and as stated there it verifies among other things that that a prospective certification path (a sequence of n certificates) satisfies the following conditions:
+The certificate path validation is an algorithm that seeks to verify the binding between the public key and the subject of a certificate, using trust anchor information. The complete processing is described in https://datatracker.ietf.org/doc/html/rfc5280#section-6.1[RFC 5280 section 6.1], and as stated there, it verifies among other things that a prospective certification path (a sequence of n certificates) satisfies the following conditions:
 
 [loweralpha]
 . for all x in {1, ..., n-1}, the subject of certificate x is the issuer of certificate x+1;
@@ -205,7 +200,7 @@ The certificate path validation is an algorithm that seeks to verify the binding
 . certificate n is the certificate to be validated (i.e., the target certificate); and
 . for all x in {1, ..., n}, the certificate was valid at the time in question.
 
-Although RFC 5280 states that procedures performed to obtain the sequence of certificate that is provided to the certification path validation is outside of its scope, Common PKI v2.0 part 5 section 2.1 (<<R23>>) provides one such possible procedure.
+Although RFC 5280 states that procedures performed to obtain the sequence of certificate that is provided to the certification path validation is outside its scope, Common PKI v2.0 part 5 section 2.1 (<<R23>>) provides one such possible procedure.
 
 An intuitive approach to build a prospective certification path is to start by looking at the “Authority Information Access” (AIA) extension of the target certificate (see https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.2.1[RFC 5280 section 4.2.2.1]) which, if present, frequently includes information on how to retrieve the certificate of the issuer of that certificate. Repeating this action on the certificate retrieved can then allow to build a prospective certification path.
 
@@ -228,7 +223,7 @@ The standard ETSI EN 319 102-1 clause 4 (<<R09>>) provides a complete conceptual
 
 * Receiving a (set of) document(s) or a (set of) hash(es) representing those documents, together with other inputs (such as so-called “signed attribute” values e.g. signer’s location, and constraints driving the creation of the signature such as the cryptographic algorithms to be used for the creation of the signature value);
 * Composing the “data to be signed” (DTBS) which is the data object that will be covered by the signature value (including thus the document(s) and attributes to be signed), and the associated “data to be signed formatted” (DTBSF) which can be taken as the format-specific byte-stream on which the signature value will be computed;
-* Creating the “data to be signed representation” (DTBSR) by applying the appropriate hash algorithm;
+* Creating the “data to be signed representation” (DTBSR) by applying the appropriate hash algorithm on the DTBSF obtained in the previous step;
 * Computing the signature value by encrypting the DTBSR using the appropriate algorithm (this is usually done by activating the private key within a “Signature creation device” (SCDev), that will perform the operation);
 * Formatting the result into a “signed data object” (SDO) complying with the desired signature format (e.g. XAdES, PAdES, etc).
 
@@ -288,17 +283,17 @@ The following table presents the indications and sub-indications that can be enc
 .Signature validation indications and sub-indications
 |=======================
 |Indication             |Sub-indication
-|TOTAL-PASSED           |
-.4+|TOTAL-FAILED        |FORMAT_FAILURE
+|TOTAL-PASSED           |-
+.6+|TOTAL-FAILED        |FORMAT_FAILURE
 |HASH_FAILURE
 |SIG_CRYPTO_FAILURE
 |REVOKED
+|EXPIRED
+|NOT_YET_VALID
 .19+|INDETERMINATE      |SIG_CONSTRAINTS_FAILURE
 |CHAIN_CONSTRAINTS_FAILURE
 |CERTIFICATE_CHAIN_GENERAL_FAILURE
 |CRYPTO_CONSTRAINTS_FAILURE
-|EXPIRED
-|NOT_YET_VALID
 |POLICY_PROCESSING_ERROR
 |SIGNATURE_POLICY_NOT_AVAILABLE
 |TIMESTAMP_ORDER_FAILURE
@@ -306,12 +301,14 @@ The following table presents the indications and sub-indications that can be enc
 |NO_CERTIFICATE_CHAIN_FOUND
 |REVOKED_NO_POE
 |REVOKED_CA_NO_POE
+|OUT_OF_BOUNDS_NOT_REVOKED
 |OUT_OF_BOUNDS_NO_POE
+|REVOCATION_OUT_OF_BOUNDS_NO_POE
 |CRYPTO_CONSTRAINTS_FAILURE_NO_POE
 |NO_POE
 |TRY_LATER
 |SIGNED_DATA_NOT_FOUND
-|GENERIC
+|CUSTOM
 
 |=======================
 
@@ -322,9 +319,9 @@ As illustrated in <<SignatureValidationModel>>, validating a signature sometimes
 
 Such proof of existence can be given in the form of a *timestamp*.
 
-A digital timestamp is an assertion of proof that a data object existed at (or before) a particular date. This usually takes the form of a binding between a hash of a data object and a date and time issued and signed by a trustworthy timestamping authority.
+A digital timestamp is an assertion of proof that a data object existed at particular time. This usually takes the form of a binding between a hash of a data object and a date and time issued and signed by a trustworthy timestamping authority.
 
-When signing digitally, a date and time is already included into the signature but it corresponds to the computer’s local time. The latter can easily be modified prior to signing so that the time of signing is not the actual one. Thus, this signing time cannot be trusted. A trustworthy digital timestamp shall be used to prove existence of the signature (and its associated data) at a certain point in time.
+When signing digitally, a date and time can be already included into the signature, but it corresponds to the signer computer’s local time. The latter can easily be modified prior to signing so that the time of signing is not the actual one. Thus, this signing time cannot be trusted. A trustworthy digital timestamp shall be used to prove existence of the signature (and its associated data) at a certain point in time.
 
 This principle exists for handwritten signatures too. When a document is signed manually, it is done in the presence of a trustworthy notary, who verifies not only the identity of the signer but also the date and time of the signature.
 
@@ -341,13 +338,13 @@ Furthermore, in the context of digital signatures, we usually distinguish timest
 
 Timestamping, the process of adding a timestamp to a signature, can be broken down into the following steps:
 
-. The user creates a hash of the data for which a timestamp assertion is required(e.g. signature value).
+. The user creates a hash of the data for which a timestamp assertion is required (e.g. signature value for a signature timestamp).
 . The user sends the hash and the digest algorithm to a TSA.
 . The TSA groups the hash, the time of stamping (current date and time) and the identity of the TSA and signs it with a private key contained in a TU.
 . The timestamp token resulting from the previous step is returned to the client.
 . The timestamp token is added to the signature of the data that was sent as a hash in the first step.
 
-An illustration of that process for the creation of a signature timestamp is provided below.
+An illustration of that process for the creation of a signature timestamp is provided below:
 
 image::Timestamp.jpg[Timestamp, width="100%", height="100%", align="center"]
 
@@ -359,11 +356,11 @@ The timestamp token created by a TSA can be considered as trustworthy because
 * the TSA shall follow strict specifications.
 
 ==== Multiple signatures
-Up until now, we only discussed the creation of a single signature. However, in most cases multiple signatures need to be created. In such cases, it is useful to note that multiple signatures can be created in parallel or in a sequential order.
+Up until now, only creation of a single signature have been covered. However, in most cases multiple signatures need to be created (e.g. a contract signing by multiple parties). In such cases, it is useful to note that multiple signatures can be created in parallel or in a sequential order.
 
 [[ParallelSignatures]]
 ===== Parallel signatures
-Parallel signatures are stand-alone, mutually independent signatures where the ordering of the signatures is not important. All the involved parties can receive the data at the same time and sign in any order. The computation of these signatures is performed on exactly the same hash data but using different private keys associated to the different signers. The only dependance between the parallel signatures is that they shall all be present and valid for the associated data to be validly signed.
+Parallel signatures are stand-alone, mutually independent signatures where the ordering of the signatures is not important. All the involved parties can receive the data at the same time and sign in any order. The computation of these signatures is performed on exactly the same hash data but using different private keys associated to the different signers. Parallel signatures can be validated independently to verify whether the associated data is validly signed.
 
 The following schema illustrates the creation of parallel signatures:
 
@@ -379,7 +376,7 @@ image::sequential-signatures.jpg[Sequential Signatures, width="80%", height="80%
 
 [[CounterSignatures]]
 ===== Counter signatures
-A counter signature is an additional signature applied on data that has already been signed previously. This type of signature is used to show approval of the data and signature, to confirm the authenticity of the data. The computation of a counter signature is performed on the signed data and it is added to the signature as an unsigned attribute, i.e. added after initial signature creation.
+A counter signature is an additional signature applied on data that has already been signed previously. This type of signature is used to show approval of the data and signature, to confirm the authenticity of the data. The computation of a counter signature is performed on the signed data and it is added to the signature as an unsigned attribute, i.e.  after initial signature creation.
 
 Counter signatures are often created by trustworthy entities such as notaries, doctors or attorneys. Possible use cases are rental and mortgage applications, health documents, passports and visas.
 
@@ -393,13 +390,13 @@ image::counter-signatures.jpg[Counter Signatures, width="60%", height="60%", ali
 ==== Signature Applicability Rules / Signature Policy
 The term "signature policy" is often used to refer to "Signature Applicability Rules", that is, a set of *rules* for the creation, validation and long-term management of one (or more) electronic signature(s).
 
-A Signature Policy, in that meaning, *contains* general information such as
+A Signature Policy, in that meaning, *contains* general information such as:
 
-* the identifier of the signature policy
-* the name of the signature policy issuer
-* the date of issuance of the signature policy
-* the signing period
-* the field of application
+* the identifier of the signature policy;
+* the name of the signature policy issuer;
+* the date of issuance of the signature policy;
+* the signing period;
+* the field of application;
 * …
 
 A Signature Policy is composed of *three main parts* that define technical and procedural requirements:
@@ -408,22 +405,22 @@ A Signature Policy is composed of *three main parts* that define technical and p
 . Signature Validation Policy: requirements for the verifier when validating a signature;
 . Signature (LTV) Management Policy: requirements for the long term management and preservation of a signature.
 
-A signature policy is a way of *expressing*
+A signature policy is a way of *expressing*:
 
-* who may sign
-* in what capacity an entity may sign
-* what data is being signed
-* in what circumstances the data is signed
-* why the data is being signed (i.e. what are the consequences).
-* the purpose for the signature
-* the context in which the signature will be used
-* the means for the creation , verification and long-term management of an electronic signature
-* the means for reproducing the formalities of signing
-* the requirements imposed on or committing the involved actors
+* who may sign;
+* in what capacity an entity may sign;
+* what data is being signed;
+* in what circumstances the data is signed;
+* why the data is being signed (i.e. what are the consequences);
+* the purpose for the signature;
+* the context in which the signature will be used;
+* the means for the creation , verification and long-term management of an electronic signature;
+* the means for reproducing the formalities of signing;
+* the requirements imposed on or committing the involved actors.
 
 The exact information contained in a signature policy will depend on the use cases of the signature and on the involved parties as the signature policy can be negotiated between them. Therefore, it is not possible to define a single template policy to cover all use cases.
 
-Having a signature policy, and thus all the above-mentioned information, available in a signature has several *advantages*:
+Having a signature policy and thus all the above-mentioned information, available in a signature, has several *advantages*:
 
 * It allows keeping a trace of the decisions that were made during the analysis of the signatures that will need to be created.
 * It allows a signature to be legally enforceable in any Member State
@@ -433,22 +430,21 @@ Having a signature policy, and thus all the above-mentioned information, availab
 
 * The Signature policy issuer: a legal/natural entity that sets the rules that compose the signature policy.
 * Signature policy users: natural persons that can be one of the two following types of entities:
-. Signer: creates an electronic signature
-. Verifier: ensures the authenticity of the policy and decides whether the signed data is valid or not
-* Trust Service Provider(s)
+. Signer: creates an electronic signature.
+. Verifier: ensures the authenticity of the policy and decides whether the signed data is valid or not.
+* Trust Service Provider(s).
 
 ETSI ESI has developped several standards to express signature applicability rules or "signature policy" in two *forms*:
 
-* In a human readable form: It can be assessed to meet the requirements of the legal and contractual context in which it is being applied. (cf. ETSI TS 119 172-1 <<R17>>)
-* In a machine processable form (XML or ASN.1): To facilitate its automatic processing using the electronic rules. (cf. ETSI TS 119 172-2 <<R18>> and ETSI TS 119 172-3 <<R19>>)
+* In a human readable form: It can be assessed to meet the requirements of the legal and contractual context in which it is being applied (cf. ETSI TS 119 172-1 <<R17>>).
+* In a machine processable form (XML or ASN.1): To facilitate its automatic processing using the electronic rules (cf. ETSI TS 119 172-2 <<R18>> and ETSI TS 119 172-3 <<R19>>).
 
 ===== Signature policy at creation and validation
-During signature *creation*, a signature creation policy can be added to the signature as a signed attributes of the signature. Signed attributes are information that can only be included upon signature creation and that cannot be added at a later point in the life of the signature. The signature creation policy can be added to the signature indirectly as a reference which is composed of the hash value of the policy and the hash algorithm that was used to hash the policy, or directly when it is in a machine processable form.
+During signature *creation*, a signature creation policy can be added to the signature as a signed attributes of the signature. Signed attributes are information that can only be included upon signature creation and that cannot be added, modified or removed at a later point in the life of the signature. The signature creation policy can be added to the signature indirectly as a reference which is composed of the hash value of the policy and the hash algorithm that was used to hash the policy, or directly when it is in a machine processable form.
 
 During signature *validation*, a mapping between acceptable signature creation policies and their corresponding
 signature validation policies can be provided to the signature validation application (SVA). If the signature contains one signature creation policy identifier, which is part of the list of mappings, the SVA
 can then apply the corresponding validation policy during validation.
-
 
 === Resources
 Certain resources have been developed to improve the adoption of the eIDAS Regulation as well as improve information sharing about the eIDAS Regulation and related concepts.
@@ -459,49 +455,46 @@ It contains among others a https://esignature.ec.europa.eu/efda/tl-browser/#/scr
 
 https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS implementing acts] have been issued and adopted by the Commission:
 
-* Commission Implementing Decision (EU) 2015/296: procedural arrangements for cooperation between Member States on electronic identification
-* Commission Implementing Decision (EU) 2015/1501: on the interoperability framework
-* Commission Implementing Decision (EU) 2015/1502: on setting out minimum technical specifications and procedures for assurance levels for electronic identification means
-* Commission Implementing Decision (EU) 2015/1984: circumstances, formats and procedures of notification
-* Commission Implementing Regulation (EU) 2015/806: specifications relating to the form of the EU trust mark for qualified trust services
-* Commission Implementing Decision (EU) 2015/1505: technical specifications and formats relating to trusted lists
-* Commission Implementing Decision (EU) 2015/1506: specifications relating to formats of advanced electronic signatures and advanced seals to be recognised by public sector bodies
-* Commission Implementing Decision (EU) 2016/650: standards for the security assessment of qualified signature and seal creation devices
+* Commission Implementing Decision (EU) 2015/296: procedural arrangements for cooperation between Member States on electronic identification.
+* Commission Implementing Decision (EU) 2015/1501: on the interoperability framework.
+* Commission Implementing Decision (EU) 2015/1502: on setting out minimum technical specifications and procedures for assurance levels for electronic identification means.
+* Commission Implementing Decision (EU) 2015/1984: circumstances, formats and procedures of notification.
+* Commission Implementing Regulation (EU) 2015/806: specifications relating to the form of the EU trust mark for qualified trust services.
+* Commission Implementing Decision (EU) 2015/1505: technical specifications and formats relating to trusted lists.
+* Commission Implementing Decision (EU) 2015/1506: specifications relating to formats of advanced electronic signatures and advanced seals to be recognised by public sector bodies.
+* Commission Implementing Decision (EU) 2016/650: standards for the security assessment of qualified signature and seal creation devices.
 
 ETSI has developed standards that can be followed to be compliant with the eIDAS Regulation.
 
 === Digital signatures in DSS
 ==== Tokens in DSS
-The Token class is the base class for the different types of tokens used in the process of signature validation which are certificates, OCSPs, CRLs and timestamps. These tokens can be described as follows
+The Token class is the base class for the different types of tokens used in the process of signature validation which are certificates, OCSPs, CRLs and timestamps. These tokens can be described as follows:
 
 * *CertificateToken:* Whenever the signature validation process encounters an X509Certificate a certificateToken is created. This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List, CertStore, Signature), has revocation data, etc. To expedite the processing of such information, they are kept in cache.
-* *RevocationToken:* Represents a revocation data token. It can be a CRLToken or an OCSPToken.
+* *RevocationToken:* Represents a revocation data token. It can be a CRLToken or an OCSPToken:
     ** *CRLToken:* Represents a CRL and provides the information about its validity.
     ** *OCSPToken:* OCSP Signed Token which encapsulate BasicOCSPResp (BC).
 * *TimestampToken:* SignedToken containing a TimeStamp.
-    ** *PdfTimestampToken:* Specific class for a PDF TimestampToken
+    ** *PdfTimestampToken:* Specific class for a PDF Document TimestampToken.
 
 ==== Compliance to ETSI standards
-XAdES digital signatures are compliant with ETSI EN 319 132 part 1-2 (<<R01>>).
+DSS implements the following ETSI standards for various signature forms:
 
-CAdES digital signatures are compliant with ETSI EN 319 122 part 1-2 (<<R02>>).
+* XAdES digital signatures are compliant with ETSI EN 319 132 part 1-2 (<<R01>>);
+* CAdES digital signatures are compliant with ETSI EN 319 122 part 1-2 (<<R02>>);
+* PAdES digital signatures are compliant with ETSI EN 319 142 part 1-2 (<<R03>>);
+* JAdES digital signatures are compliant with ETSI TS 119 182 part 1 (<<R05>>);
+* ASiC signature containers are compliant with ETSI EN 319 162 part 1-2 (<<R04>>).
 
-PAdES digital signatures are compliant with ETSI EN 319 142 part 1-2 (<<R03>>).
+but also claims:
 
-JAdES digital signatures are compliant with ETSI TS 119 182 part 1 (<<R05>>).
-
-ASiC signature containers are compliant with ETSI EN 319 162 part 1-2 (<<R04>>).
-
-Creation and validation of AdES digital signatures are compliant with ETSI EN 319 102-1 (<<R09>>) and ETSI TS 119 102-2 (<<R13>>).
-
-The determination of the certificate qualification is compliant with ETSI TS 119 172-4 (<<R10>>).
-
-Trusted lists processes are compliant with ETSI TS 119 612 (<<R11>>).
-
-Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
+* Creation and validation of AdES digital signatures are compliant with ETSI EN 319 102-1 (<<R09>>) and ETSI TS 119 102-2 (<<R13>>).
+* The determination of the certificate qualification is compliant with ETSI TS 119 172-4 (<<R10>>).
+* Trusted lists processes are compliant with ETSI TS 119 612 (<<R11>>).
+* Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
 
 ==== Out of the EU context
-DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signature, augmentation, validation, etc.
+DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signing, augmentation, validation, etc.
 
 An example would be the configuration of trust anchors (see section <<TrustAnchorConfiguration>>). The certificate sources can be configured from a TrustStore (kind of keystore which only contains certificates), a trusted list and/or a list of trusted lists.
 In case of an EU context you could use any of these three trust anchors.

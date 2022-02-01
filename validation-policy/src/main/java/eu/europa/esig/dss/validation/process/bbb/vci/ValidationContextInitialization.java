@@ -78,9 +78,8 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 	@Override
 	protected void initChain() {
-		MultiValuesConstraint signaturePolicyConstraint = validationPolicy.getSignaturePolicyConstraint(context);
 
-		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier(signaturePolicyConstraint);
+		ChainItem<XmlVCI> item = firstItem = signaturePolicyIdentifier();
 
 		if (signature.isPolicyPresent() && (!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId()))) {
 			
@@ -98,7 +97,8 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 
 	}
 
-	private ChainItem<XmlVCI> signaturePolicyIdentifier(MultiValuesConstraint signaturePolicyConstraint) {
+	private ChainItem<XmlVCI> signaturePolicyIdentifier() {
+		MultiValuesConstraint signaturePolicyConstraint = validationPolicy.getSignaturePolicyConstraint(context);
 		return new SignaturePolicyIdentifierCheck(i18nProvider, result, signature, signaturePolicyConstraint);
 	}
 

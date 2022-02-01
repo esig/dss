@@ -113,8 +113,8 @@ image::LTA-repetition.jpg[LTA repetition, width="100%", height="100%"]
 
 === Creating a baseline T signature
 
-The normal process of signing wants to sign first with the level `-B` and then later when it becomes necessary to complete the signature with superior levels. However, the framework allows signing directly with any level.
-As a direct signature creation to `BASELINE-T` level can be useful in order to provide the _best-signature-time_ (and a proof of existence of the signature, respectively) as close as possible to the claimed signing time.
+The common process is a creation of a `-B` level signature and then augmenting it, when necessary, with superior levels. However, the framework allows signing directly with any level.
+Thus, a direct signature creation to `BASELINE-T` level can benefit the signer with providing a _best-signature-time_ (and a proof of existence of the signature, respectively) as close as possible to the claimed signing time.
 
 Let's see an example of signing with the level `BASELINE-T`.
 
@@ -135,7 +135,7 @@ include::{samplesdir}/xades-signature-timestamp.adoc[]
 
 For signature creation, it is recommended to use a `BASELINE-T` level in order to provide the proof of existence (POE) to the signature with a signature time-stamp. This will ensure that the signature has been made during the validity period of the signing-certificate. The `BASELINE-B` level should not be used for signatures that need to be valid over a longer period of time because it does not contain a timestamp to prove the time of signing.
 
-It is not recommended to use `BASELINE-LT` level or higher on signature creation. The `BASELINE-LT` level should be added to a signature only after a revocation data update, so that revocation's `thisUpdate` parameter value will be after the _best-signing-time_ provided by the signature time-stamp on `BASELINE-T` level. This is a requirement of a revocation freshness constraint defined in ETSI EN 319 102-1 (cf. <<R09>>) and enforced by TS 119 172-4 (cf. <<R10>>) with a value '0'.
+It is not recommended using `BASELINE-LT` or higher level on signature creation. The `BASELINE-LT` level should be added to a signature only after a revocation data update, so that revocation's `thisUpdate` parameter value will be after the _best-signing-time_ provided by the signature time-stamp on `BASELINE-T` level. This is a requirement of a revocation freshness constraint defined in ETSI EN 319 102-1 (cf. <<R09>>) and enforced by TS 119 172-4 (cf. <<R10>>) with a value '0'.
 Since the lower levels are also added when the signature is augmented to a certain level, the `BASELINE-LTA` level should not be used for signature creation either as it would add `BASELINE-LT` too.
 
 The `AdES-BASELINE-T` trusted time indications should be created before the signing certificate has been revoked or expired and close to the time that the AdES signature was produced.

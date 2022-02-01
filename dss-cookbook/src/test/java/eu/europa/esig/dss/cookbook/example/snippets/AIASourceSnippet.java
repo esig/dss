@@ -43,11 +43,23 @@ public class AIASourceSnippet {
         // end::demo-online[]
 
         // tag::demo-cached[]
+        // Creates an instance of JdbcCacheAIASource
         JdbcCacheAIASource cacheAIASource = new JdbcCacheAIASource();
+
+        // Initialize the JdbcCacheConnector
         JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+
+        // Set the JdbcCacheConnector
         cacheAIASource.setJdbcCacheConnector(jdbcCacheConnector);
-        cacheAIASource.setProxySource(onlineAIASource);
+
+        // Allows definition of an alternative dataLoader to be used to access a revocation
+        // from online sources if a requested revocation is not present in the repository or has been expired (see below).
+
+
+        // Creates an SQL table
         cacheAIASource.initTable();
+
+        // Extract certificates by AIA
         Set<CertificateToken> aiaCertificates = cacheAIASource.getCertificatesByAIA(certificateToken);
         // end::demo-cached[]
 
