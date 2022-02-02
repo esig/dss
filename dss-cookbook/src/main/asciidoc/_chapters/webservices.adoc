@@ -29,6 +29,11 @@ Additionally, we also provide a https://github.com/esig/dss/tree/master/dss-cook
 [[RestSignatureService]]
 ==== REST signature service
 
+This service is composed by two modules:
+
+* `dss-signature-service-client` - provides client interfaces for the REST webservices;
+* `dss-signature-service` - contains REST webservices for signature creation, augmentation and document timestamping.
+
 This service exposes several methods taking as input one or more document and having as output a signed data object (possibly a timestamped document):
 
 [source,java,indent=0]
@@ -37,7 +42,14 @@ This service exposes several methods taking as input one or more document and ha
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestSignatureServiceSnippet.java[tags=demo]
 ----
 
-===== Get data to sign
+[[RestSingleDocumentSigning]]
+===== Single document signing
+
+A document signing assumes a signature creation in three (or four) consecutive steps (see <<SignatureCreationInDSS>> for more information). Two of the steps, namely "get data to sign" and "sign document" are available within the current module.
+
+Below you can find examples for processing these steps when signing a single document.
+
+====== Get data to sign
 
 The method allows retrieving the data to be signed. The user sends the document to be signed, the parameters (signature level, etc.) and the certificate chain.
 
@@ -50,7 +62,7 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/1/curl-request.adoc[Request]
 
-===== Sign document
+====== Sign document
 
 The method allows generation of the signed document with the received signature value.
 
@@ -62,6 +74,37 @@ Samples:
 * *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/http-response.adoc[Response]
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-and-extend-one-document/2/curl-request.adoc[Request]
+
+[[RestMultipleDocumentSigning]]
+===== Multiple document signing
+
+Similarly to <<RestSingleDocumentSigning>>, the service exposes methods which allow signing of multiple documents with one signature (format dependent).
+
+====== Get data to sign
+
+The method allows retrieving the data to be signed. The user sends the documents to be signed, the parameters (signature level, etc.) and the certificate chain.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/1/curl-request.adoc[Request]
+
+====== Sign document
+
+The method allows generation of the signed document with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-multiple-documents/2/curl-request.adoc[Request]
 
 ===== Extend document
 
@@ -86,7 +129,12 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/timestamp-one-document/1/curl-request.adoc[Request]
 
-===== Get data to be counter-signed
+[[RestCounterSigning]]
+===== Counter-signature
+
+Similarly to <<RestSingleDocumentSigning>>, the counter-signature creation requires execution of three (or four) consecutive steps, with the difference requiring a signed document to be provided as an input and Id of the signature to be counter-signed.
+
+====== Get data to be counter-signed
 
 This method returns the data to be signed in order to create a counter signature. The user should provide a document containing a signature to be counter-signed, id of the signature, and other parameters similarly to the method 'getDataToSign()'.
 
@@ -99,7 +147,7 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/1/curl-request.adoc[Request]
 
-===== Counter-Sign Signature
+====== Counter-Sign Signature
 
 This method incorporates a created counter signature to unsigned properties of the master signature with this specified id.
 
@@ -111,6 +159,39 @@ Samples:
 * *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/http-response.adoc[Response]
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/counter-sign-signature/2/curl-request.adoc[Request]
+
+[[RestTLSigning]]
+===== Trusted List signing
+
+Special methods have been exposed (since DSS 5.10) allowing to sign a Trusted List (TL) or a List of Trusted Lists (LOTL) using a simplified interface with a pre-configured set of parameters.
+
+The key difference with <<RestSingleDocumentSigning>> methods is the use of the `RemoteTrustedListSignatureParameters` object, containing a limited set of important parameters for TL-signature creation, instead of `RemoteSignatureParameters` object, containing a wide set of various parameters.
+
+====== Get data to sign
+
+The method allows retrieving the data to be signed. The user sends the Trusted List to be signed and the parameters (signing certificate, signing date, etc.).
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/1/curl-request.adoc[Request]
+
+====== Sign document
+
+The method allows generation of the signed Trusted List with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/curl-request.adoc[Request]
 
 [[RestServerSigningService]]
 ==== REST server signing service

@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2021-07-09T08:02:39Z",
+    "ValidationDate" : "2022-02-02T13:31:13Z",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -49,13 +49,14 @@
       "KeyUsage" : [ "keyCertSign", "crlSign" ],
       "extendedKeyUsagesOid" : [ ],
       "IdPkixOcspNoCheck" : false,
+      "ValAssuredShortTermCertificate" : null,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
         "KeyLengthUsedToSignThisToken" : "?",
         "DigestAlgoUsedToSignThisToken" : "SHA256",
         "MaskGenerationFunctionUsedToSignThisToken" : null,
-        "SignatureIntact" : null,
-        "SignatureValid" : null
+        "SignatureIntact" : false,
+        "SignatureValid" : false
       },
       "SigningCertificate" : null,
       "ChainItem" : [ ],
@@ -106,7 +107,7 @@
       "qualificationAtIssuance" : "N/A",
       "qualificationAtValidation" : "N/A",
       "revocation" : {
-        "productionDate" : null,
+        "thisUpdate" : null,
         "revocationDate" : null,
         "revocationReason" : null
       },
@@ -114,7 +115,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2021-07-09T08:02:39Z"
+    "ValidationTime" : "2022-02-02T13:31:13Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {
@@ -187,6 +188,7 @@
       "CV" : null,
       "SAV" : null,
       "PSV" : null,
+      "PSV_CRS" : null,
       "PCV" : null,
       "VTS" : null,
       "CertificateChain" : null,
