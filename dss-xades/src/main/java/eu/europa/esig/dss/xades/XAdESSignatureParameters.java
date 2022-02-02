@@ -101,7 +101,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	/**
-	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
+	 * This parameter allows producing a Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
 	 */
 	private boolean manifestSignature;
 

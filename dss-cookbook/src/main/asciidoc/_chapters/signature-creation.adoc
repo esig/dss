@@ -442,57 +442,99 @@ Unsigned attributes are not obligatory and can be added after the signature crea
 [%header,cols="7*<.<", orientation=landscape]
 |===
   2+|                                                          |DSS classes and methods                                 |XAdES                                |CAdES                                    |PAdES                                                      |JAdES
-.26+|B-Level    .24+|Signed attributes                         |class BLevelParameters +
-                                                                #setSigningDate                                         |SigningTime                          |signing-time                             |/                                                          |sigT
-                                                               |/                                                       |/                                    |signing-certificate                      |signing-certificate                                        |/
-                                                               |#setSigningCertificate                                  |SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#o / sigX5ts
-                                                               |class BLevelParameters +
-                                                                #setClaimedSignerRoles                                  |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
-                                                               |/                                                       |DataObjectFormat                     |/                                        |/                                                          |/
-                                                               |class BLevelParameters +
-                                                                #setCommitmentTypeIndications                           |CommitmentTypeIndication             |commitment-type-indication               |commitment-type-indication                                 |srCms
-                                                               |class BLevelParameters +
-                                                                #setSignerLocation                                      |SignatureProductionPlaceV2           |signer-location                          |entry with key Location in the Signature Dictionary        |sigPl
-                                                               |#setContentTimestamps                                   |AllDataObjectsTimeStamp              |content-time-stamp                       |content-time-stamp                                         |adoTst
-                                                               |For XAdES only:
-                                                                #setContentTimestamps                                   |IndividualDataObjectsTimeStamp       |/                                        |/                                                          |/
-                                                               |class BLevelParameters +
-                                                                #setSignaturePolicy                                     |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
-                                                               |/                                                       |/                                    |content-type                             |content-type                                               |/
-                                                               |/                                                       |Reference                            |message-digest                           |message-digest                                             |/
-                                                               |#setContentHintsType +
-                                                                #setContentHintsDescription                             |/                                    |content-hints                            |/                                                          |/
-                                                               |DSSDocument.setMimeType                                 |DataObjectFormat/MimeType            |mime-type                                |/                                                          |cty
-                                                               |/                                                       |/                                    |content-reference                        |/                                                          |/
-                                                               |#setContentIdentifierPrefix +
-                                                                #setContentIdentifierSuffix                             |/                                    |content-identifier                       |/                                                          |/
-                                                               |#setEncryptionAlgorithm +
-                                                                #setDigestAlgorithm                                     |SignatureMethod                      |/                                        |/                                                          |alg
-                                                               |#setIncludeKeyIdentifier                                |/                                    |/                                        |/                                                          |kid
-                                                               |?                                                       |/                                    |/                                        |/                                                          |x5u
-                                                               |#setCertificateChain                                    |KeyInfo/X509Data                     |/                                        |/                                                          |x5c
-                                                               |?                                                       |/                                    |/                                        |/                                                          |crit
-                                                               |#setSigningCertificateDigestMethod +
-                                                                 (DigestAlgorithm.SHA256)                               |/                                    |/                                        |/                                                          |x5t#S256
-                                                               |#setSigDMechanism                                       |/                                    |/                                        |/                                                          |sigD
-                                                               |#setBase64UrlEncodedPayload                             |/                                    |/                                        |/                                                          |b64
+.31+|B-Level    .28+|Signed attributes                         |_class BLevelParameters_ +
+                                                                *#setSigningDate*                                       |SigningTime                          |signing-time                             |/M                                                         |sigT
+                                                               |_class BLevelParameters_ +
+                                                                *#setClaimedSignerRole*                                 |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
+                                                               |_class BLevelParameters_ +
+                                                                *#setSignedAssertions*                                  |SignedAssertions                     |signedAssertions                         |signedAssertions                                           |signedAssertions
+                                                               |_class BLevelParameters_ +
+                                                                *#setCommitmentTypeIndications*                         |CommitmentTypeIndication             |commitment-type-indication               |commitment-type-indication                                 |srCms
+                                                               |_class BLevelParameters_ +
+                                                                *#setSignerLocation*                                    |SignatureProductionPlaceV2           |signer-location                          |/Location                                                  |sigPl
+                                                               |_class BLevelParameters_ +
+                                                                *#setSignaturePolicy*                                   |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
+                                                               |_class *AdESSignatureParameters_ +
+                                                                **#setSigningCertificate**                              |SigningCertificate +
+                                                                                                                         SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#256 +
+                                                                                                                                                                                                                                                                     x5t#o
+                                                               |_class *AdESSignatureParameters_ +
+                                                                **#setCertificateChain**                                |KeyInfo/X509Data                     |SignedData.certificates                  |SignedData.certificates                                    |x5c
+                                                               |_class *AdESSignatureParameters_ +
+                                                                **#setEncryptionAlgorithm** +
+                                                                **#setDigestAlgorithm**                                 |SignatureMethod                      |/                                        |/                                                          |alg
+                                                               |_class *AdESSignatureParameters_ +
+                                                                **#setContentTimestamps**                               |AllDataObjectsTimeStamp +
+                                                                                                                         IndividualDataObjectsTimeStamp       |content-time-stamp                       |content-time-stamp                                         |adoTst
+                                                               |_class XAdESSignatureParameters_ +
+                                                                *#setReferences*                                        |SignedInfo/Reference                 |/                                        |/                                                          |/
+                                                               |_class XAdESSignatureParameters_ +
+                                                                *#setSignedAdESObject*                                  |Object                               |/                                        |/                                                          |/
+                                                               |_class CAdESSignatureParameters_ +
+                                                                *#setContentHintsType* +
+                                                                *#setContentHintsDescription*                           |/                                    |content-hints                            |/                                                          |/
+                                                               |_class CAdESSignatureParameters_ +
+                                                                *#setContentIdentifierPrefix* +
+                                                                *#setContentIdentifierSuffix*                           |/                                    |content-identifier                       |/                                                          |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setReason*                                            |/                                    |/                                        |/Reason                                                    |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setContentSize*                                       |/                                    |/                                        |/Contents (length)                                         |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setFilter*                                            |/                                    |/                                        |/Filter                                                    |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setSubFilter*                                         |/                                    |/                                        |/SubFilter                                                 |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setSignerName*                                        |/                                    |/                                        |/Name                                                      |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setImageParameters*                                   |/                                    |/                                        |Visual representation                                      |/
+                                                               |_class PAdESSignatureParameters_ +
+                                                                *#setPermission*                                        |/                                    |/                                        |/P (CertificationPermission)                               |/
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setIncludeCertificateChain*                           |/                                    |/                                        |/                                                          |x5c
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setIncludeSignatureType*                              |/                                    |/                                        |/                                                          |typ
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setIncludeKeyIdentifier*                              |/                                    |/                                        |/                                                          |kid
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setSigningCertificateDigestMethod* +
+                                                                *(DigestAlgorithm.SHA256)*                              |/                                    |/                                        |/                                                          |x5t#S256
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setSigDMechanism*                                     |/                                    |/                                        |/                                                          |sigD
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setBase64UrlEncodedPayload*                           |/                                    |/                                        |/                                                          |b64
+                                                               |_class DSSDocument_ (for signer document) +
+                                                                *#setMimeType*                                          |DataObjectFormat/MimeType            |mime-type                                |/                                                          |cty
 
 
-                .2+|Unsigned attributes                        |class *AdESService +
-                                                                #getDataToBeCounterSigned +
-                                                                #counterSignSignature                                   |CounterSignature                     |countersignature                         |/                                                          |cSig
-                                                               |class *AdESService: +
-                                                                #addSignaturePolicyStore                                |SignaturePolicyStore                 |signature-policy-store                   |/                                                          |sigPSt
-|T-Level           |Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_T) +
-                                                                #setSignatureTimestampParameters                        |SignatureTimeStamp                   |signature-time-stamp                     |signature-time-stamp                                       |sigTst
-.5+|LT-Level    .5+|Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_LT)                   |CertificateValues                    |/                                        |/                                                          |xVals
-                                                               |#setSignatureLevel(*AdES_BASELINE_LT)                   |RevocationValues                     |/                                        |/                                                          |rVals
-                                                               |/                                                       |AttrAuthoritiesCertValues            |/                                        |/                                                          |axVals
-                                                               |/                                                       |AttributeRevocationValues            |/                                        |/                                                          |arVals
-                                                               |/                                                       |TimeStampValidationData              |/                                        |/                                                          |tstVD
-.2+|LTA-Level   .2+|Unsigned attributes                        |#setSignatureLevel(*AdES_BASELINE_LTA) +
-                                                                #setArchiveTimestampParameters                          |ArchiveTimeStamp                     |archive-time-stamp-v3                    |document-time-stamp                                        |arcTst
-                                                               |/                                                       |RenewedDigests                       |/                                        |/                                                          |/
+                .3+|Unsigned attributes                        |_class *AdESService_ +
+                                                                **#getDataToBeCounterSigned** +
+                                                                **#counterSignSignature**                               |CounterSignature                     |countersignature                         |/                                                          |cSig
+                                                               |_class *AdESService_ +
+                                                                **#addSignaturePolicyStore**                            |SignaturePolicyStore                 |signature-policy-store                   |/                                                          |sigPSt
+                                                               |_class JAdESSignatureParameters_ +
+                                                                *#setBase64UrlEncodedEtsiUComponents*                   |/                                    |/                                        |/                                                          |etsiU (items encoding)
+|T-Level           |Unsigned attributes                        |_class *AdESSignatureParameters_ +
+                                                                **#setSignatureLevel(*AdES_BASELINE_T)** +
+                                                                **#setSignatureTimestampParameters**                      |SignatureTimeStamp                 |signature-time-stamp                     |signature-time-stamp                                       |sigTst
+|LT-Level          |Unsigned attributes                        |_class *AdESSignatureParameters_ +
+                                                                **#setSignatureLevel(*AdES_BASELINE_LT)** +
+                                                                **#setSignatureLevel(XAdES_XL)**                          |CertificateValues +
+                                                                                                                         RevocationValues                     |SignedData.certificates +
+                                                                                                                                                               SignedData.crls                          |/DSS +
+                                                                                                                                                                                                         /VRI                                                       |xVals +
+                                                                                                                                                                                                                                                                     rVals
+|LTA-Level         |Unsigned attributes                        |_class *AdESSignatureParameters_ +
+                                                                **#setSignatureLevel(*AdES_BASELINE_LTA)** +
+                                                                **#setSignatureLevel(XAdES_A)** +
+                                                                **#setArchiveTimestampParameters**                        |ArchiveTimeStamp                   |archive-time-stamp-v3                    |document-time-stamp                                        |arcTst
+|C-Level +
+_(xades only)_     |Unsigned attributes                        |_class XAdESSignatureParameters_ +
+                                                                *#setSignatureLevel(XAdES_C)*                           |CompleteCertificateRefs +
+                                                                                                                         CompleteRevocationRefs               |_(not supported)_                        |_(not supported)_                                          |_(not supported)_
+|X-Level +
+_(xades only)_     |Unsigned attributes                        |_class XAdESSignatureParameters_ +
+                                                                *#setSignatureLevel(XAdES_X)*                           |SigAndRefsTimeStamp                  |_(not supported)_                        |_(not supported)_                                          |_(not supported)_
 |===
 
 [.portrait]
