@@ -250,8 +250,7 @@ Cryptographic constraints define a list of acceptable cryptographic algorithms a
 
 The default XML validation policy is present below.
 
-.constraint.xml (default policy is provided in dss-policy-jaxb module)
-
+.constraint.xml
 [source,xml]
 ----
 include::{samplesdir}/constraint.xml[]
