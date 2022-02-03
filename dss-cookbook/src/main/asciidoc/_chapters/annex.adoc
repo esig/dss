@@ -79,7 +79,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.47+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                      .2+|LevelConstraint                |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
@@ -92,7 +92,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -105,7 +105,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
-                                  |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+.12+|CertificateConstraints       |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationIssuerNotExpired      |LevelConstraint                   |INDETERMINATE         |REVOCATION_OUT_OF_BOUNDS_NO_POE
                                   |SelfSigned                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -117,7 +117,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.11+|CertificateConstraints       |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcLegislationCountryCodes       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -128,7 +128,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                   |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.21+|SignedAttributesConstraints  |SigningCertificatePresent       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.10+|SignedAttributesConstraints  |SigningCertificatePresent       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |UnicitySigningCertificate       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |SigningCertificateRefersCertificateChain  |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ReferencesToAllCertificateChainPresent    |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
@@ -138,7 +138,7 @@ A Signature validation policy is a set of rules/constraints that need to be fulf
                                   |IssuerSerialMatch               |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |KeyIdentifierPresent            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |KeyIdentifierMatch              |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |SigningTime                     |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.11+|SignedAttributesConstraints  |SigningTime                     |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentType                     |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentHints                    |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentIdentifier               |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
@@ -533,7 +533,7 @@ Now delving into the building blocks themselves, we can see in the figure below 
 
 image::DetailedReport-Illustration-BB.png[width="100%", height="100%", align="center"]
 
-We saw previously that the "validation process for basic signature" resulted in the REVOKED_NO_POE indication because the result of the "X.509 Certificate Validation" building block was not conclusive.
+We saw previously that the "validation process for basic signature" resulted in the `REVOKED_NO_POE` indication because the result of the "X.509 Certificate Validation" building block was not conclusive.
 
 To check what went wrong, we must therefore look at the "X.509 Certificate Validation" building block associated to the signature, that is the "X.509 Certificate Validation" building block that is in BBB SIG.
 
@@ -556,7 +556,7 @@ The overall validation result is then provided as the indication returned by the
 
 Although it is possible to only run the validation process for basic signature, in our case the process that was run was the "validation process for Signatures providing Long Term Availability and Integrity of Validation Material" which required to run the other two validation processes.
 
-Therefore, because that validation process returned `PASSED`, the overall validation result is TOTAL_PASSED.
+Therefore, because that validation process returned `PASSED`, the overall validation result is `TOTAL_PASSED`.
 
 Finally, the report contains information on the determination of the qualification of the signature.
 

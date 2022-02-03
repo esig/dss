@@ -160,7 +160,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * Sets a maximal pages amount in a PDF to process a visual screenshot
 	 * comparison Example: for value 10, the visual comparison will be executed for
-	 * a PDF containing 10 and less pages
+	 * a PDF containing 10 and fewer pages
 	 * 
 	 * NOTE: In order to disable visual comparison check set the pages amount to 0
 	 * (zero)

@@ -48,6 +48,41 @@ After that specify a list of dependencies required for your project. See <<Maven
 
 Refresh your project in order to download the dependency, and then you will be able to use all modules of the DSS framework. Your project needs to be refreshed every time you add new dependencies.
 
+[[BomModule]]
+====== Integration with Bill of Materials (BOM) module
+
+As DSS represents a multi-modules framework that benefits users from a more effective way of using the library (include only what you need), it has a downside that makes it difficult to keep versions of all modules up-to-date. The "bill of materials" (BOM) solution, represented by `dss-bom` module, helps other projects with the "version management".
+
+The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-library. Other projects that wish to benefit from the solution in DSS, should import `dss-bom` module using `dependencyManagement` and load other required modules without the need to define a version for each dependency:
+
+[source,xml]
+----
+ <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-bom</artifactId>
+            <version>5.10</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-utils-apache-commons</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    ...
+    <!-- add other required modules -->
+</dependencies>
+----
+
 ===== Maven build and profiles
 
 In order to use a customized bundle of DSS, you may want to build the DSS Core framework modules.

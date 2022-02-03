@@ -127,7 +127,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("Semantics identifier for legal person");
-        xmlOID.setValue("0.4.0.194121.1.1");
+        xmlOID.setValue("0.4.0.194121.1.2");
 
         xmlQcStatements.setSemanticsIdentifier(xmlOID);
 

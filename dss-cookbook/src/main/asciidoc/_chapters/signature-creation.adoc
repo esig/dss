@@ -442,7 +442,7 @@ Unsigned attributes are not obligatory and can be added after the signature crea
 [%header,cols="7*<.<", orientation=landscape]
 |===
   2+|                                                          |DSS classes and methods                                 |XAdES                                |CAdES                                    |PAdES                                                      |JAdES
-.31+|B-Level    .28+|Signed attributes                         |_class BLevelParameters_ +
+.6+|B-Level     .6+|Signed attributes                          |_class BLevelParameters_ +
                                                                 *#setSigningDate*                                       |SigningTime                          |signing-time                             |/M                                                         |sigT
                                                                |_class BLevelParameters_ +
                                                                 *#setClaimedSignerRole*                                 |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
@@ -454,7 +454,7 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 *#setSignerLocation*                                    |SignatureProductionPlaceV2           |signer-location                          |/Location                                                  |sigPl
                                                                |_class BLevelParameters_ +
                                                                 *#setSignaturePolicy*                                   |SignaturePolicyIdentifier            |signature-policy-identifier              |signature-policy-identifier                                |sigPId
-                                                               |_class *AdESSignatureParameters_ +
+.5+|B-Level      .5+|Signed attributes                         |_class *AdESSignatureParameters_ +
                                                                 **#setSigningCertificate**                              |SigningCertificate +
                                                                                                                          SigningCertificateV2                 |signing-certificate-v2                   |signing-certificate-v2                                     |x5t#256 +
                                                                                                                                                                                                                                                                      x5t#o
@@ -468,7 +468,7 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                                                                          IndividualDataObjectsTimeStamp       |content-time-stamp                       |content-time-stamp                                         |adoTst
                                                                |_class XAdESSignatureParameters_ +
                                                                 *#setReferences*                                        |SignedInfo/Reference                 |/                                        |/                                                          |/
-                                                               |_class XAdESSignatureParameters_ +
+.5+|B-Level      .5+|Signed attributes                         |_class XAdESSignatureParameters_ +
                                                                 *#setSignedAdESObject*                                  |Object                               |/                                        |/                                                          |/
                                                                |_class CAdESSignatureParameters_ +
                                                                 *#setContentHintsType* +
@@ -480,7 +480,7 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 *#setReason*                                            |/                                    |/                                        |/Reason                                                    |/
                                                                |_class PAdESSignatureParameters_ +
                                                                 *#setContentSize*                                       |/                                    |/                                        |/Contents (length)                                         |/
-                                                               |_class PAdESSignatureParameters_ +
+.5+|B-Level      .5+|Signed attributes                         |_class PAdESSignatureParameters_ +
                                                                 *#setFilter*                                            |/                                    |/                                        |/Filter                                                    |/
                                                                |_class PAdESSignatureParameters_ +
                                                                 *#setSubFilter*                                         |/                                    |/                                        |/SubFilter                                                 |/
@@ -490,7 +490,7 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 *#setImageParameters*                                   |/                                    |/                                        |Visual representation                                      |/
                                                                |_class PAdESSignatureParameters_ +
                                                                 *#setPermission*                                        |/                                    |/                                        |/P (CertificationPermission)                               |/
-                                                               |_class JAdESSignatureParameters_ +
+.5+|B-Level      .5+|Signed attributes                         |_class JAdESSignatureParameters_ +
                                                                 *#setIncludeCertificateChain*                           |/                                    |/                                        |/                                                          |x5c
                                                                |_class JAdESSignatureParameters_ +
                                                                 *#setIncludeSignatureType*                              |/                                    |/                                        |/                                                          |typ
@@ -501,13 +501,13 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 *(DigestAlgorithm.SHA256)*                              |/                                    |/                                        |/                                                          |x5t#S256
                                                                |_class JAdESSignatureParameters_ +
                                                                 *#setSigDMechanism*                                     |/                                    |/                                        |/                                                          |sigD
-                                                               |_class JAdESSignatureParameters_ +
+.5+|B-Level      .2+|Signed attributes                         |_class JAdESSignatureParameters_ +
                                                                 *#setBase64UrlEncodedPayload*                           |/                                    |/                                        |/                                                          |b64
                                                                |_class DSSDocument_ (for signer document) +
                                                                 *#setMimeType*                                          |DataObjectFormat/MimeType            |mime-type                                |/                                                          |cty
 
 
-                .3+|Unsigned attributes                        |_class *AdESService_ +
+                 .3+|Unsigned attributes                       |_class *AdESService_ +
                                                                 **#getDataToBeCounterSigned** +
                                                                 **#counterSignSignature**                               |CounterSignature                     |countersignature                         |/                                                          |cSig
                                                                |_class *AdESService_ +
