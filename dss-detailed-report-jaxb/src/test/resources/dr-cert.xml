@@ -182,35 +182,51 @@
                     <SubIndication>REVOKED_NO_POE</SubIndication>
                     <Errors Key="BBB_XCV_ISCR_ANS">The certificate is revoked!</Errors>
                 </Conclusion>
-                <RAC Id="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36" Title="Revocation Acceptance Validation">
-                    <Constraint>
-                        <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                <CRS Id="C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF" LatestAcceptableRevocationId="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36" Title="Certificate Revocation Data Selector">
+                    <Constraint Id="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36" BlockType="RAC">
+                        <Name Key="BBB_XCV_RAC">Is the revocation acceptance check conclusive?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>CertHash value of Revocation R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36 matches with the certificate digest</AdditionalInfo>
+                        <AdditionalInfo>Id = R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36, production time = 2013-07-01 06:00</AdditionalInfo>
                     </Constraint>
                     <Constraint>
-                        <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
+                        <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>
                         <Status>OK</Status>
-                        <AdditionalInfo>Id = R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
-                        <Status>OK</Status>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_CV_ISIC">Is certificates signature intact?</Name>
-                        <Status>OK</Status>
-                        <AdditionalInfo>Id = C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B</AdditionalInfo>
-                    </Constraint>
-                    <Constraint>
-                        <Name Key="BBB_XCV_OCSP_NO_CHECK">The certificate has the id-pkix-ocsp-nocheck extension (Revocation Check is skipped)</Name>
-                        <Status>OK</Status>
+                        <AdditionalInfo>Certificate Id = C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF</AdditionalInfo>
                     </Constraint>
                     <Conclusion>
                         <Indication>PASSED</Indication>
                     </Conclusion>
-                    <RevocationProductionDate>2018-02-09T07:03:45Z</RevocationProductionDate>
-                </RAC>
+                    <RAC Id="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36" Title="Revocation Acceptance Validation">
+                        <Constraint>
+                            <Name Key="BBB_XCV_IRDC">Is the revocation data consistent?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>CertHash value of Revocation R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36 matches with the certificate digest</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_CV_ISIR">Is revocations signature intact?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Id = R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_CCCBB">Can the certificate chain be built till a trust anchor?</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_CV_ISIC">Is certificates signature intact?</Name>
+                            <Status>OK</Status>
+                            <AdditionalInfo>Id = C-5C7199AD1BD04360237812292EAFB2FC010C3C7681831A99FED2C9E0FE567C8B</AdditionalInfo>
+                        </Constraint>
+                        <Constraint>
+                            <Name Key="BBB_XCV_OCSP_NO_CHECK">The certificate has the id-pkix-ocsp-nocheck extension (Revocation Check is skipped)</Name>
+                            <Status>OK</Status>
+                        </Constraint>
+                        <Conclusion>
+                            <Indication>PASSED</Indication>
+                        </Conclusion>
+                        <RevocationThisUpdate>2018-02-09T07:03:45Z</RevocationThisUpdate>
+                        <RevocationProductionDate>2018-02-09T07:03:45Z</RevocationProductionDate>
+                    </RAC>
+                </CRS>
                 <RFC Id="R-0e9b5c373afec1ced5723fcd9231f793bb330ffbf2b94bb8698301c90405b9bfcfa17dcb6fe2588a8209a374c1e685a7ecd2068f975bfe1d4ba9234a521e4e36" Title="Revocation Freshness Checker">
                     <Constraint>
                         <Name Key="BBB_XCV_IARDPFC">Is an acceptable revocation data present for the certificate?</Name>

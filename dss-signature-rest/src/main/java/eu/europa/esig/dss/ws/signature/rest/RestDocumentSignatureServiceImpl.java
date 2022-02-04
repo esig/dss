@@ -22,7 +22,6 @@ package eu.europa.esig.dss.ws.signature.rest;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.signature.common.AbstractRemoteSignatureServiceImpl;
 import eu.europa.esig.dss.ws.signature.common.RemoteDocumentSignatureService;
 import eu.europa.esig.dss.ws.signature.dto.CounterSignSignatureDTO;
 import eu.europa.esig.dss.ws.signature.dto.DataToBeCounterSignedDTO;
@@ -34,9 +33,10 @@ import eu.europa.esig.dss.ws.signature.rest.client.RestDocumentSignatureService;
 
 /**
  * REST implementation of the remote signature service
+ *
  */
 @SuppressWarnings("serial")
-public class RestDocumentSignatureServiceImpl extends AbstractRemoteSignatureServiceImpl implements RestDocumentSignatureService {
+public class RestDocumentSignatureServiceImpl implements RestDocumentSignatureService {
 
 	/** The service to use */
 	private RemoteDocumentSignatureService service;

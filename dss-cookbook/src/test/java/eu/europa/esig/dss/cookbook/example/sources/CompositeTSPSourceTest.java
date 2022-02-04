@@ -71,7 +71,7 @@ public class CompositeTSPSourceTest {
 		final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 
 		// DSS will request the tsp sources (one by one) until getting a valid token.
-		// If none of them succeed, a DSSException is thrown.
+		// If none of them succeeds, a DSSException is thrown.
 		final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
 
 		LOG.info(DSSUtils.toHex(tsBinary.getBytes()));

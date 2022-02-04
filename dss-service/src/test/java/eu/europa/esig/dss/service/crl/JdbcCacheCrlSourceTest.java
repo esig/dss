@@ -22,7 +22,9 @@ package eu.europa.esig.dss.service.crl;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import org.h2.jdbcx.JdbcDataSource;
@@ -55,7 +57,7 @@ public class JdbcCacheCrlSourceTest {
 	public void setUp() throws SQLException {		
 		// for testing purposes. DB view available on http://localhost:8082
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
-		dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
+		dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		crlSource.setJdbcCacheConnector(jdbcCacheConnector);
 		assertFalse(crlSource.isTableExists());
@@ -66,9 +68,11 @@ public class JdbcCacheCrlSourceTest {
 	@Test
 	public void test() throws Exception {
 		CRLToken revocationToken;
-		
-		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.crt"));
-		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
+
+		DataLoader dataLoader = new CommonsDataLoader();
+		CertificateToken certificateToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user-crl-ocsp.crt"));
+		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNull(revocationToken);
 		
@@ -89,7 +93,7 @@ public class JdbcCacheCrlSourceTest {
 
 		savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
-		compareTokens(revocationToken, savedRevocationToken);
+		compareTokens(forceRefresh, savedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
 		crlSource.setMaxNextUpdateDelay(1L);

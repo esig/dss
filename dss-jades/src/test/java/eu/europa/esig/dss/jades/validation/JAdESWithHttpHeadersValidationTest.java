@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -39,6 +32,13 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidation {
 
@@ -204,6 +204,12 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 		for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
 			assertFalse(cert.getSources().contains(CertificateSourceType.SIGNATURE));
 		}
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> retrievedDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertEquals(5, retrievedDocuments.size()); // 5 docs covered
 	}
 
 }

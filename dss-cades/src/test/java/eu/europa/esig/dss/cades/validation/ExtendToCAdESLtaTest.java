@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -109,17 +109,17 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 		parameters.setDetachedContents(Arrays.asList(detachedContent));
 		FileDocument document = new FileDocument(SIGNED_DOC_PATH);
 		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(document, parameters));
-		assertEquals("Cryptographic signature verification has failed / Signature verification failed against the best candidate.",
+		assertEquals("Cryptographic signature verification has failed / Signature verification failed against the best candidate.", 
 				exception.getMessage());
 	}
-
+	
 	@Override
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
-
+		
 		assertEquals(1, signatures.size());
 		AdvancedSignature advancedSignature = signatures.get(0);
-
+		
 		OfflineRevocationSource<CRL> crlSource = advancedSignature.getCRLSource();
 		Set<EncapsulatedRevocationTokenIdentifier<CRL>> crlRevocationBinaries = crlSource.getAllReferencedRevocationBinaries();
 		assertEquals(1, crlRevocationBinaries.size());
@@ -129,13 +129,13 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 			CRLBinary crlBinary = new CRLBinary(Utils.fromBase64(crlBinaries));
 			Map<RevocationRef<CRL>, Set<RevocationRefOrigin>> crlRefs = crlSource.findRefsAndOriginsForBinary(crlBinary);
 			assertEquals(1, crlRefs.size());
-
+			
 			RevocationRef<CRL> revocationRef = crlRefs.keySet().iterator().next();
 			assertNotNull(crlSource.findBinaryForReference(revocationRef));
 		} catch (Exception e) {
 			fail("Unable to extract CRL Refs", e);
 		}
-
+		
 		OfflineRevocationSource<OCSP> ocspSource = advancedSignature.getOCSPSource();
 		Set<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspRevocationBinaries = ocspSource.getAllReferencedRevocationBinaries();
 		assertEquals(1, ocspRevocationBinaries.size());
@@ -146,7 +146,7 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 			OCSPResponseBinary ocspResponseBinary = OCSPResponseBinary.build(basicOCSPResp);
 			Map<RevocationRef<OCSP>, Set<RevocationRefOrigin>> ocspRefs = ocspSource.findRefsAndOriginsForBinary(ocspResponseBinary);
 			assertEquals(1, ocspSource.findRefsAndOriginsForBinary(ocspResponseBinary).size());
-
+			
 			RevocationRef<OCSP> revocationRef = ocspRefs.keySet().iterator().next();
 			assertNotNull(ocspSource.findBinaryForReference(revocationRef));
 		} catch (Exception e) {

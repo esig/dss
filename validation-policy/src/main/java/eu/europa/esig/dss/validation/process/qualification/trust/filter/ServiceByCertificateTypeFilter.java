@@ -41,8 +41,14 @@ import java.util.List;
  */
 public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter {
 
+	/** Certificate to be checked */
 	private final CertificateWrapper certificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param certificate {@link CertificateWrapper} to get trusted services for
+	 */
 	public ServiceByCertificateTypeFilter(CertificateWrapper certificate) {
 		this.certificate = certificate;
 	}

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -36,8 +36,9 @@ import java.util.Date;
 
 /**
  * Checks if a POE exists before the control time
+ *
  */
-public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
+public class POEExistsAtOrBeforeControlTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Token to check */
 	private final TokenProxy token;
@@ -55,14 +56,14 @@ public class POEExistsAtOrBeforeControlTimeCheck extends ChainItem<XmlVTS> {
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlVTS}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param token {@link TokenProxy}
 	 * @param referenceCategory {@link TimestampedObjectType}
 	 * @param controlTime {@link Date}
 	 * @param poe {@link POEExtraction}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public POEExistsAtOrBeforeControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, TokenProxy token,
+	public POEExistsAtOrBeforeControlTimeCheck(I18nProvider i18nProvider, T result, TokenProxy token,
 											   TimestampedObjectType referenceCategory, Date controlTime,
 											   POEExtraction poe, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

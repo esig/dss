@@ -20,12 +20,8 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -33,6 +29,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature {
 
@@ -82,6 +86,13 @@ public class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature 
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<DSSDocument> retrievedDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
+		assertEquals(1, retrievedDocuments.size());
+		assertTrue(Arrays.equals(DSSUtils.toByteArray(documentToSign), DSSUtils.toByteArray(retrievedDocuments.get(0))));
 	}
 
 }

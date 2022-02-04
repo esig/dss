@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -35,6 +30,11 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESLevelLTATest extends AbstractJAdESTestValidation {
 
@@ -62,16 +62,25 @@ public class JAdESLevelLTATest extends AbstractJAdESTestValidation {
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(2, timestampList.size());
 		
+		boolean sigTstFound = false;
 		boolean archiveTstFound = false;
 		for (TimestampWrapper timestamp : timestampList) {
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
-			
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestamp.getType())) {
+				assertEquals(0, timestamp.getTimestampScopes().size());
+				assertEquals(1, timestamp.getTimestampedSignedData().size());
+				sigTstFound = true;
+
+			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
 				assertEquals(ArchiveTimestampType.JAdES, timestamp.getArchiveTimestampType());
+				assertEquals(1, timestamp.getTimestampScopes().size());
+				assertEquals(1, timestamp.getTimestampedSignedData().size());
 				archiveTstFound = true;
 			}
 		}
+		assertTrue(sigTstFound);
 		assertTrue(archiveTstFound);
 	}
 

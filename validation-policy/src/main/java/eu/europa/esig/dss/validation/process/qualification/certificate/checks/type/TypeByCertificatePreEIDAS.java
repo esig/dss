@@ -24,10 +24,20 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.enumerations.CertificateType;
 
+/**
+ * Gets certificate usage type before eIDAS
+ *
+ */
 class TypeByCertificatePreEIDAS implements TypeStrategy {
 
+	/** Certificate to get usage type for */
 	private final CertificateWrapper signingCertificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 */
 	public TypeByCertificatePreEIDAS(CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}

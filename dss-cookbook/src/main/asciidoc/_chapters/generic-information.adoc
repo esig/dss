@@ -1,0 +1,192 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Generic information
+
+=== The Project
+
+The *DSS (Digital Signature Service)* project is an open-source software library, aimed at providing implementation of the standards for Advanced Electronic Signature creation, augmentation and validation in line with European legislation and the eIDAS Regulation in particular.
+
+This project is available in *Java* language.
+
+=== Purpose of the document
+
+This document describes some examples of how to develop in Java using the DSS framework. The aim is to show to the developers, in a progressive manner, the different uses of the framework. It will familiarize them with the code step by step.
+
+=== Scope of the document
+
+This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release {dssVersion} of DSS framework which can be downloaded via https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/DSS+releases
+
+Three main features can be distinguished within the framework :
+
+* The creation of a digital signature;
+* The augmentation of a digital signature and;
+* The validation of a digital signature.
+
+In a more detailed manner the following concepts and features are addressed in this document:
+
+* Forms of digital signatures: XAdES, CAdES, PAdES, JAdES and ASiC-S/ASiC-E;
+* Formats of the signed documents: XML, JSON, PDF, DOC, TXT, ZIP, etc.;
+* Packaging structures: enveloping, enveloped, detached and internally-detached;
+* Profiles associated to each form of the digital signature;
+* Trust management;
+* Revocation data handling (OCSP and CRL sources);
+* Certificate chain building;
+* Signature validation and validation policy;
+* Signature qualification;
+* Validation reports (Simple, Detailed, ETSI Validation report);
+* Management of signature tokens;
+* Validation of the signing certificate;
+* Timestamp creation;
+* Timestamp validation and qualification;
+* REST and SOAP webservices.
+
+This is not an exhaustive list of all the possibilities offered by the framework and the proposed examples cover only the most useful features. However, to discover every detail of the operational principles of the framework, the JavaDoc is available within the source code.
+
+NOTE: The DSS framework is actively maintained and new features will be released in the future.
+
+=== Available demonstrations
+// TODO: Info that we (CEF) don’t collect documents.
+
+With the framework, some demonstrations are provided:
+
+* https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[DSS online demo web application];
+* <<DSSWebApp, Ready to use demo web application build>>;
+* <<DSSStandaloneApp, JavaFX Standalone Application>>.
+
+WARNING: The demonstrations use a fake timestamp service (Mock) so that is not recommended for a production usage.
+
+The requirements and build instructions for DSS demonstrations can be found in the section <<DSSDemo>>.
+
+=== License
+For the DSS core: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)].
+
+For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL] and https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE]
+
+=== Abbreviations and Acronyms
+
+[cols=2]
+.Abbreviations and Acronyms
+|=======================
+|Code			|Description
+|AdES			|Advanced Electronic Signature
+|API			|Application Programming Interface
+|ASiC			|Associated Signature Containers
+|BB				|Building Block (CEF)
+|CA				|Certificate authority
+|CAdES			|CMS Advanced Electronic Signatures
+|CEF			|Connecting Europe Facility
+|CMS			|Cryptographic Message Syntax
+|CRL			|Certificate Revocation List
+|CSP			|Cryptographic Service Provider
+|DER			|Distinguished Encoding Rules
+|DSA			|Digital Signature Algorithm - an algorithm for public-key cryptography
+|DSS			|Digital Signature Service
+|EC				|European Commission
+|ESI			|Electronic Signatures and Infrastructures
+|ETSI			|European Telecommunications Standards Institute
+|EUPL			|European Union Public License
+|HSM			|Hardware Security Modules
+|HTTP			|Hypertext Transfer Protocol
+|JAdES          |JSON Advanced Electronic Signatures
+|Java EE		|Java Enterprise Edition
+|JavaDoc		|JavaDoc is developed by Sun Microsystems to create API documentation in HTML format from the comments in the source code. JavaDoc is an industrial standard for documenting Java classes.
+|JAXB			|Java Architecture for XML Binding
+|JDBC			|Java DataBase Connectivity
+|JWS			|JSON Web Signatures
+|LGPL			|Lesser General Public License
+|LOTL			|List of Trusted List or List of the Lists
+|MOCCA			|Austrian Modular Open Citizen Card Architecture; implemented in Java
+|MS / EUMS		|Member State
+|MS CAPI		|Microsoft Cryptographic Application Programming Interface
+|OCF			|OEBPS Container Format
+|OCSP			|Online Certificate Status Protocol
+|ODF			|Open Document Format
+|ODT			|Open Document Text
+|OEBPS			|Open eBook Publication Structure
+|OID			|Object Identifier
+|OOXML			|Office Open XML
+|PAdES			|PDF Advanced Electronic Signatures
+|PC/SC			|Personal computer/Smart Card
+|PDF			|Portable Document Format
+|PDFBox			|Apache PDFBox - A Java PDF Library: http://pdfbox.apache.org/
+|PKCS			|Public Key Cryptographic Standards
+|PKCS#12		|It defines a file format commonly used to store X.509 private key accompanying public key certificates, protected by symmetrical password
+|PKIX			|Internet X.509 Public Key Infrastructure
+|RSA			|Rivest Shamir Adleman - an algorithm for public-key cryptography
+|SCA			|Signature Creation Application
+|SCD			|Signature Creation Device
+|SOAP			|Simple Object Access Protocol
+|SSCD			|Secure Signature-Creation Device
+|SVA			|Signature Validation Application
+|TL				|Trusted List
+|TLManager		|Application for managing trusted lists.
+|TSA			|Time Stamping Authority
+|TSL			|Trust-service Status List
+|TSP			|Trusted Service Provider
+|TST			|Time-Stamp Token
+|UCF			|Universal Container Format
+|URI			|Uniform Resource Identifier
+|WSDL			|Web Services Description Language
+|WYSIWYS		|What you see is what you sign
+|XAdES			|XML Advanced Electronic Signatures
+|XML			|Extensible Markup Language
+|ZIP			|File format used for data compression and archiving
+|=======================
+
+=== References
+
+// TODO : add links to the standards
+
+[%header,cols=4]
+.References
+|=======================
+|Ref.			|Title																			|Reference					|Version
+|[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.1.1
+|[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
+|[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
+|[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
+|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|1.1.1
+|[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
+|[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
+|[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
+|[[R09]]	R09	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.3.1
+|[[R10]]	R10	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|1.1.1
+|[[R11]]	R11	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.2.1
+|[[R12]]	R12	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
+|[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.3.1
+|[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |1.1.1
+|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax |RFC 2315 |Version 1.5
+|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015 |CID 2015/1506 |
+|[[R17]]	R17	|ESI - Building blocks and table of contents for human
+readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
+|[[R18]]	R18	|ESI - XML format for signature policies
+|ETSI TS 119 172-2			|1.1.1
+|[[R19]]	R19	|ESI - ASN.1 format for signature policies
+|ETSI TS 119 172-3			|1.1.1
+|[[R20]]    R20 |Internet RFC 7515: JSON Web Signature (JWS) |RFC 7515 |
+|[[R21]]    R21 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280 |
+|[[R22]]    R22 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP |RFC 6960 |
+|[[R23]]    R23 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST |Common PKI v2.0 | v2.0
+
+
+|=======================
+
+=== Useful links
+
+* https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
+* https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+FAQ[eSignature FAQ]
+* https://esignature.ec.europa.eu/efda/home/[Trust Services Dashboard]
+* https://esignature.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
+* https://ec.europa.eu/cefdigital/wiki/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
+* https://github.com/esig/dss[Source code (GitHub)]
+* https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
+* https://github.com/esig/dss-demonstrations[Source code demonstrations (GitHub)]
+* https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse[Source code demonstrations (EC Bitbucket)]
+* https://ec.europa.eu/cefdigital/tracker/projects/DSS/issues[Report an issue (EC Jira)]
+* https://esig-dss.atlassian.net/projects/DSS[Old Jira]
+
+

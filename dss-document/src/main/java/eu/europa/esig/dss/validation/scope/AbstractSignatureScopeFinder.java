@@ -30,17 +30,20 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 /**
  * The abstract class for {@code SignatureScope} finding
  *
- * @param <T> implementation of {@link AdvancedSignature}
  */
-public abstract class AbstractSignatureScopeFinder<T extends AdvancedSignature> implements SignatureScopeFinder<T> {
+public abstract class AbstractSignatureScopeFinder {
 
 	/** The DigestAlgorithm to use for digest computation */
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/** The ASiC-S package filename */
 	private static final String ASICS_PACKAGE_ZIP_NAME = "package.zip";
-	
-	@Override
+
+	/**
+	 * Sets the default DigestAlgorithm to use for {@code SignatureScope} digest computation
+	 *
+	 * @param defaultDigestAlgorithm {@link DigestAlgorithm} to use
+	 */
 	public void setDefaultDigestAlgorithm(DigestAlgorithm defaultDigestAlgorithm) {
 		this.defaultDigestAlgorithm = defaultDigestAlgorithm;
 	}

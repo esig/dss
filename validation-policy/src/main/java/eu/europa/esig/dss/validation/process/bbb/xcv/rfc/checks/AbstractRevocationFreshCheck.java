@@ -64,13 +64,13 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 	 *
 	 * @return TRUE is revocation is after validation time, FALSE otherwise
 	 */
-	protected boolean isProductionDateAfterValidationTime() {
+	protected boolean isThisUpdateTimeAfterValidationTime() {
 		long maxFreshness = getMaxFreshness();
 		long validationDateTime = validationDate.getTime();
 		long limit = validationDateTime - maxFreshness;
 
-		Date productionDate = revocationData.getProductionDate();
-		return productionDate != null && productionDate.after(new Date(limit));
+		Date thisUpdate = revocationData.getThisUpdate();
+		return thisUpdate != null && thisUpdate.after(new Date(limit));
 	}
 
 	/**
@@ -82,15 +82,15 @@ public abstract class AbstractRevocationFreshCheck extends ChainItem<XmlRFC> {
 
 	@Override
 	protected String buildAdditionalInfo() {
-		String productionTimeString = "not defined";
+		String thisUpdateString = "not defined";
 		String nextUpdateString = "not defined";
 		if (revocationData != null) {
-			if (revocationData.getProductionDate() != null)
-				productionTimeString = ValidationProcessUtils.getFormattedDate(revocationData.getProductionDate());
+			if (revocationData.getThisUpdate() != null)
+				thisUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getThisUpdate());
 			if (revocationData.getNextUpdate() != null)
 				nextUpdateString = ValidationProcessUtils.getFormattedDate(revocationData.getNextUpdate());
 		}
-		return i18nProvider.getMessage(MessageTag.REVOCATION_CHECK, ValidationProcessUtils.getFormattedDate(validationDate), productionTimeString,
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CHECK, ValidationProcessUtils.getFormattedDate(validationDate), thisUpdateString,
 				nextUpdateString);
 	}
 

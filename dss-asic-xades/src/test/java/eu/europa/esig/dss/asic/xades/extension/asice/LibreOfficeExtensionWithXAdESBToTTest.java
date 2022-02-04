@@ -52,8 +52,7 @@ public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdES
 	@Override
 	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
 		checkTimestamps(diagnosticData);
-
-		// Overrided because original file contains duplicate certificate values
+		// Overridden because original file contains duplicate certificate values
 	}
 
 	@Override

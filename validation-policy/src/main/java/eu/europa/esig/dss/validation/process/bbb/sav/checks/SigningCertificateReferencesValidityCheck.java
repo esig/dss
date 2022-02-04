@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -66,18 +67,18 @@ public class SigningCertificateReferencesValidityCheck extends ChainItem<XmlSAV>
 		FoundCertificatesProxy foundCertificates = token.foundCertificates();
 		
 		// 1) Check orphan references presence
-		List<CertificateRefWrapper> orphanSigningCertificateRefs = foundCertificates.getOrphanCertificateRefsByRefOrigin(
-				CertificateRefOrigin.SIGNING_CERTIFICATE);
+		List<CertificateRefWrapper> orphanSigningCertificateRefs = foundCertificates
+				.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		if (Utils.isCollectionNotEmpty(orphanSigningCertificateRefs)) {
 			// the provided reference does not match the provided certificate chain
 			return false;
 		}
 		
 		// 2) Check found references against the certificate chain
-		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(
-				CertificateRefOrigin.SIGNING_CERTIFICATE);
+		List<RelatedCertificateWrapper> relatedSigningCertificates = foundCertificates
+				.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
-		List<String> certificateChainIds = token.getCertificateChain().stream().map(c -> c.getId()).collect(Collectors.toList());
+		List<String> certificateChainIds = token.getCertificateChain().stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 		
 		for (RelatedCertificateWrapper signingCertificate : relatedSigningCertificates) {
 			if (!certificateChainIds.contains(signingCertificate.getId())) {

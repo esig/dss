@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
@@ -43,9 +42,6 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	/** ResponderId in case of OCSP response */
 	private ResponderId responderId;
-
-	/** The origin of the certificate reference */
-	private CertificateRefOrigin origin;
 	
 	/** An unique identifier of the reference */
 	private Identifier identifier;
@@ -105,24 +101,6 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 	}
 	
 	/**
-	 * Gets the certificate reference origin
-	 *
-	 * @return {@link CertificateRefOrigin}
-	 */
-	public CertificateRefOrigin getOrigin() {
-		return origin;
-	}
-	
-	/**
-	 * Sets the certificate reference origin
-	 *
-	 * @param origin {@link CertificateRefOrigin}
-	 */
-	public void setOrigin(CertificateRefOrigin origin) {
-		this.origin = origin;
-	}
-	
-	/**
 	 * Returns the certificate reference identifier
 	 *
 	 * @return {@link Identifier}
@@ -146,7 +124,7 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", signerIdentifier=" + signerIdentifier + ", origin=" + origin + "]";
+		return "CertificateRef [certDigest=" + certDigest + ", signerIdentifier=" + signerIdentifier + "]";
 	}
 	
 	@Override

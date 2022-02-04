@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.service.http.proxy;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * This class is a DTO which contains proxy properties for HTTP or HTTPS
@@ -38,8 +39,10 @@ public class ProxyProperties implements Serializable {
 	private String user;
 	/** The password to use */
 	private String password;
-	/** Allows multiple urls (separator ',', ';' or ' ') */
-	private String excludedHosts;
+	/** The host connection scheme */
+	private String scheme;
+	/** Defines a list of hosts (URLs) to be excluded from the proxy configuration */
+	private Collection<String> excludedHosts;
 
 	/**
 	 * Returns the proxy host to use
@@ -118,21 +121,39 @@ public class ProxyProperties implements Serializable {
 	}
 
 	/**
-	 * Returns the excluded hosts (can be separated by ',', ';' or ' ')
-	 * 
-	 * @return the excluded hosts
+	 * Gets the host connection scheme
+	 *
+	 * @return {@link String}
 	 */
-	public String getExcludedHosts() {
+	public String getScheme() {
+		return scheme;
+	}
+
+	/**
+	 * Sets the host connection scheme (e.g. "http", "https", etc.)
+	 *
+	 * @param scheme {@link String}
+	 */
+	public void setScheme(String scheme) {
+		this.scheme = scheme;
+	}
+
+	/**
+	 * Gets a collection of hosts to be excluded
+	 *
+	 * @return a collection of {@link String}s
+	 */
+	public Collection<String> getExcludedHosts() {
 		return excludedHosts;
 	}
 
 	/**
-	 * Set the excluded hosts (can be separated by ',', ';' or ' ')
-	 * 
+	 * Sets a collection of hosts (URLs) to be excluded from the proxy configuration
+	 *
 	 * @param excludedHosts
-	 *            the excluded hosts (can be separated by ',', ';' or ' ')
+	 *            a collection of hosts URLs to exclude
 	 */
-	public void setExcludedHosts(String excludedHosts) {
+	public void setExcludedHosts(Collection<String> excludedHosts) {
 		this.excludedHosts = excludedHosts;
 	}
 

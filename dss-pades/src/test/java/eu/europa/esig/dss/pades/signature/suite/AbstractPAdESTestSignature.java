@@ -20,26 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1TaggedObject;
-import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.SignedData;
-import org.bouncycastle.asn1.cms.SignerInfo;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -47,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -73,6 +54,25 @@ import eu.europa.esig.validationreport.jaxb.SAVRIType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.cms.SignerInfo;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> {
 
@@ -177,6 +177,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertNotNull(signature.getPDFRevision());
 			
@@ -188,10 +190,11 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			assertNotNull(signature.getSignatureByteRange());
 			
 			assertFalse(signature.arePdfModificationsDetected());
+			assertTrue(Utils.isCollectionEmpty(signature.getPdfUndefinedChanges()));
 		}
 		
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			if (timestamp.getType().isArchivalTimestamp()) {
+			if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestamp.getType())) {
 				assertNotNull(timestamp.getPDFRevision());
 				
 				assertTrue(Utils.isCollectionNotEmpty(timestamp.getSignatureFieldNames()));
@@ -202,6 +205,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 				assertNotNull(timestamp.getSignatureByteRange());		
 				
 				assertFalse(timestamp.arePdfModificationsDetected());
+				assertTrue(Utils.isCollectionEmpty(timestamp.getPdfUndefinedChanges()));
 			}
 		}
 	}
@@ -210,7 +214,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCmsSignedData().getEncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getBaseObject());
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
@@ -221,13 +225,23 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 			for (int i = 0; i < authenticatedAttributeSet.size(); i++) {
 				Attribute attribute = Attribute.getInstance(authenticatedAttributeSet.getObjectAt(i));
 				ASN1ObjectIdentifier attrTypeOid = attribute.getAttrType();
-				int size = attrTypeOid.getEncoded().length + attribute.getEncoded().length;
+				ASN1Set attrValues = attribute.getAttrValues();
+				int size = attrTypeOid.getEncoded().length + attrValues.getEncoded().length;
 
 				assertTrue(size >= previousSize);
 				previousSize = size;
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
+		}
+	}
+
+	@Override
+	protected void checkMimeType(DiagnosticData diagnosticData) {
+		super.checkMimeType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNull(signatureWrapper.getMimeType());
 		}
 	}
 

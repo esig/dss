@@ -23,10 +23,16 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.pseudo;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Extract pseudo information for German certificates
+ *
+ */
 public class PseudoGermanyStrategy implements PseudoStrategy {
 
+	/** Germany country code */
 	private static final String GERMANY_COUNTRY_CODE = "DE";
 
+	/** Suffix used for certificate's pseudo definition within X500 Attributes */
 	private static final String PSEUDO_SUFFIX = ":PN";
 
 	@Override

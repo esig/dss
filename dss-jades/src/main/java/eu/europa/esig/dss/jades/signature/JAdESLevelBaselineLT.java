@@ -43,6 +43,8 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import java.util.List;
 import java.util.Set;
 
+import static eu.europa.esig.dss.enumerations.SignatureLevel.JAdES_BASELINE_LT;
+
 /**
  * Creates an LT-level of a JAdES signature
  */
@@ -66,7 +68,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (jadesSignature.hasLTAProfile()) {
+			if (!ltLevelExtensionRequired(jadesSignature, params)) {
 				continue;
 			}
 
@@ -93,7 +95,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (jadesSignature.hasLTAProfile()) {
+			if (!ltLevelExtensionRequired(jadesSignature, params)) {
 				continue;
 			}
 
@@ -234,17 +236,20 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		}
 	}
 
+	private boolean ltLevelExtensionRequired(JAdESSignature jadesSignature, JAdESSignatureParameters parameters) {
+		return JAdES_BASELINE_LT.equals(parameters.getSignatureLevel()) || !jadesSignature.hasLTAProfile();
+	}
+
 	/**
 	 * Checks if the extension is possible.
 	 */
 	private void assertExtendSignatureToLTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signedData is already extended with [%s]!";
-			throw new IllegalInputException(String.format(exceptionMessage, "JAdES LTA"));
+		if (JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
 		} else if (jadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException(
-					"Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

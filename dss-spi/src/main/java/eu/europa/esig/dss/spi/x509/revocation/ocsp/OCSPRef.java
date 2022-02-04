@@ -96,10 +96,10 @@ public class OCSPRef extends RevocationRef<OCSP> {
     @Override
     public String toString() {
         if (responderId.getX500Principal() != null) {
-            return "OCSP Reference produced at [" + DSSUtils.formatInternal(producedAt) + "] "
+            return "OCSP Reference produced at [" + DSSUtils.formatDateToRFC(producedAt) + "] "
                     + "with Responder Name: [" + responderId.getX500Principal() + "]";
         } else {
-            return "OCSP Reference produced at [" + DSSUtils.formatInternal(producedAt) + "] "
+            return "OCSP Reference produced at [" + DSSUtils.formatDateToRFC(producedAt) + "] "
                     + "with Responder key 64base: [" + Utils.toBase64(responderId.getSki()) + "]";
         }
     }

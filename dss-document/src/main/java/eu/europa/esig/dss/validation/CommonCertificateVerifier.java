@@ -26,7 +26,6 @@ import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
@@ -160,8 +159,8 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	/**
-	 * This constructor allows to create {@code CommonCertificateVerifier} without {@code DataLoader}. It means that
-	 * only a profile -B signatures can be created.
+	 * This constructor allows creating of {@code CommonCertificateVerifier} without {@code DataLoader}.
+	 * It means that only a -B profile signature can be created.
 	 *
 	 * @param simpleCreationOnly
 	 *            if true the {@code CommonCertificateVerifier} will not contain {@code AIASource}.
@@ -273,12 +272,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 		if (adjunctCertificateSource.getCertificateSourceType().isTrusted()) {
 			LOG.warn("Adjunct certificate sources shouldn't be trusted. An adjunct certificate source contains missing intermediate certificates");
 		}
-	}
-
-	@Override
-	public void setDataLoader(final DataLoader dataLoader) {
-		LOG.warn("Use of deprecated method setDataLoader(DataLoader)! This method will override the defined AIASource.");
-		aiaSource = new DefaultAIASource(dataLoader);
 	}
 
 	@Override

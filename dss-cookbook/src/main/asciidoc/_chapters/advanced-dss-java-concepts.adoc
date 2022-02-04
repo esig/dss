@@ -1,0 +1,278 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+[[AdvancedConcepts]]
+== Advanced DSS java concepts
+
+[[ServiceLoaderAdvanced]]
+=== ServiceLoader
+
+DSS incorporates modules that are loaded in the run time based on the chosen configuration and the input data via a https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[ServiceLoader]. This provides a flexibility for an end-user to work only with selected modules and a possibility to expand DSS with custom implementations.
+
+In order to provide a chosen implementation(s) to `ServiceLoader`, a file listing all the desired implementations should be created in the resource directory `META-INF/services` with a name matching the implemented interface. When merging sources (e.g. creating a Fat JAR module), the files can be lost/overwritten, and should be configured manually (all the required implementations shall be listed).
+
+It is also possible to customize the order of the used implementation, but creating a corresponding file in `META-INF/services` directory within your project.
+
+NOTE: If a DSS module(s) implementing a required interface(s) is added to your project's dependency list, the implementation shall be loaded automatically.
+
+The following modules are provided with independent implementations:
+
+* DSS Utils;
+* DSS CRL Parser;
+* DSS PAdES.
+
+WARNING: At least one implementation shall be chosen.
+
+[[dssUtils]]
+==== DSS Utils
+
+The module `dss-utils` offers an interface with utility methods to operate on String, Collection, I/O, etc. DSS framework provides two different implementations with the same behaviour :
+
+* `dss-utils-apache-commons`: this module uses Apache Commons libraries (commons-lang3, commons-collection4, commons-io and commons-codec);
+* `dss-utils-google-guava`: this module uses Google Guava (recommended on Android).
+
+If your integration includes `dss-utils`, you will need to select an implementation. For example, to choose the `dss-utils-apache-commons` implementation within a Maven project you need to define the following:
+
+[source,xml,indent=0]
+.pom.xml
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-utils-apache-commons</artifactId>
+</dependency>
+----
+
+[[dssCrlParser]]
+==== DSS CRL Parser
+
+DSS contains two ways to parse/validate a CRL and to retrieve revocation data. An alternative to the `X509CRL` java object was developed to face memory issues in case of large CRLs. The `X509CRL` object fully loads the CRL in memory and can cause `OutOfMemoryError`.
+
+* `dss-crl-parser-x509crl`: this module uses the `X509CRL` java object.
+* `dss-crl-parser-streams`: this module offers an alternative with a CRL streaming.
+
+If your integration requires `dss-crl-parser`, you will need to choose your implementation. For example, to choose the `dss-crl-parser-streams` implementation within a Maven project you need to define the following:
+
+[source,xml,indent=0]
+.pom.xml
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-crl-parser-stream</artifactId>
+</dependency>
+----
+
+[[dssPades]]
+==== DSS PAdES
+
+DSS allows generation, augmentation and validation of PAdES signatures with two different frameworks: PDFBox and OpenPDF (fork of iText). The `dss-pades` module only contains the common code and requires an underlying implementation :
+
+* `dss-pades-pdfbox`: PAdES implementation based on https://github.com/apache/pdfbox[Apache PDFBox]. Supports drawing of custom text, images, as well as text+image, in a signature field.
+* `dss-pades-openpdf`: PAdES implementation based on https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)]. Supports drawing of custom text OR images in a signature field.
+
+DSS permits to override the visible signature generation with these interfaces:
+
+* `eu.europa.esig.dss.pdf.IPdfObjFactory`;
+* `eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory` (selects the `SignatureDrawer` depending on the `SignatureImageParameters` content);
+* `eu.europa.esig.dss.pdf.visible.SignatureDrawer`.
+
+A new instance of the `IPdfObjFactory` can be created with its own `SignatureDrawerFactory` and injected in the `padesService.setPdfObjFactory(IPdfObjFactory)`. By default, DSS uses an instance of `ServiceLoaderPdfObjFactory`. This instance checks for any registered implementation in the classpath with the ServiceLoader (potentially a service from `dss-pades-pdfbox`, `dss-pades-openpdf` or your own(s)).
+
+===== DSS PDFBox
+
+DSS allows switching between two implementations of the PDFBox framework: default (original) and native.
+
+* *Native Drawer*: A native implementation of PDFBox Drawer, allowing a user to add a vector text, image or combination of text and image to a visible signature field. The native implementation embeds the provided custom text to the inner PDF structure, that makes the text selectable and searchable, but also clearer and smoother in comparison with the raster implementation.
+* *Default Drawer*: The original drawer implemented on the PDFBox framework, supports displaying of custom text, images, but also text and image combination in a signature field. The implementation does not include the provided custom text to the inner PDF structure, instead of it, the drawer creates an image representation of the provided text, which is added to the signature field (i.e. the text is not selectable and not searchable).
+
+By default, DSS uses the "Native Drawer" as the PDFBox implementation. In order to switch the implementation, that allowed at runtime, you have to set a new instance for PdfObjFactory as following:
+
+[source,java,indent=0]
+.Runtime PDF Object Factory changing
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBVisibleTest.java[tags=custom-factory]
+----
+
+Or create a new file `META-INF/services/eu.europa.esig.dss.pdf.IPdfObjFactory` within project's resources, defining the desired implementation (see <<ServiceLoaderAdvanced>> for more information).
+
+===== DSS OpenPDF
+
+This implementation is based on the OpenPDF framework. DSS provides two drawers using the implementation:
+
+* `TextOnlySignatureDrawer` - to draw a vector text information within a signature field. The text information is selectable and searchable.
+* `ImageOnlySignatureDrawer` - to draw an image within a signature field.
+
+WARNING: DSS provides a limited support of OpenPDF framework, therefore not all features are supported (e.g. text+image drawing).
+
+=== Multithreading
+
+DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation.
+
+For each provided operation, DSS requires a `CertificateVerifier` object. This object is responsible to provide certificates and accesses to external resources (AIA, CRL, OCSP, etc.). At the beginning of all operation, CertificateSources and RevocationSources are created for each signature / timestamp / revocation data. Extracted information are combined with the configured sources in the CertificateVerifier. For these reasons, integrators need to be careful about the `CertificateVerifier` configuration.
+
+==== Resource sharing
+
+The trusted certificates can be shared between multiple threads because these certificates are static. This means they don't require more analysis. Their status won't evolve. For these certificates, DSS doesn't need to collect issuer certificate and/or their revocation data.
+
+In opposition, the adjunct certificates cannot be shared. These certificates concern a specific signature/validation operation. This parameter is used to provide missing certificate(s). When DSS is unable to build the complete certificate path with the provided certificates (as signature parameters or embedded within a signature), it is possible to inject certificates that are not present. These certificates are not necessarily trusted and may require future "modifications" like revocation data collection, etc.
+
+==== Caching
+
+In case of multi-threading usage, we strongly recommend caching of external resources. All external resources can be cached (AIA, CRL, OCSP) to improve performances and to avoid requesting too much time the same resources. FileCacheDataLoader and JdbcCacheCRLSource can help you in this way.
+
+See section <<CachingUseCases>> of the Annex for complete examples of caching revocation data, certificates and trusted lists.
+
+=== JAXB modules
+==== General
+
+DSS provides the following JAXB modules with a harmonized structure :
+
+* `dss-policy-jaxb` - defines validation policy JAXB model;
+* `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model;
+* `dss-detailed-report-jaxb` - defines Detailed Report JAXB model;
+* `dss-simple-report-jaxb` - defines Simple Report JAXB model;
+* `dss-simple-certificate-report-jaxb` - defines Certificate Simple Report JAXB model.
+
+All modules share the same logic and have the following structure (where &#42;&#42;&#42; is a model name):
+
+`*dss-&#42;&#42;&#42;-jaxb*`::
+`_/src/main/java_`:::
+`_eu.europa.esig.dss.&#42;&#42;&#42;_`::::
+** `&#42;&#42;&#42;.java` - wrapper(s) which eases the JAXB manipulation
+** `...`
+** `&#42;&#42;&#42;Facade.java` - class which allows marshalling/unmarshalling of jaxb objects, generation of HTML/PDF content, etc.
+** `&#42;&#42;&#42;XmlDefiner.java` - class which contains the model definition (XSD, XSLT references, ObjectFactory)
+** `_/jaxb_` - generated on compile time
+*** `Xml&#42;&#42;&#42;.java` - JAXB model
+*** `...`
+`_/src/main/resources_`:::
+`_/xsd_`::::
+** `&#42;&#42;&#42;.xsd` - XML Schema (XSD) for the Detailed Report model
+** `binding.xml` - XJC instructions to generate the JAXB model from the XSD
+`_/xslt_`::::
+** `_/html_`
+*** `&#42;&#42;&#42;.xslt` - XML Stylesheet for the HTML generation
+** `_/pdf_`
+***	`&#42;&#42;&#42;.xslt` - XML Stylesheet for the PDF generation
+
+In the main classes, a `Facade` is present to quickly operate with the JAXB objects (e.g. marshall, unmarshall, generate the HTML/PDF, validate the XML structure, etc.).
+
+[source,java,indent=0]
+.DetailedReportFacade usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-facade]
+----
+
+An `XmlDefiner` is also available with the access to the embedded XML Schemas (XSD), the XML Stylesheets (XSLT) to be able to generate the HTML or the PDF content (for DSS specific JAXB) and the JAXB Object Factory.
+
+[source,java,indent=0]
+.DetailedReportXmlDefiner usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-xml-definer]
+----
+
+==== Creating a trusted list
+
+It is possible to programmatically create or/and edit an XML Trusted List using the JAXB module.
+
+Below is an example of how to use JAXB modules to create a trusted list (not complete solution):
+
+[source,java,indent=0]
+.Creation of a trusted list
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CreateTLSnippet.java[tags=demoSign]
+----
+
+And an example how to modify an existing Trusted List (e.g. change its version):
+
+[source,java,indent=0]
+.Edit a trusted list
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CreateTLSnippet.java[tags=demoEdit]
+----
+
+==== Validating XSD conformity
+
+You can also use JAXB modules not only for the content creation or changing, but also in order to verify the conformity of an XML document against its XSD schema.
+
+For example, in order to validate a XAdES signature conformance against https://github.com/esig/dss/blob/master/specs-xades/src/main/resources/xsd/XAdES01903v132-201601.xsd[1.3.2 XSD schema], you can use the corresponding class `XAdES319132Utils`:
+
+[source,java,indent=0]
+.Validating XSD conformity
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=validateStructure]
+----
+
+[[ReportStylesheets]]
+==== Report stylesheets
+
+The report modules (namely: `dss-simple-report-jaxb`, `dss-simple-certificate-report-jaxb` and `dss-detailed-report-jaxb`) contain XSLT style sheets each for final reports generation:
+
+* Bootstrap 4 XSLT for HTML report;
+* PDF XSLT for PDF report.
+
+NOTE: Since DSS 5.9 only Bootstrap 4 XSLT is provided within the framework for HTML report generation.
+
+In order to generate a report with a selected style sheet you need to call a relevant method in a Facade class (see classes definition above):
+
+[source,java,indent=0]
+.HTML report generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=demo]
+----
+
+Otherwise, in case you need to customize the transformer, you can create a report by using an `XmlDefiner`:
+
+[source,java,indent=0]
+.Custom report generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/StylesheetSnippet.java[tags=custom]
+----
+
+[[DiagnosticDataStylesheets]]
+==== Diagnostic data stylesheets
+The `dss-diagnostic-jaxb` module contains an XSLT stylesheet that creates an SVG image from an XML document in order to visually represent the signature at validation time.
+
+[source,java,indent=0]
+.SVG generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SVGGenerationSnippet.java[tags=demo]
+----
+
+[[xmlSecurities]]
+=== XML securities
+
+The framework allows custom configuration of XML-related modules for enabling/disabling of XML securities (e.g. in order to use Xalan or Xerces).
+
+WARNING: We strongly do not recommend disabling of security features and usage of deprecated dependencies. Be aware: the feature is designed only for experienced users, and all changes made in the module are at your own risk.
+
+The configuration is available for the following classes:
+
+* `javax.xml.parsers.DocumentBuilderFactory` with a `DocumentBuilderFactoryBuilder` - builds a DOM document object from the obtained XML file and creates a new `org.w3c.dom.Document`;
+* `javax.xml.transform.TransformerFactory` with a `TransformerFactoryBuilder` - loads XML templates and builds DOM objects;
+* `javax.xml.validation.SchemaFactory` with a `SchemaFactoryBuilder` - loads XML Schema;
+* `javax.xml.validation.Validator` with a `ValidatorConfigurator` - configures a validator to validate an XML document against an XML Schema.
+
+All the classes can be configured with the following methods (example for `TransformerFactory`):
+
+[source,java,indent=0]
+.XMLSecurities configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=demo]
+----
+
+The `javax.xml.parsers.DocumentBuilderFactory`, that allows XML files parsing and creation of DOM `org.w3c.dom.Document` object, can be configured with the following methods:
+
+NOTE: Since DSS 5.9 the configuration of `javax.xml.parsers.DocumentBuilderFactory` has been moved from `DomUtils` to a new singleton class `DocumentBuilderFactoryBuilder`.
+
+[source,java,indent=0]
+.DocumentBuilderFactory configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecuritiesConfigTest.java[tags=dbf]
+----
+
+The class `XmlDefinerUtils` is a singleton, therefore all changes performed on the instance will have an impact to all calls of the related methods.
+
+See section <<Alerts>> in chapter Annex for more information on alerts.

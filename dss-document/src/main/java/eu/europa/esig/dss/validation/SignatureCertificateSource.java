@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.validation;
 
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -31,6 +28,9 @@ import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * The advanced signature contains a list of certificate that was needed to validate the signature. This class is a
@@ -197,11 +197,12 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	/**
 	 * Extracts candidates to be a signing certificate from the source
 	 * 
-	 * @param certificateSource {@link CertificateSource} which allows to resolve
-	 *                            the signing certificate from external sources
+	 * @param signingCertificateSource {@link CertificateSource} which allows to resolve the signing certificate
+	 *                                                           from external sources (optional)
 	 * @return {@link CandidatesForSigningCertificate}
 	 */
-	protected abstract CandidatesForSigningCertificate extractCandidatesForSigningCertificate(CertificateSource certificateSource);
+	protected abstract CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
+			CertificateSource signingCertificateSource);
 
 	@Override
 	public CertificateSourceType getCertificateSourceType() {

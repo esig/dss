@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -34,6 +35,7 @@ import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
@@ -80,9 +82,16 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
 				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-
 				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
 				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+
+				/*
+				 * Add a DigestAlgorithm used by an Archive TimeStamp to SignedData.digestAlgorithms set, when required.
+				 * See ETSI EN 319 122-1, ch. "5.5.3 The archive-time-stamp-v3 attribute"
+				 */
+				DigestAlgorithm timestampDigestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
+				AlgorithmIdentifier algorithmIdentifier = DSSASN1Utils.getAlgorithmIdentifier(timestampDigestAlgorithm);
+				cmsSignedData = CMSUtils.addDigestAlgorithm(cmsSignedData, algorithmIdentifier);
 			}
 			newSignerInformationList.add(newSignerInformation);
 		}

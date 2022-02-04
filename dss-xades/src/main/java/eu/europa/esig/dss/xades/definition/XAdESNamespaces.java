@@ -49,6 +49,12 @@ public class XAdESNamespaces {
 	public static final DSSNamespace XADES_141 = new DSSNamespace("http://uri.etsi.org/01903/v1.4.1#", "xades141");
 
 	/**
+	 * Empty constructor
+	 */
+	private XAdESNamespaces() {
+	}
+
+	/**
 	 * Registers the namespaces
 	 */
 	public static void registerNamespaces() {

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
@@ -51,7 +52,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 * The empty constructor
 	 */
 	ASiCContainerWithXAdESValidator() {
-		super(null);
+		super();
 	}
 
 	/**
@@ -61,7 +62,15 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 */
 	public ASiCContainerWithXAdESValidator(final DSSDocument asicContainer) {
 		super(asicContainer, new XAdESSignatureScopeFinder());
-		extractEntries();
+	}
+
+	/**
+	 * The constructor from {@code ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent} to be validated
+	 */
+	public ASiCContainerWithXAdESValidator(final ASiCContent asicContent) {
+		super(asicContent, new XAdESSignatureScopeFinder());
 	}
 
 	@Override
@@ -89,7 +98,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 				xadesValidator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 
 				if (ASiCUtils.isOpenDocument(getMimeTypeDocument())) {
-					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(extractResult));
+					xadesValidator.setDetachedContents(OpenDocumentSupportUtils.getOpenDocumentCoverage(asicContent));
 				} else if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 					xadesValidator.setDetachedContents(getSignedDocuments());
 					xadesValidator.setContainerContents(getArchiveDocuments());

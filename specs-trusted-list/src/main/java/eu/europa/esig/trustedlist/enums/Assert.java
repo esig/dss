@@ -22,21 +22,37 @@ package eu.europa.esig.trustedlist.enums;
 
 /**
  * Trusted List assert list
+ *
+ * See TS 119 612
  */
 public enum Assert {
 
+	/** if all of the assertion shall be met */
 	ALL("all"),
 
+	/** if at least one of the assertion shall be met */
 	AT_LEAST_ONE("atLeastOne"),
 
+	/** if all of the assertion shall be met */
 	NONE("none");
 
+	/** The value corresponding to the XSD */
 	private final String value;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param value {@link String}
+	 */
 	Assert(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * Gets the value of the enumeration, corresponding to the one defined in XSD
+	 *
+	 * @return {@link String}
+	 */
 	public String getValue() {
 		return value;
 	}

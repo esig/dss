@@ -31,7 +31,6 @@ import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -89,7 +88,7 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 
 					SignedDocumentValidator timestampValidator = SignedDocumentValidator
 							.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
-					timestampValidator.setCertificateVerifier(new CommonCertificateVerifier());
+					timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
 					timestampValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signedContent)));
 
 					Reports reports = timestampValidator.validateDocument();
@@ -146,6 +145,25 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 		for (String signatureId : simpleReport.getSignatureIdList()) {
 			assertNotEquals(Indication.FAILED, simpleReport.getIndication(signatureId));
 		}
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(2, signatures.size());
+
+		boolean emptySigDocFound = false;
+		boolean signPdfFound = false;
+		for (AdvancedSignature signature : signatures) {
+			List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature.getId());
+			if (originalDocuments.size() == 0) {
+				emptySigDocFound = true;
+			} else {
+				signPdfFound = true;
+			}
+		}
+		assertTrue(emptySigDocFound);
+		assertTrue(signPdfFound);
 	}
 
 }

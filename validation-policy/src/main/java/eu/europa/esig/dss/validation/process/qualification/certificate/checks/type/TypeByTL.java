@@ -29,13 +29,30 @@ import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualific
 
 import java.util.List;
 
+/**
+ * Gets certificate usage type based on the information extracted from a TrustedService
+ *
+ */
 class TypeByTL implements TypeStrategy {
 
+	/** Trusted Service to get certificate usage type from */
 	private final TrustedServiceWrapper trustedService;
+
+	/** Certificate qualified status */
 	private final CertificateQualifiedStatus qualified;
+
+	/** Certificate's usage type extraction strategy */
 	private final TypeStrategy typeInCert;
 
-	public TypeByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, TypeStrategy typeInCert) {
+	/**
+	 * Default constructor
+	 *
+	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param qualified {@link CertificateQualifiedStatus}
+	 * @param typeInCert {@link TypeStrategy}
+	 */
+	public TypeByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified,
+					TypeStrategy typeInCert) {
 		this.trustedService = trustedService;
 		this.qualified = qualified;
 		this.typeInCert = typeInCert;

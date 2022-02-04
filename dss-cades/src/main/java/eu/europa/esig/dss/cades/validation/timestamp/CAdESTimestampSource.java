@@ -270,12 +270,6 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		}
 		timestampToken.getTimestampedReferences().addAll(timestampedReferences);
 	}
-
-	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(CAdESAttribute signedAttribute) {
-		// not applicable for CAdES, must be not executed
-		throw new UnsupportedOperationException("Not applicable for CAdES!");
-	}
 	
 	@Override
 	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {

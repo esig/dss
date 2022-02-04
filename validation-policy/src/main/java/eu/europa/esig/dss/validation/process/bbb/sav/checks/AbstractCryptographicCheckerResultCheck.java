@@ -34,6 +34,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ import java.util.List;
  */
 public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	/** The cryptographic constrain position to be validated */
+	/** The cryptographic constraint position to be validated */
 	protected final MessageTag position;
 
 	/** Cryptographic Check result */
@@ -72,16 +73,21 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
 		XmlConclusion conclusion = ccResult.getConclusion();
 		if (conclusion != null && constraint != null && constraint.getLevel() != null) {
-			List<XmlMessage> messages = null;
+			// Collects messages from higher levels :
+			// (some checks can have a different level than crypto constraints, e.g. signing-certificate-ref)
+			List<XmlMessage> messages = new ArrayList<>();
 			switch (constraint.getLevel()) {
-				case FAIL:
-					messages = conclusion.getErrors();
+				case INFORM:
+					messages.addAll(conclusion.getInfos());
+					messages.addAll(conclusion.getWarnings());
+					messages.addAll(conclusion.getErrors());
 					break;
 				case WARN:
-					messages = conclusion.getWarnings();
+					messages.addAll(conclusion.getWarnings());
+					messages.addAll(conclusion.getErrors());
 					break;
-				case INFORM:
-					messages = conclusion.getInfos();
+				case FAIL:
+					messages.addAll(conclusion.getErrors());
 					break;
 				default:
 					break;

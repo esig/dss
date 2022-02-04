@@ -30,6 +30,9 @@ public class HostConnection implements Serializable {
 
     private static final long serialVersionUID = -7172356669516643532L;
 
+    /** The protocol to be used for the connection */
+    private String protocol;
+
     /** The name of the remote host */
     private String host;
 
@@ -66,22 +69,42 @@ public class HostConnection implements Serializable {
      * @param scheme {@link String}
      */
     public HostConnection(String host, int port, String scheme) {
-        this(host, port, scheme, null);
+        this(null, host, port, scheme, null);
     }
 
     /**
      * Complete constructor
      *
+     * @param protocol {@link String}
      * @param host {@link String}
      * @param port integer
      * @param scheme {@link String}
      * @param realm {@link String}
      */
-    public HostConnection(String host, int port, String scheme, String realm) {
+    public HostConnection(String protocol, String host, int port, String scheme, String realm) {
+        this.protocol = protocol;
         this.host = host;
         this.port = port;
         this.scheme = scheme;
         this.realm = realm;
+    }
+
+    /**
+     * Gets the connection protocol
+     *
+     * @return {@link String}
+     */
+    public String getProtocol() {
+        return protocol;
+    }
+
+    /**
+     * Sets the connection protocol
+     *
+     * @param protocol {@link String}
+     */
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 
     /**

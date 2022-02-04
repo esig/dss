@@ -46,6 +46,7 @@ import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -548,6 +549,32 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * This extension indicates that the validity of the certificate is assured because
+	 * the certificate is a "short-term certificate". That is, the time as indicated in
+	 * the certificate attribute from notBefore through notAfter, inclusive, is shorter
+	 * than the maximum time to process a revocation request as specified by
+	 * the certificate practice statement or certificate policy.
+	 *
+	 * @param token
+	 *            the certificate to be checked
+	 * @return true if the certificate has the id-etsi-ext-valassured-ST-certs extension
+	 */
+	public static boolean hasValAssuredShortTermCertsExtension(CertificateToken token) {
+		final byte[] extensionValue = token.getCertificate().getExtensionValue(OID.id_etsi_ext_valassured_ST_certs.getId());
+		if (extensionValue != null) {
+			try {
+				final ASN1Primitive derObject = toASN1Primitive(extensionValue);
+				if (derObject instanceof DEROctetString) {
+					return isDEROctetStringNull((DEROctetString) derObject);
+				}
+			} catch (Exception e) {
+				LOG.debug("Exception when processing 'id-etsi-ext-valassured-ST-certs'", e);
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Retrieves a list of {@code CertificatePolicy}s from a certificate token
 	 *
 	 * @param certToken {@link CertificateToken}
@@ -778,7 +805,7 @@ public final class DSSASN1Utils {
 	private static String parseGn(GeneralName gn) {
 		try {
 			if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
-				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getObject();
+				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getBaseObject();
 				return str.getString();
 			}
 		} catch (Exception e) {
@@ -1117,11 +1144,10 @@ public final class DSSASN1Utils {
 	 * @return {@link AttributeTable}
 	 */
 	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
-		if (originalAttributeTable == null) {
-			return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-		} else {
+		if (originalAttributeTable != null) {
 			return originalAttributeTable;
 		}
+		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
 	}
 
 	/**
@@ -1266,7 +1292,7 @@ public final class DSSASN1Utils {
 			 * The field unsignedAttrsHashIndex shall be a sequence of octet strings. Each one shall contain the hash value of
 			 * one instance of Attribute within the unsignedAttrs field of the SignerInfo.
 			 */
-			return Arrays.asList(getDEREncoded(attribute));
+			return Collections.singletonList(getDEREncoded(attribute));
 		}
 	}
 
@@ -1687,6 +1713,27 @@ public final class DSSASN1Utils {
 			basicOCSPResps.add(new BasicOCSPResp(basicOCSPRespons));
 		}
 		return basicOCSPResps.toArray(new BasicOCSPResp[0]);
+	}
+
+	/**
+	 * Builds SPDocSpecification attribute from the given {@code oidOrUri}
+	 *
+	 * SPDocSpecification ::= CHOICE {
+	 *  oid OBJECT IDENTIFIER,
+	 *  uri IA5String
+	 * }
+	 *
+	 * @param oidOrUri {@link String} represents OID or URI
+	 * @return {@link ASN1Primitive}
+	 */
+	public static ASN1Primitive buildSPDocSpecificationId(String oidOrUri) {
+		ASN1Primitive spDocSpecification;
+		if (DSSUtils.isOidCode(oidOrUri)) {
+			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
+		} else {
+			spDocSpecification = new DERIA5String(oidOrUri);
+		}
+		return spDocSpecification;
 	}
 
 }

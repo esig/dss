@@ -96,7 +96,7 @@ public class AllDataObjectsTimeStampBuilder {
 			referenceBuilder.checkReferencesValidity();
 		} else {
 			references = referenceBuilder.build();
-			signatureParameters.setReferences(references);
+			signatureParameters.getContext().setReferences(references);
 		}
 
 		byte[] dataToBeDigested;

@@ -25,6 +25,8 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -57,12 +59,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	}
 
 	/**
-	 * The internal signature processing variable
-	 */
-	private ProfileParameters context;
-
-	/**
-	 * This parameter allows to add optional X509SubjectName in the tag X509Data
+	 * This parameter allows adding an optional X509SubjectName in the tag X509Data
 	 */
 	private boolean addX509SubjectName;
 
@@ -79,7 +76,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private boolean embedXML;
 
 	/**
-	 * Defines if the signature shall be creates according to ETSI EN 319 132
+	 * Defines if the signature shall be created according to ETSI EN 319 132
 	 *
 	 * Default: true
 	 */
@@ -104,7 +101,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
 
 	/**
-	 * This parameter allows to produce Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
+	 * This parameter allows producing a Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
 	 */
 	private boolean manifestSignature;
 
@@ -296,7 +293,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @return a list of {@link DSSReference}s
 	 */
 	public List<DSSReference> getReferences() {
-		return dssReferences;
+		if (Utils.isCollectionNotEmpty(dssReferences)) {
+			return dssReferences;
+		}
+		XAdESProfileParameters context = getContext();
+		if (context != null) {
+			return context.getReferences();
+		}
+		return null;
 	}
 
 	/**
@@ -365,15 +369,32 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	}
 
 	/**
+	 * The ID of xades:SignedProperties is contained in the signed content of the
+	 * xades Signature. We must create this ID in a deterministic way.
+	 *
+	 * @return the unique ID for the current signature
+	 */
+	public String getDeterministicId() {
+		String deterministicId = getContext().getDeterministicId();
+		if (deterministicId == null) {
+			final TokenIdentifier identifier = (getSigningCertificate() == null ? null : getSigningCertificate().getDSSId());
+			deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
+			getContext().setDeterministicId(deterministicId);
+		}
+		return deterministicId;
+	}
+
+	/**
 	 * Gets the signature creation context (internal variable)
 	 *
-	 * @return {@link ProfileParameters}
+	 * @return {@link XAdESProfileParameters}
 	 */
-	public ProfileParameters getContext() {
+	@Override
+	public XAdESProfileParameters getContext() {
 		if (context == null) {
-			context = new ProfileParameters();
+			context = new XAdESProfileParameters();
 		}
-		return context;
+		return (XAdESProfileParameters) context;
 	}
 
 	/**
@@ -637,4 +658,10 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 		return archiveTimestampParameters;
 	}
 	
+	@Override
+	public void reinit() {
+		super.reinit();
+		context = null;
+	}
+
 }

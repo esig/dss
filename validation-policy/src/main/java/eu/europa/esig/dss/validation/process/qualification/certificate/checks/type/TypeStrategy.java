@@ -22,8 +22,17 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import eu.europa.esig.dss.enumerations.CertificateType;
 
+/**
+ * Strategy to extract certificate usage type for a certificate
+ *
+ */
 public interface TypeStrategy {
 
+	/**
+	 * Gets certificate usage type
+	 *
+	 * @return {@link CertificateType}
+	 */
 	CertificateType getType();
 
 }

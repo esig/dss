@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -49,6 +41,13 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class DSS2214Test extends AbstractXAdESTestSignature {
 
@@ -90,7 +89,7 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
 
-		assertEquals(SubIndication.NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		verifyDetailedReport(detailedReport);
@@ -115,8 +114,8 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 
 			SignatureConstraints signatureConstraints = constraints.getSignatureConstraints();
 			BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
-			basicSignatureConstraints.getSigningCertificate().getRevocationDataAvailable().setLevel(Level.WARN);
-			basicSignatureConstraints.getCACertificate().getRevocationDataAvailable().setLevel(Level.WARN);
+			basicSignatureConstraints.getSigningCertificate().getAcceptableRevocationDataFound().setLevel(Level.WARN);
+			basicSignatureConstraints.getCACertificate().getAcceptableRevocationDataFound().setLevel(Level.WARN);
 
 			return new EtsiValidationPolicy(constraints);
 		} catch (Exception e) {

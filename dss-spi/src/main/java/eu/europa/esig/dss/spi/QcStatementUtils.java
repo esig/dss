@@ -69,8 +69,18 @@ public class QcStatementUtils {
     public static QcStatements getQcStatements(CertificateToken certToken) {
         final byte[] qcStatements = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
         if (Utils.isArrayNotEmpty(qcStatements)) {
-            final ASN1Sequence qcStatementsSeq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatements);
-            return getQcStatements(qcStatementsSeq);
+            try {
+                final ASN1Sequence qcStatementsSeq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatements);
+                return getQcStatements(qcStatementsSeq);
+
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn("Unable to extract QcStatements : {}. Obtained binaries : '{}'",
+                            e.getMessage(), Utils.toBase64(qcStatements));
+                } else {
+                    LOG.warn("Unable to extract QcStatements : {}", e.getMessage());
+                }
+            }
         }
         return null;
     }
@@ -88,32 +98,50 @@ public class QcStatementUtils {
 
         QcStatements result = new QcStatements();
         for (int i = 0; i < qcStatementsSeq.size(); i++) {
-            final QCStatement statement = QCStatement.getInstance(qcStatementsSeq.getObjectAt(i));
-            final ASN1ObjectIdentifier objectIdentifier = statement.getStatementId();
-            final ASN1Encodable statementInfo = statement.getStatementInfo();
-            if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.equals(objectIdentifier)) {
-                result.setQcCompliance(true);
-            } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.equals(objectIdentifier)) {
-                result.setQcLimitValue(getQcLimitValue(statementInfo));
-            } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.equals(objectIdentifier)) {
-                result.setQcEuRetentionPeriod(getQcEuRetentionPeriod(statementInfo));
-            } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.equals(objectIdentifier)) {
-                result.setQcQSCD(true);
-            } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.equals(objectIdentifier)) {
-                result.setQcEuPDS(getQcEuPDS(statementInfo));
-            } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.equals(objectIdentifier)) {
-                result.setQcTypes(getQcTypes(statementInfo));
-            } else if (OID.id_etsi_qcs_QcCClegislation.equals(objectIdentifier)) {
-                result.setQcLegislationCountryCodes(getQcLegislationCountryCodes(statementInfo));
-            } else if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(objectIdentifier)) {
-                result.setQcSemanticsIdentifier(getQcSemanticsIdentifier(statementInfo));
-            } else if (OID.psd2_qcStatement.equals(objectIdentifier)) {
-                result.setPsd2QcType(getPsdc2QcType(statementInfo));
-            } else {
-                LOG.warn("Not supported QcStatement with oid {}", objectIdentifier.getId());
+            final QCStatement statement = getQCStatement(qcStatementsSeq.getObjectAt(i));
+            if (statement != null) {
+                final ASN1ObjectIdentifier objectIdentifier = statement.getStatementId();
+                final ASN1Encodable statementInfo = statement.getStatementInfo();
+                if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.equals(objectIdentifier)) {
+                    result.setQcCompliance(true);
+                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.equals(objectIdentifier)) {
+                    result.setQcLimitValue(getQcLimitValue(statementInfo));
+                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.equals(objectIdentifier)) {
+                    result.setQcEuRetentionPeriod(getQcEuRetentionPeriod(statementInfo));
+                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.equals(objectIdentifier)) {
+                    result.setQcQSCD(true);
+                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.equals(objectIdentifier)) {
+                    result.setQcEuPDS(getQcEuPDS(statementInfo));
+                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.equals(objectIdentifier)) {
+                    result.setQcTypes(getQcTypes(statementInfo));
+                } else if (OID.id_etsi_qcs_QcCClegislation.equals(objectIdentifier)) {
+                    result.setQcLegislationCountryCodes(getQcLegislationCountryCodes(statementInfo));
+                } else if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(objectIdentifier)) {
+                    result.setQcSemanticsIdentifier(getQcSemanticsIdentifier(statementInfo));
+                } else if (OID.psd2_qcStatement.equals(objectIdentifier)) {
+                    result.setPsd2QcType(getPsdc2QcType(statementInfo));
+                } else {
+                    LOG.warn("Not supported QcStatement with oid {}", objectIdentifier.getId());
+                }
             }
         }
         return result;
+    }
+
+    private static QCStatement getQCStatement(ASN1Encodable qcStatement) {
+        if (qcStatement != null) {
+            try {
+                return QCStatement.getInstance(qcStatement);
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn("Unable to extract QCStatement : {}. Obtained sequence binaries : '{}'",
+                            e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(qcStatement)));
+                } else {
+                    LOG.warn("Unable to extract QCStatement : {}", e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 
     private static QCLimitValue getQcLimitValue(ASN1Encodable statementInfo) {
@@ -124,8 +152,14 @@ public class QcStatementUtils {
             result.setAmount(monetaryValue.getAmount().intValue());
             result.setExponent(monetaryValue.getExponent().intValue());
             return result;
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcLimitValue : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcLimitValue : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcLimitValue : {}", e.getMessage());
+            }
             return null;
         }
     }
@@ -134,8 +168,14 @@ public class QcStatementUtils {
         try {
             ASN1Integer integer = ASN1Integer.getInstance(statementInfo);
             return integer.intValueExact();
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcEuRetentionPeriod : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcEuRetentionPeriod : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcEuRetentionPeriod : {}", e.getMessage());
+            }
             return null;
         }
     }
@@ -154,8 +194,14 @@ public class QcStatementUtils {
                             e1.getClass().getName());
                 }
             }
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcEuPDS : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcEuPDS : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcEuPDS : {}", e.getMessage());
+            }
         }
         return result;
     }
@@ -186,8 +232,14 @@ public class QcStatementUtils {
                             e1.getClass().getName());
                 }
             }
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcTypes : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcTypes : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcTypes : {}", e.getMessage());
+            }
         }
         return result;
     }
@@ -202,8 +254,14 @@ public class QcStatementUtils {
                     result.add(countryCode);
                 }
             }
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcCClegislation : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcCClegislation : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcCClegislation : {}", e.getMessage());
+            }
         }
         return result;
     }
@@ -214,8 +272,14 @@ public class QcStatementUtils {
             if (semanticsInfo != null && semanticsInfo.getSemanticsIdentifier() != null) {
                 return SemanticsIdentifier.fromOid(semanticsInfo.getSemanticsIdentifier().getId());
             }
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract QcSemanticsIdentifiers : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract QcSemanticsIdentifiers : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract QcSemanticsIdentifiers : {}", e.getMessage());
+            }
         }
         return null;
     }
@@ -240,8 +304,14 @@ public class QcStatementUtils {
             result.setNcaName(DSSASN1Utils.getString(sequence.getObjectAt(1)));
             result.setNcaId(DSSASN1Utils.getString(sequence.getObjectAt(2)));
             return  result;
+
         } catch (Exception e) {
-            LOG.warn("Unable to extract PSD2-QcStatement : {}", e.getMessage());
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to extract PSD2-QcStatement : {}. Obtained binaries : '{}'",
+                        e.getMessage(), Utils.toBase64(DSSASN1Utils.getDEREncoded(statementInfo)));
+            } else {
+                LOG.warn("Unable to extract PSD2-QcStatement : {}", e.getMessage());
+            }
             return null;
         }
     }

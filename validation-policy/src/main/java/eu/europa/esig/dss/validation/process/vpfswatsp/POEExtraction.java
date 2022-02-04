@@ -61,7 +61,7 @@ public class POEExtraction {
 	/**
 	 * Map of proofs of existence by token ids
 	 */
-	private Map<String, List<POE>> poeMap = new HashMap<>();
+	private final Map<String, List<POE>> poeMap = new HashMap<>();
 
 	/**
 	 * Instantiates a controlTime POE for all used tokens
@@ -85,19 +85,19 @@ public class POEExtraction {
 		for (RevocationWrapper revocation : diagnosticData.getAllRevocationData()) {
 			addPOE(revocation.getId(), controlTimePoe);
 		}
-		for (SignerDataWrapper signerData : diagnosticData.getOriginalSignerDocuments()) {
+		for (SignerDataWrapper signerData : diagnosticData.getAllSignerDocuments()) {
 			addPOE(signerData.getId(), controlTimePoe);
 		}
-		for (OrphanTokenWrapper orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {
+		for (OrphanTokenWrapper<?> orphanCertificate : diagnosticData.getAllOrphanCertificateObjects()) {
 			addPOE(orphanCertificate.getId(), controlTimePoe);
 		}
-		for (OrphanTokenWrapper orphanCertificateRef : diagnosticData.getAllOrphanCertificateReferences()) {
+		for (OrphanTokenWrapper<?> orphanCertificateRef : diagnosticData.getAllOrphanCertificateReferences()) {
 			addPOE(orphanCertificateRef.getId(), controlTimePoe);
 		}
-		for (OrphanTokenWrapper orphanRevocation : diagnosticData.getAllOrphanRevocationObjects()) {
+		for (OrphanTokenWrapper<?> orphanRevocation : diagnosticData.getAllOrphanRevocationObjects()) {
 			addPOE(orphanRevocation.getId(), controlTimePoe);
 		}
-		for (OrphanTokenWrapper orphanRevocationRef : diagnosticData.getAllOrphanRevocationReferences()) {
+		for (OrphanTokenWrapper<?> orphanRevocationRef : diagnosticData.getAllOrphanRevocationReferences()) {
 			addPOE(orphanRevocationRef.getId(), controlTimePoe);
 		}
 		
@@ -120,7 +120,7 @@ public class POEExtraction {
 	 * @param timestamp {@link TimestampWrapper} to extract POE from
 	 */
 	public void extractPOE(TimestampWrapper timestamp) {
-		/**
+		/*
 		 * 5.6.2.3.4 Processing (5.6.2.3 POE extraction)
 		 *
 		 * 1) The building block shall determine the set S of references to objects and

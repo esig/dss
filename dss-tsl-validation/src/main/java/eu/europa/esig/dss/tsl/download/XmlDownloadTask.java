@@ -62,6 +62,8 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 	public XmlDownloadResult get() {
 		try {
 			final DSSDocument dssDocument = dssFileLoader.getDocument(url);
+			assertDocumentIsValidXML(dssDocument);
+
 			final Document dom = DomUtils.buildDOM(dssDocument);
 			final byte[] canonicalizedContent = DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, dom);
 			return new XmlDownloadResult(dssDocument, new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedContent)));
@@ -69,6 +71,15 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 			throw e;
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to retrieve the content for url '%s'. Reason : '%s'", url, e.getMessage()), e);
+		}
+	}
+
+	private void assertDocumentIsValidXML(DSSDocument document) {
+		if (document == null) {
+			throw new NullPointerException(String.format("No document has been retrieved from URL '%s'!", url));
+		}
+		if (!DomUtils.isDOM(document)) {
+			throw new DSSException(String.format("The document obtained from URL '%s' is not a valid XML!", url));
 		}
 	}
 

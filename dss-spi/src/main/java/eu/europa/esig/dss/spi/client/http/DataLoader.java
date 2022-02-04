@@ -49,19 +49,6 @@ public interface DataLoader extends Serializable {
 		 *
 		 * @param urlString {@link String} url
 		 * @param data a byte array
-		 *
-		 * @deprecated since DSS 5.9. Use {@code DataAndUrl(urlString, data)} instead.
-		 */
-		@Deprecated
-		public DataAndUrl(final byte[] data, final String urlString) {
-			this(urlString, data);
-		}
-
-		/**
-		 * Default constructor
-		 *
-		 * @param urlString {@link String} url
-		 * @param data a byte array
 		 */
 		public DataAndUrl(final String urlString, final byte[] data) {
 			this.urlString = urlString;

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
@@ -33,11 +34,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Contains utils for a DSS dictionary content extarction
+ * Contains utils for a DSS dictionary content extraction
  */
 public class DSSDictionaryExtractionUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSDictionaryExtractionUtils.class);
+
+	/**
+	 * Empty constructor
+	 */
+	private DSSDictionaryExtractionUtils() {
+	}
 
 	/**
 	 * Extract certificate object map
@@ -56,7 +63,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					final long objectNumber = certsArray.getObjectNumber(ii);
 					if (!certMap.containsKey(objectNumber)) {
-						certMap.put(objectNumber, DSSUtils.loadCertificate(certsArray.getBytes(ii)));
+						certMap.put(objectNumber, DSSUtils.loadCertificate(certsArray.getStreamBytes(ii)));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read Cert '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
@@ -85,7 +92,7 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					long objectNumber = crlArray.getObjectNumber(ii);
 					if (!crlMap.containsKey(objectNumber)) {
-						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getBytes(ii)));
+						crlMap.put(objectNumber, CRLUtils.buildCRLBinary(crlArray.getStreamBytes(ii)));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read CRL '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);
@@ -105,8 +112,8 @@ public class DSSDictionaryExtractionUtils {
 	 * @param arrayName {@link String} containing the OCSPs
 	 * @return a map of OCSP objects
 	 */
-	public static Map<Long, BasicOCSPResp> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
-		Map<Long, BasicOCSPResp> ocspMap = new LinkedHashMap<>();
+	public static Map<Long, OCSPResponseBinary> getOCSPsFromArray(PdfDict dict, String dictionaryName, String arrayName) {
+		Map<Long, OCSPResponseBinary> ocspMap = new LinkedHashMap<>();
 		PdfArray ocspArray = dict.getAsArray(arrayName);
 		if (ocspArray != null) {
 			LOG.debug("There are {} OCSPs in the '{}' dictionary", ocspArray.size(), dictionaryName);
@@ -114,9 +121,9 @@ public class DSSDictionaryExtractionUtils {
 				try {
 					final long objectNumber = ocspArray.getObjectNumber(ii);
 					if (!ocspMap.containsKey(objectNumber)) {
-						final OCSPResp ocspResp = new OCSPResp(ocspArray.getBytes(ii));
-						final BasicOCSPResp responseObject = (BasicOCSPResp) ocspResp.getResponseObject();
-						ocspMap.put(objectNumber, responseObject);
+						final OCSPResp ocspResp = new OCSPResp(ocspArray.getStreamBytes(ii));
+						final BasicOCSPResp basicOCSPResp = (BasicOCSPResp) ocspResp.getResponseObject();
+						ocspMap.put(objectNumber, OCSPResponseBinary.build(basicOCSPResp));
 					}
 				} catch (Exception e) {
 					LOG.debug("Unable to read OCSP '{}' from the '{}' dictionary : {}", ii, dictionaryName, e.getMessage(), e);

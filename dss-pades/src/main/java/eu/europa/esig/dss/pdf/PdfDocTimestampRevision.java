@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,23 +42,23 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfDocTimestampRevision.class);
 
 	/** The document timestamp token from the revision */
-	private final TimestampToken timestampToken;
+	private final PdfTimestampToken timestampToken;
 
 	/**
 	 * Default constructor to create PdfDocTimestampInfo
 	 * 
 	 * @param signatureDictionary
 	 *            					   the signature dictionary
-	 * @param timestampFieldNames
-	 *            					   list of signature field names
+	 * @param timestampFields
+	 *            					   list of {@link PdfSignatureField}s
 	 * @param signedContent
 	 *                                 {@link DSSDocument} the signed data
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
-	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<String> timestampFieldNames,
+	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<PdfSignatureField> timestampFields,
 								   DSSDocument signedContent, boolean coverCompleteRevision) {
-		super(signatureDictionary, timestampFieldNames, signedContent, coverCompleteRevision);
+		super(signatureDictionary, timestampFields, signedContent, coverCompleteRevision);
 		try {
 			timestampToken = new PdfTimestampToken(this);
 			timestampToken.matchData(getSignedData());
@@ -76,11 +76,11 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	}
 
 	/**
-	 * Returns the corresponding {@code TimestampToken}
+	 * Returns the corresponding {@code PdfTimestampToken}
 	 *
-	 * @return {@link TimestampToken}
+	 * @return {@link PdfTimestampToken}
 	 */
-	public TimestampToken getTimestampToken() {
+	public PdfTimestampToken getTimestampToken() {
 		return timestampToken;
 	}
 

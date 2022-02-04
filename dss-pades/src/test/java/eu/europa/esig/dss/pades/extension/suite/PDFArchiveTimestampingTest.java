@@ -34,6 +34,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -78,7 +79,11 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		
 		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 		extendParams.setSigningCertificate(getSigningCert());
-		DSSDocument extendedDoc = service.extendDocument(doc, extendParams);
+
+		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, extendParams));
+		assertEquals("No signatures found to be extended!", exception.getMessage());
+
+		DSSDocument extendedDoc = service.timestamp(doc, new PAdESTimestampParameters());
 		
 		Calendar nextSecond = Calendar.getInstance();
 		nextSecond.add(Calendar.SECOND, 1);
@@ -86,7 +91,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		
 		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		extendParams.setSigningCertificate(getSigningCert());
-		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(extendedDoc, extendParams));
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(extendedDoc, extendParams));
 		assertEquals("No signatures found to be extended!", exception.getMessage());
 		
 		PDFDocumentValidator validator = new PDFDocumentValidator(extendedDoc);
@@ -137,8 +142,9 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		}
 		
 		assertTrue(Utils.isCollectionEmpty(diagnosticData.getSignatures()));
-		
-		List<SignerDataWrapper> originalDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+
+		List<SignerDataWrapper> originalDocuments = diagnosticData.getAllSignerDocuments();
 		assertEquals(1, originalDocuments.size());
 		boolean fullDocFound = false;
 		for (SignerDataWrapper signerData : originalDocuments) {
@@ -189,7 +195,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		assertEquals(diagnosticData.getUsedCertificates().size(), certificatesCounter);
 		assertEquals(diagnosticData.getAllRevocationData().size(), revocationCounter);
 		assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
-		assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signerDataCounter);
+		assertEquals(diagnosticData.getAllSignerDocuments().size(), signerDataCounter);
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);

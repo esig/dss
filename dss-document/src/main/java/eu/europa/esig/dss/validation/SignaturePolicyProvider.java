@@ -65,6 +65,15 @@ public class SignaturePolicyProvider {
 	}
 
 	/**
+	 * Sets the map of signature policy documents to retrieve by URLs
+	 *
+	 * @param signaturePoliciesByUrl a map of signature policy documents by URLs
+	 */
+	public void setSignaturePoliciesByUrl(Map<String, DSSDocument> signaturePoliciesByUrl) {
+		this.signaturePoliciesByUrl = signaturePoliciesByUrl;
+	}
+
+	/**
 	 * Gets a signature policy document with the corresponding {@code policyId} from {@code signaturePoliciesById} map
 	 *
 	 * @param policyId {@link String} id to retrieve a signaturePolicy with
@@ -72,15 +81,6 @@ public class SignaturePolicyProvider {
 	 */
 	public DSSDocument getSignaturePolicyById(String policyId) {
 		return signaturePoliciesById.get(policyId);
-	}
-
-	/**
-	 * Sets the map of signature policy documents to retrieve by URLs
-	 *
-	 * @param signaturePoliciesByUrl a map of signature policy documents by URLs
-	 */
-	public void setSignaturePoliciesByUrl(Map<String, DSSDocument> signaturePoliciesByUrl) {
-		this.signaturePoliciesByUrl = signaturePoliciesByUrl;
 	}
 
 	/**
@@ -100,7 +100,6 @@ public class SignaturePolicyProvider {
 					return null;
 				}
 				dssDocument = new InMemoryDocument(bytes);
-				signaturePoliciesByUrl.put(url, dssDocument);
 			} catch (Exception e) {
 				LOG.warn("Unable to download the signature policy with url '{}'", url, e);
 			}
@@ -119,9 +118,6 @@ public class SignaturePolicyProvider {
 		DSSDocument dssDocument = getSignaturePolicyById(policyId);
 		if (dssDocument == null) {
 			dssDocument = getSignaturePolicyByUrl(url);
-			if (dssDocument != null) {
-				signaturePoliciesById.put(policyId, dssDocument);
-			}
 		}
 		return dssDocument;
 	}

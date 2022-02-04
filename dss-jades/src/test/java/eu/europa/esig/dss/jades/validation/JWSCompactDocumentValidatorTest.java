@@ -45,11 +45,35 @@ public class JWSCompactDocumentValidatorTest extends AbstractTestValidator {
 
 		DSSDocument jws = JWS_SIGNATURE;
 		assertTrue(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.c2lnaA".getBytes());
+		assertTrue(validator.isSupported(jws));
 		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
+		assertTrue(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA\n".getBytes());
+		assertTrue(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA\r\n".getBytes());
+		assertTrue(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA\n\n\n".getBytes());
 		assertTrue(validator.isSupported(jws));
 
 		DSSDocument wrong = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA".getBytes());
 		assertFalse(validator.isSupported(wrong));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9...c2lnaA".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA.c2lnaA".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.c2lnaA.".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA.".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA ".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("\neyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument(" eyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
+		assertFalse(validator.isSupported(jws));
+		jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.\n.c2lnaA".getBytes());
+		assertFalse(validator.isSupported(jws));
 		wrong = new InMemoryDocument("<".getBytes());
 		assertFalse(validator.isSupported(wrong));
 		wrong = new InMemoryDocument("%PDF".getBytes());

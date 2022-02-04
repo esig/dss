@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
@@ -37,6 +33,9 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * How to sign PDF Document with PAdES-BASELINE-B
@@ -94,7 +93,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// Validate the signature value against the original dataToSign
 			assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, privateKey.getCertificate()));
 
-			// We invoke the xadesService to sign the document with the signature value obtained in
+			// We invoke the padesService to sign the document with the signature value obtained in
 			// the previous step.
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 

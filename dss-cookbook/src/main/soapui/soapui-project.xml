@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.7.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns3="http://dss.esig.europa.eu/validation/diagnostic" xmlns:ns2="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns1="http://dss.esig.europa.eu/validation/policy">
       <xs:import namespace="http://dss.esig.europa.eu/validation/policy"/>
@@ -2155,7 +2155,7 @@
                <BLevelParams>
                   <trustAnchorBPPolicy>true</trustAnchorBPPolicy>
                   <!--Optional:-->
-                  <signingDate>1542794104583</signingDate>
+                  <signingDate>2022-02-03T14:06:14.464Z</signingDate>
                   <!--Zero or more repetitions:-->
                </BLevelParams>
                <!--Optional:-->
@@ -2180,18 +2180,13 @@
                   <digestAlgorithm>SHA256</digestAlgorithm>
                </signatureTimestampParameters>
                <!--Optional:-->
-               <detachedContents>
-                  <!--Optional:-->
-                  <bytes>77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4NCjxoOnRhYmxlIHhtbG5zOmg9Imh0dHA6Ly93d3cudzMub3JnL1RSL2h0bWw0LyI+DQoJPGg6dHI+DQoJCTxoOnRkPkhlbGxvPC9oOnRkPg0KCQk8aDp0ZD5Xb3JsZDwvaDp0ZD4NCgk8L2g6dHI+DQo8L2g6dGFibGU+</bytes>
-                  <!--Optional:-->
-                  <name>sample.xml</name>
-               </detachedContents>
+               <detachedContents/>
                <certificateChain/>
             </parameters>
             <!--Optional:-->
             <toExtendDocument>
                <!--Optional:-->
-               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT5EenR3TlRtUm9PQW02L2xNSThSeW01eFpQekl2TFlEem4vZWJZWWtQc3I0PTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtYWZkZTc4MjQzNjQ2OGRkNzRlZWIxODFmN2NlMTEwZTEiPllBN3NFTnQzTjh1ZkxGTW5LcjM2cjBQcXpNaVkzUTBzKytJR1RFVUMwc3BheFV2MGRIWk0wZC95bjNrcExKTG9Va0k0TTNmbGo1V0duODNrZjA1QnFNMWtoc1g2MUdKemFGVFBHcG03YWtSUUtodm9IMjV5eXFUWVhFU2xCY20wNGl6aUtoTE16WmpVZng0L0IxWkl5c3Y1cElCZ0oycjJvaTZqTG9wOXd3M2dlNGM0WUpvYUsrU1hrNmh5VE5PY044UGpHZTYzV1lPVE5WUFFGdmphOEJud2crYTBiQnV3RCs4TjZmd2lnQ2RXNWEvNERKVWUvSjhNYjcwWkk4UG9Pem5HRGZpK1RQYmlJZVZtQ2JsNW1Vb1VnMlEveFlsdUpmTGgzdUdRQVhLQnZGNDVvRElIUlZlZm5OL0QvV3l0QUNsVVZEb1FTeXdlbW5qUHBxRjhlZz09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlEMURDQ0FyeWdBd0lCQWdJQkNqQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZG5iMjlrTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXhXaGNOTVRnd09ESTJNRGMxTkRNeFdqQlBNUkl3RUFZRFZRUUREQWxuYjI5a0xYVnpaWEl4R1RBWEJnTlZCQW9NRUU1dmQybHVZU0JUYjJ4MWRHbHZibk14RVRBUEJnTlZCQXNNQ0ZCTFNTMVVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUxSQ1VJUVpidzNuU2RMcCtCOWN6RUNncFpra1E1eFY0ZzlNLzd3bGc5N29DQ2Y3VUVoOUJBMWQrellqc3p2K0JKMWJKWlBnYW4yMTQ0QXZnc29HSmZiNlVJeVZXNGdrbFVnSWwxYXJVdm9uK1drS25zZUZ1UU9mSnlqU0ZVREl3bnV2cDBoemNKWEhYUm1MZG15aCtuKzZOTUgwb201dFZvU2ZRcnRCVmlDTGVTTVZ6dUQ1RVBqMG1JUmN4OTFwTDM4ZTNGTlRXN05hR1pMZWV6dUZ1Ui9xN3o5M2xMa3ZaNFZBTU5HR0x2SVhPWWVSQlpNeVBocEJaNEwzQThJM0VFbEtXSC8xTHdpaVhUVFNHMXNNNld2TVRWYmYydmJkNDduWlJRQTJtU3BOR2pRb3VPQUVyZmVWVlVxeklDZ2hRQ0hSR09OdVNMRy9IZnFGSGI0aldnMENBd0VBQWFPQnZEQ0J1VEFPQmdOVkhROEJBZjhFQkFNQ0JrQXdnWWNHQ0NzR0FRVUZCd0VCQkhzd2VUQTVCZ2dyQmdFRkJRY3dBWVl0YUhSMGNEb3ZMMlJ6Y3k1dWIzZHBibUV1YkhVdmNHdHBMV1poWTNSdmNua3ZiMk56Y0M5bmIyOWtMV05oTUR3R0NDc0dBUVVGQnpBQ2hqQm9kSFJ3T2k4dlpITnpMbTV2ZDJsdVlTNXNkUzl3YTJrdFptRmpkRzl5ZVM5amNuUXZaMjl2WkMxallTNWpjblF3SFFZRFZSME9CQllFRk4ycEhELzdQZWZtQlQ4b1gyOVpoV3kvT0hKMU1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkszVk9MaERJVldLb0ZycmhoV3phZGR0azZYUXRjd1JvTlBWU3NpL2dPcnpzZE03MEEzMXhJVHc3WWZMaHBvVkExeG83b3ZIbGRwTGxocXk5bzV3aDI4MnlDcHFCVUF0Z3JTa0RHb2crSzdDTDZnVXBybFlpWnVHWnJ0ZzJYM2ZIUzJVc3g0WkozdElqNndWZWNERVVxSVNGZkZUMkVzbTBRWFVuZ0lLRk1sOTVYZ210dzJ3eFhiT3pVZURkNERJUHJ2K21XNXBvQVdyNkl0c1YrSDJWUStaTC9rQm53V0hqU1RPYUdGaXNxWFkvYUgvMVB0QlhBKzE1K1lJV2VtSkJTdjNrRGFGek9YQUV0UjlaSThsWU9KYXJuWTdBeS9hTjZiOXVHZmZyYm8vaFZBY0w0V0RkaGtiQk4zbTh3K2c3NkxvQVhOZUVldTA0QS8weExaelVCPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlENmpDQ0F0S2dBd0lCQWdJQkJEQU5CZ2txaGtpRzl3MEJBUXNGQURCTk1SQXdEZ1lEVlFRRERBZHliMjkwTFdOaE1Sa3dGd1lEVlFRS0RCQk9iM2RwYm1FZ1UyOXNkWFJwYjI1ek1SRXdEd1lEVlFRTERBaFFTMGt0VkVWVFZERUxNQWtHQTFVRUJoTUNURlV3SGhjTk1UWXhNREkyTURjMU5ETXdXaGNOTVRnd09ESTJNRGMxTkRNd1dqQk5NUkF3RGdZRFZRUUREQWRuYjI5a0xXTmhNUmt3RndZRFZRUUtEQkJPYjNkcGJtRWdVMjlzZFhScGIyNXpNUkV3RHdZRFZRUUxEQWhRUzBrdFZFVlRWREVMTUFrR0ExVUVCaE1DVEZVd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNiYmw1c0tCQ2pTQjhUTWRhY3lteC9XZk9qTVcxZ2lJalZKUlkyOEpiTldrQ1ZtdHpnbWl0Z2hmclBRUGx1ZXUwRFRhbGJEa3JTU3loQ3Z6elBTR1B3Q0ZPYWhGL243aFFhMUYzVWFIU3hUS3JGQzVuT3dkTHp4S1JPM1dqVnRJR1JTWDJrdjFGZlVwUXk1RXl5K3JzZlN6SjU5ZFU1WlpkV3BkYUR1RHhWVnlEZXIzRUl5Q2JHNy81SDlNRDRZdXpOcGVURldtTTZjVVNUMDc5NlhEbGJFeFNUVEdRWEZKQTIrQ0NzeTlEWG5KYThuejBGRThmbWN2UUhlVTZrOVFicHpHak1kM0RXbEU2bm83VWRDWUQxSDA0K3VzQnA1aGhDckFCNjcwTmRvVHJOVG1HTkFGdDRKVDB2aXRqS0hxOUtFSWQ2TGhkY20yVGc5M2REY1dGdEFnTUJBQUdqZ2RRd2dkRXdEZ1lEVlIwUEFRSC9CQVFEQWdlQU1FRUdBMVVkSHdRNk1EZ3dOcUEwb0RLR01HaDBkSEE2THk5a2MzTXVibTkzYVc1aExteDFMM0JyYVMxbVlXTjBiM0o1TDJOeWJDOXliMjkwTFdOaExtTnliREJNQmdnckJnRUZCUWNCQVFSQU1ENHdQQVlJS3dZQkJRVUhNQUtHTUdoMGRIQTZMeTlrYzNNdWJtOTNhVzVoTG14MUwzQnJhUzFtWVdOMGIzSjVMMk55ZEM5eWIyOTBMV05oTG1OeWREQWRCZ05WSFE0RUZnUVUrMnRGcXBOZTNHMjNZUjh5cUJaSWlWV1MzdlV3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFOQmdrcWhraUc5dzBCQVFzRkFBT0NBUUVBRStOdWQwNVhHT002RkVaSFdUYzgrYm16LzZCMFhRWE41NjRLV0JCaGNoOWk1R2FkanFwU3NldmtuK3RlTHE1bTZDTG8zZTRsWDJkSjdoc1BBdnlhTHFPSXB6ZzQ5VEdkaWIxbk9CMk83NCt5QWhUOHY5Rlp0SDFFQ0hYeFlzdXlTR0lLdmQrTDVJakpUaXMzbGw0dlU4Rkh6eVJsTTlJUW53WlI1MDZqRmNKZUdsT2d5WmgrVUxXblJORUV3cU44RFRGMkQwWG9nWUJzckN4Q0JqMFBwYUpGcnV2RVFxcFV1dVlnMTRSMURKRmFoTHdxVllTT0Q1Z1BobUEwSFI0ejNHRjNqSFN6MGk5alhTVE9zVWNka3ZVSnkwdElPbnVqc1VFa2czSDZXZzNsejhUdzNJYzdWMU5IYitNQzVLNFp2WCs1U1l5dTArZXI3YkZzY0lyWVp3PT08L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC1hZmRlNzgyNDM2NDY4ZGQ3NGVlYjE4MWY3Y2UxMTBlMSI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLWFmZGU3ODI0MzY0NjhkZDc0ZWViMTgxZjdjZTExMGUxIj48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAxNy0wOS0yOFQxMTowOTowNFo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48ZHM6RGlnZXN0VmFsdWU+YytWb2hnMGpJY1o0VVFTV2VnbENnMG9HTldzPTwvZHM6RGlnZXN0VmFsdWU+PC94YWRlczpDZXJ0RGlnZXN0Pjx4YWRlczpJc3N1ZXJTZXJpYWxWMj5NRll3VWFSUE1FMHhFREFPQmdOVkJBTU1CMmR2YjJRdFkyRXhHVEFYQmdOVkJBb01FRTV2ZDJsdVlTQlRiMngxZEdsdmJuTXhFVEFQQmdOVkJBc01DRkJMU1MxVVJWTlVNUXN3Q1FZRFZRUUdFd0pNVlFJQkNnPT08L3hhZGVzOklzc3VlclNlcmlhbFYyPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZVYyPjwveGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmVkRGF0YU9iamVjdFByb3BlcnRpZXM+PHhhZGVzOkRhdGFPYmplY3RGb3JtYXQgT2JqZWN0UmVmZXJlbmNlPSIjci1pZC0xIj48eGFkZXM6TWltZVR5cGU+dGV4dC94bWw8L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjwvZHM6U2lnbmF0dXJlPg==</bytes>
+               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PGRzOlNpZ25hdHVyZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIgSWQ9ImlkLTg1ZWUyYzQ0MjVmYmFkNzJiOGFhZTcwMGVmZGZkMjk4Ij48ZHM6U2lnbmVkSW5mbz48ZHM6Q2Fub25pY2FsaXphdGlvbk1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyIvPjxkczpTaWduYXR1cmVNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNyc2Etc2hhMjU2Ii8+PGRzOlJlZmVyZW5jZSBJZD0ici1pZC04NWVlMmM0NDI1ZmJhZDcyYjhhYWU3MDBlZmRmZDI5OC0xIiBUeXBlPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjT2JqZWN0IiBVUkk9IiNvLWlkLTg1ZWUyYzQ0MjVmYmFkNzJiOGFhZTcwMGVmZGZkMjk4LTEiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjYmFzZTY0Ii8+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48ZHM6RGlnZXN0VmFsdWU+R0YrTnN5SngvaVgxWWFiOGs0c3VKa01HN0RCTzJsR0FCOUYyU0NZNEdXaz08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjxkczpSZWZlcmVuY2UgVHlwZT0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMyNTaWduZWRQcm9wZXJ0aWVzIiBVUkk9IiN4YWRlcy1pZC04NWVlMmM0NDI1ZmJhZDcyYjhhYWU3MDBlZmRmZDI5OCI+PGRzOlRyYW5zZm9ybXM+PGRzOlRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyIvPjwvZHM6VHJhbnNmb3Jtcz48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPjFNOEM2RnM5WFNEdmZZR2dWdG80elZmTzlBSjRmUFRIMldwd1ZYM0pNbW89PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48L2RzOlNpZ25lZEluZm8+PGRzOlNpZ25hdHVyZVZhbHVlIElkPSJ2YWx1ZS1pZC04NWVlMmM0NDI1ZmJhZDcyYjhhYWU3MDBlZmRmZDI5OCI+UTBRYVdFQndnUzZNWGN2T3RVSkVITExObm5aTmgySTJ0VFdpdmh5QmVKU3puSjBVTm9XcklaSThzUHZOb3hRamUrekUwTVVzb21vRVd4UEhjbWVqdVJjZnRpQmlRdEx4QUlIQ1R3WlpPeUJrY3ZqOUUvYlNtOG05TDczUlM2L2o2MnBxdS84TEUyZkZmT2tSWkttM0FYUngrNDdKbEMrVGxvN1pXVzV0MEtGUWhKVlpkaGZhUTd4aTBxRHJkbVQwa0UzWk5xM3ZMKzdTRE8vNnFFejZ2cWU2RmNseEYrc3R4NGYxa2hxOHRsZWRVbnphaWZQWU8xRTdTVVlRbG53MG5nYWVoNzdieG0yUGpvNVdXcS9yOVFjTHozUmptSC9wb01aRUVmODh2dEdyUzBhL3dac3FjT0wwa2RNWm1OTUI4ZDkya01FcFVRd1B2VHplbmw2RmtBPT08L2RzOlNpZ25hdHVyZVZhbHVlPjxkczpLZXlJbmZvPjxkczpYNTA5RGF0YT48ZHM6WDUwOUNlcnRpZmljYXRlPk1JSUM2akNDQWRLZ0F3SUJBZ0lHTHRZVTE3dFhNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1EQXhHekFaQmdOVkJBTU1FbEp2YjNSVFpXeG1VMmxuYm1Wa1JtRnJaVEVSTUE4R0ExVUVDZ3dJUkZOVExYUmxjM1F3SGhjTk1UY3dOakE0TVRFeU5qQXhXaGNOTkRjd056QTBNRGMxTnpJMFdqQW9NUk13RVFZRFZRUUREQXBUYVdkdVpYSkdZV3RsTVJFd0R3WURWUVFLREFoRVUxTXRkR1Z6ZERDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTUkza1podG5pcG4raWlaSFo5YXg4RmxmRTVPdy9jRndCVGZBRWIzUjFaUVVwNi9CUW5CdDdPbzBKV0J0Yzlxa3Y3SlVEZGNCSlhQVjVRV1M1QXlNUEhwcVE3NUhpdGpzcS9GenU4ZUh0a0twRml6Y3hHYTlCWmRrUWpoNHJTcnRPMUtqczBSZDVEUXRXU2drZVZDQ04wOWtOMFpzWjBFTlkrSXA4UXhTbXl6dHNTdGtZWGRVTHFwd3o0SkVYVzl2ejY0ZVRiZGU0dlFKNnBqSEdhckpmMWdRTkVjMlh6aG1JL3ByWEx5c1dOcUM3bFpnN1BVWlVUcmRlZ0FCVFV6WUNSSjFrV0JSUG00cW8wTE40MDVjOTRRUWQ0NWE1a1Rnb3dIekVnTG5BUUkyOHgwTTNBNTlUS0MraWVOYzZWRjFQc1RMcFV3N1BOSTJWc3RYNWpBdWFzQ0F3RUFBYU1TTUJBd0RnWURWUjBQQVFIL0JBUURBZ0VHTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFDSzZMR0EwMVRSK3JtVThwNnloQWk0T2tETjJiMWRiSUw4bDhpQ01Zb3BMQ3h4OHhxcTN1YlpDT3hxaDFYMmo2cGdXemFyYjBiL01VaXgwMElvVXZOYkZPeEFXN1BCWklLRExubTZMc2NrUnhzMVUzMnNDOWQxTE9IZTNXS0JOQjZHWkFMVDFld2poN2hTYldqZnRsbWNvdnErNmVWR0E1Y3ZmMnUvMitUa0treUhWL05SMzk0blhyZHNkcHZ5Z3d5cEV0WGpldHpEN1VUOTNOdXczeGNWOFZJZnRJdkhmOUxqVTdoK1VqR21LWEc5YzE1ZVlyM1N6VW12Nmt5T0kwQnZ3MTRQV3RzV0dsMFFkT1NSdklCQnJQNGFkQ25HVGdqZ2prOUxUY084QjhGS3JyKzhsSEd1YzBicDRsSVVUb2lVa0dJTFhzaUVlRWc5V0FxbStYcU88L2RzOlg1MDlDZXJ0aWZpY2F0ZT48L2RzOlg1MDlEYXRhPjwvZHM6S2V5SW5mbz48ZHM6T2JqZWN0Pjx4YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcyB4bWxuczp4YWRlcz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiBUYXJnZXQ9IiNpZC04NWVlMmM0NDI1ZmJhZDcyYjhhYWU3MDBlZmRmZDI5OCI+PHhhZGVzOlNpZ25lZFByb3BlcnRpZXMgSWQ9InhhZGVzLWlkLTg1ZWUyYzQ0MjVmYmFkNzJiOGFhZTcwMGVmZGZkMjk4Ij48eGFkZXM6U2lnbmVkU2lnbmF0dXJlUHJvcGVydGllcz48eGFkZXM6U2lnbmluZ1RpbWU+MjAyMi0wMi0wMlQxMzozMTowNlo8L3hhZGVzOlNpZ25pbmdUaW1lPjx4YWRlczpTaWduaW5nQ2VydGlmaWNhdGVWMj48eGFkZXM6Q2VydD48eGFkZXM6Q2VydERpZ2VzdD48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhNTEyIi8+PGRzOkRpZ2VzdFZhbHVlPjE0d01qREZ6ZnNxa2RaVXNuUEgwL2grWm84cno4REV3aU1xMllPMXdOVGZwbEwzd2tRN0UwbDJ5WlBZZGVxR0s5U3hDVGx6cDExUk5FVWVMS01zQ2VRPT08L2RzOkRpZ2VzdFZhbHVlPjwveGFkZXM6Q2VydERpZ2VzdD48eGFkZXM6SXNzdWVyU2VyaWFsVjI+TUQ0d05LUXlNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRQ0JpN1dGTmU3Vnc9PTwveGFkZXM6SXNzdWVyU2VyaWFsVjI+PC94YWRlczpDZXJ0PjwveGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlVjI+PC94YWRlczpTaWduZWRTaWduYXR1cmVQcm9wZXJ0aWVzPjx4YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48eGFkZXM6RGF0YU9iamVjdEZvcm1hdCBPYmplY3RSZWZlcmVuY2U9IiNyLWlkLTg1ZWUyYzQ0MjVmYmFkNzJiOGFhZTcwMGVmZGZkMjk4LTEiPjx4YWRlczpNaW1lVHlwZT5hcHBsaWNhdGlvbi9vY3RldC1zdHJlYW08L3hhZGVzOk1pbWVUeXBlPjwveGFkZXM6RGF0YU9iamVjdEZvcm1hdD48L3hhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjwveGFkZXM6U2lnbmVkUHJvcGVydGllcz48L3hhZGVzOlF1YWxpZnlpbmdQcm9wZXJ0aWVzPjwvZHM6T2JqZWN0PjxkczpPYmplY3QgSWQ9Im8taWQtODVlZTJjNDQyNWZiYWQ3MmI4YWFlNzAwZWZkZmQyOTgtMSI+U0dWc2JHOD08L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=</bytes>
                <!--Optional:-->
                <name>xades-detached.xml</name>
             </toExtendDocument>
@@ -4876,4 +4871,324 @@
          </digest>\r
       </tim:getTimestampResponse>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.remote.timestamp.ws.dss.esig.europa.eu/SoapTimestampService/getTimestampResponse"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.remote.timestamp.ws.dss.esig.europa.eu/SoapTimestampService/getTimestampResponse"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="98aea10a-3fb1-4caa-9e1e-73f1f52c620c" wsaVersion="NONE" name="SoapTrustedListSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapTrustedListSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/trusted-list?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/trusted-list?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/trusted-list?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTrustedListSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/signature/trusted-list?wsdl=SoapTrustedListSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapTrustedListSignatureServiceImplServiceSoapBinding" type="ns1:SoapTrustedListSignatureService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDocument">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDocumentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapTrustedListSignatureServiceImplService">
+    <wsdl:port binding="tns:SoapTrustedListSignatureServiceImplServiceSoapBinding" name="SoapTrustedListSignatureServiceImplPort">
+      <soap:address location="http://localhost:8080/services/soap/signature/trusted-list"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/signature/trusted-list?wsdl=SoapTrustedListSignatureService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapTrustedListSignatureService" targetNamespace="http://signature.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+  <wsdl:types>
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://signature.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://signature.dss.esig.europa.eu/">
+      <xs:element name="getDataToSign" type="tns:getDataToSign"/>
+      <xs:element name="getDataToSignResponse" type="tns:getDataToSignResponse"/>
+      <xs:element name="signDocument" type="tns:signDocument"/>
+      <xs:element name="signDocumentResponse" type="tns:signDocumentResponse"/>
+      <xs:complexType name="getDataToSign">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="dataToSignDTO" type="tns:dataToSignTrustedListDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="dataToSignTrustedListDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteTrustedListSignatureParameters"/>
+          <xs:element minOccurs="0" name="trustedList" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteTrustedListSignatureParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="BLevelParameters" type="tns:remoteBLevelParameters"/>
+          <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="referenceId" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingCertificate" type="tns:remoteCertificate"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteBLevelParameters">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="claimedSignerRoles" nillable="true" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="commitmentTypeIndications" nillable="true" type="tns:commitmentTypeEnum"/>
+          <xs:element minOccurs="0" name="policyDescription" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyDigestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="policyDigestValue" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="policyId" type="xs:string"/>
+          <xs:element minOccurs="0" name="policyQualifier" type="tns:objectIdentifierQualifier"/>
+          <xs:element minOccurs="0" name="policySpuri" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationLocality" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="signerLocationPostalAddress" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationPostalCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStateOrProvince" type="xs:string"/>
+          <xs:element minOccurs="0" name="signerLocationStreet" type="xs:string"/>
+          <xs:element minOccurs="0" name="signingDate" type="xs:dateTime"/>
+          <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteCertificate">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getDataToSignResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="toBeSignedDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDocument">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="signDocumentDTO" type="tns:signTrustedListDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signTrustedListDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteTrustedListSignatureParameters"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
+          <xs:element minOccurs="0" name="trustedList" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signatureValueDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDocumentResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="commitmentTypeEnum">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ProofOfOrigin"/>
+          <xs:enumeration value="ProofOfReceipt"/>
+          <xs:enumeration value="ProofOfDelivery"/>
+          <xs:enumeration value="ProofOfSender"/>
+          <xs:enumeration value="ProofOfApproval"/>
+          <xs:enumeration value="ProofOfCreation"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="digestAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="SHA1"/>
+          <xs:enumeration value="SHA224"/>
+          <xs:enumeration value="SHA256"/>
+          <xs:enumeration value="SHA384"/>
+          <xs:enumeration value="SHA512"/>
+          <xs:enumeration value="SHA3_224"/>
+          <xs:enumeration value="SHA3_256"/>
+          <xs:enumeration value="SHA3_384"/>
+          <xs:enumeration value="SHA3_512"/>
+          <xs:enumeration value="SHAKE128"/>
+          <xs:enumeration value="SHAKE256"/>
+          <xs:enumeration value="SHAKE256_512"/>
+          <xs:enumeration value="RIPEMD160"/>
+          <xs:enumeration value="MD2"/>
+          <xs:enumeration value="MD5"/>
+          <xs:enumeration value="WHIRLPOOL"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="objectIdentifierQualifier">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OID_AS_URI"/>
+          <xs:enumeration value="OID_AS_URN"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="signatureAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA_RAW"/>
+          <xs:enumeration value="RSA_SHA1"/>
+          <xs:enumeration value="RSA_SHA224"/>
+          <xs:enumeration value="RSA_SHA256"/>
+          <xs:enumeration value="RSA_SHA384"/>
+          <xs:enumeration value="RSA_SHA512"/>
+          <xs:enumeration value="RSA_SHA3_224"/>
+          <xs:enumeration value="RSA_SHA3_256"/>
+          <xs:enumeration value="RSA_SHA3_384"/>
+          <xs:enumeration value="RSA_SHA3_512"/>
+          <xs:enumeration value="RSA_SSA_PSS_RAW_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA1_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA512_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_224_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_256_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_384_MGF1"/>
+          <xs:enumeration value="RSA_SSA_PSS_SHA3_512_MGF1"/>
+          <xs:enumeration value="RSA_RIPEMD160"/>
+          <xs:enumeration value="RSA_MD2"/>
+          <xs:enumeration value="RSA_MD5"/>
+          <xs:enumeration value="ECDSA_RAW"/>
+          <xs:enumeration value="ECDSA_SHA1"/>
+          <xs:enumeration value="ECDSA_SHA224"/>
+          <xs:enumeration value="ECDSA_SHA256"/>
+          <xs:enumeration value="ECDSA_SHA384"/>
+          <xs:enumeration value="ECDSA_SHA512"/>
+          <xs:enumeration value="ECDSA_SHA3_224"/>
+          <xs:enumeration value="ECDSA_SHA3_256"/>
+          <xs:enumeration value="ECDSA_SHA3_384"/>
+          <xs:enumeration value="ECDSA_SHA3_512"/>
+          <xs:enumeration value="ECDSA_RIPEMD160"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA1"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA512"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_224"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_256"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_384"/>
+          <xs:enumeration value="PLAIN_ECDSA_SHA3_512"/>
+          <xs:enumeration value="PLAIN_ECDSA_RIPEMD160"/>
+          <xs:enumeration value="DSA_RAW"/>
+          <xs:enumeration value="DSA_SHA1"/>
+          <xs:enumeration value="DSA_SHA224"/>
+          <xs:enumeration value="DSA_SHA256"/>
+          <xs:enumeration value="DSA_SHA384"/>
+          <xs:enumeration value="DSA_SHA512"/>
+          <xs:enumeration value="DSA_SHA3_224"/>
+          <xs:enumeration value="DSA_SHA3_256"/>
+          <xs:enumeration value="DSA_SHA3_384"/>
+          <xs:enumeration value="DSA_SHA3_512"/>
+          <xs:enumeration value="HMAC_SHA1"/>
+          <xs:enumeration value="HMAC_SHA224"/>
+          <xs:enumeration value="HMAC_SHA256"/>
+          <xs:enumeration value="HMAC_SHA384"/>
+          <xs:enumeration value="HMAC_SHA512"/>
+          <xs:enumeration value="HMAC_SHA3_224"/>
+          <xs:enumeration value="HMAC_SHA3_256"/>
+          <xs:enumeration value="HMAC_SHA3_384"/>
+          <xs:enumeration value="HMAC_SHA3_512"/>
+          <xs:enumeration value="HMAC_RIPEMD160"/>
+          <xs:enumeration value="ED25519"/>
+          <xs:enumeration value="ED448"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getDataToSignResponse">
+    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDocument">
+    <wsdl:part element="ns1:signDocument" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToSign">
+    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDocumentResponse">
+    <wsdl:part element="ns1:signDocumentResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapTrustedListSignatureService">
+    <wsdl:operation name="getDataToSign">
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDocument">
+      <wsdl:input message="ns1:signDocument" name="signDocument"></wsdl:input>
+      <wsdl:output message="ns1:signDocumentResponse" name="signDocumentResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint></con:endpoints><con:operation id="45bad980-e7a4-43fe-80b5-78b94560370e" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="467a3fbe-6999-44fd-975d-53504678985e" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:getDataToSign>\r
+         <!--Optional:-->\r
+         <dataToSignDTO>\r
+            <!--Optional:-->\r
+            <parameters>\r
+               <!--Optional:-->\r
+               <BLevelParameters>\r<!--Optional:-->\r
+                  <signingDate>2021-10-03T00:00:00Z</signingDate>\r
+               </BLevelParameters>\r
+               <!--Optional:-->\r
+               <referenceDigestAlgorithm>SHA512</referenceDigestAlgorithm>\r
+               <!--Optional:-->\r
+               <referenceId>tl</referenceId>\r
+               <!--Optional:-->\r
+               <signingCertificate>\r
+                  <!--Optional:-->\r
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO</encodedCertificate>\r
+               </signingCertificate>\r
+            </parameters>\r
+            <!--Optional:-->\r
+            <trustedList>\r
+               <!--Optional:-->\r
+               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PFRydXN0U2VydmljZVN0YXR1c0xpc3QgeG1sbnM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDIyMzEvdjIjIiB4bWxuczpuczI9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiIHhtbG5zOm5zMz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiB4bWxuczpuczQ9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDIyMzEvdjIvYWRkaXRpb25hbHR5cGVzIyIgeG1sbnM6bnM1PSJodHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvU3ZjSW5mb0V4dC9lU2lnRGlyLTE5OTktOTMtRUMtVHJ1c3RlZExpc3QvIyIgeG1sbnM6bnM2PSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzL3YxLjQuMSMiIElkPSJUTDEyMzQ1IiBUU0xUYWc9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMTk2MTIvVFNMVGFnIj4NCiAgICA8U2NoZW1lSW5mb3JtYXRpb24+DQogICAgICAgIDxUU0xWZXJzaW9uSWRlbnRpZmllcj41PC9UU0xWZXJzaW9uSWRlbnRpZmllcj4NCiAgICAgICAgPFRTTFNlcXVlbmNlTnVtYmVyPjE8L1RTTFNlcXVlbmNlTnVtYmVyPg0KICAgICAgICA8VFNMVHlwZT5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvVFNMVHlwZS9FVWdlbmVyaWM8L1RTTFR5cGU+DQogICAgICAgIDxTY2hlbWVPcGVyYXRvck5hbWU+DQogICAgICAgICAgICA8TmFtZSB4bWw6bGFuZz0iZW4iPlhYIE9wZXJhdG9yIG5hbWU8L05hbWU+DQogICAgICAgIDwvU2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICA8U2NoZW1lT3BlcmF0b3JBZGRyZXNzPg0KICAgICAgICAgICAgPFBvc3RhbEFkZHJlc3Nlcz4NCiAgICAgICAgICAgICAgICA8UG9zdGFsQWRkcmVzcyB4bWw6bGFuZz0iZW4iPg0KICAgICAgICAgICAgICAgICAgICA8U3RyZWV0QWRkcmVzcz5URVNUPC9TdHJlZXRBZGRyZXNzPg0KICAgICAgICAgICAgICAgICAgICA8TG9jYWxpdHk+VEVTVDwvTG9jYWxpdHk+DQogICAgICAgICAgICAgICAgICAgIDxQb3N0YWxDb2RlPlRFU1Q8L1Bvc3RhbENvZGU+DQogICAgICAgICAgICAgICAgICAgIDxDb3VudHJ5TmFtZT5FVTwvQ291bnRyeU5hbWU+DQogICAgICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzPg0KICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzZXM+DQogICAgICAgICAgICA8RWxlY3Ryb25pY0FkZHJlc3M+DQogICAgICAgICAgICAgICAgPFVSSSB4bWw6bGFuZz0iZW4iPm1haWx0bzp0ZXN0QHRlc3QudGVzdDwvVVJJPg0KICAgICAgICAgICAgPC9FbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgPC9TY2hlbWVPcGVyYXRvckFkZHJlc3M+DQogICAgICAgIDxTY2hlbWVOYW1lPg0KICAgICAgICAgICAgPE5hbWUgeG1sOmxhbmc9ImVuIj5YWDogVEVTVDwvTmFtZT4NCiAgICAgICAgPC9TY2hlbWVOYW1lPg0KICAgICAgICA8U2NoZW1lSW5mb3JtYXRpb25VUkk+DQogICAgICAgICAgICA8VVJJIHhtbDpsYW5nPSJlbiI+aHR0cHM6Ly93ZWJnYXRlLmVjLmV1cm9wYS5ldS9lc2lnLXZhbGlkYXRpb24tdGVzdHMvdGVzdC1kaXNjbGFpbWVyLzwvVVJJPg0KICAgICAgICA8L1NjaGVtZUluZm9ybWF0aW9uVVJJPg0KICAgICAgICA8U3RhdHVzRGV0ZXJtaW5hdGlvbkFwcHJvYWNoPmh0dHBzOi8vd2ViZ2F0ZS5lYy5ldXJvcGEuZXUvZXNpZy12YWxpZGF0aW9uLXRlc3RzL3Rlc3QtZGlzY2xhaW1lci88L1N0YXR1c0RldGVybWluYXRpb25BcHByb2FjaD4NCiAgICAgICAgPFNjaGVtZVR5cGVDb21tdW5pdHlSdWxlcz4NCiAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3Qvc2NoZW1lcnVsZXMvRVVjb21tb248L1VSST4NCiAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3Qvc2NoZW1lcnVsZXMvWFg8L1VSST4NCiAgICAgICAgPC9TY2hlbWVUeXBlQ29tbXVuaXR5UnVsZXM+DQogICAgICAgIDxTY2hlbWVUZXJyaXRvcnk+WFg8L1NjaGVtZVRlcnJpdG9yeT4NCiAgICAgICAgPFBvbGljeU9yTGVnYWxOb3RpY2U+DQogICAgICAgICAgICA8VFNMTGVnYWxOb3RpY2UgeG1sOmxhbmc9ImVuIj5URVNUPC9UU0xMZWdhbE5vdGljZT4NCiAgICAgICAgPC9Qb2xpY3lPckxlZ2FsTm90aWNlPg0KICAgICAgICA8SGlzdG9yaWNhbEluZm9ybWF0aW9uUGVyaW9kPjY1NTM1PC9IaXN0b3JpY2FsSW5mb3JtYXRpb25QZXJpb2Q+DQogICAgICAgIDxQb2ludGVyc1RvT3RoZXJUU0w+DQogICAgICAgICAgICA8T3RoZXJUU0xQb2ludGVyPg0KICAgICAgICAgICAgICAgIDxTZXJ2aWNlRGlnaXRhbElkZW50aXRpZXM+DQogICAgICAgICAgICAgICAgICAgIDxTZXJ2aWNlRGlnaXRhbElkZW50aXR5Pg0KICAgICAgICAgICAgICAgICAgICAgICAgPERpZ2l0YWxJZD4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8WDUwOUNlcnRpZmljYXRlPk1JSURSakNDQWk2Z0F3SUJBZ0lCQVRBTkJna3Foa2lHOXcwQkFRMEZBREJWTVJRd0VnWURWUVFEREF0RFJWSlVMVXhQVkV3dE1qRVlNQllHQTFVRUNnd1BSVlVnVDNKbllXNXBlbUYwYVc5dU1SWXdGQVlEVlFRTERBMURSVkpVSUVaUFVpQlVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQWVGdzB4T1RFeU1UTXdNREF3TURSYUZ3MHlNVEV5TVRNd01EQXdNRFJhTUZVeEZEQVNCZ05WQkFNTUMwTkZVbFF0VEU5VVRDMHlNUmd3RmdZRFZRUUtEQTlGVlNCUGNtZGhibWw2WVhScGIyNHhGakFVQmdOVkJBc01EVU5GVWxRZ1JrOVNJRlJGVTFReEN6QUpCZ05WQkFZVEFreFZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQW5XT3hTWTVJWllNYm9MeXdQRHdEUTdvWVArVkJUTWZWM2duQ0RKenhURUNlUGhQandZV01naDRXeDFPcU9ndkxpSlNjRDJiZWd6bkY1NXRkTm9TK1dvVldPQWt2OWo3OXQrREFwdkRBTFZwZW52VUZTOWgzdzAycTlvSVZqaHJxdnFydlYvMmlyWC95d2JMMlMxQXZHL2VkQ1FMcFZ6RzJyWldiaXEzK1U1enFOMnBqbnZYZ0VlYVZmWE5EZklyd2hCd2k5QklvT2ZveVBrNkRGVTFtZVVsbi90akU4Nkd4ZkJaTFQ1SU9tejRSZFVmQ1dKZE9aeDRXaFd2SUNLb1VMQko0TWN4VmZxSjlzK0FYLzNYZGkwU3NjdEpjNUtkYXRVN2YrdFNFUlBROHpXYkh0aDFCNnJHNnhsa1BJQzIrWTNlWVZoWmNUUjd1djB0N3NzUUFjUUlEQVFBQm95RXdIekFkQmdOVkhRNEVGZ1FVQTJGUzhIL21NOHZGdWJ2QTlKcXFzTU9Jc2RJd0RRWUpLb1pJaHZjTkFRRU5CUUFEZ2dFQkFEWlNLazRLakRBNlVoWXlRbmVyMXVWdHZNdklMTlpveTZtUlNEeFJsUTV2VVl3dEkxcDRXVytncU9uQWNZeHpkNG9aRzYxVHA0aWsrend1RkZCTkkvT2t5SzNnbkpEZ0FzTmR1RDAxZ3NtSHFINE1xcWV2UVA4MEl0S2N5enE3Zys1bUplcGVRY3lFMVZLTmJuNUo2bkV2RzZubWVVakhWcmEwNGJacVZMZ1FxcVhIM1dGa0p6eWdGQ0pLeFNyVzVDSXVHOTBmd1V3OGpabFFPc1k3Vm81SGFacitLRlVBTFI4QnFubDBjUXNCRUkwQVROdEE4cVBPK2h1bVNZMTRXZ3ZKMUttNVFwOTYvZkRYS2pCU3hKaFBlSFQ2Rm5wQmhPZXI5VHFHQXQrcVhMajYrUVRoelY5cVFzSzYrZG8vNjI1enlTdG90Y2pyenMydDNIUXFQYzQ9PC9YNTA5Q2VydGlmaWNhdGU+DQogICAgICAgICAgICAgICAgICAgICAgICA8L0RpZ2l0YWxJZD4NCiAgICAgICAgICAgICAgICAgICAgPC9TZXJ2aWNlRGlnaXRhbElkZW50aXR5Pg0KICAgICAgICAgICAgICAgIDwvU2VydmljZURpZ2l0YWxJZGVudGl0aWVzPg0KICAgICAgICAgICAgICAgIDxUU0xMb2NhdGlvbj5odHRwczovL3dlYmdhdGUuZWMuZXVyb3BhLmV1L2VzaWctdmFsaWRhdGlvbi10ZXN0cy90bC9MT1RMLTIueG1sPC9UU0xMb2NhdGlvbj4NCiAgICAgICAgICAgICAgICA8QWRkaXRpb25hbEluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICA8T3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxTY2hlbWVUZXJyaXRvcnk+RVU8L1NjaGVtZVRlcnJpdG9yeT4NCiAgICAgICAgICAgICAgICAgICAgPC9PdGhlckluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICA8T3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxUU0xUeXBlPmh0dHA6Ly91cmkuZXRzaS5vcmcvVHJzdFN2Yy9UcnVzdGVkTGlzdC9UU0xUeXBlL0VVbGlzdG9mdGhlbGlzdHM8L1RTTFR5cGU+DQogICAgICAgICAgICAgICAgICAgIDwvT3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgPE90aGVySW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+RVUgT3BlcmF0b3IgbmFtZTwvTmFtZT4NCiAgICAgICAgICAgICAgICAgICAgICAgIDwvU2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICAgICAgICAgICAgICA8L090aGVySW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgICAgIDxPdGhlckluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPG5zNDpNaW1lVHlwZT5hcHBsaWNhdGlvbi92bmQuZXRzaS50c2wreG1sPC9uczQ6TWltZVR5cGU+DQogICAgICAgICAgICAgICAgICAgIDwvT3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICA8L0FkZGl0aW9uYWxJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgIDwvT3RoZXJUU0xQb2ludGVyPg0KICAgICAgICA8L1BvaW50ZXJzVG9PdGhlclRTTD4NCiAgICAgICAgPExpc3RJc3N1ZURhdGVUaW1lPjIwMjAtMTItMTJUMDA6MDA6MDBaPC9MaXN0SXNzdWVEYXRlVGltZT4NCiAgICAgICAgPE5leHRVcGRhdGU+DQogICAgICAgICAgICA8ZGF0ZVRpbWU+MjAyMS0wMS0xM1QwMDowMDowMFo8L2RhdGVUaW1lPg0KICAgICAgICA8L05leHRVcGRhdGU+DQogICAgPC9TY2hlbWVJbmZvcm1hdGlvbj4NCiAgICA8VHJ1c3RTZXJ2aWNlUHJvdmlkZXJMaXN0Pg0KICAgICAgICA8VHJ1c3RTZXJ2aWNlUHJvdmlkZXI+DQogICAgICAgICAgICA8VFNQSW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgPFRTUE5hbWU+DQogICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+VFNQLTIxLjEgTmFtZTwvTmFtZT4NCiAgICAgICAgICAgICAgICA8L1RTUE5hbWU+DQogICAgICAgICAgICAgICAgPFRTUFRyYWRlTmFtZT4NCiAgICAgICAgICAgICAgICAgICAgPE5hbWUgeG1sOmxhbmc9ImVuIj5UU1AtMjEuMSBUcmFkZSBuYW1lPC9OYW1lPg0KICAgICAgICAgICAgICAgIDwvVFNQVHJhZGVOYW1lPg0KICAgICAgICAgICAgICAgIDxUU1BBZGRyZXNzPg0KICAgICAgICAgICAgICAgICAgICA8UG9zdGFsQWRkcmVzc2VzPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFBvc3RhbEFkZHJlc3MgeG1sOmxhbmc9ImVuIj4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8U3RyZWV0QWRkcmVzcz5TdHJlZXQgYWRkcmVzczwvU3RyZWV0QWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8TG9jYWxpdHk+TG9jYWxpdHk8L0xvY2FsaXR5Pg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxTdGF0ZU9yUHJvdmluY2U+UHJvdmluY2U8L1N0YXRlT3JQcm92aW5jZT4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8UG9zdGFsQ29kZT4xMjM8L1Bvc3RhbENvZGU+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPENvdW50cnlOYW1lPlhYPC9Db3VudHJ5TmFtZT4NCiAgICAgICAgICAgICAgICAgICAgICAgIDwvUG9zdGFsQWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzZXM+DQogICAgICAgICAgICAgICAgICAgIDxFbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5tYWlsdG86dGVzdEB0ZXN0LnRlc3Q8L1VSST4NCiAgICAgICAgICAgICAgICAgICAgPC9FbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgICAgICAgICA8L1RTUEFkZHJlc3M+DQogICAgICAgICAgICA8L1RTUEluZm9ybWF0aW9uPg0KICAgICAgICAgICAgPFRTUFNlcnZpY2VzPg0KICAgICAgICAgICAgICAgIDxUU1BTZXJ2aWNlPg0KICAgICAgICAgICAgICAgICAgICA8U2VydmljZUluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VUeXBlSWRlbnRpZmllcj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvU3ZjdHlwZS9DQS9RQzwvU2VydmljZVR5cGVJZGVudGlmaWVyPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+VFMtMjEuMS4xIE5hbWU8L05hbWU+DQogICAgICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VEaWdpdGFsSWRlbnRpdHk+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPERpZ2l0YWxJZD4NCjxYNTA5Q2VydGlmaWNhdGU+TUlJRFlUQ0NBa21nQXdJQkFnSUJBekFOQmdrcWhraUc5dzBCQVFzRkFEQlNNUk13RVFZRFZRUUREQXBUUkVrdE1qRXVNUzR4TVJZd0ZBWURWUVFLREExVVUxQXRNakV1TVNCT1lXMWxNUll3RkFZRFZRUUxEQTFEUlZKVUlFWlBVaUJVUlZOVU1Rc3dDUVlEVlFRR0V3Sk1WVEFlRncweE9URXlNVE13TURBd01EUmFGdzB5TVRFeU1UTXdNREF3TURSYU1GSXhFekFSQmdOVkJBTU1DbE5FU1MweU1TNHhMakV4RmpBVUJnTlZCQW9NRFZSVFVDMHlNUzR4SUU1aGJXVXhGakFVQmdOVkJBc01EVU5GVWxRZ1JrOVNJRlJGVTFReEN6QUpCZ05WQkFZVEFreFZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQWhDanFqcmFuTXVjKytKa0QyUjFWWGdzd2taYTE3NVhhSDVkZ1pYa3FtOWQwOTZqOVVlMEJjeUplRDd4TVQ5VXNnY0tROSsxaUdhUWtBVGNrbjJGNG9Kd0tBYnltWi9QNDF0cHcybWx3MTlMeFBMUHNTVlJXOC9QY1I4eVJ4QTU4eVUyd3hlUHdJdERnUmJUL0t2K2tNdVBYU1hlanM1ZVM2TkJDT0pIeGljeVhkeDRVbVVQKzRRUHZtak1ZVjhOeUdpQ3E3Q2pQaUd3anFaMHNHdk1IRlNZdzZsUXZ6NFBNUkkxK3orSHovL2FqK0N4M2orZElPNXNrR0FHMXlDWG9KcERZR1RVS3Y0R2c1S09RWk5uaGI0cWNiYnprTU9Bb2pGUC9SdEFhaHRlZXVpd1Z3cTBUWWlmdFVibzJwRDVId1JkajcrcEx1UHpsTnp6YWlNNHBMUUlEQVFBQm8wSXdRREFPQmdOVkhROEJBZjhFQkFNQ0FRWXdIUVlEVlIwT0JCWUVGSmdTSkJBVWtLOTVmSnpVbXRJd2VUeTkrRlZDTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUFmS2hUMllxYmw4aXdSSE9JTVErOFpBVHBkelNWNEsvREg3cGVwSmRxMmF3SnNiLzQxMGZsU09rVW5tblNsOUdtNXhwVGhHaS95TUJaYUNKUnNMSktkRGlTZGUva1Q5Y291VzdHYVFCVzhxODVSakxaWUwwS2JGRWhIRklrWXB1NVZDVTE2SW9ETG91czhsQ20wcHgyMnpVbFVZd2s5T29SZVh0ZnN3YkI2RDVNT2lPRDhpa1oxY1ZHNkUwY2ZPazhxZlg0a0RXT1NYQWdwZW9CK05WSXZkUWF0emhNa0xLZ0FpTWo5QTNWczJ4c0FWZWRwY3RscFFrWVNyMWhqYk83RXZrWjcrcEt1aFZJbFIzNi9CdmtQV2FCMGw0czd5ZE5mK0Jyb0t4Z0VXSEx2YlhpZHhReXliN3VtWFcxL2haYmhwanVuSExwMmFVK0h3QmVvS2cydz08L1g1MDlDZXJ0aWZpY2F0ZT4NCjxYNTA5U3ViamVjdE5hbWU+Qz1YWCxPVT1DRVJUIEZPUiBURVNULE89VFNQLTIxLjEgTmFtZSxDTj1TREktMjEuMS4xPC9YNTA5U3ViamVjdE5hbWU+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9EaWdpdGFsSWQ+DQogICAgICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VEaWdpdGFsSWRlbnRpdHk+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2VydmljZVN0YXR1cz5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvU3Zjc3RhdHVzL2dyYW50ZWQ8L1NlcnZpY2VTdGF0dXM+DQogICAgICAgICAgICAgICAgICAgICAgICA8U3RhdHVzU3RhcnRpbmdUaW1lPjIwMTYtMDYtMzBUMjI6MDA6MDBaPC9TdGF0dXNTdGFydGluZ1RpbWU+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2VydmljZUluZm9ybWF0aW9uRXh0ZW5zaW9ucz4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8RXh0ZW5zaW9uIENyaXRpY2FsPSJ0cnVlIj4NCjxBZGRpdGlvbmFsU2VydmljZUluZm9ybWF0aW9uPg0KICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvU3ZjSW5mb0V4dC9Gb3JlU2lnbmF0dXJlczwvVVJJPg0KPC9BZGRpdGlvbmFsU2VydmljZUluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvRXh0ZW5zaW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPC9TZXJ2aWNlSW5mb3JtYXRpb25FeHRlbnNpb25zPg0KICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICA8L1RTUFNlcnZpY2U+DQogICAgICAgICAgICA8L1RTUFNlcnZpY2VzPg0KICAgICAgICA8L1RydXN0U2VydmljZVByb3ZpZGVyPg0KICAgIDwvVHJ1c3RTZXJ2aWNlUHJvdmlkZXJMaXN0Pg0KPC9UcnVzdFNlcnZpY2VTdGF0dXNMaXN0Pg==</bytes>\r
+               <!--Optional:-->\r
+               <name>tl.xml</name>\r
+            </trustedList>\r
+         </dataToSignDTO>\r
+      </sig:getDataToSign>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapTrustedListSignatureService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="dae1e7bc-92af-421c-83fb-48b950f831d7" isOneWay="false" action="" name="signDocument" bindingOperationName="signDocument" type="Request-Response" outputName="signDocumentResponse" inputName="signDocument" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="144d1c53-8fcd-4933-b8d0-cd4378fe7965" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/signature/trusted-list</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:sig="http://signature.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <sig:signDocument>\r
+         <!--Optional:-->\r
+         <signDocumentDTO>\r
+            <!--Optional:-->\r
+            <parameters>\r
+               <!--Optional:-->\r
+               <BLevelParameters>\r
+                  <signingDate>2021-10-03T00:00:00Z</signingDate>\r
+               </BLevelParameters>\r
+               <!--Optional:-->\r
+               <referenceDigestAlgorithm>SHA512</referenceDigestAlgorithm>\r
+               <!--Optional:-->\r
+               <referenceId>tl</referenceId>\r
+               <!--Optional:-->\r
+               <signingCertificate>\r
+                  <!--Optional:-->\r
+                  <encodedCertificate>MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO</encodedCertificate>
+               </signingCertificate>\r
+            </parameters>\r
+            <!--Optional:-->\r
+            <signatureValue>\r
+               <!--Optional:-->\r
+               <algorithm>RSA_SHA256</algorithm>\r
+               <!--Optional:-->\r
+               <value>lax15SqO3rOCeJrThb6XAGD1JHEtszFRNyADrNdp+jduHVKtfTnLcuB7ELcebkC+k21hljwPKTDCWrpsKAMKVU3RsP9Si0nmYt/6dWYmHpMoGQTaGReq7c9HJExbva58Wu0abABnDwmMH/xPwGBavHTbfToJfX73dWOqYxKpfyOP4QUFXsy5BFvEjZOkbGwmlOqkNJJp0RSLz/LpOpTMzfVlVuSSCsVcIgVO5L+SLCaqAzRMYaV0ZcGTwhnwEDjy9alcejaoUR35lAHXPrnw7YSUsFTUvF02l+MKZFarqgyg1hmTd4USNlAHgpvdrWQQ42JHQg0nqkMEHtdtWhUyTw==</value>\r
+            </signatureValue>\r
+            <!--Optional:-->\r
+            <trustedList>\r
+               <!--Optional:-->\r
+               <bytes>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PFRydXN0U2VydmljZVN0YXR1c0xpc3QgeG1sbnM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDIyMzEvdjIjIiB4bWxuczpuczI9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiIHhtbG5zOm5zMz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiB4bWxuczpuczQ9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDIyMzEvdjIvYWRkaXRpb25hbHR5cGVzIyIgeG1sbnM6bnM1PSJodHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvU3ZjSW5mb0V4dC9lU2lnRGlyLTE5OTktOTMtRUMtVHJ1c3RlZExpc3QvIyIgeG1sbnM6bnM2PSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzL3YxLjQuMSMiIElkPSJUTDEyMzQ1IiBUU0xUYWc9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMTk2MTIvVFNMVGFnIj4NCiAgICA8U2NoZW1lSW5mb3JtYXRpb24+DQogICAgICAgIDxUU0xWZXJzaW9uSWRlbnRpZmllcj41PC9UU0xWZXJzaW9uSWRlbnRpZmllcj4NCiAgICAgICAgPFRTTFNlcXVlbmNlTnVtYmVyPjE8L1RTTFNlcXVlbmNlTnVtYmVyPg0KICAgICAgICA8VFNMVHlwZT5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvVFNMVHlwZS9FVWdlbmVyaWM8L1RTTFR5cGU+DQogICAgICAgIDxTY2hlbWVPcGVyYXRvck5hbWU+DQogICAgICAgICAgICA8TmFtZSB4bWw6bGFuZz0iZW4iPlhYIE9wZXJhdG9yIG5hbWU8L05hbWU+DQogICAgICAgIDwvU2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICA8U2NoZW1lT3BlcmF0b3JBZGRyZXNzPg0KICAgICAgICAgICAgPFBvc3RhbEFkZHJlc3Nlcz4NCiAgICAgICAgICAgICAgICA8UG9zdGFsQWRkcmVzcyB4bWw6bGFuZz0iZW4iPg0KICAgICAgICAgICAgICAgICAgICA8U3RyZWV0QWRkcmVzcz5URVNUPC9TdHJlZXRBZGRyZXNzPg0KICAgICAgICAgICAgICAgICAgICA8TG9jYWxpdHk+VEVTVDwvTG9jYWxpdHk+DQogICAgICAgICAgICAgICAgICAgIDxQb3N0YWxDb2RlPlRFU1Q8L1Bvc3RhbENvZGU+DQogICAgICAgICAgICAgICAgICAgIDxDb3VudHJ5TmFtZT5FVTwvQ291bnRyeU5hbWU+DQogICAgICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzPg0KICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzZXM+DQogICAgICAgICAgICA8RWxlY3Ryb25pY0FkZHJlc3M+DQogICAgICAgICAgICAgICAgPFVSSSB4bWw6bGFuZz0iZW4iPm1haWx0bzp0ZXN0QHRlc3QudGVzdDwvVVJJPg0KICAgICAgICAgICAgPC9FbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgPC9TY2hlbWVPcGVyYXRvckFkZHJlc3M+DQogICAgICAgIDxTY2hlbWVOYW1lPg0KICAgICAgICAgICAgPE5hbWUgeG1sOmxhbmc9ImVuIj5YWDogVEVTVDwvTmFtZT4NCiAgICAgICAgPC9TY2hlbWVOYW1lPg0KICAgICAgICA8U2NoZW1lSW5mb3JtYXRpb25VUkk+DQogICAgICAgICAgICA8VVJJIHhtbDpsYW5nPSJlbiI+aHR0cHM6Ly93ZWJnYXRlLmVjLmV1cm9wYS5ldS9lc2lnLXZhbGlkYXRpb24tdGVzdHMvdGVzdC1kaXNjbGFpbWVyLzwvVVJJPg0KICAgICAgICA8L1NjaGVtZUluZm9ybWF0aW9uVVJJPg0KICAgICAgICA8U3RhdHVzRGV0ZXJtaW5hdGlvbkFwcHJvYWNoPmh0dHBzOi8vd2ViZ2F0ZS5lYy5ldXJvcGEuZXUvZXNpZy12YWxpZGF0aW9uLXRlc3RzL3Rlc3QtZGlzY2xhaW1lci88L1N0YXR1c0RldGVybWluYXRpb25BcHByb2FjaD4NCiAgICAgICAgPFNjaGVtZVR5cGVDb21tdW5pdHlSdWxlcz4NCiAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3Qvc2NoZW1lcnVsZXMvRVVjb21tb248L1VSST4NCiAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3Qvc2NoZW1lcnVsZXMvWFg8L1VSST4NCiAgICAgICAgPC9TY2hlbWVUeXBlQ29tbXVuaXR5UnVsZXM+DQogICAgICAgIDxTY2hlbWVUZXJyaXRvcnk+WFg8L1NjaGVtZVRlcnJpdG9yeT4NCiAgICAgICAgPFBvbGljeU9yTGVnYWxOb3RpY2U+DQogICAgICAgICAgICA8VFNMTGVnYWxOb3RpY2UgeG1sOmxhbmc9ImVuIj5URVNUPC9UU0xMZWdhbE5vdGljZT4NCiAgICAgICAgPC9Qb2xpY3lPckxlZ2FsTm90aWNlPg0KICAgICAgICA8SGlzdG9yaWNhbEluZm9ybWF0aW9uUGVyaW9kPjY1NTM1PC9IaXN0b3JpY2FsSW5mb3JtYXRpb25QZXJpb2Q+DQogICAgICAgIDxQb2ludGVyc1RvT3RoZXJUU0w+DQogICAgICAgICAgICA8T3RoZXJUU0xQb2ludGVyPg0KICAgICAgICAgICAgICAgIDxTZXJ2aWNlRGlnaXRhbElkZW50aXRpZXM+DQogICAgICAgICAgICAgICAgICAgIDxTZXJ2aWNlRGlnaXRhbElkZW50aXR5Pg0KICAgICAgICAgICAgICAgICAgICAgICAgPERpZ2l0YWxJZD4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8WDUwOUNlcnRpZmljYXRlPk1JSURSakNDQWk2Z0F3SUJBZ0lCQVRBTkJna3Foa2lHOXcwQkFRMEZBREJWTVJRd0VnWURWUVFEREF0RFJWSlVMVXhQVkV3dE1qRVlNQllHQTFVRUNnd1BSVlVnVDNKbllXNXBlbUYwYVc5dU1SWXdGQVlEVlFRTERBMURSVkpVSUVaUFVpQlVSVk5VTVFzd0NRWURWUVFHRXdKTVZUQWVGdzB4T1RFeU1UTXdNREF3TURSYUZ3MHlNVEV5TVRNd01EQXdNRFJhTUZVeEZEQVNCZ05WQkFNTUMwTkZVbFF0VEU5VVRDMHlNUmd3RmdZRFZRUUtEQTlGVlNCUGNtZGhibWw2WVhScGIyNHhGakFVQmdOVkJBc01EVU5GVWxRZ1JrOVNJRlJGVTFReEN6QUpCZ05WQkFZVEFreFZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQW5XT3hTWTVJWllNYm9MeXdQRHdEUTdvWVArVkJUTWZWM2duQ0RKenhURUNlUGhQandZV01naDRXeDFPcU9ndkxpSlNjRDJiZWd6bkY1NXRkTm9TK1dvVldPQWt2OWo3OXQrREFwdkRBTFZwZW52VUZTOWgzdzAycTlvSVZqaHJxdnFydlYvMmlyWC95d2JMMlMxQXZHL2VkQ1FMcFZ6RzJyWldiaXEzK1U1enFOMnBqbnZYZ0VlYVZmWE5EZklyd2hCd2k5QklvT2ZveVBrNkRGVTFtZVVsbi90akU4Nkd4ZkJaTFQ1SU9tejRSZFVmQ1dKZE9aeDRXaFd2SUNLb1VMQko0TWN4VmZxSjlzK0FYLzNYZGkwU3NjdEpjNUtkYXRVN2YrdFNFUlBROHpXYkh0aDFCNnJHNnhsa1BJQzIrWTNlWVZoWmNUUjd1djB0N3NzUUFjUUlEQVFBQm95RXdIekFkQmdOVkhRNEVGZ1FVQTJGUzhIL21NOHZGdWJ2QTlKcXFzTU9Jc2RJd0RRWUpLb1pJaHZjTkFRRU5CUUFEZ2dFQkFEWlNLazRLakRBNlVoWXlRbmVyMXVWdHZNdklMTlpveTZtUlNEeFJsUTV2VVl3dEkxcDRXVytncU9uQWNZeHpkNG9aRzYxVHA0aWsrend1RkZCTkkvT2t5SzNnbkpEZ0FzTmR1RDAxZ3NtSHFINE1xcWV2UVA4MEl0S2N5enE3Zys1bUplcGVRY3lFMVZLTmJuNUo2bkV2RzZubWVVakhWcmEwNGJacVZMZ1FxcVhIM1dGa0p6eWdGQ0pLeFNyVzVDSXVHOTBmd1V3OGpabFFPc1k3Vm81SGFacitLRlVBTFI4QnFubDBjUXNCRUkwQVROdEE4cVBPK2h1bVNZMTRXZ3ZKMUttNVFwOTYvZkRYS2pCU3hKaFBlSFQ2Rm5wQmhPZXI5VHFHQXQrcVhMajYrUVRoelY5cVFzSzYrZG8vNjI1enlTdG90Y2pyenMydDNIUXFQYzQ9PC9YNTA5Q2VydGlmaWNhdGU+DQogICAgICAgICAgICAgICAgICAgICAgICA8L0RpZ2l0YWxJZD4NCiAgICAgICAgICAgICAgICAgICAgPC9TZXJ2aWNlRGlnaXRhbElkZW50aXR5Pg0KICAgICAgICAgICAgICAgIDwvU2VydmljZURpZ2l0YWxJZGVudGl0aWVzPg0KICAgICAgICAgICAgICAgIDxUU0xMb2NhdGlvbj5odHRwczovL3dlYmdhdGUuZWMuZXVyb3BhLmV1L2VzaWctdmFsaWRhdGlvbi10ZXN0cy90bC9MT1RMLTIueG1sPC9UU0xMb2NhdGlvbj4NCiAgICAgICAgICAgICAgICA8QWRkaXRpb25hbEluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICA8T3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxTY2hlbWVUZXJyaXRvcnk+RVU8L1NjaGVtZVRlcnJpdG9yeT4NCiAgICAgICAgICAgICAgICAgICAgPC9PdGhlckluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICA8T3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxUU0xUeXBlPmh0dHA6Ly91cmkuZXRzaS5vcmcvVHJzdFN2Yy9UcnVzdGVkTGlzdC9UU0xUeXBlL0VVbGlzdG9mdGhlbGlzdHM8L1RTTFR5cGU+DQogICAgICAgICAgICAgICAgICAgIDwvT3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICAgICAgPE90aGVySW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+RVUgT3BlcmF0b3IgbmFtZTwvTmFtZT4NCiAgICAgICAgICAgICAgICAgICAgICAgIDwvU2NoZW1lT3BlcmF0b3JOYW1lPg0KICAgICAgICAgICAgICAgICAgICA8L090aGVySW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgICAgIDxPdGhlckluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPG5zNDpNaW1lVHlwZT5hcHBsaWNhdGlvbi92bmQuZXRzaS50c2wreG1sPC9uczQ6TWltZVR5cGU+DQogICAgICAgICAgICAgICAgICAgIDwvT3RoZXJJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICA8L0FkZGl0aW9uYWxJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgIDwvT3RoZXJUU0xQb2ludGVyPg0KICAgICAgICA8L1BvaW50ZXJzVG9PdGhlclRTTD4NCiAgICAgICAgPExpc3RJc3N1ZURhdGVUaW1lPjIwMjAtMTItMTJUMDA6MDA6MDBaPC9MaXN0SXNzdWVEYXRlVGltZT4NCiAgICAgICAgPE5leHRVcGRhdGU+DQogICAgICAgICAgICA8ZGF0ZVRpbWU+MjAyMS0wMS0xM1QwMDowMDowMFo8L2RhdGVUaW1lPg0KICAgICAgICA8L05leHRVcGRhdGU+DQogICAgPC9TY2hlbWVJbmZvcm1hdGlvbj4NCiAgICA8VHJ1c3RTZXJ2aWNlUHJvdmlkZXJMaXN0Pg0KICAgICAgICA8VHJ1c3RTZXJ2aWNlUHJvdmlkZXI+DQogICAgICAgICAgICA8VFNQSW5mb3JtYXRpb24+DQogICAgICAgICAgICAgICAgPFRTUE5hbWU+DQogICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+VFNQLTIxLjEgTmFtZTwvTmFtZT4NCiAgICAgICAgICAgICAgICA8L1RTUE5hbWU+DQogICAgICAgICAgICAgICAgPFRTUFRyYWRlTmFtZT4NCiAgICAgICAgICAgICAgICAgICAgPE5hbWUgeG1sOmxhbmc9ImVuIj5UU1AtMjEuMSBUcmFkZSBuYW1lPC9OYW1lPg0KICAgICAgICAgICAgICAgIDwvVFNQVHJhZGVOYW1lPg0KICAgICAgICAgICAgICAgIDxUU1BBZGRyZXNzPg0KICAgICAgICAgICAgICAgICAgICA8UG9zdGFsQWRkcmVzc2VzPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFBvc3RhbEFkZHJlc3MgeG1sOmxhbmc9ImVuIj4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8U3RyZWV0QWRkcmVzcz5TdHJlZXQgYWRkcmVzczwvU3RyZWV0QWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8TG9jYWxpdHk+TG9jYWxpdHk8L0xvY2FsaXR5Pg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxTdGF0ZU9yUHJvdmluY2U+UHJvdmluY2U8L1N0YXRlT3JQcm92aW5jZT4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8UG9zdGFsQ29kZT4xMjM8L1Bvc3RhbENvZGU+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPENvdW50cnlOYW1lPlhYPC9Db3VudHJ5TmFtZT4NCiAgICAgICAgICAgICAgICAgICAgICAgIDwvUG9zdGFsQWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgPC9Qb3N0YWxBZGRyZXNzZXM+DQogICAgICAgICAgICAgICAgICAgIDxFbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgICAgICAgICAgICAgICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5tYWlsdG86dGVzdEB0ZXN0LnRlc3Q8L1VSST4NCiAgICAgICAgICAgICAgICAgICAgPC9FbGVjdHJvbmljQWRkcmVzcz4NCiAgICAgICAgICAgICAgICA8L1RTUEFkZHJlc3M+DQogICAgICAgICAgICA8L1RTUEluZm9ybWF0aW9uPg0KICAgICAgICAgICAgPFRTUFNlcnZpY2VzPg0KICAgICAgICAgICAgICAgIDxUU1BTZXJ2aWNlPg0KICAgICAgICAgICAgICAgICAgICA8U2VydmljZUluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VUeXBlSWRlbnRpZmllcj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvU3ZjdHlwZS9DQS9RQzwvU2VydmljZVR5cGVJZGVudGlmaWVyPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxOYW1lIHhtbDpsYW5nPSJlbiI+VFMtMjEuMS4xIE5hbWU8L05hbWU+DQogICAgICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VOYW1lPg0KICAgICAgICAgICAgICAgICAgICAgICAgPFNlcnZpY2VEaWdpdGFsSWRlbnRpdHk+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPERpZ2l0YWxJZD4NCjxYNTA5Q2VydGlmaWNhdGU+TUlJRFlUQ0NBa21nQXdJQkFnSUJBekFOQmdrcWhraUc5dzBCQVFzRkFEQlNNUk13RVFZRFZRUUREQXBUUkVrdE1qRXVNUzR4TVJZd0ZBWURWUVFLREExVVUxQXRNakV1TVNCT1lXMWxNUll3RkFZRFZRUUxEQTFEUlZKVUlFWlBVaUJVUlZOVU1Rc3dDUVlEVlFRR0V3Sk1WVEFlRncweE9URXlNVE13TURBd01EUmFGdzB5TVRFeU1UTXdNREF3TURSYU1GSXhFekFSQmdOVkJBTU1DbE5FU1MweU1TNHhMakV4RmpBVUJnTlZCQW9NRFZSVFVDMHlNUzR4SUU1aGJXVXhGakFVQmdOVkJBc01EVU5GVWxRZ1JrOVNJRlJGVTFReEN6QUpCZ05WQkFZVEFreFZNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQWhDanFqcmFuTXVjKytKa0QyUjFWWGdzd2taYTE3NVhhSDVkZ1pYa3FtOWQwOTZqOVVlMEJjeUplRDd4TVQ5VXNnY0tROSsxaUdhUWtBVGNrbjJGNG9Kd0tBYnltWi9QNDF0cHcybWx3MTlMeFBMUHNTVlJXOC9QY1I4eVJ4QTU4eVUyd3hlUHdJdERnUmJUL0t2K2tNdVBYU1hlanM1ZVM2TkJDT0pIeGljeVhkeDRVbVVQKzRRUHZtak1ZVjhOeUdpQ3E3Q2pQaUd3anFaMHNHdk1IRlNZdzZsUXZ6NFBNUkkxK3orSHovL2FqK0N4M2orZElPNXNrR0FHMXlDWG9KcERZR1RVS3Y0R2c1S09RWk5uaGI0cWNiYnprTU9Bb2pGUC9SdEFhaHRlZXVpd1Z3cTBUWWlmdFVibzJwRDVId1JkajcrcEx1UHpsTnp6YWlNNHBMUUlEQVFBQm8wSXdRREFPQmdOVkhROEJBZjhFQkFNQ0FRWXdIUVlEVlIwT0JCWUVGSmdTSkJBVWtLOTVmSnpVbXRJd2VUeTkrRlZDTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUFmS2hUMllxYmw4aXdSSE9JTVErOFpBVHBkelNWNEsvREg3cGVwSmRxMmF3SnNiLzQxMGZsU09rVW5tblNsOUdtNXhwVGhHaS95TUJaYUNKUnNMSktkRGlTZGUva1Q5Y291VzdHYVFCVzhxODVSakxaWUwwS2JGRWhIRklrWXB1NVZDVTE2SW9ETG91czhsQ20wcHgyMnpVbFVZd2s5T29SZVh0ZnN3YkI2RDVNT2lPRDhpa1oxY1ZHNkUwY2ZPazhxZlg0a0RXT1NYQWdwZW9CK05WSXZkUWF0emhNa0xLZ0FpTWo5QTNWczJ4c0FWZWRwY3RscFFrWVNyMWhqYk83RXZrWjcrcEt1aFZJbFIzNi9CdmtQV2FCMGw0czd5ZE5mK0Jyb0t4Z0VXSEx2YlhpZHhReXliN3VtWFcxL2haYmhwanVuSExwMmFVK0h3QmVvS2cydz08L1g1MDlDZXJ0aWZpY2F0ZT4NCjxYNTA5U3ViamVjdE5hbWU+Qz1YWCxPVT1DRVJUIEZPUiBURVNULE89VFNQLTIxLjEgTmFtZSxDTj1TREktMjEuMS4xPC9YNTA5U3ViamVjdE5hbWU+DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9EaWdpdGFsSWQ+DQogICAgICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VEaWdpdGFsSWRlbnRpdHk+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2VydmljZVN0YXR1cz5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvU3Zjc3RhdHVzL2dyYW50ZWQ8L1NlcnZpY2VTdGF0dXM+DQogICAgICAgICAgICAgICAgICAgICAgICA8U3RhdHVzU3RhcnRpbmdUaW1lPjIwMTYtMDYtMzBUMjI6MDA6MDBaPC9TdGF0dXNTdGFydGluZ1RpbWU+DQogICAgICAgICAgICAgICAgICAgICAgICA8U2VydmljZUluZm9ybWF0aW9uRXh0ZW5zaW9ucz4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8RXh0ZW5zaW9uIENyaXRpY2FsPSJ0cnVlIj4NCjxBZGRpdGlvbmFsU2VydmljZUluZm9ybWF0aW9uPg0KICAgIDxVUkkgeG1sOmxhbmc9ImVuIj5odHRwOi8vdXJpLmV0c2kub3JnL1Ryc3RTdmMvVHJ1c3RlZExpc3QvU3ZjSW5mb0V4dC9Gb3JlU2lnbmF0dXJlczwvVVJJPg0KPC9BZGRpdGlvbmFsU2VydmljZUluZm9ybWF0aW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvRXh0ZW5zaW9uPg0KICAgICAgICAgICAgICAgICAgICAgICAgPC9TZXJ2aWNlSW5mb3JtYXRpb25FeHRlbnNpb25zPg0KICAgICAgICAgICAgICAgICAgICA8L1NlcnZpY2VJbmZvcm1hdGlvbj4NCiAgICAgICAgICAgICAgICA8L1RTUFNlcnZpY2U+DQogICAgICAgICAgICA8L1RTUFNlcnZpY2VzPg0KICAgICAgICA8L1RydXN0U2VydmljZVByb3ZpZGVyPg0KICAgIDwvVHJ1c3RTZXJ2aWNlUHJvdmlkZXJMaXN0Pg0KPC9UcnVzdFNlcnZpY2VTdGF0dXNMaXN0Pg==</bytes>\r
+               <!--Optional:-->\r
+               <name>tl.xml</name>\r
+            </trustedList>\r
+         </signDocumentDTO>\r
+      </sig:signDocument>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapTrustedListSignatureService/signDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

@@ -31,7 +31,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -92,7 +92,7 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	public void manifestExtractorTest() {
 		
         AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
-        ASiCExtractResult result = extractor.extract();
+        ASiCContent result = extractor.extract();
         
         List<DSSDocument> manifestFiles = result.getManifestDocuments();
         assertEquals(3, manifestFiles.size());

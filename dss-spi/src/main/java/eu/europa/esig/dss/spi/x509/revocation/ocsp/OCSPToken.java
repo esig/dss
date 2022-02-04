@@ -117,6 +117,10 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		}
 		
 		checkSignatureValidity(issuer);
+		
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("OCSPToken created : {})", getDSSIdAsString());
+		}
 	}
 
 	private void extractStatusInfo(SingleResp bestSingleResp) {
@@ -301,7 +305,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 
 	@Override
 	public String getAbbreviation() {
-		return "OCSPToken[" + (basicOCSPResp == null ? "?" : DSSUtils.formatInternal(basicOCSPResp.getProducedAt())) + ", signedBy="
+		return "OCSPToken[" + (basicOCSPResp == null ? "?" : DSSUtils.formatDateToRFC(basicOCSPResp.getProducedAt())) + ", signedBy="
 				+ getIssuerX500Principal() + "]";
 	}
 
@@ -311,9 +315,9 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		out.append(indentStr).append("OCSPToken[\n");
 		indentStr += "\t";
 		out.append(indentStr).append("Id: ").append(getDSSIdAsString()).append('\n');
-		out.append(indentStr).append("ProductionTime: ").append(DSSUtils.formatInternal(productionDate)).append("; ");
-		out.append(indentStr).append("ThisUpdate: ").append(DSSUtils.formatInternal(thisUpdate)).append("; ");
-		out.append(indentStr).append("NextUpdate: ").append(DSSUtils.formatInternal(nextUpdate)).append('\n');
+		out.append(indentStr).append("ProductionTime: ").append(DSSUtils.formatDateToRFC(productionDate)).append("; ");
+		out.append(indentStr).append("ThisUpdate: ").append(DSSUtils.formatDateToRFC(thisUpdate)).append("; ");
+		out.append(indentStr).append("NextUpdate: ").append(DSSUtils.formatDateToRFC(nextUpdate)).append('\n');
 		if (getIssuerX500Principal() != null) {
 			out.append(indentStr).append("SignedBy: ").append(getIssuerX500Principal().toString()).append('\n');
 		}

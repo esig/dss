@@ -32,7 +32,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import org.bouncycastle.cms.SignerInformation;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,8 +69,7 @@ public class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignatu
         CAdESSignature cadesSignature = new CAdESSignature(cmsSignedDocument.getCMSSignedData(), signers.iterator().next());
 
         assertNotNull(cadesSignature.getSigningTime());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-        assertEquals(dateFormat.format(signatureParameters.bLevel().getSigningDate()), dateFormat.format(cadesSignature.getSigningTime()));
+        assertEquals(DSSUtils.formatDateToRFC(signatureParameters.bLevel().getSigningDate()), DSSUtils.formatDateToRFC(cadesSignature.getSigningTime()));
 
         return super.verify(signedDocument);
     }

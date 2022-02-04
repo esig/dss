@@ -51,7 +51,7 @@ public class SignXmlXadesBImplicitPolicyTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demo[]
+
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
@@ -63,12 +63,16 @@ public class SignXmlXadesBImplicitPolicyTest extends CookbookTools {
 			// We set the certificate chain
 			parameters.setCertificateChain(privateKey.getCertificateChain());
 
+			// tag::demo[]
+
 			BLevelParameters bLevelParameters = parameters.bLevel();
 
 			Policy policy = new Policy();
 			policy.setId("");
 
 			bLevelParameters.setSignaturePolicy(policy);
+
+			// end::demo[]
 
 			// Create common certificate verifier
 			CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
@@ -87,7 +91,7 @@ public class SignXmlXadesBImplicitPolicyTest extends CookbookTools {
 			// the previous step.
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
-			// end::demo[]
+
 
 			testFinalDocument(signedDocument);
 		}

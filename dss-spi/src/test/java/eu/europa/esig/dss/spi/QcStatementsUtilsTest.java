@@ -27,7 +27,11 @@ import eu.europa.esig.dss.model.x509.PSD2QcType;
 import eu.europa.esig.dss.model.x509.QCLimitValue;
 import eu.europa.esig.dss.model.x509.QcStatements;
 import eu.europa.esig.dss.model.x509.RoleOfPSP;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
+import org.bouncycastle.asn1.x509.qualified.QCStatement;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -140,6 +144,24 @@ public class QcStatementsUtilsTest {
     @Test
     void qcStatementNullSequence() {
         assertNull(QcStatementUtils.getQcStatements((ASN1Sequence) null));
+    }
+
+    @Test
+    void getQcStatementsTest() {
+        ASN1Encodable[] asn1Encodables = new ASN1Encodable[1];
+        asn1Encodables[0] = new QCStatement(ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance);
+        DERSequence asn1Sequence = new DERSequence(asn1Encodables);
+
+        QcStatements qcStatements = QcStatementUtils.getQcStatements(asn1Sequence);
+        assertNotNull(qcStatements);
+        assertTrue(qcStatements.isQcCompliance());
+
+        asn1Encodables[0] = ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance;
+        asn1Sequence = new DERSequence(asn1Encodables);
+
+        qcStatements = QcStatementUtils.getQcStatements(asn1Sequence);
+        assertNotNull(qcStatements);
+        assertFalse(qcStatements.isQcCompliance());
     }
 
 }

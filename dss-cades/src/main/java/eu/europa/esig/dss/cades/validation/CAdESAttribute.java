@@ -25,17 +25,12 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a CAdES attribute, part of AttributeTable
@@ -74,40 +69,6 @@ public class CAdESAttribute implements SignatureAttribute {
 	 */
 	public ASN1Set getAttrValues() {
 		return attribute.getAttrValues();
-	}
-	
-	/**
-	 * Returns a list of {@link ASN1Primitive} values found in the attribute
-	 *
-	 * @return list of {@link ASN1Primitive}
-	 */
-	private List<ASN1Primitive> getASN1Primitives() {
-		final List<ASN1Primitive> primitives = new ArrayList<>();
-		final ASN1Set attrValues = attribute.getAttrValues();
-		for (final ASN1Encodable value : attrValues.toArray()) {
-			if (value instanceof DEROctetString) {
-				LOG.warn("Illegal content for timestamp (OID : {}) : OCTET STRING is not allowed !", this);
-			} else {
-				primitives.add(value.toASN1Primitive());
-			}
-		}
-		return primitives;
-	}
-	
-	/**
-	 * Returns the inner {@link ASN1Primitive} object
-	 *
-	 * @return {@link ASN1Primitive} object
-	 */
-	public ASN1Primitive getASN1Primitive() {
-		List<ASN1Primitive> asn1Primitives = getASN1Primitives();
-		if (Utils.isCollectionNotEmpty(asn1Primitives)) {
-			if (asn1Primitives.size() > 1) {
-				LOG.warn("More than one result in CAdES attribute with OID: [{}]. Return only the first one", this);
-			}
-			return asn1Primitives.get(0);
-		}
-		return null;
 	}
 
 	/**

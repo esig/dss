@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.pdf.PdfObjectModifications;
+
 import java.util.List;
 
 /**
@@ -48,6 +50,13 @@ public interface PdfModificationDetection {
 	 * @return a list of {@link PdfModification}s
 	 */
 	List<PdfModification> getPageDifferences();
+
+	/**
+	 * Returns a filtered collection of modified objects between signed and final document revisions
+	 *
+	 * @return {@link PdfObjectModifications}
+	 */
+	PdfObjectModifications getObjectModifications();
 	
 	/**
 	 * Returns information if any modifications have been detected

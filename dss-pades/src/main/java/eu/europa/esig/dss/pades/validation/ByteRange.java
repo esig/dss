@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,11 +97,7 @@ public class ByteRange {
 	 * @return a list of {@link BigInteger}s
 	 */
 	public List<BigInteger> toBigIntegerList() {
-		List<BigInteger> bi = new ArrayList<>();
-		for (int i : byteRange) {
-			bi.add(BigInteger.valueOf(i));
-		}
-		return bi;
+		return DSSUtils.toBigIntegerList(byteRange);
 	}
 	
 	/**

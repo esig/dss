@@ -22,13 +22,13 @@ package eu.europa.esig.dss.pades.validation.scope;
 
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.validation.scope.PartialSignatureScope;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 /**
  * The signature scope represents a signed PDF byte range
  *
  */
-public class PdfByteRangeSignatureScope extends PartialSignatureScope {
+public abstract class PdfByteRangeSignatureScope extends SignatureScope {
 
 	private static final long serialVersionUID = -5812599751054145819L;
 
@@ -42,7 +42,7 @@ public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 	 * @param byteRange {@link ByteRange}
 	 * @param digest {@link Digest}
 	 */
-	public PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
+	protected PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
 		super(name, digest);
 		this.byteRange = byteRange;
 	}
@@ -51,4 +51,5 @@ public class PdfByteRangeSignatureScope extends PartialSignatureScope {
 	public String getDescription() {
 		return "The document ByteRange : " + byteRange;
 	}
+
 }

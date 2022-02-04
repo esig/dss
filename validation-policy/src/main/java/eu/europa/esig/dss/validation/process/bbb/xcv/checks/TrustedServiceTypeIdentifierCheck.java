@@ -110,7 +110,6 @@ public class TrustedServiceTypeIdentifierCheck extends AbstractMultiValuesCheckI
 	protected MessageTag getErrorMessageTag() {
 		switch (context) {
 		case SIGNATURE:
-			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
 		case COUNTER_SIGNATURE:
 			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
 		case TIMESTAMP:

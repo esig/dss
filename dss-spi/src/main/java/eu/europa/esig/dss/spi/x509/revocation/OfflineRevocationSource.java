@@ -102,7 +102,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 		Objects.requireNonNull(token, "The token is null");
 		
 		Objects.requireNonNull(binary, "The origin is null");
-		Set<RevocationOrigin> origins = binaryOrigins.get(binary);
+		Set<RevocationOrigin> origins = getAllRevocationBinariesWithOrigins().get(binary);
 		if (origins == null) {
 			throw new IllegalStateException(String.format("Unable to find the binary '%s'", binary.asXmlId()));
 		}
@@ -129,7 +129,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return a Set of {@code EncapsulatedRevocationTokenIdentifier}
 	 */
 	public Set<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
-		return binaryOrigins.keySet();
+		return getAllRevocationBinariesWithOrigins().keySet();
 	}
 
 	/**
@@ -148,7 +148,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return all {@code RevocationToken}
 	 */
 	public Set<RevocationToken<R>> getAllRevocationTokens() {
-		return tokenOrigins.keySet();
+		return getAllRevocationTokensWithOrigins().keySet();
 	}
 
 	/**
@@ -169,7 +169,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	public Map<RevocationToken<R>, Set<RevocationOrigin>> getUniqueRevocationTokensWithOrigins() {
 		Map<RevocationToken<R>, Set<RevocationOrigin>> result = new HashMap<>();
 		List<TokenIdentifier> knownIds = new ArrayList<>();
-		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : tokenOrigins.entrySet()) {
+		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : getAllRevocationTokensWithOrigins().entrySet()) {
 			TokenIdentifier currentId = entry.getKey().getDSSId();
 			if (!knownIds.contains(currentId)) {
 				result.put(entry.getKey(), entry.getValue());
@@ -185,7 +185,16 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return all {@code RevocationRef}
 	 */
 	public Set<RevocationRef<R>> getAllRevocationReferences() {
-		return referenceOrigins.keySet();
+		return getRevocationReferencesWithOrigins().keySet();
+	}
+
+	/**
+	 * Returns a map of revocation references with the corresponding origins
+	 *
+	 * @return a map between {@link RevocationRef}s and a set of {@link RevocationRefOrigin}s
+	 */
+	protected Map<RevocationRef<R>, Set<RevocationRefOrigin>> getRevocationReferencesWithOrigins() {
+		return referenceOrigins;
 	}
 
 	/**
@@ -209,7 +218,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken<R> revocationToken : revocationTokens) {
 				if (latestRevocationToken == null || (revocationToken.getProductionDate() != null
-						&& revocationToken.getProductionDate().after(latestRevocationToken.getProductionDate()))) {
+						&& latestRevocationToken.getProductionDate().before(revocationToken.getProductionDate()))) {
 					latestRevocationToken = revocationToken;
 				}
 			}
@@ -401,7 +410,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForRevocationToken(RevocationToken<R> revocationToken) {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : getRevocationReferencesWithOrigins().entrySet()) {
 			RevocationRef<R> currentReference = entry.getKey();
 			if (tokenRefMatcher.match(revocationToken, currentReference)) {
 				result.put(entry.getKey(), entry.getValue());
@@ -421,7 +430,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> findRefsAndOriginsForBinary(
 			EncapsulatedRevocationTokenIdentifier<R> identifier) {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : getRevocationReferencesWithOrigins().entrySet()) {
 			RevocationRef<R> currentReference = entry.getKey();
 			if (tokenRefMatcher.match(identifier, currentReference)) {
 				result.put(currentReference, entry.getValue());
@@ -438,7 +447,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return the related {@code EncapsulatedRevocationTokenIdentifier}
 	 */
 	public EncapsulatedRevocationTokenIdentifier<R> findBinaryForReference(RevocationRef<R> ref) {
-		for (EncapsulatedRevocationTokenIdentifier<R> binary : binaryOrigins.keySet()) {
+		for (EncapsulatedRevocationTokenIdentifier<R> binary : getAllRevocationBinariesWithOrigins().keySet()) {
 			if (tokenRefMatcher.match(binary, ref)) {
 				return binary;
 			}
@@ -454,7 +463,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	public Map<RevocationRef<R>, Set<RevocationRefOrigin>> getOrphanRevocationReferencesWithOrigins() {
 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> result = new HashMap<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : getRevocationReferencesWithOrigins().entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			if (isOrphan(ref)) {
 				result.put(ref, entry.getValue());
@@ -472,7 +481,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return true if the given reference is an orphan
 	 */
 	public boolean isOrphan(RevocationRef<R> reference) {
-		for (RevocationToken<R> token : tokenOrigins.keySet()) {
+		for (RevocationToken<R> token : getAllRevocationTokensWithOrigins().keySet()) {
 			if (tokenRefMatcher.match(token, reference)) {
 				return false;
 			}
@@ -487,8 +496,8 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	public Set<EncapsulatedRevocationTokenIdentifier<R>> getAllReferencedRevocationBinaries() {
 		Set<EncapsulatedRevocationTokenIdentifier<R>> result = new HashSet<>();
-		for (RevocationRef<R> reference : referenceOrigins.keySet()) {
-			for (EncapsulatedRevocationTokenIdentifier<R> identifier : binaryOrigins.keySet()) {
+		for (RevocationRef<R> reference : getRevocationReferencesWithOrigins().keySet()) {
+			for (EncapsulatedRevocationTokenIdentifier<R> identifier : getAllRevocationBinariesWithOrigins().keySet()) {
 				if (tokenRefMatcher.match(identifier, reference)) {
 					result.add(identifier);
 				}
@@ -503,7 +512,9 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 * @return true if the source is empty
 	 */
 	public boolean isEmpty() {
-		return Utils.isMapEmpty(binaryOrigins) && Utils.isMapEmpty(tokenOrigins) && Utils.isMapEmpty(referenceOrigins);
+		return Utils.isMapEmpty(getAllRevocationBinariesWithOrigins())
+				&& Utils.isMapEmpty(getAllRevocationTokensWithOrigins())
+				&& Utils.isMapEmpty(getRevocationReferencesWithOrigins());
 	}
 
 	/**
@@ -516,7 +527,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	private List<EncapsulatedRevocationTokenIdentifier<R>> getBinariesByOrigin(RevocationOrigin origin) {
 		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
-		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : binaryOrigins.entrySet()) {
+		for (Entry<EncapsulatedRevocationTokenIdentifier<R>, Set<RevocationOrigin>> entry : getAllRevocationBinariesWithOrigins().entrySet()) {
 			Set<RevocationOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
 				result.add(entry.getKey());
@@ -535,7 +546,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	private List<RevocationToken<R>> getTokensByOrigin(RevocationOrigin origin) {
 		List<RevocationToken<R>> result = new ArrayList<>();
-		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : tokenOrigins.entrySet()) {
+		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : getAllRevocationTokensWithOrigins().entrySet()) {
 			Set<RevocationOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
 				result.add(entry.getKey());
@@ -554,7 +565,7 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 	 */
 	private List<RevocationRef<R>> getReferencesByOrigin(RevocationRefOrigin origin) {
 		List<RevocationRef<R>> result = new ArrayList<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : referenceOrigins.entrySet()) {
+		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : getRevocationReferencesWithOrigins().entrySet()) {
 			Set<RevocationRefOrigin> currentOrigins = entry.getValue();
 			if (Utils.isCollectionNotEmpty(currentOrigins) && currentOrigins.contains(origin)) {
 				result.add(entry.getKey());

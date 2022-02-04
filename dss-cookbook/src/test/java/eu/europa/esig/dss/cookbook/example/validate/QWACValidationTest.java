@@ -31,16 +31,16 @@ import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
-import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -58,7 +58,6 @@ public class QWACValidationTest {
 		RevocationSource<OCSP> ocspSource = new OnlineOCSPSource();
 		RevocationSource<CRL> crlSource = new OnlineCRLSource();
 
-		// tag::demo[]
 		// We firstly need an Internet Access. Additional configuration may be required
 		// (proxy,...)
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
@@ -67,12 +66,6 @@ public class QWACValidationTest {
 		// instead of the JVM trust store.
 		dataLoader.setTrustStrategy(TrustAllStrategy.INSTANCE);
 
-		// Secondly, we create an instance of SSLCertificateLoader which is responsible
-		// of the SSL certificate(s) download.
-		SSLCertificateLoader sslCertificateLoader = new SSLCertificateLoader();
-		// We set the configured dataLoader
-		sslCertificateLoader.setCommonsDataLoader(dataLoader);
-
 		// Thirdly, we need to configure the CertificateVerifier
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setTrustedCertSources(trustedListsCertificateSource); // configured trusted list certificate source
@@ -80,12 +73,20 @@ public class QWACValidationTest {
 		cv.setOcspSource(ocspSource); // configured OCSP Access
 		cv.setCrlSource(crlSource); // configured CRL Access
 
+		// tag::demo[]
+
+		// Secondly, we create an instance of SSLCertificateLoader which is responsible
+		// for the SSL certificate(s) downloading.
+		SSLCertificateLoader sslCertificateLoader = new SSLCertificateLoader();
+		// We set the configured dataLoader
+		sslCertificateLoader.setCommonsDataLoader(dataLoader);
+
 		// We retrieve the SSL certificates for the given URL
 		List<CertificateToken> certificates = sslCertificateLoader.getCertificates("https://www.microsec.hu");
 
 		CertificateToken sslCertificate = certificates.get(0);
 
-		// Add intermediate certificates as non trusted certificates (adjunct)
+		// Add intermediate certificates as non-trusted certificates (adjunct)
 		CertificateSource adjunctCertSource = new CommonCertificateSource();
 		for (CertificateToken certificateToken : certificates) {
 			adjunctCertSource.addCertificate(certificateToken);
@@ -99,10 +100,11 @@ public class QWACValidationTest {
 
 		CertificateReports reports = validator.validate();
 		SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		DetailedReport detailedReport = reports.getDetailedReport();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 		// end::demo[]
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertNotNull(simpleReport);
 		assertNotNull(detailedReport);
 		assertNotNull(diagnosticData);

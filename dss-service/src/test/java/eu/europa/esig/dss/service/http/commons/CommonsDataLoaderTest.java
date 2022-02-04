@@ -138,7 +138,7 @@ public class CommonsDataLoaderTest {
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
 
 		dataLoader.setTimeoutConnection(60000);
-		dataLoader.setTimeoutSocket(1);
+		dataLoader.setTimeoutResponse(1);
 		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
 	}
@@ -175,6 +175,19 @@ public class CommonsDataLoaderTest {
 		assertTrue(exception.getMessage().contains("http://wrong.url"));
 		assertTrue(exception.getMessage().contains("does_not_exist"));
 		assertTrue(exception.getMessage().contains(URL_TO_LOAD));
+	}
+
+	@Test
+	public void negativeTimeoutTest() {
+		// negative values enforce to use system properties
+		dataLoader.setTimeoutConnection(-1);
+		dataLoader.setTimeoutConnectionRequest(-1);
+		dataLoader.setTimeoutResponse(-1);
+		dataLoader.setTimeoutSocket(-1);
+		dataLoader.setConnectionKeepAlive(-1);
+		dataLoader.setConnectionTimeToLive(-1);
+
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
 	}
 
 }

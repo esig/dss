@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -96,43 +95,13 @@ public class ValidationData {
 	 */
 	public boolean addToken(final Token token) {
 		if (token instanceof CertificateToken) {
-			CertificateToken certificateToken = (CertificateToken) token;
-			if (!containsCertificateToken(certificateToken)) {
-				boolean added = certificateTokens.add(certificateToken);
-				if (added) {
-					storedPublicKeys.add(certificateToken.getEntityKey());
-					LOG.trace("CertificateToken with Id '{}' has been added to the ValidationData instance",
-							token.getDSSIdAsString());
-					return true;
-				}
+			if (addCertificateToken((CertificateToken) token)) {
+				return true;
 			}
 
 		} else if (token instanceof RevocationToken) {
-			RevocationToken revocationToken = (RevocationToken) token;
-			if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
-				CRLToken crlToken = (CRLToken) revocationToken;
- 				if (!containsCRLToken(crlToken)) {
-					boolean added = crlTokens.add(crlToken);
-					if (added) {
-						LOG.trace("CRL RevocationToken with Id '{}' has been added to the ValidationData instance",
-								token.getDSSIdAsString());
-						return true;
-					}
-				}
-
-			} else if (RevocationType.OCSP.equals(revocationToken.getRevocationType())) {
-				OCSPToken ocspToken = (OCSPToken) revocationToken;
-				if (!containsOCSPToken(ocspToken)) {
-					boolean added = ocspTokens.add(ocspToken);
-					if (added) {
-						LOG.trace("OCSP RevocationToken with Id '{}' has been added to the ValidationData instance",
-								token.getDSSIdAsString());
-						return true;
-					}
-				}
-
-			} else {
-				throw new DSSException(String.format("Unexpected RevocationToken with Id '%s'", token.getDSSIdAsString()));
+			if (addRevocationToken((RevocationToken<?>) token)) {
+				return true;
 			}
 
 		} else {
@@ -141,6 +110,48 @@ public class ValidationData {
 
 		LOG.trace("ValidationData instance already contains token with Id '{}'",
 				token.getDSSIdAsString());
+		return false;
+	}
+
+	private boolean addCertificateToken(final CertificateToken certificateToken) {
+		if (!containsCertificateToken(certificateToken)) {
+			boolean added = certificateTokens.add(certificateToken);
+			if (added) {
+				storedPublicKeys.add(certificateToken.getEntityKey());
+				LOG.trace("CertificateToken with Id '{}' has been added to the ValidationData instance",
+						certificateToken.getDSSIdAsString());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean addRevocationToken(final RevocationToken<?> revocationToken) {
+		if (RevocationType.CRL.equals(revocationToken.getRevocationType())) {
+			CRLToken crlToken = (CRLToken) revocationToken;
+			if (!containsCRLToken(crlToken)) {
+				boolean added = crlTokens.add(crlToken);
+				if (added) {
+					LOG.trace("CRL RevocationToken with Id '{}' has been added to the ValidationData instance",
+							revocationToken.getDSSIdAsString());
+					return true;
+				}
+			}
+
+		} else if (RevocationType.OCSP.equals(revocationToken.getRevocationType())) {
+			OCSPToken ocspToken = (OCSPToken) revocationToken;
+			if (!containsOCSPToken(ocspToken)) {
+				boolean added = ocspTokens.add(ocspToken);
+				if (added) {
+					LOG.trace("OCSP RevocationToken with Id '{}' has been added to the ValidationData instance",
+							revocationToken.getDSSIdAsString());
+					return true;
+				}
+			}
+
+		} else {
+			throw new DSSException(String.format("Unexpected RevocationToken with Id '%s'", revocationToken.getDSSIdAsString()));
+		}
 		return false;
 	}
 
@@ -200,13 +211,7 @@ public class ValidationData {
 	}
 
 	private void excludeWithEntityKey(EntityIdentifier entityIdentifier) {
-		Iterator<CertificateToken> iterator = certificateTokens.iterator();
-		while (iterator.hasNext()) {
-			CertificateToken certToken = iterator.next();
-			if (entityIdentifier.equals(certToken.getEntityKey())) {
-				iterator.remove();
-			}
-		}
+		certificateTokens.removeIf(certToken -> entityIdentifier.equals(certToken.getEntityKey()));
 	}
 
 	/**
@@ -217,14 +222,7 @@ public class ValidationData {
 	public void excludeCRLTokens(Collection<EncapsulatedRevocationTokenIdentifier<CRL>> crlTokensToExclude) {
 		if (Utils.isCollectionNotEmpty(crlTokensToExclude)) {
 			Set<String> tokenIdsToExclude = crlTokensToExclude.stream().map(c -> c.getDSSId().asXmlId()).collect(Collectors.toSet());
-
-			Iterator<CRLToken> iterator = crlTokens.iterator();
-			while (iterator.hasNext()) {
-				CRLToken crlToken = iterator.next();
-				if (tokenIdsToExclude.contains(crlToken.getDSSIdAsString())) {
-					iterator.remove();
-				}
-			}
+			crlTokens.removeIf(crlToken -> tokenIdsToExclude.contains(crlToken.getDSSIdAsString()));
 		}
 	}
 
@@ -236,14 +234,7 @@ public class ValidationData {
 	public void excludeOCSPTokens(Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspTokensToExclude) {
 		if (Utils.isCollectionNotEmpty(ocspTokensToExclude)) {
 			Set<String> tokenIdsToExclude = ocspTokensToExclude.stream().map(c -> c.getDSSId().asXmlId()).collect(Collectors.toSet());
-
-			Iterator<OCSPToken> iterator = ocspTokens.iterator();
-			while (iterator.hasNext()) {
-				OCSPToken ocspToken = iterator.next();
-				if (tokenIdsToExclude.contains(ocspToken.getDSSIdAsString())) {
-					iterator.remove();
-				}
-			}
+			ocspTokens.removeIf(ocspToken -> tokenIdsToExclude.contains(ocspToken.getDSSIdAsString()));
 		}
 	}
 

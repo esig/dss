@@ -108,6 +108,15 @@ public class ValidationDataContainer {
     }
 
     /**
+     * Returns a collection of {@code TimestampToken}s
+     *
+     * @return a collection of {@link TimestampToken}s
+     */
+    public Collection<TimestampToken> getDetachedTimestamps() {
+        return timestampValidationDataMap.keySet();
+    }
+
+    /**
      * Checks if the validation data for inclusion if empty
      *
      * @return TRUE if the validation data container is empty, FALSE otherwise

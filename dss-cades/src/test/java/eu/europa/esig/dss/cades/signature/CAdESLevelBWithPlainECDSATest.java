@@ -55,7 +55,8 @@ public class CAdESLevelBWithPlainECDSATest extends AbstractCAdESTestSignature {
 
     private static Stream<Arguments> data() {
         List<DigestAlgorithm> digestAlgos = Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA224,
-                DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.RIPEMD160
+                DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512, DigestAlgorithm.RIPEMD160,
+                DigestAlgorithm.SHA3_224, DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512
         );
 
         List<Arguments> args = new ArrayList<>();

@@ -423,8 +423,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private boolean hasDuplicate(AdvancedSignature currentSignature) {
 		for (AdvancedSignature signature : signatures) {
 			if (currentSignature != signature
-					&& (currentSignature.getId().equals(signature.getId()) || currentSignature.getDAIdentifier() != null
-							&& currentSignature.getDAIdentifier().equals(signature.getDAIdentifier()))) {
+					&& (currentSignature.getId().equals(signature.getId()) ||
+					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())
+							&& currentSignature.getSignatureFilename() != null && currentSignature.getSignatureFilename().equals(signature.getSignatureFilename())))) {
 				return true;
 			}
 		}
@@ -642,7 +643,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (signature.getSignaturePolicyStore() != null) {
 			policyContent = signature.getSignaturePolicyStore().getSignaturePolicyContent();
 		} else if (signaturePolicyProvider != null) {
-			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUrl());
+			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUri());
 		}
 		signaturePolicy.setPolicyContent(policyContent);
 
@@ -704,8 +705,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private <R extends Revocation> void addRelatedRevocations(List<XmlRelatedRevocation> result,
 			OfflineRevocationSource<R> source) {
-		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getUniqueRevocationTokensWithOrigins()
-				.entrySet()) {
+		for (Entry<RevocationToken<R>, Set<RevocationOrigin>> entry : source.getUniqueRevocationTokensWithOrigins().entrySet()) {
 			RevocationToken<R> token = entry.getKey();
 			String id = token.getDSSIdAsString();
 			XmlRevocation xmlRevocation = xmlRevocationsMap.get(id);
@@ -896,9 +896,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlTimestampToken.setId(identifierProvider.getIdAsString(timestampToken));
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
-		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType()); // property is defined only
-																								// for archival
-																								// timestamps
+		// property is defined only for archival timestamps
+		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType());
+
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
@@ -918,6 +918,10 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				getXmlFoundCertificates(timestampToken.getDSSId(), timestampToken.getCertificateSource()));
 		xmlTimestampToken.setFoundRevocations(
 				getXmlFoundRevocations(timestampToken.getCRLSource(), timestampToken.getOCSPSource()));
+
+		if (Utils.isCollectionNotEmpty(timestampToken.getTimestampScopes())) {
+			xmlTimestampToken.setTimestampScopes(getXmlSignatureScopes(timestampToken.getTimestampScopes()));
+		}
 
 		if (tokenExtractionStrategy.isTimestamp()) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());

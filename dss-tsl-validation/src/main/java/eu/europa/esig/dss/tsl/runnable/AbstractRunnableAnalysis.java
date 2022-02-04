@@ -61,7 +61,8 @@ public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implemen
 	public void run() {
 		try {
 			this.doAnalyze();
-		} catch(final Throwable exception) {
+		} catch (final Throwable exception) {
+			// NOTE: Throwable shall be caught
 			LOG.error(LOG_ERROR_PERFORM_ANALYSIS, exception);
 		} finally {
 			latch.countDown();

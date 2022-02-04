@@ -63,6 +63,7 @@ public class DSS1983Test extends AbstractPAdESTestValidation {
 		super.verifyOriginalDocuments(validator, diagnosticData);
 		
 		assertEquals(1, diagnosticData.getOriginalSignerDocuments().size());
+		assertEquals(2, diagnosticData.getAllSignerDocuments().size()); // + timestamp revision
 	}
 	
 	@Override
@@ -77,29 +78,49 @@ public class DSS1983Test extends AbstractPAdESTestValidation {
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+
 		TimestampWrapper signatureTimestamp = timestampList.get(0);
+		assertEquals(0, signatureTimestamp.getTimestampScopes().size());
+		assertEquals(1, signatureTimestamp.getTimestampedSignedData().size());
+
+		TimestampWrapper archiveTimestamp = timestampList.get(1);
+		assertEquals(1, archiveTimestamp.getTimestampScopes().size());
+		assertEquals(2, archiveTimestamp.getTimestampedSignedData().size());
 		
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
 		assertNotNull(signatureValidationObjects);
 		
+		boolean signatureRevFound = false;
+		boolean docTstRevFound = false;
 		int signedDataCounter = 0;
 		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
 			if (ObjectType.SIGNED_DATA.equals(validationObject.getObjectType())) {
-				List<SignerDataWrapper> timestampedSignedData = signatureTimestamp.getTimestampedSignedData();
-				assertNotNull(timestampedSignedData);
-				List<String> timestampedSignedDataIds = timestampedSignedData.stream().map(SignerDataWrapper::getId).collect(Collectors.toList());
-				assertTrue(timestampedSignedDataIds.contains(validationObject.getId()));
 				assertNotNull(validationObject.getPOE());
 				assertNotNull(validationObject.getPOE().getPOEObject());
-				assertEquals(1, validationObject.getPOE().getPOEObject().getVOReference().size());
 				Object poeObject = validationObject.getPOE().getPOEObject().getVOReference().get(0);
 				assertTrue(poeObject instanceof ValidationObjectType);
-				assertEquals(signatureTimestamp.getId(), ((ValidationObjectType) poeObject).getId());
+
+				for (TimestampWrapper timestampWrapper : timestampList) {
+					if (((ValidationObjectType) poeObject).getId().equals(timestampWrapper.getId())) {
+						List<String> timestampedSignedDataIds = timestampWrapper.getTimestampedSignedData().stream()
+								.map(SignerDataWrapper::getId).collect(Collectors.toList());
+						assertTrue(timestampedSignedDataIds.contains(validationObject.getId()));
+
+						if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
+							signatureRevFound = true;
+						} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
+							docTstRevFound = true;
+						}
+						break;
+					}
+				}
 				++signedDataCounter;
 			}
 		}
-		assertEquals(1, signedDataCounter);
+		assertEquals(2, signedDataCounter);
+		assertTrue(signatureRevFound);
+		assertTrue(docTstRevFound);
 	}
 
 }

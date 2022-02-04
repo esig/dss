@@ -21,10 +21,33 @@
 package eu.europa.esig.dss.validation.executor;
 
 /**
- * The target validation level
+ * The target validation level as per EN 319 102-1
+ *
+ * NOTE: the validation process "stops" processing on the chosen level
+ *
  */
 public enum ValidationLevel {
 
-	BASIC_SIGNATURES, TIMESTAMPS, LONG_TERM_DATA, ARCHIVAL_DATA;
+	/**
+	 * Validation as per "5.3 Validation process for Basic Signatures"
+	 */
+	BASIC_SIGNATURES,
+
+	/**
+	 * Validation as per "5.4 Time-stamp validation building block"
+	 */
+	TIMESTAMPS,
+
+	/**
+	 * Validation as per "5.5 Validation process for Signatures with Time and
+	 * Signatures with Long-Term Validation Material"
+	 */
+	LONG_TERM_DATA,
+
+	/**
+	 * Validation as per "5.6 Validation process for Signatures providing Long Term Availability
+	 * and Integrity of Validation Material"
+	 */
+	ARCHIVAL_DATA;
 
 }

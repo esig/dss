@@ -20,18 +20,21 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-
 /**
- * Builds a DSS identifier for a XADES signature
+ * Builds a DSS identifier for a XAdES signature
  */
 public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
+
+	/** The META-INF folder (used to determine a signature file position in an ASiC container) */
+	public static final String META_INF_FOLDER = "META-INF/";
 
 	/**
 	 * Default constructor
@@ -60,7 +63,7 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 
 	@Override
-	protected Integer getSignatureFilePosition() {
+	protected Integer getSignaturePosition() {
 		XAdESSignature xadesSignature = (XAdESSignature) signature;
 		Element signatureElement = xadesSignature.getSignatureElement();
 		Document document = signatureElement.getOwnerDocument();
@@ -75,6 +78,15 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 		}
 		
 		return counter;
+	}
+
+	@Override
+	protected Object getSignatureFilePosition() {
+		String signatureFilename = signature.getSignatureFilename();
+		if (Utils.isStringNotEmpty(signatureFilename) && signatureFilename.startsWith(META_INF_FOLDER)) {
+			return signatureFilename;
+		}
+		return super.getSignatureFilePosition();
 	}
 
 }

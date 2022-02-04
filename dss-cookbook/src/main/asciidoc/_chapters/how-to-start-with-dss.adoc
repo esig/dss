@@ -1,0 +1,392 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== How to start with DSS
+
+=== Integration instructions
+
+The section explains the basic steps required to successfully integrate the DSS components to your project.
+
+==== DSS Core
+
+This section explains the usage and build requirements for https://github.com/esig/dss[DSS framework].
+
+===== Requirements
+
+The latest version of DSS framework has the following minimal requirements:
+
+* Java 11 and higher (tested up to Java 17) for the build is required. For usage Java 8 is a minimum requirement;
+* Maven 3.6 and higher;
+* Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
+* Operating system: no specific requirements (tested on Windows and Linux).
+
+NOTE: We strongly recommend using the latest available version of JDK, in order to have the most recent security fixes and cryptographical algorithm updates.
+
+WARNING: Before processing the integration steps, please ensure you have successfully installed Maven and JVM with a required version.
+
+===== Adding as Maven dependency
+
+The simplest way to include DSS to your Maven project is to add a repository into the pom.xml file in the root directory of your project as following:
+
+[source,xml]
+----
+<repositories>
+	...
+
+	<repository>
+	  <id>cefdigital</id>
+	  <name>cefdigital</name>
+	  <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+	</repository>
+</repositories>
+----
+
+After that specify a list of dependencies required for your project. See <<MavenModules>> to get familiar with the available modules in DSS.
+
+Refresh your project in order to download the dependency, and then you will be able to use all modules of the DSS framework. Your project needs to be refreshed every time you add new dependencies.
+
+[[BomModule]]
+====== Integration with Bill of Materials (BOM) module
+
+As DSS represents a multi-modules framework that benefits users from a more effective way of using the library (include only what you need), it has a downside that makes it difficult to keep versions of all modules up-to-date. The "bill of materials" (BOM) solution, represented by `dss-bom` module, helps other projects with the "version management".
+
+The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-library. Other projects that wish to benefit from the solution in DSS, should import `dss-bom` module using `dependencyManagement` and load other required modules without the need to define a version for each dependency:
+
+[source,xml]
+----
+ <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-bom</artifactId>
+            <version>5.10</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+<dependencies>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-utils-apache-commons</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    ...
+    <!-- add other required modules -->
+</dependencies>
+----
+
+===== Maven build and profiles
+
+In order to use a customized bundle of DSS, you may want to build the DSS Core framework modules.
+
+NOTE: If you have implemented a new feature or fixed a bug issue, your pull requests are welcome at our https://github.com/esig/dss[GitHub Repository]
+
+A simple build of the DSS Maven project can be done with the following command:
+
+----
+mvn clean install
+----
+
+NOTE: All listed commands must be executed from the project directory via a Command Line Interface (CLI).
+
+This installation will run all unit tests present in the modules, which can take more than one hour to do the complete build.
+
+In addition to the general build, the framework provides a list of various profiles, allowing a customized behavior:
+
+* *quick* - disables unit tests and java-doc validation, in order to process the build as quick as possible (takes 1-2 minutes). *This profile cannot be used for a primary DSS build* (see below).
+* *quick-init* - is similar to the `quick` profile. Disables java-doc validation for all modules and unit tests excluding some modules which have dependencies on their test classes. *Can be used for the primary build of DSS*.
+* *slow-tests* - executes all tests, including time-consuming unit tests.
+* *owasp* - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
+* *jdk19-plus* - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
+* *spotless* - used to add a licence header into project files.
+
+WARNING: Some modules (e.g. `dss-utils`, `dss-crl-parser`, etc., see ch. <<SpecificModules>>) have to be built completely, as other modules are dependent on their test classes. Therefore, for the first build of DSS, the profile `quick-init` should be chosen rather than `quick` profile.
+
+In order to run a build with a specific profile, the following command must be executed:
+
+----
+mvn clean install -P *profile_name*
+----
+
+===== Documentation generation
+
+In order to generate HTML and PDF documentation for the DSS project, the `dss-cookbook` module of the DSS Core must be built with the following command (please, ensure that you are located in the `/dss-cookbook` directory):
+
+----
+mvn clean install -P asciidoctor
+----
+
+===== Javadoc generation
+
+In order to generate https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build the DSS Core completely.
+
+[[DSSDemo]]
+==== DSS Demonstrations
+
+This section explains the build and use requirements for the https://github.com/esig/dss-demonstrations[DSS Demonstration Applications].
+
+===== Requirements
+
+The minimal requirements to build/run DSS Demonstrations:
+
+* Java 8 and higher (tested up to Java 17) is required;
+* Maven 3.6 and higher (if build required);
+* Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
+* Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
+* Operating system: no specific requirements (tested on Windows and Linux).
+
+===== Ready to use solutions
+
+[[DSSWebApp]]
+====== DSS Web Application
+
+The ready to use webapp allows testing the different functionalities offered in DSS without needing to dive into the implementation.
+
+The DSS demo is available online on the https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[CEF Digital website].
+
+The DSS demo is also available as a ready to use downloadable webapp. To use it, you need to complete the following steps:
+
+. https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Digital+Signature+Service+-++DSS[Download] the webapp as a ZIP folder.
+. Unzip the folder
+. Click on the Webapp-Startup.bat file
+. Wait until this message appears "Server startup in xxx ms"
+. Click on the DSS-Web internet shortcut
+
+[[DSSStandaloneApp]]
+====== DSS Standalone Application
+
+DSS provides a standalone application which uses JavaFX. The application does not require a server to publish the product. The application can be run locally on a client's machine.
+
+Download links for the Standalone Application (Windows x64):
+
+* https://ec.europa.eu/cefdigital/DSS/webapp-demo/downloads/dss-app-minimal-windows-x64.zip[Minimal ZIP (application + bat file)];
+* https://ec.europa.eu/cefdigital/DSS/webapp-demo/downloads/dss-app-complete-windows-x64.zip[Complete ZIP (application + bat file + OpenJDK + JavaFX SDK)].
+
+===== Maven build instructions
+
+The build of the project can be done similarly to the DSS Core framework build with the command `mvn clean install`.
+
+NOTE: Please ensure that you build modules that you really need. Ignore build failures for non-required modules.
+
+====== DSS Web Application build
+
+To build the DSS Web Application the following modules are required:
+
+* `dss-mock-tsa`;
+* `dss-demo-webapp`;
+* `dss-demo-bundle`.
+
+After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
+
+If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the <<KeyStore>> chapter for a resolution.
+
+The documentation and javadoc will be copied automatically from the built DSS Core and made available on the following addresses respectively:
+
+* HTML documentation : `http://localhost:8080/doc/dss-documentation.html`;
+* PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
+* Javadoc : `http://localhost:8080/apidocs/index.html`.
+
+In order to build a bundle for JDK 17, the following profile can be used from the `dss-demo-bundle` module:
+
+----
+mvn clean install -P java17
+----
+
+This will create a bundle with Tomcat 9.
+
+====== Integration tests
+
+The `dss-demo-webapp` module provides a collection of integration tests in order to test the behavior of REST/SOAP web-services. In order to run the tests, a web-server with the DSS Web Application shall be launched and the following profile needs to be executed from the module:
+
+----
+mvn clean install -P run-integration-test
+----
+
+====== DSS Standalone Application build
+
+In order to build the standalone application, the following modules are required:
+
+* `dss-mock-tsa`;
+* `dss-standalone-app`;
+* `dss-standalone-package`.
+
+If the build is successful, you will be able to find out the following containers in the directory `/dss-standalone-app-package/target/`:
+
+* `dss-standalone-app-package-minimal.zip` - contains the application code. Requires JDK ad JavaFX installed on a target machine in order to run the application;
+* `dss-standalone-app-package-complete.zip` - contains the application code, as well as JDK and JavaFX library code. Can be run on a machine without pre-installed libraries.
+
+In order to launch the application, you will need to extract the archive and run the file `dss-run.bat`.
+
+=== DSS framework structure
+
+DSS framework is a Maven multi-module project. See below the specifications about  provided modules within the DSS core.
+
+[[MavenModules]]
+==== Maven modules
+
+This chapter provides an overview on modules available within https://github.com/esig/dss[Source code of DSS Core].
+
+===== Shared modules
+
+dss-enumerations:: Contains a list of all used enumerations in the DSS project.
+dss-alerts:: Allows configuration of triggers and handers for arbitrary defined events.
+dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
+
+===== JAXB model modules
+
+specs-xmldsig:: W3C XSD schema for signatures http://www.w3.org/2000/09/xmldsig
+specs-xades:: ETSI EN 319 132-1 XSD schema for XAdES.
+specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists.
+specs-validation-report:: ETSI TS 119 102-2 XSD schema for the Validation report.
+specs-asic-manifest:: ETSI EN 319 162 schema for ASiCManifest.
+specs-saml-assertion:: OASIS schema for SAML Assertions.
+
+'''
+dss-policy-jaxb:: JAXB model of the validation policy.
+dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
+dss-detailed-report-jaxb:: JAXB model of the detailed report.
+dss-simple-report-jaxb:: JAXB model of the simple report.
+dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certificates.
+
+===== JSON validation modules
+
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R05>>).
+specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R20>>).
+
+===== Utils modules
+
+dss-utils:: API with utility methods for String, Collection, I/O,...
+dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries.
+dss-utils-google-guava:: Implementation of dss-utils with Google Guava.
+
+===== i18n
+
+dss-i18n:: a module allowing internationalization of generated reports.
+
+===== Core modules
+
+dss-model:: Data model used in almost every module.
+dss-crl-parser:: API to validate CRLs and retrieve revocation data
+dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL.
+dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
+dss-spi:: Interfaces and util classes to process ASN.1 structure, compute digests, etc.
+dss-document:: Common module to sign and validate document. This module doen't contain any implementation.
+dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP).
+dss-token:: Token definitions and implementations for MS CAPI, MacOS Keychain, PKCS#11, PKCS#12.
+validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
+dss-xades:: Implementation of the XAdES signature, augmentation and validation.
+dss-cades:: Implementation of the CAdES signature, augmentation and validation.
+dss-jades:: Implementation of the JAdES signature, augmentation and validation.
+dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
+dss-pades-pdfbox:: Implementation of the PAdES signature, augmentation and validation with https://pdfbox.apache.org/[PDFBox].
+dss-pades-openpdf:: Implementation of the PAdES signature, augmentation and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
+dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
+dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on CAdES signatures.
+dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on XAdES signatures.
+dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
+
+===== WebServices
+
+dss-common-remote-dto:: Common classes between all remote services (REST and SOAP).
+dss-common-remote-converter:: Classes which convert the DTO to DSS Objects.
+
+'''
+dss-signature-dto:: Data Transfer Objects used for signature creation/augmentation (REST and SOAP).
+dss-signature-remote:: Common classes between dss-signature-rest and dss-signature-soap.
+dss-signature-rest-client:: Client for the REST webservices.
+dss-signature-rest:: REST webservices to sign (getDataToSign, signDocument methods), counter-sign and augment a signature.
+dss-signature-soap-client:: Client for the SOAP webservices.
+dss-signature-soap:: SOAP webservices to sign (getDataToSign, signDocument methods), counter-sign and augment a signature.
+
+'''
+dss-server-signing-dto:: Data Transfer Objects used for the server signing module (REST and SOAP).
+dss-server-signing-common:: Common classes for server signing.
+dss-server-signing-rest:: REST webservice for server signing.
+dss-server-signing-rest-client:: REST client for server signing (sign method).
+dss-server-signing-soap:: SOAP webservice for server signing.
+dss-server-signing-soap-client:: SOAP client for server signing (sign method).
+
+'''
+dss-validation-dto:: Data Transfer Objects used for signature validation (REST and SOAP).
+dss-validation-common:: Common classes between dss-validation-rest and dss-validation-soap.
+dss-validation-rest-client:: Client for the REST signature-validation webservices.
+dss-validation-soap-client:: Client for the SOAP signature-validation webservices.
+dss-validation-rest:: REST webservices to validate a signature.
+dss-validation-soap:: SOAP webservices to validate a signature.
+
+'''
+dss-certificate-validation-dto:: Data Transfer Objects used for certificate validation (REST and SOAP).
+dss-certificate-validation-common:: Common classes between dss-certificate-validation-rest and dss-certificate-validation-soap.
+dss-certificate-validation-rest-client:: Client for the REST certificate-validation webservice.
+dss-certificate-validation-soap-client:: Client for the SOAP certificate-validation webservice.
+dss-certificate-validation-rest:: REST webservice to validate a certificate.
+dss-certificate-validation-soap:: SOAP webservice to validate a certificate.
+
+'''
+dss-timestamp-dto:: Data Transfer Objects used for timestamp creation.
+dss-timestamp-remote-common:: Common classes between dss-timestamp-remote-rest and dss-timestamp-remote-soap.
+dss-timestamp-remote-rest-client:: Client for the REST timestamp webservice.
+dss-timestamp-remote-soap-client:: Client for the SOAP timestamp webservice.
+dss-timestamp-remote-rest:: REST webservice to create a timestamp.
+dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
+
+===== Other modules
+
+dss-test:: Mock and util classes for unit tests.
+dss-cookbook:: Samples and documentation of DSS used to generate this documentation.
+dss-jacoco-coverage:: Module which is used to collect a test coverage for all modules.
+dss-bom:: Module which helps the integration with all DSS modules and the version.
+
+[[SpecificModules]]
+==== Specific modules
+
+Some modules of the DSS framework have a specific behavior and has to be handled accordingly.
+
+DSS contains a bundle of JAXB-based modules, generating Java classes at runtime based on XSD-schema. When any change is made in the XSD, the classes of the module are being re-generated according to the change. The following modules present this behavior:
+
+* specs-xmldsig;
+* specs-xades;
+* specs-trusted-list;
+* specs-validation-report;
+* specs-asic-manifest;
+* specs-saml-assertion;
+* dss-policy-jaxb;
+* dss-diagnostic-jaxb;
+* dss-detailed-report-jaxb;
+* dss-simple-report-jaxb;
+* dss-simple-certificate-report-jaxb.
+
+Specific modules with JWS and JAdES specifications exist. These modules allow to validate the generated JSON against the related JSON Schema :
+
+* specs-jws;
+* specs-jades.
+
+Also, as it was explained in the previous section, some modules are required to be built completely in order for their dependent modules to be built when using a quick profile, namely:
+
+* <<dssUtils,dss-utils>>;
+* <<dssCrlParser,dss-crl-parser>>;
+* dss-test;
+* <<dssPades,dss-pades>>;
+* dss-asic-common.
+
+The modules contain common interfaces, used in other DSS modules, as well as unit tests to ensure the same behavior between their implementations.
+
+==== DSS-demonstration modules
+
+This chapter provides an overview on modules available within https://github.com/esig/dss-demonstrations[demonstrations project].
+
+[horizontal]
+dss-mock-tsa:: Timestamping source which generates fake timestamps from a self-signed certificate.
+sscd-mocca-adapter:: Adapter for the MOCCA connection.
+dss-standalone-app:: Standalone application which allows signing a document with different formats and tokens (JavaFX).
+dss-standalone-app-package:: Packaging module for dss-standalone-app.
+dss-demo-webapp:: Demonstration web application which presents basic DSS functionalities.
+dss-demo-bundle:: Packaging module for dss-demo-webapp.

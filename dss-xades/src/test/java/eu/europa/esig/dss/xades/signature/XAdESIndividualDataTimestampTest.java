@@ -133,8 +133,13 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 			assertTrue(timestamp.isSignatureValid());
 		}
 
-		assertEquals(1, timestampList.get(0).getTimestampedObjects().size());
-		assertEquals(2, timestampList.get(1).getTimestampedObjects().size());
+		TimestampWrapper individualDataTimestamp = timestampList.get(0);
+		assertEquals(1, individualDataTimestamp.getTimestampScopes().size());
+		assertEquals(1, individualDataTimestamp.getTimestampedObjects().size());
+
+		TimestampWrapper allDataTimestamp = timestampList.get(1);
+		assertEquals(2, allDataTimestamp.getTimestampScopes().size());
+		assertEquals(2, allDataTimestamp.getTimestampedObjects().size());
 
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());

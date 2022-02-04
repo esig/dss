@@ -62,9 +62,18 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 		super.checkTimestamps(diagnosticData);
 		
 		assertEquals(2, diagnosticData.getTimestampList().size());
+		boolean sigTstFound = false;
+		boolean arcTstFound = false;
+
 		String timestampId = diagnosticData.getSignatures().get(0).getTimestampList().get(0).getId();
 		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(diagnosticData.getFirstSignatureId())) {
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
+			if (TimestampType.SIGNATURE_TIMESTAMP.equals(wrapper.getType())) {
+				assertEquals(0, wrapper.getTimestampScopes().size());
+				assertEquals(1, wrapper.getTimestampedSignedData().size());
+				sigTstFound = true;
+
+			} else
+				if (TimestampType.ARCHIVE_TIMESTAMP.equals(wrapper.getType())) {
 				boolean coverPreviousTsp = false;
 				List<TimestampWrapper> timestampedTimestamps = wrapper.getTimestampedTimestamps();
 				for (TimestampWrapper timestamp : timestampedTimestamps) {
@@ -73,6 +82,10 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 					}
 				}
 				assertTrue(coverPreviousTsp);
+
+				assertEquals(1, wrapper.getTimestampScopes().size());
+				assertEquals(1, wrapper.getTimestampedSignedData().size());
+				arcTstFound = true;
 			}
 			
 			List<SignatureWrapper> timestampedSignatures = wrapper.getTimestampedSignatures();
@@ -84,6 +97,8 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 			}
 			assertTrue(found);
 		}
+		assertTrue(sigTstFound);
+		assertTrue(arcTstFound);
 	}
 
 	@Override

@@ -148,6 +148,42 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getDocMDPConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getDocMDP();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getFieldMDPConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getFieldMDP();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigFieldLockConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getSigFieldLock();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getUndefinedChangesConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getUndefinedChanges();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getStructuralValidationConstraint(Context context) {
 		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
 		if (signatureConstraints != null) {
@@ -170,6 +206,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getReferencesToAllCertificateChainPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSigningCertificateDigestAlgorithmConstraint(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getSigningCertificateDigestAlgorithm();
 		}
 		return null;
 	}
@@ -525,6 +570,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getAcceptableRevocationDataFoundConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getAcceptableRevocationDataFound();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getCRLNextUpdatePresentConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -543,10 +597,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateRevocationFreshnessConstraint(Context context, SubContext subContext) {
+	public TimeConstraint getRevocationFreshnessConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getRevocationDataFreshness();
+			return certificateConstraints.getRevocationFreshness();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationFreshnessNextUpdateConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getRevocationFreshnessNextUpdate();
 		}
 		return null;
 	}
@@ -732,19 +795,10 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getCertificateSemanticsIdentifierForNaturalPersonConstraint(Context context, SubContext subContext) {
+	public MultiValuesConstraint getCertificateSemanticsIdentifierConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
-			return certificateConstraints.getSemanticsIdentifierForNaturalPerson();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getCertificateSemanticsIdentifierForLegalPersonConstraint(Context context, SubContext subContext) {
-		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			return certificateConstraints.getSemanticsIdentifierForLegalPerson();
+			return certificateConstraints.getSemanticsIdentifier();
 		}
 		return null;
 	}
@@ -826,6 +880,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getIssuerSerialMatch();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getKeyIdentifierPresent(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getKeyIdentifierPresent();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getKeyIdentifierMatch(Context context) {
+		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
+		if (signedAttributeConstraints != null) {
+			return signedAttributeConstraints.getKeyIdentifierMatch();
 		}
 		return null;
 	}
@@ -934,15 +1006,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTSAGeneralNameOrderMatch();
-		}
-		return null;
-	}
-
-	@Override
-	public TimeConstraint getRevocationFreshnessConstraint() {
-		RevocationConstraints revocationConstraints = getRevocationConstraints();
-		if (revocationConstraints != null) {
-			return revocationConstraints.getRevocationFreshness();
 		}
 		return null;
 	}

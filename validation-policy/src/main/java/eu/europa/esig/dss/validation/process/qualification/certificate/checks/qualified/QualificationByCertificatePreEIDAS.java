@@ -25,10 +25,20 @@ import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
+/**
+ * Gets certificate qualification status before eIDAS
+ *
+ */
 class QualificationByCertificatePreEIDAS implements QualificationStrategy {
 
+	/** Certificate to get qualification status for */
 	private final CertificateWrapper signingCertificate;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param signingCertificate {@link CertificateWrapper}
+	 */
 	public QualificationByCertificatePreEIDAS(CertificateWrapper signingCertificate) {
 		this.signingCertificate = signingCertificate;
 	}

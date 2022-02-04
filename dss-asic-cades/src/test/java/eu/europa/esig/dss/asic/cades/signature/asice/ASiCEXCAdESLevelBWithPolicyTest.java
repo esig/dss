@@ -33,7 +33,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 public class ASiCEXCAdESLevelBWithPolicyTest extends AbstractASiCECAdESTestSignature {
 
@@ -58,11 +57,6 @@ public class ASiCEXCAdESLevelBWithPolicyTest extends AbstractASiCECAdESTestSigna
 		signatureParameters.bLevel().setSignaturePolicy(policy);
 
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
-	}
-
-	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
 	}
 
 	@Override

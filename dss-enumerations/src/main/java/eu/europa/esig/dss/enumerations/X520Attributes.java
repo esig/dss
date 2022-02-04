@@ -26,6 +26,7 @@ import java.util.Map;
 
 /**
  * Contains attributes of a certificate's distinguished name
+ *
  */
 public enum X520Attributes implements OidDescription {
 
@@ -507,14 +508,26 @@ public enum X520Attributes implements OidDescription {
 
 	EMAIL_ADDRESS("emailAddress", "1.2.840.113549.1.9.1");
 	
+	/** Map between X520 Attribute uppercase names and their corresponding OIDs */
 	private static final Map<String, String> UPPERCASE_DESCRIPTION_OID = registerUpperCaseDescriptionAndOids();
 
+	/** Map between X520 Attribute OIDs and their descriptions */
 	private static final Map<String, String> OID_DESCRIPTION = registerOidAndDescriptions();
 
+	/**
+	 * Gets map of X520 Attribute uppercase names and their corresponding OIDs
+	 *
+	 * @return a map of {@link String} X520 Attribute uppercase names and {@link String} OIDs
+	 */
 	public static Map<String, String> getUppercaseDescriptionForOids() {
 		return Collections.unmodifiableMap(UPPERCASE_DESCRIPTION_OID);
 	}
 
+	/**
+	 * Gets map of X520 Attribute OIDs and their descriptions
+	 *
+	 * @return a map of {@link String} X520 Attribute OIDs and {@link String} descriptions
+	 */
 	public static Map<String, String> getOidDescriptions() {
 		return Collections.unmodifiableMap(OID_DESCRIPTION);
 	}
@@ -535,10 +548,19 @@ public enum X520Attributes implements OidDescription {
 		return map;
 	}
 
+	/** Description of the attribute */
 	private final String description;
+
+	/** OID of the attribute */
 	private final String oid;
 
-	private X520Attributes(String description, String oid) {
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String}
+	 * @param oid {@link String}
+	 */
+	X520Attributes(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
 	}

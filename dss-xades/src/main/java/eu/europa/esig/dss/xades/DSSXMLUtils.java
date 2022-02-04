@@ -47,7 +47,6 @@ import eu.europa.esig.xmldsig.XSDAbstractUtils;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.exceptions.XMLSecurityRuntimeException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -191,8 +190,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransform(final String transformURI) {
-		final boolean added = transforms.add(transformURI);
-		return added;
+		return transforms.add(transformURI);
 	}
 
 	/**
@@ -203,8 +201,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		final boolean added = canonicalizers.add(c14nAlgorithmURI);
-		return added;
+		return canonicalizers.add(c14nAlgorithmURI);
 	}
 
 	/**
@@ -216,8 +213,7 @@ public final class DSSXMLUtils {
 	 * @return true if this set did not already contain the specified element
 	 */
 	public static boolean registerTransformWithNodeSetOutput(final String transformURI) {
-		final boolean added = transformsWithNodeSetOutput.add(transformURI);
-		return added;
+		return transformsWithNodeSetOutput.add(transformURI);
 	}
 	
 	/**
@@ -593,10 +589,8 @@ public final class DSSXMLUtils {
 		for (int jj = 0; jj < attributes.getLength(); jj++) {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName() != null ? item.getLocalName() : item.getNodeName();
-			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
-					return item.getTextContent();
-				}
+			if (Utils.areStringsEqualIgnoreCase(attributeName, localName)) {
+				return item.getTextContent();
 			}
 		}
 		return null;
@@ -723,7 +717,7 @@ public final class DSSXMLUtils {
 				}
 			}
 			
-		} catch (XMLSecurityException | XMLSecurityRuntimeException e) {
+		} catch (XMLSecurityException e) {
 			// if exception occurs during the transformations
 			LOG.warn("Signature reference with id [{}] is corrupted or has an invalid format. "
 					+ "Original data cannot be obtained. Reason: [{}]", reference.getId(), e.getMessage());
@@ -791,9 +785,10 @@ public final class DSSXMLUtils {
 		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(digestAlgorithmUri);
 		final byte[] digestValue = getDigestValue(digestValueBase64);
 
-		if (digestAlgorithm == null || digestValue == null) {
+		if (digestAlgorithm == null || Utils.isArrayEmpty(digestValue)) {
 			LOG.warn("Unable to read object DigestAlgAndValueType (XMLDSig or XAdES 1.1.1)");
 			return null;
+
 		} else {
 			return new Digest(digestAlgorithm, digestValue);
 		}
@@ -802,7 +797,13 @@ public final class DSSXMLUtils {
 
 	private static byte[] getDigestValue(String digestValueBase64) {
 		byte[] result = null;
-		if (Utils.isStringNotEmpty(digestValueBase64)) {
+		if (Utils.isStringEmpty(digestValueBase64)) {
+			LOG.error("An empty DigestValue obtained!");
+
+		} else if (!Utils.isBase64Encoded(digestValueBase64)) {
+			LOG.error("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
+
+		} else {
 			result = Utils.fromBase64(digestValueBase64);
 		}
 		return result;

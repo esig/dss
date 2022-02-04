@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -37,38 +36,19 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	/** The certificate in question */
-	private final CertificateWrapper certificateWrapper;
-
 	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
-
-	/**
-	 * Constructor without certificate
-	 *
-	 * @param i18nProvider {@link I18nProvider}
-	 * @param result the result
-	 * @param revocationData {@link RevocationWrapper}
-	 * @param constraint {@link LevelConstraint}
-	 */
-	public AcceptableRevocationDataAvailableCheck(I18nProvider i18nProvider, T result,
-			RevocationWrapper revocationData, LevelConstraint constraint) {
-		this(i18nProvider, result, null, revocationData, constraint);
-	}
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
-	 * @param certificateWrapper {@link CertificateWrapper}
 	 * @param revocationData {@link RevocationWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public AcceptableRevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificateWrapper,
-			RevocationWrapper revocationData, LevelConstraint constraint) {
+	public AcceptableRevocationDataAvailableCheck(I18nProvider i18nProvider, T result, RevocationWrapper revocationData, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-		this.certificateWrapper = certificateWrapper;
 		this.revocationData = revocationData;
 	}
 
@@ -99,8 +79,8 @@ public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConc
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (certificateWrapper != null) {
-			return i18nProvider.getMessage(MessageTag.CERTIFICATE_ID, certificateWrapper.getId());
+		if (revocationData != null) {
+			return i18nProvider.getMessage(MessageTag.LAST_ACCEPTABLE_REVOCATION, revocationData.getId());
 		}
 		return null;
 	}

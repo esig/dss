@@ -1,0 +1,36 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Internationalization (i18n)
+
+[[i18nLanguage]]
+=== Language of reports
+
+DSS provides a module allowing changing a language for generated reports.
+
+NOTE: Internationalization module supports translation of only validation process messages.
+
+A target language of the report can be set with the following code:
+
+[source,java,indent=0]
+.Language customization
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=i18n]
+----
+
+In case if no language is specified, the framework will use a default `Locale` obtained from OS on a running machine. If a requested language is not found, a default translation will be used.
+
+As a default configuration DSS provides English translation.
+
+In order to provide a custom translation, a new file must be created inside `src\main\resources` directory of your project with a name followed by one of the patterns:
+
+`dss-messages_XX.properties` or
+`dss-messages_XX_YY.properties`, where:
+
+* XX - an abbreviation of a target language;
+* YY - a country code.
+
+For example, for a French language a file with a name `dss-messages_fr.properties` should be created, or `dss-messages_fr_FR.properties` to use it only in France local.

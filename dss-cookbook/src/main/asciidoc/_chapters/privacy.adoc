@@ -1,0 +1,51 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Privacy
+
+=== Use of digested documents
+Digested documents can be used during signature creation instead of the original documents to keep the latter private. In that case, the signature is created in a detached way, using the digest of the original document only.
+
+Refer to section <<DSSDocuments>> for more information on digested documents, section <<Packaging>> for information on the detached packaging of signatures and section <<DetachedSignatureDigest>> for code illustrations.
+
+=== Original document in the Data To Be Signed
+The data to be signed (DTBS) for CAdES and XAdES does not contain the original document on which the signature value is computed. JAdES and PAdES DTBS, however, does contain the whole original content.
+
+=== Private information in logs
+
+Five log levels are used in DSS:
+
+* *ERROR* - is used for the most critical issues, interrupting a normal process workflow (encoding issues, not processable signed attributes, etc.).
+* *WARN* - is used to indicate problems occurred during an executed process. Such issue does not stop or invalidate the process explicitly, but can have an impact on the final output.
+* *INFO* - returns important or useful information to the logs.
+* *DEBUG* - is used to print extended information, such as token binaries, attribute values, etc.
+* *TRACE* - is used to indicate the currently performing methods and state of objects.
+
+When setting a log execution level to `ERROR`, `WARN` or `INFO` levels, no private information will be print to the log file. However, `DEBUG` and `TRACE` might potentially contain private information, as they display more information, including the source binaries of tokens.
+
+Since the logs are hardcoded it is not possible to modify the behavior.
+Therefore, to avoid disclosing private information, users should not use the `DEBUG` and `TRACE` levels. It is also not recommended using these two levels in the production.
+
+For example, when an error occurs on a certificate reading, DSS only `WARN` users that an error occurred. However, if the log level is set to `DEBUG` on the user's side, the binaries of the failed certificate are printed.
+
+Sometimes, DSS uses mixing rules for logging, such as it displays more information within a `WARN` or `INFO` level when `DEBUG` level is enabled.
+
+[[ClientServerSeparation]]
+=== Client-side signature creation with server-side remote key activation
+
+With DSS, it is possible to sign a document without needing to send it to the signing server. This is useful for users who do not want signing servers to have access to the information contained in their documents. Such a process is possible because DSS decomposes the signature of a document in three or four atomic steps.
+See section <<SignatureCreationThreeSteps>> and <<SignatureCreationFourSteps>> for an extensive description of these steps.
+
+. The first step is performed by the client and consists in the computation of the data to be signed (DTBS).
+. For the XAdES and CAdES formats, the client can optionally compute the digest of the DTBS (DTBSR). For JAdES and PAdES the client shall compute the digest of the DTBS to "hide" the content of the original document, given that the DTBS of these two formats contains the whole original content. The client sends the DTBS or the DTBSR to the server.
+. Then, the server encrypts the DTBS using the private key to create the signature value. The server sends the signature value back to the client.
+. The last step takes place at the client-side. The client adds the signature value to the appropriate field.
+
+The following schema illustrates the different steps
+
+image::clientCreation-serverKeyActivation.jpg[client-server, width="80%", height="80%"]
+
+For code illustrations of the different steps, refer to the <<ClientServerAnnex>> section in the Annex.

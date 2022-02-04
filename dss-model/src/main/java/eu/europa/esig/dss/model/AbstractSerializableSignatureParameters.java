@@ -50,6 +50,13 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	private boolean signWithNotYetValidCertificate = false;
 
 	/**
+	 * This variable indicates whether a signing certificate revocation shall be checked.
+	 *
+	 * Default : false
+	 */
+	private boolean checkCertificateRevocation = false;
+
+	/**
 	 * This variable indicates if it is possible to generate ToBeSigned data without
 	 * the signing certificate.
 	 *
@@ -118,7 +125,8 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * Allows to change the default behavior regarding the use of an expired certificate.
+	 * Allows to change the default behavior regarding the use of an expired certificate
+	 * on signature creation or T-level extension.
 	 *
 	 * Default : false (forbid signing with an expired signing certificate)
 	 *
@@ -135,7 +143,8 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * Allows to change the default behavior regarding the use of a not yet valid certificate.
+	 * Allows to change the default behavior regarding the use of a not yet valid certificate
+	 * on signature creation or T-level extension.
 	 *
 	 * Default : false (forbid signing with a not yet valid signing certificate)
 	 *
@@ -144,6 +153,26 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
 		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
+	}
+
+	@Override
+	public boolean isCheckCertificateRevocation() {
+		return checkCertificateRevocation;
+	}
+
+	/**
+	 * Allows setting whether a revocation status for a signing certificate should be checked
+	 * on signature creation or T-level extension.
+	 *
+	 * NOTE: in order to specify a behavior for this check, the relevant alerts should be specified within
+	 * a {@code CertificateVerifier} instance, used in a service for signing/extension
+	 *
+	 * Default : false (do not perform revocation data check on signature creation/T-level extension)
+	 *
+	 * @param checkCertificateRevocation indicated if a certificate revocation check shall be performed
+	 */
+	public void setCheckCertificateRevocation(boolean checkCertificateRevocation) {
+		this.checkCertificateRevocation = checkCertificateRevocation;
 	}
 
 	/**

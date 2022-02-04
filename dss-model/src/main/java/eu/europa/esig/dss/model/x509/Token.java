@@ -39,7 +39,7 @@ import java.util.Date;
 public abstract class Token implements IdentifierBasedObject, Serializable {
 
 	/**
-	 * The token identifier to avoid to compute more than one time the digest value
+	 * The token identifier to avoid computing more than one time the digest value
 	 */
 	private TokenIdentifier tokenIdentifier;
 
@@ -142,7 +142,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 *              the candidate to be tested
 	 * @return true if this token is signed by the given certificate token
 	 */
-	public boolean isSignedBy(CertificateToken token) {
+	public synchronized boolean isSignedBy(CertificateToken token) {
 		return isSignedBy(token.getPublicKey());
 	}
 
@@ -153,7 +153,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 *              the candidate to be tested
 	 * @return true if this token is signed by the given public key
 	 */
-	public boolean isSignedBy(final PublicKey publicKey) {
+	public synchronized boolean isSignedBy(final PublicKey publicKey) {
 		if (publicKeyOfTheSigner != null) {
 			return publicKeyOfTheSigner.equals(publicKey);
 		} else if (SignatureValidity.VALID == checkIsSignedBy(publicKey)) {

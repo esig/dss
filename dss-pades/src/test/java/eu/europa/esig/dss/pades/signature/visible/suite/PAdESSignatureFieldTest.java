@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -489,6 +490,247 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		parametersOne.setOriginY(400);
 		DSSDocument document = service.addNewSignatureField(documentToSign, parametersOne);
 		assertNotNull(document);
+	}
+
+	@Test
+	public void fieldsOverlapWithRotatedDocTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(50);
+		parameters.setOriginY(100);
+		parameters.setHeight(50);
+		parameters.setWidth(100);
+		DSSDocument doc90Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc90Degrees);
+
+		parameters.setFieldId("signature2");
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc90Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		DSSDocument signed = signAndValidate(doc90Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/doc90Degrees.pdf");
+
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_180.pdf"));
+
+		parameters.setFieldId("signature1");
+		DSSDocument doc180Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc180Degrees);
+
+		parameters.setFieldId("signature2");
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc180Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		signed = signAndValidate(doc180Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/doc180Degrees.pdf");
+
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_270.pdf"));
+
+		parameters.setFieldId("signature1");
+		DSSDocument doc270Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc270Degrees);
+
+		parameters.setFieldId("signature2");
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc270Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		signed = signAndValidate(doc270Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/doc270Degrees.pdf");
+
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-90.pdf"));
+
+		parameters.setFieldId("signature1");
+		DSSDocument docMinus90Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(docMinus90Degrees);
+
+		parameters.setFieldId("signature2");
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus90Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		signed = signAndValidate(docMinus90Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/docMinus90Degrees.pdf");
+
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-180.pdf"));
+
+		parameters.setFieldId("signature1");
+		DSSDocument docMinus180Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(docMinus180Degrees);
+
+		parameters.setFieldId("signature2");
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus180Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		signed = signAndValidate(docMinus180Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/docMinus180Degrees.pdf");
+
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-270.pdf"));
+
+		parameters.setFieldId("signature1");
+		DSSDocument docMinus270Degrees = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(docMinus270Degrees);
+
+		parameters.setFieldId("signature2");
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus270Degrees, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+		signed = signAndValidate(docMinus270Degrees);
+		assertNotNull(signed);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+		signed = signAndValidate(signed);
+		assertNotNull(signed);
+		//signed.save("target/docMinus270Degrees.pdf");
+	}
+
+	@Test
+	public void fieldsOverlapWithCustomRotationTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setHeight(50);
+		fieldParameters.setWidth(100);
+
+		signatureParameters.getImageParameters().setTextParameters(textParameters);
+		signatureParameters.getImageParameters().setFieldParameters(fieldParameters);
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.ROTATE_90);
+
+		DSSDocument doc90Degrees = signAndValidate(documentToSign);
+		assertNotNull(doc90Degrees);
+
+		Exception exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doc90Degrees));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.ROTATE_180);
+
+		DSSDocument doc180Degrees = signAndValidate(doc90Degrees);
+		assertNotNull(doc180Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doc180Degrees));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.ROTATE_270);
+
+		DSSDocument doc270Degrees = signAndValidate(doc180Degrees);
+		assertNotNull(doc270Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doc270Degrees));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.NONE);
+
+		exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doc270Degrees));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		signatureParameters.getImageParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doc270Degrees));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void signOutOfPageDimensionsWithRotatedDocumentsTest() throws IOException {
+		DSSDocument doc90Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(500);
+		parameters.setOriginY(100);
+		parameters.setHeight(50);
+		parameters.setWidth(100);
+
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc90Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		DSSDocument doc180Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_180.pdf"));
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc180Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		DSSDocument doc270Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_270.pdf"));
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc270Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		DSSDocument docMinus90Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-90.pdf"));
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus90Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		DSSDocument docMinus180Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-180.pdf"));
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus180Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		DSSDocument docMinus270Degrees = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-270.pdf"));
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docMinus270Degrees, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {

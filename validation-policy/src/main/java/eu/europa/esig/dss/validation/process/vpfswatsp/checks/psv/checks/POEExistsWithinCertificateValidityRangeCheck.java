@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
  * before the expiration date of that certificate.
  *
  */
-public class POEExistsWithinCertificateValidityRangeCheck extends ChainItem<XmlPSV> {
+public class POEExistsWithinCertificateValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** Certificate to check POE */
     private final CertificateWrapper certificate;
@@ -47,12 +47,12 @@ public class POEExistsWithinCertificateValidityRangeCheck extends ChainItem<XmlP
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlPSV}
+     * @param result {@link XmlConstraintsConclusion}
      * @param certificate {@link CertificateWrapper} to check
      * @param poe {@link POEExtraction}
      * @param constraint {@link LevelConstraint}
      */
-    public POEExistsWithinCertificateValidityRangeCheck(I18nProvider i18nProvider, XmlPSV result,
+    public POEExistsWithinCertificateValidityRangeCheck(I18nProvider i18nProvider, T result,
                                                         CertificateWrapper certificate, POEExtraction poe,
                                                         LevelConstraint constraint) {
         super(i18nProvider, result, constraint);

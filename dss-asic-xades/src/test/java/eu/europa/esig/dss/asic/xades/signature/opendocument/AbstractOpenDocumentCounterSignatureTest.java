@@ -34,7 +34,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.AbstractASiCXAdESCounterSignatureTest;
@@ -94,7 +94,7 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(getOriginalDocuments().get(0));
-		ASiCExtractResult extractOriginal = extractor.extract();
+		ASiCContent extractOriginal = extractor.extract();
 		
 		AbstractASiCContainerValidator asicValidator = (AbstractASiCContainerValidator) validator;
 		List<DSSDocument> signedDocuments = asicValidator.getSignedDocuments();

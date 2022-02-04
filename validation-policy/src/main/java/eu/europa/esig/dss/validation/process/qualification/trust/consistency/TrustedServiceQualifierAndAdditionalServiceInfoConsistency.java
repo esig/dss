@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
 
@@ -39,9 +39,6 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESIG, AdditionalServiceInformation.FOR_ESIGNATURES);
 		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESEAL, AdditionalServiceInformation.FOR_ESEALS);
 		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_WSA, AdditionalServiceInformation.FOR_WEB_AUTHENTICATION);
-	}
-
-	public TrustedServiceQualifierAndAdditionalServiceInfoConsistency() {
 	}
 
 	@Override

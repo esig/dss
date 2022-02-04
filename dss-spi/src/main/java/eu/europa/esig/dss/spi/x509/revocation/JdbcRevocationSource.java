@@ -27,7 +27,6 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -89,20 +88,6 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	 */
 	protected abstract RevocationToken<R> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
 			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws DSSExternalResourceException;
-
-	/**
-	 * Sets {@code DataSource}
-	 *
-	 * @param dataSource
-	 *            the dataSource to set
-	 *
-	 * @deprecated since 5.9. Use {@code setJdbcCacheConnector(jdbcCacheConnector)}
-	 */
-	@Deprecated
-	public void setDataSource(final DataSource dataSource) {
-		this.jdbcCacheConnector = new JdbcCacheConnector(dataSource);
-		LOG.info("Use of deprecated method setDataSource(dataSource). Use setJdbcCacheConnector(jdbcCacheConnector) instead.");
-	}
 
 	/**
 	 * Sets the SQL connection DataSource

@@ -66,7 +66,7 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 
 	@Override
-	protected Integer getSignatureFilePosition() {
+	protected Integer getSignaturePosition() {
 		CAdESSignature cadesSignature = (CAdESSignature) signature;
 		
 		return count(cadesSignature.getCmsSignedData().getSignerInfos().getSigners(), cadesSignature.getSignerInformation());

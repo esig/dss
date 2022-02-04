@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -35,28 +33,26 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Checks if the revocation is acceptable and can be used
@@ -75,11 +71,8 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	/** Validation policy */
 	private final ValidationPolicy policy;
 
-	/** Internal list of processed tokens (avoids infinite loop) */
-	private final List<String> validatedTokens;
-
-	/** Defines the map between certificates in the chain and their latest valid revocation data */
-	private final Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap;
+	/** Internal set of processed tokens (avoids infinite loop) */
+	private final Set<String> validatedTokens;
 
 	/**
 	 * Default constructor
@@ -89,26 +82,22 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	 * @param revocationData {@link CertificateRevocationWrapper}
 	 * @param controlTime {@link Date}
 	 * @param policy {@link ValidationPolicy}
+	 * @param validatedTokens a set of token {@link String} identifiers that have been already processed
 	 */
 	public RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
-									   CertificateRevocationWrapper revocationData, Date controlTime,
-									   ValidationPolicy policy) {
-		this(i18nProvider, certificate, revocationData, controlTime, policy, new ArrayList<>());
-	}
-	
-	private RevocationAcceptanceChecker(I18nProvider i18nProvider, CertificateWrapper certificate,
 										CertificateRevocationWrapper revocationData, Date controlTime,
-										ValidationPolicy policy, List<String> validatedTokens) {
+										ValidationPolicy policy, Set<String> validatedTokens) {
 		super(i18nProvider, new XmlRAC());
 		this.certificate = certificate;
 		this.revocationData = revocationData;
 		this.controlTime = controlTime;
 		this.policy = policy;
 		this.validatedTokens = validatedTokens;
-		this.certificateRevocationMap = new HashMap<>();
 
 		result.setId(revocationData.getId());
+		result.setRevocationThisUpdate(revocationData.getThisUpdate());
 		result.setRevocationProductionDate(revocationData.getProductionDate());
+		this.validatedTokens.add(certificate.getId());
 	}
 
 	@Override
@@ -169,34 +158,16 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
 				
 				item = item.setNextItem(revocationDataPresentForRevocationChain(revocationCertificate, subContext));
-				
-				CertificateRevocationWrapper latestRevocationData = null;
-				for (CertificateRevocationWrapper revocationWrapper : revocationCertificate.getCertificateRevocationData()) {
-					
-					if (isTokenValidated(revocationWrapper)) {
-						if (latestRevocationData == null || 
-								revocationWrapper.getProductionDate().before(latestRevocationData.getProductionDate())) {
-							latestRevocationData = revocationWrapper;
-						}
-						continue;
-					}
-					
-					RevocationAcceptanceChecker rac = revocationAcceptanceChecker(revocationCertificate, revocationWrapper);
-					XmlRAC racResult = rac.execute();
-					
-					item = item.setNextItem(revocationAcceptanceResultCheck(racResult));
-					
-					if (isValid(racResult) && (latestRevocationData == null || 
-							revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
-						latestRevocationData = revocationWrapper;
-					}
-					
-				}
-				
-				item = item.setNextItem(acceptableRevocationDataAvailable(latestRevocationData, revocationCertificate, subContext));
 
-				if (latestRevocationData != null) {
-					certificateRevocationMap.put(revocationCertificate, latestRevocationData);
+				if (Utils.isCollectionNotEmpty(revocationCertificate.getCertificateRevocationData())) {
+
+					CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
+							i18nProvider, revocationCertificate, controlTime, policy, validatedTokens);
+					XmlCRS xmlCRS = certificateRevocationSelector.execute();
+					result.setCRS(xmlCRS);
+
+					item = item.setNextItem(checkCertificateRevocationSelectorResult(xmlCRS, subContext));
+
 				}
 				
 			}
@@ -246,11 +217,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	
 	private ChainItem<XmlRAC> certificateIntact(CertificateWrapper certificate) {
 		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
-		return new SignatureIntactWithIdCheck(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
+		return new SignatureIntactWithIdCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
 	private ChainItem<XmlRAC> selfSigned(CertificateWrapper certificate) {
-		return new CertificateSelfSignedCheck(i18nProvider, result, certificate, getWarnLevelConstraint());
+		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
@@ -261,31 +232,19 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
 		return new RevocationIssuerRevocationDataAvailableCheck(i18nProvider, result, certificate, constraint);
 	}
-	
-	private RevocationAcceptanceChecker revocationAcceptanceChecker(CertificateWrapper certificateWrapper, CertificateRevocationWrapper revocationWrapper) {
-		return new RevocationAcceptanceChecker(i18nProvider, certificateWrapper, revocationWrapper, controlTime, policy, validatedTokens);
-	}
-	
-	private ChainItem<XmlRAC> revocationAcceptanceResultCheck(XmlRAC racResult) {
-		return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
-	}
 
-	private ChainItem<XmlRAC> acceptableRevocationDataAvailable(RevocationWrapper revocationData, 
-			CertificateWrapper certificateWrapper, SubContext subContext) {
-		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
-		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, certificateWrapper, revocationData, constraint);
+	private ChainItem<XmlRAC> checkCertificateRevocationSelectorResult(XmlCRS crsResult, SubContext subContext) {
+		LevelConstraint constraint = policy.getAcceptableRevocationDataFoundConstraint(Context.REVOCATION, subContext);
+		return new CertificateRevocationSelectorResultCheck<>(i18nProvider, result, crsResult, constraint);
 	}
 
 	@Override
-	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		if (XmlBlockType.RAC.equals(constraint.getBlockType())) {
-			if (ValidationProcessUtils.isMessageCollectingRequiredForRevocation(constraint.getId(),
-					revocationData.getCertificateChain(), certificateRevocationMap)) {
-				super.collectMessages(conclusion, constraint);
-			}
+	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		super.collectAdditionalMessages(conclusion);
 
-		} else {
-			super.collectMessages(conclusion, constraint);
+		XmlCRS crs = result.getCRS();
+		if (crs != null) {
+			super.collectAllMessages(conclusion, crs.getConclusion());
 		}
 	}
 

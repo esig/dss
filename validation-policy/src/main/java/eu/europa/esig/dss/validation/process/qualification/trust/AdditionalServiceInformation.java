@@ -20,12 +20,19 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust;
 
-import java.util.List;
-
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.List;
+
+/**
+ * This class is used to verify additional service infos extracted from a TrustedService
+ *
+ */
 public final class AdditionalServiceInformation {
 
+	/**
+	 * Empty constructor
+	 */
 	private AdditionalServiceInformation() {
 	}
 
@@ -47,22 +54,52 @@ public final class AdditionalServiceInformation {
 	 */
 	public static final String FOR_WEB_AUTHENTICATION = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication";
 
+	/**
+	 * Checks if the given list of additional service infos contains "for eSignatures" identifier
+	 *
+	 * @param additionalServiceInfos a list of {@link String}s to verify
+	 * @return TRUE of the list contains "for eSignatures" identifier, FALSE otherwise
+	 */
 	public static boolean isForeSignatures(List<String> additionalServiceInfos) {
 		return additionalServiceInfos.contains(FOR_ESIGNATURES);
 	}
 
+	/**
+	 * Checks if the given list of additional service infos contains "for eSeals" identifier
+	 *
+	 * @param additionalServiceInfos a list of {@link String}s to verify
+	 * @return TRUE of the list contains "for eSeals" identifier, FALSE otherwise
+	 */
 	public static boolean isForeSeals(List<String> additionalServiceInfos) {
 		return additionalServiceInfos.contains(FOR_ESEALS);
 	}
 
+	/**
+	 * Checks if the given list of additional service infos only contains "for eSeals" identifier
+	 *
+	 * @param additionalServiceInfos a list of {@link String}s to verify
+	 * @return TRUE of the list only contains "for eSeals" identifier, FALSE otherwise
+	 */
 	public static boolean isForeSealsOnly(List<String> additionalServiceInfos) {
 		return Utils.collectionSize(additionalServiceInfos) == 1 && isForeSeals(additionalServiceInfos);
 	}
 
+	/**
+	 * Checks if the given list of additional service infos contains "for web authentication" identifier
+	 *
+	 * @param additionalServiceInfos a list of {@link String}s to verify
+	 * @return TRUE of the list contains "for web authentication" identifier, FALSE otherwise
+	 */
 	public static boolean isForWebAuth(List<String> additionalServiceInfos) {
 		return additionalServiceInfos.contains(FOR_WEB_AUTHENTICATION);
 	}
 
+	/**
+	 * Checks if the given list of additional service infos only contains "for web authentication" identifier
+	 *
+	 * @param additionalServiceInfos a list of {@link String}s to verify
+	 * @return TRUE of the list only contains "for web authentication" identifier, FALSE otherwise
+	 */
 	public static boolean isForWebAuthOnly(List<String> additionalServiceInfos) {
 		return Utils.collectionSize(additionalServiceInfos) == 1 && isForWebAuth(additionalServiceInfos);
 	}

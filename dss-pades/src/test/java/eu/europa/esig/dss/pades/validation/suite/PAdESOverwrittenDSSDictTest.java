@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -82,14 +83,26 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
 
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
+        int signatureWithVriCounter = 0;
+        int signatureWithoutVriCounter = 0;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            boolean containsVri = false;
             FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
             List<OrphanCertificateWrapper> orphanCertificates = foundCertificates.getOrphanCertificates();
             for (OrphanCertificateWrapper certificateWrapper : orphanCertificates) {
                 assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.DSS_DICTIONARY));
-                assertTrue(certificateWrapper.getOrigins().contains(CertificateOrigin.VRI_DICTIONARY));
+                if (certificateWrapper.getOrigins().contains(CertificateOrigin.VRI_DICTIONARY)) {
+                    containsVri = true;
+                }
+            }
+            if (containsVri) {
+                ++signatureWithVriCounter;
+            } else {
+                ++signatureWithoutVriCounter;
             }
         }
+        assertEquals(1, signatureWithVriCounter);
+        assertEquals(1, signatureWithoutVriCounter);
     }
 
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
@@ -97,6 +110,25 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanCertificateReferences()));
         assertEquals(5, Utils.collectionSize(diagnosticData.getAllOrphanRevocationObjects()));
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanRevocationReferences()));
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        List<AdvancedSignature> signatures = validator.getSignatures();
+        assertEquals(2, signatures.size());
+
+        boolean emptySigDocFound = false;
+        boolean signPdfFound = false;
+        for (AdvancedSignature signature : signatures) {
+            List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature.getId());
+            if (originalDocuments.size() == 0) {
+                emptySigDocFound = true;
+            } else {
+                signPdfFound = true;
+            }
+        }
+        assertTrue(emptySigDocFound);
+        assertTrue(signPdfFound);
     }
 
 }

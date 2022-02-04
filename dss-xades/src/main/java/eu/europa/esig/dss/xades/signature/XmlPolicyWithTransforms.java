@@ -113,10 +113,11 @@ public class XmlPolicyWithTransforms extends Policy {
 
 	@Override
 	public String toString() {
-		return "XmlPolicyWithTransforms [transforms=" + transforms + ", id()=" + getId() + ", qualifier()="
-				+ getQualifier() + ", description()=" + getDescription() + ", documentationReferences()="
-				+ Arrays.toString(getDocumentationReferences()) + ", digestAlgorithm()=" + getDigestAlgorithm()
-				+ ", digestValue()=" + Arrays.toString(getDigestValue()) + ", spuri()=" + getSpuri() + "]";
+		return "XmlPolicyWithTransforms {id='" + getId() + "', qualifier=" + getQualifier() + ", description='" + getDescription() +
+				"', documentationReferences=" + Arrays.toString(getDocumentationReferences()) +
+				", digestAlgorithm=" + getDigestAlgorithm() + ", digestValue=" + Arrays.toString(getDigestValue()) +
+				", spUri='" + getSpuri() + "', userNotice=" + getUserNotice() +
+				", spDocSpecification='" + getSpDocSpecification() + "', transforms=" + transforms + "}";
 	}
 
 }

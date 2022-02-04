@@ -129,6 +129,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String CERTIFIED = "certified";
 
 	/**
+	 * Certified attributes
+	 */
+	public static final String CERTIFIED_ATTRS = "certifiedAttrs";
+
+	/**
 	 * X509 Attribute certificate
 	 */
 	public static final String X509_ATTR_CERT = "x509AttrCert";
@@ -171,7 +176,12 @@ public final class JAdESHeaderParameterNames {
 	/**
 	 * Signature policy qualifiers
 	 */
-	public static final String SIG_PQUALS = "sigPQuals";
+	public static final String SIG_P_QUALS = "sigPQuals";
+
+	/**
+	 * Signature policy qualifier
+	 */
+	public static final String SIG_P_QUAL = "sigPQual";
 	
 	/**
 	 * Signature policy URL qualifier
@@ -279,6 +289,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String SIG_TST = "sigTst";
 
 	/**
+	 * Container for timestamps
+	 */
+	public static final String TST_CONTAINER = "tstContainer";
+
+	/**
 	 * Certificate Values
 	 */
 	public static final String X_VALS = "xVals";
@@ -332,6 +347,11 @@ public final class JAdESHeaderParameterNames {
 	 * References to certificates of Attribute Authorities
 	 */
 	public static final String AX_REFS = "axRefs";
+
+	/**
+	 * Certificate Identifier (reference)
+	 */
+	public static final String CERT_ID = "certId";
 
 	/**
 	 * Revocation References
@@ -397,6 +417,11 @@ public final class JAdESHeaderParameterNames {
 	 * CRL Number
 	 */
 	public static final String NUMBER = "number";
+
+	/**
+	 * PKI Object
+	 */
+	public static final String PKI_OB = "pkiOb";
 	
 	/**
 	 * Timestamp Validation Data

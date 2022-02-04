@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -87,7 +88,12 @@ public class PAdESLevelLTAAndLevelTTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSignedDocument = super.sign();
 
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-        return service.extendDocument(doubleSignedDocument, signatureParameters);
+        PAdESTimestampParameters timestampParameters = new PAdESTimestampParameters();
+        PAdESTimestampService timestampService = new PAdESTimestampService(getGoodTsa());
+
+        DSSDocument timestampedDocument = timestampService.timestampDocument(doubleSignedDocument, timestampParameters);
+        timestampedDocument.setName(doubleSignedDocument.getName());
+        return timestampedDocument;
     }
 
     @Override

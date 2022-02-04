@@ -58,10 +58,17 @@ public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestEx
     }
 
     @Override
+    protected XAdESSignatureParameters getExtensionParameters() {
+        XAdESSignatureParameters extensionParameters = super.getExtensionParameters();
+        extensionParameters.setSignWithExpiredCertificate(true);
+        return extensionParameters;
+    }
+
+    @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("The signing certificate has been expired and " +
-                "there is no POE during its validity range."));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
+                "there is no POE during its validity range :"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());

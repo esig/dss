@@ -26,15 +26,19 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
+import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -42,6 +46,7 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +63,7 @@ import java.util.Objects;
 
 /**
  * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
+ *
  */
 public class ITextDocumentReader implements PdfDocumentReader {
 
@@ -67,7 +73,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	private final PdfReader pdfReader;
 
 	/** The map of signature dictionaries and corresponding signature fields */
-	private Map<PdfSignatureDictionary, List<String>> signatureDictionaryMap;
+	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
 
 	/**
 	 * Default constructor of the OpenPDF implementation of the Reader
@@ -93,7 +99,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		try (InputStream is = dssDocument.openStream()) {
 			this.pdfReader = new PdfReader(is, passwordProtection);
 		} catch (BadPasswordException e) {
-            throw new InvalidPasswordException(e.getMessage());
+            throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
 		}
 	}
 
@@ -103,14 +109,15 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @param binaries a byte array of a PDF to read
 	 * @param passwordProtection binaries of a password to open a protected document
 	 * @throws IOException if an exception occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or invalid for a protected document
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided
+	 *                     or invalid for a protected document
 	 */
 	public ITextDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
 		try {
 			this.pdfReader = new PdfReader(binaries, passwordProtection);
 		} catch (BadPasswordException e) {
-            throw new InvalidPasswordException(e.getMessage());
+            throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
 		}
 	}
 	
@@ -123,6 +130,15 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		this.pdfReader = pdfReader;
 	}
 
+	/**
+	 * Returns the current instance of {@code PdfReader}
+	 *
+	 * @return {@link PdfReader}
+	 */
+	public PdfReader getPdfReader() {
+		return pdfReader;
+	}
+
 	@Override
 	public PdfDssDict getDSSDictionary() {
 		PdfDict currentCatalog = new ITextPdfDict(pdfReader.getCatalog());
@@ -130,23 +146,28 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public Map<PdfSignatureDictionary, List<String>> extractSigDictionaries() {
+	public Map<PdfSignatureDictionary, List<PdfSignatureField>> extractSigDictionaries() {
 		if (signatureDictionaryMap == null) {
-			AcroFields acroFields = pdfReader.getAcroFields();
-			
-			Map<PdfSignatureDictionary, List<String>> pdfDictionaries = new LinkedHashMap<>();
+			signatureDictionaryMap = new LinkedHashMap<>();
 			Map<Integer, PdfSigDictWrapper> pdfObjectDictMap = new LinkedHashMap<>();
 			
+			AcroFields acroFields = pdfReader.getAcroFields();
 			Map<String, Item> allFields = acroFields.getAllFields();
 			List<String> names = acroFields.getSignedFieldNames();
-			LOG.info("{} signature field(s) found", names.size());
+			LOG.debug("{} signature field(s) found", names.size());
 			
 			for (String name : names) {
 				PdfDictionary pdfField = allFields.get(name).getMerged(0);
-				int refNumber = pdfField.getAsIndirectObject(PdfName.V).getNumber();
+				final ITextPdfDict fieldDict = new ITextPdfDict(pdfField);
+				final PdfSignatureField pdfSignatureField = new PdfSignatureField(fieldDict);
+
+				int refNumber = 0;
+				PdfIndirectReference indirectObject = pdfField.getAsIndirectObject(PdfName.V);
+				if (indirectObject != null) {
+					refNumber = indirectObject.getNumber();
+				}
 				PdfSigDictWrapper signature = pdfObjectDictMap.get(refNumber);
 				if (signature == null) {
-
 					try {
 						PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
 						signature = new PdfSigDictWrapper(dictionary);
@@ -155,33 +176,33 @@ public class ITextDocumentReader implements PdfDocumentReader {
 						continue;
 					}
 
-					List<String> fieldNames = new ArrayList<>();
-					fieldNames.add(name);
-					pdfDictionaries.put(signature, fieldNames);
+					List<PdfSignatureField> fieldList = new ArrayList<>();
+					fieldList.add(pdfSignatureField);
+					signatureDictionaryMap.put(signature, fieldList);
 					pdfObjectDictMap.put(refNumber, signature);
+
 				} else {
-					List<String> fieldNameList = pdfDictionaries.get(signature);
-					fieldNameList.add(name);
-					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldNameList);
+					List<PdfSignatureField> fieldList = signatureDictionaryMap.get(signature);
+					fieldList.add(pdfSignatureField);
+					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldList);
 
 				}
 			}
-			signatureDictionaryMap = pdfDictionaries;
 		}
 		return signatureDictionaryMap;
 	}
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		pdfReader.close();
 	}
 
 	@Override
 	public boolean isSignatureCoversWholeDocument(PdfSignatureDictionary signatureDictionary) {
 		AcroFields acroFields = pdfReader.getAcroFields();
-		List<String> fieldNames = signatureDictionaryMap.get(signatureDictionary);
-		if (Utils.isCollectionNotEmpty(fieldNames)) {
-			return acroFields.signatureCoversWholeDocument(fieldNames.get(0));
+		List<PdfSignatureField> fields = signatureDictionaryMap.get(signatureDictionary);
+		if (Utils.isCollectionNotEmpty(fields)) {
+			return acroFields.signatureCoversWholeDocument(fields.get(0).getFieldName());
 		}
 		throw new DSSException("Not applicable use of the method isSignatureCoversWholeDocument. " +
 				"The requested signatureDictionary does not exist!");
@@ -199,13 +220,20 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
+	public int getPageRotation(int page) {
+		return pdfReader.getPageRotation(page);
+	}
+
+	@Override
 	public List<PdfAnnotation> getPdfAnnotations(int page) {
 		PdfDictionary pageDictionary = pdfReader.getPageN(page);
 		PdfArray annots = pageDictionary.getAsArray(PdfName.ANNOTS);
 		if (annots != null) {
+			AnnotationBox pageBox = getPageBox(page);
+			int pageRotation = getPageRotation(page);
 			List<PdfAnnotation> pdfAnnotations = new ArrayList<>(); 
 			for (PdfObject pdfObject : annots.getElements()) {
-				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject);
+				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject, pageBox, pageRotation);
 				if (pdfAnnotation != null) {
 					pdfAnnotations.add(pdfAnnotation);
 				}
@@ -216,14 +244,14 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		return Collections.emptyList();
 	}
 	
-	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject) {
+	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject, AnnotationBox pageBox, int pageRotation) {
 		PdfDictionary annotDictionary = getAnnotDictionary(pdfObject);
 		if (annotDictionary != null) {
 			AnnotationBox annotationBox = getAnnotationBox(annotDictionary);
 			if (annotationBox != null) {
+				annotationBox = ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageBox, pageRotation);
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
-				pdfAnnotation.setSigned(isSigned(annotDictionary));
 				return pdfAnnotation;
 			}
 		}
@@ -270,11 +298,6 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		}
 		return null;
 	}
-	
-	private boolean isSigned(PdfDictionary annotDictionary) {
-		PdfObject pdfObject = annotDictionary.get(PdfName.V);
-		return pdfObject != null;
-	}
 
 	@Override
 	public BufferedImage generateImageScreenshot(int page) {
@@ -284,6 +307,49 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations) {
 		throw new UnsupportedOperationException("The image generation is not supported with OpenPDF implementation!");
+	}
+
+	@Override
+	public void checkDocumentPermissions() {
+		if (!pdfReader.isOpenedWithFullPermissions()) {
+			throw new ProtectedDocumentException("Protected document");
+		}
+		else if (pdfReader.isEncrypted()) {
+			throw new ProtectedDocumentException("Encrypted document");
+		}
+	}
+
+	@Override
+	public CertificationPermission getCertificationPermission() {
+		int certificationLevel = pdfReader.getCertificationLevel();
+		if (certificationLevel != 0) {
+			return CertificationPermission.fromCode(certificationLevel);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isUsageRightsSignaturePresent() {
+		PdfDictionary catalog = pdfReader.getCatalog();
+		if (catalog != null) {
+			PdfDictionary permsDict = catalog.getAsDict(PdfName.PERMS);
+			if (permsDict != null) {
+				PdfObject object = permsDict.get(PdfName.UR);
+				if (object != null) {
+					return true;
+				}
+				object = permsDict.get(PdfName.UR3);
+				if (object != null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public PdfDict getCatalogDictionary() {
+		return new ITextPdfDict(pdfReader.getCatalog());
 	}
 
 }

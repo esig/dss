@@ -37,21 +37,21 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.pades.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -61,13 +61,14 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,82 +106,61 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		super(serviceMode, signatureDrawerFactory);
 	}
 
-	@Override
-	protected void checkDocumentPermissions(final DSSDocument toSignDocument, final String pwd) {
-		try (InputStream is = toSignDocument.openStream(); PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
-			if (!reader.isOpenedWithFullPermissions()) {
-				throw new ProtectedDocumentException("Protected document");
-			} 
-			else if (reader.isEncrypted()) {
-				throw new ProtectedDocumentException("Encrypted document");
-			}
-		} catch (BadPasswordException e) {
-			throw new InvalidPasswordException("Encrypted document");
-		} catch (DSSException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new DSSException("Unable to check document permissions", e);
-		}
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private PdfStamper prepareStamper(InputStream pdfData, OutputStream output, PAdESCommonParameters parameters)
+	private PdfStamper prepareStamper(PdfReader reader, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
-		try (PdfReader reader = new PdfReader(pdfData, getPasswordBinary(parameters.getPasswordProtection()))) {
+		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
+		stp.setIncludeFileID(true);
+		stp.setOverrideFileId(generateFileId(parameters));
 
-			PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
-			stp.setIncludeFileID(true);
-			stp.setOverrideFileId(generateFileId(parameters));
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(parameters.getSigningDate());
 
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(parameters.getSigningDate());
+		stp.setEnforcedModificationDate(cal);
 
-			stp.setEnforcedModificationDate(cal);
+		PdfSignatureAppearance sap = stp.getSignatureAppearance();
+		sap.setAcro6Layers(true);
 
-			PdfSignatureAppearance sap = stp.getSignatureAppearance();
-			sap.setAcro6Layers(true);
+		SignatureImageParameters imageParameters = parameters.getImageParameters();
+		SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
 
-			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+		Item fieldItem = findExistingSignatureField(reader, fieldParameters);
+		if (!imageParameters.isEmpty()) {
+			ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(imageParameters);
+			signatureDrawer.init(imageParameters, reader, sap);
 
-			Item fieldItem = findExistingSignatureField(reader, fieldParameters);
-			if (!imageParameters.isEmpty()) {
-				ITextSignatureDrawer signatureDrawer = (ITextSignatureDrawer) loadSignatureDrawer(imageParameters);
-				signatureDrawer.init(imageParameters, reader, sap);
-
-				if (fieldItem == null) {
-					checkVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
-				}
-
-				signatureDrawer.draw();
+			if (fieldItem == null) {
+				getVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
 			}
 
-			PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
-			if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
-				PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
-
-				CertificationPermission permission = signatureParameters.getPermission();
-				// A document can contain only one signature field that contains a DocMDP
-				// transform method;
-				// it shall be the first signed field in the document.
-				if (permission != null && !containsFilledSignature(reader)) {
-					sap.setCertificationLevel(permission.getCode());
-				}
-
-				cal.setTimeZone(signatureParameters.getSigningTimeZone());
-				signatureDictionary.put(PdfName.M, new PdfDate(cal));
-			}
-
-			sap.setCryptoDictionary(signatureDictionary);
-
-			int csize = parameters.getContentSize();
-			HashMap exc = new HashMap();
-			exc.put(PdfName.CONTENTS, csize * 2 + 2);
-
-			sap.preClose(exc);
-
-			return stp;
+			signatureDrawer.draw();
 		}
+
+		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
+			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
+
+			CertificationPermission permission = signatureParameters.getPermission();
+			// A document can contain only one signature field that contains a DocMDP
+			// transform method;
+			// it shall be the first signed field in the document.
+			if (permission != null && !containsFilledSignature(reader)) {
+				sap.setCertificationLevel(permission.getCode());
+			}
+
+			cal.setTimeZone(signatureParameters.getSigningTimeZone());
+			signatureDictionary.put(PdfName.M, new PdfDate(cal));
+		}
+
+		sap.setCryptoDictionary(signatureDictionary);
+
+		int csize = parameters.getContentSize();
+		HashMap exc = new HashMap();
+		exc.put(PdfName.CONTENTS, csize * 2 + 2);
+
+		sap.preClose(exc);
+
+		return stp;
 	}
 	
 	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
@@ -270,11 +250,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(
+						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			PdfStamper stp = prepareStamper(is, baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
@@ -287,12 +271,27 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
+	public DSSDocument previewPageWithVisualSignature(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
+	public DSSDocument previewSignatureField(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
 
-		checkDocumentPermissions(toSignDocument, parameters.getPasswordProtection());
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(
+						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())); ) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
 
-		try (InputStream is = toSignDocument.openStream(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			PdfStamper stp = prepareStamper(is, baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
@@ -321,7 +320,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, ValidationDataContainer validationDataForInclusion, String pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, String pwd) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				InputStream is = document.openStream();
 				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
@@ -330,80 +329,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfWriter writer = stp.getWriter();
 
 			if (!validationDataForInclusion.isEmpty()) {
-
-				Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
-				Map<String, Long> knownObjects = buildKnownObjects(signatures);
-
 				PdfDictionary catalog = reader.getCatalog();
-
-				PdfDictionary dss = new PdfDictionary();
-				PdfDictionary vrim = new PdfDictionary();
-				PdfArray ocsps = new PdfArray();
-				PdfArray crls = new PdfArray();
-				PdfArray certs = new PdfArray();
-
-				for (AdvancedSignature signature : signatures) {
-					ValidationData validationDataToAdd = new ValidationData();
-
-					ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
-					validationDataToAdd.addValidationData(signatureValidationData);
-
-					if (!validationDataToAdd.isEmpty()) {
-						PdfArray ocsp = new PdfArray();
-						PdfArray crl = new PdfArray();
-						PdfArray cert = new PdfArray();
-						PdfDictionary vri = new PdfDictionary();
-
-						Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
-						if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
-							for (CertificateToken certToken : certificateTokensToAdd) {
-								PdfObject iref = getPdfObjectForToken(certToken, knownObjects, reader, writer);
-								cert.add(iref);
-								certs.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), cert);
-						}
-
-						Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
-						if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
-							for (CRLToken crlToken : crlTokensToAdd) {
-								PdfObject iref = getPdfObjectForToken(crlToken, knownObjects, reader, writer);
-								crl.add(iref);
-								crls.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), crl);
-						}
-
-						Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
-						if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
-							for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
-								PdfObject iref = getPdfObjectForToken(ocspToken, knownObjects, reader, writer);
-								ocsp.add(iref);
-								ocsps.add(iref);
-							}
-							vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), ocsp);
-						}
-
-						String vriKey = ((PAdESSignature) signature).getVRIKey();
-						vrim.put(new PdfName(vriKey), vri);
-					}
-				}
-				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
-						writer.addToBody(vrim, false).getIndirectReference());
-
-				if (ocsps.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
-				}
-				if (crls.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
-				}
-				if (certs.size() > 0) {
-					dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
-				}
+				PdfDictionary dss = buildDSSDictionary(reader, writer, validationDataForInclusion);
 				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME),
 						writer.addToBody(dss, false).getIndirectReference());
 
-				stp.getWriter().addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
+				writer.addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
 			}
 
 			stp.close();
@@ -416,16 +347,153 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private PdfObject getPdfObjectForToken(Token token, Map<String, Long> knownObjects, PdfReader reader, PdfWriter writer)
-			throws IOException {
-		String tokenKey = getTokenKey(token);
-		Long objectNumber = knownObjects.get(tokenKey);
+	private PdfDictionary buildDSSDictionary(PdfReader reader, PdfWriter writer,
+											 PdfValidationDataContainer validationDataForInclusion) throws IOException {
+		final PdfDictionary dss = new PdfDictionary();
+		final PdfArray ocsps = new PdfArray();
+		final PdfArray crls = new PdfArray();
+		final PdfArray certs = new PdfArray();
+
+		final Map<String, PdfObject> knownObjects = new HashMap<>();
+
+		Collection<AdvancedSignature> signatures = validationDataForInclusion.getSignatures();
+		if (Utils.isCollectionNotEmpty(signatures)) {
+			PdfDictionary vrim = new PdfDictionary();
+
+			for (AdvancedSignature signature : signatures) {
+				ValidationData validationDataToAdd = new ValidationData();
+
+				ValidationData signatureValidationData = validationDataForInclusion.getAllValidationDataForSignature(signature);
+				validationDataToAdd.addValidationData(signatureValidationData);
+
+				if (!validationDataToAdd.isEmpty()) {
+					PdfDictionary vri = new PdfDictionary();
+
+					Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+					if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+						PdfArray sigCerts = new PdfArray();
+						for (CertificateToken certToken : certificateTokensToAdd) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+									knownObjects, certToken);
+							if (!sigCerts.contains(iref)) {
+								sigCerts.add(iref);
+								if (!certs.contains(iref)) {
+									certs.add(iref);
+								}
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_VRI), sigCerts);
+					}
+
+					Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+					if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+						PdfArray sigCrls = new PdfArray();
+						for (CRLToken crlToken : crlTokensToAdd) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+									knownObjects, crlToken);
+							if (!sigCrls.contains(iref)) {
+								sigCrls.add(iref);
+								if (!crls.contains(iref)) {
+									crls.add(iref);
+								}
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_VRI), sigCrls);
+					}
+
+					Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+					if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+						PdfArray sigOcsps = new PdfArray();
+						for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
+							PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+									knownObjects, ocspToken);
+							if (!sigOcsps.contains(iref)) {
+								sigOcsps.add(iref);
+								if (!ocsps.contains(iref)) {
+									ocsps.add(iref);
+								}
+							}
+						}
+						vri.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_VRI), sigOcsps);
+					}
+
+					String vriKey = ((PAdESSignature) signature).getVRIKey();
+					vrim.put(new PdfName(vriKey), vri);
+				}
+			}
+			dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
+					writer.addToBody(vrim, false).getIndirectReference());
+
+		}
+
+		Collection<TimestampToken> detachedTimestamps = validationDataForInclusion.getDetachedTimestamps();
+		if (Utils.isCollectionNotEmpty(detachedTimestamps)) { // for detached timestamps
+
+			ValidationData validationDataToAdd = validationDataForInclusion.getAllValidationData();
+			Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
+			if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
+				for (CertificateToken certToken : certificateTokensToAdd) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+							knownObjects, certToken);
+					if (!certs.contains(iref)) {
+						certs.add(iref);
+					}
+				}
+			}
+			Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
+			if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
+				for (CRLToken crlToken : crlTokensToAdd) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+							knownObjects, crlToken);
+					if (!crls.contains(iref)) {
+						crls.add(iref);
+					}
+				}
+			}
+			Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
+			if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
+				for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
+					PdfObject iref = getPdfObjectForToken(reader, writer, validationDataForInclusion,
+							knownObjects, ocspToken);
+					if (!ocsps.contains(iref)) {
+						ocsps.add(iref);
+					}
+				}
+			}
+		}
+
+		if (ocsps.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.OCSP_ARRAY_NAME_DSS), ocsps);
+		}
+		if (crls.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.CRL_ARRAY_NAME_DSS), crls);
+		}
+		if (certs.size() > 0) {
+			dss.put(new PdfName(PAdESConstants.CERT_ARRAY_NAME_DSS), certs);
+		}
+
+		return dss;
+	}
+
+	private PdfObject getPdfObjectForToken(PdfReader reader, PdfWriter writer,
+										   PdfValidationDataContainer validationDataContainer,
+										   Map<String, PdfObject> knownObjects, Token token) throws IOException {
+		final String tokenKey = validationDataContainer.getTokenKey(token);
+		PdfObject object = knownObjects.get(tokenKey);
+		if (object != null) {
+			return object;
+		}
+
+		Long objectNumber = validationDataContainer.getTokenReference(token);
 		if (objectNumber == null) {
 			PdfStream ps = new PdfStream(token.getEncoded());
-			return writer.addToBody(ps, false).getIndirectReference();
+			object = writer.addToBody(ps, false).getIndirectReference();
 		} else {
-			return new PRIndirectReference(reader, objectNumber.intValue());
+			object = new PRIndirectReference(reader, objectNumber.intValue());
 		}
+
+		knownObjects.put(tokenKey, object);
+		return object;
 	}
 
 	@Override
@@ -443,22 +511,21 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-
-		checkDocumentPermissions(document, pwd);
-		
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+			 	ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
+			checkDocumentPermissions(documentReader);
+			checkNewSignatureIsPermitted(documentReader, parameters);
 
+			final PdfReader reader = documentReader.getPdfReader();
 			if (reader.getNumberOfPages() < parameters.getPage()) {
 				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 
 			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
 			
-			AnnotationBox annotationBox = checkVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
+			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
 			
-			stp.addSignature(parameters.getFieldId(), parameters.getPage(), 
+			stp.addSignature(parameters.getFieldId(), parameters.getPage(),
 					annotationBox.getMinX(), annotationBox.getMinY(), annotationBox.getMaxX(), annotationBox.getMaxY());
 
 			stp.close();
@@ -470,8 +537,22 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			throw new DSSException("Unable to add a signature field", e);
 		}
 	}
-	
-    private byte[] getPasswordBinary(String currentPassword) {
+
+	@Override
+	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int rotation) {
+		fieldAnnotationBox = super.toPdfPageCoordinates(fieldAnnotationBox, pageBox, rotation);
+		return ImageRotationUtils.rotateRelativelyWrappingBox(fieldAnnotationBox, pageBox, rotation);
+	}
+
+	@Override
+	protected void checkSignatureFieldAgainstPageDimensions(AnnotationBox signatureFieldBox, AnnotationBox pageBox, int pageRotation) {
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(pageRotation)) {
+			pageBox = ImageRotationUtils.swapDimensions(pageBox);
+		}
+		super.checkSignatureFieldAgainstPageDimensions(signatureFieldBox, pageBox, pageRotation);
+	}
+
+	private byte[] getPasswordBinary(String currentPassword) {
         byte[] password = null;
         if (currentPassword != null) {
             password = currentPassword.getBytes();

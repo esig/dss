@@ -117,7 +117,7 @@
 
 	<xs:complexType name="Revocation">
 		<xs:sequence>
-			<xs:element name="productionDate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="thisUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="revocationDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="revocationReason" type="RevocationReason" minOccurs="0" />		
 		</xs:sequence>

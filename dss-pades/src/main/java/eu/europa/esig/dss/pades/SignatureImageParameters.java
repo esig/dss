@@ -133,68 +133,6 @@ public class SignatureImageParameters implements Serializable {
 	}
 
 	/**
-	 * Allows specifying of an absolute margin for the signature field by X axis
-	 * 
-	 * Deprecated. Use {@code getFieldParameters().setOriginX(originX)} method
-	 * 
-	 * @param originX {@code float} margin
-	 */
-	@Deprecated
-	public void setxAxis(float originX) {
-		getFieldParameters().setOriginX(originX);
-	}
-
-	/**
-	 * Allows specifying of an absolute margin for the signature field by Y axis
-	 * 
-	 * Deprecated. Use {@code getFieldParameters().setOriginY(originY)} method
-	 * 
-	 * @param originY {@code float} margin
-	 */
-	@Deprecated
-	public void setyAxis(float originY) {
-		getFieldParameters().setOriginY(originY);
-	}
-
-	/**
-	 * Defines a number of page in the document where the signature field must be placed.
-	 * The counting of pages starts from 1 (the first page) (default value = 1)
-	 * NOTE: the page must exist in the document!
-	 * 
-	 * Deprecated. Use {@code getFieldParameters().setPage(page)} method
-	 * 
-	 * @param page {@code int} page number
-	 */
-	@Deprecated
-	public void setPage(int page) {
-		getFieldParameters().setPage(page);
-	}
-
-    /**
-     * Defines a custom width for the signature field in pixels
-	 * 
-	 * Deprecated. Use {@code getFieldParameters().setWidth(width)} method
-	 * 
-     * @param width {@code int} width value
-     */
-	@Deprecated
-    public void setWidth(int width) {
-		getFieldParameters().setWidth(width);
-    }
-
-    /**
-     * Defines a custom height for the signature field in pixels
-	 * 
-	 * Deprecated. Use {@code getFieldParameters().setHeight(height)} method
-	 * 
-     * @param height {@code int} height value
-     */
-	@Deprecated
-    public void setHeight(int height) {
-		getFieldParameters().setHeight(height);
-    }
-
-	/**
 	 * Returns the defined Zoom value in percentage
 	 * @return {@code int} zoom
 	 */

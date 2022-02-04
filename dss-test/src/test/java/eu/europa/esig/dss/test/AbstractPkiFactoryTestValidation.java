@@ -67,6 +67,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -75,6 +76,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -89,10 +91,14 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
+import eu.europa.esig.validationreport.jaxb.CertificateChainType;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
+import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
@@ -100,10 +106,12 @@ import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.validationreport.jaxb.SANameType;
+import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SAReasonType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SASigPolicyIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
+import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASigningTimeType;
 import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SATimestampType;
@@ -122,6 +130,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
+import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
@@ -259,7 +268,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
+		return new SignaturePolicyProvider();
 	}
 
 	protected List<DSSDocument> getDetachedContents() {
@@ -301,6 +310,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+
+			if (advancedSignature.getSigningCertificateToken() != null && advancedSignature.getSignatureCryptographicVerification().isSignatureIntact()) {
+				assertNotNull(signatureWrapper.getSigningCertificate());
+				assertEquals(advancedSignature.getSigningCertificateToken().getDSSIdAsString(), signatureWrapper.getSigningCertificate().getId());
+			}
 
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
@@ -454,6 +468,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkTrustedServices(diagnosticData);
 		checkContainerInfo(diagnosticData);
 
+		checkNoDuplicateSignatures(diagnosticData);
 		checkNoDuplicateCompleteCertificates(diagnosticData);
 		checkNoDuplicateCompleteRevocationData(diagnosticData);
 	}
@@ -549,9 +564,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_T:
+			case XAdES_T:
 			case XAdES_C:
 			case XAdES_X:
 			case CAdES_BASELINE_T:
+			case CAdES_T:
+			case CAdES_C:
+			case CAdES_X:
 			case JAdES_BASELINE_T:
 			case PAdES_BASELINE_T:
 				return true;
@@ -563,8 +582,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected boolean isBaselineLT(SignatureLevel signatureLevel) {
 		switch (signatureLevel) {
 			case XAdES_BASELINE_LT:
+			case XAdES_LT:
 			case XAdES_XL:
 			case CAdES_BASELINE_LT:
+			case CAdES_LT:
+			case CAdES_XL:
 			case JAdES_BASELINE_LT:
 			case PAdES_BASELINE_LT:
 				return true;
@@ -578,6 +600,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			case XAdES_BASELINE_LTA:
 			case XAdES_A:
 			case CAdES_BASELINE_LTA:
+			case CAdES_A:
 			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
 				return true;
@@ -611,6 +634,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertFalse(Utils.isCollectionNotEmpty(certificateChain));
 		} else {
 			assertTrue(Utils.isCollectionNotEmpty(certificateChain));
+			assertEquals(signingCertificate.getId(), certificateChain.get(0).getId());
 
 			List<CertificateWrapper> signingCertificateChain = signingCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(signingCertificateChain)) {
@@ -780,6 +804,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				}
 
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+
+				if (timestampWrapper.getType().isContentTimestamp() || timestampWrapper.getType().isArchivalTimestamp() ||
+						timestampWrapper.getType().isDocumentTimestamp()) {
+					assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+				} else {
+					assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+				}
 			}
 		}
 	}
@@ -1013,6 +1044,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			assertTrue(signature.isStructuralValidationValid());
 			if (Utils.isCollectionNotEmpty(signature.getStructuralValidationMessages())) {
 				fail("Structural validation failure: " + signature.getStructuralValidationMessages().toString());
 			}
@@ -1046,6 +1078,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkCounterSignatures(DiagnosticData diagnosticData) {
 		// not implemented by default
+	}
+
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertFalse(signatureWrapper.isSignatureDuplicated());
+		}
 	}
 
 	protected void checkNoDuplicateCompleteCertificates(DiagnosticData diagnosticData) {
@@ -1250,7 +1288,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(signatureIdentifier);
 		assertNotNull(signatureIdentifier.getId());
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue());
-		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestMethod());
+		DigestMethodType digestMethod = signatureIdentifier.getDigestAlgAndValue().getDigestMethod();
+		assertNotNull(digestMethod);
+		assertNotNull(digestMethod.getAlgorithm());
+		assertNotNull(DigestAlgorithm.forXML(digestMethod.getAlgorithm()));
 		assertNotNull(signatureIdentifier.getDigestAlgAndValue().getDigestValue());
 		assertNotNull(signatureIdentifier.getSignatureValue());
 	}
@@ -1287,6 +1328,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
 					}
 				}
+				CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
+				if (certificateChain != null) {
+					assertNotNull(certificateChain.getSigningCertificate());
+					assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+				}
 			}
 		}
 	}
@@ -1308,6 +1354,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					} else if (value instanceof SACertIDListType) {
 						SACertIDListType certIdList = (SACertIDListType) value;
 						validateETSIACertIDListType(certIdList);
+					} else if (value instanceof SACommitmentTypeIndicationType) {
+						SACommitmentTypeIndicationType commitmentTypeIndicationType = (SACommitmentTypeIndicationType) value;
+						validateETSICommitmentTypeIndicationType(commitmentTypeIndicationType);
 					} else if (value instanceof SADataObjectFormatType) {
 						SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
 						validateETSIDataObjectFormatType(dataObjectFormatType);
@@ -1315,6 +1364,18 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						SATimestampType timestamp = (SATimestampType) value;
 						assertNotNull(timestamp.getAttributeObject());
 						assertNotNull(timestamp.getTimeStampValue());
+					} else if (value instanceof SASigPolicyIdentifierType) {
+						SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
+						validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+					} else if (value instanceof SASignatureProductionPlaceType) {
+						SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
+						validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
+					} else if (value instanceof SASignerRoleType) {
+						SASignerRoleType saSignerRoleType = (SASignerRoleType) value;
+						validateETSISASignerRoleType(saSignerRoleType);
+					} else if (value instanceof SACounterSignatureType) {
+						SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
+						validateETSISACounterSignatureType(saCounterSignature);
 					} else if (value instanceof SAMessageDigestType) {
 						SAMessageDigestType md = (SAMessageDigestType) value;
 						validateETSIMessageDigest(md);
@@ -1342,25 +1403,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					} else if (value instanceof SARevIDListType) {
 						SARevIDListType revIdList = (SARevIDListType) value;
 						validateETSIRevIDListType(revIdList);
-					} else if (value instanceof SASigPolicyIdentifierType) {
-						SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
-						validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
-					} else if (value instanceof SASignatureProductionPlaceType) {
-						SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
-						validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
-					} else if (value instanceof SACounterSignatureType) {
-						SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
-						validateETSISACounterSignatureType(saCounterSignature);
+					} else if ("CertificateValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSICertificateValues((AttributeBaseType) value);
+					} else if ("RevocationValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIRevocationValues((AttributeBaseType) value);
+					} else if ("AttrAuthoritiesCertValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIAttrAuthoritiesCertValues((AttributeBaseType) value);
+					} else if ("AttributeRevocationValues".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSIAttributeRevocationValues((AttributeBaseType) value);
+					} else if ("TimeStampValidationData".equals(jaxbElement.getName().getLocalPart())) {
+						assertTrue(value instanceof AttributeBaseType);
+						validateETSITimeStampValidationData((AttributeBaseType) value);
 					} else if ("ByteRange".equals(jaxbElement.getName().getLocalPart())) {
 						assertTrue(value instanceof List<?>);
-						List<?> byteArray = (List<?>) value;
-						validateETSIByteArray(byteArray);
+						validateETSIByteArray((List<?>) value);
 					} else {
-						LOG.warn("{} not tested", value.getClass());
+						fail(String.format("Not tested! Name : %s, class : %s",
+								jaxbElement.getName().getLocalPart(), value.getClass()));
 					}
 
 				} else {
-					fail("Only JAXBElement are accepted");
+					fail("Only JAXBElements are accepted!");
 				}
 			}
 		}
@@ -1406,8 +1473,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (SACertIDType saCertIDType : certIds) {
 			assertNotNull(saCertIDType.getDigestMethod());
 			assertNotNull(saCertIDType.getDigestValue());
-			assertNotNull(saCertIDType.getX509IssuerSerial());
 		}
+	}
+
+	protected void validateETSICommitmentTypeIndicationType(SACommitmentTypeIndicationType commitmentTypeIndication) {
+		assertNotNull(commitmentTypeIndication.getCommitmentTypeIdentifier());
 	}
 
 	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
@@ -1429,10 +1499,46 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(saSignatureProductionPlace);
 		assertTrue(Utils.isCollectionNotEmpty(saSignatureProductionPlace.getAddressString()));
 	}
+
+	protected void validateETSISASignerRoleType(SASignerRoleType signerRole) {
+		List<SAOneSignerRoleType> roleDetails = signerRole.getRoleDetails();
+		assertTrue(Utils.isCollectionNotEmpty(roleDetails));
+		for (SAOneSignerRoleType oneSignerRole : roleDetails) {
+			assertNotNull(oneSignerRole.getRole());
+			assertNotNull(oneSignerRole.getEndorsementType());
+		}
+	}
 	
 	protected void validateETSISACounterSignatureType(SACounterSignatureType saCounterSignature) {
 		assertNotNull(saCounterSignature);
 		assertNotNull(saCounterSignature.getCounterSignature());
+	}
+
+	protected void validateETSICertificateValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIRevocationValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttrAuthoritiesCertValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttributeRevocationValues(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSITimeStampValidationData(AttributeBaseType attributeBase) {
+		validateETSIAttributeBaseType(attributeBase);
+	}
+
+	protected void validateETSIAttributeBaseType(AttributeBaseType attributeBase) {
+		assertFalse(attributeBase.isSigned() != null && attributeBase.isSigned());
+		List<VOReferenceType> attributeObject = attributeBase.getAttributeObject();
+		assertEquals(1, attributeObject.size());
+		assertTrue(Utils.isCollectionNotEmpty(attributeObject.iterator().next().getVOReference()));
 	}
 
 	protected void validateETSIByteArray(List<?> byteArray) {
@@ -1545,6 +1651,27 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				} else {
 					assertNull(signersDocument);
 				}
+
+				ValidationStatusType signatureValidationStatus = signatureValidationReport.getSignatureValidationStatus();
+				assertNotNull(signatureValidationStatus);
+
+				List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+				assertNotNull(associatedValidationReportData);
+
+				if (signature.getSigningCertificate() != null) {
+					for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
+						CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
+						assertNotNull(certificateChain);
+						assertNotNull(certificateChain.getSigningCertificate());
+						assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+
+						Object signingCertificate = certificateChain.getSigningCertificate().getVOReference().get(0);
+						assertTrue(signingCertificate instanceof ValidationObjectType);
+						ValidationObjectType validationObjectType = (ValidationObjectType) signingCertificate;
+						assertEquals(ObjectType.CERTIFICATE, validationObjectType.getObjectType());
+						assertEquals(signature.getSigningCertificate().getId(), validationObjectType.getId());
+					}
+				}
 			}
 		}
 	}
@@ -1631,7 +1758,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
 			assertEquals(ddOcsps, ocspCounter);
 			assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
-			assertEquals(diagnosticData.getOriginalSignerDocuments().size(), signedDataCounter);
+			assertEquals(diagnosticData.getAllSignerDocuments().size(), signedDataCounter);
 			assertEquals(0, otherCounter);
 			
 		} else {
@@ -1639,7 +1766,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertEquals(0, diagnosticData.getUsedCertificates().size());
 			assertEquals(0, diagnosticData.getAllRevocationData().size());
 			assertEquals(0, diagnosticData.getTimestampList().size());
-			assertEquals(0, diagnosticData.getOriginalSignerDocuments().size());
+			assertEquals(0, diagnosticData.getAllSignerDocuments().size());
 			checkOrphanTokens(diagnosticData);
 		}
 		
@@ -1763,6 +1890,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && !signatureWrapper.isCounterSignature()) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+				for (DSSDocument document : retrievedOriginalDocuments) {
+					assertNotNull(document);
+					if (!(document instanceof DigestDocument)) {
+						assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(document)));
+					}
+				}
 			}
 		}
 	}

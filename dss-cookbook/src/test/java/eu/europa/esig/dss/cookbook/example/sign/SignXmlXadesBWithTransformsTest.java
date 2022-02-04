@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.crypto.dsig.XMLSignature;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.CommitmentType;
@@ -57,6 +47,14 @@ import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import javax.xml.crypto.dsig.XMLSignature;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	
@@ -83,9 +81,15 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			DSSTransform canonicalization = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE_WITH_COMMENTS);
 			// end::demoCanonicalizationTransform[]
 			transforms.add(canonicalization);
-			
-			// Assign reference to the document
+
+			// Initialize signature parameters
+			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+			// tag::demoReference[]
 			List<DSSReference> references = new ArrayList<>();
+			// Initialize and configure ds:Reference based on the provided signer document
 			DSSReference dssReference = new DSSReference();
 			dssReference.setContents(toSignDocument);
 			dssReference.setId("r-" + toSignDocument.getName());
@@ -94,13 +98,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setUri("");
 			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
 			references.add(dssReference);
-
-			// Initialize signature parameters
-			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 			// set references
 			parameters.setReferences(references);
+			// end::demoReference[]
 
 			// end::demo[]
 			
@@ -167,12 +167,13 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demoBase64Transform[]
 			DSSDocument document = new InMemoryDocument("Hello World!".getBytes(), "Hello.txt", MimeType.BINARY);
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoBase64Transform[]
 			DSSTransform base64Transform = new Base64Transform();
-			transforms.add(base64Transform);
 			// end::demoBase64Transform[]
+			transforms.add(base64Transform);
+
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();
@@ -231,12 +232,12 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
-			
-			// tag::demoEnvelopedXPathTransform[]
+
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoEnvelopedXPathTransform[]
 			DSSTransform envelopedTransform = new XPathTransform("not(ancestor-or-self::ds:Signature)");
-			transforms.add(envelopedTransform);
 			// end::demoEnvelopedXPathTransform[]
+			transforms.add(envelopedTransform);
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();
@@ -296,11 +297,11 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-			// tag::demoEnvelopedXPath2FilterTransform[]
 			List<DSSTransform> transforms = new ArrayList<>();
+			// tag::demoEnvelopedXPath2FilterTransform[]
 			DSSTransform envelopedTransform = new XPath2FilterTransform("descendant::ds:Signature", "subtract");
-			transforms.add(envelopedTransform);
 			// end::demoEnvelopedXPath2FilterTransform[]
+			transforms.add(envelopedTransform);
 			
 			List<DSSReference> references = new ArrayList<>();
 			DSSReference dssReference = new DSSReference();

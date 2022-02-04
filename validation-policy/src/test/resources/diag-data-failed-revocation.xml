@@ -37,7 +37,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature1</SignatureFieldName>
+                <SignatureField name="Signature1" />
                 <PDFSignatureDictionary>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -743,7 +743,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature2</SignatureFieldName>
+                <SignatureField name="Signature2" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -809,7 +809,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature3</SignatureFieldName>
+                <SignatureField name="Signature3" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -879,7 +879,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature4</SignatureFieldName>
+                <SignatureField name="Signature4" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>

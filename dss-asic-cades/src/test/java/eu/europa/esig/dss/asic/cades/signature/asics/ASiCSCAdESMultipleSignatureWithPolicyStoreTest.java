@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -47,7 +38,14 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -100,11 +98,6 @@ public class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
 
 		return service.addSignaturePolicyStore(doubleSignedDocument, signaturePolicyStore);
-	}
-
-	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
 	}
 
 	@Override

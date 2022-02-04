@@ -36,13 +36,18 @@ public class RevocationRefWrapper {
 	/** The wrapped XML Revocation Ref */
 	private final XmlRevocationRef revocationRef;
 
+	/** The Id of the related revocation token */
+	private final String revocationId;
+
 	/**
 	 * Default constructor
 	 *
 	 * @param revocationRef {@link XmlRevocationRef}
+	 * @param revocationId {@link String} Id of the related revocation token
 	 */
-	public RevocationRefWrapper(final XmlRevocationRef revocationRef) {
+	public RevocationRefWrapper(final XmlRevocationRef revocationRef, final String revocationId) {
 		this.revocationRef = revocationRef;
+		this.revocationId = revocationId;
 	}
 	
 	/**
@@ -96,6 +101,15 @@ public class RevocationRefWrapper {
 		return revocationRef.getDigestAlgoAndValue();
 	}
 	
+	/**
+	 * Returns an Id of the related revocation token, when present. Returns Id of the reference otherwise.
+	 *
+	 * @return {@link String}
+	 */
+	public String getRevocationId() {
+		return revocationId;
+	}
+
 	@Override
 	public String toString() {
 		if (revocationRef != null) {

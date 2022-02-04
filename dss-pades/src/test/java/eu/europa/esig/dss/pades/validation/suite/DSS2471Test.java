@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 import java.util.List;
@@ -84,6 +85,24 @@ public class DSS2471Test extends AbstractPAdESTestValidation {
             assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
             assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
         }
+    }
+
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        boolean lastSignatureFound = false;
+        assertEquals(3, diagnosticData.getSignatures().size());
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            assertTrue(signatureWrapper.arePdfObjectModificationsDetected());
+
+            assertFalse(Utils.isCollectionEmpty(signatureWrapper.getPdfExtensionChanges()));
+            assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfAnnotationChanges()));
+            assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+
+            if (Utils.isCollectionEmpty(signatureWrapper.getPdfSignatureOrFormFillChanges())) {
+                lastSignatureFound = true;
+            }
+        }
+        assertTrue(lastSignatureFound);
     }
 
 }

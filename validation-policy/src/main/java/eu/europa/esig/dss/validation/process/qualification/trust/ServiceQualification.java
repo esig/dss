@@ -20,13 +20,20 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust;
 
+import eu.europa.esig.dss.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.europa.esig.dss.utils.Utils;
-
+/**
+ * Contains qualification statuses for TrustedServices
+ *
+ */
 public final class ServiceQualification {
 
+	/**
+	 * Empty constructor
+	 */
 	private ServiceQualification() {
 	}
 
@@ -123,46 +130,114 @@ public final class ServiceQualification {
 	 */
 	public static final String QC_FOR_WSA = "http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA";
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCStatement' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCStatement' identifier, FALSE otherwise
+	 */
 	public static boolean isQcStatement(List<String> qualifiers) {
 		return listContains(qualifiers, QC_STATEMENT);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'NotQualified' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'NotQualified' identifier, FALSE otherwise
+	 */
 	public static boolean isNotQualified(List<String> qualifiers) {
 		return listContains(qualifiers, NOT_QUALIFIED);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains one of 'QCNoQSCD' or 'QCNoSSCD' identifiers
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains one of 'QCNoQSCD' or 'QCNoSSCD' identifiers, FALSE otherwise
+	 */
 	public static boolean isQcNoQSCD(List<String> qualifiers) {
 		return listContains(qualifiers, QC_NO_QSCD, QC_NO_SSCD);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCForLegalPerson' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCForLegalPerson' identifier, FALSE otherwise
+	 */
 	public static boolean isQcForLegalPerson(List<String> qualifiers) {
 		return listContains(qualifiers, QC_FOR_LEGAL_PERSON);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains one of
+	 * 'QCQSCDStatusAsInCert' or 'QCSSCDStatusAsInCert' identifiers
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains one of
+	 *         'QCQSCDStatusAsInCert' or 'QCSSCDStatusAsInCert' identifiers, FALSE otherwise
+	 */
 	public static boolean isQcQSCDStatusAsInCert(List<String> qualifiers) {
 		return listContains(qualifiers, QC_QSCD_STATUS_AS_IN_CERT, QC_SSCD_STATUS_AS_IN_CERT);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCQSCDManagedOnBehalf' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCQSCDManagedOnBehalf' identifier, FALSE otherwise
+	 */
 	public static boolean isQcQSCDManagedOnBehalf(List<String> qualifiers) {
 		return listContains(qualifiers, QC_QSCD_MANAGED_ON_BEHALF);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains one of 'QCWithQSCD' or 'QCWithSSCD' identifiers
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains one of 'QCWithQSCD' or 'QCWithSSCD' identifiers, FALSE otherwise
+	 */
 	public static boolean isQcWithQSCD(List<String> qualifiers) {
 		return listContains(qualifiers, QC_WITH_QSCD, QC_WITH_SSCD);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCForESig' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCForESig' identifier, FALSE otherwise
+	 */
 	public static boolean isQcForEsig(List<String> qualifiers) {
 		return listContains(qualifiers, QC_FOR_ESIG);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCForESeal' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCForESeal' identifier, FALSE otherwise
+	 */
 	public static boolean isQcForEseal(List<String> qualifiers) {
 		return listContains(qualifiers, QC_FOR_ESEAL);
 	}
 
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCForWSA' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains the 'QCForWSA' identifier, FALSE otherwise
+	 */
 	public static boolean isQcForWSA(List<String> qualifiers) {
 		return listContains(qualifiers, QC_FOR_WSA);
 	}
 
+	/**
+	 * Filters qualifiers containing the usage type identifiers (i.e. 'QCForESig', 'QCForESeal' or 'QCForWSA')
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return filtered list of qualifiers containing the usage type identifiers
+	 */
 	public static List<String> getUsageQualifiers(List<String> qualifiers) {
 		List<String> filteredQualifiers = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(qualifiers)) {

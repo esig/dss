@@ -33,29 +33,53 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import org.junit.jupiter.api.BeforeEach;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("slow")
 public class PAdESLevelBWithPlainECDSATokenTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
-    @BeforeEach
-    public void init() throws Exception {
+    private static Stream<DigestAlgorithm> data() {
+        List<DigestAlgorithm> args = new ArrayList<>();
+
+        for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+            SignatureAlgorithm ecCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+            SignatureAlgorithm plainEcCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, digestAlgo);
+            if (ecCa != null && Utils.isStringNotBlank(ecCa.getOid()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getOid())) {
+                args.add(digestAlgo);
+            }
+        }
+        return args.stream();
+    }
+
+    @ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
+    @MethodSource("data")
+    public void init(DigestAlgorithm digestAlgo) {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+        signatureParameters.setDigestAlgorithm(digestAlgo);
         signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.ECDSA);
 
         service = new PAdESService(getOfflineCertificateVerifier());
+
+        super.signAndVerify();
     }
 
     @Override
@@ -75,6 +99,10 @@ public class PAdESLevelBWithPlainECDSATokenTest extends AbstractPAdESTestSignatu
     protected void checkEncryptionAlgorithm(DiagnosticData diagnosticData) {
         assertEquals(EncryptionAlgorithm.ECDSA, diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId())
                 .getEncryptionAlgorithm());
+    }
+
+    @Override
+    public void signAndVerify() {
     }
 
     @Override

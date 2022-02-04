@@ -28,7 +28,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * This class allows to define the signature policy.
+ * This class allows defining the signature policy.
+ *
  */
 public class Policy implements Serializable {
 
@@ -43,7 +44,7 @@ public class Policy implements Serializable {
 	/** The SignaturePolicy description */
 	private String description;
 	
-	/** The array of documentation references (used in XAdES) */
+	/** The array of documentation references (used in XAdES/JAdES) */
 	private String[] documentationReferences;
 
 	/** The digest algorithm used to compute the digest */
@@ -52,8 +53,20 @@ public class Policy implements Serializable {
 	/** The computed digest value */
 	private byte[] digestValue;
 
-	/** The SignaturePolicy URI */
-	private String spuri;
+	/** The SignaturePolicy URI qualifier */
+	private String spUri;
+
+	/** The SignaturePolicy UserNotice qualifier */
+	private UserNotice userNotice;
+
+	/** The SignaturePolicy Document Specification qualifier */
+	private SpDocSpecification spDocSpecification;
+
+	/**
+	 * This property is used only in JAdES, to indicate that the digest of the signature policy document
+	 * has been computed as specified in a technical specification
+	 */
+	private boolean hashAsInTechnicalSpecification;
 
 	/**
 	 * Empty constructor
@@ -90,7 +103,7 @@ public class Policy implements Serializable {
 	}
 
 	/**
-	 * Set the identifier qualifier
+	 * Set the identifier qualifier (used in XAdES only)
 	 *
 	 * @param qualifier
 	 *            the qualifier
@@ -176,24 +189,84 @@ public class Policy implements Serializable {
 	}
 
 	/**
-	 * Get the SP URI (signature policy URI)
+	 * Get the SP URI (signature policy URI) qualifier
 	 *
 	 * @return the signature policy URI
 	 */
 	public String getSpuri() {
-		return spuri;
+		return spUri;
 	}
 
 	/**
-	 * Set the SP URI (signature policy URI)
+	 * Set the SP URI (signature policy URI) qualifier
 	 *
-	 * @param spuri
+	 * @param spUri
 	 *            the signature policy URI
 	 */
-	public void setSpuri(String spuri) {
-		this.spuri = spuri;
+	public void setSpuri(String spUri) {
+		this.spUri = spUri;
 	}
-	
+
+	/**
+	 * Gets the SP UserNotice qualifier
+	 *
+	 * @return {@link UserNotice}
+	 */
+	public UserNotice getUserNotice() {
+		return userNotice;
+	}
+
+	/**
+	 * Sets the SP UserNotice qualifier
+	 *
+	 * @param userNotice {@link UserNotice}
+	 */
+	public void setUserNotice(UserNotice userNotice) {
+		this.userNotice = userNotice;
+	}
+
+	/**
+	 * Gets the SP Document Specification qualifier
+	 *
+	 * @return {@link SpDocSpecification}
+	 */
+	public SpDocSpecification getSpDocSpecification() {
+		return spDocSpecification;
+	}
+
+	/**
+	 * Sets the SP Document Specification qualifier identifying the technical specification
+	 * that defines the syntax used for producing the signature policy.
+	 *
+	 * @param spDocSpecification {@link SpDocSpecification}
+	 */
+	public void setSpDocSpecification(SpDocSpecification spDocSpecification) {
+		this.spDocSpecification = spDocSpecification;
+	}
+
+	/**
+	 * Gets if the digests of the signature policy has been computed as in a technical specification
+	 *
+	 * @return TRUE if the digests has been computed as in a technical specification, FALSE otherwise
+	 */
+	public boolean isHashAsInTechnicalSpecification() {
+		return hashAsInTechnicalSpecification;
+	}
+
+	/**
+	 * Sets if the digests of the signature policy has been computed as in a technical specification.
+	 * If the property is set to FALSE, digest of the signature policy is computed in a default way (on the policy file).
+	 *
+	 * NOTE: The property is used only in JAdES
+	 *
+	 * Use method {@code setSpDocSpecification(SpDocSpecification)} to provide the technical specification
+	 *
+	 * @param hashAsInTechnicalSpecification if the digests has been computed as in a technical specification
+	 */
+	public void setHashAsInTechnicalSpecification(boolean hashAsInTechnicalSpecification) {
+		this.hashAsInTechnicalSpecification = hashAsInTechnicalSpecification;
+	}
+
 	/**
 	 * Checks if the object's data is not filled
 	 * 
@@ -218,66 +291,81 @@ public class Policy implements Serializable {
 		if (digestValue != null && digestValue.length != 0) {
 			return false;
 		}
-		if (spuri != null && !spuri.isEmpty()) {
+		if (spUri != null && !spUri.isEmpty()) {
+			return false;
+		}
+		if (userNotice != null && !userNotice.isEmpty()) {
+			return false;
+		}
+		if (spDocSpecification != null && spDocSpecification.getId() != null && !spDocSpecification.getId().isEmpty()) {
+			return false;
+		}
+		if (hashAsInTechnicalSpecification) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * This method checks if there is a definition at least for one signature policy qualifier
+	 *
+	 * @return TRUE if there is a qualifier within the signature policy, FALSE otherwise
+	 */
+	public boolean isSPQualifierPresent() {
+		if (spUri != null && !spUri.isEmpty()) {
+			return true;
+		}
+		if (userNotice != null && !userNotice.isEmpty()) {
+			return true;
+		}
+		if (spDocSpecification != null && spDocSpecification.getId() != null && !spDocSpecification.getId().isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((description == null) ? 0 : description.hashCode());
-		result = (prime * result) + ((documentationReferences == null) ? 0 : Arrays.hashCode(documentationReferences));
-		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		result = (prime * result) + Arrays.hashCode(digestValue);
-		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-		result = (prime * result) + ((spuri == null) ? 0 : spuri.hashCode());
+		int result = id != null ? id.hashCode() : 0;
+		result = 31 * result + (qualifier != null ? qualifier.hashCode() : 0);
+		result = 31 * result + (description != null ? description.hashCode() : 0);
+		result = 31 * result + Arrays.hashCode(documentationReferences);
+		result = 31 * result + (digestAlgorithm != null ? digestAlgorithm.hashCode() : 0);
+		result = 31 * result + Arrays.hashCode(digestValue);
+		result = 31 * result + (spUri != null ? spUri.hashCode() : 0);
+		result = 31 * result + (userNotice != null ? userNotice.hashCode() : 0);
+		result = 31 * result + (spDocSpecification != null ? spDocSpecification.hashCode() : 0);
+		result = 31 * result + (hashAsInTechnicalSpecification ? 1 : 0);
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Policy other = (Policy) obj;
-		if (!Objects.equals(description, other.description)) {
-			return false;
-		}
-		if (documentationReferences == null) {
-			if (other.documentationReferences != null) {
-				return false;
-			}
-		} else if (!Arrays.equals(documentationReferences, other.documentationReferences)) {
-			return false;
-		}
-		if (digestAlgorithm != other.digestAlgorithm) {
-			return false;
-		}
-		if (!Arrays.equals(digestValue, other.digestValue)) {
-			return false;
-		}
-		if (!Objects.equals(id, other.id)) {
-			return false;
-		}
-		if (!Objects.equals(spuri, other.spuri)) {
-			return false;
-		}
-		return true;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Policy)) return false;
+
+		Policy policy = (Policy) o;
+
+		if (hashAsInTechnicalSpecification != policy.hashAsInTechnicalSpecification) return false;
+		if (!Objects.equals(id, policy.id)) return false;
+		if (qualifier != policy.qualifier) return false;
+		if (!Objects.equals(description, policy.description)) return false;
+		// Probably incorrect - comparing Object[] arrays with Arrays.equals
+		if (!Arrays.equals(documentationReferences, policy.documentationReferences)) return false;
+		if (digestAlgorithm != policy.digestAlgorithm) return false;
+		if (!Arrays.equals(digestValue, policy.digestValue)) return false;
+		if (!Objects.equals(spUri, policy.spUri)) return false;
+		if (!Objects.equals(userNotice, policy.userNotice)) return false;
+		return Objects.equals(spDocSpecification, policy.spDocSpecification);
 	}
 
 	@Override
 	public String toString() {
-		return "Policy [id=" + id + ", description=" + description + ", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue)
-				+ ", spuri=" + spuri + ", documentationReferences=" + Arrays.toString(documentationReferences) + "]";
+		return "Policy {id='" + id + "', qualifier=" + qualifier + ", description='" + description +
+				"', documentationReferences=" + Arrays.toString(documentationReferences) +
+				", digestAlgorithm=" + digestAlgorithm + ", digestValue=" + Arrays.toString(digestValue) +
+				", spUri='" + spUri + "', userNotice=" + userNotice + ", spDocSpecification='" + spDocSpecification +
+				"', hashAsInTechnicalSpecification=" + hashAsInTechnicalSpecification + "}";
 	}
 
 }

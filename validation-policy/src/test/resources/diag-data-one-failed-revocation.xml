@@ -42,7 +42,9 @@
             <Policy>
                 <Id>1.3.158.36061701.0.0.1.10.4.0.12</Id>
                 <Url>http://www.nbusr.sk/archive/20100823000000zsignaturepolicy.der</Url>
-                <Notice>[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]</Notice>
+                <UserNotice>
+                    <ExplicitText>[EN: Signature policy for documents signed electronically by public administrations. SK: Podpisová politika pre ZEP. http://www.nbusr.sk/en/electronic-signature/signature-policies/index.html]</ExplicitText>
+                </UserNotice>
                 <Identified>true</Identified>
                 <Asn1Processable>false</Asn1Processable>
                 <DigestAlgoAndValue digestAlgorithmsEqual="true" match="true">
@@ -57,7 +59,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature5</SignatureFieldName>
+                <SignatureField name="Signature5" />
                 <PDFSignatureDictionary>
                     <SignerName>Petr Anonymus</SignerName>
                     <Type>Sig</Type>
@@ -655,7 +657,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature6</SignatureFieldName>
+                <SignatureField name="Signature6" />
                 <PDFSignatureDictionary>
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>

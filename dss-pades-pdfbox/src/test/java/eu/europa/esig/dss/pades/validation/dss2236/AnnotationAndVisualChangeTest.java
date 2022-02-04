@@ -20,21 +20,23 @@
  */
 package eu.europa.esig.dss.pades.validation.dss2236;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 
@@ -45,10 +47,9 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		super.checkPdfRevision(diagnosticData);
-		
 		boolean firstSignatureFound = false;
 		boolean secondSignatureFound = false;
+		boolean thirdSignatureFound = false;
 		
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertTrue(signature.arePdfModificationsDetected());
@@ -65,17 +66,39 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 			assertEquals(2, annotationOverlap.get(1).getPage().intValue());
 			
 			List<XmlModification> visualDifferences = modificationDetection.getVisualDifference();
+			XmlObjectModifications objectModifications = modificationDetection.getObjectModifications();
+
 			if (Utils.isCollectionNotEmpty(visualDifferences)) {
 				assertEquals(1, visualDifferences.size());
 				assertEquals(2, visualDifferences.get(0).getPage().intValue());
+
+				assertTrue(signature.arePdfObjectModificationsDetected());
+
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
+
 				firstSignatureFound = true;
-			} else {
+
+			} else if (objectModifications != null) {
+				assertTrue(signature.arePdfObjectModificationsDetected());
+
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
+
 				secondSignatureFound = true;
+
+			} else {
+				thirdSignatureFound = true;
 			}
 		}
 		
 		assertTrue(firstSignatureFound);
 		assertTrue(secondSignatureFound);
+		assertTrue(thirdSignatureFound);
 	}
 
 }

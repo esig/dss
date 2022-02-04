@@ -33,13 +33,13 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.bouncycastle.cms.SignerInformation;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -79,8 +79,7 @@ public class CAdESLevelTTest extends AbstractCAdESTestSignature {
 		CAdESSignature cadesSignature = new CAdESSignature(cmsSignedDocument.getCMSSignedData(), signers.iterator().next());
 
 		assertNotNull(cadesSignature.getSigningTime());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
-		assertEquals(dateFormat.format(signatureParameters.bLevel().getSigningDate()), dateFormat.format(cadesSignature.getSigningTime()));
+		assertEquals(DSSUtils.formatDateToRFC(signatureParameters.bLevel().getSigningDate()), DSSUtils.formatDateToRFC(cadesSignature.getSigningTime()));
 
 		return super.verify(signedDocument);
 	}

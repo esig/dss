@@ -36,7 +36,9 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -176,10 +178,9 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.4 The kid (key identifier) header parameter
 	 */
 	protected void incorporateKeyIdentifier() {
-		if (parameters.getSigningCertificate() == null) {
-			return;
+		if (parameters.isIncludeKeyIdentifier() && parameters.getSigningCertificate() != null) {
+			addHeader(HeaderParameterNames.KEY_ID, DSSJsonUtils.generateKid(parameters.getSigningCertificate()));
 		}
-		addHeader(HeaderParameterNames.KEY_ID, DSSJsonUtils.generateKid(parameters.getSigningCertificate()));
 	}
 
 	/**
@@ -301,7 +302,7 @@ public class JAdESLevelBaselineB {
 		// incorporate only with FALSE value
 		if (!parameters.isBase64UrlEncodedPayload()) {
 			assertPayloadEncodingValid();
-			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, false);
+			addHeader(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, parameters.isBase64UrlEncodedPayload());
 		}
 	}
 
@@ -472,10 +473,9 @@ public class JAdESLevelBaselineB {
 		
 		/*
 		 * a) The mediaType member, which shall contain a string identifying the type of
-		 * the signed assertions or the claimed attributes present in vals member, and
-		 * shall meet the requirements specified in clause 8.4 of
-		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
-		 * Vocabulary for Structural Validation of JSON" [21].
+		 * the signed assertions or the claimed attributes present in qVals member,
+		 * and shall meet the requirements specified in clause 8.4 of
+		 * draft-handrews-json-schema-validation-01 [20].
 		 */
 
 		/*
@@ -492,10 +492,9 @@ public class JAdESLevelBaselineB {
 
 		/*
 		 * b) The encoding member, which shall contain a string identifying the encoding
-		 * of the signed assertions or the claimed attributes present in vals member,
+		 * of the signed assertions or the claimed attributes present in qVals member,
 		 * and shall meet the requirements specified in clause 8.3 of
-		 * draft-handrews-json-schema-validation-02: "JSON Schema Validation: A
-		 * Vocabulary for Structural Validation of JSON" [21].
+		 * draft-handrews-json-schema-validation-01 [20].
 		 */
 
 		/*
@@ -551,14 +550,11 @@ public class JAdESLevelBaselineB {
 	private void incorporateSignaturePolicy() {
 		Policy signaturePolicy = parameters.bLevel().getSignaturePolicy();
 		if (signaturePolicy != null && !signaturePolicy.isEmpty()) {
-			String signaturePolicyId = signaturePolicy.getId();
-			if (Utils.isStringEmpty(signaturePolicyId)) {
-				// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
-				throw new IllegalArgumentException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
-			}
+			assertSignaturePolicyValid(signaturePolicy);
 			
 			Map<String, Object> sigPIdParams = new LinkedHashMap<>();
 			
+			String signaturePolicyId = signaturePolicy.getId();
 			JsonObject oid = DSSJsonUtils.getOidObject(signaturePolicyId, signaturePolicy.getDescription(), signaturePolicy.getDocumentationReferences());
 			sigPIdParams.put(JAdESHeaderParameterNames.ID, oid);
 			
@@ -575,37 +571,78 @@ public class JAdESLevelBaselineB {
 			 * present and set to "true", then the qualifier spDSpec qualifier shall be
 			 * present and shall identify the aforementioned technical specification.
 			 */
-			// digPSp is not added and treated as FALSE, because qualifier 'spDSpec' is not supported
-			// sigPIdParams.put(JAdESHeaderParameterNames.DIG_PSP, value)
-			
-			List<JsonObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
-			if (Utils.isCollectionNotEmpty(signaturePolicyQualifiers)) {
-				sigPIdParams.put(JAdESHeaderParameterNames.SIG_PQUALS, signaturePolicyQualifiers);
+			if (signaturePolicy.isHashAsInTechnicalSpecification()) {
+				sigPIdParams.put(JAdESHeaderParameterNames.DIG_PSP, signaturePolicy.isHashAsInTechnicalSpecification());
+			}
+
+			if (signaturePolicy.isSPQualifierPresent()) {
+				List<JsonObject> signaturePolicyQualifiers = getSignaturePolicyQualifiers(signaturePolicy);
+				sigPIdParams.put(JAdESHeaderParameterNames.SIG_P_QUALS, signaturePolicyQualifiers);
 			}
 			
 			addHeader(JAdESHeaderParameterNames.SIG_PID, new JsonObject(sigPIdParams));
 		}
 	}
 
-	// TODO : refactor Qualifiers to follow the schema (as well as in XAdES)
+	private void assertSignaturePolicyValid(Policy signaturePolicy) {
+		if (Utils.isStringEmpty(signaturePolicy.getId())) {
+			// see EN 119-182 ch. 5.2.7.1 Semantics and syntax ('id' is required)
+			throw new IllegalArgumentException("Implicit policy is not allowed in JAdES! The signaturePolicyId attribute is required!");
+		}
+		if (signaturePolicy.isHashAsInTechnicalSpecification() &&
+				(signaturePolicy.getSpDocSpecification() == null || Utils.isStringEmpty(signaturePolicy.getSpDocSpecification().getId()))) {
+			throw new IllegalArgumentException("SpDocSpecification shall be defined when DigestAsInTechnicalSpecification is set to true!");
+		}
+	}
+
 	private List<JsonObject> getSignaturePolicyQualifiers(Policy signaturePolicy) {
 		List<JsonObject> sigPQualifiers = new ArrayList<>();
-
-		String spuri = signaturePolicy.getSpuri();
+		/**
+		 * NOTE: Intermediate objects are created in order to allow multiple instances of the same qualifiers
+		 *
+		 * EN 119-182 ch. 5.2.7.1 Semantics and syntax:
+		 * The sigPQuals member may contain one or more qualifiers of the same type.
+		 */
+		final String spuri = signaturePolicy.getSpuri();
 		if (Utils.isStringNotEmpty(spuri)) {
-			/* 
-			 * Intermediate object is created in order to allow multiple instances of the same qualifiers
-			 * 
-			 * EN 119-182 ch. 5.2.7.1 Semantics and syntax:
-			 * The sigPQuals member may contain one or more qualifiers of the same type.
-			 */
-			Map<String, Object> spURI = new LinkedHashMap<>();
-			spURI.put(JAdESHeaderParameterNames.SP_URI, spuri);
-			sigPQualifiers.add(new JsonObject(spURI));
+			Map<String, Object> qualifier = new LinkedHashMap<>();
+			qualifier.put(JAdESHeaderParameterNames.SP_URI, spuri);
+			sigPQualifiers.add(new JsonObject(qualifier));
+		}
+
+		final UserNotice userNotice = signaturePolicy.getUserNotice();
+		if (userNotice != null && !userNotice.isEmpty()) {
+			Map<String, Object> spUserNotice = new LinkedHashMap<>();
+
+			final String organization = userNotice.getOrganization();
+			final int[] noticeNumbers = userNotice.getNoticeNumbers();
+			if (Utils.isStringNotEmpty(organization) && noticeNumbers != null && noticeNumbers.length > 0) {
+				Map<String, Object> noticeRef = new LinkedHashMap<>();
+				noticeRef.put(JAdESHeaderParameterNames.ORGANTIZATION, organization);
+				noticeRef.put(JAdESHeaderParameterNames.NOTICE_NUMBERS, noticeNumbers);
+				spUserNotice.put(JAdESHeaderParameterNames.NOTICE_REF, new JsonObject(noticeRef));
+			}
+
+			final String explicitText = userNotice.getExplicitText();
+			if (Utils.isStringNotEmpty(explicitText)) {
+				spUserNotice.put(JAdESHeaderParameterNames.EXPL_TEXT, explicitText);
+			}
+
+			Map<String, Object> qualifier = new LinkedHashMap<>();
+			qualifier.put(JAdESHeaderParameterNames.SP_USER_NOTICE, new JsonObject(spUserNotice));
+			sigPQualifiers.add(new JsonObject(qualifier));
 		}
 		
-		// other policy qualifiers are not supported
-		
+		final SpDocSpecification spDocSpecification = signaturePolicy.getSpDocSpecification();
+		if (spDocSpecification != null && Utils.isStringNotEmpty(spDocSpecification.getId())) {
+			final JsonObject spDSpec = DSSJsonUtils.getOidObject(spDocSpecification.getId(),
+					spDocSpecification.getDescription(), spDocSpecification.getDocumentationReferences());
+
+			Map<String, Object> qualifier = new LinkedHashMap<>();
+			qualifier.put(JAdESHeaderParameterNames.SP_DSPEC, spDSpec);
+			sigPQualifiers.add(new JsonObject(qualifier));
+		}
+
 		return sigPQualifiers;
 	}
 
@@ -708,7 +745,7 @@ public class JAdESLevelBaselineB {
 	private JSONArray getSignedDataReferences(List<DSSDocument> detachedContents) {
 		List<String> references = new ArrayList<>();
 		for (DSSDocument document : detachedContents) {
-			references.add(DSSUtils.encodeURI(document.getName()));
+			references.add(document.getName());
 		}
 		return new JSONArray(references);
 	}
@@ -814,7 +851,7 @@ public class JAdESLevelBaselineB {
 	public byte[] getPayloadBytes() {
 		if (!SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) ||
 				SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
-			return DSSUtils.toByteArray(documentsToSign.get(0));
+			return getIncorporatedPayload();
 
 		} else if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
 			return getPayloadForHttpHeadersMechanism();
@@ -833,6 +870,10 @@ public class JAdESLevelBaselineB {
 		}
 		throw new IllegalArgumentException("The configured signature format is not supported!");
 	}
+
+	private byte[] getIncorporatedPayload() {
+		return DSSJsonUtils.getDocumentOctets(documentsToSign.get(0), parameters.isBase64UrlEncodedPayload());
+	}
 	
 	private byte[] getPayloadForHttpHeadersMechanism() {
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentsToSign, false);
@@ -841,7 +882,7 @@ public class JAdESLevelBaselineB {
 	
 	private byte[] getPayloadForObjectIdByUriMechanism() {
 		// NOTE: base64url encoding is processed by JWS
-		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign);
+		return DSSJsonUtils.concatenateDSSDocuments(documentsToSign, parameters.isBase64UrlEncodedPayload());
 	}
 
 }

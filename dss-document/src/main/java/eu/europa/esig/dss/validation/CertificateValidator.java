@@ -159,20 +159,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate(ValidationPolicy validationPolicy) {
-		SignatureValidationContext svc = new SignatureValidationContext();
-		svc.initialize(certificateVerifier);
-		svc.addCertificateTokenForVerification(token);
-		svc.setCurrentTime(getValidationTime());
-		svc.validate();
-
-		final XmlDiagnosticData diagnosticData = new CertificateDiagnosticDataBuilder()
-				.usedCertificates(svc.getProcessedCertificates())
-				.usedRevocations(svc.getProcessedRevocations())
-				.allCertificateSources(svc.getAllCertificateSources())
-				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
-				.tokenExtractionStrategy(tokenExtractionStrategy)
-				.tokenIdentifierProvider(identifierProvider)
-				.validationDate(getValidationTime()).build();
+		final XmlDiagnosticData diagnosticData = getDiagnosticData();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
 		executor.setValidationPolicy(validationPolicy);
@@ -181,6 +168,58 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
+	}
+
+	/**
+	 * This method retrieves {@code XmlDiagnosticData} containing all information relevant
+	 * for the validation process, including the certificate and revocation tokens obtained
+	 * from online resources, e.g. AIA, CRL, OCSP (when applicable).
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
+	public final XmlDiagnosticData getDiagnosticData() {
+		return prepareDiagnosticDataBuilder().build();
+	}
+
+	/**
+	 * Initializes and fills {@code ValidationContext} for a certificate token validation
+	 *
+	 * @return {@link ValidationContext}
+	 */
+	protected ValidationContext prepareValidationContext() {
+		SignatureValidationContext svc = new SignatureValidationContext();
+		svc.initialize(certificateVerifier);
+		svc.addCertificateTokenForVerification(token);
+		svc.setCurrentTime(getValidationTime());
+		return svc;
+	}
+
+	/**
+	 * Creates a {@code DiagnosticDataBuilder}
+	 *
+	 * @return {@link DiagnosticDataBuilder}
+	 */
+	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder() {
+		ValidationContext validationContext = prepareValidationContext();
+		validationContext.validate();
+		return createDiagnosticDataBuilder(validationContext);
+	}
+
+	/**
+	 * Creates and fills the {@code DiagnosticDataBuilder} with a relevant data
+	 *
+	 * @param validationContext {@link ValidationContext} used for the validation
+	 * @return filled {@link DiagnosticDataBuilder}
+	 */
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext) {
+		return new CertificateDiagnosticDataBuilder()
+				.usedCertificates(validationContext.getProcessedCertificates())
+				.usedRevocations(validationContext.getProcessedRevocations())
+				.allCertificateSources(validationContext.getAllCertificateSources())
+				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
+				.tokenExtractionStrategy(tokenExtractionStrategy)
+				.tokenIdentifierProvider(identifierProvider)
+				.validationDate(getValidationTime());
 	}
 
 	@Override

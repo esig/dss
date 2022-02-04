@@ -110,7 +110,7 @@ public class TLValidationJobSnippets {
 	public void jobConfig() {
 		// tag::job-config-sources[]
 		TLValidationJob validationJob = new TLValidationJob();
-		// Specify where is the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL. 
+		// Specify where the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL.
 		validationJob.setTrustedListSources(boliviaTLSource(), costaRicaTLSource());
 		validationJob.setListOfTrustedListSources(europeanLOTLSource(), unitedStatesLOTLSource());
 		// end::job-config-sources[]
@@ -120,8 +120,10 @@ public class TLValidationJobSnippets {
 		// tag::refresh[]
 		TLValidationJob validationJob = new TLValidationJob();
 
+		// tag::offline-refresh[]
 		// call with the Offline Loader (application initialization)
 		validationJob.offlineRefresh();
+		// end::offline-refresh[]
 
 		// call with the Online Loader (callable every day/hour in a cron)
 		validationJob.onlineRefresh();
@@ -132,7 +134,7 @@ public class TLValidationJobSnippets {
 	// tag::job-loaders[]
 	public DSSFileLoader offlineLoader() {
 		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
-		offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		offlineFileLoader.setCacheExpirationTime(-1); // negative value means cache never expires
 		offlineFileLoader.setDataLoader(new IgnoreDataLoader()); // do not download from Internet
 		offlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
 		return offlineFileLoader;
@@ -246,10 +248,12 @@ public class TLValidationJobSnippets {
 		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
 		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
 
+		// tag::predicate-country[]
 		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
 		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE","RO"))
 				.and(new EULOTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
+		// end::predicate-country[]
 		// end::predicates[]
 	}
 	
@@ -391,7 +395,7 @@ public class TLValidationJobSnippets {
 		// Default : not defined
 		//
 		// OfficialJournalSchemeInformationURI allows to specify the Official Journal
-		// URL where are published the signing certificates
+		// URL where the signing certificates are published
 		lotlSource.setSigningCertificatesAnnouncementPredicate(
 				new OfficialJournalSchemeInformationURI("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG"));
 

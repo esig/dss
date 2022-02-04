@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -80,6 +81,12 @@ public class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
 		assertTrue(Utils.isCollectionEmpty(originalSignerDocuments));
 	}
 	
+	@Override
+	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
+		assertEquals(SignatureLevel.XAdES_BES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+	}
+
 	@Override
 	protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
 		// signed data reference is not present

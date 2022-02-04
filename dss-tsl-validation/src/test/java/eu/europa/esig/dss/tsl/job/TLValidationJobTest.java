@@ -37,6 +37,7 @@ import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -1202,7 +1203,42 @@ public class TLValidationJobTest {
 			assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
 			assertFalse(lotlInfo.getValidationCacheInfo().isError());
 		}
-		
+	}
+
+	@Test
+	public void ecdsaTLTest() {
+		DSSDocument ecdsaTLDoc = new FileDocument("src/test/resources/tl-ecdsa-brainpool.xml");
+		Map<String, DSSDocument> map = new HashMap<>();
+		map.put("ecdsa-tl.xml", ecdsaTLDoc);
+		MockDataLoader mockDataLoader = new MockDataLoader(map);
+
+		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
+		certificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString("MIICajCCAhCgAwIBAgIBAjAKBggqhkjOPQQDAjBtMQswCQYDVQQGEwJERTEVMBMGA1UECgwMZ2VtYXRpayBHbWJIMTEwLwYDVQQLDChUU0wtU2lnbmVyLUNBIGRlciBUZWxlbWF0aWtpbmZyYXN0cnVrdHVyMRQwEgYDVQQDDAtHRU0uVFNMLUNBMzAeFw0yMDA1MjcwODA4NDVaFw0yNTA1MjYwODA4NDRaMEExCzAJBgNVBAYTAkRFMRUwEwYDVQQKDAxnZW1hdGlrIEdtYkgxGzAZBgNVBAMMElRTTCBTaWduaW5nIFVuaXQgNDBaMBQGByqGSM49AgEGCSskAwMCCAEBBwNCAASbnbVnJlebP/mNgM2jauAwjSbm3T/hSgP9ONSnLcaDVn+iwUamPaADxwvcM3Vhm1gSiIndd+Qm+q/e6Xyb7vIso4HLMIHIMB0GA1UdDgQWBBSr2Phaox8MZCztWNE9P7HR7gfAgTAfBgNVHSMEGDAWgBTDLDCsVtQnssZn52F8J+uQEQnBwzA+BggrBgEFBQcBAQQyMDAwLgYIKwYBBQUHMAGGImh0dHA6Ly9vY3NwLnRzbC50aS1kaWVuc3RlLmRlL29jc3AwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBkAwEQYDVR0lBAowCAYGBACRNwMAMBUGA1UdIAQOMAwwCgYIKoIUAEwEgTAwCgYIKoZIzj0EAwIDSAAwRQIhAJAJMlpBEuq+GDkY3XpgrWPQPL55WTcLkXjfzWccbyqeAiAyxtns/z30brVd+OCDJQj9GfA8uKIbMCCkCpDWqbCNew=="));
+
+		TLSource tlSource = new TLSource();
+		tlSource.setUrl("ecdsa-tl.xml");
+		tlSource.setCertificateSource(certificateSource);
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader(mockDataLoader);
+		fileCacheDataLoader.setCacheExpirationTime(0);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(tlSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		ValidationInfoRecord validationCacheInfo = tlInfos.get(0).getValidationCacheInfo();
+		assertEquals(Indication.TOTAL_PASSED, validationCacheInfo.getIndication());
 	}
 	
 	private TLValidationJob getTLValidationJob() {

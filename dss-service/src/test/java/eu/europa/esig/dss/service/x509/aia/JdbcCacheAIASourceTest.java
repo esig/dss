@@ -54,7 +54,7 @@ public class JdbcCacheAIASourceTest {
     public void setUp() throws SQLException {
         // for testing purposes. DB view available on http://localhost:8082
         // webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
-        dataSource.setUrl("jdbc:h2:mem:test;create=true;DB_CLOSE_DELAY=-1");
+        dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 
         JdbcCacheConnector cacheConnector = new JdbcCacheConnector(dataSource);
         aiaSource.setJdbcCacheConnector(cacheConnector);

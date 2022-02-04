@@ -57,7 +57,7 @@ public class TimestampMessageImprintCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        TimestampMessageImprintCheck tmic = new TimestampMessageImprintCheck(
+        TimestampMessageImprintCheck<?> tmic = new TimestampMessageImprintCheck<>(
                 i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
         tmic.execute();
 
@@ -82,7 +82,7 @@ public class TimestampMessageImprintCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        TimestampMessageImprintCheck tmic = new TimestampMessageImprintCheck(
+        TimestampMessageImprintCheck<?> tmic = new TimestampMessageImprintCheck<>(
                 i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
         tmic.execute();
 

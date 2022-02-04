@@ -85,4 +85,36 @@ public interface PdfDict {
 	 */
 	Date getDateValue(String name);
 
+	/**
+	 * Returns a number value
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Number} value
+	 */
+	Number getNumberValue(String name);
+
+	/**
+	 * Returns an object
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Object} value
+	 */
+	Object getObject(String name);
+
+	/**
+	 * Returns a number of indirect reference to an object, when applicable
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link Object} value
+	 */
+	Long getObjectNumber(String name);
+
+	/**
+	 * Returns object's stream binaries, when available
+	 *
+	 * @return byte array
+	 * @throws IOException if a stream reading exception occurs
+	 */
+	byte[] getStreamBytes() throws IOException;
+
 }

@@ -206,8 +206,8 @@
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Url" type="xs:string" minOccurs="0" />
-			<xs:element name="Notice" type="xs:string" minOccurs="0" />
-			<xs:element name="DocSpecification" type="xs:string" minOccurs="0" />
+			<xs:element name="UserNotice" type="UserNotice" minOccurs="0" />
+			<xs:element name="DocSpecification" type="SPDocSpecification" minOccurs="0" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="Identified" type="xs:boolean" minOccurs="0" />
 			<xs:element name="Asn1Processable" type="xs:boolean" minOccurs="0" />
@@ -215,6 +215,18 @@
 			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
 			<xs:element name="ProcessingError" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoAndValue" type="PolicyDigestAlgoAndValue" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="UserNotice">
+		<xs:sequence>
+			<xs:element name="Organization" type="xs:string" minOccurs="0" />
+			<xs:element name="NoticeNumbers" minOccurs="0" >
+				<xs:simpleType>
+					<xs:list itemType="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="ExplicitText" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -228,21 +240,61 @@
 	</xs:complexType>
 	
 	<xs:complexType name="SignaturePolicyStore">
+		<xs:complexContent>
+			<xs:extension base="SPDocSpecification">
+				<xs:sequence>
+					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SPDocSpecification">
 		<xs:sequence>
 			<xs:element name="Id" type="xs:string" />
 			<xs:element name="Description" type="xs:string" minOccurs="0" />
 			<xs:element name="DocumentationReferences" type="DocumentationReferences" minOccurs="0" />
-			<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="PDFRevision">
 		<xs:sequence>
-			<xs:element name="SignatureFieldName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" minOccurs="0" />
+			<xs:element name="SignatureField" type="PDFSignatureField" maxOccurs="unbounded" />
+			<xs:element name="PDFSignatureDictionary" type="PDFSignatureDictionary" />
 			<xs:element name="ModificationDetection" type="ModificationDetection" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="PDFSignatureField">
+		<xs:sequence>
+			<xs:element name="SigFieldLock" type="PDFLockDictionary" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="PDFLockDictionary">
+		<xs:sequence>
+			<xs:element name="Action" type="PDFLockAction" />
+			<xs:element name="Field" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Permissions" type="CertificationPermission" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="PDFLockAction" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ALL" />
+			<xs:enumeration value="INCLUDE" />
+			<xs:enumeration value="EXCLUDE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CertificationPermission" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_CHANGE_PERMITTED" />
+			<xs:enumeration value="MINIMAL_CHANGES_PERMITTED" />
+			<xs:enumeration value="CHANGES_PERMITTED" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="PDFSignatureDictionary">
 		<xs:sequence>
@@ -258,6 +310,14 @@
 					<xs:list itemType="xs:integer"/>
 				</xs:simpleType>
 			</xs:element>
+			<xs:element name="DocMDP" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Permissions" type="CertificationPermission" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="FieldMDP" type="PDFLockDictionary" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -266,12 +326,41 @@
 			<xs:element name="AnnotationOverlap" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="VisualDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="PageDifference" type="Modification" minOccurs="0" maxOccurs="unbounded" />
+
+			<xs:element name="ObjectModifications" type="ObjectModifications" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="Modification">
 		<xs:attribute name="Page" type="xs:integer" use="required" />
 	</xs:complexType>
+
+	<xs:complexType name="ObjectModifications">
+		<xs:sequence>
+			<xs:element name="ExtensionChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="SignatureOrFormFill" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="AnnotationChange" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Undefined" type="ObjectModification" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ObjectModification">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="action" type="ObjectModificationType" />
+				<xs:attribute name="fieldName" type="xs:string" use="optional" />
+				<xs:attribute name="type" type="xs:string" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="ObjectModificationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CREATION" />
+			<xs:enumeration value="DELETION" />
+			<xs:enumeration value="MODIFICATION" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="Certificate">
 		<xs:complexContent>
@@ -352,8 +441,8 @@
 						</xs:complexType>
 					</xs:element>
 
-
 					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
+					<xs:element name="ValAssuredShortTermCertificate" type="xs:boolean" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
@@ -509,6 +598,10 @@
 	<xs:simpleType name="SignatureFormat" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XML-NOT-ETSI" />
+			<xs:enumeration value="XAdES-BES" />
+			<xs:enumeration value="XAdES-EPES" />
+			<xs:enumeration value="XAdES-T" />
+			<xs:enumeration value="XAdES-LT" />
 			<xs:enumeration value="XAdES-C" />
 			<xs:enumeration value="XAdES-X" />
 			<xs:enumeration value="XAdES-XL" />
@@ -518,6 +611,10 @@
 			<xs:enumeration value="XAdES-BASELINE-T" />
 			<xs:enumeration value="XAdES-BASELINE-B" />
 			<xs:enumeration value="CMS-NOT-ETSI" />
+			<xs:enumeration value="CAdES-BES" />
+			<xs:enumeration value="CAdES-EPES" />
+			<xs:enumeration value="CAdES-T" />
+			<xs:enumeration value="CAdES-LT" />
 			<xs:enumeration value="CAdES-C" />
 			<xs:enumeration value="CAdES-X" />
 			<xs:enumeration value="CAdES-XL" />
@@ -812,6 +909,7 @@
 			<xs:enumeration value="SIGNING_CERTIFICATE" />
 			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
 			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
+			<xs:enumeration value="KEY_IDENTIFIER" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -838,6 +936,14 @@
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
+
+					<xs:element name="TimestampScopes" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 		
 					<xs:choice>
 						<xs:element name="Base64Encoded" type="xs:base64Binary" />
@@ -1022,8 +1128,6 @@
 	<xs:complexType name="OrphanToken" abstract="true">
 		<xs:complexContent>
             <xs:extension base="AbstractToken">
-				<xs:sequence>
-				</xs:sequence>
 				<xs:attribute name="EncapsulationType" type="EncapsulationType" use="required" />
 			</xs:extension>
 		</xs:complexContent>

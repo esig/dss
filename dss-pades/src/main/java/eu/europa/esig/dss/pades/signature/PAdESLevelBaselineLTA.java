@@ -45,7 +45,7 @@ class PAdESLevelBaselineLTA extends PAdESLevelBaselineLT {
 
 	@Override
 	public DSSDocument extendSignatures(DSSDocument document, PAdESSignatureParameters parameters) throws DSSException {
-		// check if needed to extends with PAdESLevelBaselineLT
+		// check if needed to extend with PAdESLevelBaselineLT
 		document = super.extendSignatures(document, parameters);
 		
 		// Will add a Document TimeStamp (not CMS)

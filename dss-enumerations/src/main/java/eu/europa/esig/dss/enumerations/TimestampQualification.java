@@ -25,16 +25,31 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum TimestampQualification {
 
+	/** Qualified timestamp token */
 	QTSA("QTSA", "Qualified timestamp", "urn:cef:dss:timestampQualification:QTSA"),
 
+	/** Not-qualified timestamp token */
 	TSA("TSA", "Not qualified timestamp", "urn:cef:dss:timestampQualification:TSA"),
 
+	/** Not-applicable (not determined) */
 	NA("N/A", "Not applicable", "urn:cef:dss:timestampQualification:notApplicable");
 
+	/** User-friendly name (abbreviation) of the timestamp qualification */
 	private final String readable;
+
+	/** Description of the qualification */
 	private final String label;
+
+	/** Unique URL */
 	private final String uri;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param readable {@link String}
+	 * @param label {@link String}
+	 * @param uri {@link String}
+	 */
 	TimestampQualification(String readable, String label, String uri) {
 		this.readable = readable;
 		this.label = label;

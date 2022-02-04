@@ -195,7 +195,7 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 				sigTstFound = true;
 			} else if (TimestampType.DOCUMENT_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(ArchiveTimestampType.PAdES, timestampWrapper.getArchiveTimestampType());
-				assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+				assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
 				assertEquals(1, timestampWrapper.getTimestampedTimestamps().size());
 				assertEquals(2, timestampWrapper.getTimestampedRevocations().size());

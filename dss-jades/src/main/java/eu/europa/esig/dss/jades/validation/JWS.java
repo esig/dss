@@ -28,6 +28,7 @@ import org.jose4j.lang.JoseException;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -76,16 +77,16 @@ public class JWS extends JsonWebSignature implements Serializable {
 	}
 	
 	/**
-	 * Sets a detached payload binaries
+	 * Sets payload binaries depending on the 'b64' header's value
 	 * 
-	 * @param payload a byte array representing a payload
+	 * @param payload a byte array representing a payload (unencoded or encoded)
 	 */
-	public void setDetachedPayload(byte[] payload) {
+	public void setPayloadOctets(byte[] payload) {
 		// see JsonWebSignature.setCompactSerializationParts(parts)
 		if (isRfc7797UnencodedPayload()) {
             setPayloadBytes(payload);
         } else {
-            setEncodedPayload(DSSJsonUtils.toBase64Url(payload));
+            setEncodedPayload(new String(payload));
         }
 	}
 	
@@ -181,6 +182,42 @@ public class JWS extends JsonWebSignature implements Serializable {
 	public void setKnownCriticalHeaders(Collection<String> knownCriticalHeaders) {
 		String[] headersArray = knownCriticalHeaders.toArray(new String[knownCriticalHeaders.size()]);
 		super.setKnownCriticalHeaders(headersArray);
+	}
+
+	@Override
+	protected void checkCrit() throws JoseException {
+		// separate structure validation and cryptographic check
+		// (see eu.europa.esig.dss.jades.validation.JAdESBaselineRequirementsChecker)
+	}
+
+	/**
+	 * Returns a protected header value with the {@code key}
+	 *
+	 * @param key {@link String}
+	 * @return {@link String} value if present, empty string otherwise
+	 */
+	public String getProtectedHeaderValueAsString(String key) {
+		return DSSJsonUtils.toString(getHeaders().getObjectHeaderValue(key), key);
+	}
+
+	/**
+	 * Returns a protected header value with the {@code key}
+	 *
+	 * @param key {@link String}
+	 * @return {@link Map} value if present, empty map otherwise
+	 */
+	public Map<?, ?> getProtectedHeaderValueAsMap(String key) {
+		return DSSJsonUtils.toMap(getHeaders().getObjectHeaderValue(key), key);
+	}
+
+	/**
+	 * Returns a protected header value with the {@code key}
+	 *
+	 * @param key {@link String}
+	 * @return {@link List} value if present, empty list otherwise
+	 */
+	public List<?> getProtectedHeaderValueAsList(String key) {
+		return DSSJsonUtils.toList(getHeaders().getObjectHeaderValue(key), key);
 	}
 
 }

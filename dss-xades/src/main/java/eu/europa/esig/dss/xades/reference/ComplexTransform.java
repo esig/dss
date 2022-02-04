@@ -62,11 +62,11 @@ public abstract class ComplexTransform extends AbstractTransform {
 			document.appendChild(transformsDom);
 			createTransform(document, transformsDom);
 			final NodeList childNodes = transformsDom.getFirstChild().getChildNodes();
-			final Transform transformObject = new Transform(document, algorithm, childNodes);
+			final Transform transform = new Transform(document, algorithm, childNodes);
 			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
-				transformObject.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
+				transform.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
 			}
-			this.transformObject = transformObject;
+			this.transformObject = transform;
 		} catch (XMLSecurityException e) {
 			throw new DSSException(String.format("Cannot initialize a transform [%s]", algorithm), e);
 		}

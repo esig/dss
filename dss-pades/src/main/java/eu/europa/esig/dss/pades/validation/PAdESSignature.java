@@ -24,7 +24,9 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
@@ -38,7 +40,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
@@ -125,7 +126,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public SignatureCertificateSource getCertificateSource() {
 		if (offlineCertificateSource == null) {
-			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getSignerInformation());
+			offlineCertificateSource = new PAdESCertificateSource(pdfSignatureRevision, getVRIKey(), getSignerInformation());
 		}
 		return offlineCertificateSource;
 	}
@@ -133,7 +134,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public OfflineCRLSource getCRLSource() {
 		if (signatureCRLSource == null) {
-			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureCRLSource = new PAdESCRLSource(pdfSignatureRevision, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureCRLSource;
 	}
@@ -141,7 +142,7 @@ public class PAdESSignature extends CAdESSignature {
 	@Override
 	public OfflineOCSPSource getOCSPSource() {
 		if (signatureOCSPSource == null) {
-			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision.getDssDictionary(), getVRIKey(), getSignerInformation().getSignedAttributes());
+			signatureOCSPSource = new PAdESOCSPSource(pdfSignatureRevision, getVRIKey(), getSignerInformation().getSignedAttributes());
 		}
 		return signatureOCSPSource;
 	}
@@ -203,6 +204,27 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
+	public DSSDocument getOriginalDocument() {
+		return pdfSignatureRevision.getSignedData();
+	}
+
+	@Override
+	protected DSSDocument getSignerDocumentContent() {
+		DSSDocument signerDocument = getOriginalDocument();
+		/*
+		 * ISO 32000-1:
+		 *
+		 * adbe.pkcs7.sha1: The SHA-1 digest of the document’s byte range shall be encapsulated in
+		 * the CMSSignedData field with ContentInfo of type Data.
+		 */
+		if (signerDocument != null && getPdfSignatureDictionary() != null &&
+				PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(getPdfSignatureDictionary().getSubFilter())) {
+			signerDocument = new InMemoryDocument(Utils.fromBase64(signerDocument.getDigest(DigestAlgorithm.SHA1)));
+		}
+		return signerDocument;
+	}
+
+	@Override
 	protected SignatureIdentifierBuilder getSignatureIdentifierBuilder() {
 		return new PAdESSignatureIdentifierBuilder(this);
 	}
@@ -259,7 +281,7 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
+	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
 		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
 	}
 
@@ -319,7 +341,12 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	private boolean hasPKCS7SubFilter() {
-		return (pdfSignatureRevision != null) && PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(pdfSignatureRevision.getPdfSigDictInfo().getSubFilter());
+		if (pdfSignatureRevision != null) {
+			String subFilter = pdfSignatureRevision.getPdfSigDictInfo().getSubFilter();
+			return PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(subFilter) ||
+					PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(subFilter);
+		}
+		return false;
 	}
 
 	/**

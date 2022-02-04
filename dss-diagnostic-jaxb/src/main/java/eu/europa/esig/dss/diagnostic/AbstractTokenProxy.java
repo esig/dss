@@ -25,6 +25,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -86,7 +88,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		List<XmlChainItem> certificateChain = getCurrentCertificateChain();
 		if (certificateChain != null) {
 			for (XmlChainItem xmlChainCertificate : certificateChain) {
-				result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
+				if (xmlChainCertificate.getCertificate() != null) {
+					result.add(new CertificateWrapper(xmlChainCertificate.getCertificate()));
+				}
 			}
 		}
 		return result;
@@ -168,7 +172,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	@Override
 	public boolean isSigningCertificateReferencePresent() {
-		return getSigningCertificateReferences().size() > 0;
+		return !getSigningCertificateReferences().isEmpty();
 	}
 	
 	@Override
@@ -180,21 +184,33 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public CertificateRefWrapper getSigningCertificateReference() {
 		List<CertificateRefWrapper> signingCertificateReferences = foundCertificates()
 				.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-		if (signingCertificateReferences.size() > 0) {
+		if (!signingCertificateReferences.isEmpty()) {
 			// return a reference matching a signing certificate
 			CertificateWrapper signingCertificate = getSigningCertificate();
 			if (signingCertificate != null) {
-				for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
-					if (signingCertificate.getId().equals(relatedCertificate.getId()) && relatedCertificate.getReferences().size() > 0) {
-						return relatedCertificate.getReferences().iterator().next();
-					}
-				}
+				return getCertificateReferenceOfReferenceOriginType(signingCertificate, CertificateRefOrigin.SIGNING_CERTIFICATE);
 			}
+
 		} else {
 			List<CertificateRefWrapper> orphanSigningCertificateReferences = foundCertificates()
 					.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-			if (orphanSigningCertificateReferences.size() > 0) {
+			if (!orphanSigningCertificateReferences.isEmpty()) {
 				return orphanSigningCertificateReferences.iterator().next();
+			}
+		}
+		return null;
+	}
+
+	private CertificateRefWrapper getCertificateReferenceOfReferenceOriginType(CertificateWrapper certificate,
+																			   CertificateRefOrigin refOrigin) {
+		for (RelatedCertificateWrapper relatedCertificate : foundCertificates().getRelatedCertificates()) {
+			List<CertificateRefWrapper> signCertRefs = relatedCertificate.getReferences();
+			if (certificate.getId().equals(relatedCertificate.getId()) && !signCertRefs.isEmpty()) {
+				for (CertificateRefWrapper signCertRef : signCertRefs) {
+					if (refOrigin.equals(signCertRef.getOrigin())) {
+						return signCertRef;
+					}
+				}
 			}
 		}
 		return null;
@@ -254,8 +270,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		if (pdfRevision != null) {
 			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
 			if (modificationDetection != null) {
-				return modificationDetection.getAnnotationOverlap().size() != 0 ||
-						modificationDetection.getVisualDifference().size() != 0;
+				return !modificationDetection.getAnnotationOverlap().isEmpty() ||
+						!modificationDetection.getVisualDifference().isEmpty() ||
+						!modificationDetection.getPageDifference().isEmpty();
 			}
 		}
 		return false;
@@ -319,6 +336,107 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		}
 		return pages;
 	}
+
+	/**
+	 * Returns {@code XmlObjectModifications} for the given revision, when present
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return {@link XmlObjectModifications}
+	 */
+	protected XmlObjectModifications getPdfObjectModifications(XmlPDFRevision pdfRevision) {
+		if (pdfRevision != null) {
+			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
+			if (modificationDetection != null) {
+				return modificationDetection.getObjectModifications();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with a signature/document extension
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfExtensionChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getExtensionChanges();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with a signature creation, form filling
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfSignatureOrFormFillChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getSignatureOrFormFill();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of changes occurred in a PDF associated with annotation(s) modification
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfAnnotationChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getAnnotationChanges();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of undefined changes occurred in a PDF
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link XmlObjectModification}s
+	 */
+	protected List<XmlObjectModification> getPdfUndefinedChanges(XmlPDFRevision pdfRevision) {
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			return pdfObjectModifications.getUndefined();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns a list of field names modified after the given revision
+	 *
+	 * @param pdfRevision {@link XmlPDFRevision}
+	 * @return a list of {@link String}s
+	 */
+	protected List<String> getModifiedFieldNames(XmlPDFRevision pdfRevision) {
+		List<String> names = new ArrayList<>();
+		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
+		if (pdfObjectModifications != null) {
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getExtensionChanges()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getSignatureOrFormFill()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getAnnotationChanges()));
+			names.addAll(getModifiedFieldNames(pdfObjectModifications.getUndefined()));
+		}
+		return names;
+	}
+
+	private List<String> getModifiedFieldNames(List<XmlObjectModification> objectModifications) {
+		List<String> names = new ArrayList<>();
+		for (XmlObjectModification objectModification : objectModifications) {
+			String fieldName = objectModification.getFieldName();
+			if (fieldName != null) {
+				names.add(fieldName);
+			}
+		}
+		return names;
+	}
 	
 	@Override
 	public String toString() {
@@ -343,13 +461,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return false;
 		AbstractTokenProxy other = (AbstractTokenProxy) obj;
 		if (getId() == null) {
-			if (other.getId() != null) {
-				return false;
-			}
-		} else if (!getId().equals(other.getId())) {
-			return false;
-		}
-		return true;
+			return other.getId() == null;
+		} else return getId().equals(other.getId());
 	}
 
 }

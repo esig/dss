@@ -27,7 +27,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -94,19 +94,19 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(signedDocument);
-		ASiCExtractResult asicExtractResult = containerExtractor.extract();
-		List<DSSDocument> timestampDocuments = asicExtractResult.getTimestampDocuments();
+		ASiCContent asicContent = containerExtractor.extract();
+		List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
 		assertEquals(1, timestampDocuments.size());
 		DSSDocument archiveTimestamp = timestampDocuments.get(0);
 		
-		List<DSSDocument> archiveManifestDocuments = asicExtractResult.getArchiveManifestDocuments();
+		List<DSSDocument> archiveManifestDocuments = asicContent.getArchiveManifestDocuments();
 		assertEquals(1, archiveManifestDocuments.size());
 		DSSDocument archiveManifest = archiveManifestDocuments.get(0);
 		
 		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
 		assertNotNull(manifestFile);
 		
-		ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, asicExtractResult.getAllDocuments());
+		ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, asicContent.getAllDocuments());
 		asiceWithCAdESManifestValidator.validateEntries();
 		
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();

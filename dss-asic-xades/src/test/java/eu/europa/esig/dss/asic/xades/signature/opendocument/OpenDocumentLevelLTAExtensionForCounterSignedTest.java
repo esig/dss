@@ -98,7 +98,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
+		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		
 		signingAlias = GOOD_USER;
 		
@@ -263,6 +263,21 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		assertEquals(1, signatureFiles.size());
 		DSSDocument signature = signatureFiles.get(0);
 		assertEquals("META-INF/documentsignatures.xml", signature.getName());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		for (String signatureId : signatureIdList) {
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
+			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && !signatureWrapper.isCounterSignature()) {
+				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+				for (DSSDocument document : retrievedOriginalDocuments) {
+					assertNotNull(document);
+				}
+			}
+		}
 	}
 
 	@Override

@@ -21,15 +21,11 @@
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,91 +33,24 @@ import java.util.List;
  */
 public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiCSWithCAdES implements GetDataToSignASiCWithCAdESHelper {
 
-	/** The list of documents to be signed */
-	private final List<DSSDocument> filesToBeSigned;
-
-	/** The signing date */
-	private final Date signingDate;
-
-	/** The cached ToBeSigned document */
-	private List<DSSDocument> signedDocuments;
-
 	/**
 	 * The default constructor
 	 *
-	 * @param filesToBeSigned a list of {@link DSSDocument}s to sign
-	 * @param signingDate {@link Date} of signing
+	 * @param asicContent {@link ASiCContent}
 	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignASiCSWithCAdESFromFiles(final List<DSSDocument> filesToBeSigned, final Date signingDate,
-											 final ASiCParameters asicParameters) {
-		super(asicParameters);
-		this.filesToBeSigned = filesToBeSigned;
-		this.signingDate = signingDate;
-	}
-
-	@Override
-	public DSSDocument getAsicContainer() {
-		// no container is available for this class
-		return null;
-	}
-
-	@Override
-	public String getSignatureFilename() {
-		return getSignatureFileName();
-	}
-
-	@Override
-	public String getTimestampFilename() {
-		return getTimestampFileName();
+	public DataToSignASiCSWithCAdESFromFiles(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+		super(asicContent, asicParameters);
 	}
 
 	@Override
 	public DSSDocument getToBeSigned() {
-		return getSignedDocuments().get(0);
+		return asicContent.getSignedDocuments().get(0);
 	}
 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public List<DSSDocument> getSignedDocuments() {
-		if (signedDocuments == null) {
-			if (Utils.collectionSize(filesToBeSigned) > 1) {
-				DSSDocument packageZip = createPackageZip(filesToBeSigned, signingDate,
-						ASiCUtils.getZipComment(asicParameters));
-				signedDocuments = Arrays.asList(packageZip);
-			} else {
-				signedDocuments = new ArrayList<>(filesToBeSigned);
-			}
-		}
-		return signedDocuments;
-	}
-
-	@Override
-	public List<DSSDocument> getManifestFiles() {
-		// No manifest file in ASiC-S
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<DSSDocument> getSignatures() {
-		// new container
-		return new ArrayList<>();
-	}
-
-	@Override
-	public List<DSSDocument> getArchiveManifestFiles() {
-		// not supported
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<DSSDocument> getTimestamps() {
-		// new container
-		return new ArrayList<>();
 	}
 
 }

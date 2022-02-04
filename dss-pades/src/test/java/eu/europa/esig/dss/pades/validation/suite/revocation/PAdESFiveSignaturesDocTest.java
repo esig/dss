@@ -110,7 +110,7 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
         checkedIds.add(docTimestamp.getTimestampedSignatures().get(0).getId());
         
         List<SignerDataWrapper> timestampedSignedData = docTimestamp.getTimestampedSignedData();
-        assertEquals(5, timestampedSignedData.size());
+        assertEquals(6, timestampedSignedData.size());
         for (SignerDataWrapper signerDataWrapper : timestampedSignedData) {
             assertFalse(checkedIds.contains(signerDataWrapper.getId()));
             checkedIds.add(signerDataWrapper.getId());
@@ -137,7 +137,7 @@ public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
             checkedIds.add(timestampWrapper.getId());
         }
         
-        assertEquals(30, checkedIds.size());
+        assertEquals(31, checkedIds.size());
 	}
 	
 	@Override

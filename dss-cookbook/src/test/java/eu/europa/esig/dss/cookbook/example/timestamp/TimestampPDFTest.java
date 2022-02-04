@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.cookbook.example.timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TimestampPDFTest extends CookbookTools {
 	
@@ -60,6 +61,10 @@ public class TimestampPDFTest extends CookbookTools {
 		Reports reports = validator.validateDocument();
 		// end::validation[]
 		assertNotNull(reports);
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(0, diagnosticData.getSignatures().size());
+		assertEquals(1, diagnosticData.getTimestampList().size());
 		
 	}
 

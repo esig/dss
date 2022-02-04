@@ -25,8 +25,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+
+import java.util.Objects;
 
 /**
  * The service to timestamp a PDF
@@ -40,12 +43,24 @@ public class PAdESTimestampService {
 	private final PDFSignatureService pdfSignatureService;
 
 	/**
+	 * Constructor with {@code TSPSource} instantiating a default {@code PDFSignatureService}
+	 * for an archive (document) timestamp creation
+	 *
+	 * @param tspSource {@link TSPSource}
+	 */
+	public PAdESTimestampService(TSPSource tspSource) {
+		this(tspSource, new ServiceLoaderPdfObjFactory().newArchiveTimestampService());
+	}
+
+	/**
 	 * The default constructor
 	 *
 	 * @param tspSource {@link TSPSource} to request the timestamp
 	 * @param pdfSignatureService {@link PDFSignatureService} to use
 	 */
 	public PAdESTimestampService(TSPSource tspSource, PDFSignatureService pdfSignatureService) {
+		Objects.requireNonNull(tspSource, "TSPSource shall be provided!");
+		Objects.requireNonNull(pdfSignatureService, "PDFSignatureService shall be provided!");
 		this.tspSource = tspSource;
 		this.pdfSignatureService = pdfSignatureService;
 	}

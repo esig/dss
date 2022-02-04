@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -29,7 +28,9 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
+import eu.europa.esig.dss.pades.validation.scope.PAdESTimestampScopeFinder;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfRevisionTimestampSource;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
@@ -44,12 +45,11 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.TimestampScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -252,15 +252,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
     private TimestampToken createPdfTimestampToken(PdfDocTimestampRevision pdfDocTimestampRevision) {
         try {
-            TimestampToken timestampToken = pdfDocTimestampRevision.getTimestampToken();
+            PdfTimestampToken timestampToken = pdfDocTimestampRevision.getTimestampToken();
             timestampToken.setFileName(document.getName());
 
-            PAdESSignatureScopeFinder signatureScopeFinder = new PAdESSignatureScopeFinder();
-            signatureScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-            SignatureScope signatureScope = signatureScopeFinder.findSignatureScope(pdfDocTimestampRevision);
-            timestampToken.setTimestampScopes(Arrays.asList(signatureScope));
-            timestampToken.getTimestampedReferences().add(
-                    new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+            PAdESTimestampScopeFinder timestampScopeFinder = getPAdESTimestampScopeFinder();
+            timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+            findTimestampScopes(timestampToken, timestampScopeFinder);
 
             return timestampToken;
 
@@ -268,6 +265,28 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
             throw new DSSException(String.format("Unable to create a timestamp for a revision : %s. Reason : [%s]",
                     pdfDocTimestampRevision.getByteRange(), e.getMessage()), e);
         }
+    }
+
+    @Override
+    public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
+        super.findSignatureScopes(allSignatures);
+        // NOTE: encapsulated timestamps processed in super method with a default timestamp scope finder
+        for (final AdvancedSignature signature : allSignatures) {
+            TimestampScopeFinder timestampScopeFinder = getPAdESTimestampScopeFinder();
+            prepareTimestampScopeFinder(timestampScopeFinder, signature);
+            for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
+                findTimestampScopes(timestampToken, timestampScopeFinder);
+            }
+        }
+    }
+
+    /**
+     * This method returns a PDF timestamp scope finder
+     *
+     * @return {@link PAdESTimestampScopeFinder}
+     */
+    protected PAdESTimestampScopeFinder getPAdESTimestampScopeFinder() {
+        return new PAdESTimestampScopeFinder();
     }
 
     /**
@@ -313,11 +332,22 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
+    public <T extends AdvancedSignature> PdfValidationDataContainer getValidationData(
+            Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
+        return (PdfValidationDataContainer) super.getValidationData(signatures, detachedTimestamps);
+    }
+
+    @Override
+    protected PdfValidationDataContainer instantiateValidationDataContainer() {
+        return new PdfValidationDataContainer(getDssRevisions());
+    }
+
+    @Override
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
         List<DSSDocument> result = new ArrayList<>();
         InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
-        if (originalPDF != null) {
+        if (originalPDF != null && originalPDF.getBytes().length != 0) {
             result.add(originalPDF);
         }
         return result;

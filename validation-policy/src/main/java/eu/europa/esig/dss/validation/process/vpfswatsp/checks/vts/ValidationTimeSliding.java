@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
@@ -32,7 +32,6 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
-import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
@@ -44,12 +43,9 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.CertificateAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAcceptanceCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDataAcceptableCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.RevocationIssuedBeforeControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 
 import java.util.ArrayList;
@@ -174,53 +170,19 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				final List<CertificateRevocationWrapper> certificateRevocationData = SubContext.SIGNING_CERT.equals(subContext) ?
 						ValidationProcessUtils.getAcceptableRevocationDataForPSVIfExistOrReturnAll(token, certificate, bbbs, poe) : certificate.getCertificateRevocationData();
 
-				CertificateRevocationWrapper latestCompliantRevocation = null;
-
-				for (CertificateRevocationWrapper revocationData : certificateRevocationData) {
-
-					XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationData.getId());
-
-					if (item == null) {
-						item = firstItem = revocationBasicValidationAcceptable(revocationBBB);
-					} else {
-						item = item.setNextItem(revocationBasicValidationAcceptable(revocationBBB));
-					}
-
-					if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())) {
-
-						XmlRAC xmlRAC = ValidationProcessUtils.getRevocationAcceptanceCheckerResult(tokenBBB, certificate, revocationData);
-
-						item = item.setNextItem(revocationDataAcceptable(xmlRAC));
-
-						if (xmlRAC != null && isValid(xmlRAC)) {
-
-							item = item.setNextItem(revocationIssuedBeforeControlTime(revocationData, controlTime));
-
-							if (revocationData.getProductionDate() != null && revocationData.getProductionDate().before(controlTime)) {
-
-								item = item.setNextItem(poeExistsAtOrBeforeControlTime(certificate, TimestampedObjectType.CERTIFICATE, controlTime));
-
-								item = item.setNextItem(poeExistsAtOrBeforeControlTime(revocationData, TimestampedObjectType.REVOCATION, controlTime));
-
-								if (poe.isPOEExists(certificate.getId(), controlTime) && poe.isPOEExists(revocationData.getId(), controlTime)
-										&& (latestCompliantRevocation == null || revocationData.getProductionDate().after(latestCompliantRevocation.getProductionDate())) ) {
-
-									latestCompliantRevocation = revocationData;
-
-								}
-
-							}
-
-						}
-					}
-				}
+				CertificateRevocationSelector certificateRevocationSelector = new ValidationTimeSlidingCertificateRevocationSelector(
+						i18nProvider, certificate, certificateRevocationData, controlTime, bbbs, tokenBBB.getId(), poe, policy);
+				XmlCRS xmlCRS = certificateRevocationSelector.execute();
+				result.getCRS().add(xmlCRS);
 
 				if (item == null) {
-					item = firstItem = satisfyingRevocationDataExists(certificate, latestCompliantRevocation, controlTime);
+					item = firstItem = satisfyingRevocationDataExists(xmlCRS, certificate, controlTime);
 				} else {
-					item = item.setNextItem(satisfyingRevocationDataExists(certificate, latestCompliantRevocation, controlTime));
+					item = item.setNextItem(satisfyingRevocationDataExists(xmlCRS, certificate, controlTime));
 				}
 				
+				CertificateRevocationWrapper latestCompliantRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
+
 				if (latestCompliantRevocation == null) {
 					continue;
 				}
@@ -261,7 +223,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 							i18nProvider, latestCompliantRevocation, controlTime, context, subContext, policy);
 					XmlRFC execute = rfc.execute();
 					if (execute.getConclusion() != null && Indication.FAILED.equals(execute.getConclusion().getIndication())) {
-						controlTime = latestCompliantRevocation.getProductionDate();
+						controlTime = latestCompliantRevocation.getThisUpdate();
 					}
 				}
 
@@ -323,26 +285,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return null;
 	}
 
-	private ChainItem<XmlVTS> revocationBasicValidationAcceptable(XmlBasicBuildingBlocks revocationBBB) {
-		return new RevocationDataAcceptableCheck(i18nProvider, result, revocationBBB.getId(),
-				revocationBBB.getConclusion(), getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> revocationDataAcceptable(XmlRAC xmlRAC) {
-		return new RevocationAcceptanceCheckerResultCheck(i18nProvider, result, xmlRAC, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> revocationIssuedBeforeControlTime(RevocationWrapper revocation, Date controlTime) {
-		return new RevocationIssuedBeforeControlTimeCheck(i18nProvider, result, revocation, controlTime, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType objectType, Date controlTime) {
-		return new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlVTS> satisfyingRevocationDataExists(CertificateWrapper certificateWrapper,
-															 RevocationWrapper revocationData, Date controlTime) {
-		return new SatisfyingRevocationDataExistsCheck<>(i18nProvider, result, certificateWrapper, revocationData, controlTime, getFailLevelConstraint());
+	private ChainItem<XmlVTS> satisfyingRevocationDataExists(XmlCRS crsResult, CertificateWrapper certificateWrapper,
+															 Date controlTime) {
+		return new SatisfyingRevocationDataExistsCheck<>(i18nProvider, result, crsResult, certificateWrapper,
+				controlTime, getFailLevelConstraint());
 	}
 	
     private XmlSAV getCertificateCryptographicAcceptanceResult(CertificateWrapper certificateWrapper, Date controlTime) {

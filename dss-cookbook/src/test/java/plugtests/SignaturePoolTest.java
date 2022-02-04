@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -152,7 +153,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
-				"es3", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
+				"es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
@@ -305,6 +306,11 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		// do nothing
 	}
 	
+	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		// skip
+	}
+
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
@@ -498,12 +504,21 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 
 	@Override
+	protected void checkDTBSR(DiagnosticData diagnosticData) {
+		// can be null
+	}
+
+	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		List<String> signatureIdList = diagnosticData.getSignatureIdList();
 		for (String signatureId : signatureIdList) {
 			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
 			if (diagnosticData.isBLevelTechnicallyValid(signatureId) && isNotInvalidManifest(validator)
-					&& signsDocuments(diagnosticData) && !signatureWrapper.isCounterSignature()) {
+					&& signsDocuments(diagnosticData) && !signatureWrapper.isCounterSignature()
+					// a PDF signature can be incorporated within the first PDF's revision (no original content can be extracted)
+					&& !((SignatureForm.PAdES.equals(diagnosticData.getSignatureFormat(signatureId).getSignatureForm())
+									|| SignatureForm.PKCS7.equals(diagnosticData.getSignatureFormat(signatureId).getSignatureForm()))
+			 				&& diagnosticData.getFirstSignatureId().equals(signatureId))) {
 				List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
 				assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
 			}

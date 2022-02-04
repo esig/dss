@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.validation.timestamp;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -36,14 +35,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
@@ -54,7 +51,6 @@ import eu.europa.esig.dss.xades.validation.XAdESRevocationRefExtractionUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
-import org.apache.xml.security.signature.Reference;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -296,8 +292,12 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			return new TimestampToken(Utils.fromBase64(encapsulatedTimeStamp.getTextContent()), timestampType,
 					references);
 		} catch (Exception e) {
-			LOG.warn("Unable to build timestamp token from binaries '{}'. Reason : {}",
-					encapsulatedTimeStamp.getTextContent(), e.getMessage(), e);
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to build timestamp token from binaries '{}'! Reason : {}",
+						encapsulatedTimeStamp.getTextContent(), e.getMessage(), e);
+			} else {
+				LOG.warn("Unable to build timestamp token! Reason : {}", e.getMessage(), e);
+			}
 			return null;
 		}
 	}
@@ -307,61 +307,19 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			List<TimestampedReference> references) {
 		throw new UnsupportedOperationException("XAdESTimeStampType element can contain more than one timestamp");
 	}
-
-	@Override
-	protected List<TimestampedReference> getIndividualContentTimestampedReferences(XAdESAttribute signedAttribute) {
-		List<TimestampInclude> includes = signedAttribute.getTimestampIncludedReferences();
-		List<TimestampedReference> timestampReferences = new ArrayList<>();
-		List<SignatureScope> signatureScopeListToAdd = new ArrayList<>();
-		for (Reference reference : signature.getReferences()) {
-			if (isContentTimestampedReference(reference, includes)) {
-				List<SignatureScope> signatureScopes = signature.getSignatureScopes();
-				if (Utils.isCollectionNotEmpty(signatureScopes)) {
-					for (SignatureScope signatureScope : signatureScopes) {
-						if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
-							signatureScopeListToAdd.add(signatureScope);
-						}
-					}
-				}
-			}
-		}
-		populateSignerDataReferencesList(timestampReferences, signatureScopeListToAdd);
-		return timestampReferences;
-	}
 	
 	@Override
 	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
 		return getKeyInfoReferences();
 	}
 	
-	private boolean isContentTimestampedReference(Reference reference, List<TimestampInclude> includes) {
-		for (TimestampInclude timestampInclude : includes) {
-			if (reference.getId().equals(timestampInclude.getURI())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	@Override
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
-		if (isKeyInfoCovered()) {
+		if (XAdESSignatureUtils.isKeyInfoCovered(signature)) {
 			addReferences(timestampedReferences, getKeyInfoReferences());
 		}
 		return timestampedReferences;
-	}
-
-	private boolean isKeyInfoCovered() {
-		List<ReferenceValidation> referenceValidations = signature.getReferenceValidations();
-		if (Utils.isCollectionNotEmpty(referenceValidations)) {
-			for (ReferenceValidation referenceValidation : referenceValidations) {
-				if (DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) && referenceValidation.isFound() && referenceValidation.isIntact()) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -369,23 +327,31 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		List<CertificateRef> certRefs = new ArrayList<>();
 		boolean certificateRefV1 = isCertificateRefV1(unsignedAttribute);
 
-		NodeList certRefsNodeList;
+		NodeList certRefsNodeList = null;
 		if (certificateRefV1) {
-			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefsCertChildren());
+			String currentCertRefsCertChildrenPath = xadesPaths.getCurrentCertRefsCertChildren();
+			if (Utils.isStringNotEmpty(currentCertRefsCertChildrenPath)) {
+				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefsCertChildrenPath);
+			}
 		} else {
-			certRefsNodeList = unsignedAttribute.getNodeList(xadesPaths.getCurrentCertRefs141CertChildren());
+			String currentCertRefs141CertChildrenPath = xadesPaths.getCurrentCertRefs141CertChildren();
+			if (Utils.isStringNotEmpty(currentCertRefs141CertChildrenPath)) {
+				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefs141CertChildrenPath);
+			}
 		}
 
-		for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
-			Element certRefElement = (Element) certRefsNodeList.item(ii);
-			CertificateRef certificateRef;
-			if (certificateRefV1) {
-				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
-			} else {
-				certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
-			}
-			if (certificateRef != null) {
-				certRefs.add(certificateRef);
+		if (certRefsNodeList != null) {
+			for (int ii = 0; ii < certRefsNodeList.getLength(); ii++) {
+				Element certRefElement = (Element) certRefsNodeList.item(ii);
+				CertificateRef certificateRef;
+				if (certificateRefV1) {
+					certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV1(certRefElement, xadesPaths);
+				} else {
+					certificateRef = XAdESCertificateRefExtractionUtils.createCertificateRefFromV2(certRefElement, xadesPaths);
+				}
+				if (certificateRef != null) {
+					certRefs.add(certificateRef);
+				}
 			}
 		}
 		return certRefs;

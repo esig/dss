@@ -36,6 +36,7 @@ import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -47,6 +48,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import static eu.europa.esig.dss.enumerations.SignatureLevel.JAdES_BASELINE_T;
 
 /**
  * Creates a T-level of a JAdES signature
@@ -133,28 +136,39 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
+				certificateVerifier, params);
+
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
-			assertExtendSignatureToTPossible(jadesSignature, params);
 
 			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!jadesSignature.hasTProfile() || SignatureLevel.JAdES_BASELINE_T.equals(params.getSignatureLevel())) {
-
-				JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-				DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
-
-				byte[] messageImprint = jadesSignature.getTimestampSource().getSignatureTimestampData();
-				byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
-				TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
-
-				JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
-
-				JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
-				etsiUHeader.addComponent(JAdESHeaderParameterNames.SIG_TST, tstContainer,
-						params.isBase64UrlEncodedEtsiUComponents());
+			if (!tLevelExtensionRequired(jadesSignature, params)) {
+				continue;
 			}
+
+			assertExtendSignatureToTPossible(jadesSignature, params);
+
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
+
+			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
+
+			byte[] messageImprint = jadesSignature.getTimestampSource().getSignatureTimestampData();
+			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
+			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
+
+			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
+
+			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
+			etsiUHeader.addComponent(JAdESHeaderParameterNames.SIG_TST, tstContainer,
+					params.isBase64UrlEncodedEtsiUComponents());
 		}
+	}
+
+	private boolean tLevelExtensionRequired(JAdESSignature jadesSignature, JAdESSignatureParameters parameters) {
+		return JAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !jadesSignature.hasTProfile();
 	}
 
 	/**
@@ -162,10 +176,10 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 */
 	private void assertExtendSignatureToTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.JAdES_BASELINE_T.equals(signatureLevel)
-				&& (jadesSignature.hasLTProfile() || jadesSignature.hasLTAProfile())) {
-			final String exceptionMessage = "Cannot extend signature. The signedData is already extended with [%s].";
-			throw new IllegalInputException(String.format(exceptionMessage, "JAdES LT"));
+		if (JAdES_BASELINE_T.equals(signatureLevel) && (jadesSignature.hasLTAProfile() ||
+				(jadesSignature.hasLTProfile() && !jadesSignature.areAllSelfSignedCertificates()) )) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
 		}
 	}
 

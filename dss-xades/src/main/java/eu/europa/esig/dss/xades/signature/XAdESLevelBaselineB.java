@@ -69,8 +69,7 @@ public class XAdESLevelBaselineB implements SignatureProfile {
 	public byte[] getDataToSign(final DSSDocument dssDocument, final XAdESSignatureParameters parameters) throws DSSException {
 		final XAdESSignatureBuilder signatureBuilder = XAdESSignatureBuilder.getSignatureBuilder(parameters, dssDocument, certificateVerifier);
 		parameters.getContext().setBuilder(signatureBuilder);
-		final byte[] dataToSign = signatureBuilder.build();
-		return dataToSign;
+		return signatureBuilder.build();
 	}
 
 	/**

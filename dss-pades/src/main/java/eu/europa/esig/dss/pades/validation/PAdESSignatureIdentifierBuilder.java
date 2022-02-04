@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
@@ -43,11 +44,12 @@ public class PAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	}
 
 	@Override
-	protected String getSignatureFilePosition() {
+	protected String getSignaturePosition() {
 		PAdESSignature padesSignature = (PAdESSignature) signature;
 		StringBuilder stringBuilder = new StringBuilder();
-		for (String filedName : padesSignature.getPdfRevision().getFieldNames()) {
-			stringBuilder.append(filedName);
+		PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
+		for (PdfSignatureField signatureField : pdfRevision.getFields()) {
+			stringBuilder.append(signatureField.getFieldName());
 		}
 		return stringBuilder.toString();
 	}

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.model.DSSDocument;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * The class is used for processing (reading and creation) of ZIP archives
@@ -101,6 +101,19 @@ public final class ZipUtils {
 	 */
 	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
 		return zipContainerHandler.createZipArchive(containerEntries, creationTime, zipComment);
+	}
+
+	/**
+	 * Creates a ZIP-Archive with the given {@code asicContent}
+	 *
+	 * @param asicContent      {@link ASiCContent} to create a new ZIP Archive from
+	 * @param creationTime     (Optional) {@link Date} defined time of an archive
+	 *                         creation, will be set for all embedded files. If
+	 *                         null, the local current time will be used
+	 * @return {@link DSSDocument} ZIP-Archive
+	 */
+	public DSSDocument createZipArchive(ASiCContent asicContent, Date creationTime) {
+		return createZipArchive(asicContent.getAllDocuments(), creationTime, asicContent.getZipComment());
 	}
 
 }

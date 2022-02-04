@@ -25,7 +25,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -80,16 +80,16 @@ public class ASiCSWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         ASiCWithCAdESContainerExtractor containerExtractor = new ASiCWithCAdESContainerExtractor(signedDocument);
-        ASiCExtractResult asicExtractResult = containerExtractor.extract();
-        List<DSSDocument> timestampDocuments = asicExtractResult.getTimestampDocuments();
+        ASiCContent asicContent = containerExtractor.extract();
+        List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
         assertEquals(1, timestampDocuments.size());
         DSSDocument archiveTimestamp = timestampDocuments.get(0);
 
-        List<DSSDocument> signedDocuments = asicExtractResult.getSignedDocuments();
+        List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
         assertEquals("package.zip", signedDocuments.get(0).getName());
 
-        List<DSSDocument> containerDocuments = asicExtractResult.getContainerDocuments();
+        List<DSSDocument> containerDocuments = asicContent.getContainerDocuments();
         assertEquals(2, containerDocuments.size());
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();

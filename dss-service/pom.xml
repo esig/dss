@@ -6,7 +6,7 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.9</version>
+		<version>5.10.RC1</version>
     </parent>
 
     <artifactId>dss-service</artifactId>
@@ -24,8 +24,8 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+			<groupId>org.apache.httpcomponents.client5</groupId>
+			<artifactId>httpclient5</artifactId>
 <!--		Exclusion with maven-surefire-plugin -->
 <!--		<exclusions> -->
 <!--        	<exclusion> -->

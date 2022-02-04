@@ -20,16 +20,7 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -45,6 +36,15 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESLevelBDoNotIncludeCertificateChain extends AbstractJAdESTestSignature {
 
@@ -89,9 +89,22 @@ public class JAdESLevelBDoNotIncludeCertificateChain extends AbstractJAdESTestSi
 		
 		RelatedCertificateWrapper relatedCertificateWrapper = relatedCertificates.get(0);
 		assertTrue(Utils.isCollectionEmpty(relatedCertificateWrapper.getOrigins()));
+
+		boolean signCertFound = false;
+		boolean keyIdentifierFound = false;
+		for (CertificateRefWrapper certificateRefWrapper : relatedCertificateWrapper.getReferences()) {
+			if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(certificateRefWrapper.getOrigin())) {
+				signCertFound = true;
+			} else if (CertificateRefOrigin.KEY_IDENTIFIER.equals(certificateRefWrapper.getOrigin())) {
+				keyIdentifierFound = true;
+			}
+		}
+		assertTrue(signCertFound);
+		assertTrue(keyIdentifierFound);
 		
 		assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
-		
+		assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
+
 		assertNotNull(signatureWrapper.getSigningCertificate());
 		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.getCertificateChain()));
 	}

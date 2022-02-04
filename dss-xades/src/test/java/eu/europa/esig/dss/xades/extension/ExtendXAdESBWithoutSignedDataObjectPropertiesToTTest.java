@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFactoryAccess {
 
@@ -62,6 +64,10 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(toSignDocument, parameters));
+		assertTrue(exception.getMessage().contains("is expired at signing time"));
+
+		parameters.setSignWithExpiredCertificate(true);
 		DSSDocument extendDocument = service.extendDocument(toSignDocument, parameters);
 		// extendDocument.save("target/result.xml");
 

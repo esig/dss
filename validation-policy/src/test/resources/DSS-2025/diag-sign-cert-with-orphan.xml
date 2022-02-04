@@ -37,7 +37,7 @@
                 </SignerInfo>
             </SignerInformationStore>
             <PDFRevision>
-                <SignatureFieldName>Signature2</SignatureFieldName>
+                <SignatureField name="Signature2" />
                 <PDFSignatureDictionary>
                     <SignerName>Lukas Baranski</SignerName>
                     <Type>Sig</Type>

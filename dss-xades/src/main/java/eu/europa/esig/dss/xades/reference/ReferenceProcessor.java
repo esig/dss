@@ -27,7 +27,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -106,8 +105,7 @@ public class ReferenceProcessor {
 
     private Node getNodeToTransform(DSSReference reference) {
         DSSDocument contents = reference.getContents();
-        byte[] docBinaries = DSSUtils.toByteArray(contents);
-        if (!DomUtils.isDOM(docBinaries)) {
+        if (!DomUtils.isDOM(contents)) {
             // cannot be transformed
             return null;
         }

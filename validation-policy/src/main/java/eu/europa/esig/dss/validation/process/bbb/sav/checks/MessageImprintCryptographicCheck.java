@@ -31,7 +31,7 @@ import java.util.Date;
 /**
  * Verifies the message-imprint cryptographic constraints
  */
-public class MessageImprintCryptographicCheck extends DigestCryptographicCheck<XmlSAV> {
+public class MessageImprintCryptographicCheck extends DigestMatcherCryptographicCheck<XmlSAV> {
 
 	/**
 	 * Default constructor

@@ -35,6 +35,8 @@ import org.w3c.dom.Element;
 import java.util.List;
 import java.util.Set;
 
+import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_LT;
+
 /**
  * LT profile of XAdES signature
  *
@@ -67,7 +69,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (xadesSignature.hasLTAProfile()) {
+			if (!ltLevelExtensionRequired()) {
 				continue;
 			}
 
@@ -94,7 +96,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (xadesSignature.hasLTAProfile()) {
+			if (!XAdES_BASELINE_LT.equals(params.getSignatureLevel()) && xadesSignature.hasLTAProfile()) {
 				continue;
 			}
 
@@ -119,16 +121,20 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		}
 	}
 
+	private boolean ltLevelExtensionRequired() {
+		return XAdES_BASELINE_LT.equals(params.getSignatureLevel()) || !xadesSignature.hasLTAProfile();
+	}
+
 	/**
 	 * Checks if the extension is possible.
 	 */
 	private void assertExtendSignatureToLTPossible() {
 		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (SignatureLevel.XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
-			final String exceptionMessage = "Cannot extend the signature. The signature is already extended with [%s]!";
-			throw new IllegalInputException(String.format(exceptionMessage, "XAdES LTA"));
+		if (XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
+			throw new IllegalInputException(String.format(
+					"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
+			throw new IllegalInputException("Cannot extend signature. The signature contains only self-signed certificate chains.");
 		}
 	}
 

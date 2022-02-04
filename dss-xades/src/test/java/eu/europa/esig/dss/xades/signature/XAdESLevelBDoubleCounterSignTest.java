@@ -34,6 +34,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -127,6 +128,13 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 			}
 		}
 		assertTrue(duplicateIdErrorFound);
+	}
+
+	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		List<SignatureWrapper> counterSignatures = new ArrayList<>(diagnosticData.getAllCounterSignatures());
+		assertEquals(2, counterSignatures.size());
+		assertEquals(counterSignatures.get(0).getDAIdentifier(), counterSignatures.get(1).getDAIdentifier());
 	}
 
 	@Override

@@ -85,10 +85,7 @@ public class ToBeSignedDTO implements Serializable {
 			return false;
 		}
 		ToBeSignedDTO other = (ToBeSignedDTO) obj;
-		if (!Arrays.equals(bytes, other.bytes)) {
-			return false;
-		}
-		return true;
+		return Arrays.equals(bytes, other.bytes);
 	}
 
 }

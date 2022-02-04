@@ -75,7 +75,7 @@ public class CRLSourceSnippet {
 		// Set the JdbcCacheConnector
 		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
 		
-		// Allows definition of an alternative dataLoadet to be used to access a revocation 
+		// Allows definition of an alternative dataLoader to be used to access a revocation
 		// from online sources if a requested revocation is not present in the repository or has been expired (see below).
 		cacheCRLSource.setProxySource(onlineCRLSource);
 		

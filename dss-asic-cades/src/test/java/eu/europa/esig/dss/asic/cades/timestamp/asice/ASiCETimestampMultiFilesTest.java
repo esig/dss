@@ -131,15 +131,28 @@ public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		assertEquals(0, diagnosticData.getSignatureIdList().size());
 		assertEquals(2, diagnosticData.getTimestampIdList().size());
 
+		boolean firstTstFound = false;
+		boolean secondTstFound = false;
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			assertTrue(timestamp.isMessageImprintDataFound());
 			assertTrue(timestamp.isMessageImprintDataIntact());
 			assertTrue(timestamp.isSignatureIntact());
 			assertTrue(timestamp.isSignatureValid());
-			
-			assertEquals(3, timestampWrapper.getDigestMatchers().size());
-			assertEquals(3, timestampWrapper.getTimestampedSignedData().size());
+
+			if (timestamp.getDigestMatchers().size() == 3) {
+				assertEquals(3, timestamp.getTimestampScopes().size());
+				assertEquals(3, timestamp.getTimestampedSignedData().size());
+				firstTstFound = true;
+
+			} else if (timestamp.getDigestMatchers().size() == 5) {
+				assertEquals(5, timestamp.getTimestampScopes().size());
+				assertEquals(4, timestamp.getTimestampedSignedData().size());
+				assertEquals(1, timestamp.getTimestampedTimestamps().size());
+				secondTstFound = true;
+			}
 		}
+		assertTrue(firstTstFound);
+		assertTrue(secondTstFound);
 
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		assertNotNull(etsiValidationReportJaxb);

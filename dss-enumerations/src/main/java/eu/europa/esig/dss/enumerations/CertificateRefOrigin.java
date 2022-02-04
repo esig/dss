@@ -26,18 +26,23 @@ package eu.europa.esig.dss.enumerations;
 public enum CertificateRefOrigin {
 
 	/**
-	 * The certificate reference was embedded in the signature 'attribute-certificate-references' attribute (used in CAdES and XAdES)
+	 * The certificate reference was embedded in the signature 'attribute-certificate-references' attribute
 	 */
 	ATTRIBUTE_CERTIFICATE_REFS,
 
 	/**
-	 * The certificate reference was embedded in the signature 'complete-certificate-references' attribute (used in CAdES and XAdES)
+	 * The certificate reference was embedded in the signature 'complete-certificate-references' attribute
 	 */
 	COMPLETE_CERTIFICATE_REFS,
 
 	/**
-	 * The certificate reference was embedded in the signature 'signing-certificate' attribute (used in CAdES and XAdES)
+	 * The certificate reference was embedded in the signature 'signing-certificate' attribute
 	 */
 	SIGNING_CERTIFICATE,
+
+	/**
+	 * Used as a hint to identify the signing certificate (used in JAdES)
+	 */
+	KEY_IDENTIFIER,
 
 }

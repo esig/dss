@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.dss818;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.List;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -36,10 +35,10 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractDSS818Test extends AbstractPAdESTestValidation {
 
@@ -66,7 +65,7 @@ public abstract class AbstractDSS818Test extends AbstractPAdESTestValidation {
 		try (ASN1InputStream asn1sInput = new ASN1InputStream(encoded)) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 	
-			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getObject());
+			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getBaseObject());
 	
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
 			LOG.debug("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());

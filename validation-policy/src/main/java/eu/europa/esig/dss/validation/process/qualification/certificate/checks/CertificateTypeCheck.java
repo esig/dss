@@ -32,6 +32,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the certificate type has been identified at the given time
+ *
  */
 public class CertificateTypeCheck extends ChainItem<XmlValidationCertificateQualification> {
 
@@ -41,8 +42,17 @@ public class CertificateTypeCheck extends ChainItem<XmlValidationCertificateQual
 	/** The used validation time */
 	private final ValidationTime validationTime;
 
-	public CertificateTypeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, CertificateType type,
-								ValidationTime validationTime, LevelConstraint constraint) {
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationCertificateQualification}
+	 * @param type {@link CertificateType}
+	 * @param validationTime {@link ValidationTime}
+	 * @param constraint {@link LevelConstraint}
+	 */
+	public CertificateTypeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+								CertificateType type, ValidationTime validationTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.type = type;

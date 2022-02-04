@@ -1,21 +1,22 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 09 Jul 2021 08:02:38 GMT
+Date: Wed, 02 Feb 2022 13:31:10 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self' http://localhost:9795 fonts.googleapis.com fonts.gstatic.com cdnjs.cloudflare.com 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 388
+Content-Length: 440
 
 {
-  "bytes" : "MYIBDzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTA3MDkwODAyMzhaMCsGCSqGSIb3DQEJNDEeMBwwCwYJYIZIAWUDBAIBoQ0GCSqGSIb3DQEBCwUAMC8GCSqGSIb3DQEJBDEiBCCRwMc5mPBmFV+4OG6EJ4IRFGZilMfgmPhGZ9VWLfVD2DB3BgsqhkiG9w0BCRACLzFoMGYwZDBiBCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1c="
+  "bytes" : "MYIBNTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMjAyMDIxMzMxMTBaMCQGBgQAjUUCATEaDBhhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0wKwYJKoZIhvcNAQk0MR4wHDALBglghkgBZQMEAgGhDQYJKoZIhvcNAQELBQAwLwYJKoZIhvcNAQkEMSIEIJHAxzmY8GYVX7g4boQnghEUZmKUx+CY+EZn1VYt9UPYMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

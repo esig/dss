@@ -77,7 +77,7 @@ public class XAdESLevelLTANotTrustedTSPTest extends AbstractXAdESTestSignature {
     public void signAndVerify() {
         Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
-        assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain for the token :"));
+        assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain!"));
     }
 
     @Override

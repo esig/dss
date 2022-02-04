@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -249,8 +248,8 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Only XAdES form is allowed !", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        exception = assertThrows(DSSException.class, () -> extendAndValidate(signedDocument, extensionParameters));
-        assertEquals("Cannot extend to XAdES_BASELINE_B", exception.getMessage());
+        exception = assertThrows(UnsupportedOperationException.class, () -> extendAndValidate(signedDocument, extensionParameters));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
         
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         extendAndValidate(signedDocument, extensionParameters);

@@ -33,7 +33,7 @@ import java.util.Objects;
 @SuppressWarnings("serial")
 public class DataToSignOneDocumentDTO extends AbstractDataToSignDTO {
 
-	/** Th document to be signed */
+	/** The document to be signed */
 	private RemoteDocument toSignDocument;
 
 	/**

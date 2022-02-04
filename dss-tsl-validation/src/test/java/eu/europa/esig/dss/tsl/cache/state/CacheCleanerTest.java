@@ -243,6 +243,11 @@ public class CacheCleanerTest {
 		
 		assertTrue(sampleFile.exists());
 		assertTrue(lotlFile.exists());
+
+		assertTrue(sampleFile.delete(), "Cannot delete the file");
+		assertTrue(lotlFile.delete(), "Cannot delete the file");
+		assertFalse(sampleFile.exists());
+		assertFalse(lotlFile.exists());
 	}
 	
 	@Test

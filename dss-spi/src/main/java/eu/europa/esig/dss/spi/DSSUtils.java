@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -65,6 +66,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -81,7 +83,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -102,39 +103,28 @@ public final class DSSUtils {
 	/** Empty byte array */
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+	/** Represents a carriage return '\r' character */
+	public static final byte CARRIAGE_RETURN = '\r';
+
+	/** Represents a new line '\n' character */
+	public static final byte LINE_FEED = '\n';
+
+	/** RFC 3339 DateTime format used by default */
+	public static final String RFC3339_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+	/** The UTC timezone (GMT+0), used by default */
+	public static final TimeZone UTC_TIMEZONE = TimeZone.getTimeZone("UTC");
+
 	/** The UTF-8 encoding name string */
 	public static final String UTF8_ENCODING = "UTF-8";
 
-	/** Default DateTime format */
-	private static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	/** This array contains character bytes, representing a line break (new line, carriage return) */
+	private static final byte[] LINE_BREAK_CHARS = { CARRIAGE_RETURN, LINE_FEED };
 
 	/**
 	 * This class is an utility class and cannot be instantiated.
 	 */
 	private DSSUtils() {
-	}
-
-	/**
-	 * Formats a date to use for internal purposes (logging, toString)
-	 * Example: "2019-11-19T17:28:15Z"
-	 *
-	 * @param date
-	 *            the date to be converted
-	 * @return the textual representation (a null date will result in "N/A")
-	 */
-	public static String formatInternal(final Date date) {
-		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT);
-	}
-
-	/**
-	 * Formats the date according to the given format (with system TimeZone)
-	 * 
-	 * @param date {@link Date} to transform to a String
-	 * @param format {@link String} representing a Date format to be used
-	 * @return {@link String} formatted date
-	 */
-	public static String formatDateWithCustomFormat(final Date date, final String format) {
-		return formatDateWithCustomFormat(date, format, null);
 	}
 
 	/**
@@ -146,11 +136,24 @@ public final class DSSUtils {
 	 * @return the textual representation (a null date will result in "N/A")
 	 */
 	public static String formatDateToRFC(final Date date) {
-		return formatDateWithCustomFormat(date, DEFAULT_DATE_TIME_FORMAT, "UTC");
+		return formatDateWithCustomFormat(date, RFC3339_TIME_FORMAT);
+	}
+
+	/**
+	 * Formats the date according to the given format (with system TimeZone)
+	 * 
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format) {
+		return formatDateWithCustomFormat(date, format, UTC_TIMEZONE);
 	}
 	
 	/**
-	 * Formats the date according to the given format and timeZone
+	 * Formats the date according to the given format and timeZone as {@code String}.
+	 *
+	 * NOTE : When null or empty string is provided, the system default timezone is used!
 	 * 
 	 * @param date {@link Date} to transform to a String
 	 * @param format {@link String} representing a Date format to be used
@@ -158,9 +161,23 @@ public final class DSSUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String formatDateWithCustomFormat(final Date date, final String format, final String timeZone) {
+		return formatDateWithCustomFormat(date, format, Utils.isStringNotEmpty(timeZone) ? TimeZone.getTimeZone(timeZone) : null);
+	}
+
+	/**
+	 * Formats the date according to the given format and {@code TimeZone}
+	 *
+	 * NOTE : When null TimeZone is provided, the system default timezone is used!
+	 *
+	 * @param date {@link Date} to transform to a String
+	 * @param format {@link String} representing a Date format to be used
+	 * @param timeZone {@link TimeZone} specifying a TimeZone
+	 * @return {@link String} formatted date
+	 */
+	public static String formatDateWithCustomFormat(final Date date, final String format, final TimeZone timeZone) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-		if (Utils.isStringNotEmpty(timeZone)) {
-			simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		if (timeZone != null) {
+			simpleDateFormat.setTimeZone(timeZone);
 		}
 		return (date == null) ? "N/A" : simpleDateFormat.format(date);
 	}
@@ -826,27 +843,53 @@ public final class DSSUtils {
 	}
 	
 	/**
-	 * Reads first {@code byteArray.length} bytes of the {@code dssDocument} and compares them with {@code byteArray}
+	 * Reads first {@code preamble.length} bytes of the {@code dssDocument} and compares them with {@code preamble}
 	 * 
 	 * @param dssDocument {@link DSSDocument} to read bytes from
-	 * @param byteArray {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code byteArray}, FALSE otherwise
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
 	 */
-	public static boolean compareFirstBytes(final DSSDocument dssDocument, byte[] byteArray) {
-		try {
-			byte[] preamble = new byte[byteArray.length];
-			readAvailableBytes(dssDocument, preamble);
-			return Arrays.equals(byteArray, preamble);
+	public static boolean startsWithBytes(final DSSDocument dssDocument, byte[] preamble) {
+		return startsWithBytes(dssDocument.openStream(), preamble);
+	}
+
+	/**
+	 * Reads first {@code preamble.length} bytes of the {@code byteArray} and compares them with {@code preamble}
+	 *
+	 * @param byteArray {@link DSSDocument} to compare bytes from
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 */
+	public static boolean startsWithBytes(final byte[] byteArray, byte[] preamble) {
+		byte[] subarray = Utils.subarray(byteArray, 0, preamble.length);
+		return Arrays.equals(preamble, subarray);
+	}
+
+	/**
+	 * Reads first {@code preamble.length} bytes of the {@code InputStream} and compares them with {@code preamble}
+	 *
+	 * @param inputStream {@link InputStream} to read bytes from
+	 * @param preamble {@code byte} array to compare the beginning string with
+	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 */
+	public static boolean startsWithBytes(final InputStream inputStream, byte[] preamble) {
+		try (InputStream is = inputStream) {
+			byte[] byteArray = new byte[preamble.length];
+			readAvailableBytes(is, byteArray);
+			return Arrays.equals(preamble, byteArray);
+
 		} catch (IllegalStateException e) {
 			LOG.warn("Cannot compare first bytes of the document. Reason : {}", e.getMessage());
 			return false;
+
+		} catch (IOException e) {
+			throw new DSSException("Cannot read a sequence of bytes from the InputStream.", e);
 		}
 	}
 
 	/**
-	 * Concatenates all the arrays into a new array. The new array contains all of the element of each array followed by
-	 * all of the elements of the next array. When an array is
-	 * returned, it is always a new array.
+	 * Concatenates all the arrays into a new array. The new array contains all bytes of each array followed by
+	 * all bytes of the next array. When an array is returned, it is always a new array.
 	 *
 	 * @param arrays
 	 *            {@code byte} arrays to concatenate
@@ -972,7 +1015,7 @@ public final class DSSUtils {
 	}
 	
 	/**
-	 * This method encodes an URI to be compliant with the RFC 3986 (see DSS-1475 for details)
+	 * This method encodes a URI to be compliant with the RFC 3986 (see DSS-1475 for details)
 	 *
 	 * @param fileURI the uri to be encoded
 	 * @return the encoded result
@@ -1200,7 +1243,7 @@ public final class DSSUtils {
 	 * @param toAddCollection a collection to add values from
 	 * @param <T> an Object
 	 */
-	public static <T extends Object> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
+	public static <T> void enrichCollection(Collection<T> currentCollection, Collection<T> toAddCollection) {
 		for (T object : toAddCollection) {
 			if (!currentCollection.contains(object)) {
 				currentCollection.add(object);
@@ -1240,39 +1283,46 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method creates a user-friendly representation of SPUserNotice signature policy qualifier
+	 * This method verifies the validity of thw provided {@code UserNotice} object
 	 *
-	 * @param organization {@link String}
-	 * @param noticeNumbers a list of {@link Number}s
-	 * @param explicitText {@link String}
-	 * @param <N> {@link Number}
-	 * @return {@link String}
+	 * @param userNotice {@link UserNotice} to check
+	 * @throws IllegalArgumentException in case of an invalid configuration
 	 */
-	public static <N extends Number> String getSPUserNoticeString(String organization, List<N> noticeNumbers, String explicitText) {
-		StringBuilder spUserNoticeStringBuilder = new StringBuilder();
-		if (Utils.isStringNotEmpty(organization)) {
-			spUserNoticeStringBuilder.append(organization);
+	public static void assertSPUserNoticeConfigurationValid(final UserNotice userNotice) throws IllegalArgumentException {
+		boolean organizationEmpty = Utils.isStringEmpty(userNotice.getOrganization());
+		boolean noticeNumbersEmpty = userNotice.getNoticeNumbers() == null || userNotice.getNoticeNumbers().length == 0;
+		if (organizationEmpty != noticeNumbersEmpty) {
+			throw new IllegalArgumentException("Both Organization name and NoticeNumbers shall be defined " +
+					"within the UserNotice configuration!");
 		}
-		if (Utils.isCollectionNotEmpty(noticeNumbers)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			Iterator<N> iterator = noticeNumbers.iterator();
-			while (iterator.hasNext()) {
-				N number = iterator.next();
-				spUserNoticeStringBuilder.append(number);
-				if (iterator.hasNext()) {
-					spUserNoticeStringBuilder.append(", ");
-				}
+	}
+	/**
+	 * Transforms the given array of integers to a list of {@code BigInteger}s
+	 *
+	 * @param integers array of integers
+	 * @return a list of {@link BigInteger}s
+	 */
+	public static List<BigInteger> toBigIntegerList(int[] integers) {
+		List<BigInteger> bi = new ArrayList<>();
+		for (int i : integers) {
+			bi.add(BigInteger.valueOf(i));
+		}
+		return bi;
+	}
+
+	/**
+	 * This method verifies if the given byte represents a line break character (new line or a carriage return)
+	 *
+	 * @param b byte to verify
+	 * @return TRUE if the byte represents a line break char, FALSE otherwise
+	 */
+	public static boolean isLineBreakByte(byte b) {
+		for (byte m : LINE_BREAK_CHARS) {
+			if (b == m) {
+				return true;
 			}
 		}
-		if (Utils.isStringNotEmpty(explicitText)) {
-			if (spUserNoticeStringBuilder.length() != 0) {
-				spUserNoticeStringBuilder.append("; ");
-			}
-			spUserNoticeStringBuilder.append(explicitText);
-		}
-		return spUserNoticeStringBuilder.toString();
+		return false;
 	}
 
 }

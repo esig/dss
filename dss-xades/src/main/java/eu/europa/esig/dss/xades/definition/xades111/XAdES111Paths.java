@@ -454,6 +454,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSignaturePolicySPDocSpecification() {
+		return null;
+	}
+
+	@Override
 	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
 		return null;
 	}
@@ -581,6 +586,16 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	// --------------------------- Signature Policy Store
 
 	@Override
+	public String getCurrentSPDocSpecification() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentIdentifier() {
+		return fromCurrentPosition(XAdES111Element.IDENTIFIER);
+	}
+
+	@Override
 	public String getCurrentSPDocSpecificationIdentifier() {
 		return null;
 	}
@@ -591,7 +606,12 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDocumentReferenceElements() {
+	public String getCurrentDocumentationReferenceElements() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentSPDocSpecificationDocumentationReferenceElements() {
 		return null;
 	}
 

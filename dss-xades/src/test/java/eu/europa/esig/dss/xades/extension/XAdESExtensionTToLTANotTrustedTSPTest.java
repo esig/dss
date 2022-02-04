@@ -25,10 +25,10 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
@@ -74,7 +74,7 @@ public class XAdESExtensionTToLTANotTrustedTSPTest extends AbstractXAdESTestExte
     public void extendAndVerify() throws Exception {
         Exception exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
-        assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain for the token :"));
+        assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain!"));
     }
 
 }

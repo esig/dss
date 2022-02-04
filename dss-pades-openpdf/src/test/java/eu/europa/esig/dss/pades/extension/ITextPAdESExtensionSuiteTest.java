@@ -30,12 +30,15 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTASelfSignedTS
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTAWithExpiredUserTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertificateTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedSkipCheckTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithRevokedCertTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionInvalidLevelsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTAWithDifferentTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTASelfSignedTSATest;
@@ -46,6 +49,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSig
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTALevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTLevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToTLevelTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANoChangesPermittedTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTATest;
@@ -55,11 +59,10 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionTToLTWithSelfSignedTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFArchiveTimestampingTest;
 import eu.europa.esig.dss.pades.extension.suite.PDFTimestampingTest;
-import org.junit.platform.runner.JUnitPlatform;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({ PAdESExtensionBToLTTest.class, PAdESExtensionBToLTATest.class, PAdESExtensionBToTTest.class, PAdESExtensionBToTWithCompositeTSATest.class,
 		PAdESExtensionBToTWithError500TimestampTest.class, PAdESExtensionBToTWithFailTimestampTest.class, PAdESExtensionLTAToLTATest.class,
 		PAdESExtensionLTToLTATest.class, PAdESExtensionLTToLTAWithError500TimestampTest.class, PAdESExtensionLTToLTAWithFailTimestampTest.class,
@@ -70,7 +73,9 @@ import org.junit.runner.RunWith;
 		DSS1469ExtensionTest.class, DSS2058LTATest.class, DSS2058QCLTATest.class, PAdESExtensionLTAToLTAWithDifferentTSATest.class,
 		PAdESExtensionTToLTANotTrustedTSPTest.class, PAdESExtensionNonPDFToTLevelTest.class, PAdESExtensionNonPDFToLTLevelTest.class,
         PAdESExtensionNonPDFToLTALevelTest.class, PAdESExtensionBToLTWithRevokedCertificateTest.class,
-        PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class })
+        PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToTWithRevokedCertTest.class,
+		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class,
+		PAdESExtensionInvalidLevelsTest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

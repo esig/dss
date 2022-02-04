@@ -52,6 +52,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 
 	@Override
 	public void close() {
+		// nothing to close
 	}
 
 }

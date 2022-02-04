@@ -99,8 +99,9 @@ public abstract class RevocationDataLoadingStrategy {
 	 *                               issuer of the certificateToken
 	 * @return an instance of {@code RevocationToken}
 	 */
+	@SuppressWarnings("rawtypes")
 	protected abstract RevocationToken getRevocationToken(CertificateToken certificateToken,
-												CertificateToken issuerCertificateToken);
+														  CertificateToken issuerCertificateToken);
 
 	/**
 	 * Retrieves and verifies the obtained CRL token

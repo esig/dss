@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextPosition;
@@ -41,6 +42,9 @@ import org.junit.jupiter.api.TestInfo;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
 public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisualComparator {
@@ -104,8 +108,13 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 		textParameters.setTextColor(Color.GREEN);
 		textParameters.setSignerTextPosition(SignerTextPosition.TOP);
 		imageParameters.setTextParameters(textParameters);
-
 		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
 		drawAndCompareVisually();
 	}
 

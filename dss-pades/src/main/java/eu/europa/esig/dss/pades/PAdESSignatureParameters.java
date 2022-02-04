@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -222,25 +223,15 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.location = location;
 	}
 
-	/**
-	 * The id/name of the signature field which should be signed
-	 * 
-	 * Deprecated. Use {@code getImageParameters().getFieldParameters().setFieldId(signatureFieldId)}
-	 * 
-	 * @param signatureFieldId {@link String} id of a signature field to be used
-	 */
-	@Deprecated
-	public void setSignatureFieldId(String signatureFieldId) {
-		getImageParameters().getFieldParameters().setFieldId(signatureFieldId);
-	}
-
 	@Override
 	public int getContentSize() {
 		return this.signatureSize;
 	}
 
 	/**
-	 * This setter allows to reserve more than the default size for a signature (9472bytes)
+	 * This setter defines an amount of bytes to be reserved for a CMS signature contents encapsulation
+	 *
+	 * Default : 9472 bytes
 	 *
 	 * @param signatureSize /Contents parameter reserved space
 	 */

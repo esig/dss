@@ -39,7 +39,6 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -104,15 +103,9 @@ public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 
 		Exception exception = assertThrows(IllegalInputException.class,
 				() -> service.addSignaturePolicyStore(doubleSignedDocument, signaturePolicyStore));
-		assertEquals("Not possible to add a signature policy store! " +
-				"Reason : a signature with a filename 'META-INF/signature002.p7s' is covered by another manifest.", exception.getMessage());
+		assertTrue(exception.getMessage().contains("Not possible to add a signature policy store!"));
 
 		return service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
-	}
-
-	@Override
-	protected SignaturePolicyProvider getSignaturePolicyProvider() {
-		return null;
 	}
 
 	@Override

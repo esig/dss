@@ -62,7 +62,7 @@ public class PAdESVisibleSignatureSnippet {
 		
 		// Rotates the signature field and changes the coordinates' origin respectively to its values as following:
 		/* _NONE_ (_DEFAULT value._ No rotation is applied. The origin of coordinates begins from the top left corner of a page);
-		   _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as a defined in a PDF page);
+		   _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as defined in a PDF page);
 		   _ROTATE_90_ (Rotates a signature field for a 90&#176; clockwise. Coordinates' origin begins from top right page corner);
 		   _ROTATE_180_ (Rotates a signature field for a 180&#176; clockwise. Coordinates' origin begins from the bottom right page corner);
 		   _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner). */

@@ -1,0 +1,21 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Exceptions
+
+This section provides an overview of runtime Exceptions which are being thrown by various modules of DSS framework.
+
+The following Exceptions can be obtained by the upper level:
+
+* `NullPointerException` is thrown when a mandatory parameter has not been provided by the end-user to the method/process, requiring the property;
+* `IllegalArgumentException` is thrown when a configuration of input parameters is not valid for the called method or some parameters cannot be used together (e.g. on a signature creation);
+* `IllegalInputException` is thrown when a provided input document is not valid for the requested process and/or the configuration of parameters is not applicable for the given document;
+* `UnsupportedOperationException` is thrown when a method is not implemented or its usage with the requested parameters is not (yet) supported;
+* `IllegalStateException` is thrown when the requested method cannot be performed at the current method (e.g. another method shall be executed before);
+* `DSSException` is thrown in case of an error obtained during the internal DSS process (e.g. data conversion, CRL/OCSP parsing, etc.);
+* `DSSExternalResourceException` is thrown if an error occurs during a remote source request (AIA, CRL, OCSP requests, etc.);
+* `DSSRemoteServiceException` is thrown in case of a request/response error within <<REST>> and <<SOAP>>;
+* `SecurityConfigurationException` is thrown in case of invalid configuration of security features (see <<xmlSecurities>>).

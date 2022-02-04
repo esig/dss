@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -45,7 +44,6 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInfoGenerator;
@@ -160,10 +158,33 @@ public class CMSSignedDataBuilder {
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
 	 *         CAdESLevelBaselineB
 	 */
-	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider, final CAdESSignatureParameters parameters,
-			final boolean includeUnsignedAttributes) {
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
+															 final CAdESSignatureParameters parameters,
+															 final boolean includeUnsignedAttributes) {
 
-		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB();
+		return getSignerInfoGeneratorBuilder(digestCalculatorProvider, parameters, includeUnsignedAttributes, null);
+	}
+
+	/**
+	 * This method creates a builder of SignerInfoGenerator
+	 *
+	 * @param digestCalculatorProvider
+	 *            the digest calculator (can be pre-computed)
+	 * @param parameters
+	 *            the parameters of the signature containing values for the attributes
+	 * @param includeUnsignedAttributes
+	 *            true if the unsigned attributes must be included
+	 * @param contentToSign
+	 *            {@link DSSDocument} represents a content to be signed
+	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the
+	 *         CAdESLevelBaselineB
+	 */
+	SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(DigestCalculatorProvider digestCalculatorProvider,
+															 final CAdESSignatureParameters parameters,
+															 final boolean includeUnsignedAttributes,
+															 final DSSDocument contentToSign) {
+
+		final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB(contentToSign);
 		final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
 		AttributeTable unsignedAttributes = null;
@@ -256,48 +277,6 @@ public class CMSSignedDataBuilder {
 			throw new DSSException(String.format("Unable to get JcaCertStore. Reason : %s", e.getMessage()), e);
 		}
 	}
-
-	/**
-	 * Generates a new CMSSignedData with incorporation of defined validation data stores
-	 *
-	 * @param cmsSignedData {@link CMSSignedData} to be re-generated
-	 * @param detachedContents a list of {@link DSSDocument}s to add (shall be one)
-	 * @param certificatesStore {@link Store} of certificates
-	 * @param attributeCertificatesStore {@link Store} of attribute certificates
-	 * @param crlsStore {@link Store} of CRLs
-	 * @param otherRevocationInfoFormatStoreBasic {@link Store} of other revocation data
-	 * @param otherRevocationInfoFormatStoreOcsp {@link Store} of OCSPs
-	 * @return {@link CMSSignedData}
-	 */
-	@SuppressWarnings("rawtypes")
-	protected CMSSignedData regenerateCMSSignedData(CMSSignedData cmsSignedData, List<DSSDocument> detachedContents,
-													Store certificatesStore, Store attributeCertificatesStore,
-													Store crlsStore, Store otherRevocationInfoFormatStoreBasic,
-													Store otherRevocationInfoFormatStoreOcsp) {
-		try {
-
-			final CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
-			cmsSignedDataGenerator.addSigners(cmsSignedData.getSignerInfos());
-			cmsSignedDataGenerator.addAttributeCertificates(attributeCertificatesStore);
-			cmsSignedDataGenerator.addCertificates(certificatesStore);
-			cmsSignedDataGenerator.addCRLs(crlsStore);
-			cmsSignedDataGenerator.addOtherRevocationInfo(id_pkix_ocsp_basic, otherRevocationInfoFormatStoreBasic);
-			cmsSignedDataGenerator.addOtherRevocationInfo(id_ri_ocsp_response, otherRevocationInfoFormatStoreOcsp);
-
-			final boolean encapsulate = !CMSUtils.isDetachedSignature(cmsSignedData);
-			if (!encapsulate) {
-				// CAdES can only sign one document
-				final DSSDocument doc = detachedContents.get(0);
-				final CMSTypedData content = CMSUtils.getContentToBeSigned(doc);
-				cmsSignedData = cmsSignedDataGenerator.generate(content, encapsulate);
-			} else {
-				cmsSignedData = cmsSignedDataGenerator.generate(cmsSignedData.getSignedContent(), encapsulate);
-			}
-			return cmsSignedData;
-		} catch (CMSException e) {
-			throw new DSSException(String.format("Unable to regenerate CMSSignedData. Reason : %s", e.getMessage()), e);
-		}
-	}
 	
 	/**
 	 * Extends the provided {@code cmsSignedData} with the required validation data
@@ -357,17 +336,15 @@ public class CMSSignedDataBuilder {
 		crlsStore = new CollectionStore(newCrlsStore);
 
 		try {
-			cmsSignedData = CMSSignedData.replaceCertificatesAndCRLs(cmsSignedData, certificatesStore,
-					attributeCertificatesStore, crlsStore);
+			return CMSSignedData.replaceCertificatesAndCRLs(
+					cmsSignedData, certificatesStore, attributeCertificatesStore, crlsStore);
 		} catch (CMSException e) {
 			throw new DSSException(String.format("Unable to re-create a CMS signature. Reason : %s", e.getMessage()), e);
 		}
-
-		return cmsSignedData;
 	}
 
 	/**
-	 * @return the a copy of x509crl as a X509CRLHolder
+	 * @return a copy of x509crl as a X509CRLHolder
 	 */
 	private X509CRLHolder getX509CrlHolder(CRLToken crlToken) {
 		try (InputStream is = crlToken.getCRLStream()) {

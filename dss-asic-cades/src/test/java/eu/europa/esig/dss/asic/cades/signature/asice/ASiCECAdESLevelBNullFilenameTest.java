@@ -20,16 +20,24 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSignature {
 
@@ -53,6 +61,25 @@ public class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSign
 	@Override
 	protected boolean isGenerateHtmlPdfReports() {
 		return true;
+	}
+
+	@Override
+	protected void checkManifests(List<DSSDocument> manifestDocuments) {
+		assertEquals(1, manifestDocuments.size());
+
+		DSSDocument manifest = manifestDocuments.get(0);
+
+		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifest);
+		assertNotNull(manifestFile);
+
+		assertNotNull(manifestFile.getFilename());
+		assertNotNull(manifestFile.getSignatureFilename());
+		assertEquals(1, manifestFile.getEntries().size());
+
+		ManifestEntry manifestEntry = manifestFile.getEntries().get(0);
+		assertNotNull(manifestEntry.getFileName());
+		assertNotNull(manifestEntry.getDigest());
+		assertNull(manifestEntry.getMimeType());
 	}
 
 	@Override

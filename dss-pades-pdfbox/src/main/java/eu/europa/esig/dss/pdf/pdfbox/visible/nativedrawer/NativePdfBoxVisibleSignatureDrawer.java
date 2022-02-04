@@ -31,6 +31,7 @@ import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -76,6 +77,28 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	/** Defines the default value for a non-transparent alpha layer */
 	private static final float OPAQUE_VALUE = 0xff;
 
+	/**
+	 * Defines whether only a subset of used glyphs should be embedded to a PDF,
+	 * when a font file is used with a text information defined within a signature field
+	 *
+	 * DEFAULT : FALSE (all glyphs from a font file are embedded to a PDF document)
+	 */
+	private boolean embedFontSubset = false;
+
+	/**
+	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
+	 *
+	 * When set to TRUE, only the used glyphs will be embedded to a font.
+	 * When set to FALSE, all glyphs from a font will be embedded to a PDF.
+	 *
+	 * DEFAULT : FALSE (the whole font file is embedded to a PDF)
+	 *
+	 * @param embedFontSubset whether only a subset of used glyphs should be embedded to a PDF
+	 */
+	public void setEmbedFontSubset(boolean embedFontSubset) {
+		this.embedFontSubset = embedFontSubset;
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions)
 			throws IOException {
@@ -96,7 +119,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		} else if (dssFont instanceof DSSFileFont) {
 			DSSFileFont fileFont = (DSSFileFont) dssFont;
 			try (InputStream is = fileFont.getInputStream()) {
-				return PDType0Font.load(document, is);
+				return PDType0Font.load(document, is, embedFontSubset);
 			}
 		} else {
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
@@ -201,11 +224,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private void setBackground(PDPageContentStream cs, Color color, PDRectangle rect) throws IOException {
 		if (color != null) {
 			setAlphaChannel(cs, color);
-			cs.setNonStrokingColor(color);
+			setNonStrokingColor(cs, color);
 			// fill a whole box with the background color
 			cs.addRect(rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getWidth(), rect.getHeight());
 			cs.fill();
-			cleanTransparency(cs);
+			cleanTransparency(cs, color);
 		}
 	}
 
@@ -259,7 +282,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			float fontSize = dimensionAndPosition.getTextSize();
 			cs.beginText();
 			cs.setFont(pdFont, fontSize);
-			cs.setNonStrokingColor(textParameters.getTextColor());
+			setNonStrokingColor(cs, textParameters.getTextColor());
 			setAlphaChannel(cs, textParameters.getTextColor());
 
 			PdfBoxDSSFontMetrics pdfBoxFontMetrics = new PdfBoxDSSFontMetrics(pdFont);
@@ -296,7 +319,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				cs.newLine();
 			}
 			cs.endText();
-			cleanTransparency(cs);
+			cleanTransparency(cs, textParameters.getTextColor());
 		}
 	}
 
@@ -310,6 +333,12 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		}
 	}
 
+	private void setNonStrokingColor(PDPageContentStream cs, Color color) throws IOException {
+		if (color != null) {
+			cs.setNonStrokingColor(color);
+		}
+	}
+
 	/**
 	 * Sets alpha channel if needed
 	 * 
@@ -318,11 +347,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * @throws IOException in case of error
 	 */
 	private void setAlphaChannel(PDPageContentStream cs, Color color) throws IOException {
-		// if alpha value is less then 255 (is transparent)
-		float alpha = color.getAlpha();
-		if (alpha < OPAQUE_VALUE) {
-			LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
-			setAlpha(cs, alpha);
+		if (color != null) {
+			// if alpha value is less then 255 (is transparent)
+			float alpha = color.getAlpha();
+			if (alpha < OPAQUE_VALUE) {
+				LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
+				setAlpha(cs, alpha);
+			}
 		}
 	}
 
@@ -332,13 +363,26 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		cs.setGraphicsStateParameters(gs);
 	}
 
-	private void cleanTransparency(PDPageContentStream cs) throws IOException {
-		setAlpha(cs, OPAQUE_VALUE);
+	/**
+	 * Clears alpha channel if needed
+	 *
+	 * @param cs    {@link PDPageContentStream} current stream
+	 * @param color {@link Color}
+	 * @throws IOException in case of error
+	 */
+	private void cleanTransparency(PDPageContentStream cs, Color color) throws IOException {
+		if (color != null) {
+			// if alpha value is less than 255 (is transparent)
+			float alpha = color.getAlpha();
+			if (alpha < OPAQUE_VALUE) {
+				setAlpha(cs, OPAQUE_VALUE);
+			}
+		}
 	}
 
 	/**
 	 * Returns {@link PDRectangle} of the widget to place on page
-	 * 
+	 *
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
 	 *                             specifies widget size and position
 	 * @param page                 {@link PDPage} to place the widget on
@@ -357,12 +401,17 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 
 	@Override
-	protected String getColorSpaceName(DSSDocument image) throws IOException {
-		try (InputStream is = image.openStream()) {
-			byte[] bytes = IOUtils.toByteArray(is);
-			PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, image.getName());
-			PDColorSpace colorSpace = imageXObject.getColorSpace();
-			return colorSpace.getName();
+	protected String getExpectedColorSpaceName() throws IOException {
+		if (parameters.getImage() != null) {
+			try (InputStream is = parameters.getImage().openStream()) {
+				byte[] bytes = IOUtils.toByteArray(is);
+				PDImageXObject imageXObject = PDImageXObject.createFromByteArray(document, bytes, parameters.getImage().getName());
+				PDColorSpace colorSpace = imageXObject.getColorSpace();
+				return colorSpace.getName();
+			}
+		} else {
+			// RGB is default for text
+			return COSName.DEVICERGB.getName();
 		}
 	}
 

@@ -53,7 +53,9 @@ public class XAdESWithMultipleSignatureTimeStampsTest extends AbstractXAdESTestV
 
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		super.checkSignatureLevel(diagnosticData);
 		// BASELINE-T level shall contain only one tst inside SignatureTimeStamp element
-		assertEquals(SignatureLevel.XAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
+
 }

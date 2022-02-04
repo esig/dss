@@ -26,6 +26,8 @@ import eu.europa.esig.dss.pades.signature.suite.GetOriginalDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.InvisibleSignatureFieldSignTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleLTAValidationDataTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
@@ -38,6 +40,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithContentTimestampT
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithECDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithECDSATokenTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithNoChangesPermittedTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithPlainECDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithPlainECDSATokenTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithSHA256andMGF1Test;
@@ -53,8 +56,10 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTNotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprintTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESNoChangesPermittedTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignDocumentsConsequentlyTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithRevokedCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignatureParametersSerializationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignedAssertionTest;
@@ -63,15 +68,16 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESTwoSignersLTALevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPemEncodedCrlTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
+import eu.europa.esig.dss.pades.signature.suite.PDFSignWithPermissionsTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFSignatureWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
-import org.junit.platform.runner.JUnitPlatform;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESLevelBCertificationTest;
 import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(JUnitPlatform.class)
+@Suite
 @SelectClasses({ DigestStabilityTest.class, GetOriginalDocumentTest.class, PAdESDoubleSignatureTest.class, PAdESLevelBTest.class,
 		PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class, PAdESLevelBNotEnoughSpaceForSignatureTest.class,
 		PAdESLevelBOnlySigningCertTest.class, PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class,
@@ -85,7 +91,10 @@ import org.junit.runner.RunWith;
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
 		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
 		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class,
-        PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class })
+        PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class,
+		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
+		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
+		PAdESSignDocumentsConsequentlyTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

@@ -42,7 +42,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -108,10 +107,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(toSignDocuments, true);
 			messageImprint = httpHeadersPayloadBuilder.build();
 		} else {
-			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments);
-			if (parameters.isBase64UrlEncodedPayload()) {
-				messageImprint = DSSJsonUtils.toBase64Url(messageImprint).getBytes();
-			}
+			messageImprint = DSSJsonUtils.concatenateDSSDocuments(toSignDocuments, parameters.isBase64UrlEncodedPayload());
 		}
 
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
@@ -129,7 +125,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, Collections.singletonList(toSignDocument));
 		return jadesBuilder.buildDataToBeSigned();
@@ -140,7 +136,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
 		assertMultiDocumentsAllowed(toSignDocuments, parameters);
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		return jadesBuilder.buildDataToBeSigned();
@@ -182,11 +178,13 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		if (signatureExtension != null) {
 			if (SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging()) &&
 					Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-				parameters.setDetachedContents(toSignDocuments);
+				parameters.getContext().setDetachedContents(toSignDocuments);
 			}
 			signatureExtension.setOperationKind(SigningOperation.SIGN);
 			signedDocument = signatureExtension.extendSignatures(signedDocument, parameters);
 		}
+
+		parameters.reinit();
 		signedDocument.setName(getFinalFileName(toSignDocuments.iterator().next(), SigningOperation.SIGN,
 				parameters.getSignatureLevel()));
 		signedDocument.setMimeType(jadesBuilder.getMimeType());
@@ -257,7 +255,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			dssDocument.setMimeType(MimeType.JOSE_JSON);
 			return dssDocument;
 		}
-		throw new DSSException("Cannot extend to " + parameters.getSignatureLevel());
+		throw new UnsupportedOperationException(
+				String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 	}
 
 	private void assertExtensionPossible(JAdESSignatureParameters parameters) {
@@ -285,7 +284,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			extensionLTA.setTspSource(tspSource);
 			return extensionLTA;
 		default:
-			throw new DSSException("Unsupported signature format " + parameters.getSignatureLevel());
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 	}
 
@@ -352,6 +352,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		
 		DSSDocument counterSigned = counterSignatureBuilder.buildEmbeddedCounterSignature(signatureDocument, counterSignature, parameters);
 		
+		parameters.reinit();
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN,
 				parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());

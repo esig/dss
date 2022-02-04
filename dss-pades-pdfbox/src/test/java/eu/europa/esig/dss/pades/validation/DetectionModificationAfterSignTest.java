@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -39,6 +30,14 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 
@@ -63,7 +62,7 @@ public class DetectionModificationAfterSignTest extends AbstractTestVisualCompar
 		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
-		assertFalse(areVisuallyEqual(dssDocument, expected));
+		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));
 
 		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(dssDocument, expected, 1);
 		assertNotNull(subtractionImage);

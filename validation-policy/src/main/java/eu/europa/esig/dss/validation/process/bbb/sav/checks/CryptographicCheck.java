@@ -49,7 +49,7 @@ public class CryptographicCheck<T extends XmlConstraintsConclusion> extends Cryp
 	 */
 	public CryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token, MessageTag position,
 							  Date validationDate, CryptographicConstraint constraint) {
-		super(i18nProvider, result, token, validationDate, position,
+		super(i18nProvider, result, validationDate, position,
 				execute(i18nProvider, token, validationDate, position, constraint), constraint);
 	}
 	

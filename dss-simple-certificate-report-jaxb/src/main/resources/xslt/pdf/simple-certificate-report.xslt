@@ -358,7 +358,7 @@
     <xsl:template match="dss:revocation">
     
 	   	<xsl:choose>
-			<xsl:when test="dss:productionDate">
+			<xsl:when test="dss:thisUpdate">
 	    		<fo:table-row>
 					<fo:table-cell>
 						<fo:block>
@@ -366,7 +366,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation production time :</xsl:text>
+							<xsl:text>Revocation thisUpdate time :</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -374,7 +374,7 @@
 							<xsl:attribute name="margin-top">1px</xsl:attribute>
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
-							<xsl:value-of select="dss:productionDate" />
+							<xsl:value-of select="dss:thisUpdate" />
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>

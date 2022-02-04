@@ -26,6 +26,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class RemoteCertificateConverter {
 			}
 			return certificateTokens;
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 }

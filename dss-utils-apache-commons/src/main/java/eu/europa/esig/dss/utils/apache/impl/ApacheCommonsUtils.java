@@ -275,4 +275,9 @@ public class ApacheCommonsUtils implements IUtils {
 		return reverse;
 	}
 
+	@Override
+	public <T> boolean containsAny(Collection<T> superCollection, Collection<T> subCollection) {
+		return CollectionUtils.containsAny(superCollection, subCollection);
+	}
+
 }

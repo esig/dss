@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.PublicKey;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,10 +58,10 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESCertificateSource.class);
 
 	/** The JWS Signature to extract certificates from */
-	private transient final JWS jws;
+	private final transient JWS jws;
 
 	/** Represents the unsigned 'etsiU' header */
-	private transient final JAdESEtsiUHeader etsiUHeader;
+	private final transient JAdESEtsiUHeader etsiUHeader;
 
 	/**
 	 * Default constructor
@@ -82,6 +81,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		extractX5TS256();
 		extractX5TO();
 		extractSigX5Ts();
+		extractKid();
 
 		// certificate chain
 		extractX5C();
@@ -90,68 +90,85 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		extractEtsiU();
 	}
 
+	/**
+	 * Retrieves the list of {@link CertificateRef}s referenced within a 'kid' (key identifier) header
+	 *
+	 * @return the list of references to the signing certificate (from key identifier)
+	 */
+	public List<CertificateRef> getKeyIdentifierCertificateRefs() {
+		return getCertificateRefsByOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
+	}
+
+	/**
+	 * Retrieves the Set of {@link CertificateToken}s according to a reference present
+	 * within a 'kid' (key identifier) header
+	 *
+	 * @return Set of {@link CertificateToken}s
+	 */
+	public Set<CertificateToken> getKeyIdentifierCertificates() {
+		return findTokensFromRefs(getCompleteCertificateRefs());
+	}
+
 	private void extractX5T() {
-		String base64UrlSHA1Certificate = jws.getHeaders().getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
+		String base64UrlSHA1Certificate = jws.getProtectedHeaderValueAsString(
+				HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA1Certificate)) {
 			Digest digest = new Digest(DigestAlgorithm.SHA1, DSSJsonUtils.fromBase64Url(base64UrlSHA1Certificate));
-			LOG.warn("Found {} with value {} but not supported by the JAdES standard", HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
+			LOG.warn("Found {} with value {} but not supported by the JAdES standard",
+					HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, digest);
 		}
 	}
 
 	private void extractX5TS256() {
-		String base64UrlSHA256Certificate = jws.getHeaders().getStringHeaderValue(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
+		String base64UrlSHA256Certificate = jws.getProtectedHeaderValueAsString(
+				HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT);
 		if (Utils.isStringNotEmpty(base64UrlSHA256Certificate)) {
 			CertificateRef certRef = new CertificateRef();
-			certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 			certRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, DSSJsonUtils.fromBase64Url(base64UrlSHA256Certificate)));
 			addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 		}
 	}
 
 	private void extractX5TO() {
-		Map<?, ?> x5TO = (Map<?, ?>) jws.getHeaders()
-				.getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O);
-		extractX5TO(x5TO);
+		extractX5TO(jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.X5T_O));
 	}
 
 	private void extractX5TO(Map<?, ?> x5TO) {
-		if (x5TO != null) {
+		if (Utils.isMapNotEmpty(x5TO)) {
 			Digest digest = DSSJsonUtils.getDigest(x5TO);
 			if (digest != null) {
 				CertificateRef certRef = new CertificateRef();
-				certRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 				certRef.setCertDigest(digest);
-
 				addCertificateRef(certRef, CertificateRefOrigin.SIGNING_CERTIFICATE);
 			}
 		}
 	}
 
 	private void extractSigX5Ts() {
-		List<?> sigX5ts = (List<?>) jws.getHeaders().getObjectHeaderValue(JAdESHeaderParameterNames.SIG_X5T_S);
-		if (Utils.isCollectionNotEmpty(sigX5ts)) {
-			for (Object item : sigX5ts) {
-				if (item instanceof Map<?, ?>) {
-					Map<?, ?> x5TO = (Map<?, ?>) item;
-					extractX5TO(x5TO);
-				} else {
-					LOG.warn("Unsupported type for {} : {}", JAdESHeaderParameterNames.SIG_X5T_S, item.getClass());
-				}
+		List<?> sigX5tsList = jws.getProtectedHeaderValueAsList(JAdESHeaderParameterNames.SIG_X5T_S);
+		if (Utils.isCollectionNotEmpty(sigX5tsList)) {
+			for (Object item : sigX5tsList) {
+				extractX5TO(DSSJsonUtils.toMap(item, JAdESHeaderParameterNames.X5T_O));
 			}
 		}
 	}
 
+	private void extractKid() {
+		IssuerSerial kidIssuerSerial = getKidIssuerSerial();
+		if (kidIssuerSerial != null) {
+			CertificateRef certificateRef = new CertificateRef();
+			certificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(kidIssuerSerial));
+			addCertificateRef(certificateRef, CertificateRefOrigin.KEY_IDENTIFIER);
+		}
+	}
+
 	private void extractX5C() {
-		List<?> x5c = (List<?>) jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
-		if (Utils.isCollectionNotEmpty(x5c)) {
-			for (Object item : x5c) {
-				if (item instanceof String) {
-					String certificateBase64 = (String) item;
-					CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(certificateBase64);
-					addCertificate(certificate, CertificateOrigin.KEY_INFO);
-				} else {
-					LOG.warn("Unsupported type for {} : {}", HeaderParameterNames.X509_CERTIFICATE_CHAIN, item.getClass());
-				}
+		List<?> x509CertChain = jws.getProtectedHeaderValueAsList(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+		if (Utils.isCollectionNotEmpty(x509CertChain)) {
+			for (Object item : x509CertChain) {
+				String certificateBase64 = DSSJsonUtils.toString(item);
+				CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(certificateBase64);
+				addCertificate(certificate, CertificateOrigin.KEY_INFO);
 			}
 		}
 	}
@@ -173,75 +190,77 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private void extractCertificateValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.X_VALS.equals(attribute.getHeaderName())) {
-			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.CERTIFICATE_VALUES);
+			extractCertificateValues(DSSJsonUtils.toList(attribute.getValue(), JAdESHeaderParameterNames.X_VALS),
+					CertificateOrigin.CERTIFICATE_VALUES);
 		}
 	}
 
 	private void extractAttrAuthoritiesCertValues(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AX_VALS.equals(attribute.getHeaderName())) {
-			extractCertificateValues((List<?>) attribute.getValue(), CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
+			extractCertificateValues(DSSJsonUtils.toList(attribute.getValue(), JAdESHeaderParameterNames.AX_VALS),
+					CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 		}
 	}
 
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
-			Map<?, ?> tstVd = (Map<?, ?>) attribute.getValue();
-			List<?> certVals = (List<?>) tstVd.get(JAdESHeaderParameterNames.X_VALS);
-			if (Utils.isCollectionNotEmpty(certVals)) {
-				extractCertificateValues(certVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+			Map<?,?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
+			List<?> xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
+			if (Utils.isCollectionNotEmpty(xVals)) {
+				extractCertificateValues(xVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
 			}
 		}
 	}
 
 	private void extractCompleteCertificateRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.X_REFS.equals(attribute.getHeaderName())) {
-			extractCertificateRefs((List<?>) attribute.getValue(), CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
+			extractCertificateRefs(DSSJsonUtils.toList(attribute.getValue(), JAdESHeaderParameterNames.X_REFS),
+					CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		}
 	}
 
 	private void extractAttributeCertificateRefs(JAdESAttribute attribute) {
 		if (JAdESHeaderParameterNames.AX_REFS.equals(attribute.getHeaderName())) {
-			extractCertificateRefs((List<?>) attribute.getValue(), CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
+			extractCertificateRefs(DSSJsonUtils.toList(attribute.getValue(), JAdESHeaderParameterNames.AX_REFS),
+					CertificateRefOrigin.ATTRIBUTE_CERTIFICATE_REFS);
 		}
 	}
 
 	private void extractCertificateValues(List<?> xVals, CertificateOrigin origin) {
 		for (Object item : xVals) {
-			if (item instanceof Map) {
-				Map<?, ?> xVal = (Map<?, ?>) item;
-				Map<?, ?> x509Cert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.X509_CERT);
-				Map<?, ?> otherCert = (Map<?, ?>) xVal.get(JAdESHeaderParameterNames.OTHER_CERT);
-				if (x509Cert != null) {
-					extractX509Cert(x509Cert, origin);
-				} else if (otherCert != null) {
-					LOG.warn("Unsupported otherCert found");
-				}
+			Map<?, ?> xVal = DSSJsonUtils.toMap(item);
+			Map<?, ?> x509Cert = DSSJsonUtils.getAsMap(xVal, JAdESHeaderParameterNames.X509_CERT);
+			Map<?, ?> otherCert = DSSJsonUtils.getAsMap(xVal, JAdESHeaderParameterNames.OTHER_CERT);
+			if (Utils.isMapNotEmpty(x509Cert)) {
+				extractX509Cert(x509Cert, origin);
+			} else if (Utils.isMapNotEmpty(otherCert)) {
+				LOG.warn("The header '{}' is not supported! The entry is skipped.", JAdESHeaderParameterNames.OTHER_CERT);
 			}
 		}
 	}
 
 	private void extractCertificateRefs(List<?> xRefs, CertificateRefOrigin origin) {
 		for (Object item : xRefs) {
-			if (item instanceof Map) {
-				CertificateRef certificateRef = JAdESCertificateRefExtractionUtils.createCertificateRef((Map<?, ?>) item);
-				if (certificateRef != null) {
-					addCertificateRef(certificateRef, origin);
-				}
+			Map<?, ?> xref = DSSJsonUtils.toMap(item);
+			CertificateRef certificateRef = JAdESCertificateRefExtractionUtils.createCertificateRef(xref);
+			if (certificateRef != null) {
+				addCertificateRef(certificateRef, origin);
 			}
 		}
 	}
 
 	private void extractX509Cert(Map<?, ?> x509Cert, CertificateOrigin origin) {
-		String encoding = (String) x509Cert.get(JAdESHeaderParameterNames.ENCODING);
+		String encoding = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.ENCODING);
 		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
-			String certDerBase64 = (String) x509Cert.get(JAdESHeaderParameterNames.VAL);
-			addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(certDerBase64), origin);
+			String val = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.VAL);
+			if (Utils.isStringNotBlank(val)) {
+				addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(val), origin);
+			}
+
 		} else {
-			LOG.warn("Unsupported encoding '{}'", encoding);
+			LOG.warn("Unsupported encoding header value : '{}'", encoding);
 		}
 	}
-
-	// ------------- Not supported
 
 	@Override
 	protected CandidatesForSigningCertificate extractCandidatesForSigningCertificate(
@@ -315,44 +334,50 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void checkSigningCertificateRef(CandidatesForSigningCertificate candidates) {
-
-		IssuerSerial issuerSerial = getCurrentIssuerSerial();
-		Digest signingCertificateDigest = getSigningCertificateDigest();
-
-		CertificateValidity bestCertificateValidity = null;
-		for (CertificateValidity certificateValidity : candidates.getCertificateValidityList()) {
-			CertificateToken candidate = certificateValidity.getCertificateToken();
-
-			if (signingCertificateDigest != null) {
-				certificateValidity.setDigestPresent(true);
-
-				byte[] candidateDigest = candidate.getDigest(signingCertificateDigest.getAlgorithm());
-				if (Arrays.equals(signingCertificateDigest.getValue(), candidateDigest)) {
-					certificateValidity.setDigestEqual(true);
-				}
-			}
-
-			if (issuerSerial != null) {
-				certificateValidity.setIssuerSerialPresent(true);
-
-				IssuerSerial candidateIssuerSerial = DSSASN1Utils.getIssuerSerial(candidate);
-				if (Objects.equals(issuerSerial.getIssuer(), candidateIssuerSerial.getIssuer())) {
-					certificateValidity.setDistinguishedNameEqual(true);
-				}
-
-				if (Objects.equals(issuerSerial.getSerial(), candidateIssuerSerial.getSerial())) {
-					certificateValidity.setSerialNumberEqual(true);
-				}
-			}
-
-			if (certificateValidity.isValid()) {
-				bestCertificateValidity = certificateValidity;
-			}
+		CertificateRef signingCertRef = null;
+		final List<CertificateRef> potentialSigningCertificates = getSigningCertificateRefs();
+		if (Utils.isCollectionNotEmpty(potentialSigningCertificates)) {
+			// first reference shall be a reference to a signing certificate
+			signingCertRef = potentialSigningCertificates.get(0);
 		}
 
-		if (bestCertificateValidity != null) {
-			candidates.setTheCertificateValidity(bestCertificateValidity);
+		CertificateRef kidCertRef = null;
+		final List<CertificateRef> keyIdentifierCertificateRefs = getKeyIdentifierCertificateRefs();
+		if (Utils.isCollectionNotEmpty(keyIdentifierCertificateRefs)) {
+			kidCertRef = keyIdentifierCertificateRefs.get(0);
 		}
+
+		if (signingCertRef != null) {
+			CertificateValidity bestCertificateValidity = null;
+			// check all certificates against the signingCert ref and find the best one
+			final List<CertificateValidity> certificateValidityList = candidates.getCertificateValidityList();
+			for (final CertificateValidity certificateValidity : certificateValidityList) {
+				if (isValid(certificateValidity, signingCertRef, kidCertRef)) {
+					bestCertificateValidity = certificateValidity;
+				}
+			}
+			if (bestCertificateValidity != null) {
+				candidates.setTheCertificateValidity(bestCertificateValidity);
+			}
+		}
+	}
+
+	private boolean isValid(CertificateValidity certificateValidity,
+							CertificateRef signingCertRef, CertificateRef kidCertRef) {
+		certificateValidity.setDigestPresent(signingCertRef != null && signingCertRef.getCertDigest() != null);
+		certificateValidity.setIssuerSerialPresent(kidCertRef != null && kidCertRef.getCertificateIdentifier() != null);
+
+		CertificateToken certificateToken = certificateValidity.getCertificateToken();
+		if (certificateToken != null) {
+			if (signingCertRef != null) {
+				certificateValidity.setDigestEqual(certificateMatcher.matchByDigest(certificateToken, signingCertRef));
+			}
+			if (kidCertRef != null) {
+				certificateValidity.setSerialNumberEqual(certificateMatcher.matchBySerialNumber(certificateToken, kidCertRef));
+				certificateValidity.setDistinguishedNameEqual(certificateMatcher.matchByIssuerName(certificateToken, kidCertRef));
+			}
+		}
+		return certificateValidity.isValid();
 	}
 
 	private Digest getSigningCertificateDigest() {
@@ -365,7 +390,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		return null;
 	}
 
-	private IssuerSerial getCurrentIssuerSerial() {
+	private IssuerSerial getKidIssuerSerial() {
 		return DSSJsonUtils.getIssuerSerial(jws.getKeyIdHeaderValue());
 	}
 

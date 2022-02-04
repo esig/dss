@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EccBrainpoolTest extends AbstractXAdESTestValidation {
 
@@ -41,11 +41,6 @@ public class EccBrainpoolTest extends AbstractXAdESTestValidation {
 		
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(EncryptionAlgorithm.ECDSA, signatureWrapper.getEncryptionAlgorithm());
-	}
-	
-	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		// XPath error
 	}
 
 }

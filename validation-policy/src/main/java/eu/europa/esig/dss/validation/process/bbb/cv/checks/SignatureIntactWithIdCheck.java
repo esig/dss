@@ -32,7 +32,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * that provides the token's Id to the additional information
  *
  */
-public class SignatureIntactWithIdCheck extends SignatureIntactCheck {
+public class SignatureIntactWithIdCheck<T extends XmlConstraintsConclusion> extends SignatureIntactCheck<T> {
 
     /**
      * Default constructor
@@ -43,7 +43,7 @@ public class SignatureIntactWithIdCheck extends SignatureIntactCheck {
      * @param context      {@link Context}
      * @param constraint   {@link LevelConstraint}
      */
-    public SignatureIntactWithIdCheck(I18nProvider i18nProvider, XmlConstraintsConclusion result, TokenProxy token,
+    public SignatureIntactWithIdCheck(I18nProvider i18nProvider, T result, TokenProxy token,
                                       Context context, LevelConstraint constraint) {
         super(i18nProvider, result, token, context, constraint);
     }

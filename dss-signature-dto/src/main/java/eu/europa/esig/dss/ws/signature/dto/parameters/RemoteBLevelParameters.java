@@ -51,7 +51,7 @@ public class RemoteBLevelParameters implements Serializable {
 	 */
 	private boolean trustAnchorBPPolicy = true;
 
-	/** The claimed signign time */
+	/** The claimed signing time */
 	private Date signingDate = new Date();
 
 	/** The claimed signer roles */

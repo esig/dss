@@ -29,10 +29,23 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
+/**
+ * Checks whether the certificate has been for QSCD at signing time
+ *
+ */
 public class QSCDCertificateAtSigningTimeCheck extends ChainItem<XmlValidationSignatureQualification> {
 
+	/** Certificate qualification at signing time */
 	private final CertificateQualification certificateQualification;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlValidationSignatureQualification}
+	 * @param certificateQualification {@link CertificateQualification}
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public QSCDCertificateAtSigningTimeCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result, 
 			CertificateQualification certificateQualification, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

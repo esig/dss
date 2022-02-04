@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -68,7 +68,7 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSign
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
-		ASiCExtractResult extract = extractor.extract();
+		ASiCContent extract = extractor.extract();
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
 		try {
@@ -76,6 +76,11 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSign
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}
+	}
+
+	@Override
+	protected MimeType getExpectedMime() {
+		return MimeType.fromMimeTypeString(APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT);
 	}
 
 	@Override

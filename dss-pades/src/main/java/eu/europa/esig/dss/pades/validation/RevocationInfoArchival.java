@@ -82,15 +82,15 @@ public class RevocationInfoArchival
             throw new IllegalArgumentException("Bad sequence size: "
                 + seq.size());
         }
-        Enumeration e = seq.getObjects();
+        Enumeration<?> e = seq.getObjects();
         while (e.hasMoreElements())
         {
             ASN1TaggedObject o = (ASN1TaggedObject)e.nextElement();
             switch (o.getTagNo())
             {
                 case 0:
-                    ASN1Sequence crlValsSeq = (ASN1Sequence)o.getObject();
-                    Enumeration crlValsEnum = crlValsSeq.getObjects();
+                    ASN1Sequence crlValsSeq = (ASN1Sequence)o.getBaseObject();
+                    Enumeration<?> crlValsEnum = crlValsSeq.getObjects();
                     while (crlValsEnum.hasMoreElements())
                     {
                         CertificateList.getInstance(crlValsEnum.nextElement());
@@ -98,8 +98,8 @@ public class RevocationInfoArchival
                     this.crlVals = crlValsSeq;
                     break;
                 case 1:
-                    ASN1Sequence ocspValsSeq = (ASN1Sequence)o.getObject();
-                    Enumeration ocspValsEnum = ocspValsSeq.getObjects();
+                    ASN1Sequence ocspValsSeq = (ASN1Sequence)o.getBaseObject();
+                    Enumeration<?> ocspValsEnum = ocspValsSeq.getObjects();
                     while (ocspValsEnum.hasMoreElements())
                     {
                         OCSPResponse.getInstance(ocspValsEnum.nextElement());
@@ -107,7 +107,7 @@ public class RevocationInfoArchival
                     this.ocspVals = ocspValsSeq;
                     break;
                 case 2:
-                    this.otherRevVals = OtherRevVals.getInstance(o.getObject());
+                    this.otherRevVals = OtherRevVals.getInstance(o.getBaseObject());
                     break;
                 default:
                     throw new IllegalArgumentException("invalid tag: "

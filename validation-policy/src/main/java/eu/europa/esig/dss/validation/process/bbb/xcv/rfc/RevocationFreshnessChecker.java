@@ -34,7 +34,6 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataFreshCheckWithNullConstraint;
@@ -52,7 +51,7 @@ import java.util.Date;
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	/** Defines the name of th revocation position */
-	private final static MessageTag REVOCATION_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
+	private static final MessageTag REVOCATION_POSITION = MessageTag.ACCM_POS_REVOC_SIG;
 
 	/** Revocation data to check */
 	private final RevocationWrapper revocationData;
@@ -102,7 +101,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
 	@Override
 	protected void initChain() {
-		ChainItem<XmlRFC> item = firstItem = revocationDataAvailable(revocationData);
+		ChainItem<XmlRFC> item = null;
 
 		if (revocationData != null) {
 
@@ -124,14 +123,14 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
-			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint();
+			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint(context, subContext);
 			if (revocationFreshnessConstraint == null || Level.IGNORE.equals(revocationFreshnessConstraint.getLevel())) {
 				switch (revocationData.getRevocationType()) {
 					case CRL:
-						item = item.setNextItem(crlNextUpdateCheck(revocationData));
+						item = firstItem = crlNextUpdateCheck(revocationData);
 						break;
 					case OCSP:
-						item = item.setNextItem(ocspNextUpdateCheck(revocationData));
+						item = firstItem = ocspNextUpdateCheck(revocationData);
 						break;
 					default:
 						throw new IllegalArgumentException(String.format("The RevocationType '%s' is not supported!",
@@ -144,15 +143,14 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * the building block shall return the indication PASSED. Otherwise
 			 * the building block shall return the indication FAILED.
 			 */
-			item = item.setNextItem(revocationDataFreshCheck(revocationData, revocationFreshnessConstraint));
+			if (item == null) {
+				item = firstItem = revocationDataFreshCheck(revocationData, revocationFreshnessConstraint);
+			} else {
+				item = item.setNextItem(revocationDataFreshCheck(revocationData, revocationFreshnessConstraint));
+			}
 
 			item = item.setNextItem(revocationCryptographic(revocationData));
 		}
-	}
-
-	private ChainItem<XmlRFC> revocationDataAvailable(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
-		return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> crlNextUpdateCheck(RevocationWrapper revocationData) {
@@ -183,9 +181,9 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * freshness.
 		 */
 		else {
-			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, getFailLevelConstraint());
+			LevelConstraint constraint = policy.getRevocationFreshnessNextUpdateConstraint(context, subContext);
+			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, constraint);
 		}
-
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {

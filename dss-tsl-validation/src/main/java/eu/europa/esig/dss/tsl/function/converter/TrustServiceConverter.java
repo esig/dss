@@ -138,7 +138,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 
 	@SuppressWarnings("rawtypes")
 	private List<ConditionForQualifiers> extractConditionsForQualifiers(List<ExtensionType> extensions) {
-		List<ConditionForQualifiers> conditionsForQualifiers = new ArrayList<>();
+		List<ConditionForQualifiers> conditionsForQualifiersList = new ArrayList<>();
 		for (ExtensionType extensionType : extensions) {
 			List<Object> content = extensionType.getContent();
 			if (Utils.isCollectionNotEmpty(content)) {
@@ -147,22 +147,30 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 						JAXBElement jaxbElement = (JAXBElement) object;
 						Object objectValue = jaxbElement.getValue();
 						if (objectValue instanceof QualificationsType) {
-							QualificationsType qt = (QualificationsType) jaxbElement.getValue();
-							if ((qt != null) && Utils.isCollectionNotEmpty(qt.getQualificationElement())) {
-								for (QualificationElementType qualificationElement : qt.getQualificationElement()) {
-									List<String> qualifiers = extractQualifiers(qualificationElement);
-									Condition condition = getCondition(qualificationElement.getCriteriaList());
-									if (Utils.isCollectionNotEmpty(qualifiers) && (condition != null)) {
-										conditionsForQualifiers.add(new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers)));
-									}
-								}
+							ConditionForQualifiers conditionForQualifiers =
+									toConditionForQualifiers((QualificationsType) jaxbElement.getValue());
+							if (conditionForQualifiers != null) {
+								conditionsForQualifiersList.add(conditionForQualifiers);
 							}
 						}
 					}
 				}
 			}
 		}
-		return conditionsForQualifiers;
+		return conditionsForQualifiersList;
+	}
+
+	private ConditionForQualifiers toConditionForQualifiers(QualificationsType qt) {
+		if ((qt != null) && Utils.isCollectionNotEmpty(qt.getQualificationElement())) {
+			for (QualificationElementType qualificationElement : qt.getQualificationElement()) {
+				List<String> qualifiers = extractQualifiers(qualificationElement);
+				if (Utils.isCollectionNotEmpty(qualifiers)) {
+					Condition condition = getCondition(qualificationElement.getCriteriaList());
+					return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
+				}
+			}
+		}
+		return null;
 	}
 
 	@SuppressWarnings("rawtypes")

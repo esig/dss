@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
@@ -53,9 +54,9 @@ public class CreateKeyStoreApp {
 	 * Main method
 	 *
 	 * @param args not applicable
-	 * @throws Exception if an exception occurs
+	 * @throws IOException if an exception occurs
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException {
 
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource((InputStream) null, KEYSTORE_TYPE, getKeystorePassword());
 
@@ -82,7 +83,7 @@ public class CreateKeyStoreApp {
 		}
 	}
 
-	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws Exception {
+	private static void addCertificate(KeyStoreCertificateSource kscs, String certPath) throws IOException {
 		try (InputStream is = new FileInputStream(certPath)) {
 			CertificateToken cert = DSSUtils.loadCertificate(is);
 			if (!ALLOW_EXPIRED && !cert.isValidOn(new Date())) {

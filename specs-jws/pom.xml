@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.9</version>
+		<version>5.10.RC1</version>
 	</parent>
 
 	<artifactId>specs-jws</artifactId>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.github.everit-org.json-schema</groupId>
 			<artifactId>org.everit.json.schema</artifactId>
-			<version>1.12.1</version>
+			<version>1.14.0</version>
 		</dependency>
         
 		<dependency>

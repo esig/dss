@@ -52,9 +52,9 @@ public class SingleDssDict extends AbstractPdfDssDict {
 	 */
 	public static SingleDssDict extract(PdfDict documentDict) {
 		if (documentDict != null) {
-			final PdfDict dssCatalog = documentDict.getAsDict(PAdESConstants.DSS_DICTIONARY_NAME);
-			if (dssCatalog != null) {
-				return new SingleDssDict(dssCatalog);
+			final PdfDict dssDict = documentDict.getAsDict(PAdESConstants.DSS_DICTIONARY_NAME);
+			if (dssDict != null) {
+				return new SingleDssDict(dssDict);
 			}
 		}
 		LOG.debug("No DSS dictionary found");

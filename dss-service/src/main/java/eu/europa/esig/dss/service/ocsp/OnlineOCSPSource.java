@@ -224,6 +224,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			try {
 				final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
 				if (!Utils.isArrayEmpty(ocspRespBytes)) {
+					if (LOG.isTraceEnabled()) {
+						LOG.trace(String.format("Obtained OCSPResponse binaries from URL '%s' : %s", ocspAccessLocation, Utils.toBase64(ocspRespBytes)));
+					}
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
 					verifyNonce(ocspResp, nonce);
 
@@ -285,8 +288,8 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 				ocspReqBuilder.setRequestExtensions(extensions);
 			}
 			final OCSPReq ocspReq = ocspReqBuilder.build();
-			final byte[] ocspReqData = ocspReq.getEncoded();
-			return ocspReqData;
+			return ocspReq.getEncoded();
+
 		} catch (OCSPException | IOException e) {
 			throw new DSSException("Cannot build OCSP Request", e);
 		}
@@ -308,19 +311,23 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			
 			Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
 			ASN1OctetString extnValue = extension.getExtnValue();
-			ASN1Primitive value;
-			try {
-				value = ASN1Primitive.fromByteArray(extnValue.getOctets());
-			} catch (IOException ex) {
-				throw new OCSPException("Invalid encoding of nonce extension value in OCSP response", ex);
-			}
+			ASN1Primitive value = fromByteArray(extnValue);
 			if (value instanceof DEROctetString) {
 				return new BigInteger(((DEROctetString) value).getOctets());
 			}
 			throw new OCSPException("Nonce extension value in OCSP response is not an OCTET STRING");
+
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Unable to extract the nonce from the OCSPResponse! " +
 					"Reason : [%s]", e.getMessage()), e);
+		}
+	}
+
+	private ASN1Primitive fromByteArray(ASN1OctetString extnValue) throws OCSPException {
+		try {
+			return ASN1Primitive.fromByteArray(extnValue.getOctets());
+		} catch (IOException ex) {
+			throw new OCSPException("Invalid encoding of nonce extension value in OCSP response", ex);
 		}
 	}
 	

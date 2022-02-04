@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.exception.IllegalInputException;
@@ -32,7 +32,6 @@ import eu.europa.esig.dss.validation.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +45,7 @@ public abstract class ASiCCounterSignatureHelper {
 	protected final DSSDocument asicContainer;
 
 	/** Represents a cached instance of ASiC container extraction result */
-	private ASiCExtractResult extractResult;
+	private final ASiCContent asicContent;
 
 	/**
 	 * The default constructor
@@ -55,8 +54,28 @@ public abstract class ASiCCounterSignatureHelper {
 	 */
 	protected ASiCCounterSignatureHelper(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
-	} 
-	
+		this.asicContent = extractAsicContent();
+	}
+
+	/**
+	 * Extracts the ASiC container content (documents)
+	 *
+	 * @return {@link ASiCContent}
+	 */
+	private ASiCContent extractAsicContent() {
+		AbstractASiCContainerExtractor extractor = getASiCContainerExtractor();
+		return extractor.extract();
+	}
+
+	/**
+	 * Returns {@code ASiCContent}
+	 *
+	 * @return {@link ASiCContent}
+	 */
+	public ASiCContent getAsicContent() {
+		return asicContent;
+	}
+
 	/**
 	 * Returns a file containing a signature with the given id
 	 * 
@@ -67,7 +86,7 @@ public abstract class ASiCCounterSignatureHelper {
 		if (!ASiCUtils.isZip(asicContainer)) {
 			throw new IllegalInputException("The provided file shall be an ASiC container with signatures inside!");
 		}
-		List<DSSDocument> signatureDocuments = getSignatureDocuments();
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
 			throw new IllegalInputException("No signatures found to be extended!");
 		}
@@ -79,16 +98,6 @@ public abstract class ASiCCounterSignatureHelper {
 			}
 		}
 		throw new IllegalArgumentException(String.format("A signature with id '%s' has not been found!", signatureId));
-	}
-
-	/**
-	 * Returns a list if signature documents from the container
-	 * 
-	 * @return a list of {@link DSSDocument}s
-	 */
-	public List<DSSDocument> getSignatureDocuments() {
-		ASiCExtractResult extractResult = getASiCExtractResult();
-		return extractResult.getSignatureDocuments();
 	}
 	
 	/**
@@ -109,19 +118,6 @@ public abstract class ASiCCounterSignatureHelper {
 	public ManifestFile getManifestFile(String signatureFilename) {
 		// not applicable by default
 		return null;
-	}
-
-	/**
-	 * Extracts the ASiC container content (documents)
-	 *
-	 * @return {@link ASiCExtractResult}
-	 */
-	protected ASiCExtractResult getASiCExtractResult() {
-		if (extractResult == null) {
-			AbstractASiCContainerExtractor extractor = getASiCContainerExtractor();
-			extractResult = extractor.extract();
-		}
-		return extractResult;
 	}
 	
 	/**
@@ -183,24 +179,6 @@ public abstract class ASiCCounterSignatureHelper {
 	 */
 	protected void checkCounterSignaturePossible(DSSDocument signatureDocument) {
 		// do nothing by default
-	}
-	
-	/**
-	 * Returns a list of all signature files with a replaced {@code updatedSignatureDocument}
-	 * 
-	 * @param updatedSignatureDocument {@link DSSDocument} a signature document to be updated in a list of signatures
-	 * @return a list of {@link DSSDocument} signatures
-	 */
-	public List<DSSDocument> getUpdatedSignatureDocumentsList(DSSDocument updatedSignatureDocument) {
-		List<DSSDocument> newSignaturesList = new ArrayList<>();
-		for (DSSDocument signature : getSignatureDocuments()) {
-			if (updatedSignatureDocument.getName().equals(signature.getName())) {
-				newSignaturesList.add(updatedSignatureDocument);
-			} else {
-				newSignaturesList.add(signature);
-			}
-		}
-		return newSignaturesList;
 	}
 
 }

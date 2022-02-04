@@ -30,6 +30,12 @@ import java.awt.Font;
 public class PdfBoxFontMapper {
 
 	/**
+	 * Empty constructor
+	 */
+	private PdfBoxFontMapper() {
+	}
+
+	/**
 	 * Gets a PDFBox font by Java font
 	 *
 	 * @param javaFont {@link Font} java instance of the font
@@ -79,7 +85,7 @@ public class PdfBoxFontMapper {
 			default:
 				throw new UnsupportedOperationException("The font is not supported! " +
 						"Please use DSSFileFont implementation for custom fonts.");
-			}
+		}
 	}
 
 }

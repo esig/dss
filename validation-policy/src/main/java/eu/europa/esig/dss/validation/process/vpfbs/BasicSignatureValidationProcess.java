@@ -36,6 +36,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Signature validation process at validation time as per EN 319 102-1 ch. "5.3 Validation process for Basic Signatures"
+ *
+ */
 public class BasicSignatureValidationProcess extends AbstractBasicValidationProcess<XmlValidationProcessBasicSignature> {
 
     /** List of timestamps within the signature */

@@ -40,7 +40,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -114,7 +114,7 @@ public class OpenDocumentLevelBMultipleSignaturesTest extends PKIFactoryAccess {
 		}
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(resignedDocument);
-		ASiCExtractResult result = extractor.extract();
+		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());
 

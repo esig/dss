@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
 import java.util.Date;
@@ -49,7 +50,7 @@ public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocati
 	@Override
 	protected boolean process() {
 		if (revocationData != null && revocationData.getNextUpdate() != null) {
-			return isProductionDateAfterValidationTime();
+			return isThisUpdateTimeAfterValidationTime();
 		}
 		return false;
 	}
@@ -63,6 +64,11 @@ public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocati
 		long nextUpdateTime = nextUpdate == null ? 0 : nextUpdate.getTime();
 		long thisUpdateTime = thisUpdate == null ? 0 : thisUpdate.getTime();
 		return nextUpdateTime - thisUpdateTime;
+	}
+
+	@Override
+	protected MessageTag getMessageTag() {
+		return MessageTag.BBB_RFC_IRIF_TUNU;
 	}
 
 }

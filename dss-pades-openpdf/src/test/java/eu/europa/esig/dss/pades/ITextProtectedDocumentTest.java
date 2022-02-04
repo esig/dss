@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -38,6 +30,13 @@ import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ITextProtectedDocumentTest extends AbstractPAdESTestValidation {
 	
@@ -58,34 +57,29 @@ public class ITextProtectedDocumentTest extends AbstractPAdESTestValidation {
 			MimeType.PDF);
 	
 	@Test
-	public void signatureOperationsCorrectPassword() throws Exception {
-		
+	public void signatureOperationsCorrectPassword() {
 		assertThrows(ProtectedDocumentException.class, () -> sign(openProtected, correctProtectionPhrase));
 		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedNone, correctProtectionPhrase));
 		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedNoField, correctProtectionPhrase));
 		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedWithField, correctProtectionPhrase));
-		
 	}
 	
 	@Test
-	public void extendSignatureTest() throws Exception {
-		
+	public void timestampTest() {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
-		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
-		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-		signatureParameters.setPasswordProtection(correctProtectionPhrase);
-		
-		assertThrows(ProtectedDocumentException.class, () -> service.extendDocument(openProtected, signatureParameters));
-		assertThrows(ProtectedDocumentException.class, () -> service.extendDocument(editionProtectedNone, signatureParameters));
-		assertThrows(ProtectedDocumentException.class, () -> service.extendDocument(editionProtectedSigningAllowedNoField, signatureParameters));
-		assertThrows(ProtectedDocumentException.class, () -> service.extendDocument(editionProtectedSigningAllowedWithField, signatureParameters));
-		
+		PAdESTimestampParameters timestampParameters = new PAdESTimestampParameters();
+		timestampParameters.setPasswordProtection(correctProtectionPhrase);
+
+		assertThrows(ProtectedDocumentException.class, () -> service.timestamp(openProtected, timestampParameters));
+		assertThrows(ProtectedDocumentException.class, () -> service.timestamp(editionProtectedNone, timestampParameters));
+		assertThrows(ProtectedDocumentException.class, () -> service.timestamp(editionProtectedSigningAllowedNoField, timestampParameters));
+		assertThrows(ProtectedDocumentException.class, () -> service.timestamp(editionProtectedSigningAllowedWithField, timestampParameters));
 	}
 	
 	@Test
-	public void addSignatureFieldTest() throws Exception {
+	public void addSignatureFieldTest() {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		
 		DSSDocument document = openProtected;
@@ -99,7 +93,7 @@ public class ITextProtectedDocumentTest extends AbstractPAdESTestValidation {
 		assertThrows(ProtectedDocumentException.class, () -> service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase));
 	}
 
-	private DSSDocument sign(DSSDocument doc, String pwd) throws Exception {
+	private DSSDocument sign(DSSDocument doc, String pwd) {
 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(
 				getOfflineCertificateVerifier());

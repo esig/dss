@@ -1,13 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 09 Jul 2021 08:02:38 GMT
+Date: Wed, 02 Feb 2022 13:31:10 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self' http://localhost:9795 fonts.googleapis.com fonts.gstatic.com cdnjs.cloudflare.com 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -17,6 +18,6 @@ Content-Length: 395
 
 {
   "algorithm" : "RSA_SHA256",
-  "value" : "lX91IFs5lYzbdyJiGRm8k+DmPejpo2SCoZJmVGX3+1ElhBxDkrtSckjGkqS94W3ZCK0giC1CMXSj/eghcBbTJJ27w2QRsxnqNn5i8obn5qTUefOv+9v1cDNL5Sl0AZx7Lq8D2QazK8nj5H2RVeWczc2VBWhCHm6NKodAO/oGuvQv/+r43rb/WVBJ8zj+fH2MK3EALVj3x6l/lgHTrlk7cTKbMBA7AB/o1F0XH1gPyrti8F5LALSq6gkjcSC7yPhpJSTQOlJ769VOXYFZR4YA3sJXMZZYlQKRWWU/PT5ZGR/NVv6gjxsKxdiXybjhyVO5tYjiLzd5VGD5k+D+4gI8Sw=="
+  "value" : "h1k7kwDqtbix2hS0rkHG3X+qOUx6OuCULIpgTxrzC3nT8F7A8bgYw266XgCyE5cJkdooJkGLGMiX1tbgby1GGP2liQ78GekRm+mb0CU7RfWfwhh1g7j0V65J33QZWqYj0kC1m5L/OdeBqpSOOQURpPGOAAcMuNcdsrf6LBg9Oto+tjsM7XfLTbsU2Ya9Hcnj/WI6W2I3n59YYBPKd6GDPnJPEf9t+G0NIREqMqx3KGoD2qEWmAabGnfsepYj651fTcvpxO9Mu/ux25R0/uCjP3g6tFbsuCBPrwTyeLTRfyvPQuDIHEF3x7Ia56WG7+SL2GV7h6qb4nVeDG7RAi8yLw=="
 }
 ----

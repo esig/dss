@@ -104,13 +104,14 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource, pdfObjFactory);
+				return new PAdESLevelBaselineT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LT:
 				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LTA:
 				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
 			default:
-				throw new IllegalArgumentException("Signature format '" + signatureLevel + "' not supported");
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
 	}
 
@@ -126,13 +127,43 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			throw new DSSException("Cannot obtain the content timestamp", e);
 		}
 	}
+	
+	/**
+	 * Returns a page preview with the visual signature
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
+		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		return pdfSignatureService.previewPageWithVisualSignature(toSignDocument, parameters);
+	}
+
+	/**
+	 * Returns a preview of the signature field
+	 * @param toSignDocument the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+
+		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		return pdfSignatureService.previewSignatureField(toSignDocument, parameters);
+	}
 
 	@Override
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) throws DSSException {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
@@ -170,7 +201,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		assertSigningDateInCertificateValidityRange(parameters);
+		assertSigningCertificateValid(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
@@ -184,7 +215,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 			signature = extension.extendSignatures(signature, parameters);
 		}
 
-		parameters.reinitDeterministicId();
+		parameters.reinit();
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signature;
 	}
@@ -217,7 +248,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 		if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
 			// use an embedded timestamp
-			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource);
+			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, certificateVerifier);
 			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
 		}
 
@@ -229,7 +260,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		if (SignatureLevel.PAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
-			throw new IllegalArgumentException("Cannot extend to PAdES_BASELINE_B");
+			throw new UnsupportedOperationException(
+					String.format("Unsupported signature format '%s' for extension.", parameters.getSignatureLevel()));
 		}
 		
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(parameters.getSignatureLevel());
@@ -297,8 +329,11 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
+		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, pdfObjFactory);
+		DSSDocument extendedDocument = extensionService.incorporateValidationData(toTimestampDocument, parameters.getPasswordProtection());
+
 		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, pdfObjFactory.newSignatureTimestampService());
-		DSSDocument timestampedDocument = timestampService.timestampDocument(toTimestampDocument, parameters);
+		DSSDocument timestampedDocument = timestampService.timestampDocument(extendedDocument, parameters);
 		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
 		return timestampedDocument;
 	}

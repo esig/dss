@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -32,10 +30,26 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.List;
+
+/**
+ * Verifies if the certificate has TrustedServices with a 'granted' status
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
+	/** List of {@link TrustedServiceWrapper}s with a 'granted status' */
 	private final List<TrustedServiceWrapper> trustServicesAtTime;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result {@link XmlConstraintsConclusion}
+	 * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}s
+	 * @param constraint {@link LevelConstraint}
+	 */
 	public GrantedStatusCheck(I18nProvider i18nProvider, T result, 
 			List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);

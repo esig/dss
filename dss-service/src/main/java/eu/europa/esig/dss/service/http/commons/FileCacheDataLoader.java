@@ -69,7 +69,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	private List<String> toIgnored;
 
 	/** The cache expiration time, after with the document shall be downloaded again */
-	private Long cacheExpirationTime;
+	private long cacheExpirationTime = -1;
 
 	/** The dataloader to be used for a remote files access */
 	private DataLoader dataLoader;
@@ -114,17 +114,27 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	 *            {@code File} pointing the cache folder to be used.
 	 */
 	public void setFileCacheDirectory(final File fileCacheDirectory) {
+		Objects.requireNonNull(fileCacheDirectory, "File cache directory cannot be null!");
 
 		this.fileCacheDirectory = fileCacheDirectory;
-		this.fileCacheDirectory.mkdirs();
+		if (!this.fileCacheDirectory.exists()) {
+			if (this.fileCacheDirectory.mkdirs()) {
+				LOG.info("A new directory '{}' has been successfully created.", fileCacheDirectory.getPath());
+			} else {
+				throw new IllegalStateException(
+						String.format("Unable to create the directory '%s'!", fileCacheDirectory.getPath()));
+			}
+		}
 	}
 
 	/**
 	 * Sets the expiration time for the cached files in milliseconds.
-	 * If more time has passed from the cache file's last modified time, then a fresh copy is downloaded and cached,
-	 * otherwise a cached copy is used.
+	 * If the defined time has passed after the cache file's last modification time,
+	 * then a fresh copy is downloaded and cached, otherwise a cached copy is used.
 	 *
-	 * If the expiration time is not set, then the cache does not expire.
+	 * A negative value is interpreted as undefined (cache does not expire).
+	 *
+	 * Default: {@code -1}
 	 *
 	 * @param cacheExpirationTimeInMilliseconds value in milliseconds
 	 */
@@ -245,7 +255,16 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	public boolean remove(String url) {
 		final String fileName = DSSUtils.getNormalizedString(url);
 		final File file = getCacheFile(fileName);
-		return file.delete();
+		if (file.exists()) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Deleting the file corresponding to URL '{}'...", url);
+			}
+			return file.delete();
+		}
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Unable to remove the file corresponding to URL '{}'! The file does not exist.", url);
+		}
+		return false;
 	}
 
 	/**
@@ -279,8 +298,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			throw new DSSExternalResourceException("Part of urls to ignore.");
 		}
 		LOG.debug("Cached file: {}/{}", fileCacheDirectory, trimmedFileName);
-		final File file = new File(fileCacheDirectory, trimmedFileName);
-		return file;
+		return new File(fileCacheDirectory, trimmedFileName);
 	}
 	
     /**
@@ -310,8 +328,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 		final String fileName = DSSUtils.getNormalizedString(urlString);
 		final File file = getCacheFile(fileName);
 		if (file.exists()) {
-			final byte[] bytes = DSSUtils.toByteArray(file);
-			return bytes;
+			return DSSUtils.toByteArray(file);
 		}
 		throw new DSSExternalResourceException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
 	}
@@ -337,8 +354,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 
 		if (fileExists && !isCacheExpired) {
 			LOG.debug("Cached file was used");
-			final byte[] byteArray = DSSUtils.toByteArray(file);
-			return byteArray;
+			return DSSUtils.toByteArray(file);
 		} else {
 			LOG.debug("There is no cached file!");
 		}
@@ -357,14 +373,14 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 
 	private boolean isCacheExpired(File file) {
-		if (cacheExpirationTime == null) {
+		if (cacheExpirationTime < 0) {
 			return false;
 		}
 		if (!file.exists()) {
 			return true;
 		}
 		long currentTime = new Date().getTime();
-		if (currentTime - file.lastModified() > cacheExpirationTime) {
+		if (currentTime - file.lastModified() >= cacheExpirationTime) {
 			LOG.debug("Cache is expired");
 			return true;
 		}

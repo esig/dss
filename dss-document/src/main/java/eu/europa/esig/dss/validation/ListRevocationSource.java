@@ -39,6 +39,7 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 
 	private static final long serialVersionUID = -6284731668494875108L;
 
+	/** List of revocation sources */
 	private List<OfflineRevocationSource<R>> sources = new ArrayList<>();
 
 	/**
@@ -96,7 +97,7 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	/**
 	 * Checks if the current ListRevocationSource and its children are empty
 	 *
-	 * @return TRUE if the current source and its children are empty, FALSE if there is at leats one revocation token
+	 * @return TRUE if the current source and its children are empty, FALSE if there is at least one revocation token
 	 */
 	public boolean isEmpty() {
 		for (OfflineRevocationSource<R> revocationSource : sources) {

@@ -22,15 +22,18 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.jose4j.jwx.HeaderParameterNames;
-import org.jose4j.jwx.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Performs checks according to EN 119 182-1 v1.1.1
@@ -54,33 +57,38 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     @Override
     public boolean hasBaselineBProfile() {
         JWS jws = signature.getJws();
-        Headers headers = jws.getHeaders();
         JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
         // alg (Cardinality == 1)
-        if (headers.getObjectHeaderValue(HeaderParameterNames.ALGORITHM) == null) {
+        if (Utils.isStringEmpty(jws.getProtectedHeaderValueAsString(HeaderParameterNames.ALGORITHM))) {
             LOG.warn("alg header shall be present for JAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
         // cty (Conditional presence)
-        if (signature.isCounterSignature() && headers.getObjectHeaderValue(HeaderParameterNames.CONTENT_TYPE) != null) {
+        if (signature.isCounterSignature() && Utils.isStringNotEmpty(jws.getProtectedHeaderValueAsString(HeaderParameterNames.CONTENT_TYPE))) {
             LOG.warn("cty header shall not be present for a JAdES-BASELINE-B counter signature!");
             return false;
         }
         // crit (conditional presence, but shall be included for other mandatory headers, therefore it is mandatory)
-        if (headers.getObjectHeaderValue(HeaderParameterNames.CRITICAL) == null) {
+        Object crit = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.CRITICAL);
+        if (crit == null) {
             LOG.warn("crit header shall be present for a JAdES-BASELINE-B signature!");
             return false;
         }
+        // verify 'crit' as of RFC 7515 and ETSI TS 119 182-1
+        if (!critRequirements(jws, crit)) {
+            // validation errors returned inside
+            return false;
+        }
         // sigT (Cardinality == 1)
-        if (headers.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_T) == null) {
+        if (Utils.isStringEmpty(jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T))) {
             LOG.warn("sigT header shall be present for JAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
         // x5t#256 / x5t#o / sigX5ts (Cardinality == 1)
         int certHeaders = 0;
-        if (headers.getObjectHeaderValue(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT) != null) ++certHeaders;
-        if (headers.getObjectHeaderValue(JAdESHeaderParameterNames.X5T_O) != null) ++certHeaders;
-        if (headers.getObjectHeaderValue(JAdESHeaderParameterNames.SIG_X5T_S) != null) ++certHeaders;
+        if (Utils.isStringNotEmpty(jws.getProtectedHeaderValueAsString(HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT))) ++certHeaders;
+        if (Utils.isMapNotEmpty(jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.X5T_O))) ++certHeaders;
+        if (Utils.isCollectionNotEmpty(jws.getProtectedHeaderValueAsList(JAdESHeaderParameterNames.SIG_X5T_S))) ++certHeaders;
         if (certHeaders != 1) {
             LOG.warn("Only one of x5t#256, x5t#o, sigX5ts headers shall be present " +
                     "for JAdES-BASELINE-B signature (cardinality == 1)!");
@@ -100,6 +108,67 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
+    private boolean critRequirements(JWS jws, Object crit) {
+        // crit shall be an array (List)
+        if (!(crit instanceof List<?>)) {
+            LOG.warn("crit header shall be an instance of json array type for a JAdES-BASELINE-B signature!");
+            return false;
+        }
+        // crit cannot be empty
+        List<?> critList = (List<?>) crit;
+        if (Utils.isCollectionEmpty(critList)) {
+            LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
+            return false;
+        }
+        Set<Object> uniqueEntries = new HashSet<>();
+        Set<Object> duplicates = critList.stream().filter(e -> !uniqueEntries.add(e)).collect(Collectors.toSet());
+        if (Utils.isCollectionNotEmpty(duplicates)) {
+            LOG.warn("crit header shall not contain duplicates for a JAdES-BASELINE-B signature (see RFC 7515)! Found duplicates : '{}'", duplicates);
+            return false;
+        }
+        Set<String> keySet = DSSJsonUtils.extractJOSEHeaderMembersSet(jws);
+        for (String key : keySet) {
+            // critical headers shall not be present within crit
+            if (DSSJsonUtils.isCriticalHeaderException(key)) {
+                if (critList.contains(key)) {
+                    LOG.warn("crit header shall not contain headers listed in RFC 7515 or RFC 7518 " +
+                            "for a JAdES-BASELINE-B signature (see RFC 7515)! Found header : '{}'", key);
+                    return false;
+                }
+                // The elements of the crit JSON array shall be the names of all the signed header parameters
+                // that are present in the JAdES signatures and specified in clause 5.2.
+            } else if (DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(key)) {
+                if (!critList.contains(key)) {
+                    LOG.warn("crit header shall contain all headers present in a signature and specified in clause 5.2 " +
+                            "of ETSI TS 119 182-1 or RFC 7797 ('b64') for a JAdES-BASELINE-B signature! Not present header : '{}'", key);
+                    return false;
+                }
+            }
+        }
+        for (Object critEntry : critList) {
+            // crit shall contain String entries
+            if (!(critEntry instanceof String)) {
+                LOG.warn("An entry of crit header shall be an instance of String type for a JAdES-BASELINE-B signature!");
+                return false;
+            }
+            // crit shall not contain not-used entries
+            if (!keySet.contains(critEntry)) {
+                LOG.warn("crit header can contain only entries used within a signed header " +
+                        "for a JAdES-BASELINE-B signature (see RFC 7515)! Found header : '{}'", critEntry);
+                return false;
+            }
+            //  Conforming implementations must reject input containing critical
+            //  extensions that are not understood or cannot be processed.
+            if (!DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critEntry) &&
+                    !JAdESHeaderParameterNames.ETSI_U.equals(critEntry)) {
+                LOG.warn("crit header shall not contain a header that cannot be understood and processed " +
+                        "for a JAdES-BASELINE-B signature (see RFC 7515)! Found header : '{}'", critEntry);
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean hasBaselineTProfile() {
         if (!minimalTRequirement()) {
@@ -109,12 +178,18 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // Additional requirement (c)
         for (EtsiUComponent etsiUComponent :
                 DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.SIG_TST)) {
-            Map<?, ?> sigTst = (Map<?, ?>) etsiUComponent.getValue();
-            List<?> tstTokens = (List<?>) sigTst.get(JAdESHeaderParameterNames.TST_TOKENS);
+            Map<?, ?> sigTst = DSSJsonUtils.toMap(etsiUComponent.getValue(), JAdESHeaderParameterNames.SIG_TST);
+            List<?> tstTokens = DSSJsonUtils.getAsList(sigTst, JAdESHeaderParameterNames.TST_TOKENS);
             if (tstTokens.size() != 1) {
                 LOG.warn("sigTst shall contain only one electronic timestamp for JAdES-BASELINE-T signature (requirement (c))!");
                 return false;
             }
+        }
+        // Additional requirement (d)
+        if (!signatureTimestampsCreatedBeforeSignCertExpiration()) {
+            LOG.warn("sigTst shall be created before expiration of the signing-certificate " +
+                    "for JAdES-BASELINE-T signature (requirement (d))!");
+            return false;
         }
         return true;
     }

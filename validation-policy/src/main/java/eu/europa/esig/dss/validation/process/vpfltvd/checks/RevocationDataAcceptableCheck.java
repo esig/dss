@@ -70,7 +70,7 @@ public class RevocationDataAcceptableCheck<T extends XmlConstraintsConclusion> e
 
 	@Override
 	protected boolean process() {
-		return xmlConclusion != null && ValidationProcessUtils.isAllowedBasicRevocationDataValidation(xmlConclusion);
+		return ValidationProcessUtils.isAllowedBasicRevocationDataValidation(xmlConclusion);
 	}
 
 	@Override

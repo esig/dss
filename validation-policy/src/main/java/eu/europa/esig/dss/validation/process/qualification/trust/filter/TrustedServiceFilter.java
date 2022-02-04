@@ -20,12 +20,22 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 
+import java.util.List;
+
+/**
+ * Used to filter acceptable Trusted Services to be used during qualification determination process
+ *
+ */
 public interface TrustedServiceFilter {
 
+	/**
+	 * Filters a list of {@code TrustedServiceWrapper}s
+	 *
+	 * @param trustedServices a list of {@link TrustedServiceWrapper}s to filter
+	 * @return filtered list of {@link TrustedServiceWrapper}s
+	 */
 	List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices);
 
 }

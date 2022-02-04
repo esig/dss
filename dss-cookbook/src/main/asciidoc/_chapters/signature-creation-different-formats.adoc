@@ -1,0 +1,336 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+== Specificities of signature creation in different signature formats
+
+=== XAdES (XML)
+==== Versions support
+
+DSS supports the following XAdES formats :
+
+[cols="5*^"]
+.Supported XAdES versions
+|===
+| | B-level | T-level | LT-level | LTA-level
+
+| XAdES 1.1.1 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.2.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:times-circle[role="red"]
+
+| XAdES 1.3.2 | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"] | icon:check-circle[role="lime"]
+
+| XAdES 1.4.1  4+| The format contains qualifying properties for XAdES 1.3.2 LTA level
+|===
+
+The XAdES Profile, as well as a customizable prefixes can be set with following methods :
+
+[source,java,indent=0]
+.XAdES formats and prefixes
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoPrefixes]
+----
+
+
+[[RefTransformations]]
+==== Reference Transformations
+
+In case of 'Enveloping', 'Enveloped' and 'Internally Detached' signatures, it is possible to apply custom transformations for signing references in order to compute a proper digest result. You can find an example of definition reference transformations below:
+
+[[SignXmlXadesBWithTransformsTest.java]]
+[source,java,indent=0]
+.Custom transformations definition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demo]
+----
+
+Current version of DSS supports the following transformations:
+
+* `EnvelopedSignatureTransform` - removes the current `Signature` element from the digest calculation of the reference.
+
+WARNING: Enveloped Signature Transform does not support parallel signatures!
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedTransform]
+----
+
+* `CanonicalizationTransform` - any canonicalization algorithm that can be used for 'CanonicalizationMethod' can be used as a transform:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoCanonicalizationTransform]
+----
+
+* `Base64Transform` - this transform is used if the application needs to sign RAW data (binaries, images, audio or other formats). The 'Base64 Transform' is not compatible with the following:
+
+** Other reference transformations. The reference shall not contain other transforms, the `Base64Transform` shall be the sole element of the reference transformation;
+** setEmbedXML(true) - embedded setting cannot be used;
+** setManifestSignature(true) - As is apparent from the previous point, Manifest cannot be used with the Base64 Transform as well since it shall also be embedded to the signature;
+** ENVELOPED, DETACHED or INTERNALLY DETACHED packaging.
+
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoBase64Transform]
+----
+
+* `XPathTransform` - allows signing a custom node in a signature or embedded document. DSS contains an additional class `XPathEnvelopedSignatureTransform` allowing to exclude signatures from the digested content (used for Enveloped signatures by default). Additional information about the 'XPath Transform' can be found https://www.w3.org/TR/xpath20/[by the link].
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedXPathTransform]
+----
+
+* `XPath2FilterTransform` - an alternative to 'XPath Transform'. Additional information about the 'XPath2Filter Transform' can be found https://www.w3.org/TR/xmldsig-filter2/[by the link]. DSS contains an additional class `XPath2FilterEnvelopedSignatureTransform` allowing to exclude signatures from the digest calculation.
+
+NOTE: In DSS, the XPath-2-Filter transform is used by default for ENVELOPED signature packaging.
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedXPath2FilterTransform]
+----
+
+* `XsltTransform` - This transform requires a 'org.w3.dom.Document' as an input, compatible with the normative https://www.w3.org/TR/xslt-30/[XSLT Specification]. Must be a sole transform.
+
+//TODO: add an example for XsltTransform because it is the only transform mentioned here that has no code associated to it
+
+NOTE: All transformations, except Base64, can be applied only to XML objects.
+
+==== Specific schema version
+
+Some signatures may have been created with an older version of the XAdES format using different schema definition. To take into account the validation of such signatures the `interface eu.europa.esig.dss.xades.definition.XAdESPaths` was created. This interface allows providing the different needed XPath expressions which are used to explore the elements of the signature. The DSS framework proposes 3 implementations :
+
+* XAdES132Paths (XAdES 1.3.2 / 1.4.1)
+* XAdES122Paths (XAdES 1.2.2)
+* XAdES111Paths (XAdES 1.1.1)
+
+By default, all XAdES are supported and DSS loads/parses all versions of XAdES. It is possible to restrict to only one version of XAdES with the following code :
+
+[source,java,indent=0]
+.Customize the supported XAdES version(s) at the validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132OnlyTest.java[tags=demo]
+----
+
+=== CAdES signature (CMS)
+
+To familiarize yourself with this type of signature it is advisable to read the following document:
+
+* CAdES Specifications (cf. <<R02>>).
+
+To implement this form of signature you can use the XAdES examples. You only need to instantiate the CAdES object service and change the SignatureLevel parameter value. For an extensive example see section <<CAdES>> of the Annex.
+
+=== PAdES signature (PDF)
+
+The standard ISO 32000-1 (cf. <<R06>>) allows defining a file format for portable electronic documents (PDF). The standard defines the PDF version 1.7 of Adobe Systems. Concerning the advanced electronic signature, the PAdES standard is used (cf. <<R03>>).
+
+The DSS implementation supports main operations for PAdES signatures:
+
+* Adding a digital signature to a document,
+* Providing a placeholder field for signatures,
+* Checking signatures for validity.
+
+To familiarize yourself with this type of signature it is advisable to read the documents referenced above.
+
+An example of code to perform a `PAdES-BASELINE-B` type signature can be found in section <<PAdES>> of the Annex.
+
+
+[[PAdESVisibleSignature]]
+==== PAdES Visible Signature
+
+The framework also allows creation of PDF files with visible signatures as specified in ETSI EN 319 142 (cf. <<R03>>).
+In the `PAdESSignatureParameters` object, there is a special attribute named `SignatureImageParameters`.
+This parameter allows you to customize the visual signature (with text, with image or with image and text).
+An example of code to perform a PAdES-BASELINE-B type signature with a visible signature can be found in section <<PAdESVisibleSignatureAnnex>> of the Annex.
+
+Additionally, DSS also allows you to insert a visible signature to an existing field. This is illustrated in section <<PAdESVisibleSignatureAnnex>> of the Annex.
+
+In case of placing an image or text to an existing field, the visible signature will fill out the whole available area of the field.
+
+===== Visible signature parameters (image and text)
+
+This chapter introduces existing parameters for creation of visible signatures with DSS.
+DSS has three implementations for visible signature drawing:
+
+* *OpenPDF (iText)* - supports separate image and text drawing;
+* *PDFBox Default* - supports separate image and text drawing, as well as a joint drawing of image and text together. It transforms text to an image;
+* *PDFBox Native* - supports separate image and text drawing, as well as a joint drawing of image and text together. It prints text in a native way, that increases quality of the produced signature.
+
+====== Positioning
+
+DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page.
+For an illustrative example see section <<Positioning>> in the Annex.
+
+====== Dimensions
+
+DSS framework provides a set of functions to manage the signature field size.
+See section <<Dimensions>> in the Annex for a concrete example.
+
+====== Text Parameters
+
+The available implementation allows placing of a visible text in a signature field.
+See section <<TextParameters>> in the Annex for a concrete example.
+
+====== Text and image combination
+
+DSS provides a set of functions to align a text with respect to an image.
+The parameters must be applied to a 'SignatureImageTextParameters' object.
+See section <<TextImageCombi>> in the Annex for a concrete example.
+
+===== Fonts usage
+
+To customize a text representation a custom font can be defined. The font must be added as an instance of the `DSSFont` interface to a `SignatureImageTextParameters` object.
+
+DSS provides the following common implementations for the `DSSFont` interface:
+
+* `DSSFileFont` for use of physical fonts, which must be embedded to the produced PDF document. To create an instance of the class, you must pass to a `DSSFileFont` constructor an object of `DSSDocument` type or an InputStream of the font file;
+* `DSSJavaFont` for use of logical fonts (default Java fonts). The logical Java fonts allow you to significantly reduce the document size, because these fonts cannot be embedded to the final PDF document. Be aware that, because of the latter fact, use of logical fonts does not allow producing PDF documents satisfying the PDF/A standard. To create an instance of this class, you should pass as an input a `java.awt.Font` object or target font parameters (name, style, size).
+
+WARNING: Logical fonts may have different implementations depending on the PAdES Visible signature service or Operating System (OS) used. Keep this in mind when switching from an implementation or system environment to another.
+
+Additionally, there are implementation-dependent classes:
+
+* `ITextNativeFont` to be used with `ITextSignatureDrawerFactory`;
+* `PdfBoxNativeFont` to be used with `PdfBoxNativeObjectFactory`.
+
+You can find an example of how to create a custom font for a physical font, for a logical font and for a native font in section <<Fonts>>.
+
+By default, DSS uses a Google font : 'PT Serif Regular' (its physical implementation).
+
+NOTE: The 'Native PDFBox Drawer' implementation supports only one of the following fonts: SERIF, SANS-SERIF, MONOSPACED, DIALOG and DIALOG_INPUT.
+
+=== ISO 32000-1 PDF signature (PKCS#7)
+The ISO 32000-1 standard gives a specification for the creation of electronic signatures in the PDF format. However, these signatures are not in the AdES format defined by ETSI.
+
+The Public Key Cryptographic Standard Number 7 (PKCS#7) is a common format of a signature included in a PDF which has been created by Adobe PDF Reader. The PKCS#7 signature format is described in the ISO 32000-1 standard (cf. <<R06>>) and must conform to the RFC 2315 (cf. <<R15>>). To familiarize yourself with this type of signature you can read these documents.
+
+DSS only supports AdES formats (e.g. PAdES for PDF) and thus does not support signature creation for PKCS#7. DSS only provides a limited support for the augmentation and validation of PKCS#7 signatures.
+
+There is no specific validation standard for PKCS#7 nor any augmentation formats in the ISO 32000-1 standard. Thus, DSS validates and augments PKCS#7 according to rules defined in ETSI standards. It validates PKCS#7 signatures according to the AdES validation algorithm, and it adds the same components as when augmenting PADES-BASELINE-B to PAdES-BASELINE-T.
+
+
+=== JAdES signature (JWS)
+
+DSS includes a possibility of creation and validation of JSON Advanced signatures (JAdES).
+
+The JSON format for AdES Signatures (cf. <<R05>>) represents an extension of JSON Web Signatures (JWS) as specified in https://tools.ietf.org/html/rfc7515[IETF RFC 7515].
+
+A typical example of a JAdES signature creation can be found in section <<JAdES>> of the Annex.
+
+The specific parameters for JAdES signature are described in the next sections.
+
+==== JWS Serialization type
+
+A JWS signature can be represented in different forms which are supported by the JAdES standard as well:
+
+* `COMPACT_SERIALIZATION` represents a compact, URL-safe serialization. It has no JWS Unprotected Header, therefore only `JAdES-BASELINE-B` level is possible with this format.
+* `JSON_SERIALIZATION` represents a JSON object with a collection of signatures inside the `'signatures'` header that allows parallel signing. It allows `JAdES-BASELINE-T/-LT/-LTA` signature augmentation levels.
+* `FLATTENED_JSON_SERIALIZATION` represents a JSON object with a single signature container. It allows `JAdES-BASELINE-T/-LT/-LTA` signature augmentation levels.
+
+[source,java,indent=0]
+.JWS Serialization type usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=serialization]
+----
+
+==== SigD header parameter
+
+JAdES signatures allow two types of JWS Payload (signed data) inclusion: `ENVELOPING` and `DETACHED`.
+
+===== Enveloping packaging
+
+With `ENVELOPING` packaging the JWS Payload is enveloped into the JAdES Signature. The type only allows signing one document.
+
+[[JAdESDetachedPackaging]]
+===== Detached packaging
+
+A simple JWS signature allows a `DETACHED` packaging by omitting the JWS Payload in the created signature. For the validation process the detached content shall be provided and it is treated in the same way as if it were attached.
+
+To create such a signature, the parameter `SigDMechanism.NO_SIG_D` shall be set. The solution allows signing of only one document.
+
+The JAdES standard <<R05>> provides a possibility for signing multiple documents within one signature in a detached way.
+
+The following mechanisms are possible:
+
+* `HTTP_HEADERS` is used to sign an HTTP request. The signature may explicitly sign several HTTP headers (represented by the class `HTTPHeader`), as well as the HTTP message body (see the `HTTPHeaderDigest` class).
+
+[source,java,indent=0]
+.Configuration for signing with detached mechanism HttpHeaders
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignHttpHeadersJadesBTest.java[tags=demo]
+----
+
+* `OBJECT_ID_BY_URI` can be used for signing of multiple documents. The signed files are dereferenced by URIs and their content is concatenated for generation of the JWS Payload.
+
+* `OBJECT_ID_BY_URI_HASH` similarly provides a possibility to sign multiple documents, by signing the computed digests of the original documents. The JWS Payload for this format stays empty.
+
+[source,java,indent=0]
+.Configuration for signing with detached mechanism ObjectIdByURIHash
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsJadesTTest.java[tags=demo]
+----
+
+==== Base64Url encoding
+
+The `Base64Url` represents a Base64 encoded format with URI safe alphabet (see https://tools.ietf.org/html/rfc4648[RFC 4648]).
+
+JAdES signatures (as well as JWS) force some values to be Base64Url-encoded, while providing a possibility to customize the format for some of them.
+
+DSS provides options to configure encoding for the following elements:
+
+* JWS Payload can be represented as Base64Url encoded octets (by default), and can be present in its initial form (with the protected header `b64` set to `false`).
+
+[source,java,indent=0]
+.Use unencoded JWS Payload
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignHttpHeadersJadesBTest.java[tags=unencodedPayload]
+----
+
+* The components of the unsigned header `'etsiU'` can occur either as Base64Url encoded strings (by default), or as clear JSON objects.
+
+NOTE: All components inside the `'etsiU'` header shall be present in the same form (Base64Url encoded or as clear JSON).
+
+WARNING: The current version of DSS does not allow `JAdES-BASELINE-LTA` level creation for `'etsiU'` components in their clear JSON representation.
+
+[source,java,indent=0]
+.Represent EtsiU components as clear JSON instances
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignMultipleDocumentsJadesTTest.java[tags=clearEtsiU]
+----
+
+=== ASiC signature (containers)
+
+The ETSI EN 319 162 standard (cf. <<R04>>) offers a standardized use of container forms to establish a common way for associating data objects with advanced signatures or time-stamp tokens. It is an alternative to the packaging types presented in section <<Packaging>>.
+
+A number of application environments use ZIP-based container formats to package sets of files together with meta-information. ASiC technical specification is designed to operate with a range of such ZIP-based application environments. Rather than enforcing a single packaging structure, ASiC describes how these package formats can be used to associate advanced electronic signatures with any data objects.
+
+The standard defines two types of containers:
+
+* *ASiC-S* is a simple container that allows you to associate one or more signatures with a single data element (zip-container). In this case, the structure of the signature can be based (in a general way) on a single CAdES signature or on multiple XAdES signatures or finally on a single TST;
+* *ASiC-E* is an extended container that includes multiple data objects. Each data object may be signed by one or more signatures whose structure is similar to ASiC-S. This second type of container is compatible with OCF, UCF and ODF formats.
+
+DSS framework has some restrictions on the containers you can generate, depending on the input file. If the input file is already an ASiC container, the output container must be the same type of container based on the same type of signature. If the input is any other file, the output does not have any restriction.
+
+.ASiC containers
+|===
+|Input |Output
+
+|ASiC-S CAdES |ASiC-S CAdES
+
+|ASiC-S XAdES |ASiC-S XAdES
+
+|ASiC-E CAdES |ASiC-E CAdES
+
+|ASiC-E XAdES |ASiC-E XAdES
+
+|Binary |ASiC-S CAdES, ASiC-S XAdES, ASiC-E CAdES, ASiC-E XAdES
+|===
+
+Typical examples of the source code for signing a document using `ASiC-S` based on `XAdES-BASELINE-B` and `ASiC-E` based on `XAdES-BASELINE-B` can be found in sections <<ASiC-S>> and <<ASiC-E>> respectively.
+
+You need to pass only few parameters to the service. Other parameters, although they are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on the DETACHED packaging no matter the packaging that was specified.
+
+It is also possible with the DSS framework to make an augmentation of an ASiC container to the levels `BASELINE-T`, `BASELINE-LT` or `BASELINE-LTA`, respectively for XAdES and CAdES formats.

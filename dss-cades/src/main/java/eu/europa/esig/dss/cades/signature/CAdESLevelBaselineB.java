@@ -26,8 +26,13 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -36,6 +41,7 @@ import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -55,15 +61,18 @@ import org.bouncycastle.asn1.ess.ContentHints;
 import org.bouncycastle.asn1.ess.ContentIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.NoticeReference;
 import org.bouncycastle.asn1.x509.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Vector;
 
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentIdentifier;
@@ -86,6 +95,9 @@ public class CAdESLevelBaselineB {
 	/** Defines if the CMS signature will be created for a PAdES */
 	private final boolean padesUsage;
 
+	/** The document to be signed */
+	private final DSSDocument documentToSign;
+
 	/**
 	 * The default constructor for CAdESLevelBaselineB.
 	 */
@@ -99,6 +111,26 @@ public class CAdESLevelBaselineB {
 	 * @param padesUsage defines if the CMS signature shall be created a PAdES
 	 */
 	public CAdESLevelBaselineB(boolean padesUsage) {
+		this(null, padesUsage);
+	}
+
+	/**
+	 * The constructor for CAdESLevelBaselineB with a {@code documentToSign}
+	 *
+	 * @param documentToSign {@link DSSDocument} document to be signed
+	 */
+	public CAdESLevelBaselineB(DSSDocument documentToSign) {
+		this(documentToSign, false);
+	}
+
+	/**
+	 * The constructor for CAdESLevelBaselineB with a {@code documentToSign} and {@code padesUsage}
+	 *
+	 * @param documentToSign {@link DSSDocument} document to be signed
+	 * @param padesUsage defines if the CMS signature shall be created a PAdES
+	 */
+	CAdESLevelBaselineB(DSSDocument documentToSign, boolean padesUsage) {
+		this.documentToSign = documentToSign;
 		this.padesUsage = padesUsage;
 	}
 
@@ -119,7 +151,7 @@ public class CAdESLevelBaselineB {
 	 */
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
-			LOG.debug("Using explict SignedAttributes from parameter");
+			LOG.debug("Using explicit SignedAttributes from parameter");
 			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
 		}
 
@@ -129,13 +161,11 @@ public class CAdESLevelBaselineB {
 		addSignerAttribute(parameters, signedAttributes);
 		addSignaturePolicyId(parameters, signedAttributes);
 		addContentHints(parameters, signedAttributes);
+		addMimeType(parameters, signedAttributes);
 		addContentIdentifier(parameters, signedAttributes);
 		addCommitmentType(parameters, signedAttributes);
 		addSignerLocation(parameters, signedAttributes);
 		addContentTimestamps(parameters, signedAttributes);
-
-		// mime-type attribute breaks parallel signatures by adding PKCS7 as a mime-type for subsequent signers.
-		// This attribute is not mandatory, so it has been disabled.
 
 		return new AttributeTable(signedAttributes);
 	}
@@ -427,19 +457,16 @@ public class CAdESLevelBaselineB {
 
 			if (Utils.isStringEmpty(policyId)) {// implicit
 				sigPolicy = new SignaturePolicyIdentifier();
+
 			} else { // explicit
 				final ASN1ObjectIdentifier derOIPolicyId = new ASN1ObjectIdentifier(policyId);
 				final ASN1ObjectIdentifier oid = new ASN1ObjectIdentifier(policy.getDigestAlgorithm().getOid());
 				final AlgorithmIdentifier algorithmIdentifier = new AlgorithmIdentifier(oid);
-				OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
+				final OtherHashAlgAndValue otherHashAlgAndValue = new OtherHashAlgAndValue(algorithmIdentifier, new DEROctetString(policy.getDigestValue()));
 
-				if (Utils.isStringNotEmpty(policy.getSpuri())) {
-					SigPolicyQualifierInfo policyQualifierInfo = new SigPolicyQualifierInfo(PKCSObjectIdentifiers.id_spq_ets_uri,
-							new DERIA5String(policy.getSpuri()));
-					SigPolicyQualifierInfo[] qualifierInfos = new SigPolicyQualifierInfo[] { policyQualifierInfo };
-					SigPolicyQualifiers qualifiers = new SigPolicyQualifiers(qualifierInfos);
-
-					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue, qualifiers));
+				if (policy.isSPQualifierPresent()) {
+					SigPolicyQualifiers sigPolicyQualifiers = buildSigPolicyQualifiers(policy);
+					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue, sigPolicyQualifiers));
 				} else {
 					sigPolicy = new SignaturePolicyIdentifier(new SignaturePolicyId(derOIPolicyId, otherHashAlgAndValue));
 				}
@@ -451,6 +478,51 @@ public class CAdESLevelBaselineB {
 		}
 	}
 
+	private SigPolicyQualifiers buildSigPolicyQualifiers(final Policy policy) {
+		final List<SigPolicyQualifierInfo> qualifierInfos = new ArrayList<>();
+
+		final String spUri = policy.getSpuri();
+		if (Utils.isStringNotEmpty(spUri)) {
+			final SigPolicyQualifierInfo spuriQualifier = new SigPolicyQualifierInfo(
+					PKCSObjectIdentifiers.id_spq_ets_uri, new DERIA5String(policy.getSpuri()));
+			qualifierInfos.add(spuriQualifier);
+		}
+
+		final UserNotice userNotice = policy.getUserNotice();
+		if (userNotice != null && !userNotice.isEmpty()) {
+			DSSUtils.assertSPUserNoticeConfigurationValid(userNotice);
+
+			NoticeReference noticeReference = null;
+			String explicitText = null;
+
+			final String organization = userNotice.getOrganization();
+			final int[] noticeNumbers = userNotice.getNoticeNumbers();
+			if (Utils.isStringNotEmpty(organization) && noticeNumbers != null && noticeNumbers.length > 0) {
+				Vector<BigInteger> numbers = new Vector<>(DSSUtils.toBigIntegerList(noticeNumbers));
+				noticeReference = new NoticeReference(organization, numbers);
+			}
+			if (Utils.isStringNotEmpty(userNotice.getExplicitText())) {
+				explicitText = userNotice.getExplicitText();
+			}
+
+			final org.bouncycastle.asn1.x509.UserNotice asn1UserNotice =
+					new org.bouncycastle.asn1.x509.UserNotice(noticeReference, explicitText);
+			final SigPolicyQualifierInfo userNoticeQualifier = new SigPolicyQualifierInfo(
+					PKCSObjectIdentifiers.id_spq_ets_unotice, asn1UserNotice);
+			qualifierInfos.add(userNoticeQualifier);
+		}
+
+		final SpDocSpecification spDocSpecification = policy.getSpDocSpecification();
+		if (spDocSpecification != null && Utils.isStringNotEmpty(spDocSpecification.getId())) {
+			final ASN1Primitive spDocSpecificationId = DSSASN1Utils.buildSPDocSpecificationId(spDocSpecification.getId());
+			final SigPolicyQualifierInfo spDocSpecificationQualifier = new SigPolicyQualifierInfo(
+					OID.id_sp_doc_specification, spDocSpecificationId);
+			qualifierInfos.add(spDocSpecificationQualifier);
+		}
+
+		return new SigPolicyQualifiers(qualifierInfos.toArray(new SigPolicyQualifierInfo[0]));
+	}
+
 	private void addSigningCertificateAttribute(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
 		if (parameters.getSigningCertificate() == null && parameters.isGenerateTBSWithoutCertificate()) {
 			LOG.debug("Signing certificate not available and must be added to signed attributes later");
@@ -458,6 +530,27 @@ public class CAdESLevelBaselineB {
 		}
 
 		CMSUtils.addSigningCertificateAttribute(signedAttributes, parameters.getDigestAlgorithm(), parameters.getSigningCertificate());
+	}
+
+	private void addMimeType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
+		if (padesUsage) {
+			return;
+		}
+		if (parameters instanceof CAdESCounterSignatureParameters) {
+			return;
+		}
+		if (Utils.isStringNotBlank(parameters.getContentHintsType())) {
+			return;
+		}
+
+		MimeType mimeType = MimeType.BINARY;
+		if (documentToSign != null && documentToSign.getMimeType() != null) {
+			mimeType = documentToSign.getMimeType();
+		}
+		final DERUTF8String mimeTypeDerString = new DERUTF8String(mimeType.getMimeTypeString());
+		final DERSet attrValues = new DERSet(mimeTypeDerString);
+		final Attribute attribute = new Attribute(OID.id_aa_ets_mimeType, attrValues);
+		signedAttributes.add(attribute);
 	}
 
 }

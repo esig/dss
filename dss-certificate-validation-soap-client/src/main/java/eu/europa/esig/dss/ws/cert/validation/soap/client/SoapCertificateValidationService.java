@@ -37,7 +37,7 @@ public interface SoapCertificateValidationService extends Serializable {
 
 	/**
 	 * This method returns the result of the validation of the certificate. The
-	 * results contains a Diagnostic Data, simple certificate report and detailed report
+	 * result contains a Diagnostic Data, simple certificate report and detailed report
 	 * 
 	 * @param certificateToValidate
 	 *                       a {@code CertificateToValidateDTO} which contains the

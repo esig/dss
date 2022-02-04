@@ -1,0 +1,235 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+[[TrustedLists]]
+== Trusted Lists
+
+[[tlValidationJob]]
+=== Configuration of TL validation job
+
+The `TLValidationJob` allows downloading, parsing and validating the Trusted List(s) (TL) (cf. <<EUTL>>) and List(s) Of Trusted Lists (LOTL) (cf. <<LOTL>>). Once the task is done, its result is stored in the `TrustedListsCertificateSource`. The job uses 3 different caches (download, parsing and validation) and a state-machine to be efficient.
+
+Trusted lists are stored in the file system. That offers the possibility to run the validation job in offline mode with the stored trusted lists. Trusted Lists can be loaded from the file system and/or from Internet.
+
+In the next sections the different configurations will be covered.
+
+==== TLSource and LOTLSource
+
+Several TLSources and several LOTLSources can be injected in a `TLValidationJob`. The only constraint is the uniqueness of the Trusted List URLs.
+
+[source,java,indent=0]
+.Multiple TLSources and multiple LOTLSources configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=job-config-sources]
+----
+
+===== Trusted List Source (TLSource)
+
+A `TLSource` allows quickly setting up a trusted list configuration. The URL and the signing certificates for this TL are mandatory. Optionally, predicates or/and filters can be configured to retrieve only a part of the trust service providers or trust services.
+
+[source,java,indent=0]
+.TLSource configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=french-tl-source]
+----
+
+===== List Of Trusted Lists Source (LOTLSource)
+
+A similar configuration is possible for Lists Of Trusted Lists (LOTL) with a `LOTLSource`. That requires an URL and a list of potential LOTL signers. Some other parameters are also possible. By default, all listed trusted lists are loaded.
+
+[source,java,indent=0]
+.LOTLSource configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=european-lotl-source]
+----
+
+[[DSSFileLoader]]
+==== DSSFileLoader
+
+The `FileCacheDataLoader` is used to download the trusted list contents in the file system. Two different configurations are needed. Both of them share the same folder:
+
+* *offline refresh*: disabled download from Internet and unlimited cache expiration
+* *online refresh*: enabled download from Internet and limited cache expiration
+
+[source,java,indent=0]
+.Offline and Online refresh configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=job-loaders]
+----
+
+==== The SynchronizationStrategy
+
+The `SynchronizationStrategy` defines the trusted lists or list(s) of trusted lists to be synchronized. By default, DSS synchronizes all of them and DSS does not reject any trusted lists (e.g. expired, invalid, etc.). The default behavior can be customized with implementation of the `SynchronizationStrategy`.
+
+DSS provides two implementations within the framework:
+
+* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
+* `AcceptAllStrategy` (default) - accepts all Trusted List, whatever the validation status is.
+
+An example of a custom implementation of `SynchronizationStrategy` can be found below:
+
+[source,java,indent=0]
+.Example of a custom  SynchronizationStrategy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=custom-strategy]
+----
+
+==== The CacheCleaner
+
+The `CacheCleaner` specifies how DSS clears the cache (e.g. in case of expired URL, etc.). Two cleaning options are available : memory and file system.
+
+[source,java,indent=0]
+.CacheCleaner Configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=cache-cleaner]
+----
+
+[[AlertingTL]]
+==== Alerting from TL Loading
+
+DSS allows running of custom alerts in some situations (e.g. invalid TL signature, LOTL location change, etc.). Alert works with two concepts: detection and alert handler. After the download/parsing/validation and before the synchronization, the results are tested to detect events and launch alert(s).
+
+[source,java,indent=0]
+.Examples of Alerting
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=alerting]
+----
+
+See section <<Alerts>> in the Annex for more information on related alerts.
+
+==== LOTL/TL filter predicates
+
+TSL predicates provide an option to filter the extracted TSL Pointers from LOTL or TL sources, allowing a customization of a trusted certificates and trusted services loading.
+
+The following predicates are provided within the framework:
+
+* `EULOTLOtherTSLPointer` - filters the EU LOTL pointer;
+* `EUTLOtherTSLPointer` - filters the EU TL pointers;
+* `MimetypeOtherTSLPointer` - filters TL pointers by a MimeType (e.g. to filter XML files only);
+* `XMLOtherTSLPointer` - filters XML TL pointers;
+* `PDFOtherTSLPointer` - filters PDF TL pointers;
+* `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
+
+[source,java,indent=0]
+.Examples of TSL Loading Predicates configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicates]
+----
+
+==== Executor Service
+
+An Executor Service allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on.
+
+[source,java,indent=0]
+.Executor Service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=executor-service]
+----
+
+==== Complete configuration for the European LOTL
+
+Below, you can find a complete configuration for the European List Of Trusted Lists. The URLs need to be externalized.
+
+[source,java,indent=0]
+.European LOTL Configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=complete-european-lotl-config]
+----
+
+==== The TL / LOTL refresh
+
+The TL / LOTL loading in DSS works as below :
+
+* Download / parse / validate all LOTLSources from the configuration with/without pivot support (multi-threaded);
+* Analyze introduced changes and expired cache entries (new TL URLs, new signing certificates for a TL, etc.);
+* Create TLSources from the retrieved LOTLs;
+* Combine these TLSources with independent TLSources (from the configuration);
+* Download / parse / validate all TLs (multi-threaded);
+* If alerts are configured, test if an alert needs to be launched;
+* If the debug is enabled, print in the log the cache status;
+* Synchronize the `TrustedListCertificateSource`;
+* If the cache cleaner is configured, execute it;
+* If the debug is enabled, print in the log the cache status.
+
+The refresh can be called with the offline or the online loader and run exactly the same code:
+
+[source,java,indent=0]
+.How to refresh the Trusted List(s) and Lists of Trusted Lists
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=refresh]
+----
+
+[[KeyStore]]
+===== Java Keystore Management
+
+Generally (like in case of European LOTL) DSS downloads Trusted Lists by using the SSL protocol (for resources using HTTPS extension), that requires to have a certificate of a remote source in the Java trust store. The certificates have their own validity period and can expire. If a certificate is expired, it will be replaced on a server by a new one in order to support a secure SSL connection. The easiest way to know if your Java trust store is outdated and new certificates need to be added is to check your logs during a `TLValidationJob` update :
+
+[source]
+--
+ERROR 14052 --- [pool-2-thread-30] e.e.e.dss.tsl.runnable.AbstractAnalysis  : Unable to process GET call for url [https://sr.riik.ee/tsl/estonian-tsl.xml]. Reason : [PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target]
+--
+
+The `SunCertPathBuilderException` means that the certificate establishing the secure connection is not trusted by your Java Virtual Machine. In order to add the certificate to the trust store, you need to do the following steps (the example is based on Windows OS and Google Chrome browser):
+
+. Open the failed URL in your browser. In our case it will be 'https://sr.riik.ee/tsl/estonian-tsl.xml' obtained from the logs.
+. Click on a lock icon next to the URL in the tab you just opened. It will open a window about the current connection status.
+. Click on 'Certificate' button to open the Certificate window.
+. Go to 'Details' tab and choose 'Copy to File...'.
+. Process the 'Certificate Export Wizard', by saving the certificate in one of '.CER' formats. Store the file in your file system. For us it will create a file 'ee.cer'.
+. Run 'Command Prompt' with administrator permissions (right click -> 'Run As Administrator').
+. Execute the following line (ensure that 'keytool' is installed):
+
+.Certificate import
+[source,ruby]
+----
+keytool -import -alias newCert -file pathToCert\ee.cer -keystore pathToJavaDirectory\lib\security\cacerts -storepass changeit
+----
+
+The default password for a Java keystore is `changeit`. Ensure that you have a default configuration, or use another password you have configured.
+
+NOTE: In order to apply changes, the application using Java must be rebooted.
+
+After these steps the `TLValidationJob` will successfully download the target Trusted List (i.e. Estonian in our example).
+
+NOTE: This described algorithm is not only one available solution, if you have difficulties with this, you can search in the Internet for another working for you solution.
+
+==== TLValidationJobSummary
+
+The class `TLValidationJobSummary` contains all processed data about the download (time, error, etc.), the parsing (extracted information, parsing error, etc.) and the signature validation (signing certificate, signing time, etc.).
+
+[source,java,indent=0]
+.How to retrieve the information about the TLValidationJob process
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=tl-summary]
+----
+
+=== Validation policy for trusted lists
+
+An eIDAS XML node linked to the status of the Trusted List is included in the DSS validation policy (see <<validationPolicy>> for more information). The following elements are contained in that node:
+
+* *TLFreshness*: Given that TLs are too heavy to be downloaded at each validation, TLs are downloaded every few hours. However, it can happen that a download is not possible because the TL is not available or because there is a problem with the downloader on the signature validation algorithm side. For such situations, it is useful to display a message to indicate that the TL is not “fresh”. To achieve this, the TL freshness indicates that TLs were downloaded no later than the validation time minus the TL freshness time interval.
+* *TLNotExpired*: The TL might be expired in case of an attack consisting in replacing the current TL by an older one. Using an old TL might bring problems. The expired TL could for example contain Certificate Authorities that are not present in the current TL. Thus, an expired TL should lead to a warning during the validation.
+* *TLWellSigned*: If the signature of the TL is not valid, the TL should be discarded. A non-valid TL signature might indicate that the content of that TL is "fake" and should not be trusted.
+* *TLVersion*: If the version of the trusted list does not correspond to the version indicated in the validation policy, the validation process fails.
+
+=== Using non-EU trusted lists
+
+Non-EU trusted lists are supported by DSS. However, there are a few limitations:
+
+* Non-EU trusted lists shall have the same XML structure as EU TLs, i.e. they shall be compliant with the XSD schema.
+* There is no guarantee for a proper qualification determination as the non-EU TL shall also be compliant with EU regulations.
+
+NOTE: Even though the ETSI TS 119 615 standard (<<R14>>) is EU-specific, the diagnostic data contains the necessary information for implementers to implement non-EU ETSI TS 119 615 status determination.
+
+=== Signing a trusted list
+
+The standard ETSI TS 119 612 (cf. <<R11>>) specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+
+[source,java,indent=0]
+.Sign a Trusted List with the TrustedListSignatureParametersBuilder
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTrustedListTest.java[tags=demo]
+----

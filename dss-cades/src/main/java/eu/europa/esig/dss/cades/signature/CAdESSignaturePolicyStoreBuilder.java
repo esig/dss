@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
@@ -32,10 +33,7 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -127,26 +125,10 @@ public class CAdESSignaturePolicyStoreBuilder {
 	private ASN1Sequence getSignaturePolicyStore(SignaturePolicyStore signaturePolicyStore) {
 		final ASN1EncodableVector sigPolicyStore = new ASN1EncodableVector();
 		// spDocSpec
-		sigPolicyStore.add(getSPDocSpecificationId(signaturePolicyStore.getSpDocSpecification().getId()));
+		sigPolicyStore.add(DSSASN1Utils.buildSPDocSpecificationId(signaturePolicyStore.getSpDocSpecification().getId()));
 		// spDocument : only complete octets supported
 		sigPolicyStore.add(new DEROctetString(DSSUtils.toByteArray(signaturePolicyStore.getSignaturePolicyContent()))); 
 		return new DERSequence(sigPolicyStore);
-	}
-	
-	/**
-	 * SPDocSpecification ::= CHOICE {
-	 *  oid OBJECT IDENTIFIER,
-	 *  uri IA5String
-	 * }
-	 */
-	private ASN1Primitive getSPDocSpecificationId(String oidOrUri) {
-		ASN1Primitive spDocSpecification;
-		if (DSSUtils.isOidCode(oidOrUri)) {
-			spDocSpecification = new ASN1ObjectIdentifier(oidOrUri);
-		} else {
-			spDocSpecification = new DERIA5String(oidOrUri);
-		}
-		return spDocSpecification;
 	}
 	
 	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {

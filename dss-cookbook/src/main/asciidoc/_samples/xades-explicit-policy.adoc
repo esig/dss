@@ -7,7 +7,7 @@
 		</xades:SigPolicyId>
 		<xades:SigPolicyHash>
 			<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-		<ds:DigestValue>Uw3PxkrX4SpF03jDvkSu6Zqm9UXDxs56FFXeg7MWy0c=</ds:DigestValue>
+		    <ds:DigestValue>Uw3PxkrX4SpF03jDvkSu6Zqm9UXDxs56FFXeg7MWy0c=</ds:DigestValue>
 		</xades:SigPolicyHash>
 	</xades:SignaturePolicyId>
 </xades:SignaturePolicyIdentifier>

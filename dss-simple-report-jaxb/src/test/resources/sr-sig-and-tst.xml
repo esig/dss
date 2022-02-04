@@ -93,6 +93,12 @@
         <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+        <TimestampScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/signature002.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="test.text" scope="FULL">Full document</TimestampScope>
     </Timestamp>
     <Timestamp Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
         <Filename>META-INF/timestamp001.tst</Filename>
@@ -110,5 +116,9 @@
         <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+        <TimestampScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope name="test.text" scope="FULL">Full document</TimestampScope>
     </Timestamp>
 </SimpleReport>

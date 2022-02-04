@@ -65,7 +65,7 @@ public class OrphanRevocationWrapper extends OrphanRevocationTokenWrapper {
 		
 		List<XmlRevocationRef> revocationRefs = orphanRevocation.getRevocationRefs();
 		for (XmlRevocationRef revocationRef : revocationRefs) {
-			revocationRefWrappers.add(new RevocationRefWrapper(revocationRef));
+			revocationRefWrappers.add(new RevocationRefWrapper(revocationRef, orphanRevocation.getToken().getId()));
 		}
 		return revocationRefWrappers;
 	}

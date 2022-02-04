@@ -61,6 +61,104 @@ public final class PAdESConstants {
 	/** 'CRL' */
 	public static final String CRL_ARRAY_NAME_VRI = "CRL";
 
+	/* Field names */
+
+	/** 'AcroForm' */
+	public static final String ACRO_FORM_NAME = "AcroForm";
+	/** 'Action' */
+	public static final String ACTION_NAME = "Action";
+	/** 'F' (Annotation flag) */
+	public static final String ANNOT_FLAG = "F";
+	/** 'Action' */
+	public static final String ANNOTS_NAME = "Annots";
+	/** 'AP' (Appearance dictionary) */
+	public static final String APPEARANCE_DICTIONARY_NAME = "AP";
+	/** 'AS' */
+	public static final String AS_NAME = "AS";
+	/** 'ByteRange' */
+	public static final String BYTE_RANGE_NAME = "ByteRange";
+	/** 'Catalog' */
+	public static final String CATALOG_NAME = "Catalog";
+	/** 'ContactInfo' */
+	public static final String CONTACT_INFO_NAME = "ContactInfo";
+	/** 'Contents' */
+	public static final String CONTENTS_NAME = "Contents";
+	/** 'Data' */
+	public static final String DATA_NAME = "Data";
+	/** 'DocMDP' */
+	public static final String DOC_MDP_NAME = "DocMDP";
+	/** 'DA' (Document-wide appearance) */
+	public static final String DOCUMENT_APPEARANCE_NAME = "DA";
+	/** 'DR' (Document-wide resources) */
+	public static final String DOCUMENT_RESOURCES_NAME = "DR";
+	/** 'Extensions' */
+	public static final String EXTENSIONS_NAME = "Extensions";
+	/** 'FieldMDP' */
+	public static final String FIELD_MDP_NAME = "FieldMDP";
+	/** 'Fields' */
+	public static final String FIELDS_NAME = "Fields";
+	/** 'T' (Field name) */
+	public static final String FIELD_NAME_NAME = "T";
+	/** 'Filter' */
+	public static final String FILTER_NAME = "Filter";
+	/** 'Font' */
+	public static final String FONT_NAME = "Font";
+	/** 'ITXT' (iText identifier) */
+	public static final String ITEXT_NAME = "ITXT";
+	/** 'Location' */
+	public static final String LOCATION_NAME = "Location";
+	/** 'Lock' */
+	public static final String LOCK_NAME = "Lock";
+	/** 'Metadata' */
+	public static final String METADATA_NAME = "Metadata";
+	/** 'Name' */
+	public static final String NAME_NAME = "Name";
+	/** 'Names' */
+	public static final String NAMES_NAME = "Names";
+	/** 'OutputIntents' */
+	public static final String OUTPUT_INTENTS_NAME = "OutputIntents";
+	/** 'Parent' */
+	public static final String PARENT_NAME = "Parent";
+	/** 'P' (Permissions) */
+	public static final String PERMISSIONS_NAME = "P";
+	/** 'Perms' */
+	public static final String PERMS_NAME = "Perms";
+	/** 'PieceInfo' */
+	public static final String PIECE_INFO_NAME = "PieceInfo";
+	/** 'Reason' */
+	public static final String REASON_NAME = "Reason";
+	/** 'Reference' */
+	public static final String REFERENCE_NAME = "Reference";
+	/** 'M' (Signing date) */
+	public static final String SIGNING_DATE_NAME = "M";
+	/** 'SigFieldLock' */
+	public static final String SIG_FIELD_LOCK_NAME = "SigFieldLock";
+	/** 'SigFlags' */
+	public static final String SIG_FLAGS_NAME = "SigFlags";
+	/** 'SigRef' */
+	public static final String SIG_REF_NAME = "SigRef";
+	/** 'SubFilter' */
+	public static final String SUB_FILTER_NAME = "SubFilter";
+	/** 'Type' */
+	public static final String TYPE_NAME = "Type";
+	/** 'TransformMethod' */
+	public static final String TRANSFORM_METHOD_NAME = "TransformMethod";
+	/** 'TransformParams' */
+	public static final String TRANSFORM_PARAMS_NAME = "TransformParams";
+	/** 'UR' (User rights) */
+	public static final String UR_NAME = "UR";
+	/** 'UR3' (User rights) */
+	public static final String UR3_NAME = "UR3";
+	/** 'V' (Value) */
+	public static final String VALUE_NAME = "V";
+	/** 'Version' */
+	public static final String VERSION_NAME = "Version";
+
+	/* Field values */
+
+	/** 'V=1.2' */
+	public static final String VERSION_DEFAULT = "1.2";
+
 	/**
 	 * Utils class
 	 */

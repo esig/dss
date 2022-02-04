@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCExtractResult;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
@@ -57,8 +56,7 @@ public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	@Override
 	protected List<DSSDocument> getDetachedDocuments(String signatureFilename) {
 		// return all found documents (any document can be signed)
-		ASiCExtractResult extractResult = getASiCExtractResult();
-		return extractResult.getAllDocuments();
+		return getAsicContent().getAllDocuments();
 	}
 
 }

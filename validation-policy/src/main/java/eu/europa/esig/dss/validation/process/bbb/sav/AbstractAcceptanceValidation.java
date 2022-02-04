@@ -24,11 +24,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -36,14 +38,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateAttributePresentCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.UnicitySigningCertificateAttributeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestCryptographicCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheckerResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateAttributePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateRefDigestCryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.UnicitySigningCertificateAttributeCheck;
 
 import java.util.Date;
 import java.util.List;
@@ -79,7 +82,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
-	public AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
+	protected AbstractAcceptanceValidation(I18nProvider i18nProvider, T token, Date currentTime, Context context,
 										ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSAV());
 		this.token = token;
@@ -88,26 +91,52 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		this.validationPolicy = validationPolicy;
 	}
 
+	/**
+	 * Checks whether a signing-certificate signed attribute is present
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> signingCertificateAttributePresent() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
 		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks if only one signing-certificate signed attribute is present
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> unicitySigningCertificateAttribute() {
 		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
 		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks whether a signing-certificate signed attribute is valid to the determined signing certificate
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> signingCertificateReferencesValidity() {
 		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
 		return new SigningCertificateReferencesValidityCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Checks if all certificates in a signing certificate chain are references
+	 * within signing-certificate signed attribute
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> allCertificatesInPathReferenced() {
 		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
 		return new AllCertificatesInPathReferencedCheck(i18nProvider, result, token, constraint);
 	}
 
+	/**
+	 * Verifies cryptographic validity of signature references and signing-certificate signed attribute
+	 *
+	 * @return {@link ChainItem}
+	 */
 	protected ChainItem<XmlSAV> cryptographic() {
 		ChainItem<XmlSAV> firstItem;
 		
@@ -138,7 +167,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				}
 				
 				position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-				DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, digestAlgorithm, currentTime, position, constraint);
+				DigestCryptographicChecker dac = new DigestCryptographicChecker(
+						i18nProvider, digestAlgorithm, currentTime, position, constraint);
 				XmlCC dacResult = dac.execute();
 				
 				item = item.setNextItem(digestAlgorithmCheckResult(digestMatcher, dacResult, position, constraint));
@@ -146,7 +176,28 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				if (!isValid(dacResult)) {
 					// update the failed constraints and brake the loop
 					cryptographicValidation = getCryptographicValidation(dacResult);
-					cryptographicValidation.setConcernedMaterial(getDigestMatcherDescription(digestMatcher));
+					cryptographicValidation.setConcernedMaterial(getDigestMatcherDescription(digestMatcher, position));
+					break;
+				}
+			}
+		}
+
+		if (token.isSigningCertificateReferencePresent()) {
+			List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
+			for (CertificateRefWrapper certificateRefWrapper : signingCertificateReferences) {
+				DigestAlgorithm digestAlgorithm = certificateRefWrapper.getDigestMethod();
+				if (digestAlgorithm == null) {
+					continue;
+				}
+
+				XmlCC dacResult = getSigningCertificateDigestCryptographicCheckResult(certificateRefWrapper);
+
+				item = item.setNextItem(signingCertificateRefDigestAlgoCheckResult(certificateRefWrapper, dacResult));
+
+				if (!isValid(dacResult)) {
+					cryptographicValidation = getCryptographicValidation(dacResult);
+					cryptographicValidation.setConcernedMaterial(getTokenDescription(
+							certificateRefWrapper.getCertificateId(), MessageTag.ACCM_POS_SIG_CERT_REF));
 					break;
 				}
 			}
@@ -156,12 +207,37 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	}
 	
 	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {
-		return new CryptographicCheckerResultCheck<>(i18nProvider, result, token, currentTime, position, ccResult, constraint);
+		return new CryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, ccResult, constraint);
 	}
 	
-	private ChainItem<XmlSAV> digestAlgorithmCheckResult(XmlDigestMatcher digestMatcher, XmlCC ccResult, 
+	private ChainItem<XmlSAV> digestAlgorithmCheckResult(XmlDigestMatcher digestMatcher, XmlCC ccResult,
 			MessageTag position, CryptographicConstraint constraint) {
-		return new DigestCryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, digestMatcher.getName(), ccResult, constraint);
+		return new DigestMatcherCryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position,
+				digestMatcher.getName(), ccResult, constraint);
+	}
+
+	private ChainItem<XmlSAV> signingCertificateRefDigestAlgoCheckResult(CertificateRefWrapper certificateRefWrapper,
+																		 XmlCC ccResult) {
+		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestAlgorithmConstraint(context);
+		return new SigningCertificateRefDigestCryptographicCheckerResultCheck<>(i18nProvider, result,
+				currentTime, certificateRefWrapper, ccResult, constraint);
+	}
+
+	private XmlCC getSigningCertificateDigestCryptographicCheckResult(CertificateRefWrapper certificateRef) {
+		SubContext subContext;
+		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
+		if (signingCertificateReference != null &&
+				signingCertificateReference.getCertificateId().equals(certificateRef.getCertificateId())) {
+			subContext = SubContext.SIGNING_CERT;
+		} else {
+			subContext = SubContext.CA_CERTIFICATE;
+		}
+
+		CryptographicConstraint certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
+
+		DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, certificateRef.getDigestMethod(),
+				currentTime, MessageTag.ACCM_POS_SIG_CERT_REF, certificateConstraint);
+		return dac.execute();
 	}
 
 	@Override
@@ -180,12 +256,15 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		return cryptographicValidation;
 	}
 
-	private static String getDigestMatcherDescription(XmlDigestMatcher digestMatcher) {
-		StringBuilder description = new StringBuilder(digestMatcher.getType().name());
+	private String getDigestMatcherDescription(XmlDigestMatcher digestMatcher, MessageTag position) {
 		if (Utils.isStringNotEmpty(digestMatcher.getName())) {
-			description.append(" with name [").append(digestMatcher.getName()).append("]");
+			return i18nProvider.getMessage(MessageTag.ACCM_DESC_WITH_NAME, position, digestMatcher.getName());
 		}
-		return description.toString();
+		return i18nProvider.getMessage(position);
+	}
+
+	private String getTokenDescription(String id, MessageTag position) {
+		return i18nProvider.getMessage(MessageTag.ACCM_DESC_WITH_ID, position, id);
 	}
 
 }

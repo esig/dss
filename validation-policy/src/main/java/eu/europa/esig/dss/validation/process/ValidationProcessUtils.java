@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -54,6 +55,15 @@ public class ValidationProcessUtils {
 
 	/** The Validation policy date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
+
+	/** The prefix used for "urn:oid:" definition as per RFC 3061 */
+	private static final String URN_OID_PREFIX = "urn:oid:";
+
+	/**
+	 * Empty constructor
+	 */
+	private ValidationProcessUtils() {
+	}
 	
 	/**
 	 * Verifies if the revocation check is required for the OCSP Responder's certificate
@@ -96,13 +106,13 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedBasicRevocationDataValidation(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && (Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
 				|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 				|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 				|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 				|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -159,9 +169,10 @@ public class ValidationProcessUtils {
 				XmlBasicBuildingBlocks revocationBBB = bbbs.get(revocationWrapper.getId());
 				if (isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
 						&& isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, revocationWrapper)
-						&& revocationWrapper.getProductionDate() != null && revocationWrapper.getProductionDate().before(controlTime)
+						&& revocationWrapper.getThisUpdate() != null && revocationWrapper.getThisUpdate().before(controlTime)
 						&& poe.isPOEExists(revocationWrapper.getId(), controlTime)
-						&& (latestRevocationData == null || revocationWrapper.getProductionDate().after(latestRevocationData.getProductionDate()))) {
+						&& (latestRevocationData == null || (revocationWrapper.getProductionDate() != null
+								&& latestRevocationData.getProductionDate().before(revocationWrapper.getProductionDate())))) {
 					latestRevocationData = revocationWrapper;
 				}
 			}
@@ -229,7 +240,7 @@ public class ValidationProcessUtils {
 	 */
 	public static boolean isRevocationDataAcceptable(XmlBasicBuildingBlocks bbb, CertificateWrapper certificate,
 													 RevocationWrapper revocationData) {
-		XmlRAC xmlRAC = getRevocationAcceptanceCheckerResult(bbb, certificate, revocationData);
+		XmlRAC xmlRAC = getRevocationAcceptanceCheckerResult(bbb, certificate.getId(), revocationData.getId());
 		return xmlRAC != null && xmlRAC.getConclusion() != null && Indication.PASSED.equals(xmlRAC.getConclusion().getIndication());
 	}
 
@@ -237,26 +248,45 @@ public class ValidationProcessUtils {
 	 * Return a corresponding {@code XmlRAC} result for the given {@code certificate} and {@code revocationData}
 	 *
 	 * @param bbb {@link XmlBasicBuildingBlocks} of the validating token
-	 * @param certificate {@link CertificateWrapper} concerned certificate
-	 * @param revocationData {@link RevocationWrapper} to check
+	 * @param certificateId {@link String} concerned certificate id
+	 * @param revocationDataId {@link String} revocation data id to check
 	 * @return {@link XmlRAC}
 	 */
-	public static XmlRAC getRevocationAcceptanceCheckerResult(XmlBasicBuildingBlocks bbb, CertificateWrapper certificate,
-													 RevocationWrapper revocationData) {
+	public static XmlRAC getRevocationAcceptanceCheckerResult(XmlBasicBuildingBlocks bbb, String certificateId,
+															  String revocationDataId) {
 		if (bbb != null) {
 			XmlXCV xcv = bbb.getXCV();
 			if (xcv != null) {
-				for (XmlSubXCV subXCV : xcv.getSubXCV()) {
-					if (certificate.getId().equals(subXCV.getId())) {
-						List<XmlRAC> racs = subXCV.getRAC();
-						if (Utils.isCollectionNotEmpty(racs)) {
-							for (XmlRAC rac : racs) {
-								if (revocationData.getId().equals(rac.getId())) {
-									return rac;
-								}
-							}
+				XmlSubXCV subXCV = getXmlSubXCVForId(xcv.getSubXCV(), certificateId);
+				if (subXCV != null) {
+					XmlCRS crs = subXCV.getCRS();
+					if (crs != null) {
+						List<XmlRAC> racs = crs.getRAC();
+						XmlRAC rac = getXmlRACForId(racs, revocationDataId);
+						if (rac != null) {
+							return rac;
 						}
 					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private static XmlSubXCV getXmlSubXCVForId(List<XmlSubXCV> subXCVs, String tokenId) {
+		for (XmlSubXCV subXCV : subXCVs) {
+			if (tokenId.equals(subXCV.getId())) {
+				return subXCV;
+			}
+		}
+		return null;
+	}
+
+	private static XmlRAC getXmlRACForId(List<XmlRAC> racs, String tokenId) {
+		if (Utils.isCollectionNotEmpty(racs)) {
+			for (XmlRAC rac : racs) {
+				if (tokenId.equals(rac.getId())) {
+					return rac;
 				}
 			}
 		}
@@ -399,57 +429,17 @@ public class ValidationProcessUtils {
 	}
 
 	/**
-	 * Checks if a valid revocation (RAC) has been found
+	 * Transforms the given OID to a URN format as per RFC 3061
+	 * e.g. "1.2.3" to "urn:oid:1.2.3"
 	 *
-	 * @param subXCV {@link XmlSubXCV} result to be checked
-	 * @return TRUE if at least one valid RAC found, FALSE otherwise
+	 * @param oid {@link String}
+	 * @return {@link String} urn
 	 */
-	public static boolean isValidRACFound(XmlSubXCV subXCV) {
-		for (XmlRAC rac : subXCV.getRAC()) {
-			if (rac != null && rac.getConclusion() != null &&
-					Indication.PASSED.equals(rac.getConclusion().getIndication())) {
-				return true;
-			}
+	public static String toUrnOid(String oid) {
+		if (oid == null) {
+			return null;
 		}
-		return false;
-	}
-
-	/**
-	 * The method is used to check whether the validation messages of the corresponding constraint
-	 * should be augmented to the upper level
-	 *
-	 * @param revocationId {@link String} id of a revocation data being checked
-	 * @param certificateChain a collection of {@link CertificateWrapper} of the signature certificate chain
-	 * @param certificateRevocationMap a map of checked certificates from the chain and
-	 *                                    their corresponding last issued revocation data, when available
-	 * @return TRUE if the message collection is requires, FALSE otherwise
-	 */
-	public static boolean isMessageCollectingRequiredForRevocation(String revocationId, List<CertificateWrapper> certificateChain,
-													  Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap) {
-		for (CertificateWrapper certificateWrapper : certificateChain) {
-			if (isRevocationRelatedToCertificate(certificateWrapper, revocationId) &&
-					!isCertificateRevocationValid(certificateWrapper, certificateRevocationMap)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static boolean isRevocationRelatedToCertificate(CertificateWrapper certificateWrapper, String revocationId) {
-		for (CertificateRevocationWrapper certificateRevocationWrapper : certificateWrapper.getCertificateRevocationData()) {
-			if (revocationId.equals(certificateRevocationWrapper.getId())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static boolean isCertificateRevocationValid(CertificateWrapper certificateWrapper,
-					Map<CertificateWrapper, CertificateRevocationWrapper> certificateRevocationMap) {
-		if (certificateWrapper.isTrusted()) {
-			return true;
-		}
-		return certificateRevocationMap.get(certificateWrapper) != null;
+		return URN_OID_PREFIX + oid;
 	}
 
 }

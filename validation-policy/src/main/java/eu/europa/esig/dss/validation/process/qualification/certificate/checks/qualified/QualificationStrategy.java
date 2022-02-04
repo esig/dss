@@ -22,8 +22,17 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
+/**
+ * Extract the qualification status for a certificate
+ *
+ */
 public interface QualificationStrategy {
 
+	/**
+	 * Gets certificate qualification status
+	 *
+	 * @return {@link CertificateQualifiedStatus}
+	 */
 	CertificateQualifiedStatus getQualifiedStatus();
 
 }

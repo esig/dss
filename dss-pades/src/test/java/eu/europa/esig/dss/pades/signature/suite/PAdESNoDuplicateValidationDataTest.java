@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -44,10 +32,21 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	
@@ -136,7 +135,7 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 			}
 			
 			PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
-			Map<Long, BasicOCSPResp> ocspMap = ocspSource.getOcspMap();
+			Map<Long, OCSPResponseBinary> ocspMap = ocspSource.getOcspMap();
 			assertEquals(1, ocspMap.size());
 			for (Long ocsp : ocsps) {
 				assertNotNull(ocspMap.get(ocsp));

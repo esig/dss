@@ -121,7 +121,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the revocation data is available, FALSE otherwise
 	 */
 	public boolean isRevocationDataAvailable() {
-		return certificate.getRevocations() != null && certificate.getRevocations().size() > 0;
+		return certificate.getRevocations() != null && !certificate.getRevocations().isEmpty();
 	}
 
 	/**
@@ -378,7 +378,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public boolean isTrustedListReached() {
 		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
-		return tsps != null && tsps.size() > 0;
+		return tsps != null && !tsps.isEmpty();
 	}
 
 	/**
@@ -427,7 +427,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private List<String> getValues(List<XmlLangAndValue> langAndValues) {
-		return langAndValues.stream().map(t -> t.getValue()).collect(Collectors.toList());
+		return langAndValues.stream().map(XmlLangAndValue::getValue).collect(Collectors.toList());
 	}
 
 	/**
@@ -640,6 +640,16 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns if the certificate contains id-etsi-ext-valassured-ST-certs extension,
+	 * as defined in ETSI EN 319 412-1 "5.2 Certificate Extensions regarding Validity Assured Certificate"
+	 *
+	 * @return TRUE if the certificate is a validity assured short-term certificate, FALSE otherwise
+	 */
+	public boolean isValAssuredShortTermCertificate() {
+		return certificate.isValAssuredShortTermCertificate() != null && certificate.isValAssuredShortTermCertificate();
 	}
 
 	/**

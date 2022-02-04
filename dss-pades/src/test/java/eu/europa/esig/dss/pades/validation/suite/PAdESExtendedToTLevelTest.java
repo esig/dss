@@ -47,7 +47,7 @@ public class PAdESExtendedToTLevelTest extends AbstractPAdESTestValidation {
 		TimestampWrapper timestampWrapper = timestampList.get(0);
 		assertEquals(TimestampType.DOCUMENT_TIMESTAMP, timestampWrapper.getType());
 		assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-		assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+		assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
 		assertEquals(2, timestampWrapper.getTimestampedCertificates().size());
 	}
 

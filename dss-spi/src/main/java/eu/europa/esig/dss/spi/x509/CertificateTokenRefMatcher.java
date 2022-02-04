@@ -48,8 +48,8 @@ public class CertificateTokenRefMatcher {
 		Digest certDigest = certificateRef.getCertDigest();
 		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
 		ResponderId responderId = certificateRef.getResponderId();
-		if (certDigest != null) {
-			return matchByDigest(certificateToken, certificateRef);
+		if (certDigest != null && matchByDigest(certificateToken, certificateRef)) {
+			return true;
 		} else if (signerIdentifier != null && signerIdentifier.isRelatedToCertificate(certificateToken)) {
 			return true;
 		} else if (responderId != null && responderId.isRelatedToCertificate(certificateToken)) {
@@ -80,7 +80,7 @@ public class CertificateTokenRefMatcher {
 	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @param certificateRef {@link CertificateRef}
-	 * @return TRUE if the the serial number present within a reference match the certificate token
+	 * @return TRUE if the serial number present within a reference match the certificate token
 	 */
 	public boolean matchBySerialNumber(CertificateToken certificateToken, CertificateRef certificateRef) {
 		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
@@ -96,7 +96,7 @@ public class CertificateTokenRefMatcher {
 	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @param certificateRef {@link CertificateRef}
-	 * @return TRUE if the the issuer name present within a reference match the certificate token
+	 * @return TRUE if the issuer name present within a reference match the certificate token
 	 */
 	public boolean matchByIssuerName(CertificateToken certificateToken, CertificateRef certificateRef) {
 		SignerIdentifier signerIdentifier = certificateRef.getCertificateIdentifier();
@@ -112,7 +112,7 @@ public class CertificateTokenRefMatcher {
 	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @param certificateRef {@link CertificateRef}
-	 * @return TRUE if the the responder Id present within a reference match the certificate token
+	 * @return TRUE if the responder Id present within a reference match the certificate token
 	 */
 	public boolean matchByResponderId(CertificateToken certificateToken, CertificateRef certificateRef) {
 		ResponderId responderId = certificateRef.getResponderId();
