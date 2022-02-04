@@ -61,6 +61,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
+		signatureParameters.setAppName("DSS lib");
 		signatureParameters.setContactInfo("Jira");
 		signatureParameters.setPermission(CertificationPermission.MINIMAL_CHANGES_PERMITTED);
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();

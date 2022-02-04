@@ -46,6 +46,9 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	/** The signer's location */
 	private String location;
 
+	/** The signing app name */
+	private String appName;
+
 	/**
 	 * Defines the preserved space for a signature context
 	 *
@@ -221,6 +224,24 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 */
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	/**
+	 * Gets signing application name
+	 *
+	 * @return {@link String}
+	 */
+	public String getAppName() {
+		return appName;
+	}
+
+	/**
+	 * Sets signing application name
+	 *
+	 * @param appName {@link String}
+	 */
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 	@Override
