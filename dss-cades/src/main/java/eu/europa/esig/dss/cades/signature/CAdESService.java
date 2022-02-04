@@ -170,7 +170,8 @@ public class CAdESService extends
 			CMSSignedData extendedCMSSignature = extension.extendCMSSignatures(cmsSignedData, newSignerInformation, parameters);
 			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
-		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN,
+				parameters.getSignatureLevel(), parameters.getSignaturePackaging()));
 		parameters.reinit();
 		return signature;
 	}

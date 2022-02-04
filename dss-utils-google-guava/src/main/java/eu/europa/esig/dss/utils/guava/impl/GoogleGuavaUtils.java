@@ -143,6 +143,14 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public String getFileNameExtension(String filename) {
+		if (filename != null) {
+			return Files.getFileExtension(filename);
+		}
+		return null;
+	}
+
+	@Override
 	public String lowerCase(String text) {
 		if (Strings.isNullOrEmpty(text)) {
 			return text;

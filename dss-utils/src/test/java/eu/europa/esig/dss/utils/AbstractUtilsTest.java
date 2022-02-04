@@ -197,6 +197,20 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void getFileNameExtension() {
+		assertEquals("xml", Utils.getFileNameExtension("file.xml"));
+		assertEquals("pdf", Utils.getFileNameExtension("document.pdf"));
+		assertEquals("pdf", Utils.getFileNameExtension("document..pdf"));
+		assertEquals("pdf", Utils.getFileNameExtension("document.one.pdf"));
+		assertEquals("java", Utils.getFileNameExtension("C:/root/demo.java"));
+		assertEquals("java", Utils.getFileNameExtension("http://nowina.lu/demo.java"));
+		assertEquals("", Utils.getFileNameExtension("document"));
+		assertEquals("", Utils.getFileNameExtension("    "));
+		assertEquals("", Utils.getFileNameExtension(""));
+		assertNull(Utils.getFileNameExtension(null));
+	}
+
+	@Test
 	public void lowerCase() {
 		assertNull(Utils.lowerCase(null));
 		assertEquals("", Utils.lowerCase(""));
