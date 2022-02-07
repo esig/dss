@@ -144,6 +144,15 @@ public interface IUtils {
 	boolean endsWithIgnoreCase(String text, String expected);
 
 	/**
+	 * This method returns an extension for the given filename
+	 * Ex. "file.xml" = "xml"; "document.pdf" = "pdf"
+	 *
+	 * @param filename {@link String} representing a filename extracted from a file
+	 * @return {@link String} extension
+	 */
+	String getFileNameExtension(String filename);
+
+	/**
 	 * Converts a string to its lower case representation
 	 * Ex. "Nowina" = "nowina"
 	 *

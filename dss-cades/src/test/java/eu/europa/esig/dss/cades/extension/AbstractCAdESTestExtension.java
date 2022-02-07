@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.extension.AbstractTestExtension;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -76,12 +77,14 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 	protected void onDocumentSigned(DSSDocument signedDocument) {
 		super.onDocumentSigned(signedDocument);
 		checkSignaturePackaging(signedDocument);
+		checkFileExtension(signedDocument);
 	}
 
 	@Override
 	protected void onDocumentExtended(DSSDocument extendedDocument) {
 		super.onDocumentExtended(extendedDocument);
 		checkSignaturePackaging(extendedDocument);
+		checkFileExtension(extendedDocument);
 	}
 
 	protected void checkSignaturePackaging(DSSDocument document) {
@@ -90,6 +93,20 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 				cmsSignedData.isDetachedSignature());
 		assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
 				cmsSignedData.getSignedContent() == null);
+	}
+
+	protected void checkFileExtension(DSSDocument document) {
+		String documentName = document.getName();
+		assertNotNull(documentName);
+
+		String extension = Utils.getFileNameExtension(documentName);
+		assertNotNull(extension);
+
+		if (SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging())) {
+			assertEquals("p7s", extension);
+		} else {
+			assertEquals("p7m", extension);
+		}
 	}
 
 	@Override

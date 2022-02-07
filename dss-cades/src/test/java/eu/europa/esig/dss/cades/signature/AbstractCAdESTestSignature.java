@@ -155,6 +155,26 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	@Override
+	protected void checkMimeType(DSSDocument signedDocument) {
+		super.checkMimeType(signedDocument);
+		checkFileExtension(signedDocument);
+	}
+
+	protected void checkFileExtension(DSSDocument document) {
+		String documentName = document.getName();
+		assertNotNull(documentName);
+
+		String extension = Utils.getFileNameExtension(documentName);
+		assertNotNull(extension);
+
+		if (SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging())) {
+			assertEquals("p7s", extension);
+		} else {
+			assertEquals("p7m", extension);
+		}
+	}
+
+	@Override
 	protected void checkMimeType(DiagnosticData diagnosticData) {
 		super.checkMimeType(diagnosticData);
 
