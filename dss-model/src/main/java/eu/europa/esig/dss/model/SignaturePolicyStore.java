@@ -43,6 +43,12 @@ public class SignaturePolicyStore {
 	private DSSDocument signaturePolicyContent;
 
 	/**
+	 * The SigPolDocLocalURI shall have as value the URI referencing a local store
+	 * where the present document can be retrieved.
+	 */
+	private String sigPolDocLocalURI;
+
+	/**
 	 * Get Id (optional)
 	 * 
 	 * @return {@link String}
@@ -89,11 +95,33 @@ public class SignaturePolicyStore {
 
 	/**
 	 * Set policy store content
+	 *
+	 * NOTE: one of signaturePolicyContent or sigPolDocLocalURI shall be used
 	 * 
 	 * @param signaturePolicyContent {@link DSSDocument}
 	 */
 	public void setSignaturePolicyContent(DSSDocument signaturePolicyContent) {
 		this.signaturePolicyContent = signaturePolicyContent;
+	}
+
+	/**
+	 * Gets SigPolDocLocalURI element value
+	 *
+	 * @return {@link String}
+	 */
+	public String getSigPolDocLocalURI() {
+		return sigPolDocLocalURI;
+	}
+
+	/**
+	 * Sets SigPolDocLocalURI element value, defining the local URI where the policy document can be retrieved
+	 *
+	 * NOTE: one of signaturePolicyContent or sigPolDocLocalURI shall be used
+	 *
+	 * @param sigPolDocLocalURI {@link String}
+	 */
+	public void setSigPolDocLocalURI(String sigPolDocLocalURI) {
+		this.sigPolDocLocalURI = sigPolDocLocalURI;
 	}
 
 }

@@ -578,6 +578,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						sps.setSignaturePolicyContent(new InMemoryDocument(Utils.fromBase64(spDocB64)));
 					}
 				}
+
+				String currentSigPolDocLocalURI = xadesPaths.getCurrentSigPolDocLocalURI();
+				if (Utils.isStringNotEmpty(currentSigPolDocLocalURI)) {
+					String sigPolDocLocalURI = DomUtils.getValue(signaturePolicyStoreElement, currentSigPolDocLocalURI);
+					if (Utils.isStringNotEmpty(sigPolDocLocalURI)) {
+						sps.setSigPolDocLocalURI(sigPolDocLocalURI);
+					}
+				}
+
 				return sps;
 			}
 		}
@@ -599,7 +608,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		String description = DomUtils.getValue(spDocSpecificationElement, xadesPaths.getCurrentDescription());
-		spDocSpec.setDescription(description);
+		if (Utils.isStringNotBlank(description)) {
+			spDocSpec.setDescription(description);
+		}
 
 		String currentDocumentationReferenceElementsPath = xadesPaths.getCurrentDocumentationReferenceElements();
 		if (Utils.isStringNotEmpty(currentDocumentationReferenceElementsPath)) {

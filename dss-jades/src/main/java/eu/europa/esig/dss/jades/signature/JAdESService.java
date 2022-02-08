@@ -133,6 +133,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		
 		assertMultiDocumentsAllowed(toSignDocuments, parameters);
@@ -149,6 +150,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	 * @param parameters {@link JAdESSignatureParameters}
 	 */
 	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
+
 		if (Utils.isCollectionEmpty(toSignDocuments)) {
 			throw new IllegalArgumentException("The documents to sign must be provided!");
 		}
@@ -165,12 +168,17 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public DSSDocument signDocument(DSSDocument toSignDocument, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		return signDocument(Collections.singletonList(toSignDocument), parameters, signatureValue);
 	}
 
 	@Override
 	public DSSDocument signDocument(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters,
 			SignatureValue signatureValue) {
+		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		DSSDocument signedDocument = jadesBuilder.build(signatureValue);
 
@@ -241,7 +249,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 
 	@Override
 	public DSSDocument extendDocument(DSSDocument toExtendDocument, JAdESSignatureParameters parameters) {
-		Objects.requireNonNull(toExtendDocument, "toExtendDocument is not defined!");
+		Objects.requireNonNull(toExtendDocument, "toExtendDocument cannot be null!");
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
 		assertExtensionPossible(parameters);

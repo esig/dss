@@ -517,6 +517,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns a signature policy store local URI
+	 *
+	 * @return {@link String}
+	 */
+	public String getPolicyStoreLocalURI() {
+		XmlSignaturePolicyStore policyStore = signature.getSignaturePolicyStore();
+		if (policyStore != null) {
+			return policyStore.getSigPolDocLocalURI();
+		}
+		return null;
+	}
+
+	/**
 	 * Gets if the B-level of the signature is valid
 	 *
 	 * @return TRUE if the B-level of the signature is valid, FALSE otherwise

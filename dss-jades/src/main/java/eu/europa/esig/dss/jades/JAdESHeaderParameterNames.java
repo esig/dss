@@ -458,4 +458,9 @@ public final class JAdESHeaderParameterNames {
 	 */
 	public static final String SIG_POL_DOC = "sigPolDoc";
 
+	/**
+	 * Signature policy document local URI
+	 */
+	public static final String SIG_POL_LOCAL_URI = "sigPolLocalURI";
+
 }

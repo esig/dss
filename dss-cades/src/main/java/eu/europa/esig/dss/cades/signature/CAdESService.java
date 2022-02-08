@@ -324,13 +324,8 @@ public class CAdESService extends
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 
-		CMSSignedData originalCmsSignedData = DSSUtils.toCMSSignedData(document);
-
 		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
-		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(originalCmsSignedData, signaturePolicyStore);
-		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData);
-		
-		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);
+		DSSDocument documentWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
 		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
 		return documentWithPolicyStore;
 	}

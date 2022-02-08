@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -58,6 +43,20 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSignature {
 
@@ -153,6 +152,17 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 
 			String jsonString = new String(DSSJsonUtils.fromBase64Url((String) signature.get(JWSConstants.PROTECTED)));
 			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(jsonString);
+
+			Map<?, ?> sigPId = (Map<?, ?>) protectedHeaderMap.get("sigPId");
+			assertNotNull(sigPId);
+			assertNotNull(sigPId.get("id"));
+			Map<?, ?> hashAV = (Map<?, ?>) sigPId.get("hashAV");
+			if (hashAV != null) {
+				String digAlg = (String) hashAV.get("digAlg");
+				assertNotNull(digAlg);
+				String digVal = (String) hashAV.get("digVal");
+				assertNotNull(digVal);
+			}
 			
 			Map<?, ?> unprotectedHeaderMap = (Map<?, ?>) signature.get(JWSConstants.HEADER);
 			List<?> etsiU = (List<?>) unprotectedHeaderMap.get(JAdESHeaderParameterNames.ETSI_U);
@@ -166,18 +176,15 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 				}
 			}
 			assertNotNull(sigPSt);
-			
-			Map<?, ?> sigPId = (Map<?, ?>) protectedHeaderMap.get("sigPId");
-			assertNotNull(sigPId);
+
+			String sigPolDoc = (String) sigPSt.get("sigPolDoc");
+			assertNotNull(sigPolDoc);
+			assertTrue(Utils.isBase64Encoded(sigPolDoc));
+
+			Map<?, ?> spDSpec = (Map<?, ?>) sigPSt.get("spDSpec");
+			assertNotNull(spDSpec);
 			assertNotNull(sigPId.get("id"));
-			Map<?, ?> hashAV = (Map<?, ?>) sigPId.get("hashAV");
-			if (hashAV != null) {
-				String digAlg = (String) hashAV.get("digAlg");
-				assertNotNull(digAlg);
-				String digVal = (String) hashAV.get("digVal");
-				assertNotNull(digVal);
-			}
-			
+
 		} catch (JoseException e) {
 			fail(e);
 		}

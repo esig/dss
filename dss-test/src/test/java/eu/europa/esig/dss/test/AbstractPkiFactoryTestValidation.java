@@ -1006,10 +1006,14 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			String policyStoreId = signatureWrapper.getPolicyStoreId();
 			if (Utils.isStringNotEmpty(policyStoreId)) {
+				String policyStoreLocalURI = signatureWrapper.getPolicyStoreLocalURI();
 				XmlDigestAlgoAndValue digestAlgoAndValue = signatureWrapper.getPolicyStoreDigestAlgoAndValue();
-				assertNotNull(digestAlgoAndValue);
-				assertNotNull(digestAlgoAndValue.getDigestMethod());
-				assertTrue(Utils.isArrayNotEmpty(digestAlgoAndValue.getDigestValue()));
+				assertTrue(policyStoreLocalURI != null ^ digestAlgoAndValue != null);
+
+				if (digestAlgoAndValue != null) {
+					assertNotNull(digestAlgoAndValue.getDigestMethod());
+					assertTrue(Utils.isArrayNotEmpty(digestAlgoAndValue.getDigestValue()));
+				}
 			}
 		}
 	}

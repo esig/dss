@@ -621,6 +621,11 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSigPolDocLocalURI() {
+		return null;
+	}
+
+	@Override
 	public XSDAbstractUtils getXSDUtils() {
 		return XAdES111Utils.getInstance();
 	}

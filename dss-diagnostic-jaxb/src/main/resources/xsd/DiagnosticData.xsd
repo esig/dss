@@ -243,6 +243,7 @@
 		<xs:complexContent>
 			<xs:extension base="SPDocSpecification">
 				<xs:sequence>
+					<xs:element name="SigPolDocLocalURI" type="xs:string" minOccurs="0" />
 					<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>

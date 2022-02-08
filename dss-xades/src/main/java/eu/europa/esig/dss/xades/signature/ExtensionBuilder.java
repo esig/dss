@@ -74,6 +74,12 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected XMLDocumentValidator documentValidator;
 
 	/**
+	 * Empty constructor
+	 */
+	protected ExtensionBuilder() {
+	}
+
+	/**
 	 * Default constructor
 	 *
 	 * @param certificateVerifier {@code CertificateVerifier}

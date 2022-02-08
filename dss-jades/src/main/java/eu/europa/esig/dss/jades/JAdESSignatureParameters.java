@@ -24,6 +24,8 @@ import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
+import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 import java.util.Objects;
 
@@ -99,6 +101,14 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Defines a used 'sigD' mechanism for a detached signature
 	 */
 	private SigDMechanism sigDMechanism;
+
+	@Override
+	public void setSignatureLevel(SignatureLevel signatureLevel) {
+		if (signatureLevel == null || SignatureForm.JAdES != signatureLevel.getSignatureForm()) {
+			throw new IllegalArgumentException("Only JAdES form is allowed !");
+		}
+		super.setSignatureLevel(signatureLevel);
+	}
 
 	@Override
 	public JAdESTimestampParameters getContentTimestampParameters() {

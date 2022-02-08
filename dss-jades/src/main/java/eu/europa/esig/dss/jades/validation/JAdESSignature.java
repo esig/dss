@@ -235,19 +235,25 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	public SignaturePolicyStore getSignaturePolicyStore() {
 		Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
 		if (Utils.isMapNotEmpty(sigPStMap)) {
-			SpDocSpecification spDocSpecification = null;
-			DSSDocument policyContent = null;
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+
 			String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
 			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
-				policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+				DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+				signaturePolicyStore.setSignaturePolicyContent(policyContent);
 			}
+
+			String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
+			if (Utils.isStringNotEmpty(sigPolLocalURI)) {
+				signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
+			}
+
 			Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
 			if (spDSpec != null) {
-				spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+				SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
 			}
-			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-			signaturePolicyStore.setSignaturePolicyContent(policyContent);
-			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+
 			return signaturePolicyStore;
 		}
 		return null;

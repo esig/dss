@@ -680,15 +680,28 @@ public class JAdESLevelBaselineB {
 	}
 
 	private void assertDetachedContentValid() {
-		if (parameters.getSigDMechanism() == null) {
+		SigDMechanism sigDMechanism = parameters.getSigDMechanism();
+		if (sigDMechanism == null) {
 			throw new IllegalArgumentException("The SigDMechanism is not defined for a detached signature! "
 					+ "Please use JAdESSignatureParameters.setSigDMechanism(sigDMechanism) method.");
 		}
-		if (!SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())) {
+		if (SigDMechanism.NO_SIG_D.equals(sigDMechanism)) {
+			if (Utils.collectionSize(documentsToSign) > 1) {
+				throw new IllegalArgumentException(String.format(
+						"Only one detached document is allowed with '%s' mechanism!", SigDMechanism.NO_SIG_D.name()));
+			}
+			
+		} else {
+			List<String> documentNames = new ArrayList<>();
 			for (DSSDocument document : documentsToSign) {
 				if (Utils.isStringEmpty(document.getName())) {
-					throw new IllegalArgumentException("The signed document must have names for a detached signature!");
+					throw new IllegalArgumentException("The signed document must have names for a detached JAdES signature!");
 				}
+				if (!SigDMechanism.HTTP_HEADERS.equals(sigDMechanism) && documentNames.contains(document.getName())) {
+					throw new IllegalArgumentException(String.format("The documents to be signed shall have different names! "
+							+ "The name '%s' appears multiple times.", document.getName()));
+				}
+				documentNames.add(document.getName());
 			}
 		}
 	}

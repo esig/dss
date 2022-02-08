@@ -857,15 +857,24 @@ public class DSSJsonUtils {
 				LOG.warn("The {} element is empty!", JAdESHeaderParameterNames.SP_DSPEC);
 				return null;
 			}
+
 			SpDocSpecification spDocSpecification = new SpDocSpecification();
+
 			String id = getAsString(spDSpec, JAdESHeaderParameterNames.ID);
-			spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+			if (Utils.isStringNotEmpty(id)) {
+				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+			}
+
 			String desc = getAsString(spDSpec, JAdESHeaderParameterNames.DESC);
-			spDocSpecification.setDescription(desc);
+			if (Utils.isStringNotEmpty(desc)) {
+				spDocSpecification.setDescription(desc);
+			}
+
 			List<?> docRefsList = getAsList(spDSpec, JAdESHeaderParameterNames.DOC_REFS);
 			if (Utils.isCollectionNotEmpty(docRefsList)) {
 				spDocSpecification.setDocumentationReferences(docRefsList.toArray(new String[0]));
 			}
+
 			return spDocSpecification;
 
 		} catch (Exception e) {

@@ -57,6 +57,7 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -638,21 +639,31 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlPolicyBuilder getPolicyBuilder(AdvancedSignature signature) {
 		Objects.requireNonNull(signaturePolicyValidatorLoader, "SignaturePolicyValidatorLoader shall be defined!");
 		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
+		SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
 
-		DSSDocument policyContent = null;
-		if (signature.getSignaturePolicyStore() != null) {
-			policyContent = signature.getSignaturePolicyStore().getSignaturePolicyContent();
-		} else if (signaturePolicyProvider != null) {
-			policyContent = signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUri());
-		}
+		DSSDocument policyContent = extractSignaturePolicyContent(signaturePolicy, signaturePolicyStore);
 		signaturePolicy.setPolicyContent(policyContent);
 
 		SignaturePolicyValidator signaturePolicyValidator = signaturePolicyValidatorLoader.loadValidator(signaturePolicy);
 		SignaturePolicyValidationResult validationResult = signaturePolicyValidator.validate(signaturePolicy);
 
 		XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy, validationResult);
-		xmlPolicyBuilder.setSignaturePolicyStore(signature.getSignaturePolicyStore());
+		xmlPolicyBuilder.setSignaturePolicyStore(signaturePolicyStore);
 		return xmlPolicyBuilder;
+	}
+
+	private DSSDocument extractSignaturePolicyContent(SignaturePolicy signaturePolicy, SignaturePolicyStore signaturePolicyStore) {
+		if (signaturePolicyStore != null) {
+			if (signaturePolicyStore.getSignaturePolicyContent() != null) {
+				return signaturePolicyStore.getSignaturePolicyContent();
+			} else if (signaturePolicyStore.getSigPolDocLocalURI() != null && signaturePolicyProvider != null) {
+				return signaturePolicyProvider.getSignaturePolicyByUrl(signaturePolicyStore.getSigPolDocLocalURI());
+			}
+		}
+		if (signaturePolicyProvider != null) {
+			return signaturePolicyProvider.getSignaturePolicy(signaturePolicy.getIdentifier(), signaturePolicy.getUri());
+		}
+		return null;
 	}
 
 	private XmlSignatureDigestReference getXmlSignatureDigestReference(AdvancedSignature signature) {

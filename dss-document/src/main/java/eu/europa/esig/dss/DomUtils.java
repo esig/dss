@@ -474,7 +474,8 @@ public final class DomUtils {
 	 *            element text node value
 	 * @return added element
 	 */
-	public static Element addTextElement(final Document document, final Element parentDom, final DSSNamespace namespace, final DSSElement element, final String value) {
+	public static Element addTextElement(final Document document, final Element parentDom, final DSSNamespace namespace,
+										 final DSSElement element, final String value) {
 		final Element dom = createElementNS(document, namespace, element);
 		parentDom.appendChild(dom);
 		final Text valueNode = document.createTextNode(value);
