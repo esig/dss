@@ -12,7 +12,7 @@ Digested documents can be used during signature creation instead of the original
 Refer to section <<DSSDocuments>> for more information on digested documents, section <<Packaging>> for information on the detached packaging of signatures and section <<DetachedSignatureDigest>> for code illustrations.
 
 === Original document in the Data To Be Signed
-The data to be signed (DTBS) for CAdES and XAdES does not contain the original document on which the signature value is computed. JAdES and PAdES DTBS, however, does contain the whole original content.
+The data to be signed (DTBS) for CAdES, XAdES and PAdES does not contain the original document on which the signature value is computed. JAdES DTBS however, when not the DTBS of a detached JAdES signature making use of the ObjectIdByURIHash referencing mechanism, does contain the whole original content.
 
 === Private information in logs
 
