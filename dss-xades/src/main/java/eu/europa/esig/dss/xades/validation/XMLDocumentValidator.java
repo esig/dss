@@ -115,7 +115,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * NOT RECOMMENDED : This parameter allows disabling protection against XML
 	 * Signature wrapping attacks (XSW). It disables the research by XPath
 	 * expression for defined Type attributes.
 	 * 

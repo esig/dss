@@ -525,7 +525,7 @@ public final class ASiCUtils {
 	}
 	
 	/**
-	 * Generates an unique name for a new ASiC Manifest file, avoiding any name collision
+	 * Generates a unique name for a new ASiC Manifest file, avoiding any name collision
 	 *
 	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCManifest")
 	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container

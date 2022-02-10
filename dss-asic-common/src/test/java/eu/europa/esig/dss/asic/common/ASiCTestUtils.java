@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,8 +29,11 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCTestUtils {
 
@@ -41,20 +41,26 @@ public class ASiCTestUtils {
 		try (InputStream is = document.openStream();
 				ZipInputStream zis = new ZipInputStream(is);
 				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+			ZipEntry firstEntry = null;
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {
 				assertNotNull(entry.getName());
 				assertNotEquals(-1L, entry.getTime());
-				assertNull(entry.getExtra());
 
-				if ("mimetype".equals(entry.getName())) {
+				if (firstEntry == null) {
+					firstEntry = entry;
+					assertEquals("mimetype", firstEntry.getName());
 					assertEquals(ZipEntry.STORED, entry.getMethod());
+					assertNull(entry.getExtra());
+				}
+
+				if (ZipEntry.STORED == entry.getMethod()) {
 					assertNotEquals(-1, entry.getCrc());
 					assertNotEquals(-1, entry.getSize());
 					assertNotEquals(-1, entry.getCompressedSize());
 				} else {
 					// not defined values while not read
-					assertEquals(ZipEntry.DEFLATED, entry.getMethod());
 					assertEquals(-1, entry.getCrc());
 					assertEquals(-1, entry.getSize());
 					assertEquals(-1, entry.getCompressedSize());
@@ -70,7 +76,7 @@ public class ASiCTestUtils {
 				assertNotEquals(-1, entry.getSize());
 				assertNotEquals(-1, entry.getCompressedSize());
 
-				if ("mimetype".equals(entry.getName())) {
+				if (ZipEntry.STORED == entry.getMethod()) {
 					assertEquals(entry.getSize(), entry.getCompressedSize());
 				} else {
 					assertNotEquals(entry.getSize(), entry.getCompressedSize());
@@ -81,6 +87,7 @@ public class ASiCTestUtils {
 				}
 
 			}
+
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}

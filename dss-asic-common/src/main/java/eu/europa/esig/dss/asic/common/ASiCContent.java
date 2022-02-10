@@ -307,6 +307,7 @@ public class ASiCContent implements Serializable {
 	 */
 	public List<DSSDocument> getAllDocuments() {
 		List<DSSDocument> allDocuments = new ArrayList<>();
+		// "mimetype" shall be the first file in the ASiC container;
 		if (mimeTypeDocument != null) {
 			allDocuments.add(mimeTypeDocument);
 		}
