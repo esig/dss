@@ -192,9 +192,9 @@ DSS allows creation of different kinds of DSSDocument :
 * `DigestDocument` : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures).
 * `CMSSignedDocument` : an internal implementation of a `DSSDocument`, loading a CMS Signed Data object.
 * `HTTPHeader` : represents an HTTP Header used as a signed object within a JAdES implementation (see <<JAdESDetachedPackaging, JAdES Detached Packaging>>).
-* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another `DSSDocument` (e.g. from binaries, digest document, etc.).
-
-// TODO: 2 examples to be created - CMSSignedDocumentTest.java and HTTPHeaderDigestTest.java
+* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another `DSSDocument` (e.g. from binaries, digest document, etc.);
+* `ContainerEntryDocument` : represents a container entry, containing metadata about the document;
+* `FileArchiveEntry` : internal implementation, used to increase performance when reading a ZIP archive from file system.
 
 [source,java,indent=0]
 .InMemoryDocument
@@ -215,9 +215,21 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocument
 ----
 
 [source,java,indent=0]
-.HTTPHeader
+.CMSDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=cmsDocument]
+----
+
+[source,java,indent=0]
+.HTTPHeader and HTTPHeaderDigest
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=httpHeader]
+----
+
+[source,java,indent=0]
+.ContainerEntryDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=containerEntryDocument]
 ----
 
 [[SignatureTokens]]

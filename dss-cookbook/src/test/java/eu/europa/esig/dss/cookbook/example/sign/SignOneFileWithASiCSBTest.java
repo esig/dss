@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
+import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -95,6 +97,44 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 			// end::demo[]
+
+			// tag::zipUtils[]
+
+			// Instantiate a SecureContainerHandler in order to configure ZIP securities
+			SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+
+			// Sets the maximum allowed number of files within an archive. (Default : 1000)
+			// If the number exceeds, an exception will be thrown.
+			secureContainerHandler.setMaxAllowedFilesAmount(1000);
+
+			// Sets the maximum allowed number of malformed/corrupted files within an archive. (Default : 100)
+			// If the number exceeds, an exception will be thrown.
+			secureContainerHandler.setMaxMalformedFiles(100);
+
+			// Sets a maximum allowed ratio of decompressed data to compressed data within an archive.
+			// This check allows z ZIP-bomb detection. (Default : 100)
+			// If the number exceeds, an exception will be thrown.
+			secureContainerHandler.setMaxCompressionRatio(100);
+
+			// Sets the maximum size of uncompressed data, exceeding which aforementioned security check is enforced.
+			// Default : 1000000 (1MB).
+			// NOTE : ZIP-bomb check can be not necessary for very small documents,
+			// as it still should not cause memory overhead.
+			secureContainerHandler.setThreshold(1000000);
+
+			// As a limitation of JDK, when reading an archive from memory (e.g. using `InMemoryDocument`),
+			// it is not possible to read comments from a ZIP entry of an archive.
+			// However, the comments still can be obtained using `java.util.zip.ZipFile` class when working
+			// with a document from filesystem (i.e. with a `FileDocument`).
+			// When this property is set to `true`, a new stream will be open to the file,
+			// to extract comments associated with the container's entries.
+			// Default : false (do not read comments)
+			secureContainerHandler.setExtractComments(true);
+
+			// As a singleton, the provided handler will be used across the whole DSS code.
+			ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+
+			// end::zipUtils[]
 
 			testFinalDocument(signedDocument);
 		}

@@ -276,3 +276,18 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecurit
 The class `XmlDefinerUtils` is a singleton, therefore all changes performed on the instance will have an impact to all calls of the related methods.
 
 See section <<Alerts>> in chapter Annex for more information on alerts.
+
+[[zipUtils]]
+=== ZIP Utils
+
+For parsing and creation of ZIP archives a special class `ZipUtils` is provided. This is a singleton class, and its behavior can be customized using an implementation of `ZipContainerHandler` interface. An implementation of `ZipContainerHandler` can be provided in runtime and the defined class will be used on all calls of `ZipUtils` across DSS's code
+
+By default, an instance of `SecureContainerHandler` is used, allowing to parse ZIP container securely, by reporting a presence of a ZIP-bomb (see https://unforgettable.dk/[42.zip]) and/or malicious documents within a given archive.
+
+Below you can find the configuration available in `SecureContainerHandler`:
+
+[source,java,indent=0]
+.SecureContainerHandler for ZipUtils configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWithASiCSBTest.java[tags=zipUtils]
+----
