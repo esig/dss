@@ -129,7 +129,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			onlineOCSPSource.setDataLoader(ocspDataLoader);
 			commonCertificateVerifier.setOcspSource(onlineOCSPSource);
 
-			// For test purpose (not recommened for use in production)
+			// For test purpose (not recommended for use in production)
 			// Will request unknown OCSP responder / download untrusted CRL
 			commonCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class allows to inject trusted certificates from Trusted Lists
+ * This class allows injection of trusted certificates from Trusted Lists
  */
 @SuppressWarnings("serial")
 public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
