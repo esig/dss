@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -117,6 +118,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		assertSignaturePossible(toSignDocument);
+
 		final PDFSignatureService pdfSignatureService = pdfObjFactory.newContentTimestampService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
@@ -163,6 +168,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
+		assertSignaturePossible(toSignDocument);
 		assertSigningCertificateValid(parameters);
 
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
@@ -201,6 +207,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
+		assertSignaturePossible(toSignDocument);
 		assertSigningCertificateValid(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
@@ -218,6 +225,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		parameters.reinit();
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
 		return signature;
+	}
+
+	private void assertSignaturePossible(DSSDocument toSignDocument) {
+		if (toSignDocument instanceof DigestDocument) {
+			throw new IllegalArgumentException("DigestDocument cannot be used for PAdES!");
+		}
 	}
 
 	/**

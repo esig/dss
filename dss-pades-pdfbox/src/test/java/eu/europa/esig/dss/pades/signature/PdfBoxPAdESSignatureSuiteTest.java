@@ -30,6 +30,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATe
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBDigestDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBHugeTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
@@ -94,7 +95,7 @@ import org.junit.platform.suite.api.Suite;
         PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class,
 		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
-		PAdESSignDocumentsConsequentlyTest.class })
+		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

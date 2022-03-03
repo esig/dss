@@ -81,6 +81,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
+		assertSignaturePossible(toSignDocuments);
+
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
 				.build(toSignDocuments, parameters.aSiC().getContainerType());
 		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
@@ -92,9 +95,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	@Override
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
-		}
+		assertSignaturePossible(toSignDocuments);
 		assertSigningCertificateValid(parameters);
 
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
@@ -116,9 +117,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(toSignDocuments, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
-		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
-		}
+		assertSignaturePossible(toSignDocuments);
 		assertSigningCertificateValid(parameters);
 
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()

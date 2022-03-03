@@ -58,6 +58,7 @@ public class PdfDocDssRevision implements PdfRevision {
 	/**
 	 * Default constructor
 	 *
+	 * @param compositeDssDictionary {@link PdfCompositeDssDictionary}
 	 * @param dssDictionary {@link PdfDssDict}
 	 */
 	public PdfDocDssRevision(final PdfCompositeDssDictionary compositeDssDictionary, final PdfDssDict dssDictionary) {
