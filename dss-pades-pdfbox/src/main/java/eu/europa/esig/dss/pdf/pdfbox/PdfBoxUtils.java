@@ -23,8 +23,16 @@ package eu.europa.esig.dss.pdf.pdfbox;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -130,6 +138,35 @@ public class PdfBoxUtils {
 		drawer.setBackground(Color.WHITE);
 		drawer.clearRect(0, 0, width, height);
 		return outputImage;
+	}
+
+	/**
+	 * This method creates a generic Appearance dictionary, containing a Normal Appearance
+	 *
+	 * @param pdDocument {@link PDDocument} to create a new Appearance dictionary in
+	 * @param pdRectangle {@link PDRectangle} used for annotation dictionary
+	 * @return {@link PDAppearanceDictionary}
+	 */
+	public static PDAppearanceDictionary createSignatureAppearanceDictionary(PDDocument pdDocument,
+																			 PDRectangle pdRectangle) {
+		Objects.requireNonNull(pdDocument, "PDDocument cannot be null!");
+		Objects.requireNonNull(pdRectangle, "PDRectangle cannot be null!");
+
+		PDStream stream = new PDStream(pdDocument);
+		PDFormXObject form = new PDFormXObject(stream);
+		PDResources res = new PDResources();
+		form.setResources(res);
+		form.setFormType(1);
+
+		// create a copy of rectangle
+		form.setBBox(new PDRectangle(pdRectangle.getWidth(), pdRectangle.getHeight()));
+
+		PDAppearanceDictionary appearance = new PDAppearanceDictionary();
+		appearance.getCOSObject().setDirect(true);
+		PDAppearanceStream appearanceStream = new PDAppearanceStream(form.getCOSObject());
+		appearance.setNormalAppearance(appearanceStream);
+
+		return appearance;
 	}
 
 }

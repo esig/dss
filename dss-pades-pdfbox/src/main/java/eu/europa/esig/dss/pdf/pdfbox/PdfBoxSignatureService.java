@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -60,11 +60,10 @@ import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
@@ -712,12 +711,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (acroForm == null) {
 				acroForm = new PDAcroForm(pdfDoc);
 				catalog.setAcroForm(acroForm);
-
-				// Set default appearance
-				PDResources resources = new PDResources();
-				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
-				acroForm.setDefaultResources(resources);
-				acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
 			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
@@ -736,6 +729,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			widget.setRectangle(rect);
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
+
+			// Set normal appearance
+			PDAppearanceDictionary appearance = PdfBoxUtils.createSignatureAppearanceDictionary(pdfDoc, rect);
+			widget.setAppearance(appearance);
 
 			acroForm.getFields().add(signatureField);
 			COSArray fields = acroForm.getCOSObject().getCOSArray(COSName.FIELDS);

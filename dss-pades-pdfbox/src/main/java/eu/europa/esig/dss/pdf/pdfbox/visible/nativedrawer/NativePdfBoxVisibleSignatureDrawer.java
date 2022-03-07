@@ -25,6 +25,7 @@ import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
@@ -36,13 +37,10 @@ import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
-import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
@@ -154,20 +152,10 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			PDRectangle rectangle = getPdRectangle(dimensionAndPosition, page);
 			widget.setRectangle(rectangle);
 
-			PDStream stream = new PDStream(doc);
-			PDFormXObject form = new PDFormXObject(stream);
-			PDResources res = new PDResources();
-			form.setResources(res);
-			form.setFormType(1);
-
-			form.setBBox(new PDRectangle(rectangle.getWidth(), rectangle.getHeight()));
-
-			PDAppearanceDictionary appearance = new PDAppearanceDictionary();
-			appearance.getCOSObject().setDirect(true);
-			PDAppearanceStream appearanceStream = new PDAppearanceStream(form.getCOSObject());
-			appearance.setNormalAppearance(appearanceStream);
+			PDAppearanceDictionary appearance = PdfBoxUtils.createSignatureAppearanceDictionary(doc, rectangle);
 			widget.setAppearance(appearance);
 
+			PDAppearanceStream appearanceStream = appearance.getNormalAppearance().getAppearanceStream();
 			try (PDPageContentStream cs = new PDPageContentStream(doc, appearanceStream)) {
 				rotateSignature(cs, rectangle, dimensionAndPosition);
 				setFieldBackground(cs, parameters.getBackgroundColor());
