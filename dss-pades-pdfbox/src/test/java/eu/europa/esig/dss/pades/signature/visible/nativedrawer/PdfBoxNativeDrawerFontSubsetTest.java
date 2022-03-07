@@ -86,7 +86,7 @@ public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature
         embedSubset = false;
 
         DSSDocument signedDocument = sign();
-        signedDocument.save("target/test.pdf");
+        // signedDocument.save("target/test.pdf");
         assertContainsSubset(signedDocument, false);
         verify(signedDocument);
     }
@@ -96,7 +96,7 @@ public class PdfBoxNativeDrawerFontSubsetTest extends AbstractPAdESTestSignature
         embedSubset = true;
 
         DSSDocument signedDocument = sign();
-        signedDocument.save("target/embed_subset_test.pdf");
+        // signedDocument.save("target/embed_subset_test.pdf");
         assertContainsSubset(signedDocument, true);
         verify(signedDocument);
     }
