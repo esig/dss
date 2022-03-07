@@ -64,6 +64,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuild;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuildDataDict;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
@@ -360,6 +362,17 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (Utils.isStringNotEmpty(signatureParameters.getLocation())) {
 				signature.setLocation(signatureParameters.getLocation());
+			}
+
+			if (Utils.isStringNotEmpty(signatureParameters.getAppName())) {
+				PDPropBuild propBuild = signature.getPropBuild();
+				if (propBuild == null) {
+					propBuild = new PDPropBuild(new COSDictionary());
+				}
+				PDPropBuildDataDict app = new PDPropBuildDataDict();
+				app.setName(signatureParameters.getAppName());
+				propBuild.setPDPropBuildApp(app);
+				signature.setPropBuild(propBuild);
 			}
 
 			if (Utils.isStringNotEmpty(signatureParameters.getReason())) {
