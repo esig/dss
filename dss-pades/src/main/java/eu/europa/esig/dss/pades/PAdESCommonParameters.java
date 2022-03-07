@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 import java.io.Serializable;
 import java.util.Date;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Defines a list of common PAdES parameters between signature and timestamps
@@ -79,5 +79,12 @@ public interface PAdESCommonParameters extends Serializable {
 	 * @return {@link String} password
 	 */
 	String getPasswordProtection();
+
+	/**
+	 * Returns name of an application used to create a signature/timestamp
+	 *
+	 * @return {@link String}
+	 */
+	String getAppName();
 
 }

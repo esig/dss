@@ -37,17 +37,26 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 
 	private static final long serialVersionUID = -1632557456487796227L;
 
-	/** The signature creation reason */
+	/**
+	 * The signature creation reason
+	 */
 	private String reason;
 
-	/** The contact info */
+	/**
+	 * The contact info
+	 */
 	private String contactInfo;
 
-	/** The signer's location */
+	/**
+	 * The signer's location
+	 */
 	private String location;
 
-	/** The signing app name */
-	private String appName;
+	/**
+	 * This attribute allows to explicitly specify the SignerName (name for the Signature).
+	 * The person or authority signing the document.
+	 */
+	private String signerName;
 
 	/**
 	 * Defines the preserved space for a signature context
@@ -71,10 +80,9 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	private String signatureSubFilter = PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER;
 
 	/**
-	 * This attribute allows to explicitly specify the SignerName (name for the Signature).
-	 * The person or authority signing the document.
+	 * The signing app name
 	 */
-	private String signerName;
+	private String appName;
 
 	/**
 	 * This attribute is used to create visible signature in PAdES form
@@ -145,6 +153,42 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.contactInfo = contactInfo;
 	}
 
+	/**
+	 * Gets location
+	 *
+	 * @return {@link String}
+	 */
+	public String getLocation() {
+		return this.location;
+	}
+
+	/**
+	 * Sets location (The CPU host name or physical location of the signing)
+	 *
+	 * @param location {@link String}
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	/**
+	 * Returns the Signer Name
+	 *
+	 * @return {@link String}
+	 */
+	public String getSignerName() {
+		return signerName;
+	}
+
+	/**
+	 * Sets the name of the signed
+	 *
+	 * @param signerName {@link String}
+	 */
+	public void setSignerName(final String signerName) {
+		this.signerName = signerName;
+	}
+
 	@Override
 	public String getFilter() {
 		return signatureFilter;
@@ -173,22 +217,18 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.signatureSubFilter = signatureSubFilter;
 	}
 
-	/**
-	 * Returns the Signer Name
-	 *
-	 * @return {@link String}
-	 */
-	public String getSignerName() {
-		return signerName;
+	@Override
+	public String getAppName() {
+		return appName;
 	}
 
 	/**
-	 * Sets the name of the signed
+	 * Sets signing application name
 	 *
-	 * @param signerName {@link String}
+	 * @param appName {@link String}
 	 */
-	public void setSignerName(final String signerName) {
-		this.signerName = signerName;
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 	@Override
@@ -206,42 +246,6 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 */
 	public void setImageParameters(SignatureImageParameters signatureImageParameters) {
 		this.signatureImageParameters = signatureImageParameters;
-	}
-
-	/**
-	 * Gets location
-	 * 
-	 * @return {@link String}
-	 */
-	public String getLocation() {
-		return this.location;
-	}
-
-	/**
-	 * Sets location (The CPU host name or physical location of the signing)
-	 * 
-	 * @param location {@link String}
-	 */
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	/**
-	 * Gets signing application name
-	 *
-	 * @return {@link String}
-	 */
-	public String getAppName() {
-		return appName;
-	}
-
-	/**
-	 * Sets signing application name
-	 *
-	 * @param appName {@link String}
-	 */
-	public void setAppName(String appName) {
-		this.appName = appName;
 	}
 
 	@Override

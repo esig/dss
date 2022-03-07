@@ -194,6 +194,14 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			dic.put(PdfName.SUBFILTER, new PdfName(parameters.getSubFilter()));
 		}
 
+		if (Utils.isStringNotEmpty(parameters.getAppName())) {
+			PdfDictionary propBuildDict = new PdfDictionary();
+			dic.put(new PdfName(PAdESConstants.PROP_BUILD), propBuildDict);
+			PdfDictionary appDict = new PdfDictionary();
+			propBuildDict.put(new PdfName(PAdESConstants.APP), appDict);
+			appDict.put(PdfName.NAME, new PdfName(parameters.getAppName()));
+		}
+
 		if (PdfName.SIG.equals(type)) {
 			
 			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;

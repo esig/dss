@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNotEnoughSpaceForSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBOnlySigningCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithAppNameTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithContentTimestampTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithECDSATest;
@@ -95,7 +96,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class,
 		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
-		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class })
+		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }

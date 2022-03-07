@@ -348,6 +348,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signature.setSubFilter(COSName.getPDFName(parameters.getSubFilter()));
 		}
 
+		if (Utils.isStringNotEmpty(parameters.getAppName())) {
+			PDPropBuild propBuild = new PDPropBuild(new COSDictionary());
+			PDPropBuildDataDict app = new PDPropBuildDataDict();
+			app.setName(parameters.getAppName());
+			propBuild.setPDPropBuildApp(app);
+			signature.setPropBuild(propBuild);
+		}
+
 		if (COSName.SIG.equals(currentType)) {
 
 			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
@@ -362,17 +370,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (Utils.isStringNotEmpty(signatureParameters.getLocation())) {
 				signature.setLocation(signatureParameters.getLocation());
-			}
-
-			if (Utils.isStringNotEmpty(signatureParameters.getAppName())) {
-				PDPropBuild propBuild = signature.getPropBuild();
-				if (propBuild == null) {
-					propBuild = new PDPropBuild(new COSDictionary());
-				}
-				PDPropBuildDataDict app = new PDPropBuildDataDict();
-				app.setName(signatureParameters.getAppName());
-				propBuild.setPDPropBuildApp(app);
-				signature.setPropBuild(propBuild);
 			}
 
 			if (Utils.isStringNotEmpty(signatureParameters.getReason())) {
