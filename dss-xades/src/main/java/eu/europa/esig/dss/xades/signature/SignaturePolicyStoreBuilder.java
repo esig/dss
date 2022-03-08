@@ -69,7 +69,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		boolean signaturePolicyStoreAdded = false;
 		for (AdvancedSignature signature : documentValidator.getSignatures()) {
 			boolean added = addSignaturePolicyStoreIfDigestMatch((XAdESSignature) signature, documentDom, signaturePolicyStore);
-			signaturePolicyStoreAdded = signaturePolicyStoreAdded | added;
+			signaturePolicyStoreAdded = signaturePolicyStoreAdded || added;
 		}
 		if (!signaturePolicyStoreAdded) {
 			throw new IllegalInputException("The process did not find a signature to add SignaturePolicyStore!");

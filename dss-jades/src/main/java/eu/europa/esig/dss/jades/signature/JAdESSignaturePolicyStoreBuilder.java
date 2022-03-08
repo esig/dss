@@ -84,7 +84,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		for (AdvancedSignature signature : signatures) {
 			boolean added = addSignaturePolicyStoreIfDigestMatch((JAdESSignature) signature, signaturePolicyStore,
 					base64UrlInstance, documentValidator);
-			signaturePolicyStoreAdded = signaturePolicyStoreAdded | added;
+			signaturePolicyStoreAdded = signaturePolicyStoreAdded || added;
 		}
 		if (!signaturePolicyStoreAdded) {
 			throw new IllegalInputException("The process did not find a signature to add SignaturePolicyStore!");
