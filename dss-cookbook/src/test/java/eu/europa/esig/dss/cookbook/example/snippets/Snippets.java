@@ -222,7 +222,7 @@ public class Snippets {
 		String base64Sha256HashOfBinaries = Utils.toBase64(sha256HashOfBinaries);
 		// end::hashComputation[]
 
-		assertEquals(base64Sha256HashOfDocument, base64Sha256HashOfDocument);
+		assertEquals(base64Sha256HashOfDocument, base64Sha256HashOfBinaries);
 	}
 
 }
