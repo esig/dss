@@ -489,7 +489,7 @@ public final class ASiCUtils {
 			mimetypeDocument = getMimetypeDocument(archiveContainer);
 		}
 		String zipComment = getZipComment(archiveContainer);
-		int signedDocumentsNumber = getNumberOfSignedDocuments(entryNames);
+		int signedDocumentsNumber = getNumberOfSignedRootDocuments(entryNames);
 
 		return getContainerType(archiveContainer.getMimeType(), mimetypeDocument, zipComment, signedDocumentsNumber);
 	}
@@ -525,13 +525,13 @@ public final class ASiCUtils {
 			return asicContent.getContainerType();
 		}
 		return getContainerType(asicContent.getAsicContainer().getMimeType(), asicContent.getMimeTypeDocument(),
-				asicContent.getZipComment(), Utils.collectionSize(asicContent.getSignedDocuments()));
+				asicContent.getZipComment(), Utils.collectionSize(asicContent.getRootLevelSignedDocuments()));
 	}
 
-	private static int getNumberOfSignedDocuments(List<String> containerEntryNames) {
+	private static int getNumberOfSignedRootDocuments(List<String> containerEntryNames) {
 		int signedDocumentCounter = 0;
 		for (String documentName : containerEntryNames) {
-			if (!documentName.endsWith("/") && !isMimetype(documentName)) {
+			if (!documentName.contains("/") && !isMimetype(documentName)) {
 				++signedDocumentCounter;
 			}
 		}
@@ -539,7 +539,7 @@ public final class ASiCUtils {
 	}
 
 	private static ASiCContainerType getContainerType(MimeType containerMimeType, DSSDocument mimetypeDocument,
-			String zipComment, int signedDocumentsNumber) {
+			String zipComment, int rootSignedDocumentsNumber) {
 		ASiCContainerType containerType = getContainerTypeFromMimeType(containerMimeType);
 		if (containerType == null) {
 			containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
@@ -549,15 +549,14 @@ public final class ASiCUtils {
 		}
 		if (containerType == null) {
 			LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
-			if (signedDocumentsNumber == 1) {
+			if (rootSignedDocumentsNumber == 1) {
 				containerType = ASiCContainerType.ASiC_S;
-			} else if (signedDocumentsNumber > 1) {
+			} else if (rootSignedDocumentsNumber > 1) {
 				containerType = ASiCContainerType.ASiC_E;
 			} else {
-				throw new IllegalInputException("The provided file does not contain signed documents. The signature validation is not possible");
+				LOG.warn("The provided container does not contain signer documents on the root level!");
 			}
 		}
-
 		return containerType;
 	}
 

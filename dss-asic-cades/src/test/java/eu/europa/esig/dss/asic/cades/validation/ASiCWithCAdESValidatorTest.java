@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,20 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 	protected DSSDocument getNoSignatureDocument() {
 		// not applicable
 		return null;
+	}
+
+	@Test
+	public void validateEmptyContainer() {
+		DSSDocument document = new FileDocument("src/test/resources/signable/empty.zip");
+		SignedDocumentValidator validator = initValidator(document);
+		validate(validator, false);
+	}
+
+	@Test
+	public void validateZipContainer() {
+		DSSDocument document = new FileDocument("src/test/resources/signable/test.zip");
+		SignedDocumentValidator validator = initValidator(document);
+		validate(validator, false);
 	}
 
 }

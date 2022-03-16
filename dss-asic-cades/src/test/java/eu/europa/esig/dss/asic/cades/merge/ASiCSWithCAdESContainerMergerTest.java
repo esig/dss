@@ -133,9 +133,16 @@ public class ASiCSWithCAdESContainerMergerTest extends
 
         DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContentToAdd, new Date());
 
-        ASiCSWithCAdESContainerMerger containerMerger = new ASiCSWithCAdESContainerMerger(containerOne, zipArchive);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> containerMerger.merge());
-        assertEquals("Unable to merge two ASiC-S with CAdES containers. Signer documents have different names!", exception.getMessage());
+        merger = new ASiCSWithCAdESContainerMerger(containerOne, zipArchive);
+        mergedContainer = merger.merge();
+
+        reports = verify(mergedContainer);
+        diagnosticData = reports.getDiagnosticData();
+        assertEquals(1, diagnosticData.getSignatures().size());
+
+        containerInfo = diagnosticData.getContainerInfo();
+        assertNotNull(containerInfo);
+        assertTrue(containerInfo.getContentFiles().contains(documentToAdd.getName()));
     }
 
     @Test
@@ -227,9 +234,20 @@ public class ASiCSWithCAdESContainerMergerTest extends
 
         DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContentToAdd, new Date());
 
-        ASiCSWithCAdESContainerMerger containerMerger = new ASiCSWithCAdESContainerMerger(timestampedContainer, zipArchive);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> containerMerger.merge());
-        assertEquals("Unable to merge two ASiC-S with CAdES containers. Signer documents have different names!", exception.getMessage());
+        merger = new ASiCSWithCAdESContainerMerger(timestampedContainer, zipArchive);
+        mergedContainer = merger.merge();
+
+        validator = SignedDocumentValidator.fromDocument(mergedContainer);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+        reports = validator.validateDocument();
+
+        diagnosticData = reports.getDiagnosticData();
+        assertEquals(0, diagnosticData.getSignatures().size());
+        assertEquals(1, diagnosticData.getTimestampList().size());
+
+        containerInfo = diagnosticData.getContainerInfo();
+        assertNotNull(containerInfo);
+        assertTrue(containerInfo.getContentFiles().contains(documentToAdd.getName()));
     }
 
     @Test
@@ -274,9 +292,27 @@ public class ASiCSWithCAdESContainerMergerTest extends
 
         DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContentToAdd, new Date());
 
-        ASiCSWithCAdESContainerMerger containerMerger = new ASiCSWithCAdESContainerMerger(timestampedContainer, zipArchive);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> containerMerger.merge());
-        assertEquals("Unable to merge two ASiC-S with CAdES containers. Signer documents have different names!", exception.getMessage());
+        merger = new ASiCSWithCAdESContainerMerger(timestampedContainer, zipArchive);
+        mergedContainer = merger.merge();
+
+        validator = SignedDocumentValidator.fromDocument(mergedContainer);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+        reports = validator.validateDocument();
+
+        diagnosticData = reports.getDiagnosticData();
+        assertEquals(0, diagnosticData.getSignatures().size());
+        assertEquals(1, diagnosticData.getTimestampList().size());
+
+        timestampWrapper = diagnosticData.getTimestampList().get(0);
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertTrue(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureValid());
+
+        assertEquals(3, timestampWrapper.getTimestampScopes().size()); // 2 signer docs + package.zip
+
+        containerInfo = diagnosticData.getContainerInfo();
+        assertNotNull(containerInfo);
+        assertTrue(containerInfo.getContentFiles().contains(documentToAdd.getName()));
     }
 
     @Test

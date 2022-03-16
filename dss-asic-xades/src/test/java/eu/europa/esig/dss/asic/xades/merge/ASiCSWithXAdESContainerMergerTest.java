@@ -125,9 +125,16 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContentToAdd, new Date());
 
-        ASiCSWithXAdESContainerMerger containerMerger = new ASiCSWithXAdESContainerMerger(containerOne, zipArchive);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> containerMerger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. Signer documents have different names!", exception.getMessage());
+        merger = new ASiCSWithXAdESContainerMerger(containerOne, zipArchive);
+        mergedContainer = merger.merge();
+
+        reports = verify(mergedContainer);
+        diagnosticData = reports.getDiagnosticData();
+        assertEquals(1, diagnosticData.getSignatures().size());
+
+        containerInfo = diagnosticData.getContainerInfo();
+        assertNotNull(containerInfo);
+        assertTrue(containerInfo.getContentFiles().contains(documentToAdd.getName()));
     }
 
     @Test

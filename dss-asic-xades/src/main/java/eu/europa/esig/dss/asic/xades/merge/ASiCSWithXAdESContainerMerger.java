@@ -93,8 +93,8 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
                     "One of the containers contains a detached timestamp!");
         }
 
-        List<DSSDocument> signedDocumentsOne = asicContentOne.getSignedDocuments();
-        List<DSSDocument> signedDocumentsTwo = asicContentTwo.getSignedDocuments();
+        List<DSSDocument> signedDocumentsOne = asicContentOne.getRootLevelSignedDocuments();
+        List<DSSDocument> signedDocumentsTwo = asicContentTwo.getRootLevelSignedDocuments();
         if (Utils.collectionSize(signedDocumentsOne) > 1 || Utils.collectionSize(signedDocumentsTwo) > 1) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signer documents!");
