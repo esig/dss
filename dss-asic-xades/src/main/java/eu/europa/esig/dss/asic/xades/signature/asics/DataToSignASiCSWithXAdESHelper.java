@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.asics.AbstractGetDataToSignASiCS;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -52,9 +53,9 @@ public class DataToSignASiCSWithXAdESHelper extends AbstractGetDataToSignASiCS i
 	@Override
 	public String getSignatureFilename() {
 		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return "META-INF/" + asicParameters.getSignatureFileName();
+			return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
 		}
-		return "META-INF/signatures.xml";
+		return ASiCUtils.SIGNATURES_XML;
 	}
 
 	@Override

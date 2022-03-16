@@ -110,6 +110,14 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	/**
+	 * Checks if the {@code ASiCContent} is supported by the current validator
+	 *
+	 * @param asicContent {@link ASiCContent} to check
+	 * @return TRUE if the ASiC Content is supported, FALSE otherwise
+	 */
+	public abstract boolean isSupported(ASiCContent asicContent);
+
+	/**
 	 * Extracts documents from a container
 	 */
 	private ASiCContent extractEntries() {

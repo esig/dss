@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +57,9 @@ public final class ASiCUtils {
 	/** The ASiC Archive Manifest name */
 	public static final String ASIC_ARCHIVE_MANIFEST_FILENAME = "ASiCArchiveManifest";
 
+	/** The ASiC-E with XAdES Manifest name */
+	public static final String ASIC_XAdES_MANIFEST_FILENAME = "manifest";
+
 	/** The mimetype filename */
 	public static final String MIME_TYPE = "mimetype";
 
@@ -71,6 +75,9 @@ public final class ASiCUtils {
 	/** The signature filename */
 	public static final String SIGNATURE_FILENAME = "signature";
 
+	/** The signature filename */
+	public static final String SIGNATURES_FILENAME = "signatures";
+
 	/** The timestamp filename */
 	public static final String TIMESTAMP_FILENAME = "timestamp";
 
@@ -83,6 +90,24 @@ public final class ASiCUtils {
 	/** The XML file extension */
 	public static final String XML_EXTENSION = ".xml";
 
+	/** The ASiC-S with XAdES signature document name (META-INF/signatures.xml) */
+	public static final String SIGNATURES_XML = META_INF_FOLDER + SIGNATURES_FILENAME + XML_EXTENSION;
+
+	/** The default XML manifest filename (META-INF/manifest.xml) */
+	public static final String ASICE_METAINF_MANIFEST = META_INF_FOLDER + ASIC_XAdES_MANIFEST_FILENAME + XML_EXTENSION;
+
+	/** The default signature filename for ASiC-E with XAdES container */
+	private static final String ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
+
+	/** The ASiC-S with CAdES signature document name (META-INF/signature.p7s) */
+	public static final String SIGNATURE_P7S = META_INF_FOLDER + SIGNATURE_FILENAME + CADES_SIGNATURE_EXTENSION;
+
+	/** The ASiC-S with CAdES timestamp document name (META-INF/timestamp.tst) */
+	public static final String TIMESTAMP_TST = META_INF_FOLDER + TIMESTAMP_FILENAME + TST_EXTENSION;
+
+	/**
+	 * Singleton
+	 */
 	private ASiCUtils() {
 	}
 
@@ -125,7 +150,7 @@ public final class ASiCUtils {
 	 */
 	public static String getZipComment(final ASiCParameters asicParameters) {
 		if (asicParameters.isZipComment()) {
-			return getZipComment(ASiCUtils.getMimeTypeString(asicParameters));
+			return getZipComment(getMimeTypeString(asicParameters));
 		}
 		return Utils.EMPTY_STRING;
 	}
@@ -147,7 +172,7 @@ public final class ASiCUtils {
 	 * @return {@link String} zip comment
 	 */
 	public static String getZipComment(final String mimeTypeString) {
-		return ASiCUtils.MIME_TYPE_COMMENT + mimeTypeString;
+		return MIME_TYPE_COMMENT + mimeTypeString;
 	}
 
 	/**
@@ -357,13 +382,13 @@ public final class ASiCUtils {
 	 */
 	public static boolean isContainerOpenDocument(final DSSDocument archiveContainer) {
 		DSSDocument mimetype = getMimetypeDocument(archiveContainer);
-		return mimetype != null && ASiCUtils.isOpenDocument(mimetype);
+		return mimetype != null && isOpenDocument(mimetype);
 	}
 
-	private static DSSDocument getMimetypeDocument(DSSDocument dssDocument) {
-		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(dssDocument);
+	private static DSSDocument getMimetypeDocument(DSSDocument archiveDocument) {
+		List<DSSDocument> documents = ZipUtils.getInstance().extractContainerContent(archiveDocument);
 		for (DSSDocument document : documents) {
-			if (ASiCUtils.isMimetype(document.getName())) {
+			if (isMimetype(document.getName())) {
 				return document;
 			}
 		}
@@ -408,7 +433,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the name is a "mimetype", FALSE otherwise
 	 */
 	public static boolean isMimetype(String entryName) {
-		return ASiCUtils.MIME_TYPE.equals(entryName);
+		return MIME_TYPE.equals(entryName);
 	}
 
 	/**
@@ -431,28 +456,102 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Returns target container type
-	 * 
-	 * @param archive         {@link DSSDocument} archive
-	 * @param mimetype        {@link DSSDocument} mimetype file
-	 * @param zipComment      {@link String} zipComment
-	 * @param signedDocuments a list of {@link DSSDocument}s
+	 * This method verifies whether the given container is of ASiC-S format type
+	 *
+	 * @param container {@link DSSDocument} to verify
+	 * @return TRUE if the container is of ASiC-S type, FALSE otherwise
+	 */
+	public static boolean isASiCSContainer(DSSDocument container) {
+		return ASiCContainerType.ASiC_S.equals(getContainerType(container));
+	}
+
+	/**
+	 * This method verifies whether the given container is of ASiC-E format type
+	 *
+	 * @param container {@link DSSDocument} to verify
+	 * @return TRUE if the container is of ASiC-E type, FALSE otherwise
+	 */
+	public static boolean isASiCEContainer(DSSDocument container) {
+		return ASiCContainerType.ASiC_E.equals(getContainerType(container));
+	}
+
+	/**
+	 * This method verifies type of the provided container document
+	 *
+	 * @param archiveContainer {@link DSSDocument} to verify
 	 * @return {@link ASiCContainerType}
 	 */
-	public static ASiCContainerType getContainerType(DSSDocument archive, DSSDocument mimetype, String zipComment, List<DSSDocument> signedDocuments) {
-		ASiCContainerType containerType = getContainerTypeFromMimeType(archive.getMimeType());
+	public static ASiCContainerType getContainerType(DSSDocument archiveContainer) {
+		List<String> entryNames = ZipUtils.getInstance().extractEntryNames(archiveContainer);
+
+		DSSDocument mimetypeDocument = null;
+		if (areFilesContainMimetype(entryNames)) {
+			mimetypeDocument = getMimetypeDocument(archiveContainer);
+		}
+		String zipComment = getZipComment(archiveContainer);
+		int signedDocumentsNumber = getNumberOfSignedDocuments(entryNames);
+
+		return getContainerType(archiveContainer.getMimeType(), mimetypeDocument, zipComment, signedDocumentsNumber);
+	}
+
+	/**
+	 * This method verifies whether the given {@code ASiCContent} is of ASiC-S format type
+	 *
+	 * @param asicContent {@link ASiCContent} to verify
+	 * @return TRUE if the ASiC Content is of ASiC-S type, FALSE otherwise
+	 */
+	public static boolean isASiCSContainer(ASiCContent asicContent) {
+		return ASiCContainerType.ASiC_S.equals(getContainerType(asicContent));
+	}
+
+	/**
+	 * This method verifies whether the given {@code ASiCContent} is of ASiC-E format type
+	 *
+	 * @param asicContent {@link ASiCContent} to verify
+	 * @return TRUE if the ASiC Content is of ASiC-E type, FALSE otherwise
+	 */
+	public static boolean isASiCEContainer(ASiCContent asicContent) {
+		return ASiCContainerType.ASiC_E.equals(getContainerType(asicContent));
+	}
+
+	/**
+	 * Returns container type
+	 * 
+	 * @param asicContent {@link ASiCContent}
+	 * @return {@link ASiCContainerType}
+	 */
+	public static ASiCContainerType getContainerType(ASiCContent asicContent) {
+		if (asicContent.getContainerType() != null) {
+			return asicContent.getContainerType();
+		}
+		return getContainerType(asicContent.getAsicContainer().getMimeType(), asicContent.getMimeTypeDocument(),
+				asicContent.getZipComment(), Utils.collectionSize(asicContent.getSignedDocuments()));
+	}
+
+	private static int getNumberOfSignedDocuments(List<String> containerEntryNames) {
+		int signedDocumentCounter = 0;
+		for (String documentName : containerEntryNames) {
+			if (!documentName.endsWith("/") && !isMimetype(documentName)) {
+				++signedDocumentCounter;
+			}
+		}
+		return signedDocumentCounter;
+	}
+
+	private static ASiCContainerType getContainerType(MimeType containerMimeType, DSSDocument mimetypeDocument,
+			String zipComment, int signedDocumentsNumber) {
+		ASiCContainerType containerType = getContainerTypeFromMimeType(containerMimeType);
 		if (containerType == null) {
-			containerType = getContainerTypeFromMimeTypeDocument(mimetype);
+			containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
 			if (containerType == null) {
 				containerType = getContainerTypeFromZipComment(zipComment);
 			}
 		}
-
 		if (containerType == null) {
-			LOG.warn("Unable to define the ASiC Container type with its properties");
-			if (Utils.collectionSize(signedDocuments) == 1) {
+			LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
+			if (signedDocumentsNumber == 1) {
 				containerType = ASiCContainerType.ASiC_S;
-			} else if (Utils.collectionSize(signedDocuments) > 1) {
+			} else if (signedDocumentsNumber > 1) {
 				containerType = ASiCContainerType.ASiC_E;
 			} else {
 				throw new IllegalInputException("The provided file does not contain signed documents. The signature validation is not possible");
@@ -476,15 +575,15 @@ public final class ASiCUtils {
 
 	private static ASiCContainerType getContainerTypeFromMimeTypeDocument(DSSDocument mimetype) {
 		if (mimetype != null) {
-			MimeType mimeTypeFromEmbeddedFile = ASiCUtils.getMimeType(mimetype);
+			MimeType mimeTypeFromEmbeddedFile = getMimeType(mimetype);
 			return getContainerTypeFromMimeType(mimeTypeFromEmbeddedFile);
 		}
 		return null;
 	}
 
 	private static ASiCContainerType getContainerTypeFromMimeType(MimeType mimeType) {
-		if (ASiCUtils.isASiCMimeType(mimeType)) {
-			return ASiCUtils.getASiCContainerType(mimeType);
+		if (isASiCMimeType(mimeType)) {
+			return getASiCContainerType(mimeType);
 		}
 		return null;
 	}
@@ -509,8 +608,8 @@ public final class ASiCUtils {
 	 * @return TRUE if the given name matches Manifest filename, FALSE otherwise
 	 */
 	public static boolean isManifest(String fileName) {
-		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASiCUtils.ASIC_MANIFEST_FILENAME)
-				&& fileName.endsWith(ASiCUtils.XML_EXTENSION);
+		return fileName.startsWith(META_INF_FOLDER) && fileName.contains(ASIC_MANIFEST_FILENAME)
+				&& fileName.endsWith(XML_EXTENSION);
 	}
 
 	/**
@@ -520,7 +619,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the given name matches ASiC Archive Manifest filename, FALSE otherwise
 	 */
 	public static boolean isArchiveManifest(String fileName) {
-		return fileName.startsWith(ASiCUtils.META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
+		return fileName.startsWith(META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
 				&& fileName.endsWith(XML_EXTENSION);
 	}
 	
@@ -618,11 +717,11 @@ public final class ASiCUtils {
 		DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
 		if (mimeTypeDocument != null) {
 			// re-use the same mime-type when extending a container
-			mimeType = ASiCUtils.getMimeType(mimeTypeDocument);
+			mimeType = getMimeType(mimeTypeDocument);
 		}
 		if (mimeType == null) {
 			Objects.requireNonNull(asicParameters, "ASiCParameters shall be present for the requested operation!");
-			mimeType = ASiCUtils.getMimeType(asicParameters);
+			mimeType = getMimeType(asicParameters);
 		}
 		return mimeType;
 	}
@@ -632,14 +731,14 @@ public final class ASiCUtils {
 		if (Utils.isStringNotEmpty(zipComment)) {
 			return zipComment;
 		} else if (asicParameters != null && asicParameters.isZipComment()) {
-			return ASiCUtils.getZipComment(mimeType);
+			return getZipComment(mimeType);
 		}
 		return Utils.EMPTY_STRING;
 	}
 
 	private static DSSDocument createMimetypeDocument(final MimeType mimeType) {
 		final byte[] mimeTypeBytes = mimeType.getMimeTypeString().getBytes(StandardCharsets.UTF_8);
-		return new InMemoryDocument(mimeTypeBytes, ASiCUtils.MIME_TYPE);
+		return new InMemoryDocument(mimeTypeBytes, MIME_TYPE);
 	}
 
 	/**
@@ -664,6 +763,103 @@ public final class ASiCUtils {
 			}
 		}
 		return rootDocuments;
+	}
+
+	/**
+	 * Returns a zip comment {@code String} from the ASiC container
+	 *
+	 * @return {@link String} zip comment
+	 */
+	public static String getZipComment(DSSDocument archiveContainer) {
+		try (InputStream is = archiveContainer.openStream()) {
+			byte[] buffer = Utils.toByteArray(is);
+			final int len = buffer.length;
+			final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
+
+			// Check the buffer from the end
+			for (int ii = len - magicDirEnd.length - 22; ii >= 0; ii--) {
+				boolean isMagicStart = true;
+				for (int jj = 0; jj < magicDirEnd.length; jj++) {
+					if (buffer[ii + jj] != magicDirEnd[jj]) {
+						isMagicStart = false;
+						break;
+					}
+				}
+				if (isMagicStart) {
+					// Magic Start found!
+					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
+					int realLen = len - ii - 22;
+					if (commentLen != realLen) {
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
+					}
+					return new String(buffer, ii + 22, realLen);
+
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract the ZIP comment : {}", e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * Transforms a list of given documents to a list of "simple" (only basic information) manifest entries
+	 *
+	 * @param documents list of {@link DSSDocument}s
+	 * @return list of {@link ManifestEntry}s
+	 */
+	public static List<ManifestEntry> toSimpleManifestEntries(List<DSSDocument> documents) {
+		List<ManifestEntry> entries = new ArrayList<>();
+		for (DSSDocument document : documents) {
+			ManifestEntry entry = new ManifestEntry();
+			entry.setFileName(document.getName());
+			entry.setMimeType(document.getMimeType());
+			entry.setFound(true);
+			entries.add(entry);
+		}
+		return entries;
+	}
+
+	/**
+	 * This method returns a next available name for an XML signature document to be created
+	 *
+	 * @param existingSignatureNames a collection of forbidden {@link String} signature names
+	 * @return {@link String}
+	 */
+	public static String getNextAvailableASiCEWithXAdESSignatureName(Collection<String> existingSignatureNames) {
+		if (Utils.isCollectionNotEmpty(existingSignatureNames)) {
+			return ASICE_METAINF_XADES_SIGNATURE.replace("001", getDocumentNameRecursively(new ArrayList<>(existingSignatureNames)));
+		} else {
+			return ASICE_METAINF_XADES_SIGNATURE;
+		}
+	}
+
+	/**
+	 * This method returns a next available name for an XML manifest document to be created
+	 *
+	 * @param existingManifestNames a collection of forbidden {@link String} signature names
+	 * @param manifestType {@link String} pattern name of the manifest document to get new available name for
+	 * @return {@link String}
+	 */
+	public static String getNextAvailableASiCEWithCAdESManifestName(Collection<String> existingManifestNames, String manifestType) {
+		if (Utils.isCollectionNotEmpty(existingManifestNames)) {
+			String manifestNameToReplace = META_INF_FOLDER + manifestType + "001" + XML_EXTENSION;
+			return manifestNameToReplace.replace("001", getDocumentNameRecursively(new ArrayList<>(existingManifestNames)));
+		} else {
+			return META_INF_FOLDER + manifestType + XML_EXTENSION;
+		}
+	}
+
+	private static String getDocumentNameRecursively(List<String> existingDocumentNames) {
+		int number = existingDocumentNames.size() + 1;
+		String numberStr = String.valueOf(number);
+		String zeroPad = "000";
+		String candidateName = zeroPad.substring(numberStr.length()) + numberStr; // 2 -> 002
+		if (existingDocumentNames.contains(candidateName)) {
+			existingDocumentNames.add(candidateName);
+			return getDocumentNameRecursively(existingDocumentNames);
+		}
+		return candidateName;
 	}
 
 }

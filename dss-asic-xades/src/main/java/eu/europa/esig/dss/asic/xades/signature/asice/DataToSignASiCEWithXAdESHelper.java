@@ -26,6 +26,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractGetDataToSignHelper;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
@@ -34,9 +35,6 @@ import java.util.List;
  * An abstract class to generate a DataToSign with ASiC-E with XAdES
  */
 public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper implements GetDataToSignASiCWithXAdESHelper {
-
-    /** The default signature filename */
-    private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
 
     /** ASiC Container creation parameters */
     private final ASiCParameters asicParameters;
@@ -62,20 +60,9 @@ public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper 
         if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
             return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
         }
-        List<DSSDocument>existingSignatures = asicContent.getSignatureDocuments();
-        if (Utils.isCollectionNotEmpty(existingSignatures)) {
-            return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE.replace("001", getSignatureNumber(existingSignatures));
-        } else {
-            return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE;
-        }
+        List<String> existingSignatureNames = DSSUtils.getDocumentNames(asicContent.getSignatureDocuments());
+        return ASiCUtils.getNextAvailableASiCEWithXAdESSignatureName(existingSignatureNames);
     }
-	
-    private String getSignatureNumber(List<DSSDocument> existingSignatures) {
-        int signatureNumber = existingSignatures.size() + 1;
-        String sigNumberStr = String.valueOf(signatureNumber);
-        String zeroPad = "000";
-        return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
-	}
 
     @Override
     public String getTimestampFilename() {

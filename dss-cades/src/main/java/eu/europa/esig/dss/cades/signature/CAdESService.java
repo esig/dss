@@ -143,7 +143,7 @@ public class CAdESService extends
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+		if (originalCmsSignedData == null && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 			parameters.getContext().setDetachedContents(Arrays.asList(toSignDocument));
 		}
 

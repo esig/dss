@@ -1202,6 +1202,24 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This method retrieves a URI attribute value of the given reference, when applicable
+	 *
+	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
+	 *
+	 * @param reference {@link Reference} to get value of URI attribute
+	 * @return {@link String} URI attribute value if available, NULL otherwise
+	 */
+	public static String getReferenceURI(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Checks if the original reference document content can be obtained (de-referenced)
 	 *
 	 * @param reference {@link Reference} to check

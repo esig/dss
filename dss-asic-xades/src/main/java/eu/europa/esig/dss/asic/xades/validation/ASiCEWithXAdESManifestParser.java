@@ -57,6 +57,15 @@ public class ASiCEWithXAdESManifestParser {
 	private final DSSDocument manifestDocument;
 
 	/**
+	 * Constructor with a manifest document only (no assigned signature)
+	 *
+	 * @param manifestDocument {@link DSSDocument} to be parsed
+	 */
+	public ASiCEWithXAdESManifestParser(DSSDocument manifestDocument) {
+		this(null, manifestDocument);
+	}
+
+	/**
 	 * The default constructor
 	 *
 	 * @param signatureDocument {@link DSSDocument} the linked signature
@@ -75,7 +84,9 @@ public class ASiCEWithXAdESManifestParser {
 	public ManifestFile getManifest() {
 		ManifestFile manifest = new ManifestFile();
 		manifest.setDocument(manifestDocument);
-		manifest.setSignatureFilename(signatureDocument.getName());
+		if (signatureDocument != null) {
+			manifest.setSignatureFilename(signatureDocument.getName());
+		}
 		manifest.setEntries(getEntries());
 		return manifest;
 	}

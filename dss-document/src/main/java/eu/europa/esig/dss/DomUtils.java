@@ -588,7 +588,7 @@ public final class DomUtils {
 	 * @param document
 	 *            the {@link org.w3c.dom.Document} to store
 	 * @param name
-	 *            the ouput filename
+	 *            the output filename
 	 * @return a new instance of InMemoryDocument with the XML and the given filename
 	 */
 	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
