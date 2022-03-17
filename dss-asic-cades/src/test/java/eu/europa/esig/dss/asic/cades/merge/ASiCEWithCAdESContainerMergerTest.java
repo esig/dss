@@ -152,6 +152,8 @@ public class ASiCEWithCAdESContainerMergerTest extends
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(firstContainer, secondContainer);
         DSSDocument mergedContainer = merger.merge();
 
+        assertEquals("test-merged.zip", mergedContainer.getName());
+
         ASiCContent mergedAsicContent = new ASiCWithCAdESContainerExtractor(mergedContainer).extract();
         List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
         for (DSSDocument document : firstAsicContent.getAllDocuments()) {
@@ -172,6 +174,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
         merger = new ASiCEWithCAdESContainerMerger(firstAsicContent, secondAsicContent);
         mergedContainer = merger.merge();
+        assertEquals("test-merged.zip", mergedContainer.getName());
 
         mergedAsicContent = new ASiCWithCAdESContainerExtractor(mergedContainer).extract();
         allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
@@ -199,6 +202,8 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(timestampedContainerOne, timestampedContainerTwo);
         DSSDocument mergedContainer = merger.merge();
+
+        assertEquals("tstNoMimeType-merged.asice", mergedContainer.getName());
 
         SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(mergedContainer);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -272,6 +277,8 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(signedContainer, timestampedContainer);
         DSSDocument mergedContainer = merger.merge();
+
+        assertEquals("multifiles-ok-merged.asice", mergedContainer.getName());
 
         Reports reports = verify(mergedContainer);
         DiagnosticData diagnosticData = reports.getDiagnosticData();

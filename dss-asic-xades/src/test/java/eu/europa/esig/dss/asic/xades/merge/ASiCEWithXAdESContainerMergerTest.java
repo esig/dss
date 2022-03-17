@@ -145,6 +145,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
 
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
         DSSDocument mergedContainer = merger.merge();
+        assertEquals("test-merged.zip", mergedContainer.getName());
 
         ASiCContent mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedContainer).extract();
         List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
@@ -166,6 +167,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
 
         merger = new ASiCEWithXAdESContainerMerger(firstAsicContent, secondAsicContent);
         mergedContainer = merger.merge();
+        assertEquals("test-merged.zip", mergedContainer.getName());
 
         mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedContainer).extract();
         allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());

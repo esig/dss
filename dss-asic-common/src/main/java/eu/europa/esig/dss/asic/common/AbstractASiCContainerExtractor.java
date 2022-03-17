@@ -92,7 +92,6 @@ public abstract class AbstractASiCContainerExtractor {
 					result.getUnsupportedDocuments().add(currentDocument);
 				}
 
-
 			} else if (!isFolder(entryName)) { 
 				if (ASiCUtils.isMimetype(entryName)) {
 					result.setMimeTypeDocument(currentDocument);

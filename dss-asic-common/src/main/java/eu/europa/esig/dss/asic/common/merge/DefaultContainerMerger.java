@@ -167,7 +167,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     public DSSDocument merge() {
         ASiCContent mergeResult = mergeToASiCContent();
         DSSDocument containerDocument = ZipUtils.getInstance().createZipArchive(mergeResult, getCreationTime());
-        containerDocument.setName("merged" + (ASiCContainerType.ASiC_S.equals(mergeResult.getContainerType()) ? ".scs" : ".sce"));
+        containerDocument.setName(getFinalContainerName(mergeResult.getContainerType()));
         containerDocument.setMimeType(ASiCContainerType.ASiC_S.equals(mergeResult.getContainerType()) ? MimeType.ASICS : MimeType.ASICE);
         return containerDocument;
     }
@@ -181,8 +181,6 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
     /**
      * Verifies whether two containers can be merged
-     *
-     * @return TRUE if merge is possible, FAlSE otherwise
      */
     protected abstract void ensureContainerContentAllowMerge();
 
@@ -245,6 +243,50 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
                 }
                 // continue, no document to be added
             }
+        }
+    }
+
+    /**
+     * This method returns a filename for the merged container
+     *
+     * @param asicContainerType {@link ASiCContainerType} ASiC type of the merged container
+     * @return {@link String} filename of the container
+     */
+    protected String getFinalContainerName(ASiCContainerType asicContainerType) {
+        String originalFilename = getOriginalContainerFilename();
+        String originalExtension = Utils.getFileNameExtension(originalFilename);
+        if (Utils.isStringNotEmpty(originalExtension)) {
+            // remove extension
+            originalFilename = originalFilename.substring(0, originalFilename.length() - originalExtension.length() - 1);
+        }
+
+        StringBuilder sb = new StringBuilder(originalFilename);
+        sb.append("-merged");
+        sb.append(".");
+
+        String finalExtension = getFinalExtension(asicContainerType, originalExtension);
+        sb.append(finalExtension);
+
+        return sb.toString();
+    }
+
+    private String getOriginalContainerFilename() {
+        if (asicContentOne.getAsicContainer() != null && asicContentOne.getAsicContainer().getName() != null) {
+            return asicContentOne.getAsicContainer().getName();
+        }
+        if (asicContentTwo.getAsicContainer() != null && asicContentTwo.getAsicContainer().getName() != null) {
+            return asicContentTwo.getAsicContainer().getName();
+        }
+        return "container";
+    }
+
+    private String getFinalExtension(ASiCContainerType asicContainerType, String originalExtension) {
+        if (Utils.isStringNotEmpty(originalExtension)) {
+            return originalExtension;
+        } else if (asicContainerType != null) {
+            return ASiCContainerType.ASiC_S.equals(asicContainerType) ? "scs" : "sce";
+        } else {
+            return "zip";
         }
     }
 

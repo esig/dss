@@ -255,7 +255,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the list of filename contains the expected signature file,
 	 *         FALSE otherwise
 	 */
-	public static boolean areFilesContainCorrectSignatureFileWithExtension(List<String> filenames, String extension) {
+	public static boolean filesContainCorrectSignatureFileWithExtension(List<String> filenames, String extension) {
 		for (String filename : filenames) {
 			if (isSignature(filename) && filename.endsWith(extension)) {
 				return true;
@@ -287,9 +287,9 @@ public final class ASiCUtils {
 	 *         FALSE otherwise
 	 */
 	public static boolean isAsicFileContent(List<String> filenames) {
-		return areFilesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| areFilesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
-				|| areFilesContainTimestamp(filenames);
+		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
+				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
+				|| filesContainTimestamps(filenames);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the list of filenames contains the expected timestamp file,
 	 *         FALSE otherwise
 	 */
-	public static boolean areFilesContainTimestamp(List<String> filenames) {
+	public static boolean filesContainTimestamps(List<String> filenames) {
 		for (String filename : filenames) {
 			if (isTimestamp(filename)) {
 				return true;
@@ -339,7 +339,7 @@ public final class ASiCUtils {
 	 *         otherwise
 	 */
 	public static boolean isASiCWithXAdES(List<String> filenames) {
-		return areFilesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
+		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
 	}
 	
 	/**
@@ -350,8 +350,8 @@ public final class ASiCUtils {
 	 *         otherwise
 	 */
 	public static boolean isASiCWithCAdES(List<String> filenames) {
-		return areFilesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| areFilesContainTimestamp(filenames);
+		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
+				|| filesContainTimestamps(filenames);
 	}
 
 	/**
@@ -767,6 +767,7 @@ public final class ASiCUtils {
 	/**
 	 * Returns a zip comment {@code String} from the ASiC container
 	 *
+	 * @param archiveContainer {@link DSSDocument} representing an Archive container
 	 * @return {@link String} zip comment
 	 */
 	public static String getZipComment(DSSDocument archiveContainer) {
