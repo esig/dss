@@ -575,3 +575,29 @@ We discussed above the validation processes defined in ETSI EN 319 102-1. The de
 Without going into details, ETSI TS 119 615 specifies procedures for interpreting the content of EUMS trusted lists, including procedures for validating EUMS trusted lists.
 
 Illustrated in the figure above are the results of the main steps defined in that standard.
+
+[[ASiCMerger]]
+=== ASiC Merger
+
+Since DSS v5.11 the framework provides a possibility to merge ASiC containers of the same type (e.g. `ASiC-E` with `XAdES` merge with another `ASiC-E` with `XAdES`). This can benefit from creating signature containers in parallel by different users and/or on different machines and finally merging them after obtaining all signatures, without breaking the cryptographical validity of signatures.
+
+The possibility is provided with introduction of `DefaultContainerMerger` class that chooses a relevant implementation of `ASiCContainerMerger` based on the provided containers types, evaluates a technical possibility to execute the merge and creates the merged container, when possible.
+
+[source,java,indent=0]
+.Sign multiple files within an ASiC-E container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTwoAsicAndMergeTest.java[tags=demo]
+----
+
+The following implementations of `ASiCContainerMerger` are provided within the framework:
+
+ * `ASiCSWithXAdESContainerMerger` - a part of `dss-asic-xades` module. The class supports a merging of `ASiC-S` with `XAdES` containers, containing the same signed data.
+* `ASiCEWithXAdESContainerMerger` - a part of `dss-asic-xades` module. The class supports a merging of `ASiC-E` with `XAdES` containers, including merging of containers signing a different set of signed data.
+* `ASiCSWithCAdESContainerMerger` - a part of `dss-asic-cades` module. The class supports a merging of `ASiC-S` with `CAdES` containers, containing the same signed data.
+* `ASiCEWithCAdESContainerMerger` - a part of `dss-asic-cades` module. The class supports a merging of `ASiC-E` with `CAdES` containers, including merging of containers signing/timestamping a different set of signed data, provided that signature/timestamp document names are different.
+
+NOTE: The merging classes are able to resolve conflicts between container entries, when feasible. If the extension is not possible, a corresponding exception will be thrown.
+
+In order to use a selected class, the corresponding module shall be loaded within the project. `DefaultContainerMerger` will choose a relevant implementation across available modules using <<ServiceLoaderAdvanced>>.
+
+When using provided implementations of the `ASiCContainerMerger`, a user can also benefit from merging a corresponding ASiC container with a simple not-signed ZIP archive, or even from merging two not signed ZIP archives.
