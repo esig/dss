@@ -1,10 +1,10 @@
 ## DSS : Digital Signature Service
 
-This is the official repository for project DSS : https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature. 
+This is the official repository for project DSS : https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Digital+Signature+Service+-++DSS. 
 
 # Issue Tracker
 
-Please, use the new JIRA for project is on https://ec.europa.eu/cefdigital/tracker/projects/DSS/issues. 
+Please, use the new JIRA for project is on https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues. 
 
 # Requirements
 
@@ -78,7 +78,7 @@ The source code of the demonstrations is available on https://github.com/esig/ds
 
 Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
 
-The code of the demonstration can be found on https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse
+The code of the demonstration can be found on https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss-demos/browse
 
 # Licenses
 

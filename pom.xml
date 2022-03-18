@@ -1016,7 +1016,7 @@
 
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://ec.europa.eu/cefdigital/tracker/projects/DSS</url>
+		<url>https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS</url>
 		<!-- <url>https://esig-dss.atlassian.net/projects/DSS</url> Old issues -->
 	</issueManagement>
 

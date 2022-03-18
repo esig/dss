@@ -18,7 +18,7 @@ This document describes some examples of how to develop in Java using the DSS fr
 
 === Scope of the document
 
-This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release {dssVersion} of DSS framework which can be downloaded via https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/DSS+releases
+This document provides examples of code which allow easy handling of digital signatures. The examples are consistent with the Release {dssVersion} of DSS framework which can be downloaded via https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Digital+Signature+Service+-++DSS#DigitalSignatureServiceDSS-Releases[the webpage].
 
 Three main features can be distinguished within the framework :
 
@@ -64,7 +64,7 @@ The requirements and build instructions for DSS demonstrations can be found in t
 === License
 For the DSS core: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)].
 
-For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL] and https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE]
+For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL] and https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE].
 
 === Abbreviations and Acronyms
 
@@ -75,14 +75,15 @@ For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-unio
 |AdES			|Advanced Electronic Signature
 |API			|Application Programming Interface
 |ASiC			|Associated Signature Containers
-|BB				|Building Block (CEF)
+|BB				|Building Block (DIGITAL)
+|BBB			|Basic Building Block (cf. <<R09>>)
 |CA				|Certificate authority
 |CAdES			|CMS Advanced Electronic Signatures
-|CEF			|Connecting Europe Facility
 |CMS			|Cryptographic Message Syntax
 |CRL			|Certificate Revocation List
 |CSP			|Cryptographic Service Provider
 |DER			|Distinguished Encoding Rules
+|DIGITAL		|EC DIGITAL Building Block
 |DSA			|Digital Signature Algorithm - an algorithm for public-key cryptography
 |DSS			|Digital Signature Service
 |EC				|European Commission
@@ -177,16 +178,16 @@ readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
 
 === Useful links
 
-* https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature[CEF Digital]
-* https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eSignature+FAQ[eSignature FAQ]
+* https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/[Digital Building Block]
+* https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/eSignature+FAQ[eSignature FAQ]
 * https://esignature.ec.europa.eu/efda/home/[Trust Services Dashboard]
 * https://esignature.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
-* https://ec.europa.eu/cefdigital/wiki/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
-* https://github.com/esig/dss[Source code (GitHub)]
-* https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss/browse[Source code (EC Bitbucket)]
-* https://github.com/esig/dss-demonstrations[Source code demonstrations (GitHub)]
-* https://ec.europa.eu/cefdigital/code/projects/ESIG/repos/dss-demos/browse[Source code demonstrations (EC Bitbucket)]
-* https://ec.europa.eu/cefdigital/tracker/projects/DSS/issues[Report an issue (EC Jira)]
+* https://ec.europa.eu/digital-building-blocks/wikis/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
+* https://github.com/esig/dss[DSS source code (GitHub)]
+* https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss/browse[DSS source code (EC Bitbucket)]
+* https://github.com/esig/dss-demonstrations[DSS-demonstrations source code (GitHub)]
+* https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss-demos/browse[DSS-demonstrations source code (EC Bitbucket)]
+* https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[Report an issue (EC Jira)]
 * https://esig-dss.atlassian.net/projects/DSS[Old Jira]
 
 
