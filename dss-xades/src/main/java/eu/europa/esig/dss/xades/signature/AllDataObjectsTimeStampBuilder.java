@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -89,6 +90,8 @@ public class AllDataObjectsTimeStampBuilder {
 	 * @return {@link TimestampToken}
 	 */
 	public TimestampToken build(List<DSSDocument> documents) {
+		assertTimestampCreationPossible(documents);
+
 		// Prepare references
 		ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
 		List<DSSReference> references = signatureParameters.getReferences();
@@ -144,6 +147,14 @@ public class AllDataObjectsTimeStampBuilder {
 			return token;
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);
+		}
+	}
+
+	private void assertTimestampCreationPossible(List<DSSDocument> documents) {
+		for (DSSDocument document : documents) {
+			if (document instanceof DigestDocument) {
+				throw new IllegalArgumentException("Content timestamp creation is not possible with DigestDocument!");
+			}
 		}
 	}
 

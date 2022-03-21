@@ -161,6 +161,16 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
 
+	@Test
+	public void testContentTstWithDigestDocument() {
+		XAdESService service = getService();
+		XAdESSignatureParameters params = getParams();
+		DSSDocument digestDocument = getDigestDocument();
+
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getContentTimestamp(digestDocument, params));
+		assertEquals("Content timestamp creation is not possible with DigestDocument!", exception.getMessage());
+	}
+
 	private DiagnosticData validate(DSSDocument signedDocument, DSSDocument original) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());

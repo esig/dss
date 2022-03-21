@@ -20,21 +20,14 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -45,9 +38,20 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
@@ -97,6 +101,31 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 		DSSDocument extendDocument = service.extendDocument(signedDoc, getExtendParams(digestDocument));
 		reports = validate(extendDocument, digestDocument);
 		validateHashOnly(reports, true, false);
+	}
+
+	@Test
+	public void testContentTstWithDigestDocument() {
+		CAdESService service = getService();
+		CAdESSignatureParameters params = getParams();
+		DSSDocument digestDocument = getDigestDocument();
+
+		TimestampToken contentTimestamp = service.getContentTimestamp(digestDocument, params);
+		params.setContentTimestamps(Collections.singletonList(contentTimestamp));
+
+		ToBeSigned toBeSigned = service.getDataToSign(digestDocument, params);
+		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDoc = service.signDocument(digestDocument, params, signatureValue);
+
+		Reports reports = validate(signedDoc, digestDocument);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(1, timestampList.size());
+
+		TimestampWrapper contentTst = timestampList.get(0);
+		assertEquals(TimestampType.CONTENT_TIMESTAMP, contentTst.getType());
+		assertTrue(contentTst.isMessageImprintDataFound());
+		assertTrue(contentTst.isMessageImprintDataIntact());
 	}
 
 	private Reports validate(DSSDocument signedDocument, DSSDocument original) {

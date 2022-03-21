@@ -176,7 +176,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
         DSSDocument asicContainer = timestampService.timestamp(documentsToSign, timestampParameters);
-        asicContainer.save("target/timestamped.scs");
+        // asicContainer.save("target/timestamped.scs");
 
         ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContainer);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());

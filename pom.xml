@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.10.RC1</version>
+	<version>5.10</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -168,15 +168,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
-				<!-- <executions>
+				<executions>
 					<execution>
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
 					</execution>
-				</executions> -->
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -386,6 +385,11 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>3.0.0-M4</version>
 				</plugin>
@@ -458,7 +462,7 @@
 		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.10.RC1</tag>
+		<tag>5.10</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -1016,7 +1020,7 @@
 
 	<issueManagement>
 		<system>JIRA</system>
-		<url>https://ec.europa.eu/cefdigital/tracker/projects/DSS</url>
+		<url>https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS</url>
 		<!-- <url>https://esig-dss.atlassian.net/projects/DSS</url> Old issues -->
 	</issueManagement>
 

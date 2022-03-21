@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -44,6 +35,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
 
@@ -94,6 +95,16 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
 		assertEquals(1, retrievedOriginalDocuments.size());
+	}
+
+	@Test
+	public void createContentTstTest() {
+		DSSDocument documentToSign = getDocumentToSign();
+		JAdESSignatureParameters signatureParameters = getSignatureParameters();
+		DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();
+
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getContentTimestamp(documentToSign, signatureParameters));
+		assertEquals("Content timestamp creation is not possible with DigestDocument!", exception.getMessage());
 	}
 
 	@Override

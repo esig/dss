@@ -150,11 +150,11 @@ The minimal requirements to build/run DSS Demonstrations:
 
 The ready to use webapp allows testing the different functionalities offered in DSS without needing to dive into the implementation.
 
-The DSS demo is available online on the https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[CEF Digital website].
+The DSS demo is available online on the https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[DIGITAL website].
 
 The DSS demo is also available as a ready to use downloadable webapp. To use it, you need to complete the following steps:
 
-. https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Digital+Signature+Service+-++DSS[Download] the webapp as a ZIP folder.
+. https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/Digital+Signature+Service+-++DSS[Download] the webapp as a ZIP folder.
 . Unzip the folder
 . Click on the Webapp-Startup.bat file
 . Wait until this message appears "Server startup in xxx ms"

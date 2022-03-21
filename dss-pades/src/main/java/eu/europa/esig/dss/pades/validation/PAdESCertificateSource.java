@@ -47,6 +47,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	 * The default constructor for PAdESCertificateSource.
 	 *
 	 * @param pdfSignatureRevision the used {@link PdfSignatureRevision}
+	 * @param vriDictionaryName {@link String} the name of the corresponding /VRi dictionary to the validating signature
 	 * @param signerInformation    the current {@link SignerInformation}
 	 */
 	public PAdESCertificateSource(PdfSignatureRevision pdfSignatureRevision, final String vriDictionaryName,

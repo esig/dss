@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -98,9 +99,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		Objects.requireNonNull(tspSource, "A TSPSource is required!");
-		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new IllegalArgumentException("Original documents must be provided to generate a content timestamp!");
-		}
+		assertContentTimestampCreationPossible(toSignDocuments);
 		
 		byte[] messageImprint;
 		if (SigDMechanism.HTTP_HEADERS.equals(parameters.getSigDMechanism())) {
@@ -117,6 +116,17 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot create a content TimestampToken", e);
+		}
+	}
+
+	private void assertContentTimestampCreationPossible(List<DSSDocument> documents) {
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new IllegalArgumentException("Original documents must be provided to generate a content timestamp!");
+		}
+		for (DSSDocument document : documents) {
+			if (document instanceof DigestDocument) {
+				throw new IllegalArgumentException("Content timestamp creation is not possible with DigestDocument!");
+			}
 		}
 	}
 

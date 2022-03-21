@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -121,6 +123,22 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent, creationTime);
 		zipArchive.setMimeType(ASiCUtils.getMimeType(asicContent.getMimeTypeDocument()));
 		return zipArchive;
+	}
+
+	/**
+	 * This method verifies whether the signature creation is possible with the provided documents
+	 *
+	 * @param documentsToSign a list of {@link DSSDocument}s
+	 */
+	protected void assertSignaturePossible(List<DSSDocument> documentsToSign) {
+		if (Utils.isCollectionEmpty(documentsToSign)) {
+			throw new IllegalArgumentException("List of documents to sign cannot be empty!");
+		}
+		for (DSSDocument document : documentsToSign) {
+			if (document instanceof DigestDocument) {
+				throw new IllegalArgumentException("ASiC container creation is not possible with DigestDocument!");
+			}
+		}
 	}
 
 	/**
