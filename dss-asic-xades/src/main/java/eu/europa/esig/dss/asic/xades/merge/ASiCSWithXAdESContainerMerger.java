@@ -7,6 +7,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -19,8 +20,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,127 +42,125 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
     /**
      * This constructor is used to create an ASiC-S With XAdES container merger from provided container documents
      *
-     * @param containerOne {@link DSSDocument} first container to be merged
-     * @param containerTwo {@link DSSDocument} second container to be merged
+     * @param containers {@link DSSDocument}s representing containers to be merged
      */
-    public ASiCSWithXAdESContainerMerger(DSSDocument containerOne, DSSDocument containerTwo) {
-        super(containerOne, containerTwo);
+    public ASiCSWithXAdESContainerMerger(DSSDocument... containers) {
+        super(containers);
     }
 
     /**
      * This constructor is used to create an ASiC-S With XAdES from to given {@code ASiCContent}s
      *
-     * @param asicContentOne {@link ASiCContent} first ASiC Content to be merged
-     * @param asicContentTwo {@link ASiCContent} second ASiC Content to be merged
+     * @param asicContents {@link ASiCContent}s to be merged
      */
-    public ASiCSWithXAdESContainerMerger(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        super(asicContentOne, asicContentTwo);
+    public ASiCSWithXAdESContainerMerger(ASiCContent... asicContents) {
+        super(asicContents);
     }
 
     @Override
-    public boolean isSupported(DSSDocument container) {
+    protected boolean isSupported(DSSDocument container) {
         return super.isSupported(container) && !ASiCUtils.isASiCEContainer(container);
     }
 
     @Override
-    public boolean isSupported(ASiCContent asicContent) {
+    protected boolean isSupported(ASiCContent asicContent) {
         return super.isSupported(asicContent) && !ASiCUtils.isASiCEContainer(asicContent);
     }
 
     @Override
     protected void ensureContainerContentAllowMerge() {
-        List<DSSDocument> signatureDocumentsOne = asicContentOne.getSignatureDocuments();
-        List<DSSDocument> signatureDocumentsTwo = asicContentTwo.getSignatureDocuments();
-        if (Utils.isCollectionEmpty(signatureDocumentsOne) && Utils.isCollectionEmpty(signatureDocumentsTwo)) {
+        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()))) {
             return; // no signatures -> can merge
         }
 
-        if (Utils.collectionSize(signatureDocumentsOne) > 1 || Utils.collectionSize(signatureDocumentsTwo) > 1) {
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getSignatureDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signature documents!");
         }
-        if (Utils.isCollectionNotEmpty(signatureDocumentsOne) && Utils.isCollectionNotEmpty(signatureDocumentsTwo)) {
-            DSSDocument signatureDocumentOne = signatureDocumentsOne.get(0);
-            DSSDocument signatureDocumentTwo = signatureDocumentsTwo.get(0);
-            if (!ASiCUtils.SIGNATURES_XML.equals(signatureDocumentOne.getName()) || !ASiCUtils.SIGNATURES_XML.equals(signatureDocumentTwo.getName())) {
-                throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> asicContent.getSignatureDocuments().stream()
+                .anyMatch(document -> !ASiCUtils.SIGNATURES_XML.equals(document.getName())))) {
+            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
                         "The signature document in one of the containers has invalid naming!");
-            }
         }
-
-        List<DSSDocument> timestampDocumentsOne = asicContentOne.getTimestampDocuments();
-        List<DSSDocument> timestampDocumentsTwo = asicContentTwo.getTimestampDocuments();
-        if (Utils.isCollectionNotEmpty(timestampDocumentsOne) || Utils.isCollectionNotEmpty(timestampDocumentsTwo)) {
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
                     "One of the containers contains a detached timestamp!");
         }
-
-        List<DSSDocument> signedDocumentsOne = asicContentOne.getRootLevelSignedDocuments();
-        List<DSSDocument> signedDocumentsTwo = asicContentTwo.getRootLevelSignedDocuments();
-        if (Utils.collectionSize(signedDocumentsOne) > 1 || Utils.collectionSize(signedDocumentsTwo) > 1) {
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getRootLevelSignedDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signer documents!");
         }
-
-        if (Utils.isCollectionNotEmpty(signedDocumentsOne) && Utils.isCollectionNotEmpty(signedDocumentsTwo)) {
-            DSSDocument signedDocumentOne = signedDocumentsOne.get(0);
-            DSSDocument signedDocumentTwo = signedDocumentsTwo.get(0);
-            if (signedDocumentOne.getName() == null || !signedDocumentOne.getName().equals(signedDocumentTwo.getName())) {
-                throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
-                        "Signer documents have different names!");
-            }
+        if (Utils.collectionSize(getSignerDocumentNameSet()) > 1) {
+            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+                    "Signer documents have different names!");
         }
+    }
+
+    private Set<String> getSignerDocumentNameSet() {
+        Set<String> result = new HashSet<>();
+        for (ASiCContent asicContent : asicContents) {
+            result.addAll(DSSUtils.getDocumentNames(asicContent.getRootLevelSignedDocuments()));
+        }
+        return result;
     }
 
     @Override
     protected void ensureSignaturesAllowMerge() {
-        if (Utils.isCollectionEmpty(asicContentOne.getSignatureDocuments()) ||
-                Utils.isCollectionEmpty(asicContentTwo.getSignatureDocuments())) {
-            // one of the containers does not contain a signature document. Can merge.
+        if (Arrays.stream(asicContents).filter(asicContent ->
+                Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
+            // no signatures in all containers except maximum one. Can merge.
             return;
         }
 
-        DSSDocument signatureDocumentOne = asicContentOne.getSignatureDocuments().get(0);
-        DSSDocument signatureDocumentTwo = asicContentTwo.getSignatureDocuments().get(0);
-
-        XMLDocumentValidator documentValidatorOne = new XMLDocumentValidator(signatureDocumentOne);
-        XMLDocumentValidator documentValidatorTwo = new XMLDocumentValidator(signatureDocumentTwo);
-
-        List<AdvancedSignature> signaturesOne = documentValidatorOne.getSignatures();
-        List<AdvancedSignature> signaturesTwo = documentValidatorTwo.getSignatures();
-
-        if (!checkNoCommonIdsBetweenSignatures(signaturesOne, signaturesTwo)) {
+        List<XMLDocumentValidator> documentValidators = getAllDocumentValidators();
+        List<AdvancedSignature> allSignatures = getAllSignatures(documentValidators);
+        if (!checkNoCommonIdsBetweenSignatures(allSignatures)) {
             throw new IllegalInputException("Signature documents contain signatures with the same identifiers!");
         }
-        if (!checkNoCommonIdsBetweenSignedData(signaturesOne, signaturesTwo)) {
+        if (!checkNoCommonIdsBetweenSignedData(allSignatures)) {
             throw new IllegalInputException("Signature documents contain signatures signed enveloped objects with the same identifiers!");
         }
-        if (!checkNoCommonIdsBetweenSignatureValues(signaturesOne, signaturesTwo)) {
+        if (!checkNoCommonIdsBetweenSignatureValues(allSignatures)) {
             throw new IllegalInputException("Signature documents contain signatures with SignatureValue elements sharing the same ids!");
         }
-        assertSameRootElement(documentValidatorOne, documentValidatorTwo);
+        assertSameRootElement(documentValidators);
 
-        DSSDocument signaturesXml = getMergedSignaturesXml(documentValidatorOne, documentValidatorTwo);
-        asicContentOne.setSignatureDocuments(Collections.singletonList(signaturesXml));
-        asicContentTwo.setSignatureDocuments(Collections.emptyList());
+        DSSDocument signaturesXml = getMergedSignaturesXml(documentValidators);
+        for (ASiCContent asicContent : asicContents) {
+            asicContent.setSignatureDocuments(Collections.singletonList(signaturesXml));
+        }
     }
 
-    private boolean checkNoCommonIdsBetweenSignatures(List<AdvancedSignature> signaturesOne,
-                                                      List<AdvancedSignature> signaturesTwo) {
-        List<String> signatureIdsOne = getSignatureIds(signaturesOne);
-        List<String> signatureIdsTwo = getSignatureIds(signaturesTwo);
-        return !intersect(signatureIdsOne, signatureIdsTwo);
+    private List<XMLDocumentValidator> getAllDocumentValidators() {
+        List<XMLDocumentValidator> validators = new ArrayList<>();
+        for (ASiCContent asicContent : asicContents) {
+            for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
+                validators.add(new XMLDocumentValidator(signatureDocument));
+            }
+        }
+        return validators;
+    }
+
+    private List<AdvancedSignature> getAllSignatures(List<XMLDocumentValidator> validators) {
+        List<AdvancedSignature> signatures = new ArrayList<>();
+        for (XMLDocumentValidator validator : validators) {
+            signatures.addAll(validator.getSignatures());
+        }
+        return signatures;
+    }
+
+    private boolean checkNoCommonIdsBetweenSignatures(List<AdvancedSignature> signatures) {
+        List<String> signatureIds = getSignatureIds(signatures);
+        return !checkDuplicatesPresent(signatureIds);
     }
 
     private List<String> getSignatureIds(List<AdvancedSignature> signatures) {
         return signatures.stream().map(AdvancedSignature::getDAIdentifier).collect(Collectors.toList());
     }
 
-    private boolean checkNoCommonIdsBetweenSignedData(
-            List<AdvancedSignature> signaturesOne, List<AdvancedSignature> signaturesTwo) {
-        List<String> signedDataObjectIdsOne = getSignedDataObjectIds(signaturesOne);
-        List<String> signedDataObjectIdsTwo = getSignedDataObjectIds(signaturesTwo);
-        return !intersect(signedDataObjectIdsOne, signedDataObjectIdsTwo);
+    private boolean checkNoCommonIdsBetweenSignedData(List<AdvancedSignature> signatures) {
+        List<String> signedDataObjectIdsOne = getSignedDataObjectIds(signatures);
+        return !checkDuplicatesPresent(signedDataObjectIdsOne);
     }
 
     private List<String> getSignedDataObjectIds(List<AdvancedSignature> signatures) {
@@ -183,11 +185,9 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return ids;
     }
 
-    private boolean checkNoCommonIdsBetweenSignatureValues(List<AdvancedSignature> signaturesOne,
-                                                           List<AdvancedSignature> signaturesTwo) {
-        List<String> signatureValueIdsOne = getSignatureValueIds(signaturesOne);
-        List<String> signatureValueIdsTwo = getSignatureValueIds(signaturesTwo);
-        return !intersect(signatureValueIdsOne, signatureValueIdsTwo);
+    private boolean checkNoCommonIdsBetweenSignatureValues(List<AdvancedSignature> signatures) {
+        List<String> signatureValueIds = getSignatureValueIds(signatures);
+        return !checkDuplicatesPresent(signatureValueIds);
     }
 
     private List<String> getSignatureValueIds(List<AdvancedSignature> signatures) {
@@ -199,34 +199,55 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return ids;
     }
 
-    private void assertSameRootElement(XMLDocumentValidator documentValidatorOne,
-                                         XMLDocumentValidator documentValidatorTwo) {
-        Element rootElementOne = documentValidatorOne.getRootElement().getDocumentElement();
-        Element rootElementTwo = documentValidatorTwo.getRootElement().getDocumentElement();
-        if (!rootElementOne.getLocalName().equals(rootElementTwo.getLocalName())) {
-            throw new IllegalInputException("Signature containers have different root elements!");
+    private boolean checkDuplicatesPresent(List<String> strings) {
+        for (String str : strings) {
+            if (Collections.frequency(strings, str) > 1) {
+                return true;
+            }
         }
-        if (rootElementOne.getNamespaceURI() != null ^ rootElementTwo.getNamespaceURI() != null) {
-            throw new IllegalInputException("Signature containers have different namespaces!");
-        }
-        if (rootElementOne.getNamespaceURI() != null && !rootElementOne.getNamespaceURI().equals(rootElementTwo.getNamespaceURI())) {
-            throw new IllegalInputException("Signature containers have different namespaces!");
-        }
-        if (!rootElementOne.getPrefix().equals(rootElementTwo.getPrefix())) {
-            throw new IllegalInputException("Signature containers have different namespace prefixes!");
-        }
+        return false;
     }
 
-    private DSSDocument getMergedSignaturesXml(XMLDocumentValidator documentValidatorOne,
-                                               XMLDocumentValidator documentValidatorTwo) {
-        Document document = documentValidatorOne.getRootElement();
-        Element documentElement = document.getDocumentElement();
+    private void assertSameRootElement(List<XMLDocumentValidator> documentValidators) {
+        Element rootElement = null;
+        for (XMLDocumentValidator documentValidator : documentValidators) {
+            Element currentRootElement = documentValidator.getRootElement().getDocumentElement();
+            if (rootElement == null) {
+                rootElement = currentRootElement;
+            } else {
+                if (!rootElement.getLocalName().equals(currentRootElement.getLocalName())) {
+                    throw new IllegalInputException("Signature containers have different root elements!");
+                }
+                if (rootElement.getNamespaceURI() != null ^ currentRootElement.getNamespaceURI() != null) {
+                    throw new IllegalInputException("Signature containers have different namespaces!");
+                }
+                if (rootElement.getNamespaceURI() != null && !rootElement.getNamespaceURI().equals(currentRootElement.getNamespaceURI())) {
+                    throw new IllegalInputException("Signature containers have different namespaces!");
+                }
+                if (!rootElement.getPrefix().equals(currentRootElement.getPrefix())) {
+                    throw new IllegalInputException("Signature containers have different namespace prefixes!");
+                }
+            }
+        }
 
-        NodeList childNodesToAdd = documentValidatorTwo.getRootElement().getDocumentElement().getChildNodes();
-        for (int i = 0; i < childNodesToAdd.getLength(); i++) {
-            Node node = childNodesToAdd.item(i);
-            Node adopted = document.importNode(node, true);
-            documentElement.appendChild(adopted);
+    }
+
+    private DSSDocument getMergedSignaturesXml(List<XMLDocumentValidator> documentValidators) {
+        Document document = null;
+        Element documentElement = null;
+
+        for (XMLDocumentValidator documentValidator : documentValidators) {
+            if (document == null) {
+                document = documentValidator.getRootElement();
+                documentElement = document.getDocumentElement();
+            } else {
+                NodeList childNodesToAdd = documentValidator.getRootElement().getDocumentElement().getChildNodes();
+                for (int i = 0; i < childNodesToAdd.getLength(); i++) {
+                    Node node = childNodesToAdd.item(i);
+                    Node adopted = document.importNode(node, true);
+                    documentElement.appendChild(adopted);
+                }
+            }
         }
 
         byte[] bytes = DSSXMLUtils.serializeNode(documentElement);

@@ -301,7 +301,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two containers. " +
+        assertEquals("Unable to merge containers. " +
                 "Containers contain different documents under the same name : hello.txt!", exception.getMessage());
     }
 

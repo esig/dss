@@ -22,30 +22,28 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
     /**
      * This constructor is used to create an ASiC With XAdES container merger from provided container documents
      *
-     * @param containerOne {@link DSSDocument} first container to be merged
-     * @param containerTwo {@link DSSDocument} second container to be merged
+     * @param containers {@link DSSDocument}s representing ASiC containers to be merged
      */
-    protected AbstractASiCWithXAdESContainerMerger(DSSDocument containerOne, DSSDocument containerTwo) {
-        super(containerOne, containerTwo);
+    protected AbstractASiCWithXAdESContainerMerger(DSSDocument... containers) {
+        super(containers);
     }
 
     /**
      * This constructor is used to create an ASiC With XAdES from to given {@code ASiCContent}s
      *
-     * @param asicContentOne {@link ASiCContent} first ASiC Content to be merged
-     * @param asicContentTwo {@link ASiCContent} second ASiC Content to be merged
+     * @param asicContents {@link ASiCContent}s to be merged
      */
-    protected AbstractASiCWithXAdESContainerMerger(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        super(asicContentOne, asicContentTwo);
+    protected AbstractASiCWithXAdESContainerMerger(ASiCContent... asicContents) {
+        super(asicContents);
     }
 
     @Override
-    public boolean isSupported(DSSDocument container) {
+    protected boolean isSupported(DSSDocument container) {
         return new ASiCContainerWithXAdESValidatorFactory().isSupported(container);
     }
 
     @Override
-    public boolean isSupported(ASiCContent asicContent) {
+    protected boolean isSupported(ASiCContent asicContent) {
         return new ASiCContainerWithXAdESValidatorFactory().isSupported(asicContent);
     }
 

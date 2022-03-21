@@ -13,30 +13,28 @@ public interface ASiCContainerMerger {
     /**
      * Returns whether the format of given containers is supported by the current {@code ASiCContainerMerger}
      *
-     * @param containerOne {@link DSSDocument}
-     * @param containerTwo {@link DSSDocument}
-     * @return TRUE if both documents are supported by the current container, FALSE otherwise
+     * @param containers {@link DSSDocument}s to be merged
+     * @return TRUE if all documents are supported by the current container, FALSE otherwise
      */
-    boolean isSupported(DSSDocument containerOne, DSSDocument containerTwo);
+    boolean isSupported(DSSDocument... containers);
 
     /**
      * Returns whether the format of given containers is supported by the current {@code ASiCContainerMerger}
      *
-     * @param asicContentOne {@link ASiCContent}
-     * @param asicContentTwo {@link ASiCContent}
-     * @return TRUE if both containers are supported by the current container, FALSE otherwise
+     * @param asicContents {@link ASiCContent}s to be merged
+     * @return TRUE if all containers are supported by the current container, FALSE otherwise
      */
-    boolean isSupported(ASiCContent asicContentOne, ASiCContent asicContentTwo);
+    boolean isSupported(ASiCContent... asicContents);
 
     /**
-     * Merges two given containers to a new one, if possible
+     * Merges given containers to a new container document, when possible
      *
-     * @return {@link DSSDocument} representing a merge result of two given ZIP-containers
+     * @return {@link DSSDocument} representing a merge result of the given ZIP-containers
      */
     DSSDocument merge();
 
     /**
-     * Merges two given containers to a single {@code ASiCContent}, if possible
+     * Merges given containers to a single {@code ASiCContent}, when possible
      *
      * @return {@link ASiCContent} representing a merge result
      */

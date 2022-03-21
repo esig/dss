@@ -52,7 +52,8 @@ public class ASiCEWithXAdESLevelBContainerMergerDifferentFileContentTest extends
     @Override
     public void createTwoContainersAndMerge() throws Exception {
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
-        assertEquals("Unable to merge two containers. Containers contain different documents under the same name : hello.txt!", exception.getMessage());
+        assertEquals("Unable to merge containers. " +
+                "Containers contain different documents under the same name : hello.txt!", exception.getMessage());
     }
 
     @Override

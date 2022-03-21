@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to load a relevant {@code eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger}
@@ -26,11 +27,8 @@ import java.util.ServiceLoader;
  */
 public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
-    /** Represents the first container's content to be merged */
-    protected ASiCContent asicContentOne;
-
-    /** Represents the second container's content to be merged */
-    protected ASiCContent asicContentTwo;
+    /** An array of ASiC contents representing containers to be merged */
+    protected ASiCContent[] asicContents;
 
     /** Defines creation time of the merged container */
     private Date creationTime;
@@ -44,23 +42,29 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     /**
      * This constructor is used to create an {@code ASiCContainerMerger} from provided container documents
      *
-     * @param containerOne {@link DSSDocument} first container to be merged
-     * @param containerTwo {@link DSSDocument} second container to be merged
+     * @param containers {@link DSSDocument}s representing containers to be merged
      */
-    protected DefaultContainerMerger(DSSDocument containerOne, DSSDocument containerTwo) {
-        this.asicContentOne = getContainerExtractor(containerOne).extract();
-        this.asicContentTwo = getContainerExtractor(containerTwo).extract();
+    protected DefaultContainerMerger(DSSDocument... containers) {
+        assertNotNull(containers);
+        this.asicContents = toASiCContentArray(containers);
     }
 
     /**
      * This constructor is used to create an {@code ASiCContainerMerger} from to given {@code ASiCContent}s
      *
-     * @param asicContentOne {@link ASiCContent} first ASiC Content to be merged
-     * @param asicContentTwo {@link ASiCContent} second ASiC Content to be merged
+     * @param asicContents {@link ASiCContent}s to be merged
      */
-    protected DefaultContainerMerger(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        this.asicContentOne = asicContentOne;
-        this.asicContentTwo = asicContentTwo;
+    protected DefaultContainerMerger(ASiCContent... asicContents) {
+        assertNotNull(asicContents);
+        this.asicContents = asicContents;
+    }
+
+    private ASiCContent[] toASiCContentArray(DSSDocument... containers) {
+        ASiCContent[] asicContents = new ASiCContent[containers.length];
+        for (int i = 0; i < containers.length; i++) {
+            asicContents[i] = getContainerExtractor(containers[i]).extract();
+        }
+        return asicContents;
     }
 
     /**
@@ -131,13 +135,18 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     @Override
-    public boolean isSupported(DSSDocument containerOne, DSSDocument containerTwo) {
-        Objects.requireNonNull(containerOne, "Container document cannot be null!");
-        Objects.requireNonNull(containerTwo, "Container document cannot be null!");
-        if (!ASiCUtils.isZip(containerOne) || !ASiCUtils.isZip(containerTwo)) {
-            throw new IllegalInputException("One of the provided documents is not a ZIP archive!");
+    public boolean isSupported(DSSDocument... containers) {
+        assertNotNull(containers);
+        for (DSSDocument containerDocument : containers) {
+            if (!ASiCUtils.isZip(containerDocument)) {
+                throw new IllegalInputException(String.format("The document with name '%s' is not a ZIP archive!",
+                        containerDocument.getName()));
+            }
+            if (!isSupported(containerDocument)) {
+                return false;
+            }
         }
-        return isSupported(containerOne) && isSupported(containerTwo);
+        return true;
     }
 
     /**
@@ -146,13 +155,17 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * @param container {@link DSSDocument} to verify
      * @return TRUE if the container is supported, FALSE otherwise
      */
-    public abstract boolean isSupported(DSSDocument container);
+    protected abstract boolean isSupported(DSSDocument container);
 
     @Override
-    public boolean isSupported(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        Objects.requireNonNull(asicContentOne, "ASiC content cannot be null!");
-        Objects.requireNonNull(asicContentTwo, "ASiC content cannot be null!");
-        return isSupported(asicContentOne) && isSupported(asicContentTwo);
+    public boolean isSupported(ASiCContent... asicContents) {
+        assertNotNull(asicContents);
+        for (ASiCContent asicContent : asicContents) {
+            if (!isSupported(asicContent)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -161,7 +174,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * @param asicContent {@link ASiCContent} to verify
      * @return TRUE if the ASIC Content is supported, FALSE otherwise
      */
-    public abstract boolean isSupported(ASiCContent asicContent);
+    protected abstract boolean isSupported(ASiCContent asicContent);
 
     @Override
     public DSSDocument merge() {
@@ -197,53 +210,75 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     protected ASiCContent createMergedResult() {
         ASiCContent asicContent = new ASiCContent();
 
-        asicContent.setContainerType(asicContentOne.getContainerType() != null ?
-                asicContentOne.getContainerType() : asicContentTwo.getContainerType());
-        asicContent.setZipComment(asicContentOne.getZipComment() != null ?
-                asicContentOne.getZipComment() : asicContentTwo.getZipComment());
-        asicContent.setMimeTypeDocument(asicContentOne.getMimeTypeDocument() != null ?
-                asicContentOne.getMimeTypeDocument() : asicContentTwo.getMimeTypeDocument());
+        asicContent.setContainerType(getContainerType());
+        asicContent.setZipComment(getZipComment());
+        asicContent.setMimeTypeDocument(getMimeTypeDocument());
 
         asicContent.setSignedDocuments(mergeDocumentLists(
-                asicContentOne.getSignedDocuments(), asicContentTwo.getSignedDocuments()));
+                Arrays.stream(asicContents).map(ASiCContent::getSignedDocuments).collect(Collectors.toList())));
         asicContent.setSignatureDocuments(mergeDocumentLists(
-                asicContentOne.getSignatureDocuments(), asicContentTwo.getSignatureDocuments()));
+                Arrays.stream(asicContents).map(ASiCContent::getSignatureDocuments).collect(Collectors.toList())));
         asicContent.setManifestDocuments(mergeDocumentLists(
-                asicContentOne.getManifestDocuments(), asicContentTwo.getManifestDocuments()));
+                Arrays.stream(asicContents).map(ASiCContent::getManifestDocuments).collect(Collectors.toList())));
         asicContent.setArchiveManifestDocuments(mergeDocumentLists(
-                asicContentOne.getArchiveManifestDocuments(), asicContentTwo.getArchiveManifestDocuments()));
+                Arrays.stream(asicContents).map(ASiCContent::getArchiveManifestDocuments).collect(Collectors.toList())));
         asicContent.setTimestampDocuments(mergeDocumentLists(
-                asicContentOne.getTimestampDocuments(), asicContentTwo.getTimestampDocuments()));
+                Arrays.stream(asicContents).map(ASiCContent::getTimestampDocuments).collect(Collectors.toList())));
         asicContent.setUnsupportedDocuments(mergeDocumentLists(
-                asicContentOne.getUnsupportedDocuments(), asicContentTwo.getUnsupportedDocuments()));
-        asicContent.setFolders(mergeDocumentLists(asicContentOne.getFolders(), asicContentTwo.getFolders()));
+                Arrays.stream(asicContents).map(ASiCContent::getUnsupportedDocuments).collect(Collectors.toList())));
+        asicContent.setFolders(mergeDocumentLists(
+                Arrays.stream(asicContents).map(ASiCContent::getFolders).collect(Collectors.toList())));
 
         return asicContent;
     }
 
-    private List<DSSDocument> mergeDocumentLists(List<DSSDocument> documentListOne, List<DSSDocument> documentListTwo) {
-        List<DSSDocument> result = new ArrayList<>();
-        appendDocumentsToList(result, documentListOne);
-        appendDocumentsToList(result, documentListTwo);
-        return result;
-    }
-
-    private void appendDocumentsToList(List<DSSDocument> documentsList, List<DSSDocument> documentsToAppend) {
-        List<String> addedDocumentNames = new ArrayList<>(DSSUtils.getDocumentNames(documentsList));
-        for (DSSDocument document : documentsToAppend) {
-            if (!addedDocumentNames.contains(document.getName())) {
-                documentsList.add(document);
-                addedDocumentNames.add(document.getName());
-
-            } else {
-                DSSDocument originalListDocument = DSSUtils.getDocumentWithName(documentsList, document.getName());
-                if (!Arrays.equals(DSSUtils.toByteArray(originalListDocument), DSSUtils.toByteArray(document))) {
-                    throw new UnsupportedOperationException(String.format(
-                            "Unable to merge two containers. Containers contain different documents under the same name : %s!", document.getName()));
-                }
-                // continue, no document to be added
+    private ASiCContainerType getContainerType() {
+        for (ASiCContent asicContent : asicContents) {
+            if (asicContent.getContainerType() != null) {
+                return asicContent.getContainerType();
             }
         }
+        return null;
+    }
+
+    private String getZipComment() {
+        for (ASiCContent asicContent : asicContents) {
+            if (asicContent.getZipComment() != null) {
+                return asicContent.getZipComment();
+            }
+        }
+        return null;
+    }
+
+    private DSSDocument getMimeTypeDocument() {
+        for (ASiCContent asicContent : asicContents) {
+            if (asicContent.getMimeTypeDocument() != null) {
+                return asicContent.getMimeTypeDocument();
+            }
+        }
+        return null;
+    }
+
+    private List<DSSDocument> mergeDocumentLists(Collection<List<DSSDocument>> documentsLists) {
+        List<DSSDocument> result = new ArrayList<>();
+        List<String> addedDocumentNames = new ArrayList<>();
+        for (List<DSSDocument> documentsList : documentsLists) {
+            for (DSSDocument document : documentsList) {
+                if (!addedDocumentNames.contains(document.getName())) {
+                    result.add(document);
+                    addedDocumentNames.add(document.getName());
+
+                } else {
+                    DSSDocument originalListDocument = DSSUtils.getDocumentWithName(result, document.getName());
+                    if (!Arrays.equals(DSSUtils.toByteArray(originalListDocument), DSSUtils.toByteArray(document))) {
+                        throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
+                                "Containers contain different documents under the same name : %s!", document.getName()));
+                    }
+                    // continue, no document to be added
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -271,11 +306,10 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     private String getOriginalContainerFilename() {
-        if (asicContentOne.getAsicContainer() != null && asicContentOne.getAsicContainer().getName() != null) {
-            return asicContentOne.getAsicContainer().getName();
-        }
-        if (asicContentTwo.getAsicContainer() != null && asicContentTwo.getAsicContainer().getName() != null) {
-            return asicContentTwo.getAsicContainer().getName();
+        for (ASiCContent asicContent : asicContents) {
+            if (asicContent.getAsicContainer() != null && asicContent.getAsicContainer().getName() != null) {
+                return asicContent.getAsicContainer().getName();
+            }
         }
         return "container";
     }
@@ -284,23 +318,31 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         if (Utils.isStringNotEmpty(originalExtension)) {
             return originalExtension;
         } else if (asicContainerType != null) {
-            return ASiCContainerType.ASiC_S.equals(asicContainerType) ? "scs" : "sce";
+            MimeType mimeType = ASiCContainerType.ASiC_S.equals(asicContainerType) ? MimeType.ASICS : MimeType.ASICE;
+            return MimeType.getExtension(mimeType);
         } else {
             return "zip";
         }
     }
 
-    /**
-     * This method verifies whether two given collection have shared objects
-     *
-     * @param firstList first collection to check
-     * @param secondList second collection to check against
-     * @return TRUE if collections intersect, FALSE otherwise
-     */
-    protected boolean intersect(Collection<?> firstList, Collection<?> secondList) {
-        List<?> tempList = new ArrayList<>(firstList);
-        tempList.retainAll(secondList);
-        return Utils.isCollectionNotEmpty(tempList);
+    private void assertNotNull(DSSDocument... containers) {
+        Objects.requireNonNull(containers, "Documents shall be provided!");
+        if (containers.length == 0) {
+            throw new NullPointerException("At least one document shall be provided!");
+        }
+        for (DSSDocument containerDocument : containers) {
+            Objects.requireNonNull(containerDocument, "DSSDocument cannot be null!");
+        }
+    }
+
+    private void assertNotNull(ASiCContent... asicContents) {
+        Objects.requireNonNull(asicContents, "ASiCContents shall be provided!");
+        if (asicContents.length == 0) {
+            throw new NullPointerException("At least one ASiCContent shall be provided!");
+        }
+        for (ASiCContent asicContent : asicContents) {
+            Objects.requireNonNull(asicContent, "ASiCContent cannot be null!");
+        }
     }
 
 }

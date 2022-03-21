@@ -51,7 +51,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
     }
 
     @Override
-    public boolean isSupported(DSSDocument container) {
+    protected boolean isSupported(DSSDocument container) {
         return super.isSupported(container) && (!ASiCUtils.isASiCSContainer(container) || doesNotContainSignatures(container));
     }
 
@@ -61,7 +61,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
     }
 
     @Override
-    public boolean isSupported(ASiCContent asicContent) {
+    protected boolean isSupported(ASiCContent asicContent) {
         return super.isSupported(asicContent) && (!ASiCUtils.isASiCSContainer(asicContent) || doesNotContainSignatures(asicContent));
     }
 
