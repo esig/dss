@@ -21,12 +21,15 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -34,6 +37,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -79,6 +83,18 @@ public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestVa
 					fail(String.format("Unexpected DigestMatcherType reached : %s", digestMatcher.getType()));
 				}
 			}
+		}
+	}
+
+	@Override
+	protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+		super.verifyCertificateSourceData(certificateSource, foundCertificates);
+
+		if (certificateSource instanceof JAdESCertificateSource) {
+			JAdESCertificateSource jadesCertificateSource = (JAdESCertificateSource) certificateSource;
+			assertEquals(jadesCertificateSource.getKeyIdentifierCertificateRefs().size(),
+					foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size() +
+							foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
 		}
 	}
 
