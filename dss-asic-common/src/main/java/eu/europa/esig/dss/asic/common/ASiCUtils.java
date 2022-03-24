@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.zip.ZipEntry;
 
 /**
  * Contains utils for working with ASiC containers
@@ -737,7 +738,10 @@ public final class ASiCUtils {
 
 	private static DSSDocument createMimetypeDocument(final MimeType mimeType) {
 		final byte[] mimeTypeBytes = mimeType.getMimeTypeString().getBytes(StandardCharsets.UTF_8);
-		return new InMemoryDocument(mimeTypeBytes, MIME_TYPE);
+		DSSDocument mimetypeDocument = new InMemoryDocument(mimeTypeBytes, MIME_TYPE);
+		DSSZipEntryDocument zipEntryDocument = new ContainerEntryDocument(mimetypeDocument);
+		zipEntryDocument.getZipEntry().setCompressionMethod(ZipEntry.STORED); // ensure STORED compression method
+		return zipEntryDocument;
 	}
 
 	/**
