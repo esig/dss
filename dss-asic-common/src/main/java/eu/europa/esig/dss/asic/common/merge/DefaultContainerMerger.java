@@ -187,6 +187,10 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
     @Override
     public ASiCContent mergeToASiCContent() {
+        if (asicContents == null || asicContents.length == 0) {
+            throw new NullPointerException("At least one container shall be provided!");
+        }
+
         ensureContainerContentAllowMerge();
         ensureSignaturesAllowMerge();
         return createMergedResult();

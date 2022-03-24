@@ -87,8 +87,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     @Override
     protected void ensureSignaturesAllowMerge() {
-        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getManifestDocuments())).count() <= 1 &&
-                Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
+        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
             // no signatures in all containers except maximum one. Can merge.
             return;
         }

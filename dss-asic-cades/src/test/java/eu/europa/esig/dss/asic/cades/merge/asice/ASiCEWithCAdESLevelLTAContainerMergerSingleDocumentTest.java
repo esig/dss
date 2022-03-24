@@ -54,7 +54,7 @@ public class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentTest extends Abs
     public void createTwoContainersAndMerge() throws Exception {
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
         assertEquals("Unable to merge two ASiC-E with CAdES containers. " +
-                "A manifest with conflicting name in a container is covered by another manifest!", exception.getMessage());
+                "A signature with name 'META-INF/signature001.p7s' in a container is covered by a manifest!", exception.getMessage());
     }
 
     @Override

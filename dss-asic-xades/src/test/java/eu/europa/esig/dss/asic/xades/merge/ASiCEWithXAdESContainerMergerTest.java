@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -222,6 +223,136 @@ public class ASiCEWithXAdESContainerMergerTest extends
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertEquals("Unable to merge ASiC-E with XAdES containers. " +
                 "A signature covers another signature file, while having same signature names in both containers!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeMultipleContainersTest() {
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
+
+        ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+        signatureParameters.bLevel().setSigningDate(new Date());
+
+        ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
+
+        signatureParameters.bLevel().setSigningDate(new Date());
+
+        dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+        signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument containerTwo = service.signDocument(toSignDocument, signatureParameters, signatureValue);
+
+        signatureParameters.bLevel().setSigningDate(new Date());
+
+        dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
+        signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument containerThree = service.signDocument(toSignDocument, signatureParameters, signatureValue);
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(containerOne, containerTwo, containerThree);
+        DSSDocument mergedContainer = merger.merge();
+        Reports reports = verify(mergedContainer);
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertEquals(3, diagnosticData.getSignatures().size());
+        assertEquals(1, diagnosticData.getContainerInfo().getContentFiles().size());
+
+        ASiCContent asicContentOne = new ASiCWithXAdESContainerExtractor(containerOne).extract();
+        ASiCContent asicContentTwo = new ASiCWithXAdESContainerExtractor(containerTwo).extract();
+        ASiCContent asicContentThree = new ASiCWithXAdESContainerExtractor(containerThree).extract();
+
+        merger = new ASiCEWithXAdESContainerMerger(asicContentOne, asicContentTwo, asicContentThree);
+        mergedContainer = merger.merge();
+        reports = verify(mergedContainer);
+        diagnosticData = reports.getDiagnosticData();
+        assertEquals(3, diagnosticData.getSignatures().size());
+        assertEquals(1, diagnosticData.getContainerInfo().getContentFiles().size());
+    }
+
+    @Test
+    public void mergeZeroFilesTest() throws Exception {
+        Exception exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger(new DSSDocument[]{}));
+        assertEquals("At least one document shall be provided!", exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger(new ASiCContent[]{}));
+        assertEquals("At least one ASiCContent shall be provided!", exception.getMessage());
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger();
+        exception = assertThrows(NullPointerException.class, () -> merger.merge());
+        assertEquals("At least one container shall be provided!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeNullFileTest() throws Exception {
+        Exception exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger(new DSSDocument[]{ null }));
+        assertEquals("DSSDocument cannot be null!", exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger(new ASiCContent[]{ null }));
+        assertEquals("ASiCContent cannot be null!", exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger((DSSDocument) null));
+        assertEquals("DSSDocument cannot be null!", exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class, () ->
+                new ASiCEWithXAdESContainerMerger((ASiCContent) null));
+        assertEquals("ASiCContent cannot be null!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeOneFileTest() throws Exception {
+        DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(document);
+        DSSDocument mergedDocument = merger.merge();
+
+        ASiCContent asicContent = new ASiCWithXAdESContainerExtractor(document).extract();
+        ASiCContent mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedDocument).extract();
+        // return same document
+
+        assertEquals(asicContent.getContainerType(), mergedAsicContent.getContainerType());
+        assertEquals(asicContent.getZipComment(), mergedAsicContent.getZipComment());
+        assertDocumentsEqual(asicContent.getSignedDocuments(), mergedAsicContent.getSignedDocuments());
+        assertDocumentsEqual(asicContent.getContainerDocuments(), mergedAsicContent.getContainerDocuments());
+        assertDocumentsEqual(asicContent.getSignatureDocuments(), mergedAsicContent.getSignatureDocuments());
+        assertDocumentsEqual(asicContent.getTimestampDocuments(), mergedAsicContent.getTimestampDocuments());
+        assertDocumentsEqual(asicContent.getManifestDocuments(), mergedAsicContent.getManifestDocuments());
+        assertDocumentsEqual(asicContent.getArchiveManifestDocuments(), mergedAsicContent.getArchiveManifestDocuments());
+        assertDocumentsEqual(asicContent.getUnsupportedDocuments(), mergedAsicContent.getUnsupportedDocuments());
+        assertDocumentsEqual(asicContent.getFolders(), mergedAsicContent.getFolders());
+
+        merger = new ASiCEWithXAdESContainerMerger(asicContent);
+        mergedAsicContent = merger.mergeToASiCContent();
+
+        assertEquals(asicContent.getContainerType(), mergedAsicContent.getContainerType());
+        assertEquals(asicContent.getZipComment(), mergedAsicContent.getZipComment());
+        assertDocumentsEqual(asicContent.getSignedDocuments(), mergedAsicContent.getSignedDocuments());
+        assertDocumentsEqual(asicContent.getContainerDocuments(), mergedAsicContent.getContainerDocuments());
+        assertDocumentsEqual(asicContent.getSignatureDocuments(), mergedAsicContent.getSignatureDocuments());
+        assertDocumentsEqual(asicContent.getTimestampDocuments(), mergedAsicContent.getTimestampDocuments());
+        assertDocumentsEqual(asicContent.getManifestDocuments(), mergedAsicContent.getManifestDocuments());
+        assertDocumentsEqual(asicContent.getArchiveManifestDocuments(), mergedAsicContent.getArchiveManifestDocuments());
+        assertDocumentsEqual(asicContent.getUnsupportedDocuments(), mergedAsicContent.getUnsupportedDocuments());
+        assertDocumentsEqual(asicContent.getFolders(), mergedAsicContent.getFolders());
+    }
+
+    private void assertDocumentsEqual(List<DSSDocument> documentListOne, List<DSSDocument> documentListTwo) {
+        assertEquals(new HashSet<>(DSSUtils.getDocumentNames(documentListOne)), new HashSet<>(DSSUtils.getDocumentNames(documentListTwo)));
+
+        for (String documentName : DSSUtils.getDocumentNames(documentListOne)) {
+            DSSDocument documentOne = DSSUtils.getDocumentWithName(documentListOne, documentName);
+            assertNotNull(documentOne);
+            DSSDocument documentTwo = DSSUtils.getDocumentWithName(documentListTwo, documentName);
+            assertNotNull(documentTwo);
+            assertTrue(Arrays.equals(DSSUtils.toByteArray(documentOne), DSSUtils.toByteArray(documentTwo)));
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,21 +24,19 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
     /**
      * This constructor is used to create an ASiC-S With CAdES container merger from provided container documents
      *
-     * @param containerOne {@link DSSDocument} first container to be merged
-     * @param containerTwo {@link DSSDocument} second container to be merged
+     * @param containers {@link DSSDocument}s representing containers to be merged
      */
-    public ASiCSWithCAdESContainerMerger(DSSDocument containerOne, DSSDocument containerTwo) {
-        super(containerOne, containerTwo);
+    public ASiCSWithCAdESContainerMerger(DSSDocument... containers) {
+        super(containers);
     }
 
     /**
      * This constructor is used to create an ASiC-S With CAdES from to given {@code ASiCContent}s
      *
-     * @param asicContentOne {@link ASiCContent} first ASiC Content to be merged
-     * @param asicContentTwo {@link ASiCContent} second ASiC Content to be merged
+     * @param asicContents {@link ASiCContent}s to be merged
      */
-    public ASiCSWithCAdESContainerMerger(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        super(asicContentOne, asicContentTwo);
+    public ASiCSWithCAdESContainerMerger(ASiCContent... asicContents) {
+        super(asicContents);
     }
 
     @Override
@@ -52,82 +51,91 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
     @Override
     protected void ensureContainerContentAllowMerge() {
-        List<DSSDocument> signatureDocumentsOne = asicContentOne.getSignatureDocuments();
-        List<DSSDocument> signatureDocumentsTwo = asicContentTwo.getSignatureDocuments();
-        List<DSSDocument> timestampDocumentsOne = asicContentOne.getTimestampDocuments();
-        List<DSSDocument> timestampDocumentsTwo = asicContentTwo.getTimestampDocuments();
-
-        if (Utils.isCollectionEmpty(signatureDocumentsOne) && Utils.isCollectionEmpty(signatureDocumentsTwo) &&
-                Utils.isCollectionEmpty(timestampDocumentsOne) && Utils.isCollectionEmpty(timestampDocumentsTwo)) {
+        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments())) &&
+                Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getTimestampDocuments()))) {
             return; // no signatures/timestamps -> can merge
         }
 
-        if (Utils.collectionSize(signatureDocumentsOne) + Utils.collectionSize(timestampDocumentsOne) > 1 ||
-                Utils.collectionSize(signatureDocumentsTwo) + Utils.collectionSize(timestampDocumentsTwo) > 1) {
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getSignatureDocuments()) +
+                Utils.collectionSize(asicContent.getTimestampDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
                     "One of the containers has more than one signature or timestamp documents!");
         }
-        if (Utils.collectionSize(signatureDocumentsOne) + Utils.collectionSize(timestampDocumentsTwo) > 1 ||
-                Utils.collectionSize(signatureDocumentsTwo) + Utils.collectionSize(timestampDocumentsOne) > 1) {
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())) &&
+                Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
                     "A container containing a timestamp file cannot be merged with other signed or timestamped container!");
         }
-        assertSignatureDocumentNameValid(signatureDocumentsOne);
-        assertSignatureDocumentNameValid(signatureDocumentsTwo);
-        assertTimestampDocumentNameValid(timestampDocumentsOne);
-        assertTimestampDocumentNameValid(timestampDocumentsTwo);
+        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())).count() > 1) {
+            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                    "Multiple containers contain detached timestamps!");
+        }
 
-        List<DSSDocument> signedDocumentsOne = asicContentOne.getRootLevelSignedDocuments();
-        List<DSSDocument> signedDocumentsTwo = asicContentTwo.getRootLevelSignedDocuments();
-        if (Utils.collectionSize(signedDocumentsOne) > 1 || Utils.collectionSize(signedDocumentsTwo) > 1) {
+        Arrays.stream(asicContents).forEach(asicContent -> assertSignatureDocumentNameValid(asicContent.getSignatureDocuments()));
+        Arrays.stream(asicContents).forEach(asicContent -> assertTimestampDocumentNameValid(asicContent.getTimestampDocuments()));
+
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getRootLevelSignedDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
                     "One of the containers has more than one signer documents!");
         }
 
-        if (Utils.isCollectionNotEmpty(signedDocumentsOne) && Utils.isCollectionNotEmpty(signedDocumentsTwo)) {
-            DSSDocument signedDocumentOne = signedDocumentsOne.get(0);
-            DSSDocument signedDocumentTwo = signedDocumentsTwo.get(0);
-            if (signedDocumentOne.getName() == null || !signedDocumentOne.getName().equals(signedDocumentTwo.getName())) {
-                throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
-                        "Signer documents have different names!");
+        if (!checkRootSignerDocumentsNames()) {
+            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                    "Signer documents have different names!");
+        }
+    }
+
+    private void assertSignatureDocumentNameValid(List<DSSDocument> signatureDocuments) {
+        if (Utils.isCollectionNotEmpty(signatureDocuments)) {
+            for (DSSDocument signatureDocument : signatureDocuments) {
+                if (!ASiCUtils.SIGNATURE_P7S.equals(signatureDocument.getName()) ) {
+                    throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                            "The signature document in one of the containers has invalid naming!");
+                }
             }
         }
     }
 
-    private void assertSignatureDocumentNameValid(List<DSSDocument> documents) {
-        if (Utils.isCollectionNotEmpty(documents)) {
-            DSSDocument document = documents.get(0);
-            if (!ASiCUtils.SIGNATURE_P7S.equals(document.getName()) ) {
-                throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
-                        "The signature document in one of the containers has invalid naming!");
+    private void assertTimestampDocumentNameValid(List<DSSDocument> timestampDocuments) {
+        if (Utils.isCollectionNotEmpty(timestampDocuments)) {
+            for (DSSDocument tstDocument : timestampDocuments) {
+                if (!ASiCUtils.TIMESTAMP_TST.equals(tstDocument.getName())) {
+                    throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                            "The timestamp document in one of the containers has invalid naming!");
+                }
             }
         }
     }
 
-    private void assertTimestampDocumentNameValid(List<DSSDocument> documents) {
-        if (Utils.isCollectionNotEmpty(documents)) {
-            DSSDocument document = documents.get(0);
-            if (!ASiCUtils.TIMESTAMP_TST.equals(document.getName()) ) {
-                throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
-                        "The timestamp document in one of the containers has invalid naming!");
+    private boolean checkRootSignerDocumentsNames() {
+        String rootSignedDocumentName = null;
+        for (ASiCContent asicContent : asicContents) {
+            List<DSSDocument> rootLevelSignedDocuments = asicContent.getRootLevelSignedDocuments();
+            if (Utils.isCollectionNotEmpty(rootLevelSignedDocuments)) {
+                DSSDocument currentSignedDocument = rootLevelSignedDocuments.get(0); // only one shall be present
+                if (rootSignedDocumentName == null) {
+                    rootSignedDocumentName = currentSignedDocument.getName();
+                } else {
+                    return rootSignedDocumentName.equals(currentSignedDocument.getName());
+                }
             }
         }
+        return true;
     }
 
     @Override
     protected void ensureSignaturesAllowMerge() {
-        if (Utils.isCollectionEmpty(asicContentOne.getSignatureDocuments()) ||
-                Utils.isCollectionEmpty(asicContentTwo.getSignatureDocuments())) {
+        if (Arrays.stream(asicContents).filter(asicContent ->
+                Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
             // one of the containers does not contain a signature document. Can merge.
             return;
         }
 
-        DSSDocument signatureDocumentOne = asicContentOne.getSignatureDocuments().get(0);
-        DSSDocument signatureDocumentTwo = asicContentTwo.getSignatureDocuments().get(0);
-
-        DSSDocument signaturesCms = mergeCmsSignatures(signatureDocumentOne, signatureDocumentTwo);
-        asicContentOne.setSignatureDocuments(Collections.singletonList(signaturesCms));
-        asicContentTwo.setSignatureDocuments(Collections.emptyList());
+        List<DSSDocument> allSignatureDocuments = getAllSignatureDocuments(asicContents);
+        DSSDocument mergedCMSSignaturesDocument = mergeCmsSignatures(allSignatureDocuments);
+        for (ASiCContent asicContent : asicContents) {
+            asicContent.setSignatureDocuments(Collections.singletonList(mergedCMSSignaturesDocument));
+        }
     }
 
 }
