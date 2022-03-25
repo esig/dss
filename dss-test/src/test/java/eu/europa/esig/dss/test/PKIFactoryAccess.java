@@ -344,7 +344,7 @@ public abstract class PKIFactoryAccess {
 		return getOnlineTSPSourceByNameAndTime(GOOD_TSA, date);
 	}
 	
-	private OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
+	protected OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
 		return getTSPSourceByUrl(getTsaUrl(tsaName, date));
 	}
 	

@@ -311,4 +311,23 @@ public interface CertificateVerifier {
 	 */
 	boolean isCheckRevocationForUntrustedChains();
 
+	/**
+	 * This method allows enabling of POE extraction from timestamps coming
+	 * from untrusted certificate chains.
+	 *
+	 * @param enable
+	 *               true if POE extraction is allowed for timestamps from untrusted
+	 *               certificate chains
+	 */
+	void setExtractPOEFromUntrustedChains(boolean enable);
+
+	/**
+	 * This method returns whether POEs should be extracted from timestamps coming from untrusted
+	 * certificate chains.
+	 *
+	 * @return true if POEs should be extracted from timestamp with untrusted
+	 *         certificate chains
+	 */
+	boolean isExtractPOEFromUntrustedChains();
+
 }

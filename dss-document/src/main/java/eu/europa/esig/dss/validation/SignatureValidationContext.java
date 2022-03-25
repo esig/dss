@@ -156,6 +156,12 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean checkRevocationForUntrustedChains;
 
 	/**
+	 * This variable indicates whether a POE should be extracted from timestamps
+	 * with certificate chains from untrusted sources.
+	 */
+	private boolean extractPOEFromUntrustedChains;
+
+	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
 	protected Date currentTime = new Date();
@@ -176,6 +182,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
+		this.extractPOEFromUntrustedChains = certificateVerifier.isExtractPOEFromUntrustedChains();
 	}
 
 	@Override
@@ -643,9 +650,37 @@ public class SignatureValidationContext implements ValidationContext {
 				lastTimestampCertChainDates.put(cert, usageDate);
 			}
 		}
-		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
-			registerPOE(timestampedReference.getObjectId(), timestampToken);
+		if (isTimestampValid(timestampToken)) {
+			LOG.debug("Extracting POE from timestamp : {}", timestampToken.getDSSIdAsString());
+			for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
+				registerPOE(timestampedReference.getObjectId(), timestampToken);
+			}
 		}
+	}
+
+	/**
+	 * This method verifies whether a {@code timestampToken} is valid and
+	 * can be used as a valid POE for covered objects
+	 *
+	 * @param timestampToken {@link TimestampToken} to be checked
+	 * @return TRUE if the timestamp is valid, FALSE otherwise
+	 */
+	protected boolean isTimestampValid(TimestampToken timestampToken) {
+		if (!extractPOEFromUntrustedChains && !containsTrustAnchor(getCertChain(timestampToken))) {
+			LOG.warn("POE extraction is skipped for untrusted timestamp : {}.", timestampToken.getDSSIdAsString());
+			return false;
+		}
+		if (!timestampToken.isMessageImprintDataIntact()) {
+			LOG.warn("POE extraction is skipped for timestamp : {}. The message-imprint is not intact!",
+					timestampToken.getDSSIdAsString());
+			return false;
+		}
+		if (!timestampToken.isSignatureIntact()) {
+			LOG.warn("POE extraction is skipped for timestamp : {}. The signature is not intact!",
+					timestampToken.getDSSIdAsString());
+			return false;
+		}
+		return true;
 	}
 
 	private void registerPOE(String tokenId, TimestampToken timestampToken) {
@@ -774,9 +809,11 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private <T extends Token> Token getFirstTrustAnchor(List<T> certChain) {
-		for (T token : certChain) {
-			if (isTrusted(token)) {
-				return token;
+		if (Utils.isCollectionNotEmpty(certChain)) {
+			for (T token : certChain) {
+				if (isTrusted(token)) {
+					return token;
+				}
 			}
 		}
 		return null;
