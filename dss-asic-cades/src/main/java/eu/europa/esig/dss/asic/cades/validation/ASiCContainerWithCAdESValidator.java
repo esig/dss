@@ -32,6 +32,7 @@ import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -95,6 +96,13 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 					(!ASiCUtils.areFilesContainMimetype(filenames) || !ASiCUtils.isContainerOpenDocument(dssDocument));
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isSupported(ASiCContent asicContent) {
+		List<String> entryNames = DSSUtils.getDocumentNames(asicContent.getAllDocuments());
+		return !ASiCUtils.isASiCWithXAdES(entryNames) &&
+				(!ASiCUtils.areFilesContainMimetype(entryNames) || !ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument()));
 	}
 
 	@Override

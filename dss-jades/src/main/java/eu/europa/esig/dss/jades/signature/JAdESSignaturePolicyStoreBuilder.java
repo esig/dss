@@ -105,6 +105,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	 * @param base64UrlInstance    TRUE if the signature policy store shall be incorporated as a
 	 *                             base64url-encoded component of the 'etsiU' header, FALSE if it will be
 	 *                             incorporated in its clear JSON representation
+	 * @param signatureId          {@link String} id of a signature to add SignaturePolicyStore for
 	 * @return {@link DSSDocument} containing signatures with {@code signaturePolicyStore}
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument document, SignaturePolicyStore signaturePolicyStore,

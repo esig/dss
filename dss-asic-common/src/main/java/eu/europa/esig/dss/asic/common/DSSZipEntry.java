@@ -64,7 +64,9 @@ public class DSSZipEntry {
     private long crc;
 
     /**
-     * Empty constructor
+     * Default constructor
+     *
+     * @param name {@link String} of the zip-entry to be created
      */
     public DSSZipEntry(String name) {
         Objects.requireNonNull(name, "Name cannot be null!");

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
@@ -42,9 +41,6 @@ import java.util.List;
  * Builds a relevant {@code GetDataToSignASiCWithXAdESHelper} for ASiC with XAdES dataToSign creation
  */
 public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
-
-	/** The default manifest filename */
-	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = ASiCUtils.META_INF_FOLDER + "manifest.xml";
 
 	/**
 	 * This method is used to create a {@code GetDataToSignASiCWithXAdESHelper} from an {@code ASiCContent}
@@ -104,8 +100,8 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 	 * @return {@link DSSDocument} manifest
 	 */
 	private DSSDocument createASiCManifest(List<DSSDocument> documents) {
-		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), ZIP_ENTRY_ASICE_METAINF_MANIFEST);
+		return new ASiCEWithXAdESManifestBuilder().setDocuments(documents)
+				.setManifestFilename(ASiCUtils.ASICE_METAINF_MANIFEST).build();
 	}
 
 	/**

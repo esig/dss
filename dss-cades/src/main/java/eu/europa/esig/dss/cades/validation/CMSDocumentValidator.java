@@ -141,6 +141,15 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		return signatures;
 	}
 
+	/**
+	 * This method returns a CMSSignedData
+	 *
+	 * @return {@link CMSSignedData}
+	 */
+	public CMSSignedData getCmsSignedData() {
+		return cmsSignedData;
+	}
+
 	@Override
 	protected CAdESDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
 		return new CAdESDiagnosticDataBuilder();

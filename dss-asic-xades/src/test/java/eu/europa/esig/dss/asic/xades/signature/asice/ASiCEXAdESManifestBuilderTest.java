@@ -20,19 +20,17 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEXAdESManifestBuilderTest {
 
@@ -44,9 +42,9 @@ public class ASiCEXAdESManifestBuilderTest {
 		DSSDocument d2 = new InMemoryDocument("world".getBytes(), "test.html");
 		DSSDocument d3 = new InMemoryDocument("bye".getBytes(), "test.pdf");
 		List<DSSDocument> documents = Arrays.asList(d1, d2, d3);
-		ASiCEWithXAdESManifestBuilder builder = new ASiCEWithXAdESManifestBuilder(documents);
-		Document doc = builder.build();
-		String xmlContent = new String(DSSXMLUtils.serializeNode(doc));
+		ASiCEWithXAdESManifestBuilder builder = new ASiCEWithXAdESManifestBuilder();
+		DSSDocument manifestDoc = builder.setDocuments(documents).build();
+		String xmlContent = new String( DSSUtils.toByteArray(manifestDoc));
 		LOG.info(xmlContent);
 
 		// <?xml version="1.0" encoding="UTF-8" standalone="no"?>
