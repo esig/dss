@@ -14,37 +14,33 @@ public interface ASiCContainerMergerFactory {
     /**
      * Returns whether the format of given containers is supported by the current {@code ASiCContainerMerger}
      *
-     * @param containerOne {@link DSSDocument}
-     * @param containerTwo {@link DSSDocument}
+     * @param containers {@link DSSDocument}s to be merged
      * @return TRUE if both documents are supported by the current container, FALSE otherwise
      */
-    boolean isSupported(DSSDocument containerOne, DSSDocument containerTwo);
+    boolean isSupported(DSSDocument... containers);
 
     /**
      * Creates a new {@code ASiCContainerMerger} for the given ZIP-archive containers
      *
-     * @param containerOne {@link DSSDocument} representing a first ZIP-container to be merged
-     * @param containerTwo {@link DSSDocument} representing a second ZIP-container to be merged
+     * @param containers {@link DSSDocument}s representing ZIP-containers to be merged
      * @return {@link DSSDocument} representing a merge result of two given ZIP-containers
      */
-    ASiCContainerMerger create(DSSDocument containerOne, DSSDocument containerTwo);
+    ASiCContainerMerger create(DSSDocument... containers);
 
     /**
      * Returns whether the format of given containers is supported by the current {@code ASiCContainerMerger}
      *
-     * @param asicContentOne {@link ASiCContent}
-     * @param asicContentTwo {@link ASiCContent}
+     * @param asicContents {@link ASiCContent}s to be merged
      * @return TRUE if both containers are supported by the current container, FALSE otherwise
      */
-    boolean isSupported(ASiCContent asicContentOne, ASiCContent asicContentTwo);
+    boolean isSupported(ASiCContent... asicContents);
 
     /**
      * Creates a new {@code ASiCContainerMerger} for the given {@code ASiCContent}s
      *
-     * @param contentOne {@link ASiCContent} representing a content of first ZIP-container to be merged
-     * @param contentTwo {@link ASiCContent} representing a content of second ZIP-container to be merged
+     * @param asicContents {@link ASiCContent}s representing content of ZIP-containers to be merged
      * @return {@link ASiCContent} representing a merge result
      */
-    ASiCContainerMerger create(ASiCContent contentOne, ASiCContent contentTwo);
+    ASiCContainerMerger create(ASiCContent... asicContents);
 
 }

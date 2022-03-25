@@ -97,19 +97,17 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     /**
-     * This method loads a relevant {@code ASiCContainerMerger} to be used to merge two given container documents
+     * This method loads a relevant {@code ASiCContainerMerger} to be used to merge given container documents
      *
-     * @param containerOne {@link DSSDocument} to be merged
-     * @param containerTwo {@link DSSDocument} to be merged
+     * @param containers {@link DSSDocument} to be merged
      * @return {@link ASiCContainerMerger}
      */
-    public static ASiCContainerMerger fromDocuments(DSSDocument containerOne, DSSDocument containerTwo) {
-        Objects.requireNonNull(containerOne, "Container document cannot be null!");
-        Objects.requireNonNull(containerTwo, "Container document cannot be null!");
+    public static ASiCContainerMerger fromDocuments(DSSDocument... containers) {
+        assertNotNull(containers);
         ServiceLoader<ASiCContainerMergerFactory> serviceLoaders = ServiceLoader.load(ASiCContainerMergerFactory.class);
         for (ASiCContainerMergerFactory mergerFactory : serviceLoaders) {
-            if (mergerFactory.isSupported(containerOne, containerTwo)) {
-                return mergerFactory.create(containerOne, containerTwo);
+            if (mergerFactory.isSupported(containers)) {
+                return mergerFactory.create(containers);
             }
         }
         throw new UnsupportedOperationException("Document format not recognized/handled");
@@ -329,7 +327,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         }
     }
 
-    private void assertNotNull(DSSDocument... containers) {
+    private static void assertNotNull(DSSDocument... containers) {
         Objects.requireNonNull(containers, "Documents shall be provided!");
         if (containers.length == 0) {
             throw new NullPointerException("At least one document shall be provided!");
@@ -339,7 +337,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         }
     }
 
-    private void assertNotNull(ASiCContent... asicContents) {
+    private static void assertNotNull(ASiCContent... asicContents) {
         Objects.requireNonNull(asicContents, "ASiCContents shall be provided!");
         if (asicContents.length == 0) {
             throw new NullPointerException("At least one ASiCContent shall be provided!");
