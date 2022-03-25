@@ -123,7 +123,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         DSSDocument manifest = ASiCWithCAdESManifestParser.getLinkedManifest(
                 currentASiCContent.getAllManifestDocuments(), currentSignatureDocument.getName());
         if (manifest == null) {
-            throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+            throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                     "A signature with filename '%s' does not have a corresponding manifest file!", currentSignatureDocument.getName()));
         }
 
@@ -136,12 +136,12 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                 DSSDocument manifestToCompare = ASiCWithCAdESManifestParser.getLinkedManifest(
                         asicContentToCompare.getAllManifestDocuments(), signatureToCompare.getName());
                 if (manifestToCompare == null) {
-                    throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+                    throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                             "A signature with filename '%s' does not have a corresponding manifest file!", signatureToCompare.getName()));
 
                 } else if (ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentSignatureDocument.getName()) ||
                         ASiCWithCAdESUtils.isCoveredByManifest(asicContentToCompare.getAllManifestDocuments(), signatureToCompare.getName())) {
-                    throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+                    throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                             "A signature with name '%s' in a container is covered by a manifest!", currentSignatureDocument.getName()));
 
                 } else if (manifest.getName().equals(manifestToCompare.getName()) &&
@@ -149,7 +149,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                     result.add(signatureToCompare);
 
                 } else {
-                    throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+                    throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                             "Signatures with filename '%s' sign different manifests!", currentSignatureDocument.getName()));
                 }
             }
@@ -186,7 +186,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
                             } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
                                     ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
-                                throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+                                throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                         "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
                             } else {
@@ -207,7 +207,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
                             } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
                                     ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
-                                throw new UnsupportedOperationException(String.format("Unable to merge two ASiC-E with CAdES containers. " +
+                                throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                         "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
                             } else {

@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class is used to load a relevant {@code eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger}
- * in order merge content of two given containers.
+ * in order merge content of given containers.
  *
  */
 public abstract class DefaultContainerMerger implements ASiCContainerMerger {
@@ -114,19 +114,17 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     /**
-     * This method loads a relevant {@code ASiCContainerMerger} to be used to merge two given {@code ASiCContent}s
+     * This method loads a relevant {@code ASiCContainerMerger} to be used to merge given {@code ASiCContent}s
      *
-     * @param asicContentOne {@link ASiCContent} to be merged
-     * @param asicContentTwo {@link ASiCContent} to be merged
+     * @param asicContents {@link ASiCContent}s to be merged
      * @return {@link ASiCContainerMerger}
      */
-    public static ASiCContainerMerger fromASiCContents(ASiCContent asicContentOne, ASiCContent asicContentTwo) {
-        Objects.requireNonNull(asicContentOne, "ASiC Content cannot be null!");
-        Objects.requireNonNull(asicContentTwo, "ASiC Content cannot be null!");
+    public static ASiCContainerMerger fromASiCContents(ASiCContent... asicContents) {
+        assertNotNull(asicContents);
         ServiceLoader<ASiCContainerMergerFactory> serviceLoaders = ServiceLoader.load(ASiCContainerMergerFactory.class);
         for (ASiCContainerMergerFactory mergerFactory : serviceLoaders) {
-            if (mergerFactory.isSupported(asicContentOne, asicContentTwo)) {
-                return mergerFactory.create(asicContentOne, asicContentTwo);
+            if (mergerFactory.isSupported(asicContents)) {
+                return mergerFactory.create(asicContents);
             }
         }
         throw new UnsupportedOperationException("Document format not recognized/handled");
@@ -195,7 +193,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     /**
-     * Verifies whether two containers can be merged
+     * Verifies whether containers can be merged
      */
     protected abstract void ensureContainerContentAllowMerge();
 
@@ -205,7 +203,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     protected abstract void ensureSignaturesAllowMerge();
 
     /**
-     * This method creates a new {@code ASiCContent} by merging the two given containers
+     * This method creates a new {@code ASiCContent} by merging the given containers
      *
      * @return {@link ASiCContent}
      */

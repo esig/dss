@@ -339,7 +339,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-E with CAdES containers. " +
+        assertEquals("Unable to merge ASiC-E with CAdES containers. " +
                 "A signature with filename 'META-INF/signature.p7s' does not have a corresponding manifest file!", exception.getMessage());
     }
 

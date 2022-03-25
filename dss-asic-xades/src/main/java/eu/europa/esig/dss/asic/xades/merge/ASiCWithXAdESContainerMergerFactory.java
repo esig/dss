@@ -60,7 +60,7 @@ public class ASiCWithXAdESContainerMergerFactory implements ASiCContainerMergerF
 
             } else if (isASiCS ^ asicsContainer) {
                 throw new UnsupportedOperationException(
-                        "Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!");
+                        "Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!");
             }
         }
         if (isASiCS != null && isASiCS) {
@@ -115,7 +115,7 @@ public class ASiCWithXAdESContainerMergerFactory implements ASiCContainerMergerF
 
             } else if (isASiCS ^ asicsContainer) {
                 throw new UnsupportedOperationException(
-                        "Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!");
+                        "Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!");
             }
         }
         if (isASiCS != null && isASiCS) {

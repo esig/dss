@@ -52,7 +52,7 @@ public class ASiCSWithCAdESLevelBContainerMergerDifferentSingleDocumentsTest ext
     @Override
     public void createTwoContainersAndMerge() throws Exception {
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
-        assertEquals("Unable to merge two ASiC-S with CAdES containers. Signer documents have different names!", exception.getMessage());
+        assertEquals("Unable to merge ASiC-S with CAdES containers. Signer documents have different names!", exception.getMessage());
     }
 
     @Override

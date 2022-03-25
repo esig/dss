@@ -4,7 +4,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
- * This class is used to verify a possibility to merge two ASiC containers and
+ * This class is used to verify a possibility to merge ASiC containers and
  * merge them in a single container, when possible.
  *
  */

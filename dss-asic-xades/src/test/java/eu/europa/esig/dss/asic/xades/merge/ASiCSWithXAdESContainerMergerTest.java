@@ -213,7 +213,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-S with XAdES containers. " +
                 "One of the containers has more than one signature documents!", exception.getMessage());
     }
 
@@ -229,7 +229,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-S with XAdES containers. " +
                 "The signature document in one of the containers has invalid naming!", exception.getMessage());
     }
 
@@ -245,7 +245,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-S with XAdES containers. " +
                 "One of the containers contains a detached timestamp!", exception.getMessage());
     }
 
@@ -266,7 +266,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-S with XAdES containers. " +
                 "One of the containers has more than one signer documents!", exception.getMessage());
     }
 
@@ -286,7 +286,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-S with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-S with XAdES containers. " +
                 "Signer documents have different names!", exception.getMessage());
     }
 

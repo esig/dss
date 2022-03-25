@@ -80,7 +80,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
             return; // no signatures -> can merge
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-E with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
                     "One of the containers contains a detached timestamp!");
         }
     }

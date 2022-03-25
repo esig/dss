@@ -600,4 +600,4 @@ NOTE: The merging classes are able to resolve conflicts between container entrie
 
 In order to use a selected class, the corresponding module shall be loaded within the project. `DefaultContainerMerger` will choose a relevant implementation across available modules using <<ServiceLoaderAdvanced>>.
 
-When using provided implementations of the `ASiCContainerMerger`, a user can also benefit from merging a corresponding ASiC container with a simple not-signed ZIP archive, or even from merging two not signed ZIP archives.
+When using provided implementations of the `ASiCContainerMerger`, a user can also benefit from merging a corresponding ASiC container with a simple not-signed ZIP archive, or even from merging not signed ZIP archives.

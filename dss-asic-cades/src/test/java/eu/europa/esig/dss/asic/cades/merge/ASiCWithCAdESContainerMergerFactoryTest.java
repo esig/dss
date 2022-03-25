@@ -164,14 +164,14 @@ public class ASiCWithCAdESContainerMergerFactoryTest {
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> factory.create(
                 new FileDocument("src/test/resources/validation/onefile-ok.asice"),
                 new FileDocument("src/test/resources/validation/onefile-ok.asics")));
-        assertEquals("Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!",
+        assertEquals("Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!",
                 exception.getMessage());
 
         exception = assertThrows(UnsupportedOperationException.class, () -> factory.create(
                 new FileDocument("src/test/resources/validation/onefile-ok.asics"),
                 new FileDocument("src/test/resources/signable/test.zip"),
                 new FileDocument("src/test/resources/validation/onefile-ok.asice")));
-        assertEquals("Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!",
+        assertEquals("Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!",
                 exception.getMessage());
     }
 
@@ -260,7 +260,7 @@ public class ASiCWithCAdESContainerMergerFactoryTest {
                         new FileDocument("src/test/resources/validation/onefile-ok.asice")).extract(),
                 new ASiCWithCAdESContainerExtractor(
                         new FileDocument("src/test/resources/validation/onefile-ok.asics")).extract()));
-        assertEquals("Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!",
+        assertEquals("Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!",
                 exception.getMessage());
 
         exception = assertThrows(UnsupportedOperationException.class, () -> factory.create(
@@ -270,7 +270,7 @@ public class ASiCWithCAdESContainerMergerFactoryTest {
                         new FileDocument("src/test/resources/signable/test.zip")).extract(),
                 new ASiCWithCAdESContainerExtractor(
                         new FileDocument("src/test/resources/validation/onefile-ok.asice")).extract()));
-        assertEquals("Unable to create an ASiCContainerMerger for two documents of different ASiCContainer types!",
+        assertEquals("Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!",
                 exception.getMessage());
     }
 

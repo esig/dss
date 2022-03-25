@@ -58,16 +58,16 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getSignatureDocuments()) +
                 Utils.collectionSize(asicContent.getTimestampDocuments()) > 1)) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                     "One of the containers has more than one signature or timestamp documents!");
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())) &&
                 Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                     "A container containing a timestamp file cannot be merged with other signed or timestamped container!");
         }
         if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())).count() > 1) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                     "Multiple containers contain detached timestamps!");
         }
 
@@ -75,12 +75,12 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         Arrays.stream(asicContents).forEach(asicContent -> assertTimestampDocumentNameValid(asicContent.getTimestampDocuments()));
 
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getRootLevelSignedDocuments()) > 1)) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                     "One of the containers has more than one signer documents!");
         }
 
         if (!checkRootSignerDocumentsNames()) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                     "Signer documents have different names!");
         }
     }
@@ -89,7 +89,7 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         if (Utils.isCollectionNotEmpty(signatureDocuments)) {
             for (DSSDocument signatureDocument : signatureDocuments) {
                 if (!ASiCUtils.SIGNATURE_P7S.equals(signatureDocument.getName()) ) {
-                    throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                    throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                             "The signature document in one of the containers has invalid naming!");
                 }
             }
@@ -100,7 +100,7 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         if (Utils.isCollectionNotEmpty(timestampDocuments)) {
             for (DSSDocument tstDocument : timestampDocuments) {
                 if (!ASiCUtils.TIMESTAMP_TST.equals(tstDocument.getName())) {
-                    throw new UnsupportedOperationException("Unable to merge two ASiC-S with CAdES containers. " +
+                    throw new UnsupportedOperationException("Unable to merge ASiC-S with CAdES containers. " +
                             "The timestamp document in one of the containers has invalid naming!");
                 }
             }

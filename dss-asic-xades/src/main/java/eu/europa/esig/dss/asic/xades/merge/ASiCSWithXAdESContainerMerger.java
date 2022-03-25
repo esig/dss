@@ -74,24 +74,24 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         }
 
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getSignatureDocuments()) > 1)) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signature documents!");
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> asicContent.getSignatureDocuments().stream()
                 .anyMatch(document -> !ASiCUtils.SIGNATURES_XML.equals(document.getName())))) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                         "The signature document in one of the containers has invalid naming!");
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "One of the containers contains a detached timestamp!");
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getRootLevelSignedDocuments()) > 1)) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signer documents!");
         }
         if (Utils.collectionSize(getSignerDocumentNameSet()) > 1) {
-            throw new UnsupportedOperationException("Unable to merge two ASiC-S with XAdES containers. " +
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "Signer documents have different names!");
         }
     }

@@ -201,7 +201,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
 
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
-        assertEquals("Unable to merge two ASiC-E with XAdES containers. " +
+        assertEquals("Unable to merge ASiC-E with XAdES containers. " +
                 "One of the containers contains a detached timestamp!", exception.getMessage());
     }
 
