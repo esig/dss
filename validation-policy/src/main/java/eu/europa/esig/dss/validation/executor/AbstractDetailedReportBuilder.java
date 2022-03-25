@@ -119,7 +119,7 @@ public abstract class AbstractDetailedReportBuilder {
 	 *
 	 * @param tokensToProcess collection of tokens to validate
 	 * @param context {@link Context} validation context
-	 * @param bbbs map of BasiBuildingBlocks
+	 * @param bbbs map of BasicBuildingBlocks
 	 */
 	protected void process(Collection<? extends AbstractTokenProxy> tokensToProcess, Context context,
 						   Map<String, XmlBasicBuildingBlocks> bbbs) {
