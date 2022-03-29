@@ -5,7 +5,6 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -23,9 +22,6 @@ import java.util.Set;
  *
  */
 public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContainerMerger {
-
-    /** Digest algo used for internal documents comparison */
-    private static final DigestAlgorithm DEFAULT_DIGEST_ALGORITHM = DigestAlgorithm.SHA256;
 
     /**
      * Empty constructor

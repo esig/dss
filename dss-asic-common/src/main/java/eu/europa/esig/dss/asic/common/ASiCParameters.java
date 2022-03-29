@@ -62,7 +62,7 @@ public class ASiCParameters implements Serializable {
 	}
 
 	/**
-	 * This method allows to indicate if the zip comment will contain the mime type.
+	 * This method sets if the zip comment will contain the mime type.
 	 *
 	 * @param zipComment
 	 *            true if a zip comment needs to be added

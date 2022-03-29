@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -51,6 +52,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -105,7 +107,11 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCWithXAdESMultipl
 		assertEquals(0, manifestDocuments.size());
 
 		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
-		assertEquals(1, signedDocuments.size()); // package.zip
+		assertEquals(1, signedDocuments.size());
+
+		DSSDocument packageDocument = signedDocuments.get(0); // package.zip
+		assertEquals("package.zip", packageDocument.getName());
+		assertNull(ASiCUtils.getZipComment(signedDocuments.get(0)));
 
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 

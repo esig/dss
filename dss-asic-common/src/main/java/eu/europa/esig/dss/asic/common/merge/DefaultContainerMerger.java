@@ -5,6 +5,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
  *
  */
 public abstract class DefaultContainerMerger implements ASiCContainerMerger {
+
+    /** Digest algo used for internal documents comparison */
+    protected static final DigestAlgorithm DEFAULT_DIGEST_ALGORITHM = DigestAlgorithm.SHA256;
 
     /** An array of ASiC contents representing containers to be merged */
     protected ASiCContent[] asicContents;
@@ -242,21 +246,35 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     private String getZipComment() {
+        String zipComment = null;
         for (ASiCContent asicContent : asicContents) {
-            if (asicContent.getZipComment() != null) {
-                return asicContent.getZipComment();
+            String currentZipComment = asicContent.getZipComment();
+            if (Utils.isStringNotEmpty(currentZipComment)) {
+                if (Utils.isStringEmpty(zipComment)) {
+                    zipComment = currentZipComment;
+                } else if (!zipComment.equals(currentZipComment)) {
+                    throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
+                            "Containers contain different zip comments : '%s' and '%s'!", zipComment, currentZipComment));
+                }
             }
         }
-        return null;
+        return zipComment;
     }
 
     private DSSDocument getMimeTypeDocument() {
+        DSSDocument mimeType = null;
         for (ASiCContent asicContent : asicContents) {
-            if (asicContent.getMimeTypeDocument() != null) {
-                return asicContent.getMimeTypeDocument();
+            DSSDocument currentMimeTypeDocument = asicContent.getMimeTypeDocument();
+            if (currentMimeTypeDocument != null) {
+                if (mimeType == null) {
+                    mimeType = currentMimeTypeDocument;
+                } else if (!mimeType.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(currentMimeTypeDocument.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                    throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
+                            "Containers contain different mimetype documents!"));
+                }
             }
         }
-        return null;
+        return mimeType;
     }
 
     private List<DSSDocument> mergeDocumentLists(Collection<List<DSSDocument>> documentsLists) {
@@ -270,7 +288,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
                 } else {
                     DSSDocument originalListDocument = DSSUtils.getDocumentWithName(result, document.getName());
-                    if (!Arrays.equals(DSSUtils.toByteArray(originalListDocument), DSSUtils.toByteArray(document))) {
+                    if (!originalListDocument.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(document.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
                         throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                                 "Containers contain different documents under the same name : %s!", document.getName()));
                     }

@@ -82,8 +82,8 @@ public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCD
 			return new DataToSignASiCEWithCAdESHelper(asicContent, manifestDocument, parameters.aSiC());
 
 		} else {
-			DSSDocument asicsSignedDocument = getASiCSSignedDocument(asicContent.getSignedDocuments(),
-					parameters.getZipCreationDate(), parameters.aSiC());
+			DSSDocument asicsSignedDocument = getASiCSSignedDocument(
+					asicContent.getSignedDocuments(), parameters.getZipCreationDate());
 			asicContent.setSignedDocuments(Collections.singletonList(asicsSignedDocument));
 			return new DataToSignASiCSWithCAdESFromFiles(asicContent, parameters.aSiC());
 		}

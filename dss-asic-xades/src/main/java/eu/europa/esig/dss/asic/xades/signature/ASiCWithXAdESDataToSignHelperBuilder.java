@@ -86,8 +86,8 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 			return new DataToSignASiCEWithXAdESHelper(asicContent, parameters.aSiC());
 
 		} else {
-			DSSDocument asicsSignedDocument = getASiCSSignedDocument(asicContent.getSignedDocuments(),
-					parameters.bLevel().getSigningDate(), parameters.aSiC());
+			DSSDocument asicsSignedDocument = getASiCSSignedDocument(
+					asicContent.getSignedDocuments(), parameters.bLevel().getSigningDate());
 			asicContent.setSignedDocuments(Collections.singletonList(asicsSignedDocument));
 			return new DataToSignASiCSWithXAdESHelper(asicContent, parameters.aSiC());
 		}

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -40,15 +39,14 @@ public abstract class AbstractASiCDataToSignHelperBuilder {
 	 *
 	 * @param filesToBeSigned a list of {@link DSSDocument}s to be signed
 	 * @param signingDate {@link Date} representing the signing time
-	 * @param asicParameters {@link ASiCParameters}
 	 * @return {@link DSSDocument} to be signed
 	 */
-	protected DSSDocument getASiCSSignedDocument(List<DSSDocument> filesToBeSigned, Date signingDate, ASiCParameters asicParameters) {
+	protected DSSDocument getASiCSSignedDocument(List<DSSDocument> filesToBeSigned, Date signingDate) {
 		if (Utils.collectionSize(filesToBeSigned) == 1) {
 			return filesToBeSigned.iterator().next();
 
 		} else if (Utils.collectionSize(filesToBeSigned) > 1) {
-			return createPackageZip(filesToBeSigned, signingDate, ASiCUtils.getZipComment(asicParameters));
+			return createPackageZip(filesToBeSigned, signingDate);
 
 		} else {
 			throw new IllegalArgumentException("At least one file to be signed shall be provided!");
@@ -60,11 +58,10 @@ public abstract class AbstractASiCDataToSignHelperBuilder {
 	 *
 	 * @param documents a list of {@link DSSDocument}s
 	 * @param signingDate {@link Date}
-	 * @param zipComment {@link String}
 	 * @return {@link DSSDocument}
 	 */
-	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate, String zipComment) {
-		DSSDocument packageZip = ZipUtils.getInstance().createZipArchive(documents, signingDate, zipComment);
+	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate) {
+		DSSDocument packageZip = ZipUtils.getInstance().createZipArchive(documents, signingDate, null);
 		packageZip.setName(ASiCUtils.PACKAGE_ZIP);
 		packageZip.setMimeType(MimeType.ZIP);
 		return packageZip;

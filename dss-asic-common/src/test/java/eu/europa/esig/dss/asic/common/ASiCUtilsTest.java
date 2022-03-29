@@ -40,7 +40,7 @@ public class ASiCUtilsTest {
 
 	@Test
 	public void isZip() {
-		assertFalse(ASiCUtils.isZip(null));
+		assertFalse(ASiCUtils.isZip((DSSDocument) null));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 0 })));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'P' })));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'p', 'k' })));

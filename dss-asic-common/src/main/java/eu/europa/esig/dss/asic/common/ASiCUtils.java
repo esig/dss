@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -319,8 +320,24 @@ public final class ASiCUtils {
 		if (document == null) {
 			return false;
 		}
-		byte[] preamble = new byte[2];
 		try (InputStream is = document.openStream()) {
+			return isZip(is);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to determine whether the document with name '%s' " +
+					"represents a ZIP container. Reason : %s", document.getName(), e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * Checks if the given {@code InputStream} contains a ZIP container
+	 *
+	 * @param is {@link InputStream} to check
+	 * @return TRUE if the {@code InputStream} is a ZIP container, FALSE otherwise
+	 */
+	public static boolean isZip(InputStream is) {
+		Objects.requireNonNull(is, "InputStream cannot be null!");
+		byte[] preamble = new byte[2];
+		try {
 			int r = is.read(preamble, 0, 2);
 			if (r != 2) {
 				return false;
@@ -730,8 +747,8 @@ public final class ASiCUtils {
 		String zipComment = asicContent.getZipComment();
 		if (Utils.isStringNotEmpty(zipComment)) {
 			return zipComment;
-		} else if (asicParameters != null && asicParameters.isZipComment()) {
-			return getZipComment(mimeType);
+		} else if (asicParameters != null) {
+			return getZipComment(asicParameters);
 		}
 		return Utils.EMPTY_STRING;
 	}

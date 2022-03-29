@@ -6,6 +6,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -537,6 +538,19 @@ public class ASiCEWithCAdESContainerMergerTest extends
             assertNotNull(documentTwo);
             assertTrue(Arrays.equals(DSSUtils.toByteArray(documentOne), DSSUtils.toByteArray(documentTwo)));
         }
+    }
+
+    @Test
+    public void mergeWithDifferentZipCommentTest() throws Exception {
+        ASiCContent firstASiCContent = new ASiCContent();
+        ASiCContent secondASiCContent = new ASiCContent();
+
+        firstASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ASICE));
+        secondASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ZIP));
+
+        ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertTrue(exception.getMessage().contains("Unable to merge containers. Containers contain different zip comments"));
     }
 
     @Override

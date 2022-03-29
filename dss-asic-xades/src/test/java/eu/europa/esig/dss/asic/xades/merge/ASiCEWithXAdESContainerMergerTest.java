@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.asic.xades.merge;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -353,6 +354,19 @@ public class ASiCEWithXAdESContainerMergerTest extends
             assertNotNull(documentTwo);
             assertTrue(Arrays.equals(DSSUtils.toByteArray(documentOne), DSSUtils.toByteArray(documentTwo)));
         }
+    }
+
+    @Test
+    public void mergeWithDifferentZipCommentTest() throws Exception {
+        ASiCContent firstASiCContent = new ASiCContent();
+        ASiCContent secondASiCContent = new ASiCContent();
+
+        firstASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ASICE));
+        secondASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ZIP));
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertTrue(exception.getMessage().contains("Unable to merge containers. Containers contain different zip comments"));
     }
 
     @Override
