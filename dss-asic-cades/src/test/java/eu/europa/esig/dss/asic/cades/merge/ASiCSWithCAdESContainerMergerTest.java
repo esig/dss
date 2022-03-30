@@ -57,7 +57,6 @@ public class ASiCSWithCAdESContainerMergerTest extends
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/open-document.odp")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/asic_cades.zip"))); // ASiC-E
-        assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/asic_CAdES.zip")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/test.txt")));
     }
 
