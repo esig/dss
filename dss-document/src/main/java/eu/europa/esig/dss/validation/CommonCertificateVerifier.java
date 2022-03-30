@@ -142,13 +142,21 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
 
 	/**
-	 * This variable set the behavior to follow for revocation retrieving in case of
+	 * This variable sets the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
 	 * 
 	 * Default : false (revocation are not checked in case of certificates issued
 	 * from an unsure source)
 	 */
 	private boolean checkRevocationForUntrustedChains = false;
+
+	/**
+	 * This variable sets whether POEs should be extracted from timestamps with
+	 * untrusted certificate chains.
+	 *
+	 * Default : false (POE is not extracted from a timestamp with untrusted certificate chain)
+	 */
+	private boolean extractPOEFromUntrustedChains = false;
 
 	/**
 	 * The default constructor. The {@code DataLoader} is created to allow the
@@ -358,6 +366,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
 		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
+	}
+
+	@Override
+	public boolean isExtractPOEFromUntrustedChains() {
+		return extractPOEFromUntrustedChains;
+	}
+
+	@Override
+	public void setExtractPOEFromUntrustedChains(boolean extractPOEFromUntrustedChains) {
+		this.extractPOEFromUntrustedChains = extractPOEFromUntrustedChains;
 	}
 
 	@Override
