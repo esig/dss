@@ -202,8 +202,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
+									SignatureValue signatureValue) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 

@@ -36,7 +36,7 @@ import java.util.List;
 public interface PDFSignatureService {
 	
 	/**
-	 * Returns the digest value of a PDF document
+	 * Returns the digest value of a PDF document.
 	 *
 	 * @param toSignDocument
 	 *            the document to be signed
@@ -47,35 +47,18 @@ public interface PDFSignatureService {
 	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 	/**
-	 * Returns a page preview with the visual signature
-	 * @param toSignDocument the document to be signed
-	 * @param parameters
-	 *            the signature/timestamp parameters
-	 * @return a DSSDocument with the PNG picture
-	 */
-	DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
-
-	/**
-	 * Returns a preview of the signature field
-	 * @param toSignDocument the document to be signed
-	 * @param parameters
-	 *            the signature/timestamp parameters
-	 * @return a DSSDocument with the PNG picture
-	 */
-	DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
-
-	/**
 	 * Signs a PDF document
 	 *
-	 * @param pdfData
-	 *            the pdf document
+	 * @param toSignDocument
+	 *            the pdf document to be signed
 	 * @param signatureValue
 	 *            the signature value
 	 * @param parameters
 	 *            the signature/timestamp parameters
 	 * @return {@link DSSDocument}
 	 */
-	DSSDocument sign(final DSSDocument pdfData, final byte[] signatureValue, final PAdESCommonParameters parameters);
+	DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
+					 final PAdESCommonParameters parameters);
 
 	/**
 	 * Retrieves revisions from a PDF document
@@ -98,20 +81,21 @@ public interface PDFSignatureService {
 	 *            {@link PdfValidationDataContainer}
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion);
+	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion);
 
 	/**
-	 * This method adds the DSS dictionary (Baseline-LT)
+	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document
 	 * 
 	 * @param document
 	 *            the document to be extended
 	 * @param validationDataForInclusion
 	 *            {@link PdfValidationDataContainer}
 	 * @param pwd
-	 *            the password protection used to create the encrypted document
+	 *            the password protection used to create the encrypted document (optional)
 	 * @return the pdf document with the added dss dictionary
 	 */
-	DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, final String pwd);
+	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+								 final String pwd);
 
 	/**
 	 * This method returns not signed signature-fields
@@ -142,7 +126,7 @@ public interface PDFSignatureService {
 	 *            the parameters with the coordinates,... of the signature field
 	 * @return the pdf document with the new added signature field
 	 */
-	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters);
+	DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters);
 
 	/**
 	 * This method allows to add a new signature field to an existing encrypted pdf document
@@ -152,10 +136,11 @@ public interface PDFSignatureService {
 	 * @param parameters
 	 *            the parameters with the coordinates,... of the signature field
 	 * @param pwd
-	 *            the password protection used to create the encrypted document
+	 *            the password protection used to create the encrypted document (optional)
 	 * @return the pdf document with the new added signature field
 	 */
-	DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, final String pwd);
+	DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+									 final String pwd);
 
 	/**
 	 * Analyze the PDF revision and try to detect any modification (shadow attacks)
@@ -165,5 +150,27 @@ public interface PDFSignatureService {
 	 * @param pwd                 {@link String} password protection
 	 */
 	void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd);
+
+	/**
+	 * Returns a page preview with the visual signature
+	 *
+	 * @param toSignDocument
+	 *            the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
+	 * Returns a preview of the signature field
+	 *
+	 * @param toSignDocument
+	 *            the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return a DSSDocument with the PNG picture
+	 */
+	DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 }

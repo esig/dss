@@ -66,6 +66,7 @@ public final class PAdESUtils {
 	/** The starting bytes of a PDF document */
 	private static final byte[] PDF_PREAMBLE = new byte[]{ '%', 'P', 'D', 'F', '-' };
 
+	/** The string used to end a PDF revision */
 	private static final byte[] PDF_EOF_STRING = new byte[] { '%', '%', 'E', 'O', 'F' };
 
 	/**
@@ -125,12 +126,14 @@ public final class PAdESUtils {
 	 * @return {@link InMemoryDocument}
 	 */
 	private static InMemoryDocument retrieveCompletePDFRevision(DSSDocument firstByteRangePart) {
+		ByteArrayOutputStream tempLine = null;
+		ByteArrayOutputStream tempRevision = null;
 		try (InputStream is = firstByteRangePart.openStream();
 				BufferedInputStream bis = new BufferedInputStream(is);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-			ByteArrayOutputStream tempLine = new ByteArrayOutputStream();
-			ByteArrayOutputStream tempRevision = new ByteArrayOutputStream();
+			tempLine = new ByteArrayOutputStream();
+			tempRevision = new ByteArrayOutputStream();
 			int b;
 			while ((b = bis.read()) != -1) {
 
@@ -164,6 +167,7 @@ public final class PAdESUtils {
 					baos.write(tempRevision.toByteArray());
 					tempRevision.close();
 					tempRevision = new ByteArrayOutputStream();
+
 				} else if (DSSUtils.isLineBreakByte((byte) b) || stringBytes.length > PDF_EOF_STRING.length) {
 					tempRevision.write(tempLine.toByteArray());
 					tempLine.close();
@@ -171,14 +175,20 @@ public final class PAdESUtils {
 				}
 
 			}
-			tempLine.close();
-			tempRevision.close();
 
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF);
 
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
+
+		} finally {
+			if (tempLine != null) {
+				Utils.closeQuietly(tempLine);
+			}
+			if (tempRevision != null) {
+				Utils.closeQuietly(tempRevision);
+			}
 		}
 	}
 

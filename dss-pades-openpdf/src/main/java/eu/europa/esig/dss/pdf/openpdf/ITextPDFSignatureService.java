@@ -40,7 +40,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -62,6 +61,8 @@ import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.signature.resources.DSSResourcesFactory;
+import eu.europa.esig.dss.signature.resources.ResourcesFactoryProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -72,7 +73,6 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -257,16 +257,17 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 	ITextDocumentReader documentReader = new ITextDocumentReader(
-						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
+	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
+		try (OutputStream os = resourcesFactory.createOutputStream();
+			 ITextDocumentReader documentReader = new ITextDocumentReader(
+					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
 			checkDocumentPermissions(documentReader);
 			if (parameters instanceof PAdESSignatureParameters) {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
@@ -279,19 +280,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument previewPageWithVisualSignature(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
-	}
-
-	@Override
-	public DSSDocument previewSignatureField(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
-	}
-
-	@Override
-	public DSSDocument sign(DSSDocument toSignDocument, byte[] signatureValue, PAdESCommonParameters parameters) {
-
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
+							final PAdESCommonParameters parameters) {
+		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
+		try (OutputStream os = resourcesFactory.createOutputStream();
 			 	ITextDocumentReader documentReader = new ITextDocumentReader(
 						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())); ) {
 			checkDocumentPermissions(documentReader);
@@ -299,7 +291,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), baos, parameters);
+			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
@@ -318,9 +310,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
 			sap.close(dic);
 
-			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
-			signature.setMimeType(MimeType.PDF);
-			return signature;
+			DSSDocument signedDocument = resourcesFactory.toDSSDocument(os);
+			signedDocument.setMimeType(MimeType.PDF);
+			return signedDocument;
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to sign a PDF : %s", e.getMessage()), e);
@@ -328,12 +320,15 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, String pwd) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	public DSSDocument addDssDictionary(final DSSDocument document,
+										final PdfValidationDataContainer validationDataForInclusion, final String pwd) {
+
+		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
+		try (OutputStream os = resourcesFactory.createOutputStream();
 				InputStream is = document.openStream();
 				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
-			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
+			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
 
 			if (!validationDataForInclusion.isEmpty()) {
@@ -347,7 +342,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			stp.close();
 
-			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			DSSDocument signature = resourcesFactory.toDSSDocument(os);
 			signature.setMimeType(MimeType.PDF);
 			return signature;
 		} catch (IOException e) {
@@ -518,8 +513,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 	
 	@Override
-	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+											final String pwd) {
+
+		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
+		try (OutputStream os = resourcesFactory.createOutputStream();
 			 	ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
 			checkDocumentPermissions(documentReader);
 			checkNewSignatureIsPermitted(documentReader, parameters);
@@ -529,7 +527,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
 
-			PdfStamper stp = new PdfStamper(reader, baos, '\0', true);
+			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			
 			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(new ITextDocumentReader(reader), parameters);
 			
@@ -538,7 +536,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			stp.close();
 
-			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
+			DSSDocument signature = resourcesFactory.toDSSDocument(os);
 			signature.setMimeType(MimeType.PDF);
 			return signature;
 		} catch (IOException e) {
@@ -558,6 +556,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			pageBox = ImageRotationUtils.swapDimensions(pageBox);
 		}
 		super.checkSignatureFieldAgainstPageDimensions(signatureFieldBox, pageBox, pageRotation);
+	}
+
+	@Override
+	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
+	}
+
+	@Override
+	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
 	}
 
 	private byte[] getPasswordBinary(String currentPassword) {
@@ -580,7 +588,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
-			final PdfDocumentReader finalRevisionReader) throws IOException {
+			final PdfDocumentReader finalRevisionReader) {
 		// not supported
 		return Collections.emptyList();
 	}
