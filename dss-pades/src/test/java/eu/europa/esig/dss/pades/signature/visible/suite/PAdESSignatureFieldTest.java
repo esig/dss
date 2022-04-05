@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -36,6 +37,10 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -45,6 +50,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -733,6 +739,50 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 	}
 
+	@Test
+	public void testWithTempFileResources() throws IOException {
+		service.setPdfObjFactory(new TempFilePdfObjFactory());
+
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		// Add a signature field first
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("test");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument doc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc);
+		assertTrue(doc instanceof FileDocument);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("test");
+
+		DSSDocument signed = signAndValidate(doc);
+		assertNotNull(signed);
+		assertTrue(signed instanceof FileDocument);
+	}
+
+	private static class TempFilePdfObjFactory extends ServiceLoaderPdfObjFactory {
+
+		private static TempFileResourcesHandlerBuilder resourcesHandlerBuilder;
+
+		static {
+			resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+			resourcesHandlerBuilder.setTempFileDirectory(new File("target/"));
+		}
+
+		@Override
+		public PDFSignatureService newPAdESSignatureService() {
+			PDFSignatureService service = super.newPAdESSignatureService();
+			if (service instanceof AbstractPDFSignatureService) {
+				((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+			}
+			return service;
+		}
+
+	}
+
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
@@ -744,7 +794,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		// reports.print();
+		 reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 

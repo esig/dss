@@ -44,6 +44,8 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -76,6 +78,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private final SignatureDrawerFactory signatureDrawerFactory;
 
 	/**
+	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 * The resources are used on a document creation
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
+	 */
+	protected DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+
+	/**
 	 * This variable set the behavior to follow in case of overlapping a new
 	 * signature field with existing annotations.
 	 * 
@@ -102,7 +113,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * This variable sets the maximal amount of pages in a PDF to execute visual
 	 * screenshot comparison for Example: for value 10, the visual comparison will
-	 * be executed for a PDF containing 10 and less pages
+	 * be executed for a PDF containing 10 and fewer pages
 	 * 
 	 * Default : 10 pages
 	 */
@@ -120,6 +131,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		Objects.requireNonNull(signatureDrawerFactory, "The SignatureDrawerFactory shall be defined!");
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
+	}
+
+	/**
+	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation in internal methods
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder) {
+		Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesFactoryBuilder cannot be null!");
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	/**
@@ -167,7 +190,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * 
 	 * Default : 10 pages
 	 * 
-	 * 
 	 * @param pagesAmount the amount of the pages to execute visual comparison for
 	 */
 	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
@@ -187,6 +209,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			throw new IllegalArgumentException("SignatureDrawer shall be defined for the used SignatureDrawerFactory!");
 		}
 		return signatureDrawer;
+	}
+
+	/**
+	 * This method instantiates a new {@code DSSResourcesFactory}
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 * @throws IOException if an error occurs on DSSResourcesHandler instantiation
+	 */
+	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
+		return resourcesHandlerBuilder.createResourcesHandler();
 	}
 
 	/**
@@ -468,7 +500,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
 		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange : [%s]", byteRange);
+			String message = String.format("Unable to retrieve data from the ByteRange : %s", byteRange);
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
 				LOG.error(message, e);

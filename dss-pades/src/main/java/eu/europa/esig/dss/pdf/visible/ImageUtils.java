@@ -24,10 +24,10 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.signature.resources.DSSResourcesFactory;
-import eu.europa.esig.dss.signature.resources.ResourcesFactoryProvider;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -247,16 +247,28 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Transforms a {@code BufferedImage} to {@code DSSDocument}
+	 * Transforms a {@code BufferedImage} to {@code DSSDocument} using in memory processing
 	 *
 	 * @param bufferedImage {@link BufferedImage} to convert
 	 * @return {@link DSSDocument}
 	 */
 	public static DSSDocument toDSSDocument(BufferedImage bufferedImage) {
-		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
-		try (OutputStream os = resourcesFactory.createOutputStream()) {
+		return toDSSDocument(bufferedImage, PAdESUtils.initializeDSSResourcesHandler());
+	}
+
+	/**
+	 * Transforms a {@code BufferedImage} to {@code DSSDocument}, using a provided {@code DSSResourcesHandler}
+	 *
+	 * @param bufferedImage {@link BufferedImage} to convert
+	 * @param dssResourcesHandler {@link DSSResourcesHandler}
+	 * @return {@link DSSDocument}
+	 */
+	public static DSSDocument toDSSDocument(BufferedImage bufferedImage,
+											DSSResourcesHandler dssResourcesHandler) {
+		try (DSSResourcesHandler resourcesHandler = dssResourcesHandler;
+			 OutputStream os = resourcesHandler.createOutputStream()) {
 			ImageIO.write(bufferedImage, "png", os);
-			DSSDocument dssDocument = resourcesFactory.toDSSDocument(os);
+			DSSDocument dssDocument = resourcesHandler.writeToDSSDocument();
 			dssDocument.setName(SCREENSHOT_PNG_NAME);
 			dssDocument.setMimeType(MimeType.PNG);
 			return dssDocument;

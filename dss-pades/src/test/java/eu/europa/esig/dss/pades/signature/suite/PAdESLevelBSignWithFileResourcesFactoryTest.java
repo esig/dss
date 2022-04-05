@@ -4,12 +4,15 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.resources.ResourcesFactoryProvider;
-import eu.europa.esig.dss.signature.resources.TempFileResourcesFactoryBuilder;
+import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * This unit test evaluates the memory consumption when using a {@code TempFileResourcesFactory} implementation.
  *
- * Note : use -XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC
- *        arguments to disable garbage collector for manual testing
  */
 public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTestSignature {
 
@@ -34,14 +35,16 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBSignWithFileResourcesFactoryTest.class.getResourceAsStream("/big_file.pdf"));
+        documentToSign = new InMemoryDocument(PAdESLevelBSignWithFileResourcesFactoryTest.class
+                .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeType.PDF);
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-        service = new PAdESService(getOfflineCertificateVerifier());
+        service = new PAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getAlternateGoodTsa());
     }
 
     @Override
@@ -50,11 +53,9 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
         PAdESSignatureParameters params = getSignatureParameters();
         PAdESService service = getService();
 
-        TempFileResourcesFactoryBuilder resourcesFactoryBuilder = new TempFileResourcesFactoryBuilder()
-                .setTempFileDirectory(new File("target"));
+        service.setPdfObjFactory(new TempFilePdfObjFactory());
 
-        ResourcesFactoryProvider.getInstance().setResourcesFactoryBuilder(resourcesFactoryBuilder);
-
+        Runtime.getRuntime().gc();
         double memoryBefore = getRuntimeMemoryInMegabytes();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
@@ -66,16 +67,49 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
                 getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
+        Runtime.getRuntime().gc();
         memoryBefore = getRuntimeMemoryInMegabytes();
 
         DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
         double memoryAfterSignDocument = getRuntimeMemoryInMegabytes();
         LOG.info("Memory used for signDocument() : {}Mb", memoryAfterSignDocument - memoryBefore);
-
         assertTrue(signedDocument instanceof FileDocument);
 
-        return signedDocument;
+        params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
+
+        Runtime.getRuntime().gc();
+        memoryBefore = getRuntimeMemoryInMegabytes();
+
+        DSSDocument tLevelSignature = service.extendDocument(signedDocument, params);
+
+        double memoryTLevelExtendDocument = getRuntimeMemoryInMegabytes();
+        LOG.info("Memory used for T-Level extendDocument() : {}Mb", memoryTLevelExtendDocument - memoryBefore);
+        assertTrue(tLevelSignature instanceof FileDocument);
+
+        params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
+
+        Runtime.getRuntime().gc();
+        memoryBefore = getRuntimeMemoryInMegabytes();
+
+        DSSDocument ltLevelSignature = service.extendDocument(tLevelSignature, params);
+
+        double memoryLTLevelExtendDocument = getRuntimeMemoryInMegabytes();
+        LOG.info("Memory used for LT-Level extendDocument() : {}Mb", memoryLTLevelExtendDocument - memoryBefore);
+        assertTrue(ltLevelSignature instanceof FileDocument);
+
+        params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+        Runtime.getRuntime().gc();
+        memoryBefore = getRuntimeMemoryInMegabytes();
+
+        DSSDocument ltaLevelSignature = service.extendDocument(ltLevelSignature, params);
+
+        double memoryLTALevelExtendDocument = getRuntimeMemoryInMegabytes();
+        LOG.info("Memory used for LTA-Level extendDocument() : {}Mb", memoryLTALevelExtendDocument - memoryBefore);
+        assertTrue(ltaLevelSignature instanceof FileDocument);
+
+        return ltaLevelSignature;
     }
 
     private static double getRuntimeMemoryInMegabytes() {
@@ -109,5 +143,53 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
     protected String getSigningAlias() {
         return GOOD_USER;
     }
+
+    private static class TempFilePdfObjFactory extends ServiceLoaderPdfObjFactory {
+
+        private static TempFileResourcesHandlerBuilder resourcesHandlerBuilder;
+
+        static {
+            resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+            resourcesHandlerBuilder.setTempFileDirectory(new File("target/"));
+        }
+
+        @Override
+        public PDFSignatureService newPAdESSignatureService() {
+            PDFSignatureService service = super.newPAdESSignatureService();
+            if (service instanceof AbstractPDFSignatureService) {
+                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
+            return service;
+        }
+
+        @Override
+        public PDFSignatureService newContentTimestampService() {
+            PDFSignatureService service = super.newContentTimestampService();
+            if (service instanceof AbstractPDFSignatureService) {
+                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
+            return service;
+        }
+
+        @Override
+        public PDFSignatureService newSignatureTimestampService() {
+            PDFSignatureService service = super.newSignatureTimestampService();
+            if (service instanceof AbstractPDFSignatureService) {
+                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
+            return service;
+        }
+
+        @Override
+        public PDFSignatureService newArchiveTimestampService() {
+            PDFSignatureService service = super.newArchiveTimestampService();
+            if (service instanceof AbstractPDFSignatureService) {
+                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
+            return service;
+        }
+
+    }
+
 
 }

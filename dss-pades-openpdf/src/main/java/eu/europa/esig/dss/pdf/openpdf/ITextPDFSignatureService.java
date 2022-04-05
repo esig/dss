@@ -61,8 +61,7 @@ import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesFactory;
-import eu.europa.esig.dss.signature.resources.ResourcesFactoryProvider;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -107,8 +106,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private PdfStamper prepareStamper(PdfReader reader, OutputStream output, PAdESCommonParameters parameters)
+	private PdfStamper prepareStamper(ITextDocumentReader documentReader, OutputStream output, PAdESCommonParameters parameters)
 			throws IOException {
+		PdfReader reader = documentReader.getPdfReader();
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
 		stp.setIncludeFileID(true);
 		stp.setOverrideFileId(generateFileId(parameters));
@@ -130,7 +130,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			signatureDrawer.init(imageParameters, reader, sap);
 
 			if (fieldItem == null) {
-				getVisibleSignatureFieldBoxPosition(signatureDrawer, new ITextDocumentReader(reader), fieldParameters);
+				getVisibleSignatureFieldBoxPosition(signatureDrawer, documentReader, fieldParameters);
 			}
 
 			signatureDrawer.draw();
@@ -258,8 +258,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
-		try (OutputStream os = resourcesFactory.createOutputStream();
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
 					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
 			checkDocumentPermissions(documentReader);
@@ -267,7 +267,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), os, parameters);
+			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
 			if (LOG.isDebugEnabled()) {
@@ -282,16 +282,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
 							final PAdESCommonParameters parameters) {
-		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
-		try (OutputStream os = resourcesFactory.createOutputStream();
-			 	ITextDocumentReader documentReader = new ITextDocumentReader(
-						 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())); ) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 ITextDocumentReader documentReader = new ITextDocumentReader(
+					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
 			checkDocumentPermissions(documentReader);
 			if (parameters instanceof PAdESSignatureParameters) {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			PdfStamper stp = prepareStamper(documentReader.getPdfReader(), os, parameters);
+			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
 			byte[] pk = signatureValue;
@@ -310,7 +310,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
 			sap.close(dic);
 
-			DSSDocument signedDocument = resourcesFactory.toDSSDocument(os);
+			DSSDocument signedDocument = resourcesHandler.writeToDSSDocument();
 			signedDocument.setMimeType(MimeType.PDF);
 			return signedDocument;
 
@@ -322,11 +322,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document,
 										final PdfValidationDataContainer validationDataForInclusion, final String pwd) {
-
-		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
-		try (OutputStream os = resourcesFactory.createOutputStream();
-				InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 InputStream is = document.openStream();
+			 PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -342,7 +341,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			stp.close();
 
-			DSSDocument signature = resourcesFactory.toDSSDocument(os);
+			DSSDocument signature = resourcesHandler.writeToDSSDocument();
 			signature.setMimeType(MimeType.PDF);
 			return signature;
 		} catch (IOException e) {
@@ -515,16 +514,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
 											final String pwd) {
-
-		DSSResourcesFactory resourcesFactory = ResourcesFactoryProvider.getInstance().getFactory();
-		try (OutputStream os = resourcesFactory.createOutputStream();
-			 	ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
 			checkDocumentPermissions(documentReader);
 			checkNewSignatureIsPermitted(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
 			if (reader.getNumberOfPages() < parameters.getPage()) {
-				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
+				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!",
+						parameters.getPage()));
 			}
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
@@ -536,7 +535,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			stp.close();
 
-			DSSDocument signature = resourcesFactory.toDSSDocument(os);
+			DSSDocument signature = resourcesHandler.writeToDSSDocument();
 			signature.setMimeType(MimeType.PDF);
 			return signature;
 		} catch (IOException e) {

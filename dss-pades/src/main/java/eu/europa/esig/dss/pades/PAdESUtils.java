@@ -37,6 +37,8 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -62,6 +64,9 @@ public final class PAdESUtils {
 
 	/** Defines a number of the first page in a document */
 	public static final int DEFAULT_FIRST_PAGE = 1;
+
+	/** The default resources handler builder to be used across the code */
+	public static final InMemoryResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
 
 	/** The starting bytes of a PDF document */
 	private static final byte[] PDF_PREAMBLE = new byte[]{ '%', 'P', 'D', 'F', '-' };
@@ -336,6 +341,15 @@ public final class PAdESUtils {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * This method initializes a new {@code DSSResourcesHandler} object
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 */
+	public static DSSResourcesHandler initializeDSSResourcesHandler() {
+		return DEFAULT_RESOURCES_HANDLER_BUILDER.createResourcesHandler();
 	}
 
 }
