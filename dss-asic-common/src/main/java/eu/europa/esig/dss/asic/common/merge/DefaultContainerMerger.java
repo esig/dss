@@ -252,7 +252,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
             if (Utils.isStringNotEmpty(currentZipComment)) {
                 if (Utils.isStringEmpty(zipComment)) {
                     zipComment = currentZipComment;
-                } else if (!zipComment.equals(currentZipComment)) {
+                } else if (zipComment != null && !zipComment.equals(currentZipComment)) {
                     throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                             "Containers contain different zip comments : '%s' and '%s'!", zipComment, currentZipComment));
                 }
