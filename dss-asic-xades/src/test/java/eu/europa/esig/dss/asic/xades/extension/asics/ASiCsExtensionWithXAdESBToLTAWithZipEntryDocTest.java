@@ -1,19 +1,18 @@
 package eu.europa.esig.dss.asic.xades.extension.asics;
 
+import eu.europa.esig.dss.asic.common.ContainerEntryDocument;
 import eu.europa.esig.dss.asic.common.DSSZipEntry;
 import eu.europa.esig.dss.asic.common.DSSZipEntryDocument;
 import eu.europa.esig.dss.asic.common.SecureContainerHandler;
-import eu.europa.esig.dss.asic.common.ContainerEntryDocument;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
+import eu.europa.esig.dss.asic.xades.signature.asics.AbstractASiCSWithXAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -33,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCsExtensionWithXAdESBToLTAWithZipEntryDocTest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
+public class ASiCsExtensionWithXAdESBToLTAWithZipEntryDocTest extends AbstractASiCSWithXAdESMultipleDocumentsTestSignature {
 
     private ContainerEntryDocument documentOne;
     private ContainerEntryDocument documentTwo;
@@ -163,21 +162,6 @@ public class ASiCsExtensionWithXAdESBToLTAWithZipEntryDocTest extends AbstractAS
     @Override
     protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected MimeType getExpectedMime() {
-        return MimeType.ASICS;
-    }
-
-    @Override
-    protected boolean isBaselineT() {
-        return false;
-    }
-
-    @Override
-    protected boolean isBaselineLTA() {
-        return false;
     }
 
     @Override

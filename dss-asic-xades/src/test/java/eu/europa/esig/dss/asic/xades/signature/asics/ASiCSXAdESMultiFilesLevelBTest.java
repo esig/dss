@@ -26,7 +26,6 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -56,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
+public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCSWithXAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -90,6 +89,8 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCWithXAdESMultipl
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doc);
@@ -125,6 +126,8 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCWithXAdESMultipl
 
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertEquals(4, Utils.collectionSize(signatureScopes)); // package.zip + two signed files
@@ -159,21 +162,6 @@ public class ASiCSXAdESMultiFilesLevelBTest extends AbstractASiCWithXAdESMultipl
 	@Override
 	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

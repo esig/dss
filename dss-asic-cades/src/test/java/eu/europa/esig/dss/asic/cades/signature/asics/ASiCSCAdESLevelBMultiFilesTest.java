@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -51,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
+public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -78,6 +77,8 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertEquals(4, Utils.collectionSize(signatureScopes)); // package.zip + three signed files
@@ -134,21 +135,6 @@ public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCWithCAdESMultipl
 	@Override
 	protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICS;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return false;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return false;
 	}
 
 	@Override

@@ -20,11 +20,14 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
@@ -38,6 +41,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCWithCAdESMultipleDocumentsTestSignature extends
 		AbstractASiCMultipleDocumentsTestSignature<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
+
+	@Override
+	protected boolean isBaselineT() {
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.CAdES_BASELINE_LT.equals(signatureLevel)
+				|| SignatureLevel.CAdES_BASELINE_T.equals(signatureLevel);
+	}
+
+	@Override
+	protected boolean isBaselineLTA() {
+		return SignatureLevel.CAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
+	}
+
+	@Override
+	protected ASiCWithCAdESContainerExtractor getContainerExtractor(DSSDocument document) {
+		return new ASiCWithCAdESContainerExtractor(document);
+	}
 
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {

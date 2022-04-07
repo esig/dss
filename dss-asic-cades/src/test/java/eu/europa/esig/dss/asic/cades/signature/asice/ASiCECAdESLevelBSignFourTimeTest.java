@@ -125,4 +125,5 @@ public class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSign
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
 }

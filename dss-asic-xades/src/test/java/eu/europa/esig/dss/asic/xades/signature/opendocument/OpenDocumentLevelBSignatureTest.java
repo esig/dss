@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
 
 public class OpenDocumentLevelBSignatureTest extends AbstractOpenDocumentTestSignature {
 	
@@ -63,4 +62,5 @@ public class OpenDocumentLevelBSignatureTest extends AbstractOpenDocumentTestSig
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
 }
