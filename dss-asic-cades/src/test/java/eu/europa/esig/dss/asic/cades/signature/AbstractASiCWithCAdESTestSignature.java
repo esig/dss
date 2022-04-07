@@ -56,6 +56,11 @@ public abstract class AbstractASiCWithCAdESTestSignature
         extends AbstractASiCTestSignature<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
 
     @Override
+    protected ASiCWithCAdESContainerExtractor getContainerExtractor(DSSDocument document) {
+        return new ASiCWithCAdESContainerExtractor(document);
+    }
+
+    @Override
     protected List<DSSDocument> getOriginalDocuments() {
         return Collections.singletonList(getDocumentToSign());
     }

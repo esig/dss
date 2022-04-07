@@ -20,25 +20,12 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
+import eu.europa.esig.dss.asic.xades.signature.asice.AbstractASiCEWithXAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -54,8 +41,19 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
 
-public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
 	
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -79,6 +77,8 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractASiCWithXA
 	
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
+		super.onDocumentSigned(byteArray);
+
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
 		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doc);
@@ -110,15 +110,13 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractASiCWithXA
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
-		try {
-			assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			fail(e.getMessage());
-		}
+		assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
 	}
 
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+		super.checkSignatureScopes(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		assertEquals(2, Utils.collectionSize(signatureScopes));
@@ -127,21 +125,6 @@ public class OpenDocumentMultipleArchivesLevelLTATest extends AbstractASiCWithXA
 	@Override
 	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
 		return signatureParameters;
-	}
-
-	@Override
-	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
-	}
-
-	@Override
-	protected boolean isBaselineT() {
-		return true;
-	}
-
-	@Override
-	protected boolean isBaselineLTA() {
-		return true;
 	}
 
 	@Override

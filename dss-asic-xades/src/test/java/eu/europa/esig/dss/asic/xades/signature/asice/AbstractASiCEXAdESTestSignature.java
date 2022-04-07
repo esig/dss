@@ -20,21 +20,27 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCTestSignature;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,26 +73,50 @@ public abstract class AbstractASiCEXAdESTestSignature extends
 	protected boolean isBaselineLTA() {
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
 	}
+
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
-
-		ASiCWithXAdESContainerExtractor containerExtractor = new ASiCWithXAdESContainerExtractor(new InMemoryDocument(byteArray));
-		ASiCContent asicContent = containerExtractor.extract();
-		checkExtractedContent(asicContent);
-
-		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
-		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));
-		checkManifests(signatureDocuments, asicContent.getAllManifestDocuments());
+	protected ASiCWithXAdESContainerExtractor getContainerExtractor(DSSDocument document) {
+		return new ASiCWithXAdESContainerExtractor(document);
 	}
 
+	@Override
 	protected void checkExtractedContent(ASiCContent asicContent) {
-		assertNotNull(asicContent);
-		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
-		assertNotNull(asicContent.getMimeTypeDocument());
+		super.checkExtractedContent(asicContent);
+
 		if (getSignatureParameters().aSiC().isZipComment()) {
 			assertTrue(Utils.isStringNotBlank(asicContent.getZipComment()));
 		}
+
+		assertNotNull(asicContent.getMimeTypeDocument());
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+
+		assertEquals(1, asicContent.getManifestDocuments().size());
+		assertEquals("META-INF/manifest.xml", asicContent.getManifestDocuments().get(0).getName());
+
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		assertTrue(Utils.isCollectionNotEmpty(signatureDocuments));
+		for (DSSDocument signatureDocument : signatureDocuments) {
+			assertTrue(signatureDocument.getName().startsWith("META-INF/"));
+			assertTrue(DomUtils.isDOM(signatureDocument));
+
+			Document document = DomUtils.buildDOM(signatureDocument);
+			assertEquals("XAdESSignatures", document.getDocumentElement().getLocalName());
+			assertEquals("http://uri.etsi.org/02918/v1.2.1#", document.getDocumentElement().getNamespaceURI());
+
+			boolean sigFound = false;
+			NodeList childNodes = document.getDocumentElement().getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				Node node = childNodes.item(i);
+				if (node instanceof Element) {
+					Element element = (Element) node;
+					assertEquals("Signature", element.getLocalName());
+					sigFound = true;
+				}
+			}
+			assertTrue(sigFound);
+		}
+
+		checkManifests(signatureDocuments, asicContent.getAllManifestDocuments());
 	}
 
 	protected void checkManifests(List<DSSDocument> signatures, List<DSSDocument> manifestDocuments) {
@@ -109,10 +139,26 @@ public abstract class AbstractASiCEXAdESTestSignature extends
 	
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		super.checkContainerInfo(diagnosticData);
+
 		assertNotNull(diagnosticData.getContainerInfo());
 		assertEquals(ASiCContainerType.ASiC_E, diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+
+		for (String document : diagnosticData.getContainerInfo().getContentFiles()) {
+			if (!document.startsWith("META-INF/")) {
+				for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+					boolean contentFileFound = false;
+					for (XmlSignatureScope signatureScope : signatureWrapper.getSignatureScopes()) {
+						if (document.equals(signatureScope.getName())) {
+							contentFileFound = true;
+						}
+					}
+					assertTrue(contentFileFound);
+				}
+			}
+		}
 	}
 
 }
