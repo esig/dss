@@ -26,6 +26,9 @@ import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.asice.AbstractASiCEXAdESTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -56,7 +59,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractASiCEXAd
 
 	protected DSSDocument fileToTest;
 	
-	private static Stream<Arguments> data() {
+	protected static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
@@ -152,8 +155,30 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractASiCEXAd
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
 		assertNotNull(diagnosticData.getContainerInfo());
 		assertNotNull(diagnosticData.getContainerType());
+		assertEquals(ASiCContainerType.ASiC_E, diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
+		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+
+		assertDocumentsSigned(diagnosticData.getSignatures(), diagnosticData.getContainerInfo().getContentFiles());
+		assertDocumentsSigned(diagnosticData.getSignatures(), Collections.singletonList("META-INF/manifest.xml"));
+		assertDocumentsSigned(diagnosticData.getSignatures(), Collections.singletonList("mimetype"));
+	}
+
+	private void assertDocumentsSigned(List<SignatureWrapper> signatureWrappers, List<String> documentNames) {
+		for (String document : documentNames) {
+			for (SignatureWrapper signatureWrapper : signatureWrappers) {
+				if (!signatureWrapper.isCounterSignature()) {
+					boolean contentFileFound = false;
+					for (XmlSignatureScope signatureScope : signatureWrapper.getSignatureScopes()) {
+						if (document.equals(signatureScope.getName())) {
+							contentFileFound = true;
+						}
+					}
+					assertEquals(!document.startsWith("external-data/"), contentFileFound);
+				}
+			}
+		}
 	}
 	
 	@Override
