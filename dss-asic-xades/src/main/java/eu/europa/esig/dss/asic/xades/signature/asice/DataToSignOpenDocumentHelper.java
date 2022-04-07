@@ -23,6 +23,10 @@ package eu.europa.esig.dss.asic.xades.signature.asice;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+import java.util.List;
 
 /**
  * A class to generate a DataToSign for an OpenDocument signing
@@ -41,6 +45,11 @@ public class DataToSignOpenDocumentHelper extends DataToSignASiCEWithXAdESHelper
 	 */
 	public DataToSignOpenDocumentHelper(final ASiCContent asicContent, final ASiCParameters asicParameters) {
 		super(asicContent, asicParameters);
+	}
+
+	@Override
+	public List<DSSDocument> getToBeSigned() {
+		return OpenDocumentSupportUtils.getOpenDocumentCoverage(asicContent);
 	}
 
 	@Override

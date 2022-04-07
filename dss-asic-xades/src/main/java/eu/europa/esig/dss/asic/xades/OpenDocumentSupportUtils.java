@@ -57,12 +57,12 @@ public final class OpenDocumentSupportUtils {
 	 */
 	public static List<DSSDocument> getOpenDocumentCoverage(ASiCContent asicContent) {
 		List<DSSDocument> docs = new ArrayList<>();
-		docs.add(asicContent.getMimeTypeDocument());
 		docs.addAll(asicContent.getSignedDocuments());
 		docs.addAll(asicContent.getManifestDocuments());
 		docs.addAll(asicContent.getArchiveManifestDocuments());
 		docs.addAll(asicContent.getTimestampDocuments());
 		docs.addAll(asicContent.getUnsupportedDocuments());
+		docs.add(asicContent.getMimeTypeDocument());
 
 		List<DSSDocument> result = new ArrayList<>();
 		for (DSSDocument doc : docs) {

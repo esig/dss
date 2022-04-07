@@ -24,7 +24,6 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.signature.asice.ASiCEWithXAdESManifestBuilder;
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignASiCEWithXAdESHelper;
 import eu.europa.esig.dss.asic.xades.signature.asice.DataToSignOpenDocumentHelper;
@@ -34,7 +33,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,7 +42,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 
 	/**
 	 * This method is used to create a {@code GetDataToSignASiCWithXAdESHelper} from an {@code ASiCContent}
-	 * ]
+	 *
 	 * @param asicContent {@link ASiCContent}
 	 * @param parameters {@link ASiCWithXAdESSignatureParameters}
 	 * @return {@link GetDataToSignASiCWithXAdESHelper}
@@ -54,7 +52,6 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
 
 		if (ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument())) {
-			asicContent = moveExternalDataContent(asicContent);
 			return new DataToSignOpenDocumentHelper(asicContent, parameters.aSiC());
 		}
 
@@ -102,26 +99,6 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 	private DSSDocument createASiCManifest(List<DSSDocument> documents) {
 		return new ASiCEWithXAdESManifestBuilder().setDocuments(documents)
 				.setManifestFilename(ASiCUtils.ASICE_METAINF_MANIFEST).build();
-	}
-
-	/**
-	 * Special method for OpenDocument processing, moving "/external-data" documents to unsigned documents
-	 *
-	 * @param asicContent {@link ASiCContent} extracted content
-	 * @return {@link ASiCContent} processed content
-	 */
-	private ASiCContent moveExternalDataContent(ASiCContent asicContent) {
-		List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
-		List<DSSDocument> unsupportedDocuments = asicContent.getUnsupportedDocuments();
-		Iterator<DSSDocument> iterator = signedDocuments.iterator();
-		while (iterator.hasNext()) {
-			DSSDocument document = iterator.next();
-			if (OpenDocumentSupportUtils.isExternalDataDocument(document)) {
-				unsupportedDocuments.add(document);
-				iterator.remove();
-			}
-		}
-		return asicContent;
 	}
 
 }
