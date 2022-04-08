@@ -13,7 +13,16 @@
 |===
 |Version           |Release date             |Features
 
-|v5.10.RC1         |February 2022           a|Main new features / improvements :
+|v5.10.1           |April 2022              a|Bug fixes :
+
+                                              * ASiC-E with XAdES parallel signature creation regression;
+                                              * ASiC OpenDocument does not sign mimetype and manifest;
+                                              * JAdES Certificate Source wrong behaviour in method getKeyIdentifierCertificates;
+                                              * Upgrade jackson-binding dependency;
+                                              * Demo : NPE on PAdES sign;
+                                              * Demo : upgrade Spring.
+
+|v5.10             |March 2022              a|Main new features / improvements :
 
                                               * Cookbook update;
                                               * PAdES : object modification detection;
@@ -33,7 +42,7 @@
                                               * Dependencies upgrade (HttpClient5, BouncyCastle, Santuario, logback, etc.);
                                               * Java 17 support.
 
-|v5.10.RC1         |February 2022           a|Bug fixes :
+|v5.10             |March 2022              a|Bug fixes :
 
                                               * PAdES : erroneously triggered visual signature difference warning;
                                               * PAdES : wrong LT-/LTA-level determination for documents with multiple signatures;
