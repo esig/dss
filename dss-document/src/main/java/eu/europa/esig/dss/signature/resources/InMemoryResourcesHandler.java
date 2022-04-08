@@ -20,9 +20,10 @@ public class InMemoryResourcesHandler extends AbstractResourcesHandler<ByteArray
     }
 
     @Override
-    public DSSDocument writeToDSSDocument() {
-        ByteArrayOutputStream baos = getOutputStream();
-        return new InMemoryDocument(baos.toByteArray());
+    public DSSDocument writeToDSSDocument() throws IOException {
+        try (ByteArrayOutputStream baos = getOutputStream()) {
+            return new InMemoryDocument(baos.toByteArray());
+        }
     }
 
 }

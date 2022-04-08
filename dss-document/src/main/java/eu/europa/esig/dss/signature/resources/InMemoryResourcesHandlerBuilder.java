@@ -5,7 +5,7 @@ package eu.europa.esig.dss.signature.resources;
  *
  * NOTE: This implementation is used by default
  */
-public class InMemoryResourcesHandlerBuilder implements DSSResourcesHandlerBuilder<InMemoryResourcesHandler> {
+public class InMemoryResourcesHandlerBuilder implements DSSResourcesHandlerBuilder {
 
     @Override
     public InMemoryResourcesHandler createResourcesHandler() {

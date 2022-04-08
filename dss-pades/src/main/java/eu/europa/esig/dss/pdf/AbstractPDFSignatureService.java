@@ -84,7 +84,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
 	 */
-	protected DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
 	/**
 	 * This variable set the behavior to follow in case of overlapping a new
@@ -133,14 +133,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		this.signatureDrawerFactory = signatureDrawerFactory;
 	}
 
-	/**
-	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation in internal methods
-	 *
-	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
-	 *
-	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
-	 */
-	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder) {
+	@Override
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
 		Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesFactoryBuilder cannot be null!");
 		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
@@ -500,7 +494,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
 		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange : %s", byteRange);
+			String message = String.format("Unable to retrieve data from the ByteRange : %s. Reason : %s", byteRange, e.getMessage());
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
 				LOG.error(message, e);

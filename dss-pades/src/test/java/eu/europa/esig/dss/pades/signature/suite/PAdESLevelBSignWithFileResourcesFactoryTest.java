@@ -9,15 +9,10 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,7 +48,7 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
         PAdESSignatureParameters params = getSignatureParameters();
         PAdESService service = getService();
 
-        service.setPdfObjFactory(new TempFilePdfObjFactory());
+        service.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
 
         Runtime.getRuntime().gc();
         double memoryBefore = getRuntimeMemoryInMegabytes();
@@ -143,53 +138,5 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
     protected String getSigningAlias() {
         return GOOD_USER;
     }
-
-    private static class TempFilePdfObjFactory extends ServiceLoaderPdfObjFactory {
-
-        private static TempFileResourcesHandlerBuilder resourcesHandlerBuilder;
-
-        static {
-            resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
-            resourcesHandlerBuilder.setTempFileDirectory(new File("target/"));
-        }
-
-        @Override
-        public PDFSignatureService newPAdESSignatureService() {
-            PDFSignatureService service = super.newPAdESSignatureService();
-            if (service instanceof AbstractPDFSignatureService) {
-                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
-            }
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newContentTimestampService() {
-            PDFSignatureService service = super.newContentTimestampService();
-            if (service instanceof AbstractPDFSignatureService) {
-                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
-            }
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newSignatureTimestampService() {
-            PDFSignatureService service = super.newSignatureTimestampService();
-            if (service instanceof AbstractPDFSignatureService) {
-                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
-            }
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newArchiveTimestampService() {
-            PDFSignatureService service = super.newArchiveTimestampService();
-            if (service instanceof AbstractPDFSignatureService) {
-                ((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
-            }
-            return service;
-        }
-
-    }
-
 
 }

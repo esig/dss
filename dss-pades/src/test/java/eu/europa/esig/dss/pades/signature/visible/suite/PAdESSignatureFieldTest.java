@@ -37,9 +37,6 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,7 +47,6 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -741,7 +737,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	@Test
 	public void testWithTempFileResources() throws IOException {
-		service.setPdfObjFactory(new TempFilePdfObjFactory());
+		service.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
@@ -763,26 +759,6 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertTrue(signed instanceof FileDocument);
 	}
 
-	private static class TempFilePdfObjFactory extends ServiceLoaderPdfObjFactory {
-
-		private static TempFileResourcesHandlerBuilder resourcesHandlerBuilder;
-
-		static {
-			resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
-			resourcesHandlerBuilder.setTempFileDirectory(new File("target/"));
-		}
-
-		@Override
-		public PDFSignatureService newPAdESSignatureService() {
-			PDFSignatureService service = super.newPAdESSignatureService();
-			if (service instanceof AbstractPDFSignatureService) {
-				((AbstractPDFSignatureService) service).setResourcesHandlerBuilder(resourcesHandlerBuilder);
-			}
-			return service;
-		}
-
-	}
-
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
@@ -794,7 +770,7 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
-		 reports.print();
+		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 

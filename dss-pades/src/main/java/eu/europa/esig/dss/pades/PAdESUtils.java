@@ -134,7 +134,7 @@ public final class PAdESUtils {
 		ByteArrayOutputStream tempLine = null;
 		ByteArrayOutputStream tempRevision = null;
 		try (InputStream is = firstByteRangePart.openStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
+			 BufferedInputStream bis = new BufferedInputStream(is);
 			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
 			tempLine = new ByteArrayOutputStream();

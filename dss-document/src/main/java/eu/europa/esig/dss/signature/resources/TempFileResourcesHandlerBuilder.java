@@ -7,7 +7,7 @@ import java.io.File;
 /**
  * This class creates a {@code TempFileResourcesHandlerBuilder} storing temporary objects to temporary filesystem documents
  */
-public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuilder<TempFileResourcesHandler> {
+public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuilder {
 
     /** The default prefix of a temporary created file */
     private final static String DEFAULT_PREFIX = "dss-";

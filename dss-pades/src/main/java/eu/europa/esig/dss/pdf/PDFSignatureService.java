@@ -25,6 +25,7 @@ import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 import java.util.List;
@@ -172,5 +173,16 @@ public interface PDFSignatureService {
 	 * @return a DSSDocument with the PNG picture
 	 */
 	DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
+	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesHandler}
+	 * creation in internal methods. {@code DSSResourcesHandler} defines a way to operate with OutputStreams and
+	 * create {@code DSSDocument}s.
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder);
 
 }

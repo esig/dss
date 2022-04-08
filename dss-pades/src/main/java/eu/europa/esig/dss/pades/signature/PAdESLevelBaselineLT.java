@@ -69,8 +69,21 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();
 		PdfValidationDataContainer validationData = documentValidator.getValidationData(signatures, detachedTimestamps);
 
-		final PDFSignatureService signatureService = newPdfSignatureService();
+		final PDFSignatureService signatureService = getPAdESSignatureService();
 		return signatureService.addDssDictionary(extendedDocument, validationData, parameters.getPasswordProtection());
+	}
+
+	/**
+	 * This method returns a {@code PDFSignatureService} to be used for a DSS Dictionary addition
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
+	private PDFSignatureService getPAdESSignatureService() {
+		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+		if (resourcesHandlerBuilder != null) {
+			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		}
+		return pdfSignatureService;
 	}
 
 	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures, PAdESSignatureParameters parameters) {

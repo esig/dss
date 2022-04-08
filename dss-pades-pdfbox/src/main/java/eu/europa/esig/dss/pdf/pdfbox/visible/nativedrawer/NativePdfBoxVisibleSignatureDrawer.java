@@ -86,12 +86,12 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private boolean embedFontSubset = false;
 
 	/**
-	 * The builder to be used to create a new {@code DSSResourcesHandler} for visual signature creatuib,
+	 * The builder is to be used to create a new {@code DSSResourcesHandler} for visual signature creation,
 	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
 	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}
 	 */
-	private DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
 	/**
 	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
@@ -114,7 +114,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 *
 	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
 	 */
-	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder<?> resourcesHandlerBuilder) {
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
 		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
