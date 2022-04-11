@@ -18,21 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.validation;
+package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PdfBoxDocumentReaderTest {
 
@@ -58,4 +61,20 @@ public class PdfBoxDocumentReaderTest {
 		exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((byte[])null, null));
 		assertEquals("The document binaries must be defined!", exception.getMessage());
 	}
+
+	@Test
+	public void permissionsReadOnlyDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+		try (PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(dssDocument)) {
+			PDDocument pdDocument = pdfBoxDocumentReader.getPDDocument();
+			AccessPermission currentAccessPermission = pdDocument.getCurrentAccessPermission();
+			assertFalse(currentAccessPermission.isReadOnly());
+
+			currentAccessPermission.setReadOnly();
+			assertTrue(currentAccessPermission.isReadOnly());
+			
+			pdfBoxDocumentReader.checkDocumentPermissions();
+		}
+	}
+
 }

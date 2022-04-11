@@ -312,10 +312,10 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public void checkDocumentPermissions() {
 		if (!pdfReader.isOpenedWithFullPermissions()) {
-			throw new ProtectedDocumentException("Protected document");
+			throw new ProtectedDocumentException("The document cannot be modified! The document is protected.");
 		}
 		else if (pdfReader.isEncrypted()) {
-			throw new ProtectedDocumentException("Encrypted document");
+			throw new ProtectedDocumentException("The document cannot be modified! The document is encrypted.");
 		}
 	}
 
