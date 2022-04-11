@@ -27,6 +27,7 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSFloat;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNull;
 import org.apache.pdfbox.cos.COSNumber;
@@ -142,8 +143,12 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public Number getNumberValue(String name) {
 		COSBase val = wrapped.getDictionaryObject(name);
-		if (val != null && val instanceof COSNumber) {
-			return ((COSNumber) val).floatValue();
+		if (val != null) {
+			if (val instanceof COSFloat) {
+				return ((COSFloat) val).floatValue();
+			} else if (val instanceof COSNumber) {
+				return ((COSNumber) val).longValue();
+			}
 		}
 		return null;
 	}

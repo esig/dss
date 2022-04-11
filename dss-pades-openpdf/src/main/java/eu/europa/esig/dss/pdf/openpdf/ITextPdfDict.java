@@ -138,7 +138,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	public Number getNumberValue(String name) {
 		PdfNumber pdfNumber = wrapped.getAsNumber(new PdfName(name));
 		if (pdfNumber != null) {
-			return pdfNumber.floatValue();
+			return pdfNumber.doubleValue();
 		}
 		return null;
 	}
