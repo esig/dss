@@ -76,7 +76,7 @@ The source code of the demonstrations is available on https://github.com/esig/ds
 
 # Ready-to-use bundles
 
-Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
+Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/digital-building-blocks/artifact/service/rest/repository/browse/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
 
 The code of the demonstration can be found on https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss-demos/browse
 
