@@ -19,13 +19,13 @@ The latest version of DSS framework has the following minimal requirements:
 
 The release is published on CEF Digital repository : 
 
-https://ec.europa.eu/cefdigital/artifact/#browse/welcome
+https://ec.europa.eu/digital-building-blocks/artifact/#browse/welcome
 
 <pre>
 &lt;repository&gt;
   &lt;id&gt;cefdigital&lt;/id&gt;
   &lt;name&gt;cefdigital&lt;/name&gt;
-  &lt;url&gt;https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/&lt;/url&gt;
+  &lt;url&gt;https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss/&lt;/url&gt;
 &lt;/repository&gt;
 </pre>
 
@@ -66,17 +66,17 @@ mvn clean install -P asciidoctor
 
 # JavaDoc
 
-The JavaDoc is available on https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html
+The JavaDoc is available on https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/apidocs/index.html
 
 # Demonstration
 
-The release is deployed on https://ec.europa.eu/cefdigital/DSS/webapp-demo
+The release is deployed on https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo
 
 The source code of the demonstrations is available on https://github.com/esig/dss-demonstrations
 
 # Ready-to-use bundles
 
-Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
+Bundles which contain the above demonstration can be downloaded from the [Maven repository](https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss/eu/europa/ec/joinup/sd-dss/dss-demo-bundle/).
 
 The code of the demonstration can be found on https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss-demos/browse
 

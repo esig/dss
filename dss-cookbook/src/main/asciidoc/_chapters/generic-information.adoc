@@ -53,7 +53,7 @@ NOTE: The DSS framework is actively maintained and new features will be released
 
 With the framework, some demonstrations are provided:
 
-* https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[DSS online demo web application];
+* https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/home[DSS online demo web application];
 * <<DSSWebApp, Ready to use demo web application build>>;
 * <<DSSStandaloneApp, JavaFX Standalone Application>>.
 
