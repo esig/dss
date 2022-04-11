@@ -39,7 +39,7 @@ The simplest way to include DSS to your Maven project is to add a repository int
 	<repository>
 	  <id>cefdigital</id>
 	  <name>cefdigital</name>
-	  <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss/</url>
+	  <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss/</url>
 	</repository>
 </repositories>
 ----
@@ -126,7 +126,7 @@ mvn clean install -P asciidoctor
 
 ===== Javadoc generation
 
-In order to generate https://ec.europa.eu/cefdigital/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build the DSS Core completely.
+In order to generate https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/apidocs/index.html[HTML Javadoc], you will need to build the DSS Core completely.
 
 [[DSSDemo]]
 ==== DSS Demonstrations
@@ -150,7 +150,7 @@ The minimal requirements to build/run DSS Demonstrations:
 
 The ready to use webapp allows testing the different functionalities offered in DSS without needing to dive into the implementation.
 
-The DSS demo is available online on the https://ec.europa.eu/cefdigital/DSS/webapp-demo/home[DIGITAL website].
+The DSS demo is available online on the https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/home[DIGITAL website].
 
 The DSS demo is also available as a ready to use downloadable webapp. To use it, you need to complete the following steps:
 
@@ -167,8 +167,8 @@ DSS provides a standalone application which uses JavaFX. The application does no
 
 Download links for the Standalone Application (Windows x64):
 
-* https://ec.europa.eu/cefdigital/DSS/webapp-demo/downloads/dss-app-minimal-windows-x64.zip[Minimal ZIP (application + bat file)];
-* https://ec.europa.eu/cefdigital/DSS/webapp-demo/downloads/dss-app-complete-windows-x64.zip[Complete ZIP (application + bat file + OpenJDK + JavaFX SDK)].
+* https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/downloads/dss-app-minimal-windows-x64.zip[Minimal ZIP (application + bat file)];
+* https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/downloads/dss-app-complete-windows-x64.zip[Complete ZIP (application + bat file + OpenJDK + JavaFX SDK)].
 
 ===== Maven build instructions
 
