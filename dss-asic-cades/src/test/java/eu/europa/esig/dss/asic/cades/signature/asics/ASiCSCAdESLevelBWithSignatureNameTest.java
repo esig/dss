@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,12 +34,11 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCSCAdESLevelBWithSignatureNameTest extends AbstractASiCSCAdESTestSignature {
 
@@ -65,37 +62,26 @@ public class ASiCSCAdESLevelBWithSignatureNameTest extends AbstractASiCSCAdESTes
 	}
 
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
+	protected void checkExtractedContent(ASiCContent asicContent) {
+		assertEquals(0, asicContent.getUnsupportedDocuments().size());
 
-		InMemoryDocument doc = new InMemoryDocument(byteArray);
-
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
-		ASiCContent extract = extractor.extract();
-
-		assertEquals(0, extract.getUnsupportedDocuments().size());
-
-		List<DSSDocument> signatureDocuments = extract.getSignatureDocuments();
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
 		assertEquals(1, signatureDocuments.size());
 		assertEquals("META-INF/" + SIGNATURE_FILENAME, signatureDocuments.get(0).getName());
 
-		List<DSSDocument> manifestDocuments = extract.getManifestDocuments();
+		List<DSSDocument> manifestDocuments = asicContent.getManifestDocuments();
 		assertEquals(0, manifestDocuments.size());
 
-		List<DSSDocument> signedDocuments = extract.getSignedDocuments();
+		List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
 		assertEquals(1, signedDocuments.size());
 		assertEquals("test.text", signedDocuments.get(0).getName());
 
-		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
+		DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
-		try {
-			assertEquals(MimeType.ASICS.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			fail(e.getMessage());
-		}
+		assertEquals(MimeType.ASICS.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
 
-		assertTrue(Utils.isStringEmpty(extract.getZipComment()));
+		assertTrue(Utils.isStringEmpty(asicContent.getZipComment()));
 
 	}
 

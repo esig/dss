@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.timestamp.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
+import eu.europa.esig.dss.asic.cades.signature.asice.AbstractASiCEWithCAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCETimestampLevelTSignatureTest extends AbstractASiCWithCAdESMultipleDocumentsTestSignature {
+public class ASiCETimestampLevelTSignatureTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
     private ASiCWithCAdESService service;
     private ASiCWithCAdESSignatureParameters signatureParameters;
@@ -177,21 +177,6 @@ public class ASiCETimestampLevelTSignatureTest extends AbstractASiCWithCAdESMult
     @Override
     protected ASiCWithCAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected MimeType getExpectedMime() {
-        return MimeType.ASICE;
-    }
-
-    @Override
-    protected boolean isBaselineT() {
-        return false;
-    }
-
-    @Override
-    protected boolean isBaselineLTA() {
-        return false;
     }
 
     @Override

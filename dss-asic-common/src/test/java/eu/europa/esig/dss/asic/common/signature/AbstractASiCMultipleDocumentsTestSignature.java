@@ -20,11 +20,20 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCTestUtils;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.utils.Utils;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCMultipleDocumentsTestSignature<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters>
 		extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP, TP> {
@@ -32,7 +41,29 @@ public abstract class AbstractASiCMultipleDocumentsTestSignature<SP extends Seri
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
-		ASiCTestUtils.verifyZipContainer(new InMemoryDocument(byteArray));
+
+		DSSDocument zipDocument = new InMemoryDocument(byteArray);
+		assertTrue(ASiCUtils.isZip(zipDocument));
+		ASiCTestUtils.verifyZipContainer(zipDocument);
+
+		ASiCContent asicContent = getContainerExtractor(zipDocument).extract();
+		checkExtractedContent(asicContent);
+	}
+
+	protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument document);
+
+	protected void checkExtractedContent(ASiCContent asicContent) {
+		assertNotNull(asicContent);
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
+		assertNotNull(asicContent.getMimeTypeDocument());
+	}
+
+	@Override
+	protected void checkContainerInfo(DiagnosticData diagnosticData) {
+		assertNotNull(diagnosticData.getContainerInfo());
+		assertNotNull(diagnosticData.getContainerType());
+		assertNotNull(diagnosticData.getMimetypeFileContent());
 	}
 
 }

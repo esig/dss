@@ -106,7 +106,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	 * @return Set of {@link CertificateToken}s
 	 */
 	public Set<CertificateToken> getKeyIdentifierCertificates() {
-		return findTokensFromRefs(getCompleteCertificateRefs());
+		return findTokensFromRefs(getKeyIdentifierCertificateRefs());
 	}
 
 	private void extractX5T() {

@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.10</version>
+	<version>5.10.1</version>
 	<packaging>pom</packaging>
 	<name>Digital Signature Services</name>
 
@@ -61,7 +61,8 @@
 		<awaitility.version>4.1.1</awaitility.version>
 		<mockito.version>3.12.4</mockito.version>
 		<h2database.version>2.1.210</h2database.version>
-		<jackson.version>2.13.1</jackson.version>
+		<jackson.version>2.13.2</jackson.version>
+		<jackson-databind.version>2.13.2.2</jackson-databind.version> <!-- To be used while jackson is not updated -->
 		<fop-core.version>2.7</fop-core.version>
 		<xml-apis.version>1.4.01</xml-apis.version> <!-- Synchronized with fop-core -->
 
@@ -459,10 +460,10 @@
 	</build>
 
 	<scm>
-		<url>https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</url>
-		<connection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</connection>
-		<developerConnection>scm:git:https://ec.europa.eu/cefdigital/code/scm/esig/dss.git</developerConnection>
-		<tag>5.10</tag>
+		<url>https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</url>
+		<connection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</connection>
+		<developerConnection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</developerConnection>
+		<tag>5.10.1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -1004,17 +1005,23 @@
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson-databind.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
 	<distributionManagement>
 		<repository>
 			<id>cefdigital-nexus</id>
-			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss</url>
+			<url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss</url>
 		</repository>
 		<snapshotRepository>
 			<id>cefdigital-nexus</id>
-			<url>https://ec.europa.eu/cefdigital/artifact/content/repositories/esignaturedss-snapshots</url>
+			<url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 

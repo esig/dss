@@ -218,13 +218,10 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 														List<DSSDocument> signatureDocuments, boolean openDocument) {
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 
-		Document rootDocument = null;
-		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			rootDocument = buildDomRoot(openDocument);
-
-		// If ASiC-S OR OpenDocument + already existing signature file, we re-use the same signature file
-		} else if (ASiCContainerType.ASiC_S.equals(parameters.aSiC().getContainerType()) ||
-				openDocument && Utils.isCollectionNotEmpty(signatureDocuments)) {
+		Document rootDocument;
+		// If already existing signature file and ASiC-S OR OpenDocument type, we re-use the same signature file
+		if (Utils.isCollectionNotEmpty(signatureDocuments) &&
+				(ASiCContainerType.ASiC_S.equals(parameters.aSiC().getContainerType()) || openDocument)) {
 			if (Utils.collectionSize(signatureDocuments) > 1) {
 				throw new IllegalInputException("Unable to choose signature file to add a new signature into! " +
 						"Only one signature file shall be present for the particular container format.");
@@ -232,9 +229,13 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 			DSSDocument existingXAdESSignature = signatureDocuments.iterator().next();
 			if (!DomUtils.isDOM(existingXAdESSignature)) {
 				throw new IllegalInputException(String.format("The provided signature file '%s' is not a valid XML! " +
-								"Unable to sign.", existingXAdESSignature.getName()));
+						"Unable to sign.", existingXAdESSignature.getName()));
 			}
 			rootDocument = DomUtils.buildDOM(existingXAdESSignature);
+
+		} else {
+			// No signatures or ASiC-E
+			rootDocument = buildDomRoot(openDocument);
 		}
 
 		parameters.setRootDocument(rootDocument);

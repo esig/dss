@@ -83,7 +83,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	public Number getNumber(int i) {
 		PdfNumber number = wrapped.getAsNumber(i);
 		if (number != null) {
-			return number.floatValue();
+			return number.doubleValue();
 		}
 		return null;
 	}

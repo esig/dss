@@ -22,7 +22,6 @@ package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -30,7 +29,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +39,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSXAdESMultiFilesLevelLTATest extends AbstractASiCWithXAdESMultipleDocumentsTestSignature {
+public class ASiCSXAdESMultiFilesLevelLTATest extends AbstractASiCSWithXAdESMultipleDocumentsTestSignature {
 
     private ASiCWithXAdESService service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -95,21 +93,6 @@ public class ASiCSXAdESMultiFilesLevelLTATest extends AbstractASiCWithXAdESMulti
     @Override
     protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected MimeType getExpectedMime() {
-        return MimeType.ASICS;
-    }
-
-    @Override
-    protected boolean isBaselineT() {
-        return true;
-    }
-
-    @Override
-    protected boolean isBaselineLTA() {
-        return true;
     }
 
     @Override

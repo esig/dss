@@ -34,6 +34,7 @@ import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.jades.validation.JAdESCertificateSource;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -42,6 +43,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
@@ -273,6 +275,21 @@ public abstract class AbstractJAdESTestSignature
 				
 				assertTrue(found);
 			}
+		}
+	}
+
+	@Override
+	protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+		super.verifyCertificateSourceData(certificateSource, foundCertificates);
+
+		if (certificateSource instanceof JAdESCertificateSource) {
+			JAdESCertificateSource jadesCertificateSource = (JAdESCertificateSource) certificateSource;
+			assertEquals(jadesCertificateSource.getKeyIdentifierCertificates().size(),
+					foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size() +
+							foundCertificates.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
+			assertEquals(jadesCertificateSource.getKeyIdentifierCertificateRefs().size(),
+					foundCertificates.getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size() +
+							foundCertificates.getOrphanCertificateRefsByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
 		}
 	}
 

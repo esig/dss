@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -43,6 +32,16 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocumentTestSignature {
 
@@ -50,7 +49,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
-	private static Stream<Arguments> data() {
+	private static Stream<Arguments> externalData() {
 		File file = new File("src/test/resources/signable/open-document-external-data.odt");
 		List<Arguments> args = new ArrayList<>();
 		args.add(Arguments.of(new FileDocument(file)));
@@ -74,7 +73,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 
 	@Override
 	@ParameterizedTest(name = "Validation {index} : {0}")
-	@MethodSource("data")
+	@MethodSource("externalData")
 	public void test(DSSDocument fileToTest) {
 		super.test(fileToTest);
 	}
