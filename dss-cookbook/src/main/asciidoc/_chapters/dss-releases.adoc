@@ -17,6 +17,7 @@
 
                                               * ASiC-E with XAdES parallel signature creation regression;
                                               * ASiC OpenDocument does not sign mimetype and manifest;
+                                              * PdfBox : avoid float conversion from COSNumber class;
                                               * JAdES Certificate Source wrong behaviour in method getKeyIdentifierCertificates;
                                               * Upgrade jackson-binding dependency;
                                               * Demo : NPE on PAdES sign;
