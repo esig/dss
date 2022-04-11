@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.10-SNAPSHOT</version>
+		<version>5.10.1</version>
 	</parent>
 	<artifactId>dss-pades-openpdf</artifactId>
 	<name>DSS PAdES using OpenPDF (fork of iText)</name>
