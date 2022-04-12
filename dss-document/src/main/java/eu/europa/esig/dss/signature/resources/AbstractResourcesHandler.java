@@ -7,13 +7,13 @@ import java.io.OutputStream;
  * Abstract class used to create OutputStream to be used across DSS code
  *
  */
-public abstract class AbstractResourcesHandler<S extends OutputStream> implements DSSResourcesHandler {
+public abstract class AbstractResourcesHandler implements DSSResourcesHandler {
 
     /** OutputStream instance */
-    private S os;
+    private OutputStream os;
 
     @Override
-    public S createOutputStream() throws IOException {
+    public OutputStream createOutputStream() throws IOException {
         if (os != null) {
             throw new IllegalStateException("Cannot create OutputStream! The OutputStream has been already created!");
         }
@@ -27,14 +27,14 @@ public abstract class AbstractResourcesHandler<S extends OutputStream> implement
      * @return {@link OutputStream}
      * @throws IOException if an error occurs while building OutputStream
      */
-    protected abstract S buildOutputStream() throws IOException;
+    protected abstract OutputStream buildOutputStream() throws IOException;
 
     /**
      * This method returns the internal OutputStream instance
      *
      * @return {@link OutputStream}
      */
-    protected S getOutputStream() {
+    protected OutputStream getOutputStream() {
         if (os == null) {
             throw new IllegalStateException("Method #createOutputStream() shall be called before!");
         }

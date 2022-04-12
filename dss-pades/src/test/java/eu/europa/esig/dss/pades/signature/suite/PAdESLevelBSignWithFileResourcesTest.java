@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * This unit test evaluates the memory consumption when using a {@code TempFileResourcesFactory} implementation.
  *
  */
-public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTestSignature {
+public class PAdESLevelBSignWithFileResourcesTest extends AbstractPAdESTestSignature {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithFileResourcesFactoryTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithFileResourcesTest.class);
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;
@@ -30,7 +30,7 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBSignWithFileResourcesFactoryTest.class
+        documentToSign = new InMemoryDocument(PAdESLevelBSignWithFileResourcesTest.class
                 .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeType.PDF);
 
         signatureParameters = new PAdESSignatureParameters();
@@ -48,7 +48,8 @@ public class PAdESLevelBSignWithFileResourcesFactoryTest extends AbstractPAdESTe
         PAdESSignatureParameters params = getSignatureParameters();
         PAdESService service = getService();
 
-        service.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+        TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+        service.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
 
         Runtime.getRuntime().gc();
         double memoryBefore = getRuntimeMemoryInMegabytes();

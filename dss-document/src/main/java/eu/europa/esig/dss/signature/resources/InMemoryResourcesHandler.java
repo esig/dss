@@ -5,6 +5,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This class represents an in-memory implementation of {@code DSSResourcesFactory}.
@@ -12,7 +13,7 @@ import java.io.IOException;
  *
  * NOTE: this class is used as a default implementation in DSS
  */
-public class InMemoryResourcesHandler extends AbstractResourcesHandler<ByteArrayOutputStream> {
+public class InMemoryResourcesHandler extends AbstractResourcesHandler {
 
     @Override
     protected ByteArrayOutputStream buildOutputStream() throws IOException {
@@ -21,8 +22,11 @@ public class InMemoryResourcesHandler extends AbstractResourcesHandler<ByteArray
 
     @Override
     public DSSDocument writeToDSSDocument() throws IOException {
-        try (ByteArrayOutputStream baos = getOutputStream()) {
-            return new InMemoryDocument(baos.toByteArray());
+        try (OutputStream os = getOutputStream()) {
+            if (!(os instanceof ByteArrayOutputStream)) {
+                throw new IllegalStateException("The OutputStream shall be an implementation of ByteArrayOutputStream class!");
+            }
+            return new InMemoryDocument(((ByteArrayOutputStream) os).toByteArray());
         }
     }
 
