@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.ProfileParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -32,6 +33,11 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 public class PAdESTimestampParameters extends CAdESTimestampParameters implements PAdESCommonParameters {
+
+	/**
+	 * The internal signature processing variable
+	 */
+	protected ProfileParameters context;
 	
 	/**
 	 * Date of the timestamp
@@ -138,6 +144,19 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	public void setAppName(String appName) {
 		this.appName = appName;
+	}
+
+	@Override
+	public PAdESProfileParameters getContext() {
+		if (context == null) {
+			context = new PAdESProfileParameters();
+		}
+		return (PAdESProfileParameters) context;
+	}
+
+	@Override
+	public void reinit() {
+		context = null;
 	}
 
 	@Override

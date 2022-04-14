@@ -98,13 +98,26 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
 
     @Test
     public void changeParametersTimeZoneTest() {
-        PAdESSignatureParameters signatureParameters = getSignatureParameters();
+        Date signingTime = new Date();
+
+        PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+        signatureParameters.bLevel().setSigningDate(signingTime);
+        signatureParameters.setSigningTimeZone(TimeZone.getTimeZone("GMT+3"));
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
                 signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
 
+        signatureParameters = new PAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+        signatureParameters.bLevel().setSigningDate(signingTime);
         signatureParameters.setSigningTimeZone(TimeZone.getTimeZone("GMT+0"));
+
         DSSDocument signedDocument = service.signDocument(getDocumentToSign(), signatureParameters, signatureValue);
 
         SignedDocumentValidator validator = getValidator(signedDocument);

@@ -16,7 +16,7 @@ import java.io.OutputStream;
 public class InMemoryResourcesHandler extends AbstractResourcesHandler {
 
     @Override
-    protected ByteArrayOutputStream buildOutputStream() throws IOException {
+    protected ByteArrayOutputStream buildOutputStream() {
         return new ByteArrayOutputStream();
     }
 

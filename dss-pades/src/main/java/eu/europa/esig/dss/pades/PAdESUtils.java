@@ -38,6 +38,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -50,6 +51,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -254,6 +256,82 @@ public final class PAdESUtils {
 		}
 
 		return signedDataByteArray;
+	}
+
+	/**
+	 * This method replaces /Contents field value with a given {@code cmsSignedData} binaries
+	 *
+	 * @param toBeSignedDocument {@link DSSDocument} representing a document to be signed with an empty signature value
+	 *                                              (Ex.: {@code /Contents <00000 ... 000000>})
+	 * @param cmsSignedData byte array representing DER-encoded CMS Signed Data
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 * @return {@link DSSDocument} PDF document containing the inserted CMS signature
+	 */
+	public static DSSDocument replaceSignature(final DSSDocument toBeSignedDocument, final byte[] cmsSignedData,
+											   final DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		ByteArrayOutputStream temp = null;
+
+		byte[] signature = Utils.toHex(cmsSignedData).getBytes();
+
+		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 InputStream is = toBeSignedDocument.openStream();
+			 BufferedInputStream bis = new BufferedInputStream(is)) {
+
+			final byte startSuspicion = '<';
+			final byte continueSuspicion = '0';
+
+			boolean suspicion = false;
+			boolean cmsPasted = false;
+
+			int b;
+			while ((b = bis.read()) != -1) {
+
+				if (suspicion) {
+					if (continueSuspicion == b) {
+						temp.write(b);
+						if (signature.length == temp.size()) {
+							if (cmsPasted) {
+								throw new DSSException("PDF document contains more than one empty signature!");
+							}
+							os.write(signature);
+							temp.close();
+							suspicion = false;
+							cmsPasted = true;
+						}
+						continue;
+
+					} else {
+						os.write(temp.toByteArray());
+						temp.close();
+						suspicion = false;
+					}
+				}
+
+				os.write(b);
+
+				if (startSuspicion == b) {
+					temp = new ByteArrayOutputStream();
+					suspicion = true;
+				}
+
+			}
+
+			if (!cmsPasted) {
+				throw new DSSException("Preserved space to insert a signature was not found!");
+			}
+
+			return resourcesHandler.writeToDSSDocument();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format(
+					"Unable to replace /Contents value within a toBeSigned document. Reason : %s", e.getMessage()), e);
+
+		} finally {
+			if (temp != null) {
+				Utils.closeQuietly(temp);
+			}
+		}
 	}
 
 	/**

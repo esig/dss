@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -25,10 +5,11 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,11 +23,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @Tag("slow")
-public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignature {
+public class PAdESSignWithAtomicMethodsTest extends AbstractPAdESTestSignature {
 
     private static PAdESSignatureParameters signatureParameters;
-    private static DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
+    private static PAdESService service;
     private static CertificateVerifier certificateVerifier;
 
     private String signingAlias;
@@ -56,9 +39,6 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
     public static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new PAdESService(certificateVerifier);
-
-        signatureParameters = new PAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
     }
 
     private static Stream<Arguments> data() {
@@ -91,6 +71,8 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
         documentToSign = document;
         signingAlias = signer;
 
+        signatureParameters = new PAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(level);
@@ -108,12 +90,44 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
     }
 
     @Override
+    protected DSSDocument sign() {
+        PAdESService service = getService();
+
+        DSSDocument toBeSigned = getDocumentToSign();
+        PAdESSignatureParameters params = getSignatureParameters();
+
+        ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
+                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
+
+        toBeSigned = createDocumentCopy(toBeSigned);
+        params = createSignatureParametersCopy(params);
+
+        return service.signDocument(toBeSigned, params, signatureValue);
+    }
+
+    private DSSDocument createDocumentCopy(DSSDocument document) {
+        return new InMemoryDocument(DSSUtils.toByteArray(document), document.getName(), document.getMimeType());
+    }
+
+    private PAdESSignatureParameters createSignatureParametersCopy(PAdESSignatureParameters signatureParameters) {
+        PAdESSignatureParameters signatureParametersCopy = new PAdESSignatureParameters();
+        signatureParametersCopy.setSigningCertificate(signatureParameters.getSigningCertificate());
+        signatureParametersCopy.setCertificateChain(signatureParameters.getCertificateChain());
+        signatureParametersCopy.setSignatureLevel(signatureParameters.getSignatureLevel());
+        signatureParametersCopy.setSignaturePackaging(signatureParameters.getSignaturePackaging());
+        signatureParametersCopy.bLevel().setSigningDate(signatureParameters.bLevel().getSigningDate());
+        return signatureParametersCopy;
+    }
+
+    @Override
     public void signAndVerify() {
         // do nothing
     }
 
     @Override
-    protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {
+    protected PAdESService getService() {
         return service;
     }
 

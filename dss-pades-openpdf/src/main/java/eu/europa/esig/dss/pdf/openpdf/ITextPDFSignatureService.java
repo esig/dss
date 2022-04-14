@@ -257,7 +257,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+	protected byte[] computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
@@ -280,7 +280,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
+	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 							final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
@@ -294,17 +294,16 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
-			byte[] pk = signatureValue;
 			int csize = parameters.getContentSize();
-			if (csize < pk.length) {
+			if (csize < cmsSignedData.length) {
 				throw new IllegalArgumentException(
 						String.format("Unable to save a document. Reason : The signature size [%s] is too small " +
 								"for the signature value with a length [%s]. Use setContentSize(...) method " +
-								"to define a bigger length.", csize, pk.length));
+								"to define a bigger length.", csize, cmsSignedData.length));
 			}
 
 			byte[] outc = new byte[csize];
-			System.arraycopy(pk, 0, outc, 0, pk.length);
+			System.arraycopy(cmsSignedData, 0, outc, 0, cmsSignedData.length);
 
 			PdfDictionary dic = new PdfDictionary();
 			dic.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));

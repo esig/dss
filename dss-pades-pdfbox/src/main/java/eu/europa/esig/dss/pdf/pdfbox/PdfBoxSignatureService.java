@@ -126,7 +126,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+	protected byte[] computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
@@ -140,6 +140,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
+
+			// cache the computed document
+			parameters.getContext().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
+
 			return digest;
 
 		} catch (IOException e) {
@@ -148,17 +152,18 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
+	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 							final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+
 			checkDocumentPermissions(documentReader);
 			if (parameters instanceof PAdESSignatureParameters) {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
+			signDocumentAndReturnDigest(parameters, cmsSignedData, os, documentReader);
 
 			DSSDocument signedDocument = resourcesHandler.writeToDSSDocument();
 			signedDocument.setMimeType(MimeType.PDF);
@@ -169,7 +174,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] signatureBytes,
+	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] cmsSignedData,
 			final OutputStream outputStream, final PdfBoxDocumentReader documentReader) {
 		PDDocument pdDocument = documentReader.getPDDocument();
 
@@ -184,7 +189,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				while ((count = content.read(b)) > 0) {
 					digest.update(b, 0, count);
 				}
-				return signatureBytes;
+				return cmsSignedData;
 			}
 
 		};
@@ -260,7 +265,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Creates a new signature dictionary
 	 *
-	 * Note for developers: keep protected! See https://github.com/esig/dss/pull/138
+	 * Note for developers: keep protected! See <a href="https://github.com/esig/dss/pull/138">PR #138</a>
 	 *
 	 * @param pdDocument {@link PDDocument}
 	 * @param parameters {@link PAdESCommonParameters}

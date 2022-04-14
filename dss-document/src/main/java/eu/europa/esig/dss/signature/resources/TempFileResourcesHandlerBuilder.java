@@ -3,6 +3,8 @@ package eu.europa.esig.dss.signature.resources;
 import eu.europa.esig.dss.model.DSSException;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class creates a {@code TempFileResourcesHandlerBuilder} storing temporary objects to temporary filesystem documents
@@ -14,6 +16,9 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
 
     /** The default suffix of a temporary created file */
     private final static String DEFAULT_SUFFIX = ".tmp";
+
+    /** Cached list of created handlers by the current builder */
+    private final List<TempFileResourcesHandler> handlers = new ArrayList<>();
 
     /**
      * The prefix (beginning) of a filename to be used for created documents
@@ -83,7 +88,24 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
                 throw new DSSException(String.format("Unable to create a new directory '%s'!", tempFileDirectory.getPath()));
             }
         }
-        return new TempFileResourcesHandler(fileNamePrefix, fileNameSuffix, tempFileDirectory);
+        TempFileResourcesHandler handler = new TempFileResourcesHandler(fileNamePrefix, fileNameSuffix, tempFileDirectory);
+        handlers.add(handler);
+        return handler;
+    }
+
+    /**
+     * This method is used to remove all handlers created by the current builder,
+     * as well as temporary files from the filesystem. This method is not executed in a normal DSS operating,
+     * and should be called on user's side when the temporary files are no longer needed.
+     *
+     * NOTE: do not forget to preserve the output documents, such as a FileDocument returned by a
+     *       {@code #signDocument()} method.
+     */
+    public void clear() {
+        for (TempFileResourcesHandler handler : handlers) {
+            handler.forceDelete();
+        }
+        handlers.clear();
     }
 
 }

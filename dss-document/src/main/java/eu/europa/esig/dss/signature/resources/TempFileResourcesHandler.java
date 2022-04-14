@@ -6,8 +6,8 @@ import eu.europa.esig.dss.model.FileDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -46,11 +46,11 @@ public class TempFileResourcesHandler extends AbstractResourcesHandler {
     @Override
     protected OutputStream buildOutputStream() throws IOException {
         assertFileExists();
-        return new FileOutputStream(tempFile);
+        return new BufferedOutputStream(Files.newOutputStream(tempFile.toPath()));
     }
 
     @Override
-    public DSSDocument writeToDSSDocument() throws IOException {
+    public DSSDocument writeToDSSDocument() {
         assertFileExists();
         // Avoid deletion of the File on exit
         toBeDeleted = false;
@@ -66,7 +66,18 @@ public class TempFileResourcesHandler extends AbstractResourcesHandler {
     @Override
     public void close() throws IOException {
         super.close();
-        if (tempFile != null && toBeDeleted) {
+        if (toBeDeleted) {
+            forceDelete();
+        }
+    }
+
+    /**
+     * This method is used to delete the temporary File forcibly, even with a flag {@code toBeDeleted} set to false.
+     * Method should be called responsively and the temp file should be preserved when needed
+     * (e.g. output of signDocument() method).
+     */
+    public void forceDelete() {
+        if (tempFile != null) {
             boolean deleted = tempFile.delete();
             if (!deleted) {
                 LOG.warn("Unable to remove a temporary file '{}'", tempFile.getName());

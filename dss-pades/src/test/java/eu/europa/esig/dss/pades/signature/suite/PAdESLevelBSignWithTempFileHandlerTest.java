@@ -10,19 +10,29 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * This unit test evaluates the memory consumption when using a {@code TempFileResourcesFactory} implementation.
  *
  */
-public class PAdESLevelBSignWithFileResourcesTest extends AbstractPAdESTestSignature {
+public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSignature {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithFileResourcesTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithTempFileHandlerTest.class);
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;
@@ -30,7 +40,7 @@ public class PAdESLevelBSignWithFileResourcesTest extends AbstractPAdESTestSigna
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBSignWithFileResourcesTest.class
+        documentToSign = new InMemoryDocument(PAdESLevelBSignWithTempFileHandlerTest.class
                 .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeType.PDF);
 
         signatureParameters = new PAdESSignatureParameters();
@@ -49,6 +59,7 @@ public class PAdESLevelBSignWithFileResourcesTest extends AbstractPAdESTestSigna
         PAdESService service = getService();
 
         TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+        tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
         service.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
 
         Runtime.getRuntime().gc();
@@ -105,7 +116,34 @@ public class PAdESLevelBSignWithFileResourcesTest extends AbstractPAdESTestSigna
         LOG.info("Memory used for LTA-Level extendDocument() : {}Mb", memoryLTALevelExtendDocument - memoryBefore);
         assertTrue(ltaLevelSignature instanceof FileDocument);
 
-        return ltaLevelSignature;
+        FileDocument ltaSignatureFileDocument = (FileDocument) ltaLevelSignature;
+        File ltaSignatureFile = ltaSignatureFileDocument.getFile();
+
+        assertTrue(ltaSignatureFile.exists());
+
+        File tempFile = null;
+        try {
+            tempFile = Files.createTempFile("dss", ".pdf").toFile();
+            try (InputStream is = Files.newInputStream(ltaSignatureFile.toPath());
+                 OutputStream os = Files.newOutputStream(tempFile.toPath())) {
+                Utils.copy(is, os);
+            }
+
+        } catch (IOException e) {
+            fail(e);
+        }
+
+        assertTrue(ltaSignatureFile.exists());
+
+        assertNotNull(tempFile);
+        assertTrue(tempFile.exists());
+
+        tempFileResourcesHandlerBuilder.clear();
+
+        assertFalse(ltaSignatureFile.exists());
+        assertTrue(tempFile.exists());
+
+        return new FileDocument(tempFile);
     }
 
     private static double getRuntimeMemoryInMegabytes() {

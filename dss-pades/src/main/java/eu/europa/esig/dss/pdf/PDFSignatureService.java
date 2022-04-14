@@ -52,13 +52,13 @@ public interface PDFSignatureService {
 	 *
 	 * @param toSignDocument
 	 *            the pdf document to be signed
-	 * @param signatureValue
-	 *            the signature value
+	 * @param cmsSignedData
+	 *            the encoded CMS Signed data
 	 * @param parameters
 	 *            the signature/timestamp parameters
 	 * @return {@link DSSDocument}
 	 */
-	DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
+	DSSDocument sign(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 					 final PAdESCommonParameters parameters);
 
 	/**

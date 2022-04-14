@@ -87,4 +87,16 @@ public interface PAdESCommonParameters extends Serializable {
 	 */
 	String getAppName();
 
+	/**
+	 * Returns an internal variable, used to cache data in order to accelerate signing process
+	 *
+	 * @return {@link PAdESProfileParameters}
+	 */
+	PAdESProfileParameters getContext();
+
+	/**
+	 * This methods re-inits signature parameters to clean temporary settings
+	 */
+	void reinit();
+
 }

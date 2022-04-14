@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,6 +108,7 @@ public class PdfBoxUtilsTest {
 	@Test
 	public void generateScreenshotWithTempFileTest() throws IOException  {
 		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
 		DSSDocument fileScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, null, 1,
 				tempFileResourcesHandlerBuilder.createResourcesHandler());

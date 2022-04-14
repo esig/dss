@@ -27,6 +27,9 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
+import eu.europa.esig.dss.pades.PAdESProfileParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -214,6 +217,63 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
 		return resourcesHandlerBuilder.createResourcesHandler();
 	}
+
+	@Override
+	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		final PAdESProfileParameters context = parameters.getContext();
+		if (Utils.isArrayEmpty(context.getDigest())) {
+			byte[] digest = computeDigest(toSignDocument, parameters);
+			context.setDigest(digest);
+		}
+		return context.getDigest();
+	}
+
+	/**
+	 * Computes digest on to be signed data computed on the {@code toSignDocument} respectively
+	 * to the given {@code parameters}
+	 *
+	 * @param toSignDocument {@link DSSDocument} to be signed
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return byte array
+	 */
+	protected abstract byte[] computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
+
+	@Override
+	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
+		DSSDocument signedDocument = null;
+		if (parameters.getContext().getToBeSignedDocument() != null) {
+			try {
+				signedDocument = PAdESUtils.replaceSignature(parameters.getContext().getToBeSignedDocument(),
+						cmsSignedData, resourcesHandlerBuilder);
+			} catch (Exception e) {
+				String errorMessage = "Unable to sign document using a resources caching! Reason : '{}'. Sign using a complete processing...";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, e.getMessage());
+				}
+			}
+		}
+		parameters.reinit();
+
+		if (signedDocument == null) {
+			signedDocument = signDocument(toSignDocument, cmsSignedData, parameters);
+		}
+		signedDocument.setMimeType(MimeType.PDF);
+		return signedDocument;
+	}
+
+	/**
+	 * This method creates a signed document from the original {@code toSignDocument}, incorporating a new revision,
+	 * enveloping the provided {@code cmsSignedData}
+	 *
+	 * @param toSignDocument {@link DSSDocument} to be signed
+	 * @param cmsSignedData byte array representing the encoded CMS signed data's binaries
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return {@link DSSDocument}
+	 */
+	protected abstract DSSDocument signDocument(DSSDocument toSignDocument, byte[] cmsSignedData,
+												PAdESCommonParameters parameters);
 
 	/**
 	 * Checks if a DocumentTimestamp has to be added in the current mode

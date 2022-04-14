@@ -232,6 +232,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	}
 
 	@Override
+	public PAdESProfileParameters getContext() {
+		if (context == null) {
+			context = new PAdESProfileParameters();
+		}
+		return (PAdESProfileParameters) context;
+	}
+
+	@Override
 	public SignatureImageParameters getImageParameters() {
 		if (signatureImageParameters == null) {
 			signatureImageParameters = new SignatureImageParameters();

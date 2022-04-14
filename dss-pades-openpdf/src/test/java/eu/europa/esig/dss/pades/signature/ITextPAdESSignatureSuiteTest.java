@@ -36,7 +36,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBHugeTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNotEnoughSpaceForSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBOnlySigningCertTest;
-import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithFileResourcesTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithTempFileHandlerTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithAppNameTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithContentTimestampTest;
@@ -62,7 +62,10 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTWithSHA1MessageImprin
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoChangesPermittedTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESNoDuplicateValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESServiceTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignDocumentWithEmptySignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignDocumentsConsequentlyTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithAtomicMethodsTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithReInitParametersTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignWithRevokedCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignatureParametersSerializationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESSignedAssertionTest;
@@ -98,7 +101,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
 		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
-		PAdESLevelBSignWithFileResourcesTest.class })
+		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
+		PAdESSignDocumentWithEmptySignatureTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }
