@@ -1,10 +1,12 @@
 package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.ProfileParameters;
-import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 /**
  * This class is used to accelerate signature creation process for PAdES.
+ * The cache is set within {@code PAdESService.getDataToSign(...)} method and
+ * used in {@code PAdESService.signDocument(...)} method.
  *
  */
 public class PAdESProfileParameters extends ProfileParameters {
@@ -12,50 +14,29 @@ public class PAdESProfileParameters extends ProfileParameters {
     private static final long serialVersionUID = 852030281057208148L;
 
     /**
-     * Cached digest value of the covered ByteRange
+     * Internal cache used to accelerate the signature creation process
      */
-    private byte[] digest;
+    private PdfSignatureCache pdfToBeSignedCache;
 
     /**
-     * Represents a ToBeSigned document, used for digest computation,
-     * preserving a /Contents space for CMS Signed Data inclusion
-     */
-    private DSSDocument toBeSignedDocument;
-
-    /**
-     * Gets digest of the ByteRange
+     * Gets the PDF signature cache
      *
-     * @return byte array representing digest value
+     * @return {@link PdfSignatureCache}
      */
-    public byte[] getDigest() {
-        return digest;
+    public PdfSignatureCache getPdfToBeSignedCache() {
+        if (pdfToBeSignedCache == null) {
+            pdfToBeSignedCache = new PdfSignatureCache();
+        }
+        return pdfToBeSignedCache;
     }
 
     /**
-     * Sets digest of the ByteRange
+     * Sets the PDF signature cache
      *
-     * @param digest byte array
+     * @param pdfToBeSignedCache {@link PdfSignatureCache}
      */
-    public void setDigest(byte[] digest) {
-        this.digest = digest;
-    }
-
-    /**
-     * Gets ToBeSigned document
-     *
-     * @return {@link DSSDocument}
-     */
-    public DSSDocument getToBeSignedDocument() {
-        return toBeSignedDocument;
-    }
-
-    /**
-     * Sets ToBeSigned document
-     *
-     * @param toBeSignedDocument {@link DSSDocument}
-     */
-    public void setToBeSignedDocument(DSSDocument toBeSignedDocument) {
-        this.toBeSignedDocument = toBeSignedDocument;
+    public void setPdfToBeSignedCache(PdfSignatureCache pdfToBeSignedCache) {
+        this.pdfToBeSignedCache = pdfToBeSignedCache;
     }
 
 }

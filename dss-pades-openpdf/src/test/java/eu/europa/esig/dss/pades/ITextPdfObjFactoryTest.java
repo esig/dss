@@ -24,6 +24,7 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,6 +86,10 @@ public class ITextPdfObjFactoryTest {
 			return null;
 		}
 
+		@Override
+		public void setDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+			// do nothing
+		}
 
 	}
 

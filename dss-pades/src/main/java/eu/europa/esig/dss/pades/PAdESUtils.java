@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utils for dealing with PAdES
@@ -264,15 +266,24 @@ public final class PAdESUtils {
 	 * @param toBeSignedDocument {@link DSSDocument} representing a document to be signed with an empty signature value
 	 *                                              (Ex.: {@code /Contents <00000 ... 000000>})
 	 * @param cmsSignedData byte array representing DER-encoded CMS Signed Data
-	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}. Optional.
+	 *                                If non is provided, a default {@code InMemoryResourcesHandlerBuilder} will be used.
 	 * @return {@link DSSDocument} PDF document containing the inserted CMS signature
 	 */
 	public static DSSDocument replaceSignature(final DSSDocument toBeSignedDocument, final byte[] cmsSignedData,
-											   final DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
-		ByteArrayOutputStream temp = null;
+											   DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		Objects.requireNonNull(toBeSignedDocument, "toBeSignedDocument cannot be null!");
+		Objects.requireNonNull(cmsSignedData, "cmsSignedData cannot be null!");
+		if (resourcesHandlerBuilder == null) {
+			resourcesHandlerBuilder = DEFAULT_RESOURCES_HANDLER_BUILDER;
+		}
 
+		if (Utils.isArrayEmpty(cmsSignedData)) {
+			throw new IllegalArgumentException("cmsSignedData cannot be empty!");
+		}
 		byte[] signature = Utils.toHex(cmsSignedData).getBytes();
 
+		ByteArrayOutputStream temp = null;
 		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = toBeSignedDocument.openStream();
@@ -292,7 +303,7 @@ public final class PAdESUtils {
 						temp.write(b);
 						if (signature.length == temp.size()) {
 							if (cmsPasted) {
-								throw new DSSException("PDF document contains more than one empty signature!");
+								throw new IllegalInputException("PDF document contains more than one empty signature!");
 							}
 							os.write(signature);
 							temp.close();
@@ -318,7 +329,7 @@ public final class PAdESUtils {
 			}
 
 			if (!cmsPasted) {
-				throw new DSSException("Preserved space to insert a signature was not found!");
+				throw new IllegalInputException("Reserved space to insert a signature was not found!");
 			}
 
 			return resourcesHandler.writeToDSSDocument();

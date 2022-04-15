@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
-import eu.europa.esig.dss.pades.PAdESProfileParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -220,12 +219,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		final PAdESProfileParameters context = parameters.getContext();
-		if (Utils.isArrayEmpty(context.getDigest())) {
+		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
+		if (Utils.isArrayEmpty(pdfSignatureCache.getDigest())) {
 			byte[] digest = computeDigest(toSignDocument, parameters);
-			context.setDigest(digest);
+			pdfSignatureCache.setDigest(digest);
 		}
-		return context.getDigest();
+		return pdfSignatureCache.getDigest();
 	}
 
 	/**
@@ -240,10 +239,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
+		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
 		DSSDocument signedDocument = null;
-		if (parameters.getContext().getToBeSignedDocument() != null) {
+		if (pdfSignatureCache.getToBeSignedDocument() != null) {
 			try {
-				signedDocument = PAdESUtils.replaceSignature(parameters.getContext().getToBeSignedDocument(),
+				signedDocument = PAdESUtils.replaceSignature(pdfSignatureCache.getToBeSignedDocument(),
 						cmsSignedData, resourcesHandlerBuilder);
 			} catch (Exception e) {
 				String errorMessage = "Unable to sign document using a resources caching! Reason : '{}'. Sign using a complete processing...";

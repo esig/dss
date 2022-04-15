@@ -273,6 +273,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
+
+			// cache the computed document
+			parameters.getPdfSignatureCache().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
+
 			return digest;
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to build message-digest : %s", e.getMessage()), e);

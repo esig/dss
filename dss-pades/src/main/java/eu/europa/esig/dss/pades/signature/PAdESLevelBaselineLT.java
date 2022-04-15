@@ -79,11 +79,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	 * @return {@link PDFSignatureService}
 	 */
 	private PDFSignatureService getPAdESSignatureService() {
-		PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return pdfObjectFactory.newPAdESSignatureService();
 	}
 
 	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures, PAdESSignatureParameters parameters) {

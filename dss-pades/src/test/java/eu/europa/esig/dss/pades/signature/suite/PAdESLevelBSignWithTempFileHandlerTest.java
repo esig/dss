@@ -9,6 +9,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.PdfSignatureCache;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,6 +77,12 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
 
         Runtime.getRuntime().gc();
         memoryBefore = getRuntimeMemoryInMegabytes();
+
+        PdfSignatureCache pdfSignatureCache = params.getPdfSignatureCache();
+        assertNotNull(pdfSignatureCache);
+        assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getDigest()));
+        assertNotNull(pdfSignatureCache.getToBeSignedDocument());
+        assertTrue(pdfSignatureCache.getToBeSignedDocument() instanceof FileDocument);
 
         DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 

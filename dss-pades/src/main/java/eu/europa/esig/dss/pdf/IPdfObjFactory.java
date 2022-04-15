@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+
 /**
  * Loads the relevant implementation of {@code PDFSignatureService}
  */
@@ -52,5 +54,13 @@ public interface IPdfObjFactory {
 	 * @return {@link PDFSignatureService}
 	 */
 	PDFSignatureService newArchiveTimestampService();
+
+	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	void setDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder);
 
 }

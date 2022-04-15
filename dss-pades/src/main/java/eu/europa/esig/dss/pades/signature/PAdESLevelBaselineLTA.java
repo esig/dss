@@ -60,11 +60,7 @@ class PAdESLevelBaselineLTA extends PAdESLevelBaselineLT {
 	 * @return {@link PDFSignatureService}
 	 */
 	private PDFSignatureService getArchiveTimestampService() {
-		PDFSignatureService pdfSignatureService = pdfObjectFactory.newArchiveTimestampService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return pdfObjectFactory.newArchiveTimestampService();
 	}
 
 }

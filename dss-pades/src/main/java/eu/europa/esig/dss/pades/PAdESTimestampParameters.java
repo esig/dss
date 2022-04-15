@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.ProfileParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 import java.util.Date;
 
@@ -37,7 +37,7 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	/**
 	 * The internal signature processing variable
 	 */
-	protected ProfileParameters context;
+	protected PdfSignatureCache pdfSignatureCache;
 	
 	/**
 	 * Date of the timestamp
@@ -147,19 +147,6 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	}
 
 	@Override
-	public PAdESProfileParameters getContext() {
-		if (context == null) {
-			context = new PAdESProfileParameters();
-		}
-		return (PAdESProfileParameters) context;
-	}
-
-	@Override
-	public void reinit() {
-		context = null;
-	}
-
-	@Override
 	public SignatureImageParameters getImageParameters() {
 		if (timestampImageParameters == null) {
 			timestampImageParameters = new SignatureImageParameters();
@@ -209,6 +196,19 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	public void setPasswordProtection(String passwordProtection) {
 		this.passwordProtection = passwordProtection;
+	}
+
+	@Override
+	public PdfSignatureCache getPdfSignatureCache() {
+		if (pdfSignatureCache == null) {
+			pdfSignatureCache = new PdfSignatureCache();
+		}
+		return pdfSignatureCache;
+	}
+
+	@Override
+	public void reinit() {
+		pdfSignatureCache = null;
 	}
 
 }

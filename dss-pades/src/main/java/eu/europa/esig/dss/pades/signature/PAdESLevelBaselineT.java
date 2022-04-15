@@ -33,7 +33,6 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -59,9 +58,6 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	/** The used implementation for processing of a PDF document */
 	protected final IPdfObjFactory pdfObjectFactory;
 
-	/** The used builder of resources handler (optional) */
-	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
-
 	/**
 	 * The default constructor
 	 *
@@ -76,20 +72,6 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		this.tspSource = tspSource;
 		this.certificateVerifier = certificateVerifier;
 		this.pdfObjectFactory = pdfObjectFactory;
-	}
-
-	/**
-	 * Sets the builder of {@code DSSResourcesHandler}.
-	 * This method overwrites the value defined in a corresponding {@code PDFSignatureService}
-	 * used to create a timestamp.
-	 *
-	 * Default : when not set, the value defined within {@code PDFSignatureService}
-	 *           provided with {@code pdfObjectFactory} will be used.
-	 *
-	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
-	 */
-	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
-		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	@Override
@@ -142,11 +124,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 * @return {@link PDFSignatureService}
 	 */
 	private PDFSignatureService getSignatureTimestampService() {
-		PDFSignatureService pdfSignatureService = pdfObjectFactory.newSignatureTimestampService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return pdfObjectFactory.newSignatureTimestampService();
 	}
 
 	/**

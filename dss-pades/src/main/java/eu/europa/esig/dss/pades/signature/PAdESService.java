@@ -99,6 +99,16 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	/**
+	 * This method returns a pre-configured {@code IPdfObjFactory}
+	 *
+	 * @return {@link IPdfObjFactory}
+	 */
+	protected IPdfObjFactory getPdfObjFactory() {
+		pdfObjFactory.setDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
+		return pdfObjFactory;
+	}
+
+	/**
 	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
 	 * 
 	 * @param pdfObjFactory
@@ -128,25 +138,19 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 
-		PAdESLevelBaselineT extensionProfile = null;
 		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				extensionProfile = new PAdESLevelBaselineT(tspSource, certificateVerifier, pdfObjFactory);
-				break;
+				return new PAdESLevelBaselineT(tspSource, certificateVerifier, getPdfObjFactory());
 			case PAdES_BASELINE_LT:
-				extensionProfile = new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
-				break;
+				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, getPdfObjFactory());
 			case PAdES_BASELINE_LTA:
-				extensionProfile = new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
-				break;
+				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, getPdfObjFactory());
 			default:
 				throw new UnsupportedOperationException(
 						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
-		extensionProfile.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		return extensionProfile;
 	}
 
 	@Override
@@ -375,7 +379,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
-		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, pdfObjFactory);
+		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, getPdfObjFactory());
 		DSSDocument extendedDocument = extensionService.incorporateValidationData(toTimestampDocument, parameters.getPasswordProtection());
 
 		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, getSignatureTimestampService());
@@ -390,11 +394,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getPAdESSignatureService() {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return getPdfObjFactory().newPAdESSignatureService();
 	}
 
 	/**
@@ -403,11 +403,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getContentTimestampService() {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newContentTimestampService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return getPdfObjFactory().newContentTimestampService();
 	}
 
 	/**
@@ -416,11 +412,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getSignatureTimestampService() {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newSignatureTimestampService();
-		if (resourcesHandlerBuilder != null) {
-			pdfSignatureService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
-		}
-		return pdfSignatureService;
+		return getPdfObjFactory().newSignatureTimestampService();
 	}
 
 }

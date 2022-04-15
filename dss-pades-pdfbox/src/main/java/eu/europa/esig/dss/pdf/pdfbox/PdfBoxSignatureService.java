@@ -142,7 +142,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			// cache the computed document
-			parameters.getContext().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
+			parameters.getPdfSignatureCache().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
 
 			return digest;
 

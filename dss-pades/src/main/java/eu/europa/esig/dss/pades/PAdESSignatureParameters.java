@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -379,6 +380,11 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		} else {
 			this.archiveTimestampParameters = new PAdESTimestampParameters(archiveTimestampParameters);
 		}
+	}
+
+	@Override
+	public PdfSignatureCache getPdfSignatureCache() {
+		return getContext().getPdfToBeSignedCache();
 	}
 
 }
