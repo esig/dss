@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -95,11 +94,26 @@ public final class ASiCUtils {
 	/** The ASiC-S with XAdES signature document name (META-INF/signatures.xml) */
 	public static final String SIGNATURES_XML = META_INF_FOLDER + SIGNATURES_FILENAME + XML_EXTENSION;
 
+	/** The ASiC-E with XAdES for OpenDocument signature file name (META-INF/documentsignatures.xml) */
+	public static final String OPEN_DOCUMENT_SIGNATURES = META_INF_FOLDER + "documentsignatures.xml";
+
 	/** The default XML manifest filename (META-INF/manifest.xml) */
 	public static final String ASICE_METAINF_MANIFEST = META_INF_FOLDER + ASIC_XAdES_MANIFEST_FILENAME + XML_EXTENSION;
 
 	/** The default signature filename for ASiC-E with XAdES container */
-	private static final String ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
+	public static final String ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
+
+	/** The default signature filename for ASiC-E with CAdES container */
+	public static final String ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
+
+	/** The default timestamp filename for ASiC-E with CAdES container */
+	public static final String ASICE_METAINF_CADES_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+
+	/** The default ASIC manifest filename for ASiC-E with CAdES container */
+	public static final String ASICE_METAINF_CADES_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCManifest001.xml";
+
+	/** The default ASIC archive manifest filename for ASiC-E with CAdES container */
+	public static final String ASICE_METAINF_CADES_ARCHIVE_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCArchiveManifest001.xml";
 
 	/** The ASiC-S with CAdES signature document name (META-INF/signature.p7s) */
 	public static final String SIGNATURE_P7S = META_INF_FOLDER + SIGNATURE_FILENAME + CADES_SIGNATURE_EXTENSION;
@@ -839,48 +853,6 @@ public final class ASiCUtils {
 			entries.add(entry);
 		}
 		return entries;
-	}
-
-	/**
-	 * This method returns a next available name for an XML signature document to be created
-	 *
-	 * @param existingSignatureNames a collection of forbidden {@link String} signature names
-	 * @return {@link String}
-	 */
-	public static String getNextAvailableASiCEWithXAdESSignatureName(Collection<String> existingSignatureNames) {
-		if (Utils.isCollectionNotEmpty(existingSignatureNames)) {
-			return ASICE_METAINF_XADES_SIGNATURE.replace("001", getDocumentNameRecursively(new ArrayList<>(existingSignatureNames)));
-		} else {
-			return ASICE_METAINF_XADES_SIGNATURE;
-		}
-	}
-
-	/**
-	 * This method returns a next available name for an XML manifest document to be created
-	 *
-	 * @param existingManifestNames a collection of forbidden {@link String} signature names
-	 * @param manifestType {@link String} pattern name of the manifest document to get new available name for
-	 * @return {@link String}
-	 */
-	public static String getNextAvailableASiCEWithCAdESManifestName(Collection<String> existingManifestNames, String manifestType) {
-		if (Utils.isCollectionNotEmpty(existingManifestNames)) {
-			String manifestNameToReplace = META_INF_FOLDER + manifestType + "001" + XML_EXTENSION;
-			return manifestNameToReplace.replace("001", getDocumentNameRecursively(new ArrayList<>(existingManifestNames)));
-		} else {
-			return META_INF_FOLDER + manifestType + XML_EXTENSION;
-		}
-	}
-
-	private static String getDocumentNameRecursively(List<String> existingDocumentNames) {
-		int number = existingDocumentNames.size() + 1;
-		String numberStr = String.valueOf(number);
-		String zeroPad = "000";
-		String candidateName = zeroPad.substring(numberStr.length()) + numberStr; // 2 -> 002
-		if (existingDocumentNames.contains(candidateName)) {
-			existingDocumentNames.add(candidateName);
-			return getDocumentNameRecursively(existingDocumentNames);
-		}
-		return candidateName;
 	}
 
 }

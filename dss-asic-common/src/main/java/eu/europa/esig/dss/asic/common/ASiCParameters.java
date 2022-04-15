@@ -113,6 +113,7 @@ public class ASiCParameters implements Serializable {
 	 *
 	 * @return signature file name
 	 */
+	@Deprecated
 	public String getSignatureFileName() {
 		return signatureFileName;
 	}
@@ -123,6 +124,7 @@ public class ASiCParameters implements Serializable {
 	 * @param signatureFileName
 	 *            signature file name
 	 */
+	@Deprecated
 	public void setSignatureFileName(final String signatureFileName) {
 		this.signatureFileName = signatureFileName;
 	}

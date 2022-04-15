@@ -65,6 +65,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESService.class);
 
+	/**
+	 * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
+	 */
+	private ASiCWithXAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithXAdESFilenameFactory();
+
 	static {
 		DomUtils.registerNamespace(ASiCNamespace.NS);
 		DomUtils.registerNamespace(ManifestNamespace.NS);
@@ -78,6 +83,17 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	public ASiCWithXAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ ASiCService with XAdES created");
+	}
+
+	/**
+	 * Sets {@code ASiCWithXAdESFilenameFactory} defining a set of rules for naming of newly create ZIP entries,
+	 * such as signature files.
+	 *
+	 * @param asicFilenameFactory {@link ASiCWithXAdESFilenameFactory}
+	 */
+	public void setAsicFilenameFactory(ASiCWithXAdESFilenameFactory asicFilenameFactory) {
+		Objects.requireNonNull(asicFilenameFactory, "ASiCWithXAdESFilenameFactory cannot be null!");
+		this.asicFilenameFactory = asicFilenameFactory;
 	}
 
 	@Override
