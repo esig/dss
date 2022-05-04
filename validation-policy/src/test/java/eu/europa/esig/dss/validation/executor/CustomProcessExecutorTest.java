@@ -8286,6 +8286,258 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void signatureWithMD2Test() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.MD2);
+
+		xmlSignature.getFoundTimestamps().clear();
+		diagnosticData.getUsedTimestamps().clear();
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG)));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BSV_ICTGTNACCET_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.INDETERMINATE, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureBBB.getConclusion().getSubIndication());
+
+		XmlSAV signatureSAV = signatureBBB.getSAV();
+		assertNotNull(signatureSAV);
+		assertEquals(Indication.INDETERMINATE, signatureSAV.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureSAV.getConclusion().getSubIndication());
+
+		boolean cryptoCheckFound = false;
+		for (XmlConstraint constraint : signatureSAV.getConstraint()) {
+			if (MessageTag.ACCM.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG),
+						constraint.getError().getValue());
+				cryptoCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(cryptoCheckFound);
+
+		assertEquals(1, detailedReport.getSignatures().size());
+		XmlValidationProcessBasicSignature validationProcessBasicSignature = detailedReport.getSignatures().get(0).getValidationProcessBasicSignature();
+		assertNotNull(validationProcessBasicSignature);
+		assertEquals(Indication.INDETERMINATE, validationProcessBasicSignature.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, validationProcessBasicSignature.getConclusion().getSubIndication());
+
+		boolean contentTstBasicValidationFound = false;
+		boolean checkAgainstContentTstFound = false;
+		for (XmlConstraint constraint : validationProcessBasicSignature.getConstraint()) {
+			if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				contentTstBasicValidationFound = true;
+			} else if (MessageTag.BSV_ICTGTNACCET.getId().equals(constraint.getName().getKey())) {
+				checkAgainstContentTstFound = true;
+			}
+		}
+		assertFalse(contentTstBasicValidationFound);
+		assertFalse(checkAgainstContentTstFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void signatureWithMD2AndContentTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.MD2);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BSV_ICTGTNACCET_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.INDETERMINATE, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureBBB.getConclusion().getSubIndication());
+
+		XmlSAV signatureSAV = signatureBBB.getSAV();
+		assertNotNull(signatureSAV);
+		assertEquals(Indication.INDETERMINATE, signatureSAV.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureSAV.getConclusion().getSubIndication());
+
+		boolean cryptoCheckFound = false;
+		for (XmlConstraint constraint : signatureSAV.getConstraint()) {
+			if (MessageTag.ACCM.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG),
+						constraint.getError().getValue());
+				cryptoCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(cryptoCheckFound);
+
+		assertEquals(1, detailedReport.getSignatures().size());
+		XmlValidationProcessBasicSignature validationProcessBasicSignature = detailedReport.getSignatures().get(0).getValidationProcessBasicSignature();
+		assertNotNull(validationProcessBasicSignature);
+		assertEquals(Indication.INDETERMINATE, validationProcessBasicSignature.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE, validationProcessBasicSignature.getConclusion().getSubIndication());
+
+		boolean contentTstBasicValidationFound = false;
+		boolean checkAgainstContentTstFound = false;
+		for (XmlConstraint constraint : validationProcessBasicSignature.getConstraint()) {
+			if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				contentTstBasicValidationFound = true;
+			} else if (MessageTag.BSV_ICTGTNACCET.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BSV_ICTGTNACCET_ANS.getId(), constraint.getError().getKey());
+				checkAgainstContentTstFound = true;
+			}
+		}
+		assertTrue(contentTstBasicValidationFound);
+		assertTrue(checkAgainstContentTstFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void signatureWithMD2AndSHA3with224ContentTstTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.MD2);
+
+		XmlTimestamp xmlTimestamp = xmlSignature.getFoundTimestamps().get(0).getTimestamp();
+		xmlTimestamp.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA3_224);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG)));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BSV_ICTGTNACCET_ANS)));
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp contentTst = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0);
+		assertEquals(Indication.INDETERMINATE, contentTst.getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, contentTst.getSubIndication());
+		assertTrue(checkMessageValuePresence(convertMessages(contentTst.getAdESValidationDetails().getError()),
+				i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.SHA3_224.getName(), MessageTag.ACCM_POS_TST_SIG)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.INDETERMINATE, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureBBB.getConclusion().getSubIndication());
+
+		XmlSAV signatureSAV = signatureBBB.getSAV();
+		assertNotNull(signatureSAV);
+		assertEquals(Indication.INDETERMINATE, signatureSAV.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureSAV.getConclusion().getSubIndication());
+
+		boolean cryptoCheckFound = false;
+		for (XmlConstraint constraint : signatureSAV.getConstraint()) {
+			if (MessageTag.ACCM.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG),
+						constraint.getError().getValue());
+				cryptoCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(cryptoCheckFound);
+
+		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+		assertNotNull(timestampBBB);
+		assertEquals(Indication.INDETERMINATE, timestampBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, timestampBBB.getConclusion().getSubIndication());
+
+		XmlSAV timestampSAV = timestampBBB.getSAV();
+		assertNotNull(timestampSAV);
+		assertEquals(Indication.INDETERMINATE, timestampSAV.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, timestampSAV.getConclusion().getSubIndication());
+
+		boolean cryptoCheckForTstFound = false;
+		for (XmlConstraint constraint : timestampSAV.getConstraint()) {
+			if (MessageTag.ACCM.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.SHA3_224.getName(), MessageTag.ACCM_POS_TST_SIG),
+						constraint.getError().getValue());
+				cryptoCheckForTstFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(cryptoCheckForTstFound);
+
+		assertEquals(1, detailedReport.getSignatures().size());
+		XmlValidationProcessBasicSignature validationProcessBasicSignature = detailedReport.getSignatures().get(0).getValidationProcessBasicSignature();
+		assertNotNull(validationProcessBasicSignature);
+		assertEquals(Indication.INDETERMINATE, validationProcessBasicSignature.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, validationProcessBasicSignature.getConclusion().getSubIndication());
+
+		boolean contentTstBasicValidationFound = false;
+		boolean checkAgainstContentTstFound = false;
+		for (XmlConstraint constraint : validationProcessBasicSignature.getConstraint()) {
+			if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+				contentTstBasicValidationFound = true;
+			} else if (MessageTag.BSV_ICTGTNACCET.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BSV_ICTGTNACCET_ANS.getId(), constraint.getError().getKey());
+				checkAgainstContentTstFound = true;
+			}
+		}
+		assertTrue(contentTstBasicValidationFound);
+		assertFalse(checkAgainstContentTstFound);
+
+		checkReports(reports);
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);
