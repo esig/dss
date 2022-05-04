@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.asic.cades.timestamp;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESCommonParameters;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCWithCAdESTimestampManifestBuilder;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 
 /**
@@ -33,10 +33,20 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
  */
 public class ASiCWithCAdESTimestampDataToSignHelperBuilder extends ASiCWithCAdESDataToSignHelperBuilder {
 
+    /**
+     * Default constructor
+     *
+     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+     */
+    public ASiCWithCAdESTimestampDataToSignHelperBuilder(final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+        super(asicFilenameFactory);
+    }
+
     @Override
     protected ASiCEWithCAdESManifestBuilder getManifestBuilder(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
-        String uri = ASiCWithCAdESUtils.getTimestampFileName(asicContent.getTimestampDocuments());
-        return new ASiCWithCAdESTimestampManifestBuilder(asicContent, parameters.getDigestAlgorithm(), uri);
+        // Required as a part of the created manifest file
+        String timestampFilename = asicFilenameFactory.getTimestampFilename(asicContent);
+        return new ASiCWithCAdESTimestampManifestBuilder(asicContent, parameters.getDigestAlgorithm(), timestampFilename, asicFilenameFactory);
     }
 
 }

@@ -21,13 +21,9 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractGetDataToSignHelper;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -36,37 +32,18 @@ import java.util.List;
  */
 public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper implements GetDataToSignASiCWithXAdESHelper {
 
-    /** ASiC Container creation parameters */
-    private final ASiCParameters asicParameters;
-
     /**
      * The default constructor
      *
      * @param asicContent {@link ASiCContent}
-     * @param asicParameters {@link ASiCParameters}
      */
-    public DataToSignASiCEWithXAdESHelper(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+    public DataToSignASiCEWithXAdESHelper(final ASiCContent asicContent) {
         super(asicContent);
-        this.asicParameters = asicParameters;
     }
 
     @Override
     public List<DSSDocument> getToBeSigned() {
         return asicContent.getSignedDocuments();
-    }
-
-    @Override
-    public String getSignatureFilename() {
-        if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-            return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
-        }
-        List<String> existingSignatureNames = DSSUtils.getDocumentNames(asicContent.getSignatureDocuments());
-        return ASiCUtils.getNextAvailableASiCEWithXAdESSignatureName(existingSignatureNames);
-    }
-
-    @Override
-    public String getTimestampFilename() {
-        throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
     }
 
     @Override

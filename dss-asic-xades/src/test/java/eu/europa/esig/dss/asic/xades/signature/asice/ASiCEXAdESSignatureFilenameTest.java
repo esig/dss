@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.xades.signature.SimpleASiCWithXAdESFilenameFactory;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.zip.ZipFile;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
 
@@ -50,7 +51,12 @@ public class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
 	@Override
 	public void signAndVerify() {
 		Path containerTemporaryPath = temporaryFolder.resolve("container.asice");
-		getSignatureParameters().aSiC().setSignatureFileName("signatures2047.xml");
+
+		ASiCWithXAdESService service = (ASiCWithXAdESService) getService();
+		SimpleASiCWithXAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithXAdESFilenameFactory();
+		asicFilenameFactory.setSignatureFilename("signatures2047.xml");
+		service.setAsicFilenameFactory(asicFilenameFactory);
+
 		documentToSign = sign();
 		try {
 			documentToSign.save(containerTemporaryPath.toString());

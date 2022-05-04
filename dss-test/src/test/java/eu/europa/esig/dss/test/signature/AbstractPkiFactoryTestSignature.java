@@ -743,16 +743,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {
-				boolean found = false;
-				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
-				String originalDigest = getDigest(original, toBeCanonicalized);
-				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
-					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
-						found = true;
-						break;
-					}
-				}
+				boolean found = documentPresent(original, retrievedOriginalDocuments);
 
 				if (!MimeType.PDF.equals(original.getMimeType())) {
 					assertTrue(found, "Unable to retrieve the original document " + original.getName());
@@ -772,6 +763,20 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				}
 			}
 		}
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 
 	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {

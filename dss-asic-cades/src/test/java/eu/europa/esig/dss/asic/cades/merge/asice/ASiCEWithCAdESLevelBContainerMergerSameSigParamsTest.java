@@ -1,14 +1,13 @@
 package eu.europa.esig.dss.asic.cades.merge.asice;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.merge.AbstractWithCAdESTestMerge;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -35,14 +34,28 @@ public class ASiCEWithCAdESLevelBContainerMergerSameSigParamsTest extends Abstra
         firstSignatureParameters = new ASiCWithCAdESSignatureParameters();
         firstSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-        firstSignatureParameters.aSiC().setSignatureFileName("signature001.p7s");
         firstSignatureParameters.bLevel().setSigningDate(signingTime);
 
         secondSignatureParameters = new ASiCWithCAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         secondSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-        secondSignatureParameters.aSiC().setSignatureFileName("signature002.p7s");
         secondSignatureParameters.bLevel().setSigningDate(signingTime);
+    }
+
+    @Override
+    protected DSSDocument getFirstSignedContainer() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+        filenameFactory.setSignatureFilename("signature001.p7s");
+        getService().setAsicFilenameFactory(filenameFactory);
+        return super.getFirstSignedContainer();
+    }
+
+    @Override
+    protected DSSDocument getSecondSignedContainer() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+        filenameFactory.setSignatureFilename("signature002.p7s");
+        getService().setAsicFilenameFactory(filenameFactory);
+        return super.getSecondSignedContainer();
     }
 
     @Override
@@ -80,7 +93,7 @@ public class ASiCEWithCAdESLevelBContainerMergerSameSigParamsTest extends Abstra
     }
 
     @Override
-    protected MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> getService() {
+    protected ASiCWithCAdESService getService() {
         return service;
     }
 

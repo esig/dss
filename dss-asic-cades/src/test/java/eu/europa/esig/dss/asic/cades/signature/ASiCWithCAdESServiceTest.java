@@ -147,10 +147,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.aSiC().setMimeType(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.aSiC().setSignatureFileName(Utils.EMPTY_STRING);
-        signAndValidate(documentToSign, signatureParameters);
-        
+
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, ASiCWithCAdESSignatureParameters signatureParameters) throws IOException {

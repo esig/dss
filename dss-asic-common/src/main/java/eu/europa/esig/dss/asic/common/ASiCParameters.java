@@ -113,8 +113,8 @@ public class ASiCParameters implements Serializable {
 	 *
 	 * @return signature file name
 	 */
-	@Deprecated
 	public String getSignatureFileName() {
+		// TODO : remove with #setSignatureFileName(signatureFileName) method
 		return signatureFileName;
 	}
 
@@ -123,6 +123,13 @@ public class ASiCParameters implements Serializable {
 	 *
 	 * @param signatureFileName
 	 *            signature file name
+	 *
+	 * @deprecated since DSS 5.11.
+	 * Use {@code
+	 *         SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+	 *         asicFilenameFactory.setSignatureFilename(signatureFilename);
+	 *         ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
+	 *     }
 	 */
 	@Deprecated
 	public void setSignatureFileName(final String signatureFileName) {

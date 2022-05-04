@@ -26,7 +26,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -620,19 +619,6 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Transforms {@code num} with the pattern:
-	 *     {@code "2 -> 002"}, {@code "10 -> 010"}, etc.
-	 *
-	 * @param num number to transform
-	 * @return {@link String}
-	 */
-	public static String getPadNumber(int num) {
-		String numStr = String.valueOf(num);
-		String zeroPad = "000";
-		return zeroPad.substring(numStr.length()) + numStr;
-	}
-
-	/**
 	 * Checks if the fileName matches to a Manifest name standard
 	 *
 	 * @param fileName {@link String} to check
@@ -652,41 +638,6 @@ public final class ASiCUtils {
 	public static boolean isArchiveManifest(String fileName) {
 		return fileName.startsWith(META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
 				&& fileName.endsWith(XML_EXTENSION);
-	}
-	
-	/**
-	 * Generates a unique name for a new ASiC Manifest file, avoiding any name collision
-	 *
-	 * @param expectedManifestName {@link String} defines the expected name of the file without extension (e.g. "ASiCManifest")
-	 * @param existingManifests list of existing {@link DSSDocument} manifests of the type present in the container
-	 * @return {@link String} new manifest name
-	 */
-	public static String getNextASiCManifestName(final String expectedManifestName, final List<DSSDocument> existingManifests) {
-		List<String> manifestNames = DSSUtils.getDocumentNames(existingManifests);
-		
-		String manifestName = null;
-		for (int i = 0; i < existingManifests.size() + 1; i++) {
-			String suffix = i == 0 ? Utils.EMPTY_STRING : String.valueOf(i);
-			manifestName = META_INF_FOLDER + expectedManifestName + suffix + XML_EXTENSION;
-			if (isValidName(manifestName, manifestNames)) {
-				break;
-			}
-		}
-		return manifestName;
-	}
-	
-	private static boolean isValidName(final String name, final List<String> notValidNames) {
-		return !notValidNames.contains(name);
-	}
-	
-	/**
-	 * Checks if the current document an ASiC-E ZIP specific archive
-	 *
-	 * @param document {@link DSSDocument} to check
-	 * @return TRUE if the document if a "package.zip" archive, FALSE otherwise
-	 */
-	public static boolean isASiCSArchive(DSSDocument document) {
-		return Utils.areStringsEqual(PACKAGE_ZIP, document.getName());
 	}
 
 	/**
@@ -790,9 +741,20 @@ public final class ASiCUtils {
 			return signedDocuments;
 		}
 
+		return getRootLevelDocuments(signedDocuments);
+	}
+
+	/**
+	 * This method returns root-level documents across the provided list of documents
+	 *
+	 * @param documents list of {@link DSSDocument} to get root-level documents from
+	 * @return list of {@link DSSDocument}s
+	 */
+	public static List<DSSDocument> getRootLevelDocuments(List<DSSDocument> documents) {
 		List<DSSDocument> rootDocuments = new ArrayList<>();
-		for (DSSDocument document : signedDocuments) {
-			if (document.getName() != null && !document.getName().contains("/")) {
+		for (DSSDocument document : documents) {
+			String documentName = document.getName();
+			if (documentName != null && !documentName.contains("/") && !MIME_TYPE.equals(documentName)) {
 				rootDocuments.add(document);
 			}
 		}

@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.signature.AbstractGetDataToSignHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -38,21 +36,15 @@ public class DataToSignASiCEWithCAdESHelper extends AbstractGetDataToSignHelper 
 	/** The cached ToBeSigned document */
 	private final DSSDocument toBeSigned;
 
-	/** ASiC container parameters */
-	private final ASiCParameters asicParameters;
-
 	/**
 	 * The default constructor
 	 *
 	 * @param asicContent {@link ASiCContent}
 	 * @param toBeSigned {@link DSSDocument}
-	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignASiCEWithCAdESHelper(final ASiCContent asicContent, final DSSDocument toBeSigned,
-										  final ASiCParameters asicParameters) {
+	public DataToSignASiCEWithCAdESHelper(final ASiCContent asicContent, final DSSDocument toBeSigned) {
 		super(asicContent);
 		this.toBeSigned = toBeSigned;
-		this.asicParameters = asicParameters;
 	}
 
 	@Override
@@ -63,16 +55,6 @@ public class DataToSignASiCEWithCAdESHelper extends AbstractGetDataToSignHelper 
 	@Override
 	public List<DSSDocument> getDetachedContents() {
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getSignatureFilename() {
-		return ASiCWithCAdESUtils.getSignatureFileName(asicContent.getSignatureDocuments(), asicParameters.getSignatureFileName());
-	}
-
-	@Override
-	public String getTimestampFilename() {
-		return ASiCWithCAdESUtils.getTimestampFileName(asicContent.getTimestampDocuments());
 	}
 
 }

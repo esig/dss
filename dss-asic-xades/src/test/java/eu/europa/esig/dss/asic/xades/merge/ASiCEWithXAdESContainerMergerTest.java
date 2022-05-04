@@ -93,7 +93,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeAsicWithZipTest() throws Exception {
+    public void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
@@ -138,7 +138,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() throws Exception {
+    public void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -191,7 +191,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithTimestampsTest() throws Exception {
+    public void mergeWithTimestampsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -207,7 +207,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithSignedManifestTest() throws Exception {
+    public void mergeWithSignedManifestTest() {
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(
                 new FileDocument("src/test/resources/validation/onefile-ok.asice"),
                 new FileDocument("src/test/resources/validation/asic-xades-lta-signed-manifest.sce"));
@@ -217,7 +217,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithSignedSignatureFileTest() throws Exception {
+    public void mergeWithSignedSignatureFileTest() {
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(
                 new FileDocument("src/test/resources/validation/onefile-ok.asice"),
                 new FileDocument("src/test/resources/validation/asic-xades-signed-signature.sce"));
@@ -274,7 +274,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeZeroFilesTest() throws Exception {
+    public void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithXAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -289,7 +289,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeNullFileTest() throws Exception {
+    public void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithXAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -308,7 +308,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeOneFileTest() throws Exception {
+    public void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
 
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(document);
@@ -357,7 +357,7 @@ public class ASiCEWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() throws Exception {
+    public void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 

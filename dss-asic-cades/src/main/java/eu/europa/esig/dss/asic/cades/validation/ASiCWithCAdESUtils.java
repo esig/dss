@@ -24,7 +24,6 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
@@ -44,12 +43,6 @@ public class ASiCWithCAdESUtils {
 	/** The default Archive Manifest filename */
 	public static final String DEFAULT_ARCHIVE_MANIFEST_FILENAME = ASiCUtils.META_INF_FOLDER +
 			ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME + ASiCUtils.XML_EXTENSION;
-
-	/** The default signature filename */
-	public static final String ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
-
-	/** The default timestamp filename */
-	public static final String ZIP_ENTRY_ASICE_METAINF_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
 
 	/**
 	 * Utils class
@@ -106,42 +99,6 @@ public class ASiCWithCAdESUtils {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Generates and returns a signature filename
-	 *
-	 * @param existingSignatures a list of {@link DSSDocument} signatures from the container
-	 * @param expectedSignatureFileName {@link String} the desired signature filename (optional)
-	 * @return {@link String} signature filename
-	 */
-	public static String getSignatureFileName(List<DSSDocument> existingSignatures, String expectedSignatureFileName) {
-		if (Utils.isStringNotBlank(expectedSignatureFileName)) {
-			assertSignatureNameIsValid(existingSignatures, expectedSignatureFileName);
-			return ASiCUtils.META_INF_FOLDER + expectedSignatureFileName;
-
-		} else {
-			int num = Utils.collectionSize(existingSignatures) + 1;
-			return ZIP_ENTRY_ASICE_METAINF_CADES_SIGNATURE.replace("001", ASiCUtils.getPadNumber(num));
-		}
-	}
-
-	private static void assertSignatureNameIsValid(List<DSSDocument> existingSignatures, String signatureFileName) {
-		if (DSSUtils.getDocumentNames(existingSignatures).contains(signatureFileName)) {
-			throw new IllegalArgumentException(String.format("The signature file with name '%s' already exists " +
-					"within the ASiC Container!", signatureFileName));
-		}
-	}
-
-	/**
-	 * Generates and returns a timestamp filename
-	 *
-	 * @param existingTimestamps a list of {@link DSSDocument} timestamps from the container
-	 * @return {@link String} timestamp filename
-	 */
-	public static String getTimestampFileName(List<DSSDocument> existingTimestamps) {
-		int num = Utils.collectionSize(existingTimestamps) + 1;
-		return ZIP_ENTRY_ASICE_METAINF_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
 	}
 
 }

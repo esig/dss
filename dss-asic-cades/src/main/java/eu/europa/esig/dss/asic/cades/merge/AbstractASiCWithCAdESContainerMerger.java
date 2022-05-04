@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.asic.cades.merge;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -33,6 +35,7 @@ import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
 import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
@@ -42,6 +45,11 @@ import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basi
  *
  */
 public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContainerMerger {
+
+    /**
+     * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
+     */
+    protected ASiCWithCAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithCAdESFilenameFactory();
 
     /**
      * Empty constructor
@@ -65,6 +73,17 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
      */
     protected AbstractASiCWithCAdESContainerMerger(ASiCContent... asicContents) {
         super(asicContents);
+    }
+
+    /**
+     * Sets {@code ASiCWithCAdESFilenameFactory} defining a set of rules for naming of newly create ZIP entries,
+     * such as signature files.
+     *
+     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+     */
+    public void setAsicFilenameFactory(ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+        Objects.requireNonNull(asicFilenameFactory, "ASiCWithCAdESFilenameFactory cannot be null!");
+        this.asicFilenameFactory = asicFilenameFactory;
     }
 
     @Override

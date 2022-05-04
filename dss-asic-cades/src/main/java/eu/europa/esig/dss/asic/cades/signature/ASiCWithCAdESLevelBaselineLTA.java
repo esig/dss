@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
@@ -55,8 +57,10 @@ import java.util.List;
  */
 public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtension {
 
-    /** The default timestamp document name */
-    private static final String ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+    /**
+     * Defines rules for filename creation for timestamp and archive manifest file.
+     */
+    private final ASiCWithCAdESFilenameFactory asicFilenameFactory;
 
     /**
      * Default constructor
@@ -64,8 +68,21 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
      * @param certificateVerifier {@link CertificateVerifier}
      * @param tspSource           {@link TSPSource}
      */
-    public ASiCWithCAdESLevelBaselineLTA(CertificateVerifier certificateVerifier, TSPSource tspSource) {
+    public ASiCWithCAdESLevelBaselineLTA(final CertificateVerifier certificateVerifier, final TSPSource tspSource) {
+        this(certificateVerifier, tspSource, new DefaultASiCWithCAdESFilenameFactory());
+    }
+
+    /**
+     * Constructor with filename factory
+     *
+     * @param certificateVerifier {@link CertificateVerifier}
+     * @param tspSource           {@link TSPSource}
+     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+     */
+    public ASiCWithCAdESLevelBaselineLTA(final CertificateVerifier certificateVerifier, final TSPSource tspSource,
+                                         final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
         super(certificateVerifier, tspSource);
+        this.asicFilenameFactory = asicFilenameFactory;
     }
 
     @Override
@@ -103,12 +120,12 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
      */
     private ASiCContent extend(ASiCContent asicContent, DigestAlgorithm manifestDigestAlgorithm,
                               DigestAlgorithm tstDigestAlgorithm) {
-        List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
         // shall be computed on the first step, before timestamp extension/creation
-        String timestampFilename = getArchiveTimestampFilename(timestampDocuments);
+        String timestampFilename = asicFilenameFactory.getTimestampFilename(asicContent);
 
         ManifestFile lastManifestFile = getLastManifestFile(asicContent.getAllManifestDocuments());
 
+        List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
         DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestampDocuments);
         if (lastTimestamp != null) {
             ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContent);
@@ -140,8 +157,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         DSSDocument lastArchiveManifest = null;
         if (lastManifestFile != null && isLastArchiveManifest(lastManifestFile.getFilename())) {
             lastArchiveManifest = lastManifestFile.getDocument();
-            lastArchiveManifest.setName(ASiCUtils.getNextASiCManifestName(ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME,
-                    asicContent.getArchiveManifestDocuments()));
+            lastArchiveManifest.setName(asicFilenameFactory.getArchiveManifestFilename(asicContent));
         }
 
         ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(
@@ -154,11 +170,6 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         asicContent.getTimestampDocuments().add(timestamp);
 
         return asicContent;
-    }
-
-    private String getArchiveTimestampFilename(List<DSSDocument> timestamps) {
-        int num = Utils.collectionSize(timestamps) + 1;
-        return ZIP_ENTRY_ASICE_METAINF_CADES_TIMESTAMP.replace("001", ASiCUtils.getPadNumber(num));
     }
 
     private ManifestFile getLastManifestFile(List<DSSDocument> manifests) {

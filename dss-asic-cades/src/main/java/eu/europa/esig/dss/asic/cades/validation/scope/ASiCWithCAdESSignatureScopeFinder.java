@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.scope;
 
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
@@ -50,7 +52,7 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         	return result;
         }
         
-        if (isASiCSArchive(cadesSignature, originalDocument)) {
+        if (isASiCSArchive(cadesSignature) && isASiCSContainer(originalDocument)) {
 			ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(
 					originalDocument.getName(), DSSUtils.getDigest(getDefaultDigestAlgorithm(), originalDocument));
 			result.add(containerSignatureScope);
@@ -76,5 +78,20 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
         }
         return result;
     }
+
+	@Override
+	protected boolean isASiCSArchive(AdvancedSignature advancedSignature) {
+		return !super.isASiCEArchive(advancedSignature);
+	}
+
+	/**
+	 * This method verifies whether the given document is an ASiC-S ZIP container
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE of the document is an ASiC-S data container, FALSE otherwise
+	 */
+	private boolean isASiCSContainer(DSSDocument document) {
+		return document.getName() != null && !document.getName().contains("/") && ASiCUtils.isZip(document);
+	}
 
 }

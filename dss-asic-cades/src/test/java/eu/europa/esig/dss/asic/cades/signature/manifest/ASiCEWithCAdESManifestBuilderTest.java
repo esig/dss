@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -56,6 +57,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 
 		ASiCContent asicContent = new ASiCContent();
 		asicContent.setSignedDocuments(documents);
+		asicContent.setContainerType(ASiCContainerType.ASiC_E);
 
 		ASiCEWithCAdESManifestBuilder builder = new ASiCWithCAdESSignatureManifestBuilder(
 				asicContent, DigestAlgorithm.SHA256, "signature.p7s");

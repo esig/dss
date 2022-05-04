@@ -81,12 +81,10 @@ public abstract class AbstractSignatureScopeFinder {
 	 * Checks if the given signature represents an ASiC-S container
 	 *
 	 * @param advancedSignature {@link AdvancedSignature} to check
-	 * @param signedDocument {@link DSSDocument} the signed document
 	 * @return TRUE if the signature is ASiC-S, FALSE otherwise
 	 */
-	protected boolean isASiCSArchive(AdvancedSignature advancedSignature, DSSDocument signedDocument) {
-		return ASICS_PACKAGE_ZIP_NAME.equals(signedDocument.getName()) &&
-				Utils.isCollectionNotEmpty(advancedSignature.getContainerContents());
+	protected boolean isASiCSArchive(AdvancedSignature advancedSignature) {
+		return Utils.isCollectionNotEmpty(advancedSignature.getContainerContents());
 	}
 
 	/**

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.cades.merge;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
@@ -31,6 +32,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -101,7 +103,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeAsicWithZipTest() throws Exception {
+    public void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -145,7 +147,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() throws Exception {
+    public void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -199,7 +201,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTwoTimestampedContainersTest() throws Exception {
+    public void mergeTwoTimestampedContainersTest() {
         DSSDocument timestampedContainerOne = new FileDocument("src/test/resources/validation/tstNoMimeType.asice");
         DSSDocument timestampedContainerTwo = new FileDocument("src/test/resources/validation/tstWithEmptyCertSource.asice");
 
@@ -224,7 +226,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTimestampedAsicWithZipTest() throws Exception {
+    public void mergeTimestampedAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(getGoodTsa());
 
@@ -274,7 +276,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeSignedAndTimestampedContainersTest() throws Exception {
+    public void mergeSignedAndTimestampedContainersTest() {
         DSSDocument signedContainer = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
         DSSDocument timestampedContainer = new FileDocument("src/test/resources/validation/tstNoMimeType.asice");
 
@@ -300,7 +302,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeLTALevelContainersTest() throws Exception {
+    public void mergeLTALevelContainersTest() {
         DSSDocument signedContainer = new FileDocument("src/test/resources/validation/asice-level-lta-with-custom-manifest-namespace.sce");
         DSSDocument timestampedContainer = new FileDocument("src/test/resources/validation/cades-lta-alternative-naming.sce");
 
@@ -324,7 +326,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeSignaturesWithoutManifestTest() throws Exception {
+    public void mergeSignaturesWithoutManifestTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -344,7 +346,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeMultipleContainersTest() throws Exception {
+    public void mergeMultipleContainersTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -397,7 +399,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeMultipleContainersWithDifferentSignatureNamesTest() throws Exception {
+    public void mergeMultipleContainersWithDifferentSignatureNamesTest() throws IOException {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -406,19 +408,22 @@ public class ASiCEWithCAdESContainerMergerTest extends
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-        signatureParameters.aSiC().setSignatureFileName("signatureAAA.p7s");
+
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+        filenameFactory.setSignatureFilename("signatureAAA.p7s");
+        service.setAsicFilenameFactory(filenameFactory);
 
         ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        signatureParameters.aSiC().setSignatureFileName("signatureBBB.p7s");
+        filenameFactory.setSignatureFilename("signatureBBB.p7s");
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerTwo = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        signatureParameters.aSiC().setSignatureFileName("signatureCCC.p7s");
+        filenameFactory.setSignatureFilename("signatureCCC.p7s");
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -449,15 +454,47 @@ public class ASiCEWithCAdESContainerMergerTest extends
         assertNotEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
         assertNotEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
 
+        boolean aaaNameFound = false;
+        boolean bbbNameFound = false;
+        boolean cccNameFound = false;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getSignatureFilename())) {
+                aaaNameFound = true;
+            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getSignatureFilename())) {
+                bbbNameFound = true;
+            } else if ("META-INF/signatureCCC.p7s".equals(signatureWrapper.getSignatureFilename())) {
+                cccNameFound = true;
+            }
+        }
+        assertTrue(aaaNameFound);
+        assertTrue(bbbNameFound);
+        assertTrue(cccNameFound);
+
         manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
         assertEquals(3, manifestFiles.size());
         assertNotEquals(manifestFiles.get(0).getFilename(), manifestFiles.get(1).getFilename());
         assertNotEquals(manifestFiles.get(1).getFilename(), manifestFiles.get(2).getFilename());
         assertNotEquals(manifestFiles.get(0).getFilename(), manifestFiles.get(2).getFilename());
+
+        boolean firstManifestNameFound = false;
+        boolean secondManifestNameFound = false;
+        boolean thirdManifestNameFound = false;
+        for (XmlManifestFile manifestFile : manifestFiles) {
+            if ("META-INF/ASiCManifest001.xml".equals(manifestFile.getFilename())) {
+                firstManifestNameFound = true;
+            } else if ("META-INF/ASiCManifest002.xml".equals(manifestFile.getFilename())) {
+                secondManifestNameFound = true;
+            } else if ("META-INF/ASiCManifest003.xml".equals(manifestFile.getFilename())) {
+                thirdManifestNameFound = true;
+            }
+        }
+        assertTrue(firstManifestNameFound);
+        assertTrue(secondManifestNameFound);
+        assertTrue(thirdManifestNameFound);
     }
 
     @Test
-    public void mergeZeroFilesTest() throws Exception {
+    public void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithCAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -472,7 +509,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeNullFileTest() throws Exception {
+    public void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithCAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -491,7 +528,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeOneFileTest() throws Exception {
+    public void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(document);
@@ -540,7 +577,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() throws Exception {
+    public void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 

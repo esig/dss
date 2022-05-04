@@ -26,6 +26,8 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,9 +59,7 @@ public abstract class AbstractASiCContainerExtractor {
 		ASiCContent result = zipParsing(asicContainer);
 		result.setZipComment(ASiCUtils.getZipComment(asicContainer));
 		result.setContainerType(ASiCUtils.getContainerType(result));
-		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
-			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
-		}
+		result.setContainerDocuments(getContainerDocuments(result));
 		return result;
 	}
 
@@ -97,17 +97,34 @@ public abstract class AbstractASiCContainerExtractor {
 					result.setMimeTypeDocument(currentDocument);
 				} else {
 					result.getSignedDocuments().add(currentDocument);
-					if (ASiCUtils.isASiCSArchive(currentDocument)) {
-						result.setContainerDocuments(ZipUtils.getInstance().extractContainerContent(currentDocument));
-					}
 				}
 
 			} else {
 				result.getFolders().add(currentDocument);
 			}
 		}
-		
+
+		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
+			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
+		}
 		return result;
+	}
+
+	private List<DSSDocument> getContainerDocuments(ASiCContent asicContent) {
+		List<DSSDocument> containerDocuments = new ArrayList<>();
+		if (ASiCUtils.isASiCSContainer(asicContent)) {
+			for (DSSDocument signerDocument : asicContent.getRootLevelSignedDocuments()) {
+				if (Utils.isCollectionNotEmpty(containerDocuments)) {
+					LOG.warn("More than one ZIP archive found on a root level of the ASiC-S container! " +
+							"Extraction of embedded documents not possible.");
+					return Collections.emptyList();
+				}
+				if (ASiCUtils.isZip(signerDocument)) {
+					containerDocuments.addAll(ZipUtils.getInstance().extractContainerContent(signerDocument));
+				}
+			}
+		}
+		return containerDocuments;
 	}
 
 	private boolean isMetaInfFolder(String entryName) {

@@ -158,7 +158,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 					} else if (Utils.isCollectionNotEmpty(transformations)) {
 						return new XmlFullSignatureScope(fileName, transformations, getDigest(detachedDocument));
 	
-					} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
+					} else if (isASiCSArchive(xadesSignature)) {
 						ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(decodedUrl, getDigest(detachedDocument));
 						for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
 							containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(

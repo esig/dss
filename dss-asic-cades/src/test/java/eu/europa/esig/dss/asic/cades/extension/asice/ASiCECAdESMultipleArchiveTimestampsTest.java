@@ -46,7 +46,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,7 +56,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
@@ -164,7 +163,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			validateEntries(archiveManifestEntries);
 			
 			ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
-			if ("META-INF/ASiCArchiveManifest1.xml".equals(lastCreatedArchiveManifestFile.getFilename())) {
+			if ("META-INF/ASiCArchiveManifest001.xml".equals(lastCreatedArchiveManifestFile.getFilename())) {
 				assertNull(rootfile); // first created ArchiveManifest does not contain a "Rootfile" element
 			} else {
 				assertNotNull(rootfile);
@@ -174,16 +173,12 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestFile.getFilename());
 		
 		ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
-		assertEquals("META-INF/ASiCArchiveManifest2.xml", rootfile.getFileName());
+		assertEquals("META-INF/ASiCArchiveManifest002.xml", rootfile.getFileName());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
-		try {
-			assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			fail(e.getMessage());
-		}
+		assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
 
 	}
 	

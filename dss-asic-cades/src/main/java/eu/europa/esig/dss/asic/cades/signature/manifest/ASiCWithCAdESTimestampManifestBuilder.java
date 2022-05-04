@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.MimeType;
@@ -39,6 +40,19 @@ public class ASiCWithCAdESTimestampManifestBuilder extends ASiCEWithCAdESManifes
      */
     public ASiCWithCAdESTimestampManifestBuilder(ASiCContent asicContent, DigestAlgorithm digestAlgorithm, String documentUri) {
         super(asicContent, digestAlgorithm, documentUri);
+    }
+
+    /**
+     * Constructor with filename factory
+     *
+     * @param asicContent {@link ASiCContent} representing container's document structure
+     * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
+     * @param documentUri {@link String} filename of the document associated with the manifest
+     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+     */
+    public ASiCWithCAdESTimestampManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
+                                                    final String documentUri, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+        super(asicContent, digestAlgorithm, documentUri, asicFilenameFactory);
     }
 
     @Override

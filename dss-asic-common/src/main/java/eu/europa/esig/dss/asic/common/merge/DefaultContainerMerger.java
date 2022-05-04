@@ -212,9 +212,8 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * @return {@link ASiCContent}
      */
     protected ASiCContent createMergedResult() {
-        ASiCContent asicContent = new ASiCContent();
+        ASiCContent asicContent = createEmptyContainer();
 
-        asicContent.setContainerType(getContainerType());
         asicContent.setZipComment(getZipComment());
         asicContent.setMimeTypeDocument(getMimeTypeDocument());
 
@@ -236,14 +235,32 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         return asicContent;
     }
 
+    /**
+     * This method creates an empty container
+     *
+     * @return {@link ASiCContent}
+     */
+    protected ASiCContent createEmptyContainer() {
+        ASiCContent asicContent = new ASiCContent();
+        asicContent.setContainerType(getContainerType());
+        return asicContent;
+    }
+
     private ASiCContainerType getContainerType() {
         for (ASiCContent asicContent : asicContents) {
             if (asicContent.getContainerType() != null) {
                 return asicContent.getContainerType();
             }
         }
-        return null;
+        return getTargetASiCContainerType();
     }
+
+    /**
+     * This method returns a target ASiC Container Type of the current merger class
+     *
+     * @return {@link ASiCContainerType}
+     */
+    protected abstract ASiCContainerType getTargetASiCContainerType();
 
     private String getZipComment() {
         String zipComment = null;

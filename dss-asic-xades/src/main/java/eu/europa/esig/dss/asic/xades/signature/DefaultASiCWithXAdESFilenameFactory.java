@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.asic.xades.signature;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCFilenameFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -14,8 +15,8 @@ import java.util.List;
 public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFactory implements ASiCWithXAdESFilenameFactory {
 
     @Override
-    public String getSignatureFilename() {
-        assertASiCContentIsValid();
+    public String getSignatureFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
         if (ASiCUtils.isASiCSContainer(asicContent)) {
             return ASiCUtils.SIGNATURES_XML; // "META-INF/signatures.xml"
 
@@ -24,18 +25,18 @@ public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFac
 
         } else { // ASiC-E
             List<String> existingSignatureNames = DSSUtils.getDocumentNames(asicContent.getSignatureDocuments());
-            return ASiCUtils.ASICE_METAINF_XADES_SIGNATURE.replace("001",
-                    getDocumentNameSuffixRecursively(existingSignatureNames)); // "META-INF/signatures*.xml"
+            // "META-INF/signatures*.xml"
+            return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_XADES_SIGNATURE, existingSignatureNames);
         }
     }
 
     @Override
-    public String getManifestFilename() {
+    public String getManifestFilename(ASiCContent asicContent) {
         return ASiCUtils.ASICE_METAINF_MANIFEST; // "META-INF/manifest.xml"
     }
 
     @Override
-    public String getDataPackageFilename() {
+    public String getDataPackageFilename(ASiCContent asicContent) {
         return ASiCUtils.PACKAGE_ZIP; // "package.zip"
     }
 

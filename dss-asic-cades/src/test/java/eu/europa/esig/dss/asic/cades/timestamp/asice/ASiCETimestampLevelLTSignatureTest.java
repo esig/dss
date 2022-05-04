@@ -118,7 +118,7 @@ public class ASiCETimestampLevelLTSignatureTest extends AbstractASiCEWithCAdESMu
                     signedDataIds.add(signatureScope.getSignerData().getId());
                 }
             }
-            if ("META-INF/ASiCManifest.xml".equals(signatureScope.getName())) {
+            if ("META-INF/ASiCManifest001.xml".equals(signatureScope.getName())) {
                 signedManifestId = signatureScope.getSignerData().getId();
             }
         }

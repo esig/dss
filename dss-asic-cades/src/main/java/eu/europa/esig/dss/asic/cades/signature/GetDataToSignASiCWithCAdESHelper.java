@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.common.signature.GetDataToSignHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * The interface defining a helper to create a {@code ToBeSigned} data for an ASiC with CAdES
  */
-public interface GetDataToSignASiCWithCAdESHelper extends GetDataToSignHelper {
+public interface GetDataToSignASiCWithCAdESHelper {
 
 	/**
 	 * Returns a signed file document

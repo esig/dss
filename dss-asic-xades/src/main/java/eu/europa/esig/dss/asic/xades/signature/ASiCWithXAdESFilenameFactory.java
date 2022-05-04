@@ -17,33 +17,27 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 public interface ASiCWithXAdESFilenameFactory {
 
     /**
-     * This method is used to set {@code ASiCContent} representing a content of container to be signed or extended.
-     * {@code ASiCContent} can be created from an existing container or from a list of documents to be signed,
-     * when creating a first signature.
-     *
-     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
-     */
-    void setASiCContent(ASiCContent asicContent);
-
-    /**
      * Returns a filename for a signature file to be created
      *
+     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
      * @return {@link String} signature filename
      */
-    String getSignatureFilename();
+    String getSignatureFilename(ASiCContent asicContent);
 
     /**
      * Returns a filename of a manifest file to be created
      *
+     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
      * @return {@link String} manifest filename
      */
-    String getManifestFilename();
+    String getManifestFilename(ASiCContent asicContent);
 
     /**
      * Returns a name of a ZIP archive containing signed documents in case of an ASiC-E signature, when applicable
      *
+     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
      * @return {@link String} data package filename
      */
-    String getDataPackageFilename();
+    String getDataPackageFilename(ASiCContent asicContent);
 
 }

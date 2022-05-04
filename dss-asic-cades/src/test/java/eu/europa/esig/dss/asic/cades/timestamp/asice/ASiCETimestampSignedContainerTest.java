@@ -104,7 +104,7 @@ public class ASiCETimestampSignedContainerTest extends AbstractASiCECAdESTestSig
         for (XmlSignatureScope signatureScope : signatureScopes) {
             if (documentToSign.getName().equals(signatureScope.getName())) {
                 signedDataId = signatureScope.getSignerData().getId();
-            } else if ("META-INF/ASiCManifest.xml".equals(signatureScope.getName())) {
+            } else if ("META-INF/ASiCManifest001.xml".equals(signatureScope.getName())) {
                 signedManifestId = signatureScope.getSignerData().getId();
             }
         }
@@ -120,7 +120,7 @@ public class ASiCETimestampSignedContainerTest extends AbstractASiCECAdESTestSig
         for (SignerDataWrapper signerDataWrapper : timestampWrapper.getTimestampedSignedData()) {
             if (documentToSign.getName().equals(signerDataWrapper.getReferencedName())) {
                 timestampedDataId = signerDataWrapper.getId();
-            } else if ("META-INF/ASiCManifest1.xml".equals(signerDataWrapper.getReferencedName())) {
+            } else if ("META-INF/ASiCManifest002.xml".equals(signerDataWrapper.getReferencedName())) {
                 timestampedManifestId = signerDataWrapper.getId();
             }
         }

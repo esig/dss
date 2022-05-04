@@ -1,8 +1,11 @@
 package eu.europa.esig.dss.asic.cades;
 
+import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCFilenameFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -14,55 +17,56 @@ import java.util.List;
 public class DefaultASiCWithCAdESFilenameFactory extends AbstractASiCFilenameFactory implements ASiCWithCAdESFilenameFactory {
 
     @Override
-    public String getSignatureFilename() {
-        assertASiCContentIsValid();
+    public String getSignatureFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
         if (ASiCUtils.isASiCSContainer(asicContent)) {
             return ASiCUtils.SIGNATURE_P7S; // "META-INF/signature.p7s";
         } else {
             List<String> existingSignatureNames = DSSUtils.getDocumentNames(asicContent.getSignatureDocuments());
-            return ASiCUtils.ASICE_METAINF_CADES_SIGNATURE.replace("001",
-                    getDocumentNameSuffixRecursively(existingSignatureNames)); // "META-INF/signature*.p7s"
+            // "META-INF/signature*.p7s"
+            return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_CADES_SIGNATURE, existingSignatureNames);
         }
     }
 
     @Override
-    public String getTimestampFilename() {
-        assertASiCContentIsValid();
-        if (ASiCUtils.isASiCSContainer(asicContent)) {
+    public String getTimestampFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
+        if (ASiCUtils.isASiCSContainer(asicContent) && Utils.isCollectionEmpty(asicContent.getTimestampDocuments())) {
             return ASiCUtils.TIMESTAMP_TST; // "META-INF/timestamp.tst";
         } else {
             List<String> existingTimestampNames = DSSUtils.getDocumentNames(asicContent.getTimestampDocuments());
-            return ASiCUtils.ASICE_METAINF_CADES_TIMESTAMP.replace("001",
-                    getDocumentNameSuffixRecursively(existingTimestampNames)); // "META-INF/timestamp*.tst"
+            // "META-INF/timestamp*.tst"
+            return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_CADES_TIMESTAMP, existingTimestampNames);
         }
     }
 
     @Override
-    public String getManifestFilename() {
-        assertASiCContentIsValid();
+    public String getManifestFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
         if (ASiCUtils.isASiCEContainer(asicContent)) {
             List<String> existingManifestNames = DSSUtils.getDocumentNames(asicContent.getManifestDocuments());
-            return ASiCUtils.ASICE_METAINF_CADES_MANIFEST.replace("001",
-                    getDocumentNameSuffixRecursively(existingManifestNames)); // "META-INF/ASiCManifest*.xml"
+            // "META-INF/ASiCManifest*.xml"
+            return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_CADES_MANIFEST, existingManifestNames);
         } else {
             throw new UnsupportedOperationException("Manifest is not applicable for ASiC-S with CAdES container!");
         }
     }
 
     @Override
-    public String getArchiveManifestFilename() {
-        assertASiCContentIsValid();
-        if (ASiCUtils.isASiCEContainer(asicContent)) {
+    public String getArchiveManifestFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
+        if (ASiCUtils.isASiCEContainer(asicContent) || Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())) {
             List<String> existingArchiveManifestNames = DSSUtils.getDocumentNames(asicContent.getArchiveManifestDocuments());
-            return ASiCUtils.ASICE_METAINF_CADES_ARCHIVE_MANIFEST.replace("001",
-                    getDocumentNameSuffixRecursively(existingArchiveManifestNames)); // "META-INF/ASiCArchiveManifest*.xml"
+            existingArchiveManifestNames.remove(ASiCWithCAdESUtils.DEFAULT_ARCHIVE_MANIFEST_FILENAME);
+            // "META-INF/ASiCArchiveManifest*.xml"
+            return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_CADES_ARCHIVE_MANIFEST, existingArchiveManifestNames);
         } else {
             throw new UnsupportedOperationException("Manifest is not applicable for ASiC-S with CAdES container!");
         }
     }
 
     @Override
-    public String getDataPackageFilename() {
+    public String getDataPackageFilename(ASiCContent asicContent) {
         return ASiCUtils.PACKAGE_ZIP; // "package.zip"
     }
 

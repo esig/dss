@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESSignatureDataToSignHelperBuilder;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
@@ -173,8 +174,8 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         }
 
         private ToBeSigned getDataToSign(ASiCContent asicContent, ASiCWithCAdESSignatureParameters parameters) {
-            GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-                    .build(asicContent, parameters);
+            GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder(
+                    new DefaultASiCWithCAdESFilenameFactory()).build(asicContent, parameters);
 
             CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
             cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
@@ -185,8 +186,8 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
 
         private DSSDocument signDocument(ASiCContent asicContent, ASiCWithCAdESSignatureParameters parameters,
                                         SignatureValue signatureValue) {
-            GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
-                    .build(asicContent, parameters);
+            GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder(
+                    new DefaultASiCWithCAdESFilenameFactory()).build(asicContent, parameters);
 
             ASiCParameters asicParameters = parameters.aSiC();
 
@@ -199,7 +200,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
             }
 
             final DSSDocument signature = getCAdESService().signDocument(toBeSigned, cadesParameters, signatureValue);
-            final String newSignatureFileName = dataToSignHelper.getSignatureFilename();
+            final String newSignatureFileName = new DefaultASiCWithCAdESFilenameFactory().getSignatureFilename(asicContent);
             signature.setName(newSignatureFileName);
 
             ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signature);

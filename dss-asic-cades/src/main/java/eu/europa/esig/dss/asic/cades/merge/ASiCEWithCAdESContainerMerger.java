@@ -5,6 +5,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -12,10 +13,8 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class is used to merge ASiC-E with CAdES containers.
@@ -64,6 +63,11 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
     private boolean doesNotContainSignatures(ASiCContent asicContent) {
         return Utils.isCollectionEmpty(asicContent.getSignatureDocuments());
+    }
+
+    @Override
+    protected ASiCContainerType getTargetASiCContainerType() {
+        return ASiCContainerType.ASiC_E;
     }
 
     @Override
@@ -163,9 +167,10 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
     }
 
     private void ensureManifestDocumentsValid() {
-        Set<String> restrictedDocumentNames = new HashSet<>();
+        ASiCContent mergedASiCContent = createEmptyContainer();
         for (ASiCContent asicContent : asicContents) {
-            restrictedDocumentNames.addAll(DSSUtils.getDocumentNames(asicContent.getAllManifestDocuments()));
+            mergedASiCContent.getManifestDocuments().addAll(asicContent.getManifestDocuments());
+            mergedASiCContent.getArchiveManifestDocuments().addAll(asicContent.getArchiveManifestDocuments());
         }
 
         List<ASiCContent> asicContentsToProcess = new ArrayList<>(Arrays.asList(asicContents));
@@ -186,9 +191,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                                         "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
                             } else {
-                                String newSignatureName = ASiCUtils.getNextAvailableASiCEWithCAdESManifestName(restrictedDocumentNames, ASiCUtils.ASIC_MANIFEST_FILENAME);
-                                currentManifest.setName(newSignatureName);
-                                restrictedDocumentNames.add(newSignatureName);
+                                String newManifestName = asicFilenameFactory.getManifestFilename(mergedASiCContent);
+                                currentManifest.setName(newManifestName);
                             }
                         }
                     }
@@ -207,9 +211,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                                         "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
                             } else {
-                                String newSignatureName = ASiCUtils.getNextAvailableASiCEWithCAdESManifestName(restrictedDocumentNames, ASiCUtils.ASIC_ARCHIVE_MANIFEST_FILENAME);
-                                currentManifest.setName(newSignatureName);
-                                restrictedDocumentNames.add(newSignatureName);
+                                String newManifestName = asicFilenameFactory.getArchiveManifestFilename(mergedASiCContent);
+                                currentManifest.setName(newManifestName);
                             }
                         }
                     }

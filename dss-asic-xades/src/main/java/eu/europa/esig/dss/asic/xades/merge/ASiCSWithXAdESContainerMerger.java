@@ -3,6 +3,7 @@ package eu.europa.esig.dss.asic.xades.merge;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -65,6 +66,11 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
         return super.isSupported(asicContent) && !ASiCUtils.isASiCEContainer(asicContent);
+    }
+
+    @Override
+    protected ASiCContainerType getTargetASiCContainerType() {
+        return ASiCContainerType.ASiC_S;
     }
 
     @Override
