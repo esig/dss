@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -37,6 +38,9 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVRIDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -48,10 +52,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utils for dealing with PAdES
@@ -63,9 +69,13 @@ public final class PAdESUtils {
 	/** Defines a number of the first page in a document */
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
+	/** The default resources handler builder to be used across the code */
+	public static final InMemoryResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
+
 	/** The starting bytes of a PDF document */
 	private static final byte[] PDF_PREAMBLE = new byte[]{ '%', 'P', 'D', 'F', '-' };
 
+	/** The string used to end a PDF revision */
 	private static final byte[] PDF_EOF_STRING = new byte[] { '%', '%', 'E', 'O', 'F' };
 
 	/**
@@ -125,12 +135,14 @@ public final class PAdESUtils {
 	 * @return {@link InMemoryDocument}
 	 */
 	private static InMemoryDocument retrieveCompletePDFRevision(DSSDocument firstByteRangePart) {
+		ByteArrayOutputStream tempLine = null;
+		ByteArrayOutputStream tempRevision = null;
 		try (InputStream is = firstByteRangePart.openStream();
-				BufferedInputStream bis = new BufferedInputStream(is);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			 BufferedInputStream bis = new BufferedInputStream(is);
+			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-			ByteArrayOutputStream tempLine = new ByteArrayOutputStream();
-			ByteArrayOutputStream tempRevision = new ByteArrayOutputStream();
+			tempLine = new ByteArrayOutputStream();
+			tempRevision = new ByteArrayOutputStream();
 			int b;
 			while ((b = bis.read()) != -1) {
 
@@ -164,6 +176,7 @@ public final class PAdESUtils {
 					baos.write(tempRevision.toByteArray());
 					tempRevision.close();
 					tempRevision = new ByteArrayOutputStream();
+
 				} else if (DSSUtils.isLineBreakByte((byte) b) || stringBytes.length > PDF_EOF_STRING.length) {
 					tempRevision.write(tempLine.toByteArray());
 					tempLine.close();
@@ -171,14 +184,20 @@ public final class PAdESUtils {
 				}
 
 			}
-			tempLine.close();
-			tempRevision.close();
 
 			baos.flush();
 			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF);
 
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
+
+		} finally {
+			if (tempLine != null) {
+				Utils.closeQuietly(tempLine);
+			}
+			if (tempRevision != null) {
+				Utils.closeQuietly(tempRevision);
+			}
 		}
 	}
 
@@ -239,6 +258,91 @@ public final class PAdESUtils {
 		}
 
 		return signedDataByteArray;
+	}
+
+	/**
+	 * This method replaces /Contents field value with a given {@code cmsSignedData} binaries
+	 *
+	 * @param toBeSignedDocument {@link DSSDocument} representing a document to be signed with an empty signature value
+	 *                                              (Ex.: {@code /Contents <00000 ... 000000>})
+	 * @param cmsSignedData byte array representing DER-encoded CMS Signed Data
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}. Optional.
+	 *                                If non is provided, a default {@code InMemoryResourcesHandlerBuilder} will be used.
+	 * @return {@link DSSDocument} PDF document containing the inserted CMS signature
+	 */
+	public static DSSDocument replaceSignature(final DSSDocument toBeSignedDocument, final byte[] cmsSignedData,
+											   DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		Objects.requireNonNull(toBeSignedDocument, "toBeSignedDocument cannot be null!");
+		Objects.requireNonNull(cmsSignedData, "cmsSignedData cannot be null!");
+		if (resourcesHandlerBuilder == null) {
+			resourcesHandlerBuilder = DEFAULT_RESOURCES_HANDLER_BUILDER;
+		}
+
+		if (Utils.isArrayEmpty(cmsSignedData)) {
+			throw new IllegalArgumentException("cmsSignedData cannot be empty!");
+		}
+		byte[] signature = Utils.toHex(cmsSignedData).getBytes();
+
+		ByteArrayOutputStream temp = null;
+		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 InputStream is = toBeSignedDocument.openStream();
+			 BufferedInputStream bis = new BufferedInputStream(is)) {
+
+			final byte startSuspicion = '<';
+			final byte continueSuspicion = '0';
+
+			boolean suspicion = false;
+			boolean cmsPasted = false;
+
+			int b;
+			while ((b = bis.read()) != -1) {
+
+				if (suspicion) {
+					if (continueSuspicion == b) {
+						temp.write(b);
+						if (signature.length == temp.size()) {
+							if (cmsPasted) {
+								throw new IllegalInputException("PDF document contains more than one empty signature!");
+							}
+							os.write(signature);
+							temp.close();
+							suspicion = false;
+							cmsPasted = true;
+						}
+						continue;
+
+					} else {
+						os.write(temp.toByteArray());
+						temp.close();
+						suspicion = false;
+					}
+				}
+
+				os.write(b);
+
+				if (startSuspicion == b) {
+					temp = new ByteArrayOutputStream();
+					suspicion = true;
+				}
+
+			}
+
+			if (!cmsPasted) {
+				throw new IllegalInputException("Reserved space to insert a signature was not found!");
+			}
+
+			return resourcesHandler.writeToDSSDocument();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format(
+					"Unable to replace /Contents value within a toBeSigned document. Reason : %s", e.getMessage()), e);
+
+		} finally {
+			if (temp != null) {
+				Utils.closeQuietly(temp);
+			}
+		}
 	}
 
 	/**
@@ -326,6 +430,15 @@ public final class PAdESUtils {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * This method initializes a new {@code DSSResourcesHandler} object
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 */
+	public static DSSResourcesHandler initializeDSSResourcesHandler() {
+		return DEFAULT_RESOURCES_HANDLER_BUILDER.createResourcesHandler();
 	}
 
 }

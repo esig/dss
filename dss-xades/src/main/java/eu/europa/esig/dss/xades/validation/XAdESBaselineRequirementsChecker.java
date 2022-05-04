@@ -361,7 +361,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("Only one SignatureProductionPlace(V2) may be present for XAdES-BES signature (cardinality 0 or 1)!");
             return false;
         }
-        // SignerRole/SignerRoleV2 (Cardinality == 0)
+        // SignerRole/SignerRoleV2 (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRolePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSignerRoleV2Path()) > 1) {
             LOG.warn("Only one SignerRole(V2) may be present for XAdES-BES signature (cardinality 0 or 1)!");

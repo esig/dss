@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.DSSFont;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
@@ -32,6 +33,8 @@ import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -55,10 +58,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -84,6 +86,14 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private boolean embedFontSubset = false;
 
 	/**
+	 * The builder is to be used to create a new {@code DSSResourcesHandler} for visual signature creation,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}
+	 */
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+
+	/**
 	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
 	 *
 	 * When set to TRUE, only the used glyphs will be embedded to a font.
@@ -95,6 +105,17 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 */
 	public void setEmbedFontSubset(boolean embedFontSubset) {
 		this.embedFontSubset = embedFontSubset;
+	}
+
+	/**
+	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	@Override
@@ -131,7 +152,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	@Override
 	public void draw() throws IOException {
-		try (PDDocument doc = new PDDocument(); ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		try (DSSResourcesHandler resourcesHandler = resourcesHandlerBuilder.createResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 PDDocument doc = new PDDocument()) {
 
 			int pageNumber = parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE;
 			PDPage originalPage = document.getPage(pageNumber);
@@ -163,10 +186,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				setImage(cs, doc, dimensionAndPosition, parameters.getImage());
 			}
 
-			doc.save(baos);
+			doc.save(os);
 
-			try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
-				signatureOptions.setVisualSignature(bais);
+			DSSDocument document = resourcesHandler.writeToDSSDocument();
+			try (InputStream is = document.openStream()) {
+				signatureOptions.setVisualSignature(is);
 				signatureOptions.setPage(pageNumber);
 			}
 

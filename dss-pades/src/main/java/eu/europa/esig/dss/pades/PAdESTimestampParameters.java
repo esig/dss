@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 import java.util.Date;
 
@@ -32,6 +33,11 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 public class PAdESTimestampParameters extends CAdESTimestampParameters implements PAdESCommonParameters {
+
+	/**
+	 * The internal signature processing variable
+	 */
+	protected PdfSignatureCache pdfSignatureCache;
 	
 	/**
 	 * Date of the timestamp
@@ -190,6 +196,19 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	public void setPasswordProtection(String passwordProtection) {
 		this.passwordProtection = passwordProtection;
+	}
+
+	@Override
+	public PdfSignatureCache getPdfSignatureCache() {
+		if (pdfSignatureCache == null) {
+			pdfSignatureCache = new PdfSignatureCache();
+		}
+		return pdfSignatureCache;
+	}
+
+	@Override
+	public void reinit() {
+		pdfSignatureCache = null;
 	}
 
 }

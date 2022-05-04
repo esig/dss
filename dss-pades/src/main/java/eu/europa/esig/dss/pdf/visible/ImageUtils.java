@@ -23,10 +23,11 @@ package eu.europa.esig.dss.pdf.visible;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +41,9 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -246,15 +247,32 @@ public class ImageUtils {
 	}
 
 	/**
-	 * Transforms a {@code BufferedImage} to {@code DSSDocument}
+	 * Transforms a {@code BufferedImage} to {@code DSSDocument} using in memory processing
 	 *
 	 * @param bufferedImage {@link BufferedImage} to convert
 	 * @return {@link DSSDocument}
 	 */
 	public static DSSDocument toDSSDocument(BufferedImage bufferedImage) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			ImageIO.write(bufferedImage, "png", baos);
-			return new InMemoryDocument(baos.toByteArray(), SCREENSHOT_PNG_NAME, MimeType.PNG);
+		return toDSSDocument(bufferedImage, PAdESUtils.initializeDSSResourcesHandler());
+	}
+
+	/**
+	 * Transforms a {@code BufferedImage} to {@code DSSDocument}, using a provided {@code DSSResourcesHandler}
+	 *
+	 * @param bufferedImage {@link BufferedImage} to convert
+	 * @param dssResourcesHandler {@link DSSResourcesHandler}
+	 * @return {@link DSSDocument}
+	 */
+	public static DSSDocument toDSSDocument(BufferedImage bufferedImage,
+											DSSResourcesHandler dssResourcesHandler) {
+		try (DSSResourcesHandler resourcesHandler = dssResourcesHandler;
+			 OutputStream os = resourcesHandler.createOutputStream()) {
+			ImageIO.write(bufferedImage, "png", os);
+			DSSDocument dssDocument = resourcesHandler.writeToDSSDocument();
+			dssDocument.setName(SCREENSHOT_PNG_NAME);
+			dssDocument.setMimeType(MimeType.PNG);
+			return dssDocument;
+
 		} catch (IOException e) {
 			throw new DSSException(
 					String.format("Unable to convert BufferedImage to DSSDocument. Reason : %s", e.getMessage()), e);

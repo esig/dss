@@ -16,6 +16,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,10 +41,17 @@ public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidat
         DSSDocument timestampedDoc = service.timestamp(documentToTimestamp, timestampParameters);
         assertNotNull(timestampedDoc);
 
-        timestampedDoc.save("target/timestamped.pdf");
+        String pathString = "target/timestamped.pdf";
+        timestampedDoc.save(pathString);
+
+        File file = new File(pathString);
+        assertTrue(file.exists());
 
         checkAppNamePresence(timestampedDoc);
         verify(timestampedDoc);
+
+        assertTrue(file.delete());
+        assertFalse(file.exists());
     }
 
     private void checkAppNamePresence(DSSDocument document) {

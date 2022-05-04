@@ -43,6 +43,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -75,6 +76,15 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
 	/**
+	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 *
+	 * Default : the one defined inside a corresponding {@code PDFSignatureService} will be used.
+	 *           If the value is not overwritten, the in memory resources handler will be used.
+	 */
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
+	/**
 	 * This is the constructor to create an instance of the {@code PAdESService}. A certificate verifier must be
 	 * provided.
 	 *
@@ -89,6 +99,16 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	/**
+	 * This method returns a pre-configured {@code IPdfObjFactory}
+	 *
+	 * @return {@link IPdfObjFactory}
+	 */
+	protected IPdfObjFactory getPdfObjFactory() {
+		pdfObjFactory.setDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
+		return pdfObjFactory;
+	}
+
+	/**
 	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
 	 * 
 	 * @param pdfObjFactory
@@ -99,17 +119,34 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		this.pdfObjFactory = pdfObjFactory;
 	}
 
+	/**
+	 * This method is used to set a {@code DSSResourcesHandlerBuilder}, defining a way
+	 * the resources will be processed within the corresponding method (e.g. in memory or using temporary files).
+	 *
+	 * This setter overwrites the value defined within {@code PDFSignatureService}, provided by {@code pdfObjFactory}.
+	 * If the value is not set within this object, the value from a corresponding {@code PDFSignatureService}
+	 * will be used.
+	 *
+	 * Default : in memory resources handler is used
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
+	}
+
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+
 		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource, certificateVerifier, pdfObjFactory);
+				return new PAdESLevelBaselineT(tspSource, certificateVerifier, getPdfObjFactory());
 			case PAdES_BASELINE_LT:
-				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
+				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, getPdfObjFactory());
 			case PAdES_BASELINE_LTA:
-				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
+				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, getPdfObjFactory());
 			default:
 				throw new UnsupportedOperationException(
 						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
@@ -122,7 +159,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		assertSignaturePossible(toSignDocument);
 
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newContentTimestampService();
+		final PDFSignatureService pdfSignatureService = getContentTimestampService();
 		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
 		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
@@ -144,7 +181,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.previewPageWithVisualSignature(toSignDocument, parameters);
 	}
 
@@ -159,7 +196,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.previewSignatureField(toSignDocument, parameters);
 	}
 
@@ -197,13 +234,13 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return bytes to be signed
 	 */
 	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.digest(toSignDocument, parameters);
 	}
 
 	@Override
-	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters, SignatureValue signatureValue)
-			throws DSSException {
+	public DSSDocument signDocument(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters,
+									SignatureValue signatureValue) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
@@ -212,10 +249,10 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		final byte[] encodedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
+		final byte[] cmsSignedData = generateCMSSignedData(toSignDocument, parameters, signatureValue);
 
-		final PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
-		DSSDocument signature = pdfSignatureService.sign(toSignDocument, encodedData, parameters);
+		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
+		DSSDocument signature = pdfSignatureService.sign(toSignDocument, cmsSignedData, parameters);
 
 		final SignatureExtension<PAdESSignatureParameters> extension = getExtensionProfile(signatureLevel);
 		if ((signatureLevel != SignatureLevel.PAdES_BASELINE_B) && (signatureLevel != SignatureLevel.PAdES_BASELINE_T) && (extension != null)) {
@@ -307,7 +344,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document, String passwordProtection) {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.getAvailableSignatureFields(document, passwordProtection);
 	}
 
@@ -336,19 +373,46 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String passwordProtection) {
-		PDFSignatureService pdfSignatureService = pdfObjFactory.newPAdESSignatureService();
+		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.addNewSignatureField(document, parameters, passwordProtection);
 	}
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
-		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, pdfObjFactory);
+		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, getPdfObjFactory());
 		DSSDocument extendedDocument = extensionService.incorporateValidationData(toTimestampDocument, parameters.getPasswordProtection());
 
-		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, pdfObjFactory.newSignatureTimestampService());
+		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, getSignatureTimestampService());
 		DSSDocument timestampedDocument = timestampService.timestampDocument(extendedDocument, parameters);
 		timestampedDocument.setName(getFinalFileName(toTimestampDocument, SigningOperation.TIMESTAMP, null));
 		return timestampedDocument;
+	}
+
+	/**
+	 * This method is used to return a new {@code PDFSignatureService} for a signature creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
+	protected PDFSignatureService getPAdESSignatureService() {
+		return getPdfObjFactory().newPAdESSignatureService();
+	}
+
+	/**
+	 * This method is used to return a new {@code PDFSignatureService} for a content timestamp creation
+	 * 
+	 * @return {@link PDFSignatureService}
+	 */
+	protected PDFSignatureService getContentTimestampService() {
+		return getPdfObjFactory().newContentTimestampService();
+	}
+
+	/**
+	 * This method is used to return a new {@code PDFSignatureService} for a timestamp creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
+	protected PDFSignatureService getSignatureTimestampService() {
+		return getPdfObjFactory().newSignatureTimestampService();
 	}
 
 }

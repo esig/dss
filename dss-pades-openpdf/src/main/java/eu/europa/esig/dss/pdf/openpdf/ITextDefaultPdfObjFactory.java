@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextDefaultSignatureDrawerFactory;
@@ -28,26 +28,26 @@ import eu.europa.esig.dss.pdf.openpdf.visible.ITextDefaultSignatureDrawerFactory
 /**
  * The IText (OpenPdf) implementation of {@code IPdfObjFactory}
  */
-public class ITextDefaultPdfObjFactory implements IPdfObjFactory {
+public class ITextDefaultPdfObjFactory extends AbstractPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return new ITextPDFSignatureService(PDFServiceMode.SIGNATURE, new ITextDefaultSignatureDrawerFactory());
+		return configure(new ITextPDFSignatureService(PDFServiceMode.SIGNATURE, new ITextDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newContentTimestampService() {
-		return new ITextPDFSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
+		return configure(new ITextPDFSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new ITextDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newSignatureTimestampService() {
-		return new ITextPDFSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
+		return configure(new ITextPDFSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newArchiveTimestampService() {
-		return new ITextPDFSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory());
+		return configure(new ITextPDFSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new ITextDefaultSignatureDrawerFactory()));
 	}
 
 }

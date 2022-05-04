@@ -183,7 +183,7 @@ public class PdfModificationDetectionUtils {
 	 */
 	public static Set<ObjectModification> getModificationSet(final PdfDocumentReader signedRevisionReader,
 															 final PdfDocumentReader finalRevisionReader) {
-		final Set<ObjectModification> modifications = new LinkedHashSet<>(); // use LinkedHashSet in order to have a deteministic order
+		final Set<ObjectModification> modifications = new LinkedHashSet<>(); // use LinkedHashSet in order to have a deterministic order
 
 		final PdfDict signedCatalogDict = signedRevisionReader.getCatalogDictionary();
 		final PdfDict finalCatalogDict = finalRevisionReader.getCatalogDictionary();
