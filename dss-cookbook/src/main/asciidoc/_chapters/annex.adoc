@@ -601,3 +601,26 @@ NOTE: The merging classes are able to resolve conflicts between container entrie
 In order to use a selected class, the corresponding module shall be loaded within the project. `DefaultContainerMerger` will choose a relevant implementation across available modules using <<ServiceLoaderAdvanced>>.
 
 When using provided implementations of the `ASiCContainerMerger`, a user can also benefit from merging a corresponding ASiC container with a simple not-signed ZIP archive, or even from merging not signed ZIP archives.
+
+[[asicFilenameFactory]]
+=== ASiC Filename Factory
+
+In order to customize file naming within ASiC containers, DSS introduces `ASiCWithXAdESFilenameFactory` and `ASiCWithCAdESFilenameFactory` (for `ASiC` with `XAdES` and `CAdES`, respectively), allowing customization of the created files, such as signature, manifest, timestamp and other documents.
+
+For each container entry being created, the underlying service is making a call to the factory providing the current content of an ASiC container using an `ASiCContent` object.
+Based on the defined rules within a factory, it returns a valid file name for the current container.
+
+The following implementations are provided within DSS framework:
+
+* `DefaultASiCWithXAdESFilenameFactory`/`DefaultASiCWithCAdESFilenameFactory` (for `XAdES` and `CAdES`, respectively) - the default implementation used in DSS code, providing a user-friendly filename, conformant to EN 319 162 (cf. <<R04>>) (e.g. `META-INF/signatures001.xml`).
+* `SimpleASiCWithXAdESFilenameFactory`/`SimpleASiCWithCAdESFilenameFactory` (for `XAdES` and `CAdES`, respectively) - allows definition of custom document names, using corresponding setters. The factories verify the conformance of the defined names according to EN 319 162 (cf. <<R04>>), when applicable.
+
+NOTE: When using `SimpleASiCWithXAdESFilenameFactory` or `SimpleASiCWithCAdESFilenameFactory`, the name of signature, manifest or timestamp files may be defined without `META-INF/` directory prefix. The factory will add the required directory to the filename, when applicable.
+
+Below you can find an example of a `SimpleASiCWithXAdESFilenameFactory` use within an `ASiCWithXAdESService` for a container signature creation with a custom filename:
+
+[source,java,indent=0]
+.SimpleASiCWithXAdESFilenameFactory use for a a custom signature filename
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignASiCWithSimpleFilenameFactoryTest.java[tags=demo]
+----
