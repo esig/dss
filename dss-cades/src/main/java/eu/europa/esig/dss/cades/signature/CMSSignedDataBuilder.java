@@ -32,16 +32,19 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignatureEncryptionAlgorithmFinder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
@@ -237,10 +240,16 @@ public class CMSSignedDataBuilder {
 			CAdESSignatureParameters parameters) throws OperatorCreationException {
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
 
-		if (signingCertificate == null && parameters.isGenerateTBSWithoutCertificate()) {
-			// Generate data-to-be-signed without signing certificate
-			final SignerId signerId = new SignerId(DSSUtils.EMPTY_BYTE_ARRAY);
-			return signerInfoGeneratorBuilder.build(contentSigner, signerId.getSubjectKeyIdentifier());
+		if (signingCertificate == null) {
+			if (parameters.isGenerateTBSWithoutCertificate()) {
+				// Generate data-to-be-signed without signing certificate
+				final SignerId signerId = new SignerId(DSSUtils.EMPTY_BYTE_ARRAY);
+				return signerInfoGeneratorBuilder.build(contentSigner, signerId.getSubjectKeyIdentifier());
+
+			} else {
+				throw new IllegalArgumentException("Signing certificate is not provided! " +
+						"Provide a certificate or use parameters.setGenerateTBSWithoutCertificate(true).");
+			}
 		}
 
 		final X509CertificateHolder certHolder = DSSASN1Utils.getX509CertificateHolder(signingCertificate);

@@ -124,12 +124,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		return SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue());
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue(), null);
+		if (signatureAlgorithm == null) {
+			LOG.error("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
+		}
+		return signatureAlgorithm;
 	}
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return getSignatureAlgorithm().getEncryptionAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getEncryptionAlgorithm();
 	}
 
 	@Override
@@ -624,55 +632,54 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		signatureValueReferenceValidation.setType(DigestMatcherType.JWS_SIGNING_INPUT_DIGEST);
 		
 		try {
-			SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
-			if (signatureAlgorithm != null) {
-				
-				String encodedHeader = jws.getEncodedHeader();
-				if (Utils.isStringNotEmpty(encodedHeader)) {
-					// get payload for a detached signature
-					try {
-						SigDMechanism sigDMechanism = getSigDMechanism();
-						boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
-						if (!isDetachedSignature()) {
-							// not detached
-							signatureValueReferenceValidation.setFound(true);
+			String encodedHeader = jws.getEncodedHeader();
+			if (Utils.isStringNotEmpty(encodedHeader)) {
+				// get payload for a detached signature
+				try {
+					SigDMechanism sigDMechanism = getSigDMechanism();
+					boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
+					if (!isDetachedSignature()) {
+						// not detached
+						signatureValueReferenceValidation.setFound(true);
 
-						} else if (sigDMechanism == null && detachedContentPresent) {
-							// simple detached signature
-							byte[] payload = getIncorporatedPayload();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
+					} else if (sigDMechanism == null && detachedContentPresent) {
+						// simple detached signature
+						byte[] payload = getIncorporatedPayload();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
 
-						} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
-							// detached with HTTP_HEADERS mechanism
-							byte[] payload = getPayloadForHttpHeadersMechanism();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(payload != null);
+					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
+						// detached with HTTP_HEADERS mechanism
+						byte[] payload = getPayloadForHttpHeadersMechanism();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(payload != null);
 
-						} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
-							// detached with OBJECT_ID_BY_URI mechanism
-							byte[] payload = getPayloadForObjectIdByUriMechanism();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(payload != null);
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+						// detached with OBJECT_ID_BY_URI mechanism
+						byte[] payload = getPayloadForObjectIdByUriMechanism();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(payload != null);
 
-						} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
-							// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
-							signatureValueReferenceValidation.setFound(true);
+					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
+						signatureValueReferenceValidation.setFound(true);
 
-						} else {
-							// otherwise original content is not found
-							LOG.warn("The payload is not found! The detached content must be provided!");
-						}
-
-					} catch (Exception e) {
-						String errorMessage = "Enable to determine a JWS payload. Reason : {}";
-						if (LOG.isDebugEnabled()) {
-							LOG.warn(errorMessage, e.getMessage(), e);
-						} else {
-							LOG.warn(errorMessage, e.getMessage());
-						}
+					} else {
+						// otherwise original content is not found
+						LOG.warn("The payload is not found! The detached content must be provided!");
 					}
 
+				} catch (Exception e) {
+					String errorMessage = "Enable to determine a JWS payload. Reason : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
+				}
+
+				SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+				if (signatureAlgorithm != null) {
 					byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));

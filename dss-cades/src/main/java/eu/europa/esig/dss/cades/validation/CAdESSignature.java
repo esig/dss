@@ -612,9 +612,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			// purposely empty
 		}
 
-		// fallback to identify via signature algorithm
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(oid);
-		return signatureAlgorithm.getEncryptionAlgorithm();
+		try {
+			// fallback to identify via signature algorithm
+			final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(oid);
+			return signatureAlgorithm.getEncryptionAlgorithm();
+		} catch (IllegalArgumentException e) {
+			LOG.error("Unable to identify encryption algorithm for OID '{}'. Reason : {}", oid, e.getMessage());
+		}
+
+		return null;
 	}
 
 	@Override
@@ -625,12 +631,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return getPSSHashAlgorithm();
 			}
 			return signatureAlgorithm.getDigestAlgorithm();
+
 		} else {
+			final String digestAlgOID = signerInformation.getDigestAlgOID();
 			try {
-				final String digestAlgOID = signerInformation.getDigestAlgOID();
 				return DigestAlgorithm.forOID(digestAlgOID);
 			} catch (IllegalArgumentException e) {
-				LOG.warn(e.getMessage());
+				LOG.error("Unable to identify DigestAlgorithm for OID '{}'. Reason : {}", digestAlgOID, e.getMessage());
 				return null;
 			}
 		}

@@ -638,13 +638,31 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 	/**
 	 * Returns a corresponding {@code SignatureAlgorithm} by the JWA name
 	 *
-	 * @param jsonWebAlgorithm {@link String}
+	 * @param jsonWebAlgorithm
+	 *            {@link String} JWA algorithm Id
 	 * @return {@link SignatureAlgorithm}
 	 */
 	public static SignatureAlgorithm forJWA(String jsonWebAlgorithm) {
 		final SignatureAlgorithm algorithm = JWA_ALGORITHMS.get(jsonWebAlgorithm);
 		if (algorithm == null) {
 			throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, jsonWebAlgorithm));
+		}
+		return algorithm;
+	}
+
+	/**
+	 * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
+	 *
+	 * @param jsonWebAlgorithm
+	 *            {@link String} JWA algorithm Id
+	 * @param defaultValue
+	 *            the default value to be returned if not found
+	 * @return {@code SignatureAlgorithm} or default value
+	 */
+	public static SignatureAlgorithm forJWA(String jsonWebAlgorithm, final SignatureAlgorithm defaultValue) {
+		final SignatureAlgorithm algorithm = JWA_ALGORITHMS.get(jsonWebAlgorithm);
+		if (algorithm == null) {
+			return defaultValue;
 		}
 		return algorithm;
 	}
