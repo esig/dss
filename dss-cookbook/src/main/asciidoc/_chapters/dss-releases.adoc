@@ -247,6 +247,22 @@ asicFilenameFactory.setSignatureFilename("signaturesAAA.xml");
 ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
 ----
 _See <<asicFilenameFactory>> for more details._
+
+
+|Font subset configuration in PDF     a|[source,java]
+----
+NativePdfBoxVisibleSignatureDrawer nativePdfBoxDrawer = new NativePdfBoxVisibleSignatureDrawer();
+nativePdfBoxDrawer.setEmbedFontSubset(true);
+...
+----
+                                                                     a|[source,java]
+----
+DSSFileFont font = // create font
+font.setEmbedFontSubset(true);
+...
+SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+textParameters.setFont(font);
+----
 |===
 
 [cols="2,5,5"]
