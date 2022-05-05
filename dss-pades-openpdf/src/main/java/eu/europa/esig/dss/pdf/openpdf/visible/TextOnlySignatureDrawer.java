@@ -34,6 +34,7 @@ import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 
 /**
  * iText drawer used for visual signature creation with text data only
@@ -90,21 +92,24 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		if (dssFont instanceof ITextNativeFont) {
 			ITextNativeFont nativeFont = (ITextNativeFont) dssFont;
 			return nativeFont.getFont();
+
 		} else if (dssFont instanceof DSSFileFont) {
 			DSSFileFont fileFont = (DSSFileFont) dssFont;
 			try (InputStream iStream = fileFont.getInputStream()) {
 				byte[] fontBytes = DSSUtils.toByteArray(iStream);
 				BaseFont baseFont = BaseFont.createFont(fileFont.getName(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
-				// TODO : add support of subset
-				/*
-				 * NOTE: OpenPDF does not support yet the deterministic PDF generation when subsets are used
-				 * see https://github.com/LibrePDF/OpenPDF/issues/623
-				 */
-				baseFont.setSubset(false);
+				baseFont.setSubset(fileFont.isEmbedFontSubset());
+
+				// Provide SecureRandom to ensure deterministic computation
+				SecureRandom secureRandom = new DSSSecureRandomProvider(parameters).getSecureRandom();
+				baseFont.setSecureRandom(secureRandom);
+
 				return baseFont;
+
 			} catch (IOException e) {
 				throw new DSSException("The iText font cannot be initialized", e);
 			}
+
 		} else {
 			DefaultFontMapper fontMapper = new DefaultFontMapper();
 			return fontMapper.awtToPdf(dssFont.getJavaFont());

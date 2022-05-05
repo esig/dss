@@ -78,14 +78,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private static final float OPAQUE_VALUE = 0xff;
 
 	/**
-	 * Defines whether only a subset of used glyphs should be embedded to a PDF,
-	 * when a font file is used with a text information defined within a signature field
-	 *
-	 * DEFAULT : FALSE (all glyphs from a font file are embedded to a PDF document)
-	 */
-	private boolean embedFontSubset = false;
-
-	/**
 	 * The builder is to be used to create a new {@code DSSResourcesHandler} for visual signature creation,
 	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
 	 *
@@ -102,9 +94,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * DEFAULT : FALSE (the whole font file is embedded to a PDF)
 	 *
 	 * @param embedFontSubset whether only a subset of used glyphs should be embedded to a PDF
+	 *
+	 * @deprecated since DSS 5.11. Use {@code DSSFileFont.setEmbedFontSubset(embedFontSubset)} method
 	 */
+	@Deprecated
 	public void setEmbedFontSubset(boolean embedFontSubset) {
-		this.embedFontSubset = embedFontSubset;
+		LOG.warn("Use of deprecated method! The use of the method will not take effect on processing. " +
+				"Please use DSSFileFont.setEmbedFontSubset(embedFontSubset) method.");
 	}
 
 	/**
@@ -135,11 +131,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		if (dssFont instanceof PdfBoxNativeFont) {
 			PdfBoxNativeFont nativeFont = (PdfBoxNativeFont) dssFont;
 			return nativeFont.getFont();
+
 		} else if (dssFont instanceof DSSFileFont) {
 			DSSFileFont fileFont = (DSSFileFont) dssFont;
 			try (InputStream is = fileFont.getInputStream()) {
-				return PDType0Font.load(document, is, embedFontSubset);
+				return PDType0Font.load(document, is, fileFont.isEmbedFontSubset());
 			}
+
 		} else {
 			return PdfBoxFontMapper.getPDFont(dssFont.getJavaFont());
 		}
