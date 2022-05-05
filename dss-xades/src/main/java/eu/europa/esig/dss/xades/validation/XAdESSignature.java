@@ -344,7 +344,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		final String xmlName = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_METHOD_PATH)
 				.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
-		return SignatureAlgorithm.forXML(xmlName, null);
+		SignatureAlgorithm signatureAlgorithm =  SignatureAlgorithm.forXML(xmlName, null);
+		if (signatureAlgorithm == null) {
+			LOG.error("SignatureAlgorithm '{}' is not supported!", xmlName);
+		}
+		return signatureAlgorithm;
 	}
 
 	@Override
@@ -1245,7 +1249,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			}
 			return santuarioSignature;
 		} catch (XMLSecurityException e) {
-			throw new DSSException("Unable to initialize santuario XMLSignature", e);
+			throw new DSSException(String.format("Unable to initialize Santuario XMLSignature. Reason : %s", e.getMessage()), e);
 		}
 	}
 
