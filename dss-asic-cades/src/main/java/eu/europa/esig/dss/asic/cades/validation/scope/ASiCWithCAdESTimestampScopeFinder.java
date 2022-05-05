@@ -89,11 +89,16 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
         List<SignatureScope> result = new ArrayList<>();
         result.add(new ManifestSignatureScope(manifestFile.getFilename(), getDigest(manifestFile.getDocument())));
         if (Utils.isCollectionNotEmpty(containerDocuments)) {
+            List<DSSDocument> rootLevelDocuments = ASiCUtils.getRootLevelDocuments(containerDocuments);
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 if (manifestEntry.isIntact()) {
                     for (DSSDocument document : containerDocuments) {
                         if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
-                            result.addAll(getTimestampSignatureScopeForDocument(document));
+                            if (Utils.collectionSize(rootLevelDocuments) == 1 && isASiCSContainer(document)) {
+                                result.addAll(getTimestampSignatureScopeForZipPackage(document));
+                            } else {
+                                result.addAll(super.getTimestampSignatureScopeForDocument(document));
+                            }
                         }
                     }
                 }
@@ -104,7 +109,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
 
     @Override
     protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
-        if (ASiCUtils.isASiCSArchive(document)) {
+        if (isASiCSContainer(document)) {
             return getTimestampSignatureScopeForZipPackage(document);
         } else {
             return super.getTimestampSignatureScopeForDocument(document);
@@ -121,6 +126,16 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
             }
         }
         return result;
+    }
+
+    /**
+     * This method verifies whether the given document is an ASiC-S ZIP container
+     *
+     * @param document {@link DSSDocument} to check
+     * @return TRUE of the document is an ASiC-S data container, FALSE otherwise
+     */
+    private boolean isASiCSContainer(DSSDocument document) {
+        return document.getName() != null && !document.getName().contains("/") && ASiCUtils.isZip(document);
     }
 
 }

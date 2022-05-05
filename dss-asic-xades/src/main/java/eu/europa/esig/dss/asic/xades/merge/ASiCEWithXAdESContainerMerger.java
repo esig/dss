@@ -6,6 +6,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.signature.asice.ASiCEWithXAdESManifestBuilder;
 import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -75,6 +76,11 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
     }
 
     @Override
+    protected ASiCContainerType getTargetASiCContainerType() {
+        return ASiCContainerType.ASiC_E;
+    }
+
+    @Override
     protected void ensureContainerContentAllowMerge() {
         if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()))) {
             return; // no signatures -> can merge
@@ -105,7 +111,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
                 throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
                         "A signature covers another signature file, while having same signature names in both containers!");
             }
-            ensureDocumentNamesDiffer();
+            ensureSignatureNamesDiffer();
         }
 
         // Create a merged manifest.xml file
@@ -181,8 +187,11 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         List<ManifestEntry> manifestEntries = new ArrayList<>();
         List<String> addedFileNames = new ArrayList<>();
 
+        ASiCContent mergedContent = createEmptyContainer();
         for (ASiCContent asicContent : asicContents) {
             List<DSSDocument> manifestDocuments = asicContent.getManifestDocuments();
+            mergedContent.getManifestDocuments().addAll(manifestDocuments);
+
             for (ManifestEntry entry : getManifestFileEntries(manifestDocuments)) {
                 if (!addedFileNames.contains(entry.getFileName())) {
                     manifestEntries.add(entry);
@@ -198,7 +207,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
             }
         }
 
-        return createNewManifestXml(manifestEntries);
+        return createNewManifestXml(manifestEntries, mergedContent);
     }
 
     private List<ManifestEntry> getManifestFileEntries(List<DSSDocument> manifestDocuments) {
@@ -221,17 +230,23 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         }
     }
 
-    private DSSDocument createNewManifestXml(List<ManifestEntry> manifestEntries) {
+    private DSSDocument createNewManifestXml(List<ManifestEntry> manifestEntries, ASiCContent asicContent) {
         return new ASiCEWithXAdESManifestBuilder().setEntries(manifestEntries)
-                .setManifestFilename(ASiCUtils.ASICE_METAINF_MANIFEST).build();
+                .setManifestFilename(asicFilenameFactory.getManifestFilename(asicContent)).build();
     }
 
-    private void ensureDocumentNamesDiffer() {
+    private void ensureSignatureNamesDiffer() {
         Set<String> usedSignatureNames = new HashSet<>();
+        ASiCContent mergedASiCContent = createEmptyContainer();
         for (ASiCContent asicContent : asicContents) {
-            for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
+            mergedASiCContent.getSignatureDocuments().addAll(asicContent.getSignatureDocuments());
+        }
+
+        for (ASiCContent asicContent : asicContents) {
+            List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+            for (DSSDocument signatureDocument : signatureDocuments) {
                 if (usedSignatureNames.contains(signatureDocument.getName())) {
-                    String newSignatureName = ASiCUtils.getNextAvailableASiCEWithXAdESSignatureName(usedSignatureNames);
+                    String newSignatureName = asicFilenameFactory.getSignatureFilename(mergedASiCContent);
                     signatureDocument.setName(newSignatureName);
                 }
                 usedSignatureNames.add(signatureDocument.getName());

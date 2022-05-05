@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESASiCContentBuilder;
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.asic.common.ASiCContent;
@@ -44,8 +46,15 @@ import java.util.List;
  */
 public class ASiCWithCAdESTimestampService {
 
-    /** TSPSource used to retrieve a timestamp response */
+    /**
+     * TSPSource used to retrieve a timestamp response
+     */
     private final TSPSource tspSource;
+
+    /**
+     * Defines rules for filename creation for timestamp file.
+     */
+    private final ASiCWithCAdESFilenameFactory asicFilenameFactory;
 
     /**
      * Default constructor
@@ -53,7 +62,18 @@ public class ASiCWithCAdESTimestampService {
      * @param tspSource {@link TSPSource}
      */
     public ASiCWithCAdESTimestampService(final TSPSource tspSource) {
+        this(tspSource, new DefaultASiCWithCAdESFilenameFactory());
+    }
+
+    /**
+     * Constructor with filename factory
+     *
+     * @param tspSource {@link TSPSource}
+     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+     */
+    public ASiCWithCAdESTimestampService(final TSPSource tspSource, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
         this.tspSource = tspSource;
+        this.asicFilenameFactory = asicFilenameFactory;
     }
 
     /**
@@ -78,7 +98,7 @@ public class ASiCWithCAdESTimestampService {
      * @return {@link ASiCContent} containing the timestamp and the related XML Manifest for ASiC-E container
      */
     public ASiCContent timestamp(ASiCContent asicContent, ASiCWithCAdESTimestampParameters parameters) {
-        GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESTimestampDataToSignHelperBuilder()
+        GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESTimestampDataToSignHelperBuilder(asicFilenameFactory)
                 .build(asicContent, parameters);
 
         DSSDocument toBeTimestamped = dataToSignHelper.getToBeSigned();
@@ -91,7 +111,7 @@ public class ASiCWithCAdESTimestampService {
                 digestAlgorithm, Utils.fromBase64(toBeTimestamped.getDigest(digestAlgorithm)));
 
         DSSDocument timestampToken = new InMemoryDocument(
-                DSSASN1Utils.getDEREncoded(timestampBinary), dataToSignHelper.getTimestampFilename(), MimeType.TST);
+                DSSASN1Utils.getDEREncoded(timestampBinary), asicFilenameFactory.getTimestampFilename(asicContent), MimeType.TST);
         ASiCUtils.addOrReplaceDocument(asicContent.getTimestampDocuments(), timestampToken);
 
         return asicContent;

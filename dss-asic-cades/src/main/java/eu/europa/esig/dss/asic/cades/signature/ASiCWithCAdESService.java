@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.asic.cades.signature;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
@@ -70,6 +72,11 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
 	/**
+	 * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
+	 */
+	private ASiCWithCAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithCAdESFilenameFactory();
+
+	/**
 	 * The default constructor to instantiate the service
 	 *
 	 * @param certificateVerifier {@link CertificateVerifier} to use
@@ -79,6 +86,17 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		LOG.debug("+ ASiCService with CAdES created");
 	}
 
+	/**
+	 * Sets {@code ASiCWithCAdESFilenameFactory} defining a set of rules for naming of newly create ZIP entries,
+	 * such as signature files.
+	 *
+	 * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+	 */
+	public void setAsicFilenameFactory(ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+		Objects.requireNonNull(asicFilenameFactory, "ASiCWithCAdESFilenameFactory cannot be null!");
+		this.asicFilenameFactory = asicFilenameFactory;
+	}
+
 	@Override
 	public TimestampToken getContentTimestamp(List<DSSDocument> toSignDocuments, ASiCWithCAdESSignatureParameters parameters) {
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
@@ -86,7 +104,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
 				.build(toSignDocuments, parameters.aSiC().getContainerType());
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder(asicFilenameFactory)
 				.build(asicContent, parameters);
 		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
 		return getCAdESService().getContentTimestamp(toBeSigned, parameters);
@@ -100,7 +118,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
 				.build(toSignDocuments, parameters.aSiC().getContainerType());
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder(asicFilenameFactory)
 				.build(asicContent, parameters);
 		assertSignaturePossible(asicContent.getTimestampDocuments(), parameters.aSiC());
 
@@ -122,7 +140,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		ASiCContent asicContent = new ASiCWithCAdESASiCContentBuilder()
 				.build(toSignDocuments, parameters.aSiC().getContainerType());
-		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder()
+		GetDataToSignASiCWithCAdESHelper dataToSignHelper = new ASiCWithCAdESSignatureDataToSignHelperBuilder(asicFilenameFactory)
 				.build(asicContent, parameters);
 		ASiCParameters asicParameters = parameters.aSiC();
 		assertSignaturePossible(asicContent.getTimestampDocuments(), asicParameters);
@@ -142,13 +160,14 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		final DSSDocument signature = getCAdESService().signDocument(toBeSigned, cadesParameters, signatureValue);
-		final String newSignatureFileName = dataToSignHelper.getSignatureFilename();
-		signature.setName(newSignatureFileName);
+		String newSignatureFilename = getSignatureFilename(asicParameters, asicContent);
+		signature.setName(newSignatureFilename);
 
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signature);
 
 		if (addASiCArchiveManifest) {
-			ASiCWithCAdESSignatureExtension extensionProfile = new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource);
+			final ASiCWithCAdESSignatureExtension extensionProfile = new ASiCWithCAdESLevelBaselineLTA(
+					certificateVerifier, tspSource, asicFilenameFactory);
 			asicContent = extensionProfile.extend(asicContent, parameters);
 
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
@@ -158,6 +177,21 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		parameters.reinit();
 		return asicContainer;
+	}
+
+	/**
+	 * NOTE: Temporary method to allow migration from parameters.aSiC().setSignatureFilename(filename)
+	 * to ASiCWithXAdESFilenameFactory
+	 *
+	 * @return {@link String} filename
+	 */
+	private String getSignatureFilename(ASiCParameters asicParameters, ASiCContent asicContent) {
+		if (Utils.isStringNotEmpty(asicParameters.getSignatureFileName())) {
+			LOG.warn("The signature filename has been defined within deprecated method parameters.aSiC().setSignatureFilename(filename). " +
+					"Please use asicWithCAdESService.setAsicFilenameFactory(asicFilenameFactory) defining a custom filename factory.");
+			return asicParameters.getSignatureFileName();
+		}
+		return asicFilenameFactory.getSignatureFilename(asicContent);
 	}
 
 	@Override
@@ -181,7 +215,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				&& isLtaExtensionPossible(asicContent)) {
 			DSSDocument toTimestampDocument = toTimestampDocuments.get(0);
 
-			ASiCWithCAdESLevelBaselineLTA extensionProfile = new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource);
+			final ASiCWithCAdESLevelBaselineLTA extensionProfile = new ASiCWithCAdESLevelBaselineLTA(
+					certificateVerifier, tspSource, asicFilenameFactory);
 			asicContent = extensionProfile.extend(asicContent, parameters.getDigestAlgorithm());
 
 			final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate());
@@ -190,7 +225,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			return extensionResult;
 
 		} else {
-			ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(tspSource);
+			ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(tspSource, asicFilenameFactory);
 			asicContent = timestampService.timestamp(asicContent, parameters);
 
 			final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
@@ -302,11 +337,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return SignatureLevel.CAdES_BASELINE_LTA == signatureLevel && ASiCContainerType.ASiC_E == containerType;
 	}
 
-	@Override
-	protected String getExpectedSignatureExtension() {
-		return ".p7s";
-	}
-
 	/**
 	 * Incorporates a Signature Policy Store as an unsigned property into the ASiC
 	 * with CAdES Signature
@@ -414,7 +444,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				return new ASiCWithCAdESSignatureExtension(certificateVerifier, tspSource);
 			case CAdES_BASELINE_LTA:
 				return ASiCContainerType.ASiC_E.equals(containerType) ?
-						new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource) :
+						new ASiCWithCAdESLevelBaselineLTA(certificateVerifier, tspSource, asicFilenameFactory) :
 						new ASiCWithCAdESSignatureExtension(certificateVerifier, tspSource);
 			default:
 				throw new UnsupportedOperationException(

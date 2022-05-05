@@ -4,6 +4,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.merge.AbstractWithXAdESTestMerge;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.xades.signature.SimpleASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -12,8 +13,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;
@@ -46,13 +45,27 @@ public class ASiCEWithXAdESLevelBContainerMergerWithCustomSignatureDocumentNameT
         firstSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         firstSignatureParameters.bLevel().setSigningDate(new Date());
-        firstSignatureParameters.aSiC().setSignatureFileName("signaturesAAA.xml");
 
         secondSignatureParameters = new ASiCWithXAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         secondSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         secondSignatureParameters.bLevel().setSigningDate(new Date());
-        secondSignatureParameters.aSiC().setSignatureFileName("signaturesBBB.xml");
+    }
+
+    @Override
+    protected DSSDocument getFirstSignedContainer() {
+        SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
+        filenameFactory.setSignatureFilename("signaturesAAA.xml");
+        getService().setAsicFilenameFactory(filenameFactory);
+        return super.getFirstSignedContainer();
+    }
+
+    @Override
+    protected DSSDocument getSecondSignedContainer() {
+        SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
+        filenameFactory.setSignatureFilename("signaturesBBB.xml");
+        getService().setAsicFilenameFactory(filenameFactory);
+        return super.getSecondSignedContainer();
     }
 
     @Override
@@ -63,10 +76,10 @@ public class ASiCEWithXAdESLevelBContainerMergerWithCustomSignatureDocumentNameT
         boolean secondSignatureNameFound = false;
 
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            if ((ASiCUtils.META_INF_FOLDER + firstSignatureParameters.aSiC().getSignatureFileName())
+            if ((ASiCUtils.META_INF_FOLDER + "signaturesAAA.xml")
                     .equals(signatureWrapper.getSignatureFilename())) {
                 firstSignatureNameFound = true;
-            } else if ((ASiCUtils.META_INF_FOLDER + secondSignatureParameters.aSiC().getSignatureFileName())
+            } else if ((ASiCUtils.META_INF_FOLDER + "signaturesBBB.xml")
                     .equals(signatureWrapper.getSignatureFilename())) {
                 secondSignatureNameFound = true;
             }
@@ -110,7 +123,7 @@ public class ASiCEWithXAdESLevelBContainerMergerWithCustomSignatureDocumentNameT
     }
 
     @Override
-    protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected ASiCWithXAdESService getService() {
         return service;
     }
 

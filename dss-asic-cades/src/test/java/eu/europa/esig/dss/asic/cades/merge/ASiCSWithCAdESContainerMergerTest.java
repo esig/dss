@@ -100,7 +100,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeAsicWithZipTest() throws Exception {
+    public void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -147,7 +147,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() throws Exception {
+    public void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -202,7 +202,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTimestampedAsicWithZipTest() throws Exception {
+    public void mergeTimestampedAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(getGoodTsa());
 
@@ -256,7 +256,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTimestampedMultipleDocsAsicWithZipTest() throws Exception {
+    public void mergeTimestampedMultipleDocsAsicWithZipTest() {
         List<DSSDocument> toSignDocuments = Arrays.asList(
                 new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT),
                 new FileDocument("src/test/resources/signable/test.txt"));
@@ -321,7 +321,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeInvalidSigNameTest() throws Exception {
+    public void mergeInvalidSigNameTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -337,7 +337,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeContainerWithSignatureAndTimestampTest() throws Exception {
+    public void mergeContainerWithSignatureAndTimestampTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -355,7 +355,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeSignatureWithTimestampsTest() throws Exception {
+    public void mergeSignatureWithTimestampsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -371,7 +371,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithMultipleSignerDocsTest() throws Exception {
+    public void mergeWithMultipleSignerDocsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -392,7 +392,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithSignedDataDifferentNamesTest() throws Exception {
+    public void mergeWithSignedDataDifferentNamesTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -459,7 +459,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeZeroFilesTest() throws Exception {
+    public void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithCAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -474,7 +474,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeNullFileTest() throws Exception {
+    public void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithCAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -493,7 +493,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeOneFileTest() throws Exception {
+    public void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(document);
@@ -542,7 +542,7 @@ public class ASiCSWithCAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() throws Exception {
+    public void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 

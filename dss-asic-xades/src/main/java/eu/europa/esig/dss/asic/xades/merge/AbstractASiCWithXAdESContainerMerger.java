@@ -4,14 +4,23 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESFilenameFactory;
+import eu.europa.esig.dss.asic.xades.signature.DefaultASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
+
+import java.util.Objects;
 
 /**
  * This class contains common code for ASiC with XAdES container merger classes.
  *
  */
 public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContainerMerger {
+
+    /**
+     * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
+     */
+    protected ASiCWithXAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithXAdESFilenameFactory();
 
     /**
      * Empty constructor
@@ -35,6 +44,17 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
      */
     protected AbstractASiCWithXAdESContainerMerger(ASiCContent... asicContents) {
         super(asicContents);
+    }
+
+    /**
+     * Sets {@code ASiCWithXAdESFilenameFactory} defining a set of rules for naming of newly create ZIP entries,
+     * such as signature files.
+     *
+     * @param asicFilenameFactory {@link ASiCWithXAdESFilenameFactory}
+     */
+    public void setAsicFilenameFactory(ASiCWithXAdESFilenameFactory asicFilenameFactory) {
+        Objects.requireNonNull(asicFilenameFactory, "ASiCWithXAdESFilenameFactory cannot be null!");
+        this.asicFilenameFactory = asicFilenameFactory;
     }
 
     @Override

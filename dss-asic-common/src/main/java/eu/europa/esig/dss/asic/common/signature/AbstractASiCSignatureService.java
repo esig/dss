@@ -63,13 +63,6 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 		super(certificateVerifier);
 	}
 
-	/**
-	 * Returns the relevant signature document extension for the implemented format
-	 *
-	 * @return {@link String} signature extension
-	 */
-	protected abstract String getExpectedSignatureExtension();
-
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, SP parameters) {
 		return getContentTimestamp(Arrays.asList(toSignDocument), parameters);

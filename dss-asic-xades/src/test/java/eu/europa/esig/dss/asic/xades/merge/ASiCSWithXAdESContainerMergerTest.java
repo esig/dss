@@ -93,7 +93,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeAsicWithZipTest() throws Exception {
+    public void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
         ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
@@ -140,7 +140,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() throws Exception {
+    public void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -202,7 +202,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeMultipleSignaturesTest() throws Exception {
+    public void mergeMultipleSignaturesTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -219,7 +219,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeInvalidSigNameTest() throws Exception {
+    public void mergeInvalidSigNameTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -235,7 +235,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithTimestampsTest() throws Exception {
+    public void mergeWithTimestampsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -251,7 +251,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithMultipleSignerDocsTest() throws Exception {
+    public void mergeWithMultipleSignerDocsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -272,7 +272,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithSignedDataDifferentNamesTest() throws Exception {
+    public void mergeWithSignedDataDifferentNamesTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -292,7 +292,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithSignedDataDifferentContentTest() throws Exception {
+    public void mergeWithSignedDataDifferentContentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -355,7 +355,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeZeroFilesTest() throws Exception {
+    public void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithXAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -370,7 +370,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeNullFileTest() throws Exception {
+    public void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithXAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -389,7 +389,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeOneFileTest() throws Exception {
+    public void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCSWithXAdESContainerMerger merger = new ASiCSWithXAdESContainerMerger(document);
@@ -438,7 +438,7 @@ public class ASiCSWithXAdESContainerMergerTest extends
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() throws Exception {
+    public void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 

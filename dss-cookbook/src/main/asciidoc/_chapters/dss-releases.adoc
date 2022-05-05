@@ -231,6 +231,25 @@ This chapter covers the most significant changes in DSS code occurred between di
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 5.10/5.10.1 to 5.11
+|===
+|Title                               |v5.10                            |v5.11
+|ASiC container: set signature name     a|[source,java]
+----
+ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
+...
+signatureParameters.aSiC().setSignatureFileName("signaturesAAA.xml");
+----
+                                                                     a|[source,java]
+----
+SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+asicFilenameFactory.setSignatureFilename("signaturesAAA.xml");
+ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
+----
+_See <<asicFilenameFactory>> for more details._
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.9 to 5.10
 |===
 |Title                               |v5.9                            |v5.10

@@ -24,13 +24,19 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCTestUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -65,6 +71,44 @@ public abstract class AbstractASiCTestSignature<SP extends SerializableSignature
 		assertNotNull(diagnosticData.getContainerInfo());
 		assertNotNull(diagnosticData.getContainerType());
 		assertNotNull(diagnosticData.getMimetypeFileContent());
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		List<String> signatureIdList = diagnosticData.getSignatureIdList();
+		for (String signatureId : signatureIdList) {
+
+			SignatureWrapper signatureById = diagnosticData.getSignatureById(signatureId);
+			if (signatureById.isCounterSignature()) {
+				continue;
+			}
+
+			List<DSSDocument> retrievedOriginalDocuments = validator.getOriginalDocuments(signatureId);
+			assertTrue(Utils.isCollectionNotEmpty(retrievedOriginalDocuments));
+
+			List<DSSDocument> originalDocuments = getOriginalDocuments();
+			for (DSSDocument original : originalDocuments) {
+				boolean found = false;
+				if (ASiCContainerType.ASiC_S.equals(diagnosticData.getContainerType()) && originalDocuments.size() == 1 &&
+						ASiCUtils.isZip(original)) {
+					List<DSSDocument> archiveDocuments = ZipUtils.getInstance().extractContainerContent(original);
+					if (Utils.isCollectionNotEmpty(archiveDocuments)) {
+						found = true;
+						for (DSSDocument archiveDocument : archiveDocuments) {
+							found = documentPresent(archiveDocument, retrievedOriginalDocuments);
+							if (!found) {
+								break;
+							}
+						}
+					}
+
+				} else {
+					found = documentPresent(original, retrievedOriginalDocuments);
+				}
+
+				assertTrue(found, "Unable to retrieve the original document " + original.getName());
+			}
+		}
 	}
 
 }

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
-import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
@@ -62,9 +62,21 @@ public abstract class AbstractASiCDataToSignHelperBuilder {
 	 */
 	protected DSSDocument createPackageZip(List<DSSDocument> documents, Date signingDate) {
 		DSSDocument packageZip = ZipUtils.getInstance().createZipArchive(documents, signingDate, null);
-		packageZip.setName(ASiCUtils.PACKAGE_ZIP);
+
+		ASiCContent asicContent = new ASiCContent();
+		asicContent.setContainerDocuments(documents);
+		packageZip.setName(getDataPackageName(asicContent));
+
 		packageZip.setMimeType(MimeType.ZIP);
 		return packageZip;
 	}
+
+	/**
+	 * This method returns a name for a package zip container, containing the original signer data
+	 *
+	 * @param asicContent {@link ASiCContent} containing the original signer data
+	 * @return {@link String}
+	 */
+	protected abstract String getDataPackageName(ASiCContent asicContent);
 
 }

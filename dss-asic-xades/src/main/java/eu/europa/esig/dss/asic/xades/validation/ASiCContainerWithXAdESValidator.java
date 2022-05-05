@@ -145,9 +145,6 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	private List<DSSDocument> extractArchiveDocuments(List<DSSDocument> retrievedDocs) {
-		if (Utils.isCollectionNotEmpty(getArchiveDocuments())) {
-			return getArchiveDocuments();
-		}
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
 		}

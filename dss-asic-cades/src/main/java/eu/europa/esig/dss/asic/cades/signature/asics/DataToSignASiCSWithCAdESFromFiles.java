@@ -22,7 +22,6 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.GetDataToSignASiCWithCAdESHelper;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.Collections;
@@ -37,10 +36,9 @@ public class DataToSignASiCSWithCAdESFromFiles extends AbstractGetDataToSignASiC
 	 * The default constructor
 	 *
 	 * @param asicContent {@link ASiCContent}
-	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignASiCSWithCAdESFromFiles(final ASiCContent asicContent, final ASiCParameters asicParameters) {
-		super(asicContent, asicParameters);
+	public DataToSignASiCSWithCAdESFromFiles(final ASiCContent asicContent) {
+		super(asicContent);
 	}
 
 	@Override
