@@ -127,6 +127,8 @@ public abstract class PKIFactoryAccess {
 	protected static final String NOT_YET_VALID_USER = "not-yet-valid-user";
 	protected static final String DSA_USER = "good-dsa-user";
 	protected static final String ECDSA_USER = "good-ecdsa-user";
+	protected static final String ECDSA_384_USER = "good-ecdsa-384-user";
+	protected static final String ECDSA_521_USER = "good-ecdsa-521-user";
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
 	protected static final String SELF_SIGNED_USER = "self-signed";
 	protected static final String EE_GOOD_USER = "ee-good-user";

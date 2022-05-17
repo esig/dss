@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -114,6 +115,16 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 			return signatureValid != null && signatureValid;
 		}
 		return false;
+	}
+
+	@Override
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
+		DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
+		if (encryptionAlgorithm != null && digestAlgorithm != null) {
+			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		}
+		return null;
 	}
 
 	@Override

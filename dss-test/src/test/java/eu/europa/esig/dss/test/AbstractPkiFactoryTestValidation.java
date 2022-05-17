@@ -455,6 +455,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkClaimedRoles(diagnosticData);
 		checkSignedAssertions(diagnosticData);
 		checkSignatureProductionPlace(diagnosticData);
+		checkSignatureValue(diagnosticData);
 		checkSignatureIdentifier(diagnosticData);
 		checkSignaturePolicyIdentifier(diagnosticData);
 		checkSignaturePolicyStore(diagnosticData);
@@ -990,10 +991,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	protected void checkSignatureProductionPlace(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
+
+	protected void checkSignatureValue(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getSignatureValue());
+		}
+	}
 	
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			assertNotNull(signatureWrapper.getSignatureValue());
 			assertNotNull(signatureWrapper.getDAIdentifier());
 		}
 	}

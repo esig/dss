@@ -8538,6 +8538,271 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void jadesEcdsaTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.ECDSA);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA256);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("256");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setEllipticCurveKeySize(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC xmlFC = signatureBBB.getFC();
+		assertNotNull(xmlFC);
+		assertEquals(Indication.PASSED, xmlFC.getConclusion().getIndication());
+
+		boolean ellipticCurveCheckFound = false;
+		for (XmlConstraint constraint : xmlFC.getConstraint()) {
+			if (MessageTag.BBB_FC_IECKSCDA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertEquals(i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_WITH_KEY_SIZE, SignatureAlgorithm.ECDSA_SHA256.getName(), "256"),
+						constraint.getAdditionalInfo());
+				ellipticCurveCheckFound = true;
+				break;
+			}
+		}
+		assertTrue(ellipticCurveCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void jadesEcdsaInvalidKeySizeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.ECDSA);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA512);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("256");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setEllipticCurveKeySize(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS5)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, signatureBBB.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(signatureBBB.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS5)));
+
+		XmlFC xmlFC = signatureBBB.getFC();
+		assertNotNull(xmlFC);
+		assertEquals(Indication.FAILED, xmlFC.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, xmlFC.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(xmlFC.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS5)));
+
+		boolean ellipticCurveCheckFound = false;
+		for (XmlConstraint constraint : xmlFC.getConstraint()) {
+			if (MessageTag.BBB_FC_IECKSCDA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_IECKSCDA_ANS5.getId(), constraint.getError().getKey());
+				assertEquals(i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_WITH_KEY_SIZE, SignatureAlgorithm.ECDSA_SHA512.getName(), "256"),
+						constraint.getAdditionalInfo());
+				ellipticCurveCheckFound = true;
+				break;
+			}
+		}
+		assertTrue(ellipticCurveCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void jadesEcdsaUnauthorizedDigestAlgoTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.ECDSA);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA224);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("256");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setEllipticCurveKeySize(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS4)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, signatureBBB.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(signatureBBB.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS4)));
+
+		XmlFC xmlFC = signatureBBB.getFC();
+		assertNotNull(xmlFC);
+		assertEquals(Indication.FAILED, xmlFC.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, xmlFC.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(xmlFC.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IECKSCDA_ANS4)));
+
+		boolean ellipticCurveCheckFound = false;
+		for (XmlConstraint constraint : xmlFC.getConstraint()) {
+			if (MessageTag.BBB_FC_IECKSCDA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_IECKSCDA_ANS4.getId(), constraint.getError().getKey());
+				assertEquals(i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_WITH_KEY_SIZE, SignatureAlgorithm.ECDSA_SHA224.getName(), "256"),
+						constraint.getAdditionalInfo());
+				ellipticCurveCheckFound = true;
+				break;
+			}
+		}
+		assertTrue(ellipticCurveCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void jadesRsaTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_jades_valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.RSA);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA512);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("2048");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setEllipticCurveKeySize(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		reports.print();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC xmlFC = signatureBBB.getFC();
+		assertNotNull(xmlFC);
+		assertEquals(Indication.PASSED, xmlFC.getConclusion().getIndication());
+
+		boolean ellipticCurveCheckFound = false;
+		for (XmlConstraint constraint : xmlFC.getConstraint()) {
+			if (MessageTag.BBB_FC_IECKSCDA.getId().equals(constraint.getName().getKey())) {
+				ellipticCurveCheckFound = true;
+				break;
+			}
+		}
+		assertFalse(ellipticCurveCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void xadesEcdsaTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.ECDSA);
+		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA512);
+		xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("256");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getSignedAttributes().setEllipticCurveKeySize(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC xmlFC = signatureBBB.getFC();
+		assertNotNull(xmlFC);
+		assertEquals(Indication.PASSED, xmlFC.getConclusion().getIndication());
+
+		boolean ellipticCurveCheckFound = false;
+		for (XmlConstraint constraint : xmlFC.getConstraint()) {
+			if (MessageTag.BBB_FC_IECKSCDA.getId().equals(constraint.getName().getKey())) {
+				ellipticCurveCheckFound = true;
+				break;
+			}
+		}
+		assertFalse(ellipticCurveCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);

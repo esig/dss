@@ -394,6 +394,24 @@ OID semanticsIdentifier = xmlCertificate.getQcStatements().getSemanticsIdentifie
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 5.10 to 5.11
+|===
+|Title                                |v5.10                           |v5.11
+|JWA Elliptic Curve Key Size (see RFC 7518)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SignedAttributes>
+    ...
+    <EllipticCurveKeySize Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+|===
+
 .Policy changes from version 5.9 to 5.10
 |===
 |Title                                |v5.9                            |v5.10

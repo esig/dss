@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.util.List;
 
@@ -53,6 +54,13 @@ public interface TokenProxy {
 	 * @return TRUE if the signature is cryptographically valid, FALSE otherwise
 	 */
 	boolean isSignatureValid();
+
+	/**
+	 * Returns the SignatureAlgorithm used to create the signatureValue
+	 *
+	 * @return {@link SignatureAlgorithm}
+	 */
+	SignatureAlgorithm getSignatureAlgorithm();
 
 	/**
 	 * Returns the DigestAlgorithm used to create the signatureValue

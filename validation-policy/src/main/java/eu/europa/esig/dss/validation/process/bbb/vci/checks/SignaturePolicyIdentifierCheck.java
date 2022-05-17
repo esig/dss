@@ -79,7 +79,7 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_VCI_ISPK_ANS_1;
+		return MessageTag.BBB_VCI_ISPK_ANS;
 	}
 
 	@Override

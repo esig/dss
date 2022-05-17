@@ -255,6 +255,11 @@
 					<xsd:documentation>Checks the presence of message-digest attribute (CAdES) or SignedProperties (XAdES)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="EllipticCurveKeySize" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the size of the elliptic curve key used to create the signature corresponds to the defined signature algorithm (see RFC 7518)</xsd:documentation> <!-- JAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="CommitmentTypeIndication" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if CommitmentTypeIndication is in the acceptable values list</xsd:documentation>
@@ -433,7 +438,7 @@
 			</xsd:element>
 			<xsd:element name="SignerInformationStore" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only (!) -->
+					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PdfPageDifference" type="LevelConstraint" minOccurs="0">

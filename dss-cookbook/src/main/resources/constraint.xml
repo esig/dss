@@ -118,6 +118,7 @@
 <!--			<SignerLocation Level="FAIL" />-->
 <!--			<ContentTimeStamp Level="FAIL" />-->
 			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
+			<EllipticCurveKeySize Level="WARN" />
 		</SignedAttributes>
 		<UnsignedAttributes>
 <!--			<CounterSignature Level="IGNORE" /> check presence -->
@@ -198,6 +199,7 @@
 <!--			<SignerLocation Level="FAIL" />-->
 <!--			<ContentTimeStamp Level="FAIL" />-->
 			<MessageDigestOrSignedPropertiesPresent Level="FAIL" />
+			<EllipticCurveKeySize Level="WARN" />
 		</SignedAttributes>
 	</CounterSignatureConstraints>
 	<Timestamp>

@@ -20,9 +20,12 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
@@ -40,13 +43,16 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.DSSPKUtils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
@@ -188,6 +194,8 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
+		assertMultiDocumentsAllowed(toSignDocuments, parameters);
+		assertSigningCertificateValid(parameters);
 
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		DSSDocument signedDocument = jadesBuilder.build(signatureValue);
@@ -348,6 +356,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public ToBeSigned getDataToBeCounterSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		verifyAndSetCounterSignatureParameters(parameters);
+		assertSigningCertificateValid(parameters);
 		
 		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
 		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
@@ -362,6 +371,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		verifyAndSetCounterSignatureParameters(parameters);
+		assertSigningCertificateValid(parameters);
 
 		JAdESCounterSignatureBuilder counterSignatureBuilder = new JAdESCounterSignatureBuilder();
 		DSSDocument signatureValueToSign = counterSignatureBuilder.getSignatureValueToBeSigned(signatureDocument, parameters);
@@ -405,6 +415,85 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		if (JWSSerializationType.JSON_SERIALIZATION.equals(parameters.getJwsSerializationType())) {
 			throw new IllegalArgumentException("The JWSSerializationType.JSON_SERIALIZATION parameter " +
 					"is not supported for a JAdES Counter Signature!");
+		}
+	}
+
+	@Override
+	public boolean isValidSignatureValue(ToBeSigned toBeSigned, SignatureValue signatureValue, CertificateToken signingCertificate) {
+		if (!super.isValidSignatureValue(toBeSigned, signatureValue, signingCertificate)) {
+			return false;
+		}
+
+		try {
+			assertSigningCertificateValid(signatureValue.getAlgorithm(), signingCertificate);
+			assertSignatureValueValid(signatureValue.getAlgorithm(), signatureValue);
+			return true;
+		} catch (Exception e) {
+			LOG.error("Invalid signature value : {}", e.getMessage());
+			return false;
+		}
+	}
+
+	@Override
+	protected void assertSigningCertificateValid(AbstractSignatureParameters<?> parameters) {
+		super.assertSigningCertificateValid(parameters);
+		assertSigningCertificateValid(parameters.getSignatureAlgorithm(), parameters.getSigningCertificate());
+	}
+
+	private void assertSigningCertificateValid(SignatureAlgorithm signatureAlgorithm, CertificateToken signingCertificate) {
+		if (signatureAlgorithm.getEncryptionAlgorithm() != null && signatureAlgorithm.getDigestAlgorithm() != null &&
+				signatureAlgorithm.getEncryptionAlgorithm().isEquivalent(EncryptionAlgorithm.ECDSA) &&
+				signingCertificate != null) {
+			String errorMessage = "For ECDSA with %s a key with P-%s curve shall be used for a JWS! See RFC 7518.";
+			int keySize = DSSPKUtils.getPublicKeySize(signingCertificate.getPublicKey());
+			switch (signatureAlgorithm.getDigestAlgorithm()) {
+				case SHA256:
+					if (256 != keySize) {
+						throw new IllegalArgumentException(String.format(errorMessage, signatureAlgorithm.getDigestAlgorithm(), 256));
+					}
+					break;
+				case SHA384:
+					if (384 != keySize) {
+						throw new IllegalArgumentException(String.format(errorMessage, signatureAlgorithm.getDigestAlgorithm(), 384));
+					}
+					break;
+				case SHA512:
+					if (521 != keySize) {
+						throw new IllegalArgumentException(String.format(errorMessage, signatureAlgorithm.getDigestAlgorithm(), 521));
+					}
+					break;
+				default:
+					throw new UnsupportedOperationException(String.format(
+							"ECDSA with %s is not supported for JWS!", signatureAlgorithm.getDigestAlgorithm()));
+			}
+		}
+	}
+
+	private void assertSignatureValueValid(SignatureAlgorithm targetSignatureAlgorithm, SignatureValue signatureValue) {
+		if (targetSignatureAlgorithm.getEncryptionAlgorithm().isEquivalent(EncryptionAlgorithm.ECDSA)) {
+			String errorMessage = "Invalid SignatureValue obtained! " +
+					"For ECDSA with %s a key with P-%s curve shall be used for a JWS. See RFC 7518.";
+			int bitLength = DSSASN1Utils.getSignatureValueBitLength(signatureValue.getValue());
+			switch (targetSignatureAlgorithm.getDigestAlgorithm()) {
+				case SHA256:
+					if (bitLength != 256) {
+						throw new IllegalInputException(String.format(errorMessage, targetSignatureAlgorithm.getDigestAlgorithm(), 256));
+					}
+					break;
+				case SHA384:
+					if (bitLength != 384) {
+						throw new IllegalArgumentException(String.format(errorMessage, targetSignatureAlgorithm.getDigestAlgorithm(), 384));
+					}
+					break;
+				case SHA512:
+					if (bitLength != 520 && bitLength != 528) {
+						throw new IllegalArgumentException(String.format(errorMessage, targetSignatureAlgorithm.getDigestAlgorithm(), 521));
+					}
+					break;
+				default:
+					throw new UnsupportedOperationException(String.format(
+							"ECDSA with %s is not supported for JWS!", targetSignatureAlgorithm.getDigestAlgorithm()));
+			}
 		}
 	}
 

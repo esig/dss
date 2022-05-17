@@ -49,6 +49,8 @@ public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 	private JAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
+	private String signingAlias;
+
 	private static Stream<Arguments> data() {
 		List<Arguments> args = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 			for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
 				SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
 				if (sa != null && Utils.isStringNotBlank(sa.getJWAId())) {
-					args.add(Arguments.of(jwsSerializationType, digestAlgo));
+					args.add(Arguments.of(jwsSerializationType, digestAlgo, getSigner(digestAlgo)));
 				}
 			}
 		}
@@ -64,9 +66,25 @@ public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 		return args.stream();
 	}
 
-	@ParameterizedTest(name = "Combination {index} if type {0} and ECDSA with digest algorithm {1}")
+	private static String getSigner(DigestAlgorithm digestAlgorithm) {
+		switch (digestAlgorithm) {
+			case SHA256:
+				return ECDSA_USER;
+			case SHA384:
+				return ECDSA_384_USER;
+			case SHA512:
+				return ECDSA_521_USER;
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"DigestAlgorithm '%s' is not supported!", digestAlgorithm));
+		}
+	}
+
+	@ParameterizedTest(name = "Combination {index} if type {0} and ECDSA with digest algorithm {1} and signer {2}")
 	@MethodSource("data")
-	public void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo) {
+	public void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo, String signingAlias) {
+		this.signingAlias = signingAlias;
+
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
 		signatureParameters = new JAdESSignatureParameters();
@@ -103,7 +121,7 @@ public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 
 	@Override
 	protected String getSigningAlias() {
-		return ECDSA_USER;
+		return signingAlias;
 	}
 
 }
