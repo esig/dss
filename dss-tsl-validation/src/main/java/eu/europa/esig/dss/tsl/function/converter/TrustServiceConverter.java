@@ -147,10 +147,10 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 						JAXBElement jaxbElement = (JAXBElement) object;
 						Object objectValue = jaxbElement.getValue();
 						if (objectValue instanceof QualificationsType) {
-							ConditionForQualifiers conditionForQualifiers =
-									toConditionForQualifiers((QualificationsType) jaxbElement.getValue());
-							if (conditionForQualifiers != null) {
-								conditionsForQualifiersList.add(conditionForQualifiers);
+							List<ConditionForQualifiers> conditionForQualifiers =
+									toConditionForQualificationsType((QualificationsType) jaxbElement.getValue());
+							if (Utils.isCollectionNotEmpty(conditionForQualifiers)) {
+								conditionsForQualifiersList.addAll(conditionForQualifiers);
 							}
 						}
 					}
@@ -160,15 +160,24 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		return conditionsForQualifiersList;
 	}
 
-	private ConditionForQualifiers toConditionForQualifiers(QualificationsType qt) {
+	private List<ConditionForQualifiers> toConditionForQualificationsType(QualificationsType qt) {
+		List<ConditionForQualifiers> conditionForQualifiers = new ArrayList<>();
 		if ((qt != null) && Utils.isCollectionNotEmpty(qt.getQualificationElement())) {
 			for (QualificationElementType qualificationElement : qt.getQualificationElement()) {
-				List<String> qualifiers = extractQualifiers(qualificationElement);
-				if (Utils.isCollectionNotEmpty(qualifiers)) {
-					Condition condition = getCondition(qualificationElement.getCriteriaList());
-					return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
+				ConditionForQualifiers condition = toConditionForQualifiers(qualificationElement);
+				if (condition != null) {
+					conditionForQualifiers.add(condition);
 				}
 			}
+		}
+		return conditionForQualifiers;
+	}
+
+	private ConditionForQualifiers toConditionForQualifiers(QualificationElementType qualificationElement) {
+		List<String> qualifiers = extractQualifiers(qualificationElement);
+		if (Utils.isCollectionNotEmpty(qualifiers)) {
+			Condition condition = getCondition(qualificationElement.getCriteriaList());
+			return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
 		}
 		return null;
 	}
