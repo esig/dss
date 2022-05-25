@@ -100,8 +100,9 @@ public class JdbcCacheCrlSourceTest {
 		
 		// wait one second
 		Calendar nextSecond = Calendar.getInstance();
+		nextSecond.setTime(savedRevocationToken.getThisUpdate());
 		nextSecond.add(Calendar.SECOND, 1);
-		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().after(nextSecond.getTime()));
 
 		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
