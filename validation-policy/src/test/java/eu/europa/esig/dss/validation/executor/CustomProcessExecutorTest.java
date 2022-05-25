@@ -2666,6 +2666,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.UNKNOWN, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
@@ -8873,6 +8874,38 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(CertificateQualification.NA, detailedReport.getCertificateQualificationAtValidation("certId"));
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> detailedReport.getCertificateXCVConclusion("certId"));
 		assertEquals("Only supported in report for certificate", exception.getMessage());
+	}
+
+	@Test
+	public void qcWithConflictInTypesTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/sig-qualification/post-eidas-qc-types-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.UNKNOWN_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void noQCWithConflictInTypesTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/sig-qualification/post-eidas-no-qc-types-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.UNKNOWN, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 	}
 
 	private void validateBestSigningTimes(Reports reports) {

@@ -44,6 +44,13 @@ public enum CertificateQualification {
 
 	// QCERT_FOR_WSA_QSCD non sense
 
+	/**
+	 * Qualified Certificate for unidentified type with private key in a QSCD
+	 */
+	QCERT_FOR_UNKNOWN_QSCD("QC for unknown type with QSCD",
+			"Qualified Certificate for unknown type with its private key residing in a QSCD",
+			CertificateQualifiedStatus.QC, CertificateType.UNKNOWN, QSCDStatus.QSCD),
+
 	// --------------------------------------------------------
 
 	/**
@@ -64,6 +71,12 @@ public enum CertificateQualification {
 	QCERT_FOR_WSA("QC for WSA", "Qualified Certificate for Web Site Authentications",
 			CertificateQualifiedStatus.QC, CertificateType.WSA, QSCDStatus.NOT_QSCD),
 
+	/**
+	 * Qualified Certificate for unidentified type
+	 */
+	QCERT_FOR_UNKNOWN("QC for unknown type", "Qualified Certificate for unknown type",
+			CertificateQualifiedStatus.QC, CertificateType.UNKNOWN, QSCDStatus.NOT_QSCD),
+
 	// --------------------------------------------------------
 
 	/**
@@ -83,6 +96,12 @@ public enum CertificateQualification {
 	 */
 	CERT_FOR_WSA("Cert for WSA", "Certificate for Web Site Authentications",
 			CertificateQualifiedStatus.NOT_QC, CertificateType.WSA, QSCDStatus.NOT_QSCD),
+
+	/**
+	 * Certificate for unidentified type
+	 */
+	CERT_FOR_UNKNOWN("Cert for unknown type", "Certificate for unknown type",
+			CertificateQualifiedStatus.NOT_QC, CertificateType.UNKNOWN, QSCDStatus.NOT_QSCD),
 
 	/**
 	 * Not Applicable
