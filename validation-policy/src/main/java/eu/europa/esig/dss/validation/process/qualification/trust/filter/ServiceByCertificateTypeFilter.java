@@ -31,6 +31,7 @@ import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualific
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Allowed services are :
@@ -68,7 +69,8 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 			boolean qcForEsign = ServiceQualification.isQcForEsig(capturedQualifiers);
 			boolean qcForEseals = ServiceQualification.isQcForEseal(capturedQualifiers);
 			boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
-			boolean onlyOneQcForXXX = qcForEsign ^ qcForEseals ^ qcForWSA;
+
+			boolean onlyOneQcForXXX = Stream.of(qcForEsign, qcForEseals, qcForWSA).filter(b -> b).count() == 1;
 
 			TypeStrategy strategy = TypeStrategyFactory.createTypeFromCert(certificate);
 			CertificateType certType = strategy.getType();
