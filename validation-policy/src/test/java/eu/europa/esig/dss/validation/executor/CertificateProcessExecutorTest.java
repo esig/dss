@@ -240,8 +240,8 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
@@ -550,8 +550,8 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
 	}
 	
 	@Test
@@ -746,7 +746,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		CertificateReports reports = executor.execute();
 		SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlCertificate xmlCertificate = detailedReport.getXmlCertificateById(certId);

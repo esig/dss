@@ -78,17 +78,17 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 			boolean overruleForWSA = asiWsa && qcForWSA && onlyOneQcForXXX;
 
 			switch (certType) {
-			case ESIGN:
-				return asiEsign || overruleForEseals || overruleForWSA;
-			case ESEAL:
-				return asiEseals || overruleForEsign || overruleForWSA;
-			case WSA:
-				return asiWsa || overruleForEseals || overruleForEsign;
-			case UNKNOWN:
-				// multiple cert types + overrule ?
-				return overruleForEsign || overruleForEseals || overruleForWSA;
-			default:
-				return false;
+				case ESIGN:
+					return asiEsign || overruleForEseals || overruleForWSA;
+				case ESEAL:
+					return asiEseals || overruleForEsign || overruleForWSA;
+				case WSA:
+					return asiWsa || overruleForEseals || overruleForEsign;
+				case UNKNOWN:
+					// continue to identify qualification (keeping unknown type)
+					return true;
+				default:
+					throw new UnsupportedOperationException(String.format("Unsupported CertificateType : %s", certType));
 			}
 
 		}

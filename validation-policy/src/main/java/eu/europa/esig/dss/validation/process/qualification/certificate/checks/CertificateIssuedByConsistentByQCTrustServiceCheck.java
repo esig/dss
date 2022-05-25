@@ -33,10 +33,10 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.List;
 
 /**
- * Checks if there are consistent TrustedServices issues the certificate in question at control time
+ * Checks if there are consistent by QC TrustedServices issues the certificate in question at control time
  *
  */
-public class CertificateIssuedByConsistentTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
+public class CertificateIssuedByConsistentByQCTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** List of consistent Trusted Services issued the certificate at control time */
 	private final List<TrustedServiceWrapper> trustServicesAtTime;
@@ -49,7 +49,7 @@ public class CertificateIssuedByConsistentTrustServiceCheck extends ChainItem<Xm
 	 * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public CertificateIssuedByConsistentTrustServiceCheck(I18nProvider i18nProvider,
+	public CertificateIssuedByConsistentByQCTrustServiceCheck(I18nProvider i18nProvider,
 			XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustServicesAtTime,
 			LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
@@ -64,12 +64,12 @@ public class CertificateIssuedByConsistentTrustServiceCheck extends ChainItem<Xm
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_CONSISTENT;
+		return MessageTag.QUAL_HAS_CONSISTENT_BY_QC;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_CONSISTENT_ANS;
+		return MessageTag.QUAL_HAS_CONSISTENT_BY_QC_ANS;
 	}
 
 	@Override

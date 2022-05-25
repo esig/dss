@@ -37,7 +37,8 @@ class TrustedServiceQSCDStatusAsInCertConsistency implements TrustedServiceCondi
 
 		boolean asInCert = ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers);
 
-		boolean qcsd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
+		boolean qcsd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
+				ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
 
 		if (asInCert) {
 			return !qcsd;

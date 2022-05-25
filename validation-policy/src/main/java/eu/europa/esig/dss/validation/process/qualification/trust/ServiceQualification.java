@@ -151,13 +151,22 @@ public final class ServiceQualification {
 	}
 
 	/**
-	 * Gets whether the list of TrustedService qualifiers contains one of 'QCNoQSCD' or 'QCNoSSCD' identifiers
+	 * Gets whether the list of TrustedService qualifiers contains 'QCNoQSCD' identifier
 	 *
 	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
-	 * @return TRUE if the list of qualifiers contains one of 'QCNoQSCD' or 'QCNoSSCD' identifiers, FALSE otherwise
+	 * @return TRUE if the list of qualifiers contains 'QCNoQSCD' identifier, FALSE otherwise
 	 */
 	public static boolean isQcNoQSCD(List<String> qualifiers) {
-		return listContains(qualifiers, QC_NO_QSCD, QC_NO_SSCD);
+		return listContains(qualifiers, QC_NO_QSCD);
+	}
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCNoSSCD' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains 'QCNoSSCD' identifier, FALSE otherwise
+	 */
+	public static boolean isQcNoSSCD(List<String> qualifiers) {
+		return listContains(qualifiers, QC_NO_SSCD);
 	}
 
 	/**
@@ -193,13 +202,23 @@ public final class ServiceQualification {
 	}
 
 	/**
-	 * Gets whether the list of TrustedService qualifiers contains one of 'QCWithQSCD' or 'QCWithSSCD' identifiers
+	 * Gets whether the list of TrustedService qualifiers contains 'QCWithQSCD' identifier
 	 *
 	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
-	 * @return TRUE if the list of qualifiers contains one of 'QCWithQSCD' or 'QCWithSSCD' identifiers, FALSE otherwise
+	 * @return TRUE if the list of qualifiers contains 'QCWithQSCD' identifier, FALSE otherwise
 	 */
 	public static boolean isQcWithQSCD(List<String> qualifiers) {
-		return listContains(qualifiers, QC_WITH_QSCD, QC_WITH_SSCD);
+		return listContains(qualifiers, QC_WITH_QSCD);
+	}
+
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCWithSSCD' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains 'QCWithQSCD' identifier, FALSE otherwise
+	 */
+	public static boolean isQcWithSSCD(List<String> qualifiers) {
+		return listContains(qualifiers, QC_WITH_SSCD);
 	}
 
 	/**

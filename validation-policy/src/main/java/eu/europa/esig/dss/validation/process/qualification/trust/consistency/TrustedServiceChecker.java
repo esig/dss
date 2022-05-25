@@ -35,18 +35,6 @@ public final class TrustedServiceChecker {
 	}
 
 	/**
-	 * Checks whether the {@code TrustedServiceWrapper} is consistent in all its parameters
-	 *
-	 * @param service {@link TrustedServiceWrapper}
-	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise
-	 */
-	public static boolean isFullyConsistent(TrustedServiceWrapper service) {
-		return isLegalPersonConsistent(service) && isQCStatementConsistent(service) && isQSCDConsistent(service)
-				&& isQSCDStatusAsInCertConsistent(service) && isUsageConsistent(service)
-				&& isPreEIDASConsistent(service) && isQualifierAndAdditionalServiceInfoConsistent(service);
-	}
-
-	/**
 	 * Checks whether the legal person identifiers within {@code TrustedServiceWrapper} are consistent
 	 *
 	 * @param service {@link TrustedServiceWrapper}
@@ -107,13 +95,25 @@ public final class TrustedServiceChecker {
 	 * @param service {@link TrustedServiceWrapper}
 	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise
 	 */
-	public static boolean isPreEIDASConsistent(TrustedServiceWrapper service) {
-		TrustedServiceCondition condition = new TrustedServicePreEIDASConsistency();
+	public static boolean isPreEIDASStatusConsistent(TrustedServiceWrapper service) {
+		TrustedServiceCondition condition = new TrustedServiceStatusPreEIDASConsistency();
 		return condition.isConsistent(service);
 	}
 
 	/**
-	 * Checks whether the statuses after eIDAS within {@code TrustedServiceWrapper} are consistent
+	 * Checks whether the qualifiers and additional service information before eIDAS
+	 * within {@code TrustedServiceWrapper} are consistent
+	 *
+	 * @param service {@link TrustedServiceWrapper}
+	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise
+	 */
+	public static boolean isPreEIDASQualifierAndAdditionalServiceInfoConsistent(TrustedServiceWrapper service) {
+		TrustedServiceCondition condition = new TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency();
+		return condition.isConsistent(service);
+	}
+
+	/**
+	 * Checks whether the qualifiers and additional service information are consistent
 	 *
 	 * @param service {@link TrustedServiceWrapper}
 	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise

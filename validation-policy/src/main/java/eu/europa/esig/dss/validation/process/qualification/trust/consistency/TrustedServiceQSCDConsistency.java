@@ -35,10 +35,10 @@ class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {
 		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers)
-				|| ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
+		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
+				ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
 
-		boolean noQscd = ServiceQualification.isQcNoQSCD(capturedQualifiers);
+		boolean noQscd = ServiceQualification.isQcNoQSCD(capturedQualifiers) || ServiceQualification.isQcNoSSCD(capturedQualifiers);
 
 		if (qscd) {
 			return !noQscd;
