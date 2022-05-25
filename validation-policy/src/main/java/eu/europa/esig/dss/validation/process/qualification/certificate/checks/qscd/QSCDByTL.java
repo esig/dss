@@ -87,7 +87,7 @@ class QSCDByTL implements QSCDStrategy {
 					if (ServiceQualification.isQcWithSSCD(capturedQualifiers)) {
 						return QSCDStatus.QSCD;
 
-					} else if (ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers)) {
+					} else if (ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers)) {
 						return qscdFromCertificate.getQSCDStatus();
 
 					} else if (ServiceQualification.isQcNoSSCD(capturedQualifiers)) {

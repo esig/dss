@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+
+import java.util.List;
 
 /**
  * A Trusted Service can not have QSCDStatusAsInCert and QSCD qualifiers for the same certificate.
@@ -35,7 +35,8 @@ class TrustedServiceQSCDStatusAsInCertConsistency implements TrustedServiceCondi
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {
 		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-		boolean asInCert = ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers);
+		boolean asInCert = ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers) ||
+				ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers);
 
 		boolean qcsd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
 				ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);

@@ -180,15 +180,23 @@ public final class ServiceQualification {
 	}
 
 	/**
-	 * Gets whether the list of TrustedService qualifiers contains one of
-	 * 'QCQSCDStatusAsInCert' or 'QCSSCDStatusAsInCert' identifiers
+	 * Gets whether the list of TrustedService qualifiers contains 'QCQSCDStatusAsInCert' identifier
 	 *
 	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
-	 * @return TRUE if the list of qualifiers contains one of
-	 *         'QCQSCDStatusAsInCert' or 'QCSSCDStatusAsInCert' identifiers, FALSE otherwise
+	 * @return TRUE if the list of qualifiers contains 'QCQSCDStatusAsInCert' identifier, FALSE otherwise
 	 */
 	public static boolean isQcQSCDStatusAsInCert(List<String> qualifiers) {
-		return listContains(qualifiers, QC_QSCD_STATUS_AS_IN_CERT, QC_SSCD_STATUS_AS_IN_CERT);
+		return listContains(qualifiers, QC_QSCD_STATUS_AS_IN_CERT);
+	}
+
+	/**
+	 * Gets whether the list of TrustedService qualifiers contains 'QCSSCDStatusAsInCert' identifier
+	 *
+	 * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+	 * @return TRUE if the list of qualifiers contains QCSSCDStatusAsInCert' identifier, FALSE otherwise
+	 */
+	public static boolean isQcSSCDStatusAsInCert(List<String> qualifiers) {
+		return listContains(qualifiers, QC_SSCD_STATUS_AS_IN_CERT);
 	}
 
 	/**
