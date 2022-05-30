@@ -322,7 +322,7 @@ public class PdfModificationDetectionUtils {
 						finalRevObject = secondArray.getObject(j);
 					}
 				}
-			} else {
+			} else if (i < secondArray.size()) {
 				finalRevObject = secondArray.getObject(i);
 			}
 
