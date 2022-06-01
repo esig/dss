@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TrustedServiceUsageConsistencyTest {
 
@@ -51,6 +50,13 @@ public class TrustedServiceUsageConsistencyTest {
 	public void testForEsigAndEsealsUsage() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG, ServiceQualification.QC_FOR_ESEAL));
+		assertFalse(condition.isConsistent(service));
+	}
+
+	@Test
+	public void testForEsigAndEsealsAndWsaUsage() {
+		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG, ServiceQualification.QC_FOR_ESEAL, ServiceQualification.QC_FOR_WSA));
 		assertFalse(condition.isConsistent(service));
 	}
 

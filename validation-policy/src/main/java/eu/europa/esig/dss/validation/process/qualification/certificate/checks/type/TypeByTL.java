@@ -64,14 +64,21 @@ class TypeByTL implements TypeStrategy {
 		// overrules are only applicable when the certificate is qualified (cert + TL)
 		if (CertificateQualifiedStatus.isQC(qualified)) {
 
+			if (trustedService == null) {
+				return CertificateType.UNKNOWN;
+			}
+
 			if (EIDASUtils.isPreEIDAS(trustedService.getStartDate())) {
 				return CertificateType.ESIGN;
 			}
 
 			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
 
-			// If overrules
-			if (Utils.isCollectionNotEmpty(usageQualifiers)) {
+			if (Utils.collectionSize(usageQualifiers) > 1) {
+				return CertificateType.UNKNOWN;
+
+			} else if (Utils.isCollectionNotEmpty(usageQualifiers)) {
+				// If overrules
 
 				if (ServiceQualification.isQcForEsig(usageQualifiers)) {
 					return CertificateType.ESIGN;
@@ -86,6 +93,7 @@ class TypeByTL implements TypeStrategy {
 				}
 
 			}
+
 		}
 
 		return typeInCert.getType();

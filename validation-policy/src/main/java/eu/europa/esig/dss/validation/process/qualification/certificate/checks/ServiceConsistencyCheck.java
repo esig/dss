@@ -92,13 +92,18 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isPreEIDASConsistent(trustedService)) {
+			if (!TrustedServiceChecker.isPreEIDASStatusConsistent(trustedService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS5;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
+			if (!TrustedServiceChecker.isPreEIDASQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS6;
+				return false;
+			}
+
+			if (!TrustedServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS7;
 				return false;
 			}
 

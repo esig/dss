@@ -183,24 +183,24 @@
 		
 			<xs:enumeration value="QESig" />
 			<xs:enumeration value="QESeal" />
-			<xs:enumeration value="QES?" />
+			<xs:enumeration value="Unknown-QC-QSCD" />
 			<xs:enumeration value="AdESig-QC" />
 			<xs:enumeration value="AdESeal-QC" />
-			<xs:enumeration value="AdES?-QC" />
+			<xs:enumeration value="Unknown-QC" />
 			<xs:enumeration value="AdESig" />
 			<xs:enumeration value="AdESeal" />
-			<xs:enumeration value="AdES?" />
-			
+			<xs:enumeration value="Unknown" />
+
 			<xs:enumeration value="Indeterminate QESig" />
 			<xs:enumeration value="Indeterminate QESeal" />
-			<xs:enumeration value="Indeterminate QES?" />
+			<xs:enumeration value="Indeterminate Unknown-QC-QSCD" />
 			<xs:enumeration value="Indeterminate AdESig-QC" />
 			<xs:enumeration value="Indeterminate AdESeal-QC" />
-			<xs:enumeration value="Indeterminate AdES?-QC" />
+			<xs:enumeration value="Indeterminate Unknown-QC" />
 			<xs:enumeration value="Indeterminate AdESig" />
 			<xs:enumeration value="Indeterminate AdESeal" />
-			<xs:enumeration value="Indeterminate AdES?" />
-		
+			<xs:enumeration value="Indeterminate Unknown" />
+
 			<xs:enumeration value="Not AdES but QC with QSCD" />
 			<xs:enumeration value="Not AdES but QC" />
 			<xs:enumeration value="Not AdES" />

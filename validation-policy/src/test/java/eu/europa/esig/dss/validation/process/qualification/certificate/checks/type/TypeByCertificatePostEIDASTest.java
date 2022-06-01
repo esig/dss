@@ -23,9 +23,11 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.OidDescription;
+import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.enumerations.QCType;
 import org.junit.jupiter.api.Test;
 
@@ -45,11 +47,19 @@ public class TypeByCertificatePostEIDASTest {
 	}
 
 	@Test
-	public void esigDefault() {
-		CertificateWrapper cert = getCertificate();
+	public void esigDefaultWithQcCompliance() {
+		CertificateWrapper cert = getCertificate(QCStatement.QC_COMPLIANCE);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESIGN, strategy.getType());
+	}
+
+	@Test
+	public void esigDefaultNoQcCompliance() {
+		CertificateWrapper cert = getCertificate();
+		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
+
+		assertEquals(CertificateType.UNKNOWN, strategy.getType());
 	}
 
 	@Test
@@ -79,14 +89,19 @@ public class TypeByCertificatePostEIDASTest {
 	
 	private CertificateWrapper getCertificate(OidDescription... qcTypesOids) {
 		XmlCertificate xmlCertificate = new XmlCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		List<XmlOID> oids = new ArrayList<>();
 		for (OidDescription qcTypeOid : qcTypesOids) {
 			XmlOID xmlOID = new XmlOID();
 			xmlOID.setValue(qcTypeOid.getOid());
 			xmlOID.setDescription(qcTypeOid.getDescription());
 			oids.add(xmlOID);
+			if (QCStatement.QC_COMPLIANCE.equals(qcTypeOid)) {
+				XmlQcCompliance qcCompliance = new XmlQcCompliance();
+				qcCompliance.setPresent(true);
+				xmlQcStatements.setQcCompliance(qcCompliance);
+			}
 		}
-		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(oids);
 		xmlCertificate.setQcStatements(xmlQcStatements);
 		return new CertificateWrapper(xmlCertificate);

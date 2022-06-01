@@ -39,9 +39,10 @@ public enum SignatureQualification implements UriBasedEnum {
 	QESEAL("QESeal", "Qualified Electronic Seal", "urn:cef:dss:signatureQualification:QESeal"),
 
 	/**
-	 * Qualified Electronic Signature or Seal
+	 * Signature supported by a Qualified Certificate with the private key in a QSCD
 	 */
-	QES("QES?", "Qualified Electronic Signature or Seal", "urn:cef:dss:signatureQualification:QES"),
+	UNKNOWN_QC_QSCD("Unknown-QC-QSCD", "Signature produced by a Qualified Certificate of unknown type with its private key residing in a QSCD",
+			"urn:cef:dss:signatureQualification:UnknownQCwithQSCD"),
 
 	/**
 	 * Advanced Electronic Signature supported by a Qualified Certificate
@@ -54,9 +55,9 @@ public enum SignatureQualification implements UriBasedEnum {
 	ADESEAL_QC("AdESeal-QC", "Advanced Electronic Seal supported by a Qualified Certificate", "urn:cef:dss:signatureQualification:AdESealQC"),
 
 	/**
-	 * Advanced Electronic Signature or Seal supported by a Qualified Certificate
+	 * Signature supported by a Qualified Certificate
 	 */
-	ADES_QC("AdES?-QC", "Advanced Electronic Signature or Seal supported by a Qualified Certificate", "urn:cef:dss:signatureQualification:AdESQC"),
+	UNKNOWN_QC("Unknown-QC", "Signature produced by a Qualified Certificate of unknown type", "urn:cef:dss:signatureQualification:UnknownQC"),
 
 	/**
 	 * Advanced Electronic Signature
@@ -69,9 +70,9 @@ public enum SignatureQualification implements UriBasedEnum {
 	ADESEAL("AdESeal", "Advanced Electronic Seal", "urn:cef:dss:signatureQualification:AdESeal"),
 
 	/**
-	 * Advanced Electronic Signature or Seal
+	 * Signature of unknown type
 	 */
-	ADES("AdES?", "Advanced Electronic Signature or Seal", "urn:cef:dss:signatureQualification:AdES"),
+	UNKNOWN("Unknown", "Signature produced by a Certificate of unknown type", "urn:cef:dss:signatureQualification:Unknown"),
 
 	/**
 	 * Indeterminate Qualified Electronic Signature
@@ -84,9 +85,10 @@ public enum SignatureQualification implements UriBasedEnum {
 	INDETERMINATE_QESEAL("Indeterminate QESeal", "Indeterminate Qualified Electronic Seal", "urn:cef:dss:signatureQualification:indeterminateQESeal"),
 
 	/**
-	 * Indeterminate Qualified Electronic Signature or Seal
+	 * Indeterminate Signature supported by a Qualified Certificate with the private key in a QSCD
 	 */
-	INDETERMINATE_QES("Indeterminate QES?", "Indeterminate Qualified Electronic Signature or Seal", "urn:cef:dss:signatureQualification:indeterminateQES"),
+	INDETERMINATE_UNKNOWN_QC_QSCD("Indeterminate Unknown-QC-QSCD", "Indeterminate Signature produced by a Qualified Certificate of unknown type with its private key residing in a QSCD",
+			"urn:cef:dss:signatureQualification:indeterminateUnknownQCwithQSCD"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature supported by a Qualified Certificate
@@ -101,10 +103,9 @@ public enum SignatureQualification implements UriBasedEnum {
 			"urn:cef:dss:signatureQualification:indeterminateAdESealQC"),
 
 	/**
-	 * Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate
+	 * Indeterminate Signature supported by a Qualified Certificate
 	 */
-	INDETERMINATE_ADES_QC("Indeterminate AdES?-QC", "Indeterminate Advanced Electronic Signature or Seal supported by a Qualified Certificate", 
-			"urn:cef:dss:signatureQualification:indeterminateAdESQC"),
+	INDETERMINATE_UNKNOWN_QC("Indeterminate Unknown-QC", "Indeterminate Signature produced by a Qualified Certificate of unknown type", "urn:cef:dss:signatureQualification:indeterminateUnknownQC"),
 
 	/**
 	 * Indeterminate Advanced Electronic Signature
@@ -119,10 +120,9 @@ public enum SignatureQualification implements UriBasedEnum {
 			"urn:cef:dss:signatureQualification:indeterminateAdESeal"),
 
 	/**
-	 * Indeterminate Advanced Electronic Signature or Seal
+	 * Signature of unknown type
 	 */
-	INDETERMINATE_ADES("Indeterminate AdES?", "Indeterminate Advanced Electronic Signature or Seal", 
-			"urn:cef:dss:signatureQualification:indeterminateAdES"),
+	INDETERMINATE_UNKNOWN("Indeterminate Unknown", "Indeterminate Signature produced by a Certificate of unknown type", "urn:cef:dss:signatureQualification:indeterminateUnknown"),
 
 	/**
 	 * Not Advanced Electronic Signature but supported by a Qualified Certificate

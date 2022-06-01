@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.
@@ -41,7 +42,7 @@ class TrustedServiceUsageConsistency implements TrustedServiceCondition {
 		boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
 
 		boolean noneOfThem = !(qcForEsig || qcForEseal || qcForWSA);
-		boolean onlyOneOfThem = qcForEsig ^ qcForEseal ^ qcForWSA; // ^ = XOR
+		boolean onlyOneOfThem = Stream.of(qcForEsig, qcForEseal, qcForWSA).filter(b -> b).count() == 1;
 
 		return noneOfThem || onlyOneOfThem;
 	}
