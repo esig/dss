@@ -81,6 +81,17 @@ public class RemoteSignatureParameters implements Serializable {
 	private SignaturePackaging signaturePackaging;
 
 	/**
+	 * This variable defines whether enveloped content shall be embedded into a signature
+	 * in its clear XML representation (only for XAdES)
+	 */
+	private boolean embedXML;
+
+	/**
+	 * This variable defines whether an XML Manifest is being signed (only for XAdES)
+	 */
+	private boolean manifestSignature;
+
+	/**
 	 * JAdES JWS Serialization Type
 	 */
 	private JWSSerializationType jwsSerializationType;
@@ -253,6 +264,44 @@ public class RemoteSignatureParameters implements Serializable {
 	public void setSignatureLevel(final SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "signatureLevel must be defined!");
 		this.signatureLevel = signatureLevel;
+	}
+
+	/**
+	 * Returns if original XML document shall be embedded into ENVELOPING signature in its clear XML representation
+	 *
+	 * @return TRUE if the original document shall be embedded in its XML representation, FALSE of base64 encoded
+	 */
+	public boolean isEmbedXML() {
+		return embedXML;
+	}
+
+	/**
+	 * Sets whether the original XML document shall be embedded in its XML representation
+	 * NOTE: used only for XAdES
+	 *
+	 * @param embedXML whether the original object shall be embedded as XML
+	 */
+	public void setEmbedXML(boolean embedXML) {
+		this.embedXML = embedXML;
+	}
+
+	/**
+	 * Returns if a manifest signature should be created
+	 *
+	 * @return TRUE if a signature signs an XML Manifest, FALSE otherwise
+	 */
+	public boolean isManifestSignature() {
+		return manifestSignature;
+	}
+
+	/**
+	 * Sets whether a manifest signature shall be created
+	 * NOTE: used only for XAdES
+	 *
+	 * @param manifestSignature whether a manifest signature shall be created
+	 */
+	public void setManifestSignature(boolean manifestSignature) {
+		this.manifestSignature = manifestSignature;
 	}
 
 	/**
@@ -608,6 +657,8 @@ public class RemoteSignatureParameters implements Serializable {
 		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
 		result = prime * result + ((imageParameters == null) ? 0 : imageParameters.hashCode());
+		result = prime * result + (embedXML ? 1231 : 1237);
+		result = prime * result + (manifestSignature ? 1231 : 1237);
 		result = prime * result + ((jwsSerializationType == null) ? 0 : jwsSerializationType.hashCode());
 		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
 		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
@@ -663,6 +714,12 @@ public class RemoteSignatureParameters implements Serializable {
 			return false;
 		}
 		if (!Objects.equals(imageParameters, other.imageParameters)) {
+			return false;
+		}
+		if (embedXML != other.embedXML) {
+			return false;
+		}
+		if (manifestSignature != other.manifestSignature) {
 			return false;
 		}
 		if (jwsSerializationType != other.jwsSerializationType) {

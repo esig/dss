@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ds:Manifest Id="manifest" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+	<ds:Reference URI="l_06820180312bg.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>FgWu2p1I8fSSQ7V4RxgZFaTeJsW1KvbYFh5mxODbrPoVlAbUDALeFNn39iY1N0bY7IxtOba/ZBELqHKFgLnnVA==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312cs.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>tiwEcs3PfT5xXFR3npRcJ5UBoo1uRGLyrg2HWjoenxf5bdGUIzFXT/r2pOJVbjnaWIfsNpXFezbymsPrimeJaQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312da.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>SZ14p/+txf11uscggPRx/JuUrFwG51ZDdVeam/DfpZuROttcwsqxQsMaM2mC1UURAepgF6yujfcMpMzQob/KCg==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312de.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>SmnRzsjwOqMR0WTZMVA3fIi3nIZi1j81064uG5KOZdfkLKNaSLpDnfX1lWDPoqjBIk435Ganw4n0TnLV/NGA3A==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312el.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>Yk9fs7zaxYAKecHSSZh4ow5gdJPeZNBc8J6Hk4WwlRLTvwzdPoA2bFQI0UpjqlkED8HgAZlUfqeyp3JIwkHjrQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312en.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>DBP5AwRGIy3L6a/3jep5v1X/CuOAA/6PaSNm2WogUDils9jzZBbrCwhFIcVFYkA1sSGvBx2TCPGl2Z+Nv19NYQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312et.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>Di84I6iHQm7yM8y0pSJaE0X6PPYgtQewg2yek1wnL0ovt9XPq4+vzX3UQhag4TAPKygVCxegfvJqDLG22WIADQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312fi.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>7bqHM245CtsWht6a5isbKL2yiN/Yw6q7tREJ0NIcg/DtRhzzT+EbucsXoYPIOyUtG64QJipfvM1UsQK3hBtatw==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312fr.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>YQ47KV1Z0+P2U8PQj89dMsWXpbm9MI+tbU1XJGLbILBvMyY4sBrYxjrf9teLgbN7RClvRJhCd8qxO87evUUOcA==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312hr.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>jZNKmA1vVUHQbvjELncNix7T8pxDuVx1RuQjjN4cTrbpdfzspAhJVnWzTvVIKX2aIh8YmQt7PrwV+rSbIdkGsw==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312hu.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>tcnOALyh+zaqpVoygeb6Aywn/Fb1v2RfDzI5s+W/+ZBptduYQ8C6vskFdiOoJmbDmqsigYJFm9YSILdIfF4eog==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312it.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>5/v5gnn+ZuvHdjLT6RTGYakjIPhqdmWMl4HR1T/Xe/wK9gPIRMGbMoXo/B6rkatKMmmzzW1b/+6fmz9n24eTJQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312lv.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>QdEI3WGhqZXjTJrXqkVduY6aruwDeGnkwCfuaFkis0NIKo13hugb+zQSmUsMwoev/TP9ZU9rWxqGdvvcyrYUsw==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312lt.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>dUj5fVxNe6/8N5p1hlFTzr5/rQJV7Ie5fqYe4hwEc6UIhDqebWvp1dSX78FLPZQVD9ZqdD53tzhSXlgQWsie3g==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312mt.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>KC6jx6u58m7LFKoSg4djMNkqUMFB8AVva02V0QkK7jyhjSBjaYlfkFmOYie0wKdixHY4iZ6IjLKfRzNBeSRqrQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312nl.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>tUqW+GBHg9AYpS2yt0qPR9vOq6OjM4SHf3egzEHPiz/owBtzp/STTmIz6yrZymlJHvAstQ0vxpWsvevyflNh2A==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312pl.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>SSauL8KgY0S8cikU1kd2mgcHbs4uynnFOKKVwTfnAIkDFaudibNeOKjNA1i7bxH+Li1bkqEtLDZU7a9vszbTSQ==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312pt.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>N7GZgCQICLTg1ip49InEInpTTDb/+E4JQybFUlDXKwIXvxStNG9EijLk9q0E5zEcU4pSimmXO4k+z7qZsavstA==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312ro.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>hjGI+678cjbUuylTKOEH9b9R53i31rxBt2l2dK/h/sDrjlttmnQwwPEduNkGkaKCxnRbzPtzSfTNKR28KVW+wA==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312sk.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>ahLSuPtHuvGlBHzuRt5ZWiTXxxJwsdWqJbCDUj0I1X7+emXKyBMES/naZ8h0aD3PHDhDlqtVWHfQ4TYbC+UfUg==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312sl.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>wnDJoPaVZXXuq/WdHfmXMn/lrt9GkzJQ5hpbg+yu4hSIL0hNMZHWr5+03mwvSjEI2f/YZpNab0zOaqgHwhHJ4g==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312es.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>V+/bprMkANTtYSu4BmwRJF52YIRV0lCG/dIFylrdmdbTtkb/U053pC8kC1rzkAWo3bu9zTF4xk96z8WG+OwZjw==</ds:DigestValue>
+	</ds:Reference>
+	<ds:Reference URI="l_06820180312sv.pdf">
+		<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
+		<ds:DigestValue>tEZbSjxtMT3fewcPMQPv4h5ufClhcpvaOIWJhZ9wlpxQzgn5tLsysXeViIgwnbjwbmSAW+6Z9Qx9CcHNHcPaiA==</ds:DigestValue>
+	</ds:Reference>
+</ds:Manifest>

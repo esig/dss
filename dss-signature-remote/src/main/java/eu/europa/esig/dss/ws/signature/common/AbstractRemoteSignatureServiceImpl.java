@@ -116,7 +116,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		} else {
 			switch (signatureForm) {
 			case XAdES:
-				parameters = new XAdESSignatureParameters();
+				parameters = getXAdESSignatureParameters(remoteParameters);
 				break;
 			case CAdES:
 				parameters = new CAdESSignatureParameters();
@@ -139,6 +139,13 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 
 		return parameters;
+	}
+
+	protected SerializableSignatureParameters getXAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
+		XAdESSignatureParameters xadesParams = new XAdESSignatureParameters();
+		xadesParams.setEmbedXML(remoteParameters.isEmbedXML());
+		xadesParams.setManifestSignature(remoteParameters.isManifestSignature());
+		return xadesParams;
 	}
 
 	/**
