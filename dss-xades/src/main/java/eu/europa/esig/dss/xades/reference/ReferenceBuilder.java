@@ -213,9 +213,11 @@ public class ReferenceBuilder {
 		if (signatureParameters.isManifestSignature()) {
 			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
 
-			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			Document manifestDoc = DomUtils.buildDOM(document);
 			Element manifestElement = manifestDoc.getDocumentElement();
+			assertXmlManifestSignaturePossible(manifestElement);
+
+			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
 			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Collections.singletonList(xmlTransform));
@@ -237,6 +239,14 @@ public class ReferenceBuilder {
 			reference.setTransforms(Collections.singletonList(base64Transform));
 		}
 		return reference;
+	}
+
+	private void assertXmlManifestSignaturePossible(Element manifestElement) {
+		String idAttr = manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName());
+		if (Utils.isStringBlank(idAttr)) {
+			throw new IllegalInputException(
+					"Manifest signature is not possible for an XML file without Id attribute in the root element!");
+		}
 	}
 
 	private DSSReference detachedDSSReference(DSSDocument document, int index) {

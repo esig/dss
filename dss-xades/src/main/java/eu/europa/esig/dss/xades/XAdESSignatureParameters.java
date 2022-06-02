@@ -442,7 +442,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * Gets if the signature signs a manifest
 	 *
-	 * @return TRUE if teh signature signs a manifest, FALSE otherwise
+	 * @return TRUE if the signature signs a manifest, FALSE otherwise
 	 */
 	public boolean isManifestSignature() {
 		return manifestSignature;
