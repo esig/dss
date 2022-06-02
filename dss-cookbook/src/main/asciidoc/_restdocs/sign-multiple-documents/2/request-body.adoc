@@ -10,6 +10,8 @@
     "asicContainerType" : "ASiC_E",
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
@@ -39,7 +41,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1643808666405,
+      "signingDate" : 1654177802793,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -58,7 +60,7 @@
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "BqdSM5oQP8mG0gnBR9BUSWd7Blr4nfkfXZB47oSoXhizmU9CWx/CSyOHRDZi4AIvxo18BgzXQ9KtPbUE27hSxaYcU5PrTMpXoFsgUcaDDNhvNdGwuJMuWR42HF36MjFcR3DsMWiFFEQDxo5KrXDLtvYNb2ndMYEX8kyMH2Ajk5vNwA23sI4L8x8ylGYDeZzLdVJOIOntOGTTrcqaw9mtsTHL+jDhozztrHgA/Nio0nwo8KjOeJ2KlFZfNT6qNQQaoRBIVf7ImY60nlzmdreAYZeYQAJkt5BN2V+MmvMSKMQzMnVTrEYRIEFuEkE8YKtT9KmiVIF4tBdxs9RICXyrsw=="
+    "value" : "HUocloJGSnG4q8NyGzgly4POAE7Rp1OlYHdx2ZcmEMGNN9o2ZXBJ2dRD5e8ucCX0/THNmZUvY1wXzg+/Up2OPFWBjp1qPskHBILc/3BseeWpUJEojiJpGf6KuzLhsTeDi5ChGAdWyH+z8K521IQPbrdX5L51+i9C7CMkqk5FbquRBe6r7AIJXeXie0ntcAghzt3A2LnQA+MK/HwvYRH38nLBxiX1amqdQ3wuqRBe51j31Vk7CNT1F4j4ERBUzq1u9T0S1ZkADOSfFGZckgt8t+dMkJvNYFG87ns8Z2lIBxqK3nwHBpTJtOVymvUZ9PRE4me2pv1Tw3bEpDqhgOvXKA=="
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",

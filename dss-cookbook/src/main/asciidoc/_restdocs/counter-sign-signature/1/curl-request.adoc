@@ -13,6 +13,8 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToBeCo
     "asicContainerType" : null,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
@@ -42,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToBeCo
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1643808668008,
+      "signingDate" : 1654177804084,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

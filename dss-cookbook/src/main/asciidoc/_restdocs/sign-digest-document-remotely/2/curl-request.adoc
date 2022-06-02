@@ -15,6 +15,8 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "asicContainerType" : null,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
+    "embedXML" : false,
+    "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
@@ -44,7 +46,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1643808670371,
+      "signingDate" : 1654177805900,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

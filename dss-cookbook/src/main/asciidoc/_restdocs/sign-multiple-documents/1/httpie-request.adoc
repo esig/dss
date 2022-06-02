@@ -10,6 +10,8 @@ $ echo '{
     "asicContainerType" : "ASiC_E",
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
@@ -39,7 +41,7 @@ $ echo '{
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1643808666405,
+      "signingDate" : 1654177802793,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
