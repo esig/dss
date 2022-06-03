@@ -13,7 +13,7 @@
 <!-- 			<Id>mimetype=application/vnd.etsi.asic-s+zip</Id> -->
 <!-- 			<Id>mimetype=application/vnd.etsi.asic-e+zip</Id> -->
 <!-- 		</AcceptableZipComment> -->
-<!--		<MimeTypeFilePresent Level="WARN" />-->
+		<MimeTypeFilePresent Level="INFORM" />
 		<AcceptableMimeTypeFileContent Level="WARN">
 			<Id>application/vnd.etsi.asic-s+zip</Id>
 			<Id>application/vnd.etsi.asic-e+zip</Id>
