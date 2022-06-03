@@ -31,6 +31,7 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
@@ -151,11 +152,19 @@ public class FormatChecking extends Chain<XmlFC> {
 
 			item = item.setNextItem(zipCommentPresentCheck());
 
-			item = item.setNextItem(acceptableZipCommentCheck());
+			if (Utils.isStringNotBlank(diagnosticData.getZipComment())) {
+
+				item = item.setNextItem(acceptableZipCommentCheck());
+
+			}
 
 			item = item.setNextItem(mimetypeFilePresentCheck());
 
-			item = item.setNextItem(mimetypeFileContentCheck());
+			if (diagnosticData.isMimetypeFilePresent()) {
+
+				item = item.setNextItem(mimetypeFileContentCheck());
+
+			}
 
 			item = item.setNextItem(manifestFilePresentCheck());
 

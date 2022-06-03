@@ -98,6 +98,7 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
      *
      * @param signatureFilename {@link String} defined signature filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} signature filename
      */
     protected String getValidSignatureFilename(String signatureFilename, ASiCContent asicContent) {
         signatureFilename = getWithMetaInfFolder(signatureFilename);
@@ -125,6 +126,7 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
      *
      * @param manifestFilename {@link String} defined manifest filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} manifest filename
      */
     protected String getValidManifestFilename(String manifestFilename, ASiCContent asicContent) {
         manifestFilename = getWithMetaInfFolder(manifestFilename);

@@ -8806,6 +8806,231 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void asicNoMimetypeSkipCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setMimeTypeFilePresent(false);
+		containerInfo.setMimeTypeContent(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(null);
+		containerConstraints.setMimeTypeFilePresent(levelConstraint);
+
+		MultiValuesConstraint acceptableMimetype = new MultiValuesConstraint();
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableMimetype.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableMimeTypeFileContent(acceptableMimetype);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void asicNoMimetypeFailLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setMimeTypeFilePresent(false);
+		containerInfo.setMimeTypeContent(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		containerConstraints.setMimeTypeFilePresent(levelConstraint);
+
+		MultiValuesConstraint acceptableMimetype = new MultiValuesConstraint();
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableMimetype.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableMimeTypeFileContent(acceptableMimetype);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ITMFP_ANS)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void asicNotAcceptableMimeTypeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setMimeTypeFilePresent(true);
+		containerInfo.setMimeTypeContent("test-content");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		containerConstraints.setMimeTypeFilePresent(levelConstraint);
+
+		MultiValuesConstraint acceptableMimetype = new MultiValuesConstraint();
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableMimetype.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableMimetype.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableMimeTypeFileContent(acceptableMimetype);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IEMCF_ANS)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void asicZipCommentSkipCheckTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setZipComment(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(null);
+		containerConstraints.setZipCommentPresent(levelConstraint);
+
+		MultiValuesConstraint acceptableZipComment = new MultiValuesConstraint();
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableZipComment.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableZipComment(acceptableZipComment);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void asicZipCommentFailLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setZipComment(null);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		containerConstraints.setZipCommentPresent(levelConstraint);
+
+		MultiValuesConstraint acceptableZipComment = new MultiValuesConstraint();
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableZipComment.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableZipComment(acceptableZipComment);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ITZCP_ANS)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void asicNotAcceptableZipCommentTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/asic-s-xades-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+		containerInfo.setZipComment("test-comment");
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		containerConstraints.setZipCommentPresent(levelConstraint);
+
+		MultiValuesConstraint acceptableZipComment = new MultiValuesConstraint();
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-s+zip");
+		acceptableZipComment.getId().add("application/vnd.etsi.asic-e+zip");
+		acceptableZipComment.setLevel(Level.FAIL);
+		containerConstraints.setAcceptableZipComment(acceptableZipComment);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ITEZCF_ANS)));
+
+		checkReports(reports);
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);

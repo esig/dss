@@ -23,6 +23,7 @@ public abstract class AbstractASiCFilenameFactory {
      * Ex.: For provided two signature documents, the method will return "003" suffix,
      * to be used for a signature file creation with a name "META-INF/signature003.xml".
      *
+     * @param nameTemplate {@link String} defyning the String template of the final name
      * @param existingDocumentNames a list of {@link String} document names forbidden for usage
      * @return {@link String} available document name suffix
      */
@@ -103,6 +104,7 @@ public abstract class AbstractASiCFilenameFactory {
      *
      * @param dataPackageFilename {@link String} defined data package filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} data package filename
      */
     protected String getValidDataPackageFilename(String dataPackageFilename, ASiCContent asicContent) {
         assertFilenameValid(dataPackageFilename, asicContent.getSignedDocuments());

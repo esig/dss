@@ -20,19 +20,17 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.enumerations.Indication;
-import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
 
 public class ASiCENoMimetypeTest extends AbstractASiCWithXAdESTestValidation {
 
@@ -44,19 +42,10 @@ public class ASiCENoMimetypeTest extends AbstractASiCWithXAdESTestValidation {
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {
 		assertNotNull(diagnosticData.getContainerInfo());
+		assertFalse(diagnosticData.isMimetypeFilePresent());
 		assertNull(diagnosticData.getMimetypeFileContent());
 		assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
 		assertEquals(ASiCContainerType.ASiC_E, diagnosticData.getContainerType());
-	}
-	
-	@Override
-	protected void verifySimpleReport(SimpleReport simpleReport) {
-		super.verifySimpleReport(simpleReport);
-		
-		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
-		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
-		assertEquals(Indication.TOTAL_FAILED, indication);
-		assertEquals(SubIndication.FORMAT_FAILURE, subIndication);
 	}
 
 }

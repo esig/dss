@@ -6,7 +6,7 @@
 			<Id>ASiC-S</Id>
 			<Id>ASiC-E</Id>
 		</AcceptableContainerTypes>
-		<MimeTypeFilePresent Level="FAIL"/>
+<!--		<MimeTypeFilePresent Level="WARN" />-->
 		<AcceptableMimeTypeFileContent Level="WARN">
 			<Id>application/vnd.etsi.asic-s+zip</Id>
 			<Id>application/vnd.etsi.asic-e+zip</Id>

@@ -140,6 +140,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      *
      * @param signatureFilename {@link String} defined signature filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} signature filename
      */
     protected String getValidSignatureFilename(String signatureFilename, ASiCContent asicContent) {
         signatureFilename = getWithMetaInfFolder(signatureFilename);
@@ -161,6 +162,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      *
      * @param timestampFilename {@link String} defined timestamp filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} timestamp filename
      */
     protected String getValidTimestampFilename(String timestampFilename, ASiCContent asicContent) {
         timestampFilename = getWithMetaInfFolder(timestampFilename);
@@ -184,6 +186,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      *
      * @param manifestFilename {@link String} defined manifest filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} manifest filename
      */
     protected String getValidManifestFilename(String manifestFilename, ASiCContent asicContent) {
         manifestFilename = getWithMetaInfFolder(manifestFilename);
@@ -206,6 +209,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      *
      * @param archiveManifestFilename {@link String} defined archive manifest filename
      * @param asicContent {@link ASiCContent}
+     * @return {@link String} archive manifest filename
      */
     protected String getValidArchiveManifestFilename(String archiveManifestFilename, ASiCContent asicContent) {
         archiveManifestFilename = getWithMetaInfFolder(archiveManifestFilename);
