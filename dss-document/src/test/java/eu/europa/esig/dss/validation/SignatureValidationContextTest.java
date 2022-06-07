@@ -23,6 +23,8 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -31,6 +33,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -104,7 +107,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadofSidewaysWithoutRootOnValidation() throws Exception {
+	public void testBridgeCertificateMovesUpInsteadofSidewaysWithoutRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);
@@ -136,7 +139,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadofSidewaysAndFindsRootOnValidation() throws Exception {
+	public void testBridgeCertificateMovesUpInsteadofSidewaysAndFindsRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);
@@ -173,6 +176,8 @@ public class SignatureValidationContextTest {
 				break;
 			}
 			CertificateToken issuer = getCert(token.getPublicKeyOfTheSigner(), allCerts);
+			assertNotNull(issuer);
+
 			if (issuer.isSelfSigned()) {
 				return issuer;
 			}
@@ -189,6 +194,76 @@ public class SignatureValidationContextTest {
 			}
 		}
 		return null;
+	}
+
+	@Test
+	public void successfulAiaRequestTest() {
+		CertificateToken certToken = DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer"));
+
+		Map<String, byte[]> dataMap = new HashMap<>();
+		dataMap.put("http://q.ica.cz/ca_nbusr09.p7c", DSSUtils.toByteArray(new File("src/test/resources/certificates/CZ_CA.cer")));
+
+		DataLoader dataLoader = new MemoryDataLoader(dataMap);
+		MockAIASource aiaSource = new MockAIASource(dataLoader);
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setAIASource(aiaSource);
+
+		SignatureValidationContext svc = new SignatureValidationContext();
+		svc.initialize(certificateVerifier);
+		svc.addCertificateTokenForVerification(certToken);
+
+		assertEquals(0, aiaSource.requestCounter);
+
+		svc.validate();
+		assertEquals(1, aiaSource.requestCounter);
+		assertNotNull(certToken.getPublicKeyOfTheSigner());
+
+		svc.validate();
+		assertEquals(1, aiaSource.requestCounter);
+		assertNotNull(certToken.getPublicKeyOfTheSigner());
+	}
+
+	@Test
+	public void unsuccessfulAiaRequestTest() {
+		CertificateToken certToken = DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer"));
+
+		DataLoader dataLoader = new IgnoreDataLoader();
+		MockAIASource aiaSource = new MockAIASource(dataLoader);
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setAIASource(aiaSource);
+
+		SignatureValidationContext svc = new SignatureValidationContext();
+		svc.initialize(certificateVerifier);
+		svc.addCertificateTokenForVerification(certToken);
+
+		assertEquals(0, aiaSource.requestCounter);
+
+		svc.validate();
+		assertEquals(1, aiaSource.requestCounter);
+		assertNull(certToken.getPublicKeyOfTheSigner());
+
+		svc.validate();
+		assertEquals(1, aiaSource.requestCounter);
+		assertNull(certToken.getPublicKeyOfTheSigner());
+	}
+
+	private static class MockAIASource extends DefaultAIASource {
+
+		private static final long serialVersionUID = -5890796098843749473L;
+		private int requestCounter = 0;
+
+		public MockAIASource(DataLoader dataLoader) {
+			super(dataLoader);
+		}
+
+		@Override
+		public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
+			++requestCounter;
+			return super.getCertificatesByAIA(certificateToken);
+		}
+
 	}
 
 }

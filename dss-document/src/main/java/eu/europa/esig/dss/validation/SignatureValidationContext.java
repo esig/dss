@@ -386,16 +386,23 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// Find issuer candidates from a particular certificate source
 		Set<CertificateToken> candidates = Collections.emptySet();
-		if (token instanceof OCSPToken) {
-			candidates = getIssuersFromSource(token, ((OCSPToken) token).getCertificateSource());
-		}
-		if (token instanceof TimestampToken) {
-			candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
-		}
 
-		// Find issuer candidates from document sources
-		if (Utils.isCollectionEmpty(candidates)) {
-			candidates = getIssuersFromSources(token, documentCertificateSource);
+		// Avoid repeating over stateless sources
+		if (!tokenIssuerMap.containsKey(token)) {
+
+			if (token instanceof OCSPToken) {
+				candidates = getIssuersFromSource(token, ((OCSPToken) token).getCertificateSource());
+			}
+
+			if (token instanceof TimestampToken) {
+				candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
+			}
+
+			// Find issuer candidates from document sources
+			if (Utils.isCollectionEmpty(candidates)) {
+				candidates = getIssuersFromSources(token, documentCertificateSource);
+			}
+
 		}
 
 		// Find issuer candidates from all sources
@@ -411,7 +418,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 		issuerCertificateToken = new TokenIssuerSelector(token, candidates).getIssuer();
 
-		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
+		// Request AIA only when no issuer has been found yet
+		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null &&
+				!tokenIssuerMap.containsKey(token)) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
 			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
@@ -427,8 +436,10 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (issuerCertificateToken != null) {
 			addCertificateTokenForVerification(issuerCertificateToken);
-			tokenIssuerMap.put(token, issuerCertificateToken);
 		}
+
+		// Cache the result (successful or unsuccessful)
+		tokenIssuerMap.put(token, issuerCertificateToken);
 
 		return issuerCertificateToken;
 	}
