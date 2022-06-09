@@ -31,6 +31,9 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
+import eu.europa.esig.dss.validation.revocation.RevocationDataVerifier;
+import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -75,11 +78,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
-	 * Defines a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
+	 * Builds a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
 	 *
-	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyBuilder} is used to extract OCSP token first and CRL after
 	 */
-	private RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategy();
+	private RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder = new OCSPFirstRevocationDataLoadingStrategyBuilder();
+
+	/**
+	 * Verifies the validity of retrieved revocation data (used to evaluate if a new revocation should be requested).
+	 */
+	private RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
 
 	/**
 	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
@@ -201,14 +209,25 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public RevocationDataLoadingStrategy getRevocationDataLoadingStrategy() {
-		return revocationDataLoadingStrategy;
+	public RevocationDataLoadingStrategyBuilder getRevocationDataLoadingStrategyBuilder() {
+		return revocationDataLoadingStrategyBuilder;
 	}
 
 	@Override
-	public void setRevocationDataLoadingStrategy(RevocationDataLoadingStrategy revocationDataLoadingStrategy) {
-		Objects.requireNonNull(revocationDataLoadingStrategy, "RevocationDataLoadingStrategy shall be defined!");
-		this.revocationDataLoadingStrategy = revocationDataLoadingStrategy;
+	public void setRevocationDataLoadingStrategyBuilder(RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder) {
+		Objects.requireNonNull(revocationDataLoadingStrategyBuilder, "RevocationDataLoadingStrategyBuilder shall be defined!");
+		this.revocationDataLoadingStrategyBuilder = revocationDataLoadingStrategyBuilder;
+	}
+
+	@Override
+	public RevocationDataVerifier getRevocationDataVerifier() {
+		return revocationDataVerifier;
+	}
+
+	@Override
+	public void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
+		Objects.requireNonNull(revocationDataVerifier, "RevocationDataVerifier shall be defined!");
+		this.revocationDataVerifier = revocationDataVerifier;
 	}
 
 	@Override

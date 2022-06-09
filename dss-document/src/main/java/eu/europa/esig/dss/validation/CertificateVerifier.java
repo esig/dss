@@ -30,6 +30,8 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.validation.revocation.RevocationDataVerifier;
+import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
 
 /**
  * Provides information on the sources to be used in the validation process in
@@ -71,21 +73,41 @@ public interface CertificateVerifier {
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
 
 	/**
-	 * Returns a revocation data loading strategy associated with this verifier.
+	 * Returns a revocation data loading strategy builder associated with this verifier.
 	 *
-	 * @return the defined strategy to fetch OCSP or CRL for certificate validation
+	 * @return builds the defined strategy to fetch OCSP or CRL for certificate validation
 	 */
-	RevocationDataLoadingStrategy getRevocationDataLoadingStrategy();
+	RevocationDataLoadingStrategyBuilder getRevocationDataLoadingStrategyBuilder();
 
 	/**
-	 * Defines a strategy used to fetch OCSP or CRL for certificate validation.
+	 * Builds a strategy used to fetch OCSP or CRL for certificate validation.
 	 *
-	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyBuilder} used to build a strategy
+	 * 					 to extract OCSP token first and CRL after
 	 *
-	 * @param revocationDataLoadingStrategy
-	 *                   {@link RevocationDataLoadingStrategy}
+	 * @param revocationDataLoadingStrategyBuilder
+	 *                   {@link RevocationDataLoadingStrategyBuilder}
 	 */
-	void setRevocationDataLoadingStrategy(final RevocationDataLoadingStrategy revocationDataLoadingStrategy);
+	void setRevocationDataLoadingStrategyBuilder(final RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder);
+
+	/**
+	 * Returns a {@code RevocationDataVerifier} associated with this verifier.
+	 *
+	 * @return {@link RevocationDataVerifier}
+	 */
+	RevocationDataVerifier getRevocationDataVerifier();
+
+	/**
+	 * Sets {@code RevocationDataVerifier} used to validate acceptance of
+	 * the retrieved (from offline or online sources) revocation data.
+	 *
+	 * This class is used to verify revocation data extracted from the validating document itself,
+	 * as well the revocation data retrieved from remote sources during the validation process.
+	 *
+	 * @param revocationDataVerifier
+	 *                    {@link RevocationDataVerifier}
+	 */
+	void setRevocationDataVerifier(final RevocationDataVerifier revocationDataVerifier);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These

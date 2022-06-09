@@ -121,6 +121,7 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER_CROSS_CERTIF = "cc-good-user-crossed";
 	protected static final String GOOD_USER_WITH_PSEUDO = "good-user-with-pseudo";
 	protected static final String GOOD_USER_WITH_CRL_AND_OCSP = "good-user-crl-ocsp";
+	protected static final String GOOD_USER_WITH_OCSP_CERT_ID_DIGEST = "good-user-ocsp-certid-digest";
 	protected static final String GOOD_USER_WITH_PEM_CRL = "good-user-pem-crl";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";

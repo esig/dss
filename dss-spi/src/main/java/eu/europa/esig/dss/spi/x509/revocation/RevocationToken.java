@@ -114,6 +114,15 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	public abstract RevocationType getRevocationType();
 
 	/**
+	 * Returns a certificate token the current revocation data has been issued for
+	 *
+	 * @return {@link CertificateToken}
+	 */
+	public CertificateToken getRelatedCertificate() {
+		return relatedCertificate;
+	}
+
+	/**
 	 * Gets DSS String Id of the related certificate
 	 *
 	 * @return {@link String}

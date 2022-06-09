@@ -468,10 +468,11 @@ public final class DSSRevocationUtils {
 	 * Checks if the revocation has been produced during the issuer certificate validity range
 	 *
 	 * @param revocationToken {@link RevocationToken} to check
+	 * @param issuerCertificateToken {@link CertificateToken} used to issue the current revocation data
 	 * @return TRUE if the revocation producedAt time is in the issuer certificate's validity range, false otherwise
 	 */
-	public static boolean checkIssuerValidAtRevocationProductionTime(RevocationToken<?> revocationToken) {
-		CertificateToken issuerCertificateToken = revocationToken.getIssuerCertificateToken();
+	public static boolean checkIssuerValidAtRevocationProductionTime(RevocationToken<?> revocationToken,
+																	 CertificateToken issuerCertificateToken) {
 		return issuerCertificateToken != null && issuerCertificateToken.isValidOn(revocationToken.getProductionDate());
 	}
 

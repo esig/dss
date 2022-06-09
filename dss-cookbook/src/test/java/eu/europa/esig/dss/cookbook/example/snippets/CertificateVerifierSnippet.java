@@ -23,13 +23,13 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
+import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
 import org.slf4j.event.Level;
 
 public class CertificateVerifierSnippet {
@@ -108,11 +108,12 @@ public class CertificateVerifierSnippet {
 		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
 
-		// DSS 5.9+ :
-		// RevocationDataLoadingStrategy defines logic for loading OCSP or CRL data
-		// Default : OCSPFirstRevocationDataLoadingStrategy -> loads OCSP first,
+		// DSS 5.11+ :
+		// RevocationDataLoadingStrategyBuilder is used to instantiate RevocationDataLoadingStrategy
+		// during the validation process, defining logic for loading OCSP or CRL data
+		// Default : OCSPFirstRevocationDataLoadingStrategyBuilder -> loads OCSP first,
 		// 			 if not available or the response is invalid, then tries to load CRL
-		cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+		cv.setRevocationDataLoadingStrategyBuilder(new OCSPFirstRevocationDataLoadingStrategyBuilder());
 
 		// end::demo[]
 

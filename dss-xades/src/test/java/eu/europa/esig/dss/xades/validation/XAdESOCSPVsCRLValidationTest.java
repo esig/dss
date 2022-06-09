@@ -32,12 +32,12 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CRLFirstRevocationDataLoadingStrategy;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.revocation.CRLFirstRevocationDataLoadingStrategyBuilder;
+import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,7 @@ public class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 
         DocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
-        certificateVerifier.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+        certificateVerifier.setRevocationDataLoadingStrategyBuilder(new OCSPFirstRevocationDataLoadingStrategyBuilder());
         validator.setCertificateVerifier(certificateVerifier);
         Reports reports = validator.validateDocument();
 
@@ -84,7 +84,7 @@ public class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
         assertEquals(RevocationType.OCSP, certificateRevocationData.get(0).getRevocationType());
 
         validator = SignedDocumentValidator.fromDocument(signedDocument);
-        certificateVerifier.setRevocationDataLoadingStrategy(new CRLFirstRevocationDataLoadingStrategy());
+        certificateVerifier.setRevocationDataLoadingStrategyBuilder(new CRLFirstRevocationDataLoadingStrategyBuilder());
         validator.setCertificateVerifier(certificateVerifier);
         reports = validator.validateDocument();
 
