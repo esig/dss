@@ -20,11 +20,24 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
+import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +50,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test DSS with multi threads
  * 
  */
-public class ConcurrentValidationTest {
+public class ConcurrentValidationTest extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConcurrentValidationTest.class);
+
+	private String signingAlias;
 
 	@Test
 	public void test() {
@@ -73,9 +89,9 @@ public class ConcurrentValidationTest {
 
 	private static class TestConcurrent implements Callable<Boolean> {
 
-		private final CommonCertificateVerifier certificateVerifier;
+		private final CertificateVerifier certificateVerifier;
 
-		public TestConcurrent(CommonCertificateVerifier certificateVerifier) {
+		public TestConcurrent(CertificateVerifier certificateVerifier) {
 			this.certificateVerifier = certificateVerifier;
 		}
 
@@ -88,6 +104,91 @@ public class ConcurrentValidationTest {
 			return validator.validateDocument() != null;
 		}
 
+	}
+
+	@Test
+	public void onlineValidationTest() {
+		final DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
+		final XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getAlternateGoodTsa());
+
+		signingAlias = GOOD_USER;
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDocumentOne = service.signDocument(documentToSign, signatureParameters, signatureValue);
+
+		service.setTspSource(getSHA3GoodTsa());
+		signingAlias = RSA_SHA3_USER;
+		signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+
+		dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		signatureValue = getToken().sign(dataToSign, signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
+		DSSDocument signedDocumentTwo = service.signDocument(documentToSign, signatureParameters, signatureValue);
+
+		RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder = new OCSPFirstRevocationDataLoadingStrategyBuilder();
+
+		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
+		completeCertificateVerifier.setRevocationDataLoadingStrategyBuilder(revocationDataLoadingStrategyBuilder);
+
+		CertificateVerifier offlineCertificateVerifier = getOfflineCertificateVerifier();
+		offlineCertificateVerifier.setRevocationDataLoadingStrategyBuilder(revocationDataLoadingStrategyBuilder);
+
+		ExecutorService executor = Executors.newFixedThreadPool(40);
+
+		List<Future<Boolean>> futures = new ArrayList<>();
+
+		for (int i = 0; i < 200; i++) {
+			futures.add(executor.submit(new TestOnlineValidation(completeCertificateVerifier, signedDocumentOne)));
+			futures.add(executor.submit(new TestOnlineValidation(offlineCertificateVerifier, signedDocumentTwo)));
+		}
+
+		for (Future<Boolean> future : futures) {
+			try {
+				assertTrue(future.get());
+			} catch (Exception e) {
+				fail(e);
+			}
+		}
+
+		executor.shutdown();
+	}
+
+	private static class TestOnlineValidation implements Callable<Boolean> {
+
+		private final CertificateVerifier certificateVerifier;
+
+		private final DSSDocument toBeValidated;
+
+		public TestOnlineValidation(CertificateVerifier certificateVerifier, DSSDocument toBeValidated) {
+			this.certificateVerifier = certificateVerifier;
+			this.toBeValidated = toBeValidated;
+		}
+
+		@Override
+		public Boolean call() {
+			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(toBeValidated);
+			validator.setCertificateVerifier(certificateVerifier);
+
+			Reports reports = validator.validateDocument();
+			SimpleReport simpleReport = reports.getSimpleReport();
+			return Indication.TOTAL_PASSED.equals(simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		}
+
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return signingAlias;
 	}
 
 }
