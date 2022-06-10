@@ -139,7 +139,7 @@ public class SignatureValidationContext implements ValidationContext {
 	private RevocationSource<CRL> remoteCRLSource;
 
 	/** Used to build a strategy deciding how to retrieve a revocation data (e.g. CRL or OCSP) */
-	private RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder;
+	private RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory;
 
 	/** This class is used to verify the validity (i.e. consistency) of a revocation data */
 	private RevocationDataVerifier revocationDataVerifier;
@@ -186,7 +186,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
 		this.extractPOEFromUntrustedChains = certificateVerifier.isExtractPOEFromUntrustedChains();
-		this.revocationDataLoadingStrategyBuilder = certificateVerifier.getRevocationDataLoadingStrategyBuilder();
+		this.revocationDataLoadingStrategyFactory = certificateVerifier.getRevocationDataLoadingStrategyFactory();
 		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
 		this.revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
 		this.revocationFallback = certificateVerifier.isRevocationFallback();
@@ -854,9 +854,11 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		// fetch the data
-		final RevocationDataLoadingStrategy revocationDataLoadingStrategy = revocationDataLoadingStrategyBuilder
-				.setCrlSource(currentCRLSource).setOcspSource(currentOCSPSource)
-				.setRevocationDataVerifier(revocationDataVerifier).setFallbackEnabled(revocationFallback).build();
+		final RevocationDataLoadingStrategy revocationDataLoadingStrategy = revocationDataLoadingStrategyFactory.create();
+		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
+		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
+		revocationDataLoadingStrategy.setRevocationDataVerifier(revocationDataVerifier);
+		revocationDataLoadingStrategy.setFallbackEnabled(revocationFallback);
 		return revocationDataLoadingStrategy.getRevocationToken(certificateToken, issuerCertificate);
 	}
 

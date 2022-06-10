@@ -75,11 +75,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private RevocationSource<CRL> crlSource;
 
 	/**
-	 * Builds a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
+	 * Creates a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
 	 *
-	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyBuilder} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyFactory} is used to extract OCSP token first and CRL after
 	 */
-	private RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder = new OCSPFirstRevocationDataLoadingStrategyBuilder();
+	private RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory = new OCSPFirstRevocationDataLoadingStrategyFactory();
 
 	/**
 	 * Verifies the validity of retrieved revocation data (used to evaluate if a new revocation should be requested).
@@ -212,14 +212,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public RevocationDataLoadingStrategyBuilder getRevocationDataLoadingStrategyBuilder() {
-		return revocationDataLoadingStrategyBuilder;
+	public RevocationDataLoadingStrategyFactory getRevocationDataLoadingStrategyFactory() {
+		return revocationDataLoadingStrategyFactory;
 	}
 
 	@Override
-	public void setRevocationDataLoadingStrategyBuilder(RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder) {
-		Objects.requireNonNull(revocationDataLoadingStrategyBuilder, "RevocationDataLoadingStrategyBuilder shall be defined!");
-		this.revocationDataLoadingStrategyBuilder = revocationDataLoadingStrategyBuilder;
+	public void setRevocationDataLoadingStrategyFactory(RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory) {
+		Objects.requireNonNull(revocationDataLoadingStrategyFactory, "RevocationDataLoadingStrategyFactory shall be defined!");
+		this.revocationDataLoadingStrategyFactory = revocationDataLoadingStrategyFactory;
 	}
 
 	@Override

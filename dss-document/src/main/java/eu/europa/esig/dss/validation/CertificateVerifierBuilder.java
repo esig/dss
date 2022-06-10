@@ -51,7 +51,7 @@ public class CertificateVerifierBuilder {
 			copy.setAIASource(certificateVerifier.getAIASource());
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
-			copy.setRevocationDataLoadingStrategyBuilder(certificateVerifier.getRevocationDataLoadingStrategyBuilder());
+			copy.setRevocationDataLoadingStrategyFactory(certificateVerifier.getRevocationDataLoadingStrategyFactory());
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
 			copy.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());

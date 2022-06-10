@@ -71,22 +71,22 @@ public interface CertificateVerifier {
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
 
 	/**
-	 * Returns a revocation data loading strategy builder associated with this verifier.
+	 * Returns a factory used to create revocation data loading strategy associated with this verifier.
 	 *
-	 * @return builds the defined strategy to fetch OCSP or CRL for certificate validation
+	 * @return creates the defined strategy to fetch OCSP or CRL for certificate validation
 	 */
-	RevocationDataLoadingStrategyBuilder getRevocationDataLoadingStrategyBuilder();
+	RevocationDataLoadingStrategyFactory getRevocationDataLoadingStrategyFactory();
 
 	/**
-	 * Builds a strategy used to fetch OCSP or CRL for certificate validation.
+	 * Creates a strategy used to fetch OCSP or CRL for certificate validation.
 	 *
-	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyBuilder} used to build a strategy
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyFactory} used to create a strategy
 	 * 					 to extract OCSP token first and CRL after
 	 *
-	 * @param revocationDataLoadingStrategyBuilder
-	 *                   {@link RevocationDataLoadingStrategyBuilder}
+	 * @param revocationDataLoadingStrategyFactory
+	 *                   {@link RevocationDataLoadingStrategyFactory}
 	 */
-	void setRevocationDataLoadingStrategyBuilder(final RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder);
+	void setRevocationDataLoadingStrategyFactory(final RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory);
 
 	/**
 	 * Returns a {@code RevocationDataVerifier} associated with this verifier.

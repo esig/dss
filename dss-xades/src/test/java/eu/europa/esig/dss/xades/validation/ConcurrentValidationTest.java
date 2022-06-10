@@ -32,10 +32,10 @@ import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.validation.RevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyBuilder;
-import eu.europa.esig.dss.validation.RevocationDataLoadingStrategyBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
@@ -135,13 +135,13 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocumentTwo = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		RevocationDataLoadingStrategyBuilder revocationDataLoadingStrategyBuilder = new OCSPFirstRevocationDataLoadingStrategyBuilder();
+		RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory = new OCSPFirstRevocationDataLoadingStrategyFactory();
 
 		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-		completeCertificateVerifier.setRevocationDataLoadingStrategyBuilder(revocationDataLoadingStrategyBuilder);
+		completeCertificateVerifier.setRevocationDataLoadingStrategyFactory(revocationDataLoadingStrategyFactory);
 
 		CertificateVerifier offlineCertificateVerifier = getOfflineCertificateVerifier();
-		offlineCertificateVerifier.setRevocationDataLoadingStrategyBuilder(revocationDataLoadingStrategyBuilder);
+		offlineCertificateVerifier.setRevocationDataLoadingStrategyFactory(revocationDataLoadingStrategyFactory);
 
 		ExecutorService executor = Executors.newFixedThreadPool(40);
 
@@ -181,6 +181,7 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 
 			Reports reports = validator.validateDocument();
 			SimpleReport simpleReport = reports.getSimpleReport();
+			System.out.println(simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 			return Indication.TOTAL_PASSED.equals(simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		}
 
