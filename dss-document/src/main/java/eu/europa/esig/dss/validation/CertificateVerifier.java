@@ -30,8 +30,6 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.validation.revocation.RevocationDataVerifier;
-import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
 
 /**
  * Provides information on the sources to be used in the validation process in
@@ -104,10 +102,36 @@ public interface CertificateVerifier {
 	 * This class is used to verify revocation data extracted from the validating document itself,
 	 * as well the revocation data retrieved from remote sources during the validation process.
 	 *
+	 * NOTE: It is not recommended to use the same instance of {@code RevocationDataVerifier}
+	 *       within different {@code CertificateVerifier}s, as it may lead to concurrency issues during the execution
+	 *       in multi-threaded environments.
+	 *       Please use a new {@code RevocationDataVerifier} per each {@code CertificateVerifier}.
+	 *
 	 * @param revocationDataVerifier
 	 *                    {@link RevocationDataVerifier}
 	 */
 	void setRevocationDataVerifier(final RevocationDataVerifier revocationDataVerifier);
+
+	/**
+	 * Returns whether revocation data still shall be returned if validation of requested revocation data failed
+	 * (i.e. both for OCSP and CRL).
+	 *
+	 * @return revocation fallback
+	 */
+	boolean isRevocationFallback();
+
+	/**
+	 * Sets whether a revocation data still have to be returned to the validation process,
+	 * in case validation of obtained revocation data has failed (i.e. both for OCSP and CRL).
+	 *
+	 * Default: FALSE (invalid revocation data not returned)
+	 *
+	 * NOTE: Revocation fallback is enforced to TRUE (return even invalid revocation data, when no valid found)
+	 *       on signature validation
+	 *
+	 * @param revocationFallback whether invalid revocation data shall be returned, when not valid revocation available
+	 */
+	void setRevocationFallback(boolean revocationFallback);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These

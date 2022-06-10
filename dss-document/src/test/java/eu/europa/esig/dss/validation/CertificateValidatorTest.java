@@ -254,12 +254,13 @@ public class CertificateValidatorTest {
 		}
 		assertNotNull(crlSource);
 
-		CertificateValidator cv = CertificateValidator.fromCertificate(certToken);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setCrlSource(crlSource);
 		CommonTrustedCertificateSource trustedCertSources = new CommonTrustedCertificateSource();
 		trustedCertSources.addCertificate(caToken);
 		certificateVerifier.setTrustedCertSources(trustedCertSources);
+
+		CertificateValidator cv = CertificateValidator.fromCertificate(certToken);
 		cv.setCertificateVerifier(certificateVerifier);
 
 		CertificateReports reports = cv.validate();

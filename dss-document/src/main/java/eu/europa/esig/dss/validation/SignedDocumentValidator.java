@@ -460,7 +460,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		List<AdvancedSignature> allSignatures = getAllSignatures();
         List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
 
-		ValidationContext validationContext = prepareValidationContext(allSignatures, detachedTimestamps);
+		final CertificateVerifier certificateVerifierForValidation =
+				new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
+		final ValidationContext validationContext = prepareValidationContext(
+				allSignatures, detachedTimestamps, certificateVerifierForValidation);
 
 		if (!skipValidationContextExecution) {
 			validateContext(validationContext);
@@ -474,10 +477,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
 	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
+	 * @param certificateVerifier {@link CertificateVerifier} to be used for the validation
 	 * @return {@link ValidationContext}
 	 */
 	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
-			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps) {
+			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
+			final CertificateVerifier certificateVerifier) {
 		ValidationContext validationContext = new SignatureValidationContext();
 		validationContext.initialize(certificateVerifier);
 		prepareSignatureValidationContext(validationContext, signatures);
@@ -507,7 +512,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			throw new DSSException("At least one signature or a timestamp shall be provided to extract the validation data!");
 		}
 
-		ValidationContext validationContext = prepareValidationContext(signatures, detachedTimestamps);
+		ValidationContext validationContext = prepareValidationContext(signatures, detachedTimestamps, certificateVerifier);
 		validateContext(validationContext);
 
 		assertSignaturesValid(signatures, validationContext);
@@ -550,8 +555,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		validationContext.checkAllCertificatesValid();
 
 		for (final AdvancedSignature signature : signatures) {
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
 			validationContext.checkSignatureNotExpired(signature);
+			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
 		}
 	}
 

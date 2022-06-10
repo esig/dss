@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;

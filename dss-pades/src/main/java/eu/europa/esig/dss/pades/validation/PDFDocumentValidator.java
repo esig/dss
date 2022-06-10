@@ -42,6 +42,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -114,8 +115,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
-        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps);
+    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
+            final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
+            final CertificateVerifier certificateVerifier) {
+        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps, certificateVerifier);
         List<PdfDocDssRevision> dssRevisions = getDssRevisions();
         prepareDssDictionaryValidationContext(validationContext, dssRevisions);
         return validationContext;

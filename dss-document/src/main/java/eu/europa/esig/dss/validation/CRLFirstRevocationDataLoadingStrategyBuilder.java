@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 /**
  * This class build a {@code CRLFirstRevocationDataLoadingStrategy}

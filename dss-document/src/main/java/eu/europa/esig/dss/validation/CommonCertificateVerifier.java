@@ -31,9 +31,6 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
-import eu.europa.esig.dss.validation.revocation.RevocationDataVerifier;
-import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -88,6 +85,12 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * Verifies the validity of retrieved revocation data (used to evaluate if a new revocation should be requested).
 	 */
 	private RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+
+	/**
+	 * Defines whether a revocation data failed a verification still shall be returned to the validation process,
+	 * when no valid revocation has been obtained.
+	 */
+	private boolean revocationFallback = false;
 
 	/**
 	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
@@ -228,6 +231,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
 		Objects.requireNonNull(revocationDataVerifier, "RevocationDataVerifier shall be defined!");
 		this.revocationDataVerifier = revocationDataVerifier;
+	}
+
+	@Override
+	public boolean isRevocationFallback() {
+		return revocationFallback;
+	}
+
+	@Override
+	public void setRevocationFallback(boolean revocationFallback) {
+		this.revocationFallback = revocationFallback;
 	}
 
 	@Override

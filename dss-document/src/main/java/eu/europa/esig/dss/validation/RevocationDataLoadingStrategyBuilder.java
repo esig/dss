@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -26,35 +26,63 @@ public abstract class RevocationDataLoadingStrategyBuilder {
     protected RevocationDataVerifier revocationDataVerifier;
 
     /**
-     * Sets the CRLSource
+     * Defines whether a first obtained revocation token shall be returned, if none of them passed the verification.
+     */
+    protected boolean fallbackEnabled = false;
+
+    /**
+     * Sets the CRLSource.
+     *
+     * NOTE: This method is called by {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *       during the signature validation process
      *
      * @param crlSource {@link RevocationSource}
      * @return this {@link RevocationDataLoadingStrategyBuilder}
      */
-    public RevocationDataLoadingStrategyBuilder setCrlSource(RevocationSource<CRL> crlSource) {
+    RevocationDataLoadingStrategyBuilder setCrlSource(RevocationSource<CRL> crlSource) {
         this.crlSource = crlSource;
         return this;
     }
 
     /**
-     * Sets the OCSPSource
+     * Sets the OCSPSource.
+     *
+     * NOTE: This method is called by {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *       during the signature validation process
      *
      * @param ocspSource {@link RevocationSource}
      * @return this {@link RevocationDataLoadingStrategyBuilder}
      */
-    public RevocationDataLoadingStrategyBuilder setOcspSource(RevocationSource<OCSP> ocspSource) {
+    RevocationDataLoadingStrategyBuilder setOcspSource(RevocationSource<OCSP> ocspSource) {
         this.ocspSource = ocspSource;
         return this;
     }
 
     /**
-     * Sets {@code RevocationDataVerifier}
+     * Sets {@code RevocationDataVerifier}.
+     *
+     * NOTE: This method is called by {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *       during the signature validation process
      *
      * @param revocationDataVerifier {@link RevocationDataVerifier}
      * @return this {@link RevocationDataLoadingStrategyBuilder}
      */
-    public RevocationDataLoadingStrategyBuilder setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
+    RevocationDataLoadingStrategyBuilder setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
         this.revocationDataVerifier = revocationDataVerifier;
+        return this;
+    }
+
+    /**
+     * This method sets behaviour whether the first obtained token still shall be returned,
+     * when none of them have passed the acceptance verification.
+     *
+     * DEFAULT : FALSE - no fallback enabled. If all tokens fail the verification, then nothing is returned.
+     *
+     * @param fallbackEnabled TRUE if the fallback shall be enabled, FALSE otherwise
+     * @return this {@link RevocationDataLoadingStrategyBuilder}
+     */
+    RevocationDataLoadingStrategyBuilder setFallbackEnabled(boolean fallbackEnabled) {
+        this.fallbackEnabled = fallbackEnabled;
         return this;
     }
 
@@ -68,6 +96,7 @@ public abstract class RevocationDataLoadingStrategyBuilder {
         strategy.setCrlSource(crlSource);
         strategy.setOcspSource(ocspSource);
         strategy.setRevocationDataVerifier(revocationDataVerifier);
+        strategy.setFallbackEnabled(fallbackEnabled);
         return strategy;
     }
 

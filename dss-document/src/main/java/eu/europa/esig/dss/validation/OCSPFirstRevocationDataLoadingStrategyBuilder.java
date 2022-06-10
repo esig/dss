@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 /**
  * This class is used to build a {@code OCSPFirstRevocationDataLoadingStrategy}

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -10,7 +10,6 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.DSSPKUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,11 @@ import java.util.Objects;
  * whether the revocation data has been extracted from a document or obtained from an online source.
  * The class verifies the consistency of the given revocation information and
  * applicability of the used cryptographic constraints used to create this token.
+ *
+ * NOTE: It is not recommended to use a single instance of {@code RevocationDataVerifier}
+ *       within different {@code CertificateVerifier}s, as it may lead to concurrency issues during the execution
+ *       in multi-threaded environments.
+ *       Please use a new {@code RevocationDataVerifier} per each {@code CertificateVerifier}.
  *
  */
 public class RevocationDataVerifier {
@@ -82,9 +86,13 @@ public class RevocationDataVerifier {
     /**
      * Sets a trusted certificate source in order to accept trusted OCSPToken's certificate issuers.
      *
+     * NOTE : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *        initialization, in order to provide the same trusted source as the one used within
+     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
+     *
      * @param trustedListCertificateSource {@link ListCertificateSource}
      */
-    public void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
+    void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
         this.trustedListCertificateSource = trustedListCertificateSource;
     }
 
@@ -206,12 +214,12 @@ public class RevocationDataVerifier {
         final CertificateToken certToken = revocation.getRelatedCertificate();
 
         if (!isRevocationIssuedAfterCertificateNotBefore(revocation, certToken)) {
-            LOG.debug("The revocation '{}' has been produced before the start of the validity of the certificate '{}'!",
+            LOG.warn("The revocation '{}' has been produced before the start of the validity of the certificate '{}'!",
                     revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
             return false;
         }
         if (!doesRevocationKnowCertificate(revocation, certToken)) {
-            LOG.debug("The revocation '{}' was not issued during the validity period of the certificate! Certificate: {}",
+            LOG.warn("The revocation '{}' was not issued during the validity period of the certificate! Certificate: {}",
                     revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
             return false;
         }

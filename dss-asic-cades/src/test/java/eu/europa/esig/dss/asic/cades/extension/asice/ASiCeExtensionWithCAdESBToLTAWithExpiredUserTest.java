@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -53,6 +54,13 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
     public void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setRevocationFallback(true);
+        return certificateVerifier;
     }
 
     @Override

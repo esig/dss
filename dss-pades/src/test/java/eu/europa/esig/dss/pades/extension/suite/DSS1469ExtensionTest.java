@@ -34,10 +34,10 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -59,6 +59,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 	public void init() {
 		certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
+		certificateVerifier.setRevocationFallback(true);
 
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(TSA_CA_URL, Utils.fromBase64(TSA_CA));

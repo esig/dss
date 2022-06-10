@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -41,6 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.validationreport.enums.ObjectType;
@@ -51,6 +44,13 @@ import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Cryptographic signature is valid with expired certificate
@@ -81,6 +81,13 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		List<TimestampToken> contentTimestamps = Arrays.asList(contentTimestamp);
 		signatureParameters.setContentTimestamps(contentTimestamps);
 
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setRevocationFallback(true);
+		return certificateVerifier;
 	}
 
 	@Override

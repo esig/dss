@@ -46,9 +46,6 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.revocation.RevocationDataVerifier;
-import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategy;
-import eu.europa.esig.dss.validation.revocation.RevocationDataLoadingStrategyBuilder;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
@@ -147,6 +144,9 @@ public class SignatureValidationContext implements ValidationContext {
 	/** This class is used to verify the validity (i.e. consistency) of a revocation data */
 	private RevocationDataVerifier revocationDataVerifier;
 
+	/** Defines whether a revocation data still shall be returned, when validation of obtained revocation tokens failed */
+	private boolean revocationFallback;
+
 	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
 
@@ -189,6 +189,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.revocationDataLoadingStrategyBuilder = certificateVerifier.getRevocationDataLoadingStrategyBuilder();
 		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
 		this.revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
+		this.revocationFallback = certificateVerifier.isRevocationFallback();
 	}
 
 	@Override
@@ -791,8 +792,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// add processed revocation tokens
 		revocations.addAll(getRelatedRevocationTokens(certToken));
-		
-		if (Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations)) {
+
+		if ((remoteOCSPSource != null || remoteCRLSource != null) &&
+				(Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations))) {
 			LOG.debug("The signature does not contain relative revocation data.");
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
 				LOG.trace("Revocation update is in progress for certificate : {}", certToken.getDSSIdAsString());
@@ -854,7 +856,7 @@ public class SignatureValidationContext implements ValidationContext {
 		// fetch the data
 		final RevocationDataLoadingStrategy revocationDataLoadingStrategy = revocationDataLoadingStrategyBuilder
 				.setCrlSource(currentCRLSource).setOcspSource(currentOCSPSource)
-				.setRevocationDataVerifier(revocationDataVerifier).build();
+				.setRevocationDataVerifier(revocationDataVerifier).setFallbackEnabled(revocationFallback).build();
 		return revocationDataLoadingStrategy.getRevocationToken(certificateToken, issuerCertificate);
 	}
 

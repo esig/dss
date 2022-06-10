@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.revocation;
+package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -55,7 +55,12 @@ public abstract class RevocationDataLoadingStrategy {
 	/**
 	 * Used to verify the validity of obtained revocation data
 	 */
-	protected RevocationDataVerifier revocationDataVerifier;
+	protected RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+
+	/**
+	 * When enabled, returns first obtained revocation token, if both OCSP and CRL requests failed
+	 */
+	protected boolean fallbackEnabled = false;
 
 	/**
 	 * Sets the CRLSource
@@ -82,6 +87,18 @@ public abstract class RevocationDataLoadingStrategy {
 	 */
 	void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
 		this.revocationDataVerifier = revocationDataVerifier;
+	}
+
+	/**
+	 * Sets whether the fallback shall be enabled.
+	 * When set to TRUE, returns the first obtained token, even when it is not acceptable by the verifier.
+	 *
+	 * Default : FALSE - no fallback. If tokens fail the validation, NULL is returned.
+	 *
+	 * @param fallbackEnabled TRUE if the fallback shall be enabled, FALSE otherwise
+	 */
+	void setFallbackEnabled(boolean fallbackEnabled) {
+		this.fallbackEnabled = fallbackEnabled;
 	}
 
 	/**

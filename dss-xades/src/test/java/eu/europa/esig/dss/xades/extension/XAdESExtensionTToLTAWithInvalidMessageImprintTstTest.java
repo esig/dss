@@ -39,6 +39,13 @@ public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends Abstra
     }
 
     @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setRevocationFallback(true);
+        return certificateVerifier;
+    }
+
+    @Override
     protected XAdESSignatureParameters getSignatureParameters() {
         XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
         signatureParameters.setSignWithExpiredCertificate(true);
