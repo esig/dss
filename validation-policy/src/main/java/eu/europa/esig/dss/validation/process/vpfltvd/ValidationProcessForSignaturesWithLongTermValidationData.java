@@ -64,6 +64,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceV
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
@@ -188,6 +189,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		for (CertificateWrapper certificateWrapper : currentSignature.getCertificateChain()) {
 			if (certificateWrapper.isTrusted()) {
 				break;
+			}
+			if (!ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper)) {
+				continue;
+			}
+
+			item = item.setNextItem(revocationDataPresent(certificateWrapper, currentContext, getSubContext(certificateWrapper)));
+
+			if (Utils.isCollectionEmpty(certificateWrapper.getCertificateRevocationData())) {
+				continue;
 			}
 
 			CertificateRevocationSelector certificateRevocationSelector = new LongTermValidationCertificateRevocationSelector(
@@ -413,6 +423,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
 		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> revocationDataPresent(
+			CertificateWrapper certificate, Context context, SubContext subContext) {
+		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(context, subContext);
+		return new RevocationDataAvailableCheck<>(i18nProvider, result, certificate, constraint, certificate.getId());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> checkCertificateRevocationSelectorResult(
