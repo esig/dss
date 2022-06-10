@@ -23,14 +23,20 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.revocation.OCSPFirstRevocationDataLoadingStrategyBuilder;
+import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.validation.RevocationDataVerifier;
 import org.slf4j.event.Level;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CertificateVerifierSnippet {
 
@@ -108,14 +114,51 @@ public class CertificateVerifierSnippet {
 		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
 
-		// DSS 5.11+ :
-		// RevocationDataLoadingStrategyBuilder is used to instantiate RevocationDataLoadingStrategy
+		// DSS 5.9+ with changes since DSS 5.11+ (see below) :
+		// RevocationDataLoadingStrategyFactory is used to instantiate RevocationDataLoadingStrategy
 		// during the validation process, defining logic for loading OCSP or CRL data
-		// Default : OCSPFirstRevocationDataLoadingStrategyBuilder -> loads OCSP first,
+		// Default : OCSPFirstRevocationDataLoadingStrategyFactory -> loads OCSP first,
 		// 			 if not available or the response is invalid, then tries to load CRL
-		cv.setRevocationDataLoadingStrategyBuilder(new OCSPFirstRevocationDataLoadingStrategyBuilder());
+		// NOTE: Since DSS 5.11 a RevocationDataLoadingStrategyFactory shall be provided within CertificateVerifier, instead of RevocationDataLoadingStrategy.
+		cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
+
+		// DSS 5.11+ :
+		// RevocationDataVerifier defines logic for accepting/rejecting revocation data during the validation process.
+		// This included processing of revocation tokens extracted from a signature document,
+		// as well as revocation tokens fetched from online sources.
+		RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+		cv.setRevocationDataVerifier(revocationDataVerifier);
+
+		// DSS 5.11+ :
+		// Defines whether the first obtained revocation data still should be returned,
+		// when none of the fetched revocation tokens have passed the verification.
+		// Default : FALSE - none revocation data is returned, if all of them failed the verification.
+		// NOTE : the property is used for signature extension, but not for validation.
+		cv.setRevocationFallback(false);
 
 		// end::demo[]
+
+		// tag::rev-data-verifier[]
+
+		// #setAcceptableDigestAlgorithms method is used to provide a list of DigestAlgorithms
+		// to be accepted during the revocation data validation.
+		// Default : collection of algorithms is synchronized with ETSI 119 312
+		revocationDataVerifier.setAcceptableDigestAlgorithms(Arrays.asList(
+				DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512));
+
+		// #setAcceptableEncryptionAlgorithmKeyLength method defines a list of acceptable encryption algorithms and
+		// their corresponding key length. Revocation tokens signed with other algorithms or with a key length smaller
+		// than one defined within the map will be skipped.
+		// Default : collection of algorithms is synchronized with ETSI 119 312
+		Map<EncryptionAlgorithm, Integer> encryptionAlgos = new HashMap<>();
+		encryptionAlgos.put(EncryptionAlgorithm.DSA, 2048);
+		encryptionAlgos.put(EncryptionAlgorithm.RSA, 1900);
+		encryptionAlgos.put(EncryptionAlgorithm.ECDSA, 256);
+		encryptionAlgos.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
+		revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(encryptionAlgos);
+
+		// end::rev-data-verifier[]
 
 	}
 

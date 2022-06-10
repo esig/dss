@@ -263,6 +263,45 @@ font.setEmbedFontSubset(true);
 SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 textParameters.setFont(font);
 ----
+
+|RevocationDataLoadingStrategy     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+...
+----
+                                                                     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
+...
+----
+
+|Accepted DigestAlgorithms for OnlineOCSPSource
+
+NOTE: list changed from excluding to including
+
+a|[source,java]
+----
+OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA1));
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setOcspSource(ocspSource);
+----
+                                                                     a|[source,java]
+----
+RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+
+List<DigestAlgorithm> digestAlgorithmList = Arrays.asList(DigestAlgorithm.values());
+digestAlgorithmList.remove(DigestAlgorithm.SHA1);
+
+revocationDataVerifier.setAcceptableDigestAlgorithms(digestAlgorithmList);
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataVerifier(revocationDataVerifier);
+----
+
 |===
 
 [cols="2,5,5"]

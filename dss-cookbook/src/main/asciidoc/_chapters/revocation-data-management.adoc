@@ -31,7 +31,7 @@ The interface `OCSPSource` defines the method which returns `OCSPToken` for the 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo]
 ----
 
-We use these classes during the certificate validation process through `validationContext` object (based on `ValidationContext` class) which is a "cache" for a validation request that contains every object required for a complete validation process. This object in turn instantiates a "verifier" based on `RevocationDataLoadingStrategy` class whose role is to fetch revocation data by querying an OCSP or CRL source in the defined order and return the succeeded result (see <<RevocationLoadingStrategy>> for more details).
+We use these classes during the certificate validation process through `validationContext` object (based on `ValidationContext` class) which is a "cache" for a validation request that contains every object required for a complete validation process. This object in turn instantiates a `RevocationDataVerifier` used by `RevocationDataLoadingStrategy` class whose role is to fetch revocation data by querying an OCSP or CRL source in the defined order and return the succeeded result (see <<RevocationLoadingStrategy>> for more details).
 
 In general, we can distinguish three main sources:
 
@@ -134,10 +134,41 @@ Since version 5.9, DSS allows the use of a `RevocationDataLoadingStrategy`. The 
 * `OCSPFirstRevocationDataLoadingStrategy`: loads OCSP first, if not available or the response is invalid, then tries to load CRL and returns the first succeeded result. This strategy is used by default for revocation retrieving.
 * `CRLFirstRevocationDataLoadingStrategy`: fetches firstly CRL response, if not available, tries OCSP and returns the first succeeded result.
 
-See section <<certificateVerifier>> for an example of how to customize a used `RevocationDataLoadingStrategy`.
+NOTE: Since DSS 5.11 in order to avoid concurrency issues, the `RevocationDataLoadingStrategy` shall be configured within a `CertificateVerifier` using the new `RevocationDataLoadingStrategyFactory` class.
+
+See section <<certificateVerifier>> for an example of how to customize a used `RevocationDataLoadingStrategy` with a builder.
 
 Using an OCSP first (i.e. `OCSPFirstRevocationDataLoadingStrategy`) has some advantages:
 
-. There is a potential benefit of freshness compared to using CRLs: in case the OSCP sends queries to a database that is updated in real time or every x hours, the information fetched by the OCSP is more recent (thisUpdate field) than the information contained in the CRL, given that the CRL is built from that database. In the worst case, the OCSP uses the data contained in the CRL and they both have the same thisUpdate field. The information fetched by an OCSP will never be older than the one obtained from a CRL.
-. The certificate that signed the OCSP response might contain an OCSPNoCheck extension. This extension indicates that the revocation data of the certificate that contains the public key linked to the private key that was used to sign the OCSP response does not need to be checked.
+. There is a potential benefit of freshness compared to using CRLs: in case the OCSP sends queries to a database that is updated in real time or every `x` hours, the information fetched by the OCSP is more recent (`thisUpdate` field) than the information contained in the CRL, given that the CRL is built from that database. In the worst case, the OCSP uses the data contained in the CRL and they both have the same thisUpdate field. The information fetched by an OCSP will never be older than the one obtained from a CRL.
+. The certificate that signed the OCSP response might contain an `OCSPNoCheck` extension. This extension indicates that the revocation data of the certificate that contains the public key linked to the private key that was used to sign the OCSP response does not need to be checked.
 . Getting a response takes less time and less memory space for OCSP than with CRLs. A CRL can take a lot of space and a long time to be downloaded due its big size. There is also no obligation to sort CRLs according to serial number which means that the whole list needs to be browsed until finding the searched serial number.
+
+[[RevocationFallback]]
+==== Revocation fallback
+
+Since version 5.11, DSS performs a validation of revocation data obtained from online sources (on signature extension and validation included) through <<RevocationDataVerifier>>. Revocation data loading strategy runs the revocation verification process for each obtained revocation token (i.e. OCSP or CRL) until receiving the first successful result. In case none of the fetched revocation tokens are good to continue the validation process (i.e. verification has failed), then the strategy decides whether any results must be returned based on the "revocation fallback" property. The revocation fallback has two possible values:
+
+ * `FALSE` (by default) - does not return any revocation token in case none of the obtained revocation tokens have passed the verification process; and
+ * `TRUE` - returns the first obtained revocation token when verification of all tokens has failed.
+
+NOTE: While the revocation fallback is set to `FALSE` by default, it is enforced to `TRUE` value within a `SignedDocumentValidator` class for performing a signature validation, in order to produce a complete validation report. Therefore, the change of the value within `CertificateVerifier` will only impact the signature extension process.
+
+To configure the revocation fallback behavior, the property should be configured within `CertificateVerifier`, see section <<certificateVerifier>> for an example.
+
+[[RevocationDataVerifier]]
+=== Revocation data verifier
+
+Since version 5.11, DSS provides a way to configure a revocation data checking algorithm within `SignatureValidationContext` in order to define whether the available revocation data is good and sufficient and if a new revocation data should be loaded, as well as the acceptance of a freshly fetched revocation data itself.
+
+`RevocationDataVerifier` must be provided within the used `CertificateVerifier` in order to configure the revocation data checking behaviour. See section <<certificateVerifier>> for an example of how to provide a custom `RevocationDataVerifier` to a `CertificateVerifier`.
+
+WARNING: An instance of `RevocationDataVerifier` should not be shared between multiple `CertificateVerifier` instances, as it re-uses the same trusted certificate stores defined within a `CertificateVerifier`.
+
+An example of `RevocationDataVerifier` please see below:
+
+[source,java,indent=0]
+.RevocationDataVerifier usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=rev-data-verifier]
+----
