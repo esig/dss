@@ -102,7 +102,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
         super.makeTimestampTokensFromUnsignedAttributes();
 
         final List<TimestampToken> cadesSignatureTimestamps = getSignatureTimestamps();
-        final List<TimestampToken> timestampedTimestamps = new ArrayList<>(cadesSignatureTimestamps);
+        final List<TimestampToken> processedDocumentTimestamps = new ArrayList<>();
 
         // store all found references
         unsignedPropertiesReferences = new ArrayList<>();
@@ -128,12 +128,13 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 if (signatureRevisionReached) {
                     addReferences(individualTimestampReferences, getSignatureTimestampReferences());
                     addReferences(individualTimestampReferences, getSignatureSignedDataReferences());
+                    addReferences(individualTimestampReferences, getEncapsulatedReferencesFromTimestamps(cadesSignatureTimestamps));
                 }
                 if (Utils.isCollectionNotEmpty(unsignedPropertiesReferences)) {
                     // covers DSS dictionary
                     addReferences(individualTimestampReferences, unsignedPropertiesReferences);
                 }
-                addReferences(individualTimestampReferences, getEncapsulatedReferencesFromTimestamps(timestampedTimestamps));
+                addReferences(individualTimestampReferences, getEncapsulatedReferencesFromTimestamps(processedDocumentTimestamps));
 
                 // references embedded to timestamp's content are covered by outer timestamps
                 addReferences(timestampToken.getTimestampedReferences(), individualTimestampReferences);
@@ -143,7 +144,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 }
 
                 populateSources(timestampToken);
-                timestampedTimestamps.add(timestampToken);
+                processedDocumentTimestamps.add(timestampToken);
 
             } else if (pdfRevision instanceof PdfDocDssRevision) {
                 PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
