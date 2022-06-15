@@ -520,9 +520,23 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisab
 ----
 
 ===== Password-protected documents
-PDF files can be protected using a password. However, DSS does not support the validation of PAdES signatures on PDF documents protected by a password. DSS has no functionality allowing the user to enter the password when submitting a PDF for validation. Thus, the validation of such documents fails.
+PDF files can be protected using a password. DSS does not support creation of password-protected PDFs, however it is able to sign, extend, as well as validate existing password-protected documents, if a proper password has been provided.
 
+To sign or extend a password-protected document, a password string shall be provided within `PAdESSignatureParameters`:
 
+[source,java,indent=0]
+.Sign password-protected document
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignProtectedPdfPadesBLevelTest.java[tags=sign]
+----
+
+To validate a password-protected PDF, a password string shall be provided within an instance of `PDFDocumentValidator`:
+
+[source,java,indent=0]
+.Validate password-protected document
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignProtectedPdfPadesBLevelTest.java[tags=validate]
+----
 
 
 
