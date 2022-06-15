@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfModificationDetectionUtils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -41,14 +42,25 @@ public class PAdESDisableVisualComparison {
         // Provide an instance of CertificateVerifier
         validator.setCertificateVerifier(new CommonCertificateVerifier());
 
-        // Provide a customized DefaultPdfModificationsFinder within PdfModificationDetectionUtils
-        // in order to disable visual comparison
-        DefaultPdfDifferencesFinder pdfModificationsFinder = new DefaultPdfDifferencesFinder();
-        pdfModificationsFinder.setMaximalPagesAmountForVisualComparison(0);
-        PdfModificationDetectionUtils.getInstance().setPdfDifferencesFinder(pdfModificationsFinder);
+        // tag::visual-change-finder[]
+        DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+        // NOTE: setting '0' as MaximalPagesAmountForVisualComparison will skip the visual changes detection
+        pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+        // Provide a customized PdfDifferencesFinder within PdfModificationDetectionUtils
+        PdfModificationDetectionUtils.getInstance().setPdfDifferencesFinder(pdfDifferencesFinder);
+        // end::visual-change-finder[]
+
+        // tag::object-modifications[]
+        DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+        // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
+        pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);
+        // Provide a customized PdfObjectModificationsFinder within PdfModificationDetectionUtils
+        PdfModificationDetectionUtils.getInstance().setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+        // end::object-modifications[]
 
         // Validate document
         Reports reports = validator.validateDocument();
+
     }
 
 }
