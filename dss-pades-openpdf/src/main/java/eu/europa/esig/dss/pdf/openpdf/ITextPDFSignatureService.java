@@ -49,7 +49,7 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PdfModification;
+import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -590,7 +590,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
-			final PdfDocumentReader finalRevisionReader) {
+														 final PdfDocumentReader finalRevisionReader) {
 		// not supported
 		return Collections.emptyList();
 	}

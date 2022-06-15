@@ -35,13 +35,15 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PdfModification;
-import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfModification;
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetectionUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
@@ -58,12 +60,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -111,15 +111,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnForbiddenSignatureCreation = new ExceptionOnStatusAlert();
-
-	/**
-	 * This variable sets the maximal amount of pages in a PDF to execute visual
-	 * screenshot comparison for Example: for value 10, the visual comparison will
-	 * be executed for a PDF containing 10 and fewer pages
-	 * 
-	 * Default : 10 pages
-	 */
-	private int maximalPagesAmountForVisualComparison = 10;
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -187,9 +178,20 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : 10 pages
 	 * 
 	 * @param pagesAmount the amount of the pages to execute visual comparison for
+	 * @deprecated since 5.11. Use
+	 * 		{@code
+	 * 			DefaultPdfModificationsFinder pdfModificationsFinder = new DefaultPdfModificationsFinder();
+	 * 			pdfModificationsFinder.setMaximalPagesAmountForVisualComparison(pagesAmount);
+	 * 			PdfModificationDetectionUtils.getInstance().setPdfModificationsFinder(pdfModificationsFinder);
+	 * 		}
 	 */
+	@Deprecated
 	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
-		this.maximalPagesAmountForVisualComparison = pagesAmount;
+		LOG.warn("Use of deprecated setMaximalPagesAmountForVisualComparison(pagesAmount) method! " +
+				"See more details in JavaDoc.");
+		DefaultPdfDifferencesFinder pdfModificationsFinder = new DefaultPdfDifferencesFinder();
+		pdfModificationsFinder.setMaximalPagesAmountForVisualComparison(pagesAmount);
+		PdfModificationDetectionUtils.getInstance().setPdfDifferencesFinder(pdfModificationsFinder);
 	}
 
 	/**
@@ -734,7 +736,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param pdfAnnotations a list of {@link AnnotationBox} to verify against
 	 */
 	protected void checkSignatureFieldBoxOverlap(final AnnotationBox signatureFieldBox, List<PdfAnnotation> pdfAnnotations) {
-		if (PdfModificationDetectionUtils.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
+		if (PdfModificationDetectionUtils.getInstance().isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
 			alertOnSignatureFieldOverlap();
 		}
 	}
@@ -794,21 +796,20 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, String pwd) throws IOException {
+	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader,
+															  DSSDocument originalDocument, String pwd) throws IOException {
 		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
-			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
+			PdfModificationDetectionUtils pdfModificationDetectionUtils = PdfModificationDetectionUtils.getInstance();
 
+			PdfModificationDetection pdfModificationDetection = new PdfModificationDetection();
 			pdfModificationDetection.setAnnotationOverlaps(
-					PdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
+					pdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
 			pdfModificationDetection.setPageDifferences(
-					PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
+					pdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
 			pdfModificationDetection.setVisualDifferences(
 					getVisualDifferences(signedRevisionReader, finalRevisionReader));
-
-			Set<ObjectModification> modificationsSet =
-					PdfModificationDetectionUtils.getModificationSet(signedRevisionReader, finalRevisionReader);
-			pdfModificationDetection.setObjectModifications(new PdfObjectModificationsFilter(modificationsSet).filter());
-
+			pdfModificationDetection.setObjectModifications(
+					pdfModificationDetectionUtils.getObjectModifications(signedRevisionReader, finalRevisionReader));
 			return pdfModificationDetection;
 		}
 	}
@@ -822,18 +823,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param finalRevisionReader  {@link PdfDocumentReader} for the input PDF
 	 *                             document
 	 * @return a list of {@link PdfModification}s
-	 * @throws IOException if an exception occurs
 	 */
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
-			final PdfDocumentReader finalRevisionReader) throws IOException {
-		int pagesAmount = finalRevisionReader.getNumberOfPages();
-		if (maximalPagesAmountForVisualComparison >= pagesAmount) {
-			return PdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, finalRevisionReader);
-		} else {
-			LOG.debug("The provided document contains {} pages, while the limit for a visual comparison is set to {}.",
-					pagesAmount, maximalPagesAmountForVisualComparison);
-		}
-		return Collections.emptyList();
+														 final PdfDocumentReader finalRevisionReader) {
+		PdfModificationDetectionUtils pdfModificationDetectionUtils = PdfModificationDetectionUtils.getInstance();
+		return pdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, finalRevisionReader);
 	}
 
 	private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {

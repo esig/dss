@@ -18,37 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.modifications;
 
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
+import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfDict;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * This class is used to filter a collection of {@code ObjectModification}s
+ * The default implementation of {@code PdfObjectModificationsFilter} used to categorize {@code ObjectModification}s
+ * to four different categories.
  *
  */
-public class PdfObjectModificationsFilter {
+public class DefaultPdfObjectModificationsFilter implements PdfObjectModificationsFilter {
 
-    /** A list of object modifications to be filtered */
-    private final Collection<ObjectModification> objectModifications;
-
-    /**
-     * Default constructor
-     *
-     * @param objectModifications a collection of {@link ObjectModification}s
-     */
-    public PdfObjectModificationsFilter(Collection<ObjectModification> objectModifications) {
-        this.objectModifications = objectModifications;
-    }
-
-    /**
-     * Filters the collection of {@code ObjectModification}s to various categories
-     *
-     * @return {@link PdfObjectModifications}
-     */
-    public PdfObjectModifications filter() {
+    @Override
+    public PdfObjectModifications filter(final Collection<ObjectModification> objectModifications) {
         final PdfObjectModifications pdfObjectModifications = new PdfObjectModifications();
 
         for (ObjectModification objectModification : objectModifications) {

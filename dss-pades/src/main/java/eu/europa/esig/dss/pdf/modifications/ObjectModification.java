@@ -18,9 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.modifications;
 
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
+import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfDict;
 
 import java.util.Objects;
 

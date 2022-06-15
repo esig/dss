@@ -24,7 +24,7 @@ import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
-import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
