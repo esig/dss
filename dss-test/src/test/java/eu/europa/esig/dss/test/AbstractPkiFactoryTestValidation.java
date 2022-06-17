@@ -141,6 +141,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
 import java.io.ByteArrayOutputStream;
@@ -1214,9 +1215,40 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(indication);
 			if (indication != Indication.TOTAL_PASSED) {
 				assertNotNull(simpleReport.getSubIndication(sigId));
+				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(sigId)));
+			} else {
+				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getSignatureScopes(sigId)));
 			}
 			assertNotNull(simpleReport.getSignatureQualification(sigId));
+
+			List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(sigId);
+			for (eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp : signatureTimestamps) {
+				String tstId = xmlTimestamp.getId();
+				assertNotNull(tstId);
+
+				Indication timestampIndication = simpleReport.getIndication(tstId);
+				assertNotNull(timestampIndication);
+				if (timestampIndication != Indication.PASSED) {
+					assertNotNull(simpleReport.getSubIndication(tstId));
+					assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(tstId)));
+				}
+				assertNotNull(simpleReport.getTimestampQualification(tstId));
+			}
 		}
+
+		List<String> timestampIdList = simpleReport.getTimestampIdList();
+		for (String tstId : timestampIdList) {
+			Indication indication = simpleReport.getIndication(tstId);
+			assertNotNull(indication);
+			if (indication != Indication.PASSED) {
+				assertNotNull(simpleReport.getSubIndication(tstId));
+				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(tstId)));
+			} else {
+				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getSignatureScopes(tstId)));
+			}
+			assertNotNull(simpleReport.getTimestampQualification(tstId));
+		}
+
 		assertNotNull(simpleReport.getValidationTime());
 	}
 
@@ -1625,6 +1657,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkReportsTokens(reports);
 		checkReportsSignatureIdentifier(reports);
 		checkReportsSignaturePolicyIdentifier(reports);
+		checkSignatureScopes(reports);
 		checkBBBs(reports);
 	}
 
@@ -1839,6 +1872,49 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				}
 				
 			}
+		}
+	}
+
+	protected void checkSignatureScopes(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+		for (String sigId : diagnosticData.getSignatureIdList()) {
+			SignatureWrapper signature = diagnosticData.getSignatureById(sigId);
+			assertNotNull(signature);
+			Set<String> ddSignatureScopeIds = signature.getSignatureScopes().stream()
+					.map(s -> s.getSignerData().getId()).collect(Collectors.toSet());
+			Set<String> srSignatureScopeIds = simpleReport.getSignatureScopes(sigId).stream()
+					.map(eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope::getId).collect(Collectors.toSet());
+			List<SignatureValidationReportType> svrts = etsiValidationReportJaxb.getSignatureValidationReport().stream()
+					.filter(s -> sigId.equals(s.getSignatureIdentifier().getId())).collect(Collectors.toList());
+			assertEquals(1, svrts.size());
+			Set<String> etsiVrSignatureScopeIds = new HashSet<>();
+			SignersDocumentType signersDocument = svrts.get(0).getSignersDocument();
+			if (signersDocument != null) {
+				for (JAXBElement<?> element : signersDocument.getContent()) {
+					if (QName.valueOf("SignersDocumentRepresentation").getLocalPart()
+							.equals(element.getName().getLocalPart())) {
+						VOReferenceType references = (VOReferenceType) element.getValue();
+						for (Object object : references.getVOReference()) {
+							assertTrue(object instanceof ValidationObjectType);
+							ValidationObjectType validationObject = (ValidationObjectType) object;
+							etsiVrSignatureScopeIds.add(validationObject.getId());
+						}
+					}
+				}
+			}
+			assertEquals(ddSignatureScopeIds, srSignatureScopeIds);
+			assertEquals(ddSignatureScopeIds, etsiVrSignatureScopeIds);
+		}
+		List<String> tstIds = diagnosticData.getTimestampIdList();
+		for (String tstId : tstIds) {
+			TimestampWrapper timestampById = diagnosticData.getTimestampById(tstId);
+			Set<String> ddTstSignatureScopes = timestampById.getTimestampScopes().stream()
+					.map(s -> s.getSignerData().getId()).collect(Collectors.toSet());
+			Set<String> srTstSignatureScopes = simpleReport.getSignatureScopes(tstId).stream()
+					.map(eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope::getId).collect(Collectors.toSet());
+			assertEquals(ddTstSignatureScopes, srTstSignatureScopes);
 		}
 	}
 	

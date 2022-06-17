@@ -39,7 +39,7 @@
         <BestSignatureTime>2020-06-19T14:56:13Z</BestSignatureTime>
         <SignedBy>TEST Signature.Bank</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
-        <SignatureScope name="Partial PDF" scope="PARTIAL">The document ByteRange : [0, 38045, 238047, 313]</SignatureScope>
+        <SignatureScope Id="D-67FFF6ED45F72052B725A7632785DD8DFA026EB2066F56353F9C2D3565DF6B5E" name="Partial PDF" scope="PARTIAL">The document ByteRange : [0, 38045, 238047, 313]</SignatureScope>
     </Signature>
     <Semantic Key="TOTAL_FAILED">The signature validation process results into TOTAL-FAILED because the format-check failed, cryptographic checks of the signature failed (including checks of hashes of individual data objects that have been signed indirectly) or it has been proven that the signing certificate was invalid at the time of generation of the signature.</Semantic>
     <Semantic Key="SIG_CRYPTO_FAILURE">The signature validation process results into TOTAL-FAILED because the signature value in the signature could not be verified using the signers public key in the signing certificate.</Semantic>
