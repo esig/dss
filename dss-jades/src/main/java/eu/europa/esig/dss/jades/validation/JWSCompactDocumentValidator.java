@@ -30,16 +30,13 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Validates a JWS Compact signature
  */
 public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
-
-	/** The JAdES Compact signature */
-	private AdvancedSignature signature;
 
 	/**
 	 * Empty constructor
@@ -63,23 +60,20 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 	}
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
-		if (signature == null) {
-			JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
-			List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
-			if (Utils.isCollectionEmpty(foundSignatures)) {
-				throw new DSSException("No signatures is present in the document!");
-			}
-			// only one signature is supported by compact serialization
-			JWS jws = foundSignatures.get(0);
-			JAdESSignature jadesSignature = new JAdESSignature(jws);
-			jadesSignature.setSignatureFilename(document.getName());
-			jadesSignature.setSigningCertificateSource(signingCertificateSource);
-			jadesSignature.setDetachedContents(detachedContents);
-			jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
-			signature = jadesSignature;
+	protected List<AdvancedSignature> buildSignatures() {
+		JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
+		List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
+		if (Utils.isCollectionEmpty(foundSignatures)) {
+			throw new DSSException("No signatures is present in the document!");
 		}
-		return Arrays.asList(signature);
+		// only one signature is supported by compact serialization
+		JWS jws = foundSignatures.get(0);
+		JAdESSignature jadesSignature = new JAdESSignature(jws);
+		jadesSignature.setSignatureFilename(document.getName());
+		jadesSignature.setSigningCertificateSource(signingCertificateSource);
+		jadesSignature.setDetachedContents(detachedContents);
+		jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+		return Collections.singletonList(jadesSignature);
 	}
 
 	@Override

@@ -196,30 +196,13 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	@Override
 	public List<AdvancedSignature> getAllSignatures() {
-
-		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-
-		final List<AdvancedSignature> allSignatureList = new ArrayList<>();
-
-		List<DocumentValidator> currentValidators = getSignatureValidators();
-		for (DocumentValidator signatureValidator : currentValidators) {
-
-			List<AdvancedSignature> signatures = signatureValidator.getSignatures();
-			for (AdvancedSignature advancedSignature : signatures) {
-				allSignatureList.add(advancedSignature);
-				appendCounterSignatures(allSignatureList, advancedSignature);
-			}
-
-		}
-
-		findSignatureScopes(allSignatureList);
+		final List<AdvancedSignature> allSignatureList = super.getAllSignatures();
 		attachExternalTimestamps(allSignatureList);
-
 		return allSignatureList;
 	}
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
+	protected List<AdvancedSignature> buildSignatures() {
 		final List<AdvancedSignature> signatureList = new ArrayList<>();
 		for (DocumentValidator validator : getSignatureValidators()) {
 			signatureList.addAll(validator.getSignatures());

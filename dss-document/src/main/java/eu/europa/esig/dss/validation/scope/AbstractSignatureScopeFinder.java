@@ -26,6 +26,8 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 
 /**
  * The abstract class for {@code SignatureScope} finding
@@ -36,8 +38,17 @@ public abstract class AbstractSignatureScopeFinder {
 	/** The DigestAlgorithm to use for digest computation */
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
-	/** The ASiC-S package filename */
-	private static final String ASICS_PACKAGE_ZIP_NAME = "package.zip";
+	/** The TokenIdentifierProvider to be used for extraction of token IDs */
+	private TokenIdentifierProvider tokenIdentifierProvider = new OriginalIdentifierProvider();
+
+	/**
+	 * Returns the used {@code DigestAlgorithm}
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
+	protected DigestAlgorithm getDefaultDigestAlgorithm() {
+		return defaultDigestAlgorithm;
+	}
 
 	/**
 	 * Sets the default DigestAlgorithm to use for {@code SignatureScope} digest computation
@@ -49,12 +60,21 @@ public abstract class AbstractSignatureScopeFinder {
 	}
 
 	/**
-	 * Returns the used {@code DigestAlgorithm}
+	 * Gets the {@code TokenIdentifierProvider}
 	 *
-	 * @return {@link DigestAlgorithm}
+	 * @return {@link TokenIdentifierProvider}
 	 */
-	protected DigestAlgorithm getDefaultDigestAlgorithm() {
-		return defaultDigestAlgorithm;
+	protected TokenIdentifierProvider getTokenIdentifierProvider() {
+		return tokenIdentifierProvider;
+	}
+
+	/**
+	 * Sets the {@code TokenIdentifierProvider} to be used for identifiers extraction
+	 *
+	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider}
+	 */
+	public void setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider) {
+		this.tokenIdentifierProvider = tokenIdentifierProvider;
 	}
 
 	/**

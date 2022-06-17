@@ -59,9 +59,6 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 
 	private static final Logger LOG = LoggerFactory.getLogger(JWSSerializationDocumentValidator.class);
 
-	/** A list of signatures */
-	private List<AdvancedSignature> signatures;
-
 	/**
 	 * Empty constructor
 	 */
@@ -84,22 +81,18 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 	}
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
-		if (signatures == null) {
-			signatures = new ArrayList<>();
-			
-			JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
-			
-			List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
-			LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
-			for (JWS jws : foundSignatures) {
-				JAdESSignature jadesSignature = new JAdESSignature(jws);
-				jadesSignature.setSignatureFilename(document.getName());
-				jadesSignature.setSigningCertificateSource(signingCertificateSource);
-				jadesSignature.setDetachedContents(detachedContents);
-				jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
-				signatures.add(jadesSignature);
-			}
+	protected List<AdvancedSignature> buildSignatures() {
+		final List<AdvancedSignature> signatures = new ArrayList<>();
+		JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
+		List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
+		LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
+		for (JWS jws : foundSignatures) {
+			JAdESSignature jadesSignature = new JAdESSignature(jws);
+			jadesSignature.setSignatureFilename(document.getName());
+			jadesSignature.setSigningCertificateSource(signingCertificateSource);
+			jadesSignature.setDetachedContents(detachedContents);
+			jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+			signatures.add(jadesSignature);
 		}
 		return signatures;
 	}

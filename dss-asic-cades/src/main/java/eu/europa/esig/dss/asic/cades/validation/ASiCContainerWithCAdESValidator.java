@@ -191,7 +191,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	@Override
-	public List<TimestampToken> getDetachedTimestamps() {
+	protected List<TimestampToken> buildDetachedTimestamps() {
 		DetachedTimestampSource detachedTimestampSource = new DetachedTimestampSource();
 		for (DetachedTimestampValidator timestampValidator : getTimestampValidators()) {
 			detachedTimestampSource.addExternalTimestamp(timestampValidator.getTimestamp());

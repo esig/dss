@@ -163,7 +163,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    public List<AdvancedSignature> getSignatures() {
+    protected List<AdvancedSignature> buildSignatures() {
         final List<AdvancedSignature> signatures = new ArrayList<>();
 
         final ListCertificateSource dssCertificateSource = new ListCertificateSource();
@@ -216,7 +216,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    public List<TimestampToken> getDetachedTimestamps() {
+    protected List<TimestampToken> buildDetachedTimestamps() {
         final List<TimestampToken> timestamps = new ArrayList<>();
         final List<TimestampedReference> coveredReferences = new ArrayList<>();
 

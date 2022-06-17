@@ -82,10 +82,12 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -260,6 +262,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		validator.setTokenExtractionStrategy(getTokenExtractionStrategy());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		validator.setDetachedContents(getDetachedContents());
+		validator.setTokenIdentifierProvider(getTokenIdentifierProvider());
 		return validator;
 	}
 
@@ -269,6 +272,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected SignaturePolicyProvider getSignaturePolicyProvider() {
 		return new SignaturePolicyProvider();
+	}
+
+	protected TokenIdentifierProvider getTokenIdentifierProvider() {
+		return new OriginalIdentifierProvider();
 	}
 
 	protected List<DSSDocument> getDetachedContents() {
@@ -308,12 +315,16 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		final TokenIdentifierProvider tokenIdentifierProvider = getTokenIdentifierProvider();
+
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(tokenIdentifierProvider.getIdAsString(advancedSignature));
+			assertNotNull(signatureWrapper);
 
 			if (advancedSignature.getSigningCertificateToken() != null && advancedSignature.getSignatureCryptographicVerification().isSignatureIntact()) {
 				assertNotNull(signatureWrapper.getSigningCertificate());
-				assertEquals(advancedSignature.getSigningCertificateToken().getDSSIdAsString(), signatureWrapper.getSigningCertificate().getId());
+				assertEquals(tokenIdentifierProvider.getIdAsString(advancedSignature.getSigningCertificateToken()),
+						signatureWrapper.getSigningCertificate().getId());
 			}
 
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
@@ -330,7 +341,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
 			for (TimestampToken timestampToken : timestamps) {
-				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
+				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(tokenIdentifierProvider.getIdAsString(timestampToken));
+				assertNotNull(timestampWrapper);
 
 				certificateSource = timestampToken.getCertificateSource();
 				foundCertificates = timestampWrapper.foundCertificates();
@@ -349,7 +361,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
 				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
 				if (revocationCertificateSource != null) {
-					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationToken.getDSSIdAsString());
+					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(tokenIdentifierProvider.getIdAsString(revocationToken));
+					assertNotNull(revocationWrapper);
 					foundCertificates = revocationWrapper.foundCertificates();
 
 					assertEquals(revocationCertificateSource.getCertificates().size(), 

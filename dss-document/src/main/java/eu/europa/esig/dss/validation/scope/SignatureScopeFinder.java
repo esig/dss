@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 
 import java.util.List;
 
@@ -46,5 +47,12 @@ public interface SignatureScopeFinder<T extends AdvancedSignature> {
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
 	 */
 	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
+
+	/**
+	 * This method sets the {@code TokenIdentifierProvider} to be used within teh SignatureScope finder
+	 *
+	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider} to use
+	 */
+	void setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider);
 	
 }

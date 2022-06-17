@@ -92,7 +92,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 	}
 
 	@Override
-	public List<TimestampToken> getDetachedTimestamps() {
+	protected List<TimestampToken> buildDetachedTimestamps() {
 		return Collections.singletonList(getTimestamp());
 	}
 
@@ -118,7 +118,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		Objects.requireNonNull(document, "The timestampFile must be defined!");
 		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 		try {
-			timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
+			final TimestampToken timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
 			timestampToken.setFileName(document.getName());
 			timestampToken.matchData(getTimestampedData());
 			return timestampToken;
@@ -170,6 +170,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 	 */
 	protected void prepareDetachedTimestampScopeFinder(DetachedTimestampScopeFinder timestampScopeFinder) {
 		timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
+		timestampScopeFinder.setTokenIdentifierProvider(getTokenIdentifierProvider());
 		timestampScopeFinder.setTimestampedData(getTimestampedData());
 	}
 

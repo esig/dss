@@ -35,7 +35,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -73,14 +73,14 @@ public class XAdESLevelLTAWithUserFriendlyIdProviderTest extends AbstractXAdESTe
     }
 
     @Override
-    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-        SignedDocumentValidator validator = super.getValidator(signedDocument);
-        validator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
-        return validator;
+    protected TokenIdentifierProvider getTokenIdentifierProvider() {
+        return new UserFriendlyIdentifierProvider();
     }
 
     @Override
     protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+        super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
         assertEquals(1, advancedSignatures.size());
         AdvancedSignature advancedSignature = advancedSignatures.get(0);
         SignatureWrapper signature = diagnosticData.getSignatureById(advancedSignature.getId());
