@@ -23,6 +23,8 @@ package eu.europa.esig.dss.test;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -57,6 +59,7 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MessageType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -65,6 +68,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -91,12 +95,17 @@ import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.jaxb.AdditionalValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
 import eu.europa.esig.validationreport.jaxb.CertificateChainType;
+import eu.europa.esig.validationreport.jaxb.ConstraintStatusType;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
+import eu.europa.esig.validationreport.jaxb.IndividualValidationConstraintReportType;
 import eu.europa.esig.validationreport.jaxb.POEType;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SACertIDType;
@@ -123,7 +132,9 @@ import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.TypedDataType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
+import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
@@ -1213,6 +1224,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
 			assertNotNull(indication);
+			assertTrue(Indication.TOTAL_PASSED.equals(indication) || Indication.INDETERMINATE.equals(indication)
+					|| Indication.TOTAL_FAILED.equals(indication));
 			if (indication != Indication.TOTAL_PASSED) {
 				assertNotNull(simpleReport.getSubIndication(sigId));
 				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(sigId)));
@@ -1228,6 +1241,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 				Indication timestampIndication = simpleReport.getIndication(tstId);
 				assertNotNull(timestampIndication);
+				assertTrue(Indication.PASSED.equals(timestampIndication) || Indication.INDETERMINATE.equals(timestampIndication)
+						|| Indication.FAILED.equals(timestampIndication));
 				if (timestampIndication != Indication.PASSED) {
 					assertNotNull(simpleReport.getSubIndication(tstId));
 					assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(tstId)));
@@ -1240,6 +1255,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (String tstId : timestampIdList) {
 			Indication indication = simpleReport.getIndication(tstId);
 			assertNotNull(indication);
+			assertTrue(Indication.PASSED.equals(indication) || Indication.INDETERMINATE.equals(indication)
+					|| Indication.FAILED.equals(indication));
 			if (indication != Indication.PASSED) {
 				assertNotNull(simpleReport.getSubIndication(tstId));
 				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(tstId)));
@@ -1372,21 +1389,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationStatus.getMainIndication());
 	}
 	
-	protected void validateAssociatedValidationReportData(ValidationTimeInfoType validationTimeInfo, 
-			List<ValidationReportDataType> associatedValidationReportData) {
+	protected void validateAssociatedValidationReportData(ValidationTimeInfoType validationTimeInfo,
+														  List<ValidationReportDataType> associatedValidationReportData) {
 		if (Utils.isCollectionNotEmpty(associatedValidationReportData)) {
-			for (ValidationReportDataType validationReportDataType : associatedValidationReportData) {
-				CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
-				if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
-					Date expired = cryptoInformation.getNotAfter();
-					if (expired != null) {
-						assertTrue(expired.before(validationTimeInfo.getValidationTime()));
-					}
+			assertEquals(1, associatedValidationReportData.size());
+			ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
+
+			CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
+			if (cryptoInformation != null && !cryptoInformation.isSecureAlgorithm()) {
+				Date expired = cryptoInformation.getNotAfter();
+				if (expired != null) {
+					assertTrue(expired.before(validationTimeInfo.getValidationTime()));
 				}
-				CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
-				if (certificateChain != null) {
-					assertNotNull(certificateChain.getSigningCertificate());
-					assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+			}
+			CertificateChainType certificateChain = validationReportDataType.getCertificateChain();
+			if (certificateChain != null) {
+				assertNotNull(certificateChain.getSigningCertificate());
+				assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
+			}
+			AdditionalValidationReportDataType additionalValidationReportData = validationReportDataType.getAdditionalValidationReportData();
+			if (additionalValidationReportData != null) {
+				List<TypedDataType> reportData = additionalValidationReportData.getReportData();
+				assertTrue(Utils.isCollectionNotEmpty(reportData));
+				for (TypedDataType typedData : reportData) {
+					assertTrue(Utils.isStringNotEmpty(typedData.getType()));
+					assertNotNull(typedData.getValue());
 				}
 			}
 		}
@@ -1654,6 +1681,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void verifyReportsData(Reports reports) {
 		checkSignatureReports(reports);
+		checkTimestampReports(reports);
 		checkReportsTokens(reports);
 		checkReportsSignatureIdentifier(reports);
 		checkReportsSignaturePolicyIdentifier(reports);
@@ -1663,7 +1691,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 	protected void checkSignatureReports(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
+		SimpleReport simpleReport = reports.getSimpleReport();
+		DetailedReport detailedReport = reports.getDetailedReport();
+
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		if (Utils.isCollectionEmpty(diagnosticData.getSignatures())) {
 			// one empty report with NO_SIGNATURES_FOUND indication
@@ -1726,8 +1756,183 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						ValidationObjectType validationObjectType = (ValidationObjectType) signingCertificate;
 						assertEquals(ObjectType.CERTIFICATE, validationObjectType.getObjectType());
 						assertEquals(signature.getSigningCertificate().getId(), validationObjectType.getId());
+
+						if (Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(signature.getId())) ||
+								Utils.isCollectionNotEmpty(simpleReport.getAdESValidationWarnings(signature.getId())) ||
+								Utils.isCollectionNotEmpty(simpleReport.getAdESValidationInfo(signature.getId()))) {
+
+							AdditionalValidationReportDataType additionalValidationReportData = validationReportDataType.getAdditionalValidationReportData();
+							assertNotNull(additionalValidationReportData);
+							List<TypedDataType> reportData = additionalValidationReportData.getReportData();
+							assertNotNull(reportData);
+
+							List<String> errorMessages = new ArrayList<>();
+							List<String> warningMessages = new ArrayList<>();
+							List<String> infoMessages = new ArrayList<>();
+							for (TypedDataType typedData : reportData) {
+								assertNotNull(typedData.getType());
+								assertTrue(typedData.getValue() instanceof String);
+								if (MessageType.ERROR.getUri().equals(typedData.getType())) {
+									errorMessages.add((String) typedData.getValue());
+								} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
+									warningMessages.add((String) typedData.getValue());
+								} else if (MessageType.INFO.getUri().equals(typedData.getType())) {
+									infoMessages.add((String) typedData.getValue());
+								}
+							}
+							assertEquals(errorMessages.size(), simpleReport.getAdESValidationErrors(signature.getId()).size());
+							for (Message message : simpleReport.getAdESValidationErrors(signature.getId())) {
+								assertTrue(errorMessages.contains(message.getValue()));
+							}
+							assertEquals(warningMessages.size(), simpleReport.getAdESValidationWarnings(signature.getId()).size());
+							for (Message message : simpleReport.getAdESValidationWarnings(signature.getId())) {
+								assertTrue(warningMessages.contains(message.getValue()));
+							}
+							assertEquals(infoMessages.size(), simpleReport.getAdESValidationInfo(signature.getId()).size());
+							for (Message message : simpleReport.getAdESValidationInfo(signature.getId())) {
+								assertTrue(infoMessages.contains(message.getValue()));
+							}
+						}
 					}
 				}
+
+				XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(signature.getId());
+				assertNotNull(signatureBBB);
+				checkBBBs(signatureBBB, signatureValidationReport);
+			}
+		}
+	}
+
+	protected void checkTimestampReports(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		if (Utils.isCollectionNotEmpty(timestampList)) {
+			ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+			assertNotNull(signatureValidationObjects);
+			assertTrue(Utils.isCollectionNotEmpty(signatureValidationObjects.getValidationObject()));
+			for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+				assertNotNull(validationObject.getId());
+				assertNotNull(validationObject.getObjectType());
+				if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+					XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(validationObject.getId());
+					assertNotNull(timestampBBB);
+
+					SignatureValidationReportType validationReport = validationObject.getValidationReport();
+					assertNotNull(validationReport);
+					checkBBBs(timestampBBB, validationReport);
+				}
+			}
+		}
+	}
+
+	private void checkBBBs(XmlBasicBuildingBlocks bbb, SignatureValidationReportType validationReport) {
+		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = validationReport.getValidationConstraintsEvaluationReport();
+		assertNotNull(validationConstraintsEvaluationReport);
+
+		assertTrue(Utils.isCollectionNotEmpty(validationConstraintsEvaluationReport.getValidationConstraint()));
+		for (IndividualValidationConstraintReportType validationConstraint : validationConstraintsEvaluationReport.getValidationConstraint()) {
+			ConstraintStatusType constraintStatus = validationConstraint.getConstraintStatus();
+			assertNotNull(constraintStatus);
+
+			XmlConclusion conclusion = null;
+			if (BasicBuildingBlockDefinition.FORMAT_CHECKING.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getFC() != null) {
+					conclusion = bbb.getFC().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getISC() != null) {
+					conclusion = bbb.getISC().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getVCI() != null) {
+					conclusion = bbb.getVCI().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.CRYPTOGRAPHIC_VERIFICATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getCV() != null) {
+					conclusion = bbb.getCV().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.SIGNATURE_ACCEPTANCE_VALIDATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getSAV() != null) {
+					conclusion = bbb.getSAV().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.X509_CERTIFICATE_VALIDATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getXCV() != null) {
+					conclusion = bbb.getXCV().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.PAST_SIGNATURE_VALIDATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getPSV() != null) {
+					conclusion = bbb.getPSV().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.PAST_CERTIFICATE_VALIDATION.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getPCV() != null) {
+					conclusion = bbb.getPCV().getConclusion();
+				}
+			} else if (BasicBuildingBlockDefinition.VALIDATION_TIME_SLIDING.getUri().equals(validationConstraint.getValidationConstraintIdentifier())) {
+				if (bbb.getVTS() != null) {
+					conclusion = bbb.getVTS().getConclusion();
+				}
+			}
+
+			if (conclusion != null) {
+				assertEquals(ConstraintStatus.APPLIED, constraintStatus.getStatus());
+				ValidationStatusType validationStatus = validationConstraint.getValidationStatus();
+				assertNotNull(validationStatus);
+				assertEquals(conclusion.getIndication(), validationStatus.getMainIndication());
+				if (conclusion.getSubIndication() != null) {
+					assertEquals(1, validationStatus.getSubIndication().size());
+					assertEquals(conclusion.getSubIndication(), validationStatus.getSubIndication().get(0));
+				} else {
+					assertEquals(0, validationStatus.getSubIndication().size());
+				}
+
+				if (Utils.isCollectionNotEmpty(conclusion.getErrors()) ||
+						Utils.isCollectionNotEmpty(conclusion.getWarnings()) ||
+						Utils.isCollectionNotEmpty(conclusion.getInfos())) {
+
+					List<ValidationReportDataType> bbbAssociatedValidationReportData = validationStatus.getAssociatedValidationReportData();
+					assertNotNull(bbbAssociatedValidationReportData);
+					assertEquals(1, bbbAssociatedValidationReportData.size());
+
+					ValidationReportDataType validationReportDataType = bbbAssociatedValidationReportData.get(0);
+					AdditionalValidationReportDataType additionalValidationReportData = validationReportDataType.getAdditionalValidationReportData();
+					assertNotNull(additionalValidationReportData);
+					List<TypedDataType> reportData = additionalValidationReportData.getReportData();
+					assertNotNull(reportData);
+
+					List<String> errorMessages = new ArrayList<>();
+					List<String> warningMessages = new ArrayList<>();
+					List<String> infoMessages = new ArrayList<>();
+					for (TypedDataType typedData : reportData) {
+						assertNotNull(typedData.getType());
+						assertTrue(typedData.getValue() instanceof String);
+						if (MessageType.ERROR.getUri().equals(typedData.getType())) {
+							errorMessages.add((String) typedData.getValue());
+						} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
+							warningMessages.add((String) typedData.getValue());
+						} else if (MessageType.INFO.getUri().equals(typedData.getType())) {
+							infoMessages.add((String) typedData.getValue());
+						}
+					}
+					assertEquals(errorMessages.size(), conclusion.getErrors().size());
+					for (XmlMessage message : conclusion.getErrors()) {
+						assertTrue(errorMessages.contains(message.getValue()));
+					}
+					assertEquals(warningMessages.size(), conclusion.getWarnings().size());
+					for (XmlMessage message : conclusion.getWarnings()) {
+						assertTrue(warningMessages.contains(message.getValue()));
+					}
+					assertEquals(infoMessages.size(), conclusion.getInfos().size());
+					for (XmlMessage message : conclusion.getInfos()) {
+						assertTrue(infoMessages.contains(message.getValue()));
+					}
+				}
+
+			} else {
+				assertEquals(ConstraintStatus.DISABLED, constraintStatus.getStatus());
 			}
 		}
 	}
@@ -1765,7 +1970,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	
 	protected void checkReportsTokens(Reports reports) {
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		
+		DetailedReport detailedReport = reports.getDetailedReport();
+
 		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
 		
 		ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
@@ -1797,6 +2003,63 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						break;
 					default:
 						++otherCounter;
+				}
+
+				if (ObjectType.TIMESTAMP.equals(validationObject.getObjectType())) {
+					// process timestamps validation separately
+					continue;
+				}
+
+				XmlBasicBuildingBlocks bbbById = detailedReport.getBasicBuildingBlockById(validationObject.getId());
+				if (bbbById != null) {
+					XmlConclusion conclusion = bbbById.getConclusion();
+					SignatureValidationReportType validationReport = validationObject.getValidationReport();
+					assertNotNull(validationReport);
+					ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
+					assertNotNull(signatureValidationStatus);
+					assertEquals(conclusion.getIndication(), signatureValidationStatus.getMainIndication());
+					if (conclusion.getSubIndication() != null) {
+						assertEquals(1, signatureValidationStatus.getSubIndication().size());
+						assertEquals(conclusion.getSubIndication(), signatureValidationStatus.getSubIndication().get(0));
+					}
+					if (Utils.isCollectionNotEmpty(conclusion.getErrors()) || Utils.isCollectionNotEmpty(conclusion.getWarnings())
+							|| Utils.isCollectionNotEmpty(conclusion.getInfos())) {
+						List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+						assertEquals(1, associatedValidationReportData.size());
+						ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
+						AdditionalValidationReportDataType additionalValidationReportData = validationReportDataType.getAdditionalValidationReportData();
+						assertNotNull(additionalValidationReportData);
+
+						List<TypedDataType> reportData = additionalValidationReportData.getReportData();
+						assertNotNull(reportData);
+
+						List<String> errorMessages = new ArrayList<>();
+						List<String> warningMessages = new ArrayList<>();
+						List<String> infoMessages = new ArrayList<>();
+						for (TypedDataType typedData : reportData) {
+							assertNotNull(typedData.getType());
+							assertTrue(typedData.getValue() instanceof String);
+							if (MessageType.ERROR.getUri().equals(typedData.getType())) {
+								errorMessages.add((String) typedData.getValue());
+							} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
+								warningMessages.add((String) typedData.getValue());
+							} else if (MessageType.INFO.getUri().equals(typedData.getType())) {
+								infoMessages.add((String) typedData.getValue());
+							}
+						}
+						assertEquals(errorMessages.size(), conclusion.getErrors().size());
+						for (XmlMessage message : conclusion.getErrors()) {
+							assertTrue(errorMessages.contains(message.getValue()));
+						}
+						assertEquals(warningMessages.size(), conclusion.getWarnings().size());
+						for (XmlMessage message : conclusion.getWarnings()) {
+							assertTrue(warningMessages.contains(message.getValue()));
+						}
+						assertEquals(infoMessages.size(), conclusion.getInfos().size());
+						for (XmlMessage message : conclusion.getInfos()) {
+							assertTrue(infoMessages.contains(message.getValue()));
+						}
+					}
 				}
 			}
 

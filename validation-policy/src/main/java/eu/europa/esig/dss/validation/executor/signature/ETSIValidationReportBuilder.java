@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
@@ -63,14 +64,15 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MessageType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
-import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -80,6 +82,7 @@ import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.enums.SignatureValidationProcessID;
 import eu.europa.esig.validationreport.enums.TypeOfProof;
+import eu.europa.esig.validationreport.jaxb.AdditionalValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
 import eu.europa.esig.validationreport.jaxb.CertificateChainType;
 import eu.europa.esig.validationreport.jaxb.ConstraintStatusType;
@@ -119,6 +122,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureValidationProcessType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
+import eu.europa.esig.validationreport.jaxb.TypedDataType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationConstraintsEvaluationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
@@ -216,7 +220,7 @@ public class ETSIValidationReportBuilder {
 		signatureValidationReport.setSignerInformation(getSignerInformation(sigWrapper));
 		signatureValidationReport.setSignatureQuality(getSignatureQuality(sigWrapper));
 		signatureValidationReport.setSignatureValidationProcess(getSignatureValidationProcess(sigWrapper));
-		signatureValidationReport.setSignatureValidationStatus(getSignatureValidationStatus(sigWrapper));
+		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(sigWrapper));
 		signatureValidationReport.setValidationTimeInfo(getValidationTimeInfo(sigWrapper));
 		signatureValidationReport.setValidationConstraintsEvaluationReport(getValidationConstraintsEvaluationReport(sigWrapper));
 		return signatureValidationReport;
@@ -653,43 +657,84 @@ public class ETSIValidationReportBuilder {
 		return validationObject;
 	}
 
-	private ValidationStatusType getSignatureValidationStatus(SignatureWrapper signature) {
-		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-
-		Indication indication = detailedReport.getFinalIndication(signature.getId());
-		if (indication != null) {
-			validationStatus.setMainIndication(indication);
-			SubIndication subIndication = detailedReport.getFinalSubIndication(signature.getId());
-			if (subIndication != null) {
-				validationStatus.getSubIndication().add(subIndication);
-			}
-		}
-
-		addValidationReportData(validationStatus, signature);
-		return validationStatus;
-	}
-
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-		fillIndicationSubIndication(validationStatus, detailedReport.getBasicBuildingBlocksIndication(token.getId()),
-				detailedReport.getBasicBuildingBlocksSubIndication(token.getId()));
+		fillIndicationSubIndication(validationStatus, token);
+		fillMessages(validationStatus, token);
 		addValidationReportData(validationStatus, token);
 		return validationStatus;
 	}
 
+	private void fillIndicationSubIndication(ValidationStatusType validationStatus, AbstractTokenProxy token) {
+		validationStatus.setMainIndication(detailedReport.getFinalIndication(token.getId()));
+		validationStatus.getSubIndication().add(detailedReport.getFinalSubIndication(token.getId()));
+	}
+
+	private void fillMessages(ValidationStatusType validationStatus, AbstractTokenProxy token) {
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationErrors(token.getId()).stream()
+				.map(Message::getValue).collect(Collectors.toList()), MessageType.ERROR);
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationWarnings(token.getId()).stream()
+				.map(Message::getValue).collect(Collectors.toList()), MessageType.WARN);
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationInfos(token.getId()).stream()
+				.map(Message::getValue).collect(Collectors.toList()), MessageType.INFO);
+	}
+
 	private ValidationStatusType getValidationStatus(XmlConclusion conclusion) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-		fillIndicationSubIndication(validationStatus, conclusion.getIndication(), conclusion.getSubIndication());
+		fillIndicationSubIndication(validationStatus, conclusion);
+		fillMessages(validationStatus, conclusion);
 		return validationStatus;
 	}
 
-	private void fillIndicationSubIndication(ValidationStatusType validationStatus, Indication indication, SubIndication subIndication) {
-		if (indication != null) {
-			validationStatus.setMainIndication(indication);
+	private void fillIndicationSubIndication(ValidationStatusType validationStatus, XmlConclusion conclusion) {
+		if (conclusion.getIndication() != null) {
+			validationStatus.setMainIndication(conclusion.getIndication());
 		}
-		if (subIndication != null) {
-			validationStatus.getSubIndication().add(subIndication);
+		if (conclusion.getSubIndication() != null) {
+			validationStatus.getSubIndication().add(conclusion.getSubIndication());
 		}
+	}
+
+	private void fillMessages(ValidationStatusType validationStatus, XmlConclusion conclusion) {
+		fillMessagesOfType(validationStatus, conclusion.getErrors().stream()
+				.map(XmlMessage::getValue).collect(Collectors.toList()), MessageType.ERROR);
+		fillMessagesOfType(validationStatus, conclusion.getWarnings().stream()
+				.map(XmlMessage::getValue).collect(Collectors.toList()), MessageType.WARN);
+		fillMessagesOfType(validationStatus, conclusion.getInfos().stream()
+				.map(XmlMessage::getValue).collect(Collectors.toList()), MessageType.INFO);
+	}
+
+	private void fillMessagesOfType(ValidationStatusType validationStatus, List<String> messages, MessageType level) {
+		if (Utils.isCollectionNotEmpty(messages)) {
+			final ValidationReportDataType validationReportData = getAssociatedValidationReportData(validationStatus);
+			AdditionalValidationReportDataType additionalValidationReportData = getAdditionalValidationReportData(validationReportData);
+			for (String message : messages) {
+				TypedDataType reportData = objectFactory.createTypedDataType();
+				reportData.setType(level.getUri());
+				reportData.setValue(message);
+				additionalValidationReportData.getReportData().add(reportData);
+			}
+		}
+	}
+
+	private ValidationReportDataType getAssociatedValidationReportData(ValidationStatusType validationStatus) {
+		List<ValidationReportDataType> associatedValidationReportData = validationStatus.getAssociatedValidationReportData();
+		if (Utils.isCollectionNotEmpty(associatedValidationReportData)) {
+			// only one is used
+			return associatedValidationReportData.get(0);
+		}
+		ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
+		associatedValidationReportData.add(validationReportData);
+		return validationReportData;
+	}
+	
+	private AdditionalValidationReportDataType getAdditionalValidationReportData(ValidationReportDataType validationReportData) {
+		AdditionalValidationReportDataType additionalValidationReportData = validationReportData.getAdditionalValidationReportData();
+		if (additionalValidationReportData == null) {
+			additionalValidationReportData = objectFactory.createAdditionalValidationReportDataType();
+			validationReportData.setAdditionalValidationReportData(additionalValidationReportData);
+		}
+		return additionalValidationReportData;
 	}
 
 	private void addValidationReportData(ValidationStatusType validationStatus, AbstractTokenProxy token) {
@@ -697,24 +742,20 @@ public class ETSIValidationReportBuilder {
 		XmlSubXCV signingCertificate = detailedReport.getSigningCertificate(token.getId());
 
 		if (basicBuildingBlock != null || signingCertificate != null) {
-			ValidationReportDataType validationReportData = objectFactory.createValidationReportDataType();
+			final ValidationReportDataType validationReportData = getAssociatedValidationReportData(validationStatus);
 			if (basicBuildingBlock != null) {
 				XmlCertificateChain certificateChain = basicBuildingBlock.getCertificateChain();
 				if (certificateChain != null) {
 					fillCertificateChainAndTrustAnchor(validationReportData, certificateChain);
 				}
-
 				XmlSAV sav = basicBuildingBlock.getSAV();
 				if (sav != null && sav.getCryptographicValidation() != null) {
 					fillCryptographicInfo(validationReportData, token, sav.getCryptographicValidation());
 				}
 			}
-
 			if (signingCertificate != null && signingCertificate.getRevocationInfo() != null) {
 				fillRevocationInfo(validationReportData, signingCertificate.getRevocationInfo());
 			}
-
-			validationStatus.getAssociatedValidationReportData().add(validationReportData);
 		}
 	}
 
