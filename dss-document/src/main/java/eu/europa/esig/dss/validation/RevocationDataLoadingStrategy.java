@@ -55,7 +55,7 @@ public abstract class RevocationDataLoadingStrategy {
 	/**
 	 * Used to verify the validity of obtained revocation data
 	 */
-	protected RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+	protected RevocationDataVerifier revocationDataVerifier;
 
 	/**
 	 * When enabled, returns first obtained revocation token, if both OCSP and CRL requests failed

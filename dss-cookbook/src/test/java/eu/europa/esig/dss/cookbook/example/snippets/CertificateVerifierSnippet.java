@@ -24,6 +24,8 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -35,12 +37,13 @@ import eu.europa.esig.dss.validation.RevocationDataVerifier;
 import org.slf4j.event.Level;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CertificateVerifierSnippet {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		AIASource aiaSource = null;
 		CertificateSource adjunctCertSource = null;
@@ -126,7 +129,7 @@ public class CertificateVerifierSnippet {
 		// RevocationDataVerifier defines logic for accepting/rejecting revocation data during the validation process.
 		// This included processing of revocation tokens extracted from a signature document,
 		// as well as revocation tokens fetched from online sources.
-		RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+		RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
 		cv.setRevocationDataVerifier(revocationDataVerifier);
 
 		// DSS 5.11+ :
@@ -138,7 +141,21 @@ public class CertificateVerifierSnippet {
 
 		// end::demo[]
 
+		final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		final Date validationTime = new Date();
+
 		// tag::rev-data-verifier[]
+
+		// The following method is used to create a RevocationDataVerifier synchronized with a default validation policy
+		revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+
+		// It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
+		revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+
+		// A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
+		revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicyWithTime(validationPolicy, validationTime);
+
+		// For customization directly in RevocationDataVerifier, the following methods may be used:
 
 		// #setAcceptableDigestAlgorithms method is used to provide a list of DigestAlgorithms
 		// to be accepted during the revocation data validation.

@@ -291,7 +291,7 @@ cv.setOcspSource(ocspSource);
 ----
                                                                      a|[source,java]
 ----
-RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
 
 List<DigestAlgorithm> digestAlgorithmList = Arrays.asList(DigestAlgorithm.values());
 digestAlgorithmList.remove(DigestAlgorithm.SHA1);

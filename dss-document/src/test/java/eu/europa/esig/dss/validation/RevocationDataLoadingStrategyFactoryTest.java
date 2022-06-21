@@ -58,7 +58,7 @@ public class RevocationDataLoadingStrategyFactoryTest {
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategyFactory().create();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
         revocationDataLoadingStrategy.setCrlSource(crlSource);
-        revocationDataLoadingStrategy.setRevocationDataVerifier(new RevocationDataVerifier());
+        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(CERTIFICATE, ISSUER);
         assertNotNull(revocationToken);
@@ -79,7 +79,7 @@ public class RevocationDataLoadingStrategyFactoryTest {
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new CRLFirstRevocationDataLoadingStrategyFactory().create();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
         revocationDataLoadingStrategy.setCrlSource(crlSource);
-        revocationDataLoadingStrategy.setRevocationDataVerifier(new RevocationDataVerifier());
+        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(CERTIFICATE, ISSUER);
         assertNotNull(revocationToken);
@@ -105,7 +105,7 @@ public class RevocationDataLoadingStrategyFactoryTest {
 
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new CRLFirstRevocationDataLoadingStrategyFactory().create();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
-        revocationDataLoadingStrategy.setRevocationDataVerifier(new RevocationDataVerifier());
+        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
         revocationDataLoadingStrategy.setFallbackEnabled(false);
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(cert, caCert);

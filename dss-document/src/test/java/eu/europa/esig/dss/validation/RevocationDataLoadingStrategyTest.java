@@ -123,6 +123,7 @@ public class RevocationDataLoadingStrategyTest {
 
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new CRLFirstRevocationDataLoadingStrategy();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
+        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(cert, caCert);
         assertNull(revocationToken);

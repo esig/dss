@@ -1,15 +1,22 @@
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,29 +45,6 @@ public class RevocationDataVerifier {
     private static final Logger LOG = LoggerFactory.getLogger(RevocationDataVerifier.class);
 
     /**
-     * Collection of default Digest Algorithms supported by the verifier (synchronized with ETSI 119 312 V1.4.2).
-     */
-    private static final Collection<DigestAlgorithm> defaultDigestAlgos;
-
-    /**
-     * Collection of default Encryption Algorithms supported by the verifier with minimal acceptable key length
-     * (synchronized with ETSI 119 312 V1.4.2).
-     */
-    private static final Map<EncryptionAlgorithm, Integer> defaultEncryptionAlgos;
-
-    static {
-        defaultDigestAlgos = Arrays.asList(
-                DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
-                DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
-
-        defaultEncryptionAlgos = new HashMap<>();
-        defaultEncryptionAlgos.put(EncryptionAlgorithm.DSA, 2048);
-        defaultEncryptionAlgos.put(EncryptionAlgorithm.RSA, 1900);
-        defaultEncryptionAlgos.put(EncryptionAlgorithm.ECDSA, 256);
-        defaultEncryptionAlgos.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
-    }
-
-    /**
      * The trusted certificate source is used to accept trusted OCSPToken's certificate issuers
      */
     protected ListCertificateSource trustedListCertificateSource;
@@ -71,7 +56,7 @@ public class RevocationDataVerifier {
      *
      * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
      */
-    protected Collection<DigestAlgorithm> acceptableDigestAlgorithms = defaultDigestAlgos;
+    protected Collection<DigestAlgorithm> acceptableDigestAlgorithms;
 
     /**
      * Map of acceptable Encryption Algorithms with a corresponding minimal acceptable key length for each algorithm.
@@ -81,7 +66,75 @@ public class RevocationDataVerifier {
      *
      * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
      */
-    protected Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithmKeyLength = defaultEncryptionAlgos;
+    protected Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithmKeyLength;
+
+    /**
+     * Default constructor
+     */
+    private RevocationDataVerifier() {
+    }
+
+    /**
+     * This method is used to instantiate a new {@code RevocationDataVerifier}, using the default validation constraints
+     * (synchronized with default validation policy).
+     *
+     * @return {@link RevocationDataVerifier}
+     */
+    public static RevocationDataVerifier createDefaultRevocationDataVerifier() {
+        try {
+            final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+            return createRevocationDataVerifierFromPolicy(validationPolicy);
+        } catch (Exception e) {
+            throw new DSSException(String.format(
+                    "Unable to instantiate default RevocationDataVerifier. Reason : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * This method is used to instantiate a {@code RevocationDataVerifier} from a given {@code ValidationPolicy}
+     * in order to synchronize the validation constraints at the current validation time.
+     *
+     * @param validationPolicy {@link ValidationPolicy} to be used
+     * @return {@link RevocationDataVerifier}
+     */
+    public static RevocationDataVerifier createRevocationDataVerifierFromPolicy(final ValidationPolicy validationPolicy) {
+        return createRevocationDataVerifierFromPolicyWithTime(validationPolicy, new Date());
+    }
+
+    /**
+     * This method is used to instantiate a {@code RevocationDataVerifier} from a given {@code ValidationPolicy}
+     * in order to synchronize the validation constraints with a provided {@code validationTime}.
+     *
+     * @param validationPolicy {@link ValidationPolicy} to be used
+     * @param validationTime {@link Date} the target validation time
+     * @return {@link RevocationDataVerifier}
+     */
+    public static RevocationDataVerifier createRevocationDataVerifierFromPolicyWithTime(ValidationPolicy validationPolicy, Date validationTime) {
+        final RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+        List<DigestAlgorithm> acceptableDigestAlgorithms;
+        Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithms;
+
+        final CryptographicConstraintWrapper constraint = getRevocationCryptographicConstraints(validationPolicy);
+        if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
+            acceptableDigestAlgorithms = constraint.getReliableDigestAlgorithmsAtTime(validationTime);
+            acceptableEncryptionAlgorithms = constraint.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(validationTime);
+        } else {
+            LOG.info("No enforced cryptographic constraints have been found in the provided validation policy. Accept all cryptographic algorithms.");
+            acceptableDigestAlgorithms = Arrays.asList(DigestAlgorithm.values());
+            acceptableEncryptionAlgorithms = new HashMap<>();
+            for (EncryptionAlgorithm encryptionAlgorithm : EncryptionAlgorithm.values()) {
+                acceptableEncryptionAlgorithms.put(encryptionAlgorithm, 0);
+            }
+        }
+        revocationDataVerifier.setAcceptableDigestAlgorithms(acceptableDigestAlgorithms);
+        revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(acceptableEncryptionAlgorithms);
+        return revocationDataVerifier;
+    }
+
+    private static CryptographicConstraintWrapper getRevocationCryptographicConstraints(ValidationPolicy validationPolicy) {
+        final CryptographicConstraint cryptographicConstraint = validationPolicy.getSignatureCryptographicConstraint(Context.REVOCATION);
+        return cryptographicConstraint != null ? new CryptographicConstraintWrapper(cryptographicConstraint) : null;
+    }
 
     /**
      * Sets a trusted certificate source in order to accept trusted OCSPToken's certificate issuers.

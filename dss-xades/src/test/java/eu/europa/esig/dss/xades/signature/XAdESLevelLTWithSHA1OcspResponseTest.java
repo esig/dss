@@ -63,7 +63,7 @@ public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSigna
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
         // accept SHA-1
-        RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
         revocationDataVerifier.setAcceptableDigestAlgorithms(Arrays.asList(
                 DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
         certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
@@ -77,7 +77,7 @@ public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSigna
 
         // Ensure SHA-1 revocation is being rejected and a new one is requested
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
-        RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
         revocationDataVerifier.setAcceptableDigestAlgorithms(Arrays.asList(
                 DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
         certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
