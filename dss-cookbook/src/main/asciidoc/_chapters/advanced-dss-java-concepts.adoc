@@ -280,7 +280,7 @@ See section <<Alerts>> in chapter Annex for more information on alerts.
 [[DSSResourcesHandler]]
 === DSS Resources Handler
 
-Since version `5.11`, DSS provides a possibility to configure a way temporary objects are created within the core code.
+Since version 5.11, DSS provides a possibility to configure a way temporary objects are created within the core code.
 
 `DSSResourcesHandler` is responsible for implementation of created temporary objects during the execution, e.g. in memory or in a temporary file.
 
@@ -300,7 +300,7 @@ In order to create a `DSSResourcesHandler` an implementation of `DSSResourcesHan
 
 NOTE: `InMemoryResourcesHandlerBuilder` is used by default in DSS, working with data in memory.
 
-To define the resources handler, the corresponding `DSSResourcesHandlerBuilder` has to be provided to the underlying object, e.g. to a `PAdESService` for a signature creation using the in temporary file processing:
+To define the resources handler, the corresponding `DSSResourcesHandlerBuilder` has to be provided to an instance of `IPdfObjFactory` used within a `PAdESService`. An example below demonstrates a signature creation using in temporary file processing:
 
 [source,java,indent=0]
 .PAdES signing using temporary files

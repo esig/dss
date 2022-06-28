@@ -9,7 +9,9 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +63,10 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
 
         TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
         tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
-        service.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+
+        IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+        pdfObjFactory.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+        service.setPdfObjFactory(pdfObjFactory);
 
         Runtime.getRuntime().gc();
         double memoryBefore = getRuntimeMemoryInMegabytes();

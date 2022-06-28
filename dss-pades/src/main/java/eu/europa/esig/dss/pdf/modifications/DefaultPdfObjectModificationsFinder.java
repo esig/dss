@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -26,6 +27,9 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
 
     /** Defines the maximum value of enveloped objects tree deepness to be checked */
     private int maximumObjectVerificationDeepness = 500;
+
+    /** Used to categorize found object modifications to different groups */
+    private PdfObjectModificationsFilter pdfObjectModificationsFilter = new PdfObjectModificationsFilter();
 
     /**
      * Sets the maximum objects verification deepness of enveloped objects to be compared.
@@ -42,9 +46,24 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         this.maximumObjectVerificationDeepness = maximumObjectVerificationDeepness;
     }
 
+    /**
+     * Sets the {@code PdfObjectModificationsFilter} used to categorize found differences between PDF objects.
+     *
+     * @param pdfObjectModificationsFilter {@link PdfObjectModificationsFilter}
+     */
+    public void setPdfObjectModificationsFilter(PdfObjectModificationsFilter pdfObjectModificationsFilter) {
+        Objects.requireNonNull(pdfObjectModificationsFilter, "PdfObjectModificationsFilter cannot be null!");
+        this.pdfObjectModificationsFilter = pdfObjectModificationsFilter;
+    }
+
     @Override
-    public Set<ObjectModification> find(final PdfDocumentReader originalRevisionReader,
-                                        final PdfDocumentReader finalRevisionReader) {
+    public PdfObjectModifications find(PdfDocumentReader originalRevisionReader, PdfDocumentReader finalRevisionReader) {
+        final Set<ObjectModification> objectModifications = findObjectModifications(originalRevisionReader, finalRevisionReader);
+        return pdfObjectModificationsFilter.filter(objectModifications);
+    }
+
+    private Set<ObjectModification> findObjectModifications(final PdfDocumentReader originalRevisionReader,
+                                                            final PdfDocumentReader finalRevisionReader) {
         final Set<ObjectModification> modifications = new LinkedHashSet<>(); // use LinkedHashSet in order to have a deterministic order
         final PdfDict signedCatalogDict = originalRevisionReader.getCatalogDictionary();
         final PdfDict finalCatalogDict = finalRevisionReader.getCatalogDictionary();

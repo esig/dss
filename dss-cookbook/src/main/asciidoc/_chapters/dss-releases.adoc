@@ -316,14 +316,17 @@ class MockPdfObjFactory extends PdfBoxNativeObjectFactory {
         }
 ...
 }
-PAdESService padesService = ...
-padesService.setPdfObjFactory(new MockPdfObjFactory());
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(new MockPdfObjFactory());
 ----
                                                                      a|[source,java]
 ----
-DefaultPdfDifferencesFinder pdfModificationsFinder = new DefaultPdfDifferencesFinder();
-pdfModificationsFinder.setMaximalPagesAmountForVisualComparison(0);
-PdfModificationDetectionUtils.getInstance().setPdfDifferencesFinder(pdfModificationsFinder);
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(pdfObjFactory);
 ----
 
 |===

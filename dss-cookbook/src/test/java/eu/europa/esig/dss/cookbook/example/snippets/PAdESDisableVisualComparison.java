@@ -23,9 +23,10 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
-import eu.europa.esig.dss.pdf.modifications.PdfModificationDetectionUtils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -42,21 +43,29 @@ public class PAdESDisableVisualComparison {
         // Provide an instance of CertificateVerifier
         validator.setCertificateVerifier(new CommonCertificateVerifier());
 
+        // Initialize IPdfObjFactory
+        // Note : example uses ServiceLoaderPdfObjFactory loading the available implementation in runtime.
+        //        A custom implementation of IPdfObjFactory may be also provided, when applicable (e.g. PdfBoxNativeObjectFactory).
+        IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
         // tag::visual-change-finder[]
         DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
         // NOTE: setting '0' as MaximalPagesAmountForVisualComparison will skip the visual changes detection
         pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
-        // Provide a customized PdfDifferencesFinder within PdfModificationDetectionUtils
-        PdfModificationDetectionUtils.getInstance().setPdfDifferencesFinder(pdfDifferencesFinder);
+        // Provide a customized PdfDifferencesFinder within IPdfObjFactory
+        pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
         // end::visual-change-finder[]
 
         // tag::object-modifications[]
         DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
         // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
         pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);
-        // Provide a customized PdfObjectModificationsFinder within PdfModificationDetectionUtils
-        PdfModificationDetectionUtils.getInstance().setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+        // Provide a customized PdfObjectModificationsFinder within IPdfObjFactory
+        pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
         // end::object-modifications[]
+
+        // Set the factory to the DocumentValidator
+        validator.setPdfObjFactory(pdfObjFactory);
 
         // Validate document
         Reports reports = validator.validateDocument();

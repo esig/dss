@@ -28,13 +28,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
-import eu.europa.esig.dss.pdf.modifications.PdfModificationDetectionUtils;
 import eu.europa.esig.dss.utils.Utils;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
@@ -50,19 +51,24 @@ public class DSS2236HideTest extends AbstractPAdESTestValidation {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2236/hide.pdf"));
 	}
 
-	@BeforeAll
-	public static void init() {
-		PdfModificationDetectionUtils pdfModificationDetectionUtils = PdfModificationDetectionUtils.getInstance();
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
 		DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
 		pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(1);
-		pdfModificationDetectionUtils.setPdfDifferencesFinder(pdfDifferencesFinder);
+		pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
 
 		DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
 		pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(10);
-		pdfModificationDetectionUtils.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+		pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+
+		PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+		validator.setPdfObjFactory(pdfObjFactory);
+
+		return validator;
 	}
-	
+
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -84,13 +90,6 @@ public class DSS2236HideTest extends AbstractPAdESTestValidation {
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signature.isSigningCertificateIdentified());
-	}
-
-	@AfterAll
-	public static void clean() {
-		PdfModificationDetectionUtils pdfModificationDetectionUtils = PdfModificationDetectionUtils.getInstance();
-		pdfModificationDetectionUtils.setPdfDifferencesFinder(new DefaultPdfDifferencesFinder());
-		pdfModificationDetectionUtils.setPdfObjectModificationsFinder(new DefaultPdfObjectModificationsFinder());
 	}
 
 }

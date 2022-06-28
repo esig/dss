@@ -484,7 +484,7 @@ DSS provides a set of own utils to detect the "shadow attack" on a signed PDF do
 * `Annotations overlap` - DSS checks if any annotation overlaps occurred. The overlapping is potentially dangerous, because some annotations can cover a visual content, e.g. forms and signature fields. How this check is applied can be configured with the constraint `<PdfAnnotationOverlap>`.
 * `Visual difference` - DSS verifies the visual difference between the provided document and signed revision, excluding the newly created annotations (between the validating revisions). How this check is applied can be configured with the constraint `<PdfVisualDifference>`.
 
-The verification of points introduced above is managed by an instance of `PdfDifferencesFinder` provided within `PdfModificationDetectionUtils`. By default, an instance of `DefaultPdfDifferencesFinder` class is used. For an example of `PdfDifferencesFinder` configuration, please see below:
+The verification of points introduced above may be configured within an instance of `IPdfObjFactory` provided to a `PdfDocumentValidator`. By default, an instance of `DefaultPdfDifferencesFinder` class is used. For an example of `PdfDifferencesFinder` configuration, please see below:
 
 [source,java,indent=0]
 .PdfDifferencesFinder customization
@@ -510,7 +510,7 @@ The following constraints are available to verify the validity of a signature ba
 * `SigFieldLock` - when a `/FieldMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted.
 * `UndefinedChanges` - verifies whether the document contains modifications that cannot be unambiguously identified.
 
-The search of the object differences is performed by an implementation of `PdfObjectModificationsFinder` provided within `PdfModificationDetectionUtils`. The categorization is done by an instance of `PdfObjectModificationsFilter` interface.
+The search of the object differences may be configured within an instance of `IPdfObjFactory` provided to a `PdfDocumentValidator`. The categorization is done by a  `PdfObjectModificationsFilter` class.
 An example of a `PdfObjectModificationsFinder` customization is provided below:
 
 [source,java,indent=0]
