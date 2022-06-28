@@ -43,7 +43,6 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -76,15 +75,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
 	/**
-	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
-	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
-	 *
-	 * Default : the one defined inside a corresponding {@code PDFSignatureService} will be used.
-	 *           If the value is not overwritten, the in memory resources handler will be used.
-	 */
-	private DSSResourcesHandlerBuilder resourcesHandlerBuilder;
-
-	/**
 	 * This is the constructor to create an instance of the {@code PAdESService}. A certificate verifier must be
 	 * provided.
 	 *
@@ -99,16 +89,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	}
 
 	/**
-	 * This method returns a pre-configured {@code IPdfObjFactory}
-	 *
-	 * @return {@link IPdfObjFactory}
-	 */
-	protected IPdfObjFactory getPdfObjFactory() {
-		pdfObjFactory.setDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
-		return pdfObjFactory;
-	}
-
-	/**
 	 * Set the IPdfObjFactory. Allow to set the used implementation. Cannot be null.
 	 * 
 	 * @param pdfObjFactory
@@ -119,34 +99,17 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		this.pdfObjFactory = pdfObjFactory;
 	}
 
-	/**
-	 * This method is used to set a {@code DSSResourcesHandlerBuilder}, defining a way
-	 * the resources will be processed within the corresponding method (e.g. in memory or using temporary files).
-	 *
-	 * This setter overwrites the value defined within {@code PDFSignatureService}, provided by {@code pdfObjFactory}.
-	 * If the value is not set within this object, the value from a corresponding {@code PDFSignatureService}
-	 * will be used.
-	 *
-	 * Default : in memory resources handler is used
-	 *
-	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
-	 */
-	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
-		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
-	}
-
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
-
 		switch (signatureLevel) {
 			case PAdES_BASELINE_B:
 				return null;
 			case PAdES_BASELINE_T:
-				return new PAdESLevelBaselineT(tspSource, certificateVerifier, getPdfObjFactory());
+				return new PAdESLevelBaselineT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LT:
-				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, getPdfObjFactory());
+				return new PAdESLevelBaselineLT(tspSource, certificateVerifier, pdfObjFactory);
 			case PAdES_BASELINE_LTA:
-				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, getPdfObjFactory());
+				return new PAdESLevelBaselineLTA(tspSource, certificateVerifier, pdfObjFactory);
 			default:
 				throw new UnsupportedOperationException(
 						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
@@ -379,7 +342,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 
 	@Override
 	public DSSDocument timestamp(DSSDocument toTimestampDocument, PAdESTimestampParameters parameters) {
-		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, getPdfObjFactory());
+		PAdESExtensionService extensionService = new PAdESExtensionService(certificateVerifier, pdfObjFactory);
 		DSSDocument extendedDocument = extensionService.incorporateValidationData(toTimestampDocument, parameters.getPasswordProtection());
 
 		PAdESTimestampService timestampService = new PAdESTimestampService(tspSource, getSignatureTimestampService());
@@ -394,7 +357,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getPAdESSignatureService() {
-		return getPdfObjFactory().newPAdESSignatureService();
+		return pdfObjFactory.newPAdESSignatureService();
 	}
 
 	/**
@@ -403,7 +366,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getContentTimestampService() {
-		return getPdfObjFactory().newContentTimestampService();
+		return pdfObjFactory.newContentTimestampService();
 	}
 
 	/**
@@ -412,7 +375,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return {@link PDFSignatureService}
 	 */
 	protected PDFSignatureService getSignatureTimestampService() {
-		return getPdfObjFactory().newSignatureTimestampService();
+		return pdfObjFactory.newSignatureTimestampService();
 	}
 
 }

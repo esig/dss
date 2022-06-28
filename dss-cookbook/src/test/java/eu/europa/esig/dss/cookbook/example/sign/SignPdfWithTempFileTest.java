@@ -8,6 +8,8 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -48,7 +50,13 @@ public class SignPdfWithTempFileTest extends CookbookTools {
             // temporary files. It means that the produced DSSDocument after the signDocument() method will
             // be represented by a FileDocument object, pointing to a real file within the file system.
             TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
-            service.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+
+            // Initialize IPdfObjFactory
+            IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+            pdfObjFactory.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+
+            // Provide the factory to PAdESService
+            service.setPdfObjFactory(pdfObjFactory);
 
             // Get the SignedInfo segment that need to be signed.
             ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);

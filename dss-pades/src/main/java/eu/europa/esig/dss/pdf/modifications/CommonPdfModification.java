@@ -18,19 +18,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.validation;
+package eu.europa.esig.dss.pdf.modifications;
 
 /**
- * This interface contains information about the occurred modifications in a PDF
+ * The default PDF Modification object
  *
  */
-public interface PdfModification {
-	
+public class CommonPdfModification implements PdfModification {
+
+	/** Defines page of the found modification */
+	private final int page;
+
 	/**
-	 * Returns a page where the modification occurs
-	 * 
-	 * @return page number
+	 * Default constructor
+	 *
+	 * @param page the modified page
 	 */
-	int getPage();
+	public CommonPdfModification(int page) {
+		this.page = page;
+	}
+
+	@Override
+	public int getPage() {
+		return page;
+	}
 
 }

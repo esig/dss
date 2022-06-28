@@ -151,7 +151,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     /**
-     * Post process the extracted signatures
+     * Post-process the extracted signatures
      *
      * NOTE: the method shall be used only for the document validation
      *

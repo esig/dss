@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import org.junit.jupiter.api.Test;
@@ -87,7 +89,17 @@ public class ITextPdfObjFactoryTest {
 		}
 
 		@Override
-		public void setDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+			// do nothing
+		}
+
+		@Override
+		public void setPdfDifferencesFinder(PdfDifferencesFinder pdfDifferencesFinder) {
+			// do nothing
+		}
+
+		@Override
+		public void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder) {
 			// do nothing
 		}
 

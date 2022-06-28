@@ -25,6 +25,8 @@ import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
+import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
@@ -184,5 +186,24 @@ public interface PDFSignatureService {
 	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
 	 */
 	void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder);
+
+	/**
+	 * Sets the {@code PdfDifferencesFinder} used to find the differences on pages between given PDF revisions.
+	 *
+	 * Default : {@code eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder}
+	 *
+	 * @param pdfDifferencesFinder {@link PdfDifferencesFinder}
+	 */
+	void setPdfDifferencesFinder(PdfDifferencesFinder pdfDifferencesFinder);
+
+	/**
+	 * Sets the {@code PdfObjectModificationsFinder} used to find the differences between internal PDF objects occurred
+	 * between given PDF revisions.
+	 *
+	 * Default : {@code eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder}
+	 *
+	 * @param pdfObjectModificationsFinder {@link PdfObjectModificationsFinder}
+	 */
+	void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder);
 
 }

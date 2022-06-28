@@ -28,7 +28,9 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleLTAValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAndTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCertificationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBDigestDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
@@ -79,7 +81,6 @@ import eu.europa.esig.dss.pades.signature.suite.PDFSignatureWithoutCertificatesT
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
-import eu.europa.esig.dss.pades.signature.visible.suite.PAdESLevelBCertificationTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -102,7 +103,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
 		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
 		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
-		PAdESSignDocumentWithEmptySignatureTest.class })
+		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

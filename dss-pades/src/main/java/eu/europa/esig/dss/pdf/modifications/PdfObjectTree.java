@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.modifications;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +120,15 @@ public class PdfObjectTree {
      */
     public List<String> getKeyChain() {
         return keyChain;
+    }
+
+    /**
+     * Returns the deepness of the current objects chain
+     *
+     * @return chain deepness
+     */
+    public int getChainDeepness() {
+        return keyChain.size();
     }
 
     /**

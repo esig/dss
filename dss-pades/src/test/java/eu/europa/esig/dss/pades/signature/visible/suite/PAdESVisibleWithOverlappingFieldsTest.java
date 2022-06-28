@@ -107,11 +107,6 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 	}
 	
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		// skip
-	}
-	
-	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(2, diagnosticData.getSignatures().size());
 	}

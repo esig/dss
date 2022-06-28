@@ -18,18 +18,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.pdf.modifications;
 
-import eu.europa.esig.dss.pades.validation.PdfModification;
-import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
 /**
- * The default implementation to detect modifications in a PDF document
+ * The interface contains necessary information about a PDF visual or structure modifications
+ *
  */
-public class PdfModificationDetectionImpl implements PdfModificationDetection {
+public class PdfModificationDetection {
 
 	/** List of annotation overlaps */
 	private List<PdfModification> annotationOverlaps;
@@ -43,46 +42,58 @@ public class PdfModificationDetectionImpl implements PdfModificationDetection {
 	/** Filtered collection of {@code ObjectModification}s between a signed and final revisions */
 	private PdfObjectModifications objectModifications;
 
-	@Override
+	/**
+	 * Returns information about annotations overlapping
+	 *
+	 * @return a list of {@link PdfModification}s
+	 */
 	public List<PdfModification> getAnnotationOverlaps() {
 		return annotationOverlaps;
 	}
 
 	/**
 	 * Sets annotation overlaps
-	 * 
+	 *
 	 * @param annotationOverlaps a list of {@link PdfModification}s
 	 */
 	public void setAnnotationOverlaps(List<PdfModification> annotationOverlaps) {
 		this.annotationOverlaps = annotationOverlaps;
 	}
 
-	@Override
-	public List<PdfModification> getVisualDifferences() {
-		return visualDifferences;
-	}
-
 	/**
-	 * Sets visual differences
-	 * 
-	 * @param visualDifferences a list of {@link PdfModification}s
+	 * Returns information if there are missing/added pages between the signed and final revisions
+	 *
+	 * @return a list of {@link PdfModification}s
 	 */
-	public void setVisualDifferences(List<PdfModification> visualDifferences) {
-		this.visualDifferences = visualDifferences;
-	}
-	
-	@Override
 	public List<PdfModification> getPageDifferences() {
 		return pageDifferences;
 	}
 
 	/**
 	 * Sets page differences (for missing/added pages)
-	 * 
+	 *
 	 * @param pageDifferences a list of {@link PdfModification}s
 	 */
 	public void setPageDifferences(List<PdfModification> pageDifferences) {
 		this.pageDifferences = pageDifferences;
+	}
+
+	/**
+	 * Returns information about pages with visual differences between signed and final revisions
+	 *
+	 * @return a list of {@link PdfModification}s
+	 */
+	public List<PdfModification> getVisualDifferences() {
+		return visualDifferences;
+	}
+
+	/**
+	 * Sets visual differences
+	 *
+	 * @param visualDifferences a list of {@link PdfModification}s
+	 */
+	public void setVisualDifferences(List<PdfModification> visualDifferences) {
+		this.visualDifferences = visualDifferences;
 	}
 
 	/**
@@ -103,10 +114,14 @@ public class PdfModificationDetectionImpl implements PdfModificationDetection {
 		this.objectModifications = objectModifications;
 	}
 
-	@Override
+	/**
+	 * Returns information if any modifications have been detected
+	 *
+	 * @return TRUE if any modifications have been detected, FALSE otherwise
+	 */
 	public boolean areModificationsDetected() {
-		return Utils.isCollectionNotEmpty(annotationOverlaps) || 
-				Utils.isCollectionNotEmpty(visualDifferences) || 
+		return Utils.isCollectionNotEmpty(annotationOverlaps) ||
+				Utils.isCollectionNotEmpty(visualDifferences) ||
 				Utils.isCollectionNotEmpty(pageDifferences) ||
 				!objectModifications.isEmpty();
 	}

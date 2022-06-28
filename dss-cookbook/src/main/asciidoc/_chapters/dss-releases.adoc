@@ -302,6 +302,33 @@ CertificateVerifier cv = new CommonCertificateVerifier();
 cv.setRevocationDataVerifier(revocationDataVerifier);
 ----
 
+|Disable visual comparison
+
+a|[source,java]
+----
+AbstractPDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setMaximalPagesAmountForVisualComparison(0);
+...
+class MockPdfObjFactory extends PdfBoxNativeObjectFactory {
+        @Override
+        public PDFSignatureService newPAdESSignatureService() {
+            return pdfSignatureService;
+        }
+...
+}
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(new MockPdfObjFactory());
+----
+                                                                     a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
 |===
 
 [cols="2,5,5"]
@@ -585,7 +612,7 @@ This chapter covers the most frequently asked questions and issues occurring in 
 ----
 pdfSignatureService.setMaximalPagesAmountForVisualComparison(0); // skip validation
 ----
-For a complete code please see the https://github.com/esig/dss/blob/master/dss-cookbook/src/test/java/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[example].
+Please note that some changes have been made within verson 5.11 (see <<MigrationGuide>>).
 
 |v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use predicates. For example, to filter TLs from Germany and Romania:
 [source,java]

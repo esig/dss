@@ -28,8 +28,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
@@ -44,7 +50,25 @@ public class DSS2236HideTest extends AbstractPAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2236/hide.pdf"));
 	}
-	
+
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
+		DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+		pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(1);
+		pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+
+		DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+		pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(10);
+		pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+
+		PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+		validator.setPdfObjFactory(pdfObjFactory);
+
+		return validator;
+	}
+
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

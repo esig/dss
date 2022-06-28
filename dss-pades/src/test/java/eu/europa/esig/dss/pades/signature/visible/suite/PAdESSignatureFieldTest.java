@@ -37,6 +37,8 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -737,7 +739,9 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	@Test
 	public void testWithTempFileResources() throws IOException {
-		service.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+		pdfObjFactory.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+		service.setPdfObjFactory(pdfObjFactory);
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 

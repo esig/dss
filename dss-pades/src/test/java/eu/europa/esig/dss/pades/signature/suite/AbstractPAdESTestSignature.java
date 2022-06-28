@@ -83,7 +83,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 
 		SignedDocumentValidator validator = getValidator(dssDocument);
 		List<AdvancedSignature> signatures = validator.getSignatures();
-		assertEquals(1, signatures.size());
+		assertTrue(Utils.isCollectionNotEmpty(signatures));
 
 		PAdESSignature padesSig = (PAdESSignature) signatures.get(0);
 
