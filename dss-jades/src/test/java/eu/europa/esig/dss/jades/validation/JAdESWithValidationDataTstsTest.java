@@ -28,7 +28,6 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSConstants;
@@ -47,6 +46,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
@@ -75,15 +75,14 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	}
 	
 	@Override
-	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
-		validator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
-		return validator;
+	protected TokenIdentifierProvider getTokenIdentifierProvider() {
+		return new UserFriendlyIdentifierProvider();
 	}
 	
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
 		assertEquals(1, advancedSignatures.size());
 		AdvancedSignature advancedSignature = advancedSignatures.get(0);
 		

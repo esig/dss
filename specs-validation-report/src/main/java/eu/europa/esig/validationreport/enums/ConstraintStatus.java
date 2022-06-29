@@ -27,13 +27,13 @@ import eu.europa.esig.dss.enumerations.UriBasedEnum;
  */
 public enum ConstraintStatus implements UriBasedEnum {
 
-	/** Defines if a constrain has been applied */
+	/** Defines if a constraint has been applied */
 	APPLIED("urn:etsi:019102:constraintStatus:applied"),
 
-	/** Defines if a constrain has been disabled */
+	/** Defines if a constraint has been disabled */
 	DISABLED("urn:etsi:019102:constraintStatus:disabled"),
 
-	/** Defines if a constrain has been overridden */
+	/** Defines if a constraint has been overridden */
 	OVERRIDDEN("urn:etsi:019102:constraintStatus:overridden");
 
 	/** VR URI of the constraint */

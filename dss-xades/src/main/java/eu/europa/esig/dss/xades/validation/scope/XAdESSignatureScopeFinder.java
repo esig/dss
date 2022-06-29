@@ -103,7 +103,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.COUNTER_SIGNATURE.equals(xadesReferenceValidation.getType()) &&
 					xadesSignature.getMasterSignature() != null) {
-            	result.add(new CounterSignatureScope(xadesSignature.getMasterSignature().getId(), getDigest(xadesReferenceValidation.getOriginalContentBytes())));
+            	result.add(new CounterSignatureScope(getTokenIdentifierProvider().getIdAsString(xadesSignature.getMasterSignature()),
+						getDigest(xadesReferenceValidation.getOriginalContentBytes())));
 				
 			} else if (xadesReferenceValidation.isFound() && Utils.EMPTY_STRING.equals(uri)) {
 				byte[] originalContentBytes = xadesReferenceValidation.getOriginalContentBytes();

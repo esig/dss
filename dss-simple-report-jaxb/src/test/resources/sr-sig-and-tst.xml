@@ -41,8 +41,8 @@
         <BestSignatureTime>2019-12-17T10:12:32Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
-        <SignatureScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</SignatureScope>
-        <SignatureScope name="test.text" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-32785DD8DFA026EB2066F5667FFF6ED45F72052B725A76353F9C2D3565DF6B5E" name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</SignatureScope>
+        <SignatureScope Id="D-DFA02632785DD8EB2066F5667FFF6ED45F72052B725A76353F9C2D3565DF6B5E" name="test.text" scope="FULL">Full document</SignatureScope>
     </Signature>
     <Signature SignatureFormat="CAdES-BASELINE-B" Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59">
         <Filename>META-INF/signature002.p7s</Filename>
@@ -74,8 +74,8 @@
         <BestSignatureTime>2019-12-17T10:12:32Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
-        <SignatureScope name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</SignatureScope>
-        <SignatureScope name="test.text" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-FF6EDF5667F45F7232785DD8DFA026EB2066052B725A76353F9C2D3565DF6B5E" name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</SignatureScope>
+        <SignatureScope Id="D-F5667FFF6ED45F7232785DD8DFA026EB2066052B725A76353F9C2D3565DF6B5E" name="test.text" scope="FULL">Full document</SignatureScope>
     </Signature>
     <Timestamp Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
         <Filename>META-INF/timestamp002.tst</Filename>
@@ -93,12 +93,12 @@
         <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
-        <TimestampScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/signature002.p7s" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="test.text" scope="FULL">Full document</TimestampScope>
+        <TimestampScope Id="D-066052B725A76353F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E" name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-353F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E066052B725A76" name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-6FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E066052B725A76353F9C2D35" name="META-INF/ASiCManifest3.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-5667F45F7232785DD8DFA026EB25DF6B5E066052B725A76353F9C2D356FF6EDF" name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-45F7232785DD8DFA026EB25DF6B5E066052B725A76353F9C2D356FF6EDF5667F" name="META-INF/signature002.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-53F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E066052B725A763" name="test.text" scope="FULL">Full document</TimestampScope>
     </Timestamp>
     <Timestamp Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
         <Filename>META-INF/timestamp001.tst</Filename>
@@ -116,9 +116,9 @@
         <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>
         <ProducedBy>ee-good-tsa</ProducedBy>
         <TimestampLevel description="Not applicable">N/A</TimestampLevel>
-        <TimestampScope name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
-        <TimestampScope name="test.text" scope="FULL">Full document</TimestampScope>
+        <TimestampScope Id="D-066052B725A76353F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E" name="META-INF/ASiCManifest1.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-353F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E066052B725A76" name="META-INF/ASiCManifest2.xml" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-5667F45F7232785DD8DFA026EB25DF6B5E066052B725A76353F9C2D356FF6EDF" name="META-INF/signature001.p7s" scope="FULL">Manifest document</TimestampScope>
+        <TimestampScope Id="D-53F9C2D356FF6EDF5667F45F7232785DD8DFA026EB25DF6B5E066052B725A763" name="test.text" scope="FULL">Full document</TimestampScope>
     </Timestamp>
 </SimpleReport>

@@ -26,8 +26,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -37,7 +36,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -98,10 +96,8 @@ public class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends Abstract
     }
 
     @Override
-    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-        SignedDocumentValidator validator = super.getValidator(signedDocument);
-        validator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
-        return validator;
+    protected TokenIdentifierProvider getTokenIdentifierProvider() {
+        return new UserFriendlyIdentifierProvider();
     }
 
     @Override
@@ -133,11 +129,6 @@ public class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends Abstract
         assertTrue(firstSigFound);
         assertTrue(secondSigFound);
         assertTrue(thirdSigFound);
-    }
-
-    @Override
-    protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
-        // skip
     }
 
     @Override

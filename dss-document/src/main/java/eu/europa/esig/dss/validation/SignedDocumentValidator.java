@@ -135,7 +135,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * The implementation to be used for identifiers generation
 	 */
-	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
+	private TokenIdentifierProvider tokenIdentifierProvider = new OriginalIdentifierProvider();
 
 	/**
 	 * This variable allows to include the semantics for Indication / SubIndication
@@ -181,6 +181,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected boolean skipValidationContextExecution = false;
 
 	/**
+	 * Cached list of signatures extracted from the document
+	 */
+	private List<AdvancedSignature> signatures;
+
+	/**
+	 * Cached list of detached timestamps extracted from the document
+	 */
+	private List<TimestampToken> detachedTimestamps;
+
+	/**
 	 * The constructor with a null {@code signatureScopeFinder}
 	 */
 	protected SignedDocumentValidator() {
@@ -194,18 +204,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected SignedDocumentValidator(SignatureScopeFinder<?> signatureScopeFinder) {
 		this.signatureScopeFinder = signatureScopeFinder;
-	}
-
-	/**
-	 * Sets the default algorithm to use for a {@code SignatureScopeFinder}
-	 *
-	 * @param digestAlgorithm {@link DigestAlgorithm}
-	 */
-	protected void setSignedScopeFinderDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		// Null in the ASiC Container validator
-		if (signatureScopeFinder != null) {
-			signatureScopeFinder.setDefaultDigestAlgorithm(digestAlgorithm);
-		}
 	}
 
 	/**
@@ -262,10 +260,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
+	/**
+	 * Gets {@code TokenIdentifierProvider}
+	 *
+	 * @return {@link TokenIdentifierProvider}
+	 */
+	protected TokenIdentifierProvider getTokenIdentifierProvider() {
+		return tokenIdentifierProvider;
+	}
+
 	@Override
-	public void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider) {
-		Objects.requireNonNull(identifierProvider);
-		this.identifierProvider = identifierProvider;
+	public void setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider) {
+		Objects.requireNonNull(tokenIdentifierProvider);
+		this.tokenIdentifierProvider = tokenIdentifierProvider;
 	}
 
 	@Override
@@ -583,7 +590,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
 				.tokenExtractionStrategy(tokenExtractionStrategy)
-				.tokenIdentifierProvider(identifierProvider)
+				.tokenIdentifierProvider(tokenIdentifierProvider)
 				.validationDate(getValidationTime());
 	}
 
@@ -722,9 +729,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return a list of {@link AdvancedSignature}s
 	 */
 	protected List<AdvancedSignature> getAllSignatures() {
-
-		setSignedScopeFinderDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-
 		final List<AdvancedSignature> allSignatureList = new ArrayList<>();
 		for (final AdvancedSignature signature : getSignatures()) {
 			allSignatureList.add(signature);
@@ -756,19 +760,42 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	
 	@Override
 	public List<AdvancedSignature> getSignatures() {
+		if (signatures == null) {
+			signatures = buildSignatures();
+		}
 		// delegated in CommonSignatureValidator
+		return signatures;
+	}
+
+	/**
+	 * This method build a list of signatures to be extracted from a document
+	 *
+	 * @return a list of {@link AdvancedSignature}s
+	 */
+	protected List<AdvancedSignature> buildSignatures() {
+		// not implemented by default
 		return Collections.emptyList();
 	}
 
 	@Override
 	public List<TimestampToken> getDetachedTimestamps() {
-		// not implemented by default
-		// requires an implementation of {@code SignatureValidator}
+		if (detachedTimestamps == null) {
+			detachedTimestamps = buildDetachedTimestamps();
+		}
+		return detachedTimestamps;
+	}
+
+	/**
+	 * Builds a list of detached {@code TimestampToken}s extracted from the document
+	 *
+	 * @return a list of {@code TimestampToken}s
+	 */
+	protected List<TimestampToken> buildDetachedTimestamps() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public <T extends AdvancedSignature>  void processSignaturesValidation(Collection<T> allSignatureList) {
+	public <T extends AdvancedSignature> void processSignaturesValidation(Collection<T> allSignatureList) {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
 		}
@@ -783,6 +810,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
+		prepareSignatureScopeFinder(signatureScopeFinder);
 		for (final AdvancedSignature signature : allSignatures) {
 			signature.findSignatureScope(signatureScopeFinder);
 
@@ -794,6 +822,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
 				findTimestampScopes(timestampToken, timestampScopeFinder);
 			}
+		}
+	}
+
+	/**
+	 * Sets the provided configuration for a {@code SignatureScopeFinder}
+	 *
+	 * @param signatureScopeFinder {@link SignatureScopeFinder} to configure
+	 */
+	protected void prepareSignatureScopeFinder(SignatureScopeFinder<?> signatureScopeFinder) {
+		if (signatureScopeFinder != null) {
+			signatureScopeFinder.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
+			signatureScopeFinder.setTokenIdentifierProvider(tokenIdentifierProvider);
 		}
 	}
 
@@ -925,7 +965,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private boolean doesIdMatch(AdvancedSignature signature, String signatureId) {
 		return signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier()) ||
-				signatureId.equals(identifierProvider.getIdAsString(signature));
+				signatureId.equals(tokenIdentifierProvider.getIdAsString(signature));
 	}
 
 }

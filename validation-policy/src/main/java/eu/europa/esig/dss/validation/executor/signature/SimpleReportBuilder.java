@@ -311,6 +311,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 	private XmlSignatureScope getXmlSignatureScope(eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope signatureScope) {
 		XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
+		xmlSignatureScope.setId(signatureScope.getSignerData().getId());
 		xmlSignatureScope.setName(signatureScope.getName());
 		xmlSignatureScope.setScope(signatureScope.getScope().name());
 		xmlSignatureScope.setValue(signatureScope.getDescription());

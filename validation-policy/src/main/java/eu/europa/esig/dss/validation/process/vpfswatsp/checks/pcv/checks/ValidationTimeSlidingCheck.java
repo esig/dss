@@ -31,7 +31,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 
 /**
- * Checks if the Validation Time SLiding result is valid
+ * Checks if the Validation Time Sliding result is valid
  */
 public class ValidationTimeSlidingCheck extends ChainItem<XmlPCV> {
 

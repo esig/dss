@@ -77,8 +77,8 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
         
         String fileName = originalDocument.getName();
         if (cadesSignature.isCounterSignature()) {
-    		return Collections.singletonList(new CounterSignatureScope(cadesSignature.getMasterSignature().getId(), 
-    				getDigest(originalDocument) ));
+    		return Collections.singletonList(new CounterSignatureScope(
+                    getTokenIdentifierProvider().getIdAsString(cadesSignature.getMasterSignature()), getDigest(originalDocument) ));
     		
         } else if (originalDocument instanceof DigestDocument) {
         	DigestDocument digestDocument = (DigestDocument) originalDocument;

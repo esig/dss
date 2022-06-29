@@ -32,7 +32,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -100,10 +100,8 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
     }
 
     @Override
-    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-        SignedDocumentValidator validator = super.getValidator(signedDocument);
-        validator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
-        return validator;
+    protected TokenIdentifierProvider getTokenIdentifierProvider() {
+        return new UserFriendlyIdentifierProvider();
     }
 
     @Override
@@ -118,6 +116,8 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
 
     @Override
     protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+        super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
         boolean duplicatedSigIdFound = false;
         UserFriendlyIdentifierProvider userFriendlyIdentifierProvider = new UserFriendlyIdentifierProvider();
         assertEquals(2, advancedSignatures.size());

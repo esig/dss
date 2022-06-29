@@ -42,28 +42,28 @@
         <BestSignatureTime>2013-07-02T06:03:10Z</BestSignatureTime>
         <SignedBy>Joaquin Romera Ramirez</SignedBy>
         <SignatureLevel description="Indeterminate Qualified Electronic Signature">Indeterminate QESig</SignatureLevel>
-        <SignatureScope name="L_18320130702EN.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702LT.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702DA.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702NL.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702SK.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702SL.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702ET.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702HU.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702ES.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702HR.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702PT.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702MT.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702IT.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702SV.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702CS.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702PL.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702FI.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702LV.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702RO.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702EL.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702FR.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702BG.pdf" scope="FULL">Full document</SignatureScope>
-        <SignatureScope name="L_18320130702DE.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702EN.pdf-FULL" name="L_18320130702EN.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702LT.pdf-FULL" name="L_18320130702LT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702DA.pdf-FULL" name="L_18320130702DA.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702NL.pdf-FULL" name="L_18320130702NL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702SK.pdf-FULL" name="L_18320130702SK.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702SL.pdf-FULL" name="L_18320130702SL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702ET.pdf-FULL" name="L_18320130702ET.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702HU.pdf-FULL" name="L_18320130702HU.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702ES.pdf-FULL" name="L_18320130702ES.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702HR.pdf-FULL" name="L_18320130702HR.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702PT.pdf-FULL" name="L_18320130702PT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702MT.pdf-FULL" name="L_18320130702MT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702IT.pdf-FULL" name="L_18320130702IT.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702SV.pdf-FULL" name="L_18320130702SV.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702CS.pdf-FULL" name="L_18320130702CS.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702PL.pdf-FULL" name="L_18320130702PL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702FI.pdf-FULL" name="L_18320130702FI.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702LV.pdf-FULL" name="L_18320130702LV.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702RO.pdf-FULL" name="L_18320130702RO.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702EL.pdf-FULL" name="L_18320130702EL.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702FR.pdf-FULL" name="L_18320130702FR.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702BG.pdf-FULL" name="L_18320130702BG.pdf" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-L_18320130702DE.pdf-FULL" name="L_18320130702DE.pdf" scope="FULL">Full document</SignatureScope>
     </Signature>
 </SimpleReport>
