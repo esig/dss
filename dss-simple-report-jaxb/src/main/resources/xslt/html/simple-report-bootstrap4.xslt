@@ -150,12 +150,27 @@
 								<xsl:if test="dss:TimestampLevel">
 									<xsl:attribute name="title"><xsl:value-of select="dss:TimestampLevel/@description" /></xsl:attribute>
 								</xsl:if>
-				    		</i>					
+				    		</i>
+				    		
 			        	</dd>
 			        </dl>
 				</xsl:if>
 
 				<xsl:apply-templates select="dss:QualificationDetails" />
+
+				<xsl:if test="dss:SignatureLevel/@enactedMRA">
+					<dl>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
+			            <dt>
+			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			            </dt>
+			            <dd>
+			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+							The qualification level has been determined using the mutual recognition agreement concluded with the EU.
+			            </dd>
+					</dl>
+				</xsl:if>
 
 				<xsl:if test="@SignatureFormat">
 			        <dl>

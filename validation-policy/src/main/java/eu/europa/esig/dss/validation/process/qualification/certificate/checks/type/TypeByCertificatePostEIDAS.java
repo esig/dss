@@ -55,7 +55,7 @@ class TypeByCertificatePostEIDAS implements TypeStrategy {
 		// multiple qcTypes are possible (mistake) but MUST be overruled by the trusted list
 		boolean onlyOne = Stream.of(esign, eseal, web).filter(b -> b).count() == 1;
 
-		if (noneType && signingCertificate.isQcCompliance() || (esign && onlyOne)) {
+		if ((noneType && signingCertificate.isQcCompliance()) || (esign && onlyOne)) {
 			return CertificateType.ESIGN;
 		} else if (eseal && onlyOne) {
 			return CertificateType.ESEAL;

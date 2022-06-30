@@ -21,12 +21,18 @@
 package eu.europa.esig.dss.tsl.function.converter;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
 import eu.europa.esig.trustedlist.jaxb.tsl.DigitalIdentityListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceDigitalIdentityListType;
 
+import javax.xml.bind.JAXBElement;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,12 +46,40 @@ public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, O
 
 	@Override
 	public OtherTSLPointer apply(OtherTSLPointerType original) {
-		return new OtherTSLPointer(original.getTSLLocation(), Collections.unmodifiableList(getCertificates(original.getServiceDigitalIdentities())));
+		return new OtherTSLPointer(original.getTSLLocation(),
+				Collections.unmodifiableList(getCertificates(original.getServiceDigitalIdentities())),
+				getMRA(original.getAdditionalInformation()));
+	}
+
+	@SuppressWarnings("rawtypes")
+	private MRA getMRA(AdditionalInformationType additionalInformation) {
+		if (additionalInformation != null
+				&& Utils.isCollectionNotEmpty(additionalInformation.getTextualInformationOrOtherInformation())) {
+			for (Serializable serializableObj : additionalInformation.getTextualInformationOrOtherInformation()) {
+				if (serializableObj instanceof AnyType) {
+					AnyType anytype = (AnyType) serializableObj;
+					List<Object> content = anytype.getContent();
+					for (Object objectValue : content) {
+						if (objectValue instanceof JAXBElement) {
+							JAXBElement jaxbElement = (JAXBElement) objectValue;
+							if (jaxbElement.getValue() instanceof MutualRecognitionAgreementInformationType) {
+								MutualRecognitionAgreementInformationType jaxbMRA = (MutualRecognitionAgreementInformationType) jaxbElement
+										.getValue();
+								MRAConverter converter = new MRAConverter();
+								return converter.apply(jaxbMRA);
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	private List<CertificateToken> getCertificates(ServiceDigitalIdentityListType serviceDigitalIdentities) {
 		List<CertificateToken> certificates = new ArrayList<>();
-		if (serviceDigitalIdentities != null && Utils.isCollectionNotEmpty(serviceDigitalIdentities.getServiceDigitalIdentity())) {
+		if (serviceDigitalIdentities != null
+				&& Utils.isCollectionNotEmpty(serviceDigitalIdentities.getServiceDigitalIdentity())) {
 			DigitalIdentityListTypeConverter converter = new DigitalIdentityListTypeConverter();
 			for (DigitalIdentityListType digitalIdentityList : serviceDigitalIdentities.getServiceDigitalIdentity()) {
 				certificates.addAll(converter.apply(digitalIdentityList));

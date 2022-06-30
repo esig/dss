@@ -214,7 +214,7 @@ public class QcStatementUtils {
     }
 
     private static List<QCType> getQcTypes(ASN1Encodable statementInfo) {
-        List<QCType> result = new ArrayList<>();
+        final List<QCType> result = new ArrayList<>();
         try {
             ASN1Sequence sequence = ASN1Sequence.getInstance(statementInfo);
             for (int i = 0; i < sequence.size(); i++) {
@@ -314,6 +314,101 @@ public class QcStatementUtils {
             }
             return null;
         }
+    }
+
+    /**
+     * This method verifies whether the given {@code qcStatementOid} is present within the {@code QcStatements}
+     *
+     * @param qcStatements {@link QcStatements} to be verified
+     * @param qcStatementOid {@link String} representing OID of a QCStatement to be checked
+     * @return TRUE if a QCStatement with the given OID is present, FALSE otherwise
+     */
+    public static boolean isQcStatementPresent(QcStatements qcStatements, String qcStatementOid) {
+        if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(qcStatementOid)) {
+            return qcStatements.isQcCompliance();
+
+        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId().equals(qcStatementOid)) {
+            return qcStatements.getQcLimitValue() != null;
+
+        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.getId().equals(qcStatementOid)) {
+            return qcStatements.getQcEuRetentionPeriod() != null;
+
+        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(qcStatementOid)) {
+            return qcStatements.isQcQSCD();
+
+        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.getId().equals(qcStatementOid)) {
+            return Utils.isCollectionNotEmpty(qcStatements.getQcEuPDS());
+
+        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.getId().equals(qcStatementOid)) {
+            return Utils.isCollectionNotEmpty(qcStatements.getQcTypes());
+
+        } else if (OID.id_etsi_qcs_QcCClegislation.getId().equals(qcStatementOid)) {
+            return Utils.isCollectionNotEmpty(qcStatements.getQcLegislationCountryCodes());
+
+        } else if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.getId().equals(qcStatementOid)) {
+            return qcStatements.getQcSemanticsIdentifier() != null;
+
+        } else if (OID.psd2_qcStatement.getId().equals(qcStatementOid)) {
+            return qcStatements.getPsd2QcType() != null;
+
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method verifies whether a QCType with a given {@code qcTypeOid} is present
+     * within provided {@code QcStatements}
+     *
+     * @param qcStatements {@link QcStatements} to check QCTypes from
+     * @param qcTypeOid {@link String} representing a QCType OID to be verified
+     * @return TRUE of the QCType with a given OID is present, FALSE otherwise
+     */
+    public static boolean isQcTypePresent(QcStatements qcStatements, String qcTypeOid) {
+        List<QCType> qcTypes = qcStatements.getQcTypes();
+        if (Utils.isCollectionNotEmpty(qcTypes)) {
+            for (QCType qcType : qcTypes) {
+                if (qcTypeOid.equals(qcType.getOid())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * This method verifies whether a QCLegislation code is present within provided {@code QcStatements}
+     *
+     * @param qcStatements {@link QcStatements} to check QCLegislation from
+     * @param qcLegislation {@link String} representing a QCLegislation country code to be verified
+     * @return TRUE of the QCLegislation is present, FALSE otherwise
+     */
+    public static boolean isQcLegislationPresent(QcStatements qcStatements, String qcLegislation) {
+        List<String> qcLegislationCountryCodes = qcStatements.getQcLegislationCountryCodes();
+        if (Utils.isCollectionNotEmpty(qcLegislationCountryCodes)) {
+            return qcLegislationCountryCodes.contains(qcLegislation);
+        }
+        return false;
+    }
+
+    /**
+     * This method verifies of the given OID is a QcCompliance statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcCompliance, FALSE otherwise
+     */
+    public static boolean isQcCompliance(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcSSCD statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcSSCD, FALSE otherwise
+     */
+    public static boolean isQcSSCD(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(oid);
     }
 
 }

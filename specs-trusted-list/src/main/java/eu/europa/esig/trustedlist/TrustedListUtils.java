@@ -43,6 +43,8 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
 
+	public static final String MRA_SCHEMA_LOCATION = "/xsd/MRA-info_qc_esig-v0.03.xsd";
+
 	/** Singleton */
 	private static TrustedListUtils singleton;
 
@@ -69,7 +71,8 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(eu.europa.esig.xmldsig.jaxb.ObjectFactory.class, eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
 					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class, ObjectFactory.class, eu.europa.esig.trustedlist.jaxb.tslx.ObjectFactory.class,
-					eu.europa.esig.trustedlist.jaxb.ecc.ObjectFactory.class);
+					eu.europa.esig.trustedlist.jaxb.ecc.ObjectFactory.class,
+					eu.europa.esig.trustedlist.jaxb.mra.ObjectFactory.class);
 		}
 		return jc;
 	}
@@ -80,6 +83,7 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SIE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION)));
+		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(MRA_SCHEMA_LOCATION)));
 		return xsdSources;
 	}
 

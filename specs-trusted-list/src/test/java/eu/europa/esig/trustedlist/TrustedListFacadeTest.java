@@ -24,13 +24,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
+import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
+import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 
 public class TrustedListFacadeTest {
@@ -43,6 +51,52 @@ public class TrustedListFacadeTest {
 	@Test
 	public void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
 		marshallUnmarshall(new File("src/test/resources/lotl.xml"));
+	}
+
+	@Test
+	public void testMRA_LOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
+		marshallUnmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testMRA_LOTL_extract() throws JAXBException, XMLStreamException, IOException, SAXException {
+		TrustedListFacade facade = TrustedListFacade.newFacade();
+
+		TrustStatusListType trustStatusListType = facade
+				.unmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
+		assertNotNull(trustStatusListType);
+
+		OtherTSLPointersType pointersToOtherTSL = trustStatusListType.getSchemeInformation().getPointersToOtherTSL();
+		OtherTSLPointerType tcTL = pointersToOtherTSL.getOtherTSLPointer().get(44);
+
+		AdditionalInformationType additionalInformation = tcTL.getAdditionalInformation();
+		List<Serializable> textualInformationOrOtherInformation = additionalInformation
+				.getTextualInformationOrOtherInformation();
+
+		MutualRecognitionAgreementInformationType mraContent = null;
+
+		Serializable serializable = textualInformationOrOtherInformation.get(5);
+		if (serializable instanceof AnyType) {
+			AnyType anyType = (AnyType) serializable;
+			for (Object content : anyType.getContent()) {
+				if (content instanceof JAXBElement) {
+					JAXBElement<MutualRecognitionAgreementInformationType> jaxbElement = (JAXBElement<MutualRecognitionAgreementInformationType>) content;
+					mraContent = jaxbElement.getValue();
+				}
+			}
+		}
+		assertNotNull(mraContent);
+	}
+
+	@Test
+	public void testMRA_BE() throws JAXBException, XMLStreamException, IOException, SAXException {
+		marshallUnmarshall(new File("src/test/resources/mra/be-tl.xml"));
+	}
+
+	@Test
+	public void testMRA_TC() throws JAXBException, XMLStreamException, IOException, SAXException {
+		marshallUnmarshall(new File("src/test/resources/mra/tc-tl.xml"));
 	}
 
 	private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {

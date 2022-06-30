@@ -9,35 +9,64 @@
 		<jaxb:serializable uid="1" />
 	</jaxb:globalBindings>
 
-	<jaxb:bindings schemaLocation="ts_119612v020101_sie_xsd.xsd" node="/xs:schema">
+
+	<jaxb:bindings schemaLocation="MRA-info_qc_esig-v0.03.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.ecc" />
+			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.mra" />
 		</jaxb:schemaBindings>
-		
-		<jaxb:bindings node="//xs:complexType[@name='KeyUsageBitType']/xs:simpleContent/xs:extension">
-			<jaxb:bindings node="xs:attribute[@name='name']">
-				<jaxb:property>
-					<jaxb:baseType>
-						<jaxb:javaType
-							name="eu.europa.esig.dss.enumerations.KeyUsageBit"
-							parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse"
-							printMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.print" />
-					</jaxb:baseType>
-				</jaxb:property>
-			</jaxb:bindings>
+			
+		<jaxb:bindings node="//xs:complexType[@name='TrustServiceEquivalenceInformationType']//xs:element[@name='TrustServiceEquivalenceStatus']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAStatus"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.print" />
+		</jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='TrustServiceEquivalenceHistoryInstanceType']//xs:element[@name='TrustServiceEquivalenceStatus']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAStatus"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAStatusParser.print" />
 		</jaxb:bindings>
 		
-		<jaxb:bindings node="//xs:complexType[@name='CriteriaListType']">
-			<jaxb:bindings node="xs:attribute[@name='assert']">
-				<jaxb:property>
-					<jaxb:baseType>
-						<jaxb:javaType
-							name="eu.europa.esig.trustedlist.enums.Assert"
-							parseMethod="eu.europa.esig.trustedlist.parsers.AssertParser.parse"
-							printMethod="eu.europa.esig.trustedlist.parsers.AssertParser.print" />
-					</jaxb:baseType>
-				</jaxb:property>
+		<jaxb:bindings node="//xs:element[@name='CertificateContentReferenceEquivalenceContext']">
+			<jaxb:javaType
+				name="eu.europa.esig.dss.enumerations.MRAEquivalenceContext"
+				parseMethod="eu.europa.esig.trustedlist.parsers.MRAEquivalenceContextParser.parse"
+				printMethod="eu.europa.esig.trustedlist.parsers.MRAEquivalenceContextParser.print" />
+		</jaxb:bindings>
+			
+			
+		<jaxb:bindings schemaLocation="https://uri.etsi.org/19612/v2.2.1/ts_119612v020101_sie_xsd.xsd" node="/xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.trustedlist.jaxb.ecc" />
+			</jaxb:schemaBindings>
+			
+			<jaxb:bindings node="//xs:complexType[@name='KeyUsageBitType']/xs:simpleContent/xs:extension">
+				<jaxb:bindings node="xs:attribute[@name='name']">
+					<jaxb:property>
+						<jaxb:baseType>
+							<jaxb:javaType
+								name="eu.europa.esig.dss.enumerations.KeyUsageBit"
+								parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse"
+								printMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.print" />
+						</jaxb:baseType>
+					</jaxb:property>
+				</jaxb:bindings>
 			</jaxb:bindings>
+			
+			<jaxb:bindings node="//xs:complexType[@name='CriteriaListType']">
+				<jaxb:bindings node="xs:attribute[@name='assert']">
+					<jaxb:property>
+						<jaxb:baseType>
+							<jaxb:javaType
+								name="eu.europa.esig.trustedlist.enums.Assert"
+								parseMethod="eu.europa.esig.trustedlist.parsers.AssertParser.parse"
+								printMethod="eu.europa.esig.trustedlist.parsers.AssertParser.print" />
+						</jaxb:baseType>
+					</jaxb:property>
+				</jaxb:bindings>
+			</jaxb:bindings>
+			
 		</jaxb:bindings>
 		
 	</jaxb:bindings>

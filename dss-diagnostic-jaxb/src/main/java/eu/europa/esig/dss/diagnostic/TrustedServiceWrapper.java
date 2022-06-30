@@ -69,6 +69,7 @@ public class TrustedServiceWrapper {
 
 	/** Additional service informations */
 	private List<String> additionalServiceInfos;
+	private Boolean enactedMRA;
 
 	/**
 	 * Gets corresponding Trusted List
@@ -302,6 +303,14 @@ public class TrustedServiceWrapper {
 	 */
 	public void setAdditionalServiceInfos(List<String> additionalServiceInfos) {
 		this.additionalServiceInfos = additionalServiceInfos;
+	}
+
+	public void setEnactedMRA(Boolean enactedMRA) {
+		this.enactedMRA = enactedMRA;
+	}
+
+	public Boolean getEnactedMRA() {
+		return enactedMRA;
 	}
 
 }

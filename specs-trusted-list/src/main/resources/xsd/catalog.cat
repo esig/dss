@@ -1,4 +1,5 @@
 SYSTEM "http://uri.etsi.org/19612/v1.2.1/tsl.xsd" "ts_119612v020201_201601xsd.xsd"
+SYSTEM "https://uri.etsi.org/19612/v2.2.1/ts_119612v020101_sie_xsd.xsd" "ts_119612v020101_sie_xsd.xsd"
 REWRITE_SYSTEM "http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xmldsig-core-schema.xsd"
 REWRITE_SYSTEM "http://www.w3.org/2001/xml.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xml.xsd"
 REWRITE_SYSTEM "http://uri.etsi.org/01903/v1.3.2/XAdES.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xades:jar::!/xsd/XAdES.xsd"

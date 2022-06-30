@@ -175,6 +175,7 @@
 	    <xs:simpleContent>
 		    <xs:extension base="SignatureQualification">
 		        <xs:attribute name="description" type="xs:string" />
+		        <xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
 		    </xs:extension>
 	    </xs:simpleContent>
 	</xs:complexType>

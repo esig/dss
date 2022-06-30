@@ -22,6 +22,8 @@ package eu.europa.esig.dss.tsl.sync;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.MRA;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
@@ -225,7 +227,19 @@ public class TrustedListCertificateSourceSynchronizer {
 		if (relatedLOTL == null) {
 			return new TrustProperties(tlInfo.getDSSId(), detached, statusAndInformationExtensions);
 		}
-		return new TrustProperties(relatedLOTL.getDSSId(), tlInfo.getDSSId(), detached, statusAndInformationExtensions);
+		return new TrustProperties(relatedLOTL.getDSSId(), tlInfo.getDSSId(), detached,
+				statusAndInformationExtensions, getMRA(relatedLOTL, tlInfo));
+	}
+
+	private MRA getMRA(LOTLInfo relatedLOTL, TLInfo tlInfo) {
+		String tlURI = tlInfo.getUrl();
+		List<OtherTSLPointer> tlOtherPointers = relatedLOTL.getParsingCacheInfo().getTlOtherPointers();
+		for (OtherTSLPointer otherTSLPointer : tlOtherPointers) {
+			if (Utils.areStringsEqual(tlURI, otherTSLPointer.getLocation())) {
+				return otherTSLPointer.getMra();
+			}
+		}
+		return null;
 	}
 
 }

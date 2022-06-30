@@ -111,6 +111,20 @@
 		        	</dl>
 	        	</xsl:if>
 	        	
+	        	<xsl:if test="dss:enactedMRA">
+					<dl>
+			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
+			            <dt>
+			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
+			            </dt>
+			            <dd>
+			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
+			            
+							The qualification level has been determined using the mutual recognition agreement concluded with the EU.
+			            </dd>
+					</dl>
+				</xsl:if>			
+	        	
 				<xsl:apply-templates select="dss:subject"/>
 				
 				<xsl:if test="dss:keyUsages or dss:extendedKeyUsages">

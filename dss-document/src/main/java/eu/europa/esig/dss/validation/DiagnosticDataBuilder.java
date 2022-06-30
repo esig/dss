@@ -56,6 +56,8 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -79,11 +81,16 @@ import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.QcStatementUtils;
+import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.QCStatementOids;
+import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
+import eu.europa.esig.dss.spi.tsl.ServiceTypeASi;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
@@ -114,14 +121,15 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -129,7 +137,6 @@ import java.util.Set;
  *
  */
 public abstract class DiagnosticDataBuilder {
-
 	private static final Logger LOG = LoggerFactory.getLogger(DiagnosticDataBuilder.class);
 
 	/** The certificates used during the validation process */
@@ -594,9 +601,9 @@ public abstract class DiagnosticDataBuilder {
 	 * @return a list of {@link XmlRevocationRef}s
 	 */
 	protected <R extends Revocation> List<XmlRevocationRef> getXmlRevocationRefs(String tokenId,
-	 		Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
+																				 Map<RevocationRef<R>, Set<RevocationRefOrigin>> refsAndOrigins) {
 		List<XmlRevocationRef> xmlRevocationRefs = new ArrayList<>();
-		for (Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
+		for (Map.Entry<RevocationRef<R>, Set<RevocationRefOrigin>> entry : refsAndOrigins.entrySet()) {
 			RevocationRef<R> ref = entry.getKey();
 			Set<RevocationRefOrigin> origins = entry.getValue();
 			XmlRevocationRef xmlRef;
@@ -1297,7 +1304,7 @@ public abstract class DiagnosticDataBuilder {
 	 * @param signingCertificate {@link CertificateToken}
 	 */
 	protected void verifyAgainstCertificateToken(XmlCertificateRef xmlCertificateRef, CertificateRef ref,
-			CertificateToken signingCertificate) {
+												 CertificateToken signingCertificate) {
 		CertificateTokenRefMatcher tokenRefMatcher = new CertificateTokenRefMatcher();
 		XmlDigestAlgoAndValue digestAlgoAndValue = xmlCertificateRef.getDigestAlgoAndValue();
 		if (digestAlgoAndValue != null) {
@@ -1583,13 +1590,13 @@ public abstract class DiagnosticDataBuilder {
 	private List<XmlTrustedServiceProvider> getXmlTrustedServiceProviders(CertificateToken certToken) {
 		List<XmlTrustedServiceProvider> result = new ArrayList<>();
 		Map<CertificateToken, List<TrustProperties>> servicesByTrustedCert = getRelatedTrustServices(certToken);
-		for (Entry<CertificateToken, List<TrustProperties>> entry : servicesByTrustedCert.entrySet()) {
+		for (Map.Entry<CertificateToken, List<TrustProperties>> entry : servicesByTrustedCert.entrySet()) {
 			CertificateToken trustedCert = entry.getKey();
 			List<TrustProperties> services = entry.getValue();
 
 			Map<TrustServiceProvider, List<TrustProperties>> servicesByProviders = classifyByServiceProvider(services);
 
-			for (Entry<TrustServiceProvider, List<TrustProperties>> servicesByProvider : servicesByProviders
+			for (Map.Entry<TrustServiceProvider, List<TrustProperties>> servicesByProvider : servicesByProviders
 					.entrySet()) {
 
 				List<TrustProperties> trustServices = servicesByProvider.getValue();
@@ -1621,7 +1628,7 @@ public abstract class DiagnosticDataBuilder {
 	private List<XmlLangAndValue> getLangAndValues(Map<String, List<String>> map) {
 		if (Utils.isMapNotEmpty(map)) {
 			List<XmlLangAndValue> result = new ArrayList<>();
-			for (Entry<String, List<String>> entry : map.entrySet()) {
+			for (Map.Entry<String, List<String>> entry : map.entrySet()) {
 				String lang = entry.getKey();
 				for (String value : entry.getValue()) {
 					XmlLangAndValue langAndValue = new XmlLangAndValue();
@@ -1674,7 +1681,12 @@ public abstract class DiagnosticDataBuilder {
 					.getAfter(certToken.getNotBefore());
 			if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
 				for (TrustServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
-					XmlTrustedService trustedService = buildXmlTrustedService(serviceInfoStatus, certToken, trustedCert);
+					List<ServiceEquivalence> mraEquivalences = getMRAServiceEquivalences(trustProperties, serviceInfoStatus);
+					boolean enactedMra = Utils.isCollectionNotEmpty(mraEquivalences);
+					if (enactedMra) {
+						serviceInfoStatus = applyMra(serviceInfoStatus, certToken, mraEquivalences);
+					}
+					XmlTrustedService trustedService = buildXmlTrustedService(serviceInfoStatus, certToken, trustedCert, enactedMra);
 					result.add(trustedService);
 				}
 			}
@@ -1682,8 +1694,37 @@ public abstract class DiagnosticDataBuilder {
 		return Collections.unmodifiableList(result);
 	}
 
+	private List<ServiceEquivalence> getMRAServiceEquivalences(TrustProperties trustProperties,
+															   TrustServiceStatusAndInformationExtensions serviceInfoStatus) {
+		MRA mra = trustProperties.getMra();
+		if (mra != null) {
+			LOG.info("MRA");
+			final List<ServiceEquivalence> equivalences = new ArrayList<>();
+			Date startDate = serviceInfoStatus.getStartDate();
+			for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
+				if (MRAStatus.ENACTED == serviceEquivalence.getStatus()
+						&& startDate.compareTo(serviceEquivalence.getStartDate()) >= 0) {
+					equivalences.add(serviceEquivalence);
+				}
+			}
+			return equivalences;
+		}
+		return Collections.emptyList();
+	}
+
+	private TrustServiceStatusAndInformationExtensions applyMra(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+																CertificateToken certToken, List<ServiceEquivalence> mraEquivalences) {
+		if (mraEquivalences.size() == 1) {
+			serviceInfoStatus = translate(serviceInfoStatus, certToken, mraEquivalences.iterator().next());
+		} else {
+			LOG.warn("More than one equivalence");
+		}
+		return serviceInfoStatus;
+	}
+
 	private XmlTrustedService buildXmlTrustedService(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
-													 CertificateToken certToken, CertificateToken trustedCert) {
+													 CertificateToken certToken, CertificateToken trustedCert,
+													 boolean enactedMra) {
 		XmlTrustedService trustedService = new XmlTrustedService();
 
 		trustedService.setServiceDigitalIdentifier(xmlCertsMap.get(trustedCert.getDSSIdAsString()));
@@ -1692,6 +1733,7 @@ public abstract class DiagnosticDataBuilder {
 		trustedService.setStatus(serviceInfoStatus.getStatus());
 		trustedService.setStartDate(serviceInfoStatus.getStartDate());
 		trustedService.setEndDate(serviceInfoStatus.getEndDate());
+		trustedService.setEnactedMRA(enactedMra);
 
 		List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
 		if (Utils.isCollectionNotEmpty(qualifiers)) {
@@ -1711,6 +1753,126 @@ public abstract class DiagnosticDataBuilder {
 		trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
 
 		return trustedService;
+	}
+
+	private TrustServiceStatusAndInformationExtensions translate(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken,
+			ServiceEquivalence serviceEquivalence) {
+		TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
+		overrideCertContent(certToken, serviceEquivalence);
+		return equivalent;
+	}
+
+	private TrustServiceStatusAndInformationExtensions getEquivalent(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+
+		ServiceTypeASi typeASiSubstitution = getTypeASiSubstitution(serviceInfoStatus, serviceEquivalence);
+		String status = getStatusSubstitution(serviceInfoStatus, serviceEquivalence);
+
+		TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder builder =
+				new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
+		builder.setType(typeASiSubstitution.getType());
+		builder.setAdditionalServiceInfoUris(Arrays.asList(typeASiSubstitution.getAsi()));
+		builder.setStatus(status);
+		// copy
+		builder.setStartDate(serviceInfoStatus.getStartDate());
+		builder.setEndDate(serviceInfoStatus.getEndDate());
+		builder.setNames(serviceInfoStatus.getNames());
+		builder.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
+		builder.setServiceSupplyPoints(serviceInfoStatus.getServiceSupplyPoints());
+		builder.setConditionsForQualifiers(serviceInfoStatus.getConditionsForQualifiers());
+		return new TrustServiceStatusAndInformationExtensions(builder);
+	}
+
+	private ServiceTypeASi getTypeASiSubstitution(
+			TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+		for (Map.Entry<ServiceTypeASi, ServiceTypeASi> expectedSubstitution : serviceEquivalence.getTypeAsiEquivalence()
+				.entrySet()) {
+			ServiceTypeASi expected = expectedSubstitution.getKey();
+			if (Utils.areStringsEqual(serviceInfoStatus.getType(), expected.getType())) {
+				return expectedSubstitution.getValue();
+			}
+		}
+		return null;
+	}
+
+	private String getStatusSubstitution(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+			ServiceEquivalence serviceEquivalence) {
+		Map<List<String>, List<String>> statusEquivalence = serviceEquivalence.getStatusEquivalence();
+		for (Map.Entry<List<String>, List<String>> equivalence : statusEquivalence.entrySet()) {
+			List<String> expected = equivalence.getKey();
+			if (expected.contains(serviceInfoStatus.getStatus())) {
+				return equivalence.getValue().iterator().next();
+			}
+
+		}
+		return null;
+	}
+
+	private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
+		EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
+		XmlCertificate xmlCertificate = xmlCertsMap.get(certToken.getDSSIdAsString());
+		if (xmlCertificate == null) {
+			throw new IllegalStateException(String.format(
+					"XmlCertificate with Id '%s' is not yet created!", certToken.getDSSIdAsString()));
+		}
+		XmlQcStatements qcStatements = xmlCertificate.getQcStatements();
+		if (qcStatements == null) {
+			qcStatements = new XmlQcStatements();
+			xmlCertificate.setQcStatements(qcStatements);
+		}
+
+		for (Map.Entry<MRAEquivalenceContext, CertificateContentEquivalence> equivalence : certificateContentEquivalences.entrySet()) {
+			MRAEquivalenceContext equivalenceContext = equivalence.getKey();
+			CertificateContentEquivalence certificateContentEquivalence = equivalence.getValue();
+
+			Condition condition = certificateContentEquivalence.getCondition();
+			if (condition.check(certToken)) {
+				LOG.info("MRA condition match ({})", equivalenceContext);
+				QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
+
+				switch (equivalenceContext) {
+					case QC_COMPLIANCE:
+						replaceCompliance(qcStatements, contentReplacement);
+						break;
+					case QC_TYPE:
+						replaceType(qcStatements, contentReplacement);
+						break;
+					case QC_QSCD:
+						replaceQSCD(qcStatements, contentReplacement);
+						break;
+					default:
+						LOG.warn("Unsupported equivalence context {}", equivalence.getKey());
+						break;
+				}
+			}
+		}
+	}
+
+	private void replaceCompliance(XmlQcStatements qcStatements, QCStatementOids contentReplacement) {
+		boolean isQcCompliance = false;
+		for (String oid : contentReplacement.getQcStatementIds()) {
+			if (QcStatementUtils.isQcCompliance(oid)) {
+				isQcCompliance = true;
+			}
+		}
+		qcStatements.getQcCompliance().setPresent(isQcCompliance);
+	}
+
+	private void replaceType(XmlQcStatements qcStatements, QCStatementOids contentReplacement) {
+		qcStatements.setQcTypes(getXmlOids(contentReplacement.getQcTypeIds()));
+	}
+
+	private void replaceQSCD(XmlQcStatements qcStatements, QCStatementOids contentReplacement) {
+		boolean isQcSSCD = false;
+		for (String oid : contentReplacement.getQcStatementIds()) {
+			if (QcStatementUtils.isQcSSCD(oid)) {
+				isQcSSCD = true;
+			}
+		}
+		qcStatements.getQcSSCD().setPresent(isQcSSCD);
 	}
 
 	private Map<TrustServiceProvider, List<TrustProperties>> classifyByServiceProvider(

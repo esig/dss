@@ -51,6 +51,8 @@ public class LOTLParsingTaskTest {
 	private static DSSDocument LOTL_NOT_PARSEABLE;
 	private static DSSDocument LOTL_PIVOT;
 
+	private static DSSDocument LOTL_MRA;
+
 	private static DSSDocument TL;
 
 	@BeforeAll
@@ -59,6 +61,8 @@ public class LOTLParsingTaskTest {
 		LOTL_NO_SIG = new FileDocument("src/test/resources/eu-lotl-no-sig.xml");
 		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
 		LOTL_PIVOT = new FileDocument("src/test/resources/eu-lotl-pivot.xml");
+
+		LOTL_MRA = new FileDocument("src/test/resources/lotl-mra.xml");
 
 		TL = new FileDocument("src/test/resources/ie-tl.xml");
 	}
@@ -223,6 +227,24 @@ public class LOTLParsingTaskTest {
 		assertEquals(31, result.getTlPointers().size());
 		checkOtherPointers(result.getTlPointers());
 		assertEquals("EU", result.getTerritory());
+	}
+
+	@Test
+	public void parseLOTLMRA() {
+		// not pivot support
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setTlPredicate(new XMLOtherTSLPointer());
+		LOTLParsingTask task = new LOTLParsingTask(LOTL_MRA, lotlSource);
+		LOTLParsingResult result = task.get();
+		assertNotNull(result);
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals(5, result.getVersion());
+		assertEquals(1, result.getSequenceNumber());
+
+
+		assertEquals(1, result.getTlPointers().size());
+		assertNotNull(result.getTlPointers().get(0).getMra());
 	}
 
 	@Test

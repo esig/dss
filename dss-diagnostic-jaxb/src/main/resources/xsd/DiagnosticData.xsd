@@ -1280,6 +1280,7 @@
 			<xs:element name="ExpiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="ServiceDigitalIdentifier" type="xs:IDREF" use="required" />
+		<xs:attribute name="EnactedMRA" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValues">
