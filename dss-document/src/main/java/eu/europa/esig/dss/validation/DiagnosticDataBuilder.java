@@ -121,7 +121,6 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1772,8 +1771,10 @@ public abstract class DiagnosticDataBuilder {
 
 		TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder builder =
 				new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
-		builder.setType(typeASiSubstitution.getType());
-		builder.setAdditionalServiceInfoUris(Arrays.asList(typeASiSubstitution.getAsi()));
+		if (typeASiSubstitution != null) {
+			builder.setType(typeASiSubstitution.getType());
+			builder.setAdditionalServiceInfoUris(Collections.singletonList(typeASiSubstitution.getAsi()));
+		}
 		builder.setStatus(status);
 		// copy
 		builder.setStartDate(serviceInfoStatus.getStartDate());
@@ -1862,7 +1863,8 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	private void replaceType(XmlQcStatements qcStatements, QCStatementOids contentReplacement) {
-		qcStatements.setQcTypes(getXmlOids(contentReplacement.getQcTypeIds()));
+		List<QCType> qcTypes = QcStatementUtils.getQcTypes(contentReplacement.getQcTypeIds());
+		qcStatements.setQcTypes(getXmlQcTypes(qcTypes));
 	}
 
 	private void replaceQSCD(XmlQcStatements qcStatements, QCStatementOids contentReplacement) {

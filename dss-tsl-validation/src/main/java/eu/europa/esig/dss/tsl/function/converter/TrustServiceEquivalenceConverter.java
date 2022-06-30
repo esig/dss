@@ -61,15 +61,15 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 			TrustServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointedParty();
 			TrustServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointingParty();
 			List<TrustServiceTSLTypeType> expectedServiceTSLTypes = expected.getTrustServiceTSLType();
-			List<TrustServiceTSLTypeType> subtituteServiceTSLTypes = substitute.getTrustServiceTSLType();
+			List<TrustServiceTSLTypeType> substituteServiceTSLTypes = substitute.getTrustServiceTSLType();
 
 			Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence = new HashMap<>();
 
 			for (TrustServiceTSLTypeType expectedTypeASI : expectedServiceTSLTypes) {
 				ServiceTypeASi staExpected = getServiceTypeASi(expectedTypeASI);
-				for (TrustServiceTSLTypeType subtituteTypeASI : subtituteServiceTSLTypes) {
-					ServiceTypeASi staSubtitute = getServiceTypeASi(subtituteTypeASI);
-					typeAsiEquivalence.put(staExpected, staSubtitute);
+				for (TrustServiceTSLTypeType substituteTypeASI : substituteServiceTSLTypes) {
+					ServiceTypeASi staSubstitute = getServiceTypeASi(substituteTypeASI);
+					typeAsiEquivalence.put(staExpected, staSubstitute);
 				}
 			}
 			result.setTypeAsiEquivalence(typeAsiEquivalence);

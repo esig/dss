@@ -214,19 +214,15 @@ public class QcStatementUtils {
     }
 
     private static List<QCType> getQcTypes(ASN1Encodable statementInfo) {
-        final List<QCType> result = new ArrayList<>();
+        final List<String> oids = new ArrayList<>();
         try {
             ASN1Sequence sequence = ASN1Sequence.getInstance(statementInfo);
             for (int i = 0; i < sequence.size(); i++) {
                 final ASN1Encodable e1 = sequence.getObjectAt(i);
                 if (e1 instanceof ASN1ObjectIdentifier) {
                     final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) e1;
-                    QCType type = QCType.fromOid(oid.getId());
-                    if (type != null) {
-                        result.add(type);
-                    } else {
-                        LOG.warn("Not supported QcType : {}", oid.getId());
-                    }
+                    oids.add(oid.getId());
+
                 } else {
                     LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but {}",
                             e1.getClass().getName());
@@ -241,7 +237,47 @@ public class QcStatementUtils {
                 LOG.warn("Unable to extract QcTypes : {}", e.getMessage());
             }
         }
+
+        return getQcTypes(oids);
+    }
+
+    /**
+     * This method returns a list of {@code QCType}s from a list of given QcType OIDs
+     *
+     * @param oids a list of {@link String}s representing QcType OIDs
+     * @return a list of {@link QCType}s
+     */
+    public static List<QCType> getQcTypes(List<String> oids) {
+        List<QCType> result = new ArrayList<>();
+        for (String oid : oids) {
+            QCType type = QCType.fromOid(oid);
+            if (type != null) {
+                result.add(type);
+            } else {
+                LOG.warn("Not supported QcType : {}", oid);
+            }
+        }
         return result;
+    }
+
+    /**
+     * This method verifies of the given OID is a QcCompliance statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcCompliance, FALSE otherwise
+     */
+    public static boolean isQcCompliance(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcSSCD statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcSSCD, FALSE otherwise
+     */
+    public static boolean isQcSSCD(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(oid);
     }
 
     private static List<String> getQcLegislationCountryCodes(ASN1Encodable statementInfo) {
@@ -389,26 +425,6 @@ public class QcStatementUtils {
             return qcLegislationCountryCodes.contains(qcLegislation);
         }
         return false;
-    }
-
-    /**
-     * This method verifies of the given OID is a QcCompliance statement
-     *
-     * @param oid {@link String} to check
-     * @return TRUE if QcCompliance, FALSE otherwise
-     */
-    public static boolean isQcCompliance(String oid) {
-        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(oid);
-    }
-
-    /**
-     * This method verifies of the given OID is a QcSSCD statement
-     *
-     * @param oid {@link String} to check
-     * @return TRUE if QcSSCD, FALSE otherwise
-     */
-    public static boolean isQcSSCD(String oid) {
-        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(oid);
     }
 
 }
