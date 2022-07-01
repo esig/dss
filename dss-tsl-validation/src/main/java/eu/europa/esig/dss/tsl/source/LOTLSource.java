@@ -39,6 +39,11 @@ public class LOTLSource extends TLSource {
 	private boolean pivotSupport = false;
 
 	/**
+	 * Enable/disable MRA LOTL support
+	 */
+	private boolean mraSupport = false;
+
+	/**
 	 * Predicate which filters the LOTL
 	 * 
 	 * Default : filter the XML European list of trusted list (LOTL)
@@ -74,6 +79,29 @@ public class LOTLSource extends TLSource {
 	 */
 	public void setPivotSupport(boolean pivotSupport) {
 		this.pivotSupport = pivotSupport;
+	}
+
+	/**
+	 * Gets if the LOTL configuration supports MRA
+	 *
+	 * @return TRUE if supports MRA, FALSE otherwise
+	 */
+	public boolean isMraSupport() {
+		return mraSupport;
+	}
+
+	/**
+	 * Sets of the LOTL shall support MRA.
+	 *
+	 * Setting this condition to TRUE will allow to process LOTL containing pointers to a third-country trusted lists,
+	 * including a special scheme for transition the qualification scope rules.
+	 *
+	 * Default : FALSE (LOTL MRA is not supported)
+	 *
+	 * @param mraSupport if LOTL shall support MRA
+	 */
+	public void setMraSupport(boolean mraSupport) {
+		this.mraSupport = mraSupport;
 	}
 
 	/**

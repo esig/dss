@@ -62,7 +62,7 @@ public abstract class AbstractParsingTask {
 	 */
 	protected TrustStatusListType getJAXBObject() {
 		try (InputStream is = document.openStream()) {
-			return TrustedListFacade.newFacade().unmarshall(is);
+			return createTrustedListFacade().unmarshall(is);
 		} catch (Exception e) {
 			String message = "Unable to parse binaries. Reason : '%s'";
 			// get complete error message in case if the message string is not defined directly
@@ -71,6 +71,15 @@ public abstract class AbstractParsingTask {
 			}
 			throw new DSSException(String.format(message, e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method loads a {@code TrustedListFacade}
+	 *
+	 * @return {@link TrustedListFacade}
+	 */
+	protected TrustedListFacade createTrustedListFacade() {
+		return TrustedListFacade.newFacade();
 	}
 
 	/**

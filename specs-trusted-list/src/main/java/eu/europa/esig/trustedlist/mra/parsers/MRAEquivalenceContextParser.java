@@ -18,18 +18,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.trustedlist.parsers;
+package eu.europa.esig.trustedlist.mra.parsers;
 
-import eu.europa.esig.dss.enumerations.MRAStatus;
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 
-public final class MRAStatusParser {
+public final class MRAEquivalenceContextParser {
 
-	private MRAStatusParser() {
+	private MRAEquivalenceContextParser() {
 	}
 
-	public static MRAStatus parse(String v) {
+	public static MRAEquivalenceContext parse(String v) {
 		if (v != null) {
-			for (MRAStatus m : MRAStatus.values()) {
+			for (MRAEquivalenceContext m : MRAEquivalenceContext.values()) {
 				if (m.getUri().equals(v)) {
 					return m;
 				}
@@ -38,7 +38,7 @@ public final class MRAStatusParser {
 		return null;
 	}
 
-	public static String print(MRAStatus m) {
+	public static String print(MRAEquivalenceContext m) {
 		if (m != null) {
 			return m.getUri();
 		}

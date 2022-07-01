@@ -89,7 +89,8 @@
 			<xsd:element name="CertificateContentDeclarationPointingParty" type="tns:CriteriaListType"/>
 			<xsd:element name="CertificateContentDeclarationPointedParty" type="tns:CriteriaListType"/>
 		</xsd:sequence>
-	</xsd:complexType>	<xsd:element name="QcStatementSet" type="mra:QcStatementListType"/>
+	</xsd:complexType>	
+	<xsd:element name="QcStatementSet" type="mra:QcStatementListType"/>
 	<xsd:complexType name="QcStatementListType">
 		<xsd:sequence maxOccurs="unbounded">
 			<xsd:element name="QcStatement" type="mra:QcStatementType"/>

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
+import eu.europa.esig.trustedlist.TrustedListFacade;
+import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -31,13 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
-import eu.europa.esig.trustedlist.TrustedListFacade;
-import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
-import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OtherTLSLPointerPredicatesTest {
 
@@ -65,7 +64,7 @@ public class OtherTLSLPointerPredicatesTest {
 					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<>(Arrays.asList("BG", "CY")))).count());
 
 			List<OtherTSLPointer> result = pointersToOtherTSL.getOtherTSLPointer().stream()
-					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter())
+					.filter(new SchemeTerritoryOtherTSLPointer(new HashSet<>(Arrays.asList("BG", "CY")))).map(new OtherTSLPointerConverter(false))
 					.collect(Collectors.toList());
 
 			assertEquals(3, result.size());

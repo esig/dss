@@ -44,6 +44,18 @@ import java.util.function.Function;
  */
 public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, OtherTSLPointer> {
 
+	/** Defines whether MRA shall be extracted */
+	private boolean mraSupport;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param mraSupport defines whether MRA shall be extracted if present
+	 */
+	public OtherTSLPointerConverter(boolean mraSupport) {
+		this.mraSupport = mraSupport;
+	}
+
 	@Override
 	public OtherTSLPointer apply(OtherTSLPointerType original) {
 		return new OtherTSLPointer(original.getTSLLocation(),
@@ -53,7 +65,7 @@ public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, O
 
 	@SuppressWarnings("rawtypes")
 	private MRA getMRA(AdditionalInformationType additionalInformation) {
-		if (additionalInformation != null
+		if (mraSupport && additionalInformation != null
 				&& Utils.isCollectionNotEmpty(additionalInformation.getTextualInformationOrOtherInformation())) {
 			for (Serializable serializableObj : additionalInformation.getTextualInformationOrOtherInformation()) {
 				if (serializableObj instanceof AnyType) {
@@ -63,8 +75,8 @@ public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, O
 						if (objectValue instanceof JAXBElement) {
 							JAXBElement jaxbElement = (JAXBElement) objectValue;
 							if (jaxbElement.getValue() instanceof MutualRecognitionAgreementInformationType) {
-								MutualRecognitionAgreementInformationType jaxbMRA = (MutualRecognitionAgreementInformationType) jaxbElement
-										.getValue();
+								MutualRecognitionAgreementInformationType jaxbMRA =
+										(MutualRecognitionAgreementInformationType) jaxbElement.getValue();
 								MRAConverter converter = new MRAConverter();
 								return converter.apply(jaxbMRA);
 							}

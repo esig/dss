@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -43,6 +29,19 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LOTLParsingTaskTest {
 
@@ -62,7 +61,7 @@ public class LOTLParsingTaskTest {
 		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
 		LOTL_PIVOT = new FileDocument("src/test/resources/eu-lotl-pivot.xml");
 
-		LOTL_MRA = new FileDocument("src/test/resources/lotl-mra.xml");
+		LOTL_MRA = new FileDocument("src/test/resources/mra-lotl.xml");
 
 		TL = new FileDocument("src/test/resources/ie-tl.xml");
 	}
@@ -231,8 +230,8 @@ public class LOTLParsingTaskTest {
 
 	@Test
 	public void parseLOTLMRA() {
-		// not pivot support
 		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setMraSupport(true);
 		lotlSource.setTlPredicate(new XMLOtherTSLPointer());
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_MRA, lotlSource);
 		LOTLParsingResult result = task.get();
@@ -240,11 +239,9 @@ public class LOTLParsingTaskTest {
 		assertNotNull(result.getIssueDate());
 		assertNotNull(result.getNextUpdateDate());
 		assertEquals(5, result.getVersion());
-		assertEquals(1, result.getSequenceNumber());
-
-
-		assertEquals(1, result.getTlPointers().size());
-		assertNotNull(result.getTlPointers().get(0).getMra());
+		assertEquals(6, result.getSequenceNumber());
+		assertEquals(33, result.getTlPointers().size());
+		assertNotNull(result.getTlPointers().get(result.getTlPointers().size() - 1).getMra());
 	}
 
 	@Test

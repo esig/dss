@@ -20,26 +20,26 @@
  */
 package eu.europa.esig.trustedlist;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
 import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TrustedListFacadeTest {
 
@@ -53,22 +53,29 @@ public class TrustedListFacadeTest {
 		marshallUnmarshall(new File("src/test/resources/lotl.xml"));
 	}
 
-	@Test
-	public void testMRA_LOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
-		marshallUnmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
+	private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
+		TrustedListFacade facade = TrustedListFacade.newFacade();
+
+		TrustStatusListType trustStatusListType = facade.unmarshall(file);
+		assertNotNull(trustStatusListType);
+
+		String marshall = facade.marshall(trustStatusListType, true);
+		assertNotNull(marshall);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testMRA_LOTL_extract() throws JAXBException, XMLStreamException, IOException, SAXException {
+	public void testMRA_LOTL_extract_withTrustedListFacade() throws JAXBException, XMLStreamException, IOException, SAXException {
 		TrustedListFacade facade = TrustedListFacade.newFacade();
 
 		TrustStatusListType trustStatusListType = facade
-				.unmarshall(new File("src/test/resources/mra/lotl_with_tc-v0.03.xml"));
+				.unmarshall(new File("src/test/resources/mra/mra-lotl.xml"));
 		assertNotNull(trustStatusListType);
 
 		OtherTSLPointersType pointersToOtherTSL = trustStatusListType.getSchemeInformation().getPointersToOtherTSL();
-		OtherTSLPointerType tcTL = pointersToOtherTSL.getOtherTSLPointer().get(44);
+		assertEquals(44, pointersToOtherTSL.getOtherTSLPointer().size());
+
+		OtherTSLPointerType tcTL = pointersToOtherTSL.getOtherTSLPointer().get(pointersToOtherTSL.getOtherTSLPointer().size() - 1);
 
 		AdditionalInformationType additionalInformation = tcTL.getAdditionalInformation();
 		List<Serializable> textualInformationOrOtherInformation = additionalInformation
@@ -86,27 +93,7 @@ public class TrustedListFacadeTest {
 				}
 			}
 		}
-		assertNotNull(mraContent);
-	}
-
-	@Test
-	public void testMRA_BE() throws JAXBException, XMLStreamException, IOException, SAXException {
-		marshallUnmarshall(new File("src/test/resources/mra/be-tl.xml"));
-	}
-
-	@Test
-	public void testMRA_TC() throws JAXBException, XMLStreamException, IOException, SAXException {
-		marshallUnmarshall(new File("src/test/resources/mra/tc-tl.xml"));
-	}
-
-	private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
-		TrustedListFacade facade = TrustedListFacade.newFacade();
-
-		TrustStatusListType trustStatusListType = facade.unmarshall(file);
-		assertNotNull(trustStatusListType);
-
-		String marshall = facade.marshall(trustStatusListType, true);
-		assertNotNull(marshall);
+		assertNull(mraContent);
 	}
 
 }
