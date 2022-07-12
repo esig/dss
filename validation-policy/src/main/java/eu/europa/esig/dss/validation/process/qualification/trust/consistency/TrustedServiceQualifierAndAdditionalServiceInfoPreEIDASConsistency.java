@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 
 import java.util.Date;
 import java.util.List;

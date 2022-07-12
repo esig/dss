@@ -22,12 +22,12 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
-import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 
 import java.util.Date;
 import java.util.List;

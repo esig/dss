@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TrustedServiceLegalPersonConsistencyTest {
 
@@ -43,21 +42,21 @@ public class TrustedServiceLegalPersonConsistencyTest {
 	@Test
 	public void testLegalOnly() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_LEGAL_PERSON));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testESigOnly() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG, ServiceQualification.QC_FOR_LEGAL_PERSON));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

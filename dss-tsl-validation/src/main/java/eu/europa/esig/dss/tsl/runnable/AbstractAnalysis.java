@@ -107,7 +107,7 @@ public abstract class AbstractAnalysis  {
 				LOTLParsingTask parsingTask = new LOTLParsingTask(document, source);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				LOG.error("Cannot parse the LOTL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
+				LOG.error("Cannot parse the LOTL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage(), e);
 				cacheAccess.parsingError(e);
 			}
 		}

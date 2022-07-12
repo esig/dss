@@ -338,26 +338,8 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			XmlSignatureLevel sigLevel = new XmlSignatureLevel();
 			sigLevel.setValue(qualification);
 			sigLevel.setDescription(qualification.getLabel());
-			sigLevel.setEnactedMRA(isEnactedMRA(xmlSignature));
 			xmlSignature.setSignatureLevel(sigLevel);
 		}
-	}
-
-	private Boolean isEnactedMRA(XmlSignature xmlSignature) {
-		String signatureId = xmlSignature.getId();
-		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(signatureId);
-		if (signatureWrapper != null) {
-			CertificateWrapper signingCertificate = signatureWrapper.getSigningCertificate();
-			if (signingCertificate != null) {
-				List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-				for (TrustedServiceWrapper trustedServiceWrapper : trustedServices) {
-					if (Utils.isTrue(trustedServiceWrapper.getEnactedMRA())) {
-						return true;
-					}
-				}
-			}
-		}
-		return null;
 	}
 
 	private XmlTimestamp getXmlTimestamp(TimestampWrapper timestampWrapper) {

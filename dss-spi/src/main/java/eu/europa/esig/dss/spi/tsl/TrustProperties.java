@@ -44,8 +44,6 @@ public class TrustProperties implements Serializable {
 	/** The trustService */
 	private final TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService;
 
-	private final MRA mra;
-
 	/**
 	 * Constructor for extracted information from an "independent" trusted list
 	 * 
@@ -58,21 +56,7 @@ public class TrustProperties implements Serializable {
 	 */
 	public TrustProperties(Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this(null, tlId, trustServiceProvider, trustService, null);
-	}
-
-	/**
-	 * Constructor for extracted information from trusted list which is linked to a
-	 * LOTL
-	 *
-	 * @param lotlId               the LOTL identifier
-	 * @param tlId                 the TL identifier
-	 * @param trustServiceProvider the trust service provider information
-	 * @param trustService         the current trust service
-	 */
-	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
-						   TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this(lotlId, tlId, trustServiceProvider, trustService, null);
+		this(null, tlId, trustServiceProvider, trustService);
 	}
 
 	/**
@@ -83,15 +67,13 @@ public class TrustProperties implements Serializable {
 	 * @param tlId                 the TL identifier
 	 * @param trustServiceProvider the trust service provider information
 	 * @param trustService         the current trust service
-	 * @param mra                  the mutual recognition agreement
 	 */
 	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
-			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService, MRA mra) {
+			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
 		this.lotlId = lotlId;
 		this.tlId = tlId;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
-		this.mra = mra;
 	}
 
 	/**
@@ -128,10 +110,6 @@ public class TrustProperties implements Serializable {
 	 */
 	public TimeDependentValues<TrustServiceStatusAndInformationExtensions> getTrustService() {
 		return trustService;
-	}
-
-	public MRA getMra() {
-		return mra;
 	}
 
 }

@@ -48,6 +48,9 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	/** The validation result record */
 	private final ValidationInfoRecord validationCacheInfo;
 
+	/** Mutual Recognition Agreement element extracted from the referencing LOTL */
+	private final MRA mra;
+
 	/** Cached Identifier instance */
 	private Identifier identifier;
 	
@@ -59,12 +62,27 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
 	 * @param url {@link String} address used to extract the entry
 	 */
+	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
+				  final ValidationInfoRecord validationCacheInfo, final String url) {
+		this(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url, null);
+	}
+	
+	/**
+	 * The constructor with Mutual Recognition Agreement
+	 *
+	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
+	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
+	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
+	 * @param url {@link String} address used to extract the entry
+	 * @param mra {@link MRA} Mutual Recognition Agreement
+	 */
 	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
-			final ValidationInfoRecord validationCacheInfo, final String url) {
+			final ValidationInfoRecord validationCacheInfo, final String url, final MRA mra) {
 		this.downloadCacheInfo = downloadCacheInfo;
 		this.parsingCacheInfo = parsingCacheInfo;
 		this.validationCacheInfo = validationCacheInfo;
 		this.url = url;
+		this.mra = mra;
 	}
 	
 	/**
@@ -103,6 +121,15 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 		return url;
 	}
 	
+	/**
+	 * Gets the MRA (Mutual Recognition Agreement) element when applicable
+	 *
+	 * @return {@link MRA}
+	 */
+	public MRA getMra() {
+		return mra;
+	}
+
 	/**
 	 * Returns the TL id
 	 *

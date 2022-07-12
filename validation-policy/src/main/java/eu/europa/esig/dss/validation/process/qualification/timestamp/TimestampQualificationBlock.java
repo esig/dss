@@ -34,6 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustedServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
@@ -136,11 +137,19 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 			item = item.setNextItem(isAcceptableTLPresent(acceptableTLUrls));
 			
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
-	
-				// 1. filter by service for QTST
+
 				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
 				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
+				// Execute only for Trusted Lists with defined MRA
+				if (isMRAEnactedForTrustedList(acceptableServices)) {
+					filter = TrustedServicesFilterFactory.createMRAEnactedFilter();
+					acceptableServices = filter.filter(acceptableServices);
+
+					item = item.setNextItem(hasMraEnactedTrustedService(acceptableServices));
+				}
+
+				// 1. filter by service for QTST
 				filter = TrustedServicesFilterFactory.createFilterByQTST();
 				List<TrustedServiceWrapper> qtstServices = filter.filter(acceptableServices);
 	
@@ -224,6 +233,10 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
+	private ChainItem<XmlValidationTimestampQualification> hasMraEnactedTrustedService(List<TrustedServiceWrapper> services) {
+		return new RelatedToMraEnactedTrustedServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+	}
+
 	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {
 		return new QTSTCheck(i18nProvider, result, services, getFailLevelConstraint());
 	}
@@ -234,6 +247,15 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 
 	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatusAtDate(List<TrustedServiceWrapper> services) {
 		return new GrantedStatusAtProductionTimeCheck(i18nProvider, result, services, getFailLevelConstraint());
+	}
+
+	private boolean isMRAEnactedForTrustedList(List<TrustedServiceWrapper> trustedServices) {
+		for (TrustedServiceWrapper trustedService : trustedServices) {
+			if (Utils.isTrue(trustedService.getTrustedList().isMra())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

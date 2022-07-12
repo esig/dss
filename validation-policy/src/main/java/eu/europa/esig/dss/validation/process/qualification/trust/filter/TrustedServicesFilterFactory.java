@@ -160,4 +160,23 @@ public final class TrustedServicesFilterFactory {
 		return new ConsistentServiceByQSCDFilter();
 	}
 
+	/**
+	 * Creates a TrustedService filter by MRA enacted
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createMRAEnactedFilter() {
+		return new ServiceByMRAEnactedFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by MRA equivalence starting date
+	 *
+	 * @param date {@link Date} to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createFilterByMRAEquivalenceStartingDate(Date date) {
+		return new ServiceByMRAEquivalenceStartingDateFilter(date);
+	}
+
 }

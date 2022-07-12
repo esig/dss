@@ -39,7 +39,7 @@ public class LOTLSource extends TLSource {
 	private boolean pivotSupport = false;
 
 	/**
-	 * Enable/disable MRA LOTL support
+	 * Enable/disable MRA (Mutual Recognition Agreement) LOTL support
 	 */
 	private boolean mraSupport = false;
 
@@ -82,7 +82,7 @@ public class LOTLSource extends TLSource {
 	}
 
 	/**
-	 * Gets if the LOTL configuration supports MRA
+	 * Gets if the LOTL configuration supports MRA (Mutual Recognition Agreement).
 	 *
 	 * @return TRUE if supports MRA, FALSE otherwise
 	 */
@@ -91,7 +91,7 @@ public class LOTLSource extends TLSource {
 	}
 
 	/**
-	 * Sets of the LOTL shall support MRA.
+	 * Sets of the LOTL shall support MRA (Mutual Recognition Agreement).
 	 *
 	 * Setting this condition to TRUE will allow to process LOTL containing pointers to a third-country trusted lists,
 	 * including a special scheme for transition the qualification scope rules.

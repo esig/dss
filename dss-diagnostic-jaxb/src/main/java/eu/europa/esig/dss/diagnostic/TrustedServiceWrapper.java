@@ -69,7 +69,27 @@ public class TrustedServiceWrapper {
 
 	/** Additional service informations */
 	private List<String> additionalServiceInfos;
+
+	/** Defines whether MRA has been applied for this particular Trusted Service */
 	private Boolean enactedMRA;
+
+	/** The name of the Trust Service defined the Mutual Recognition Agreement equivalence scheme */
+	private String mraTrustServiceLegalIdentifier;
+
+	/** The date when the status for the current MRA Trust Service equivalence has been started */
+	private Date mraTrustServiceEquivalenceStatusStartingTime;
+
+	/** Original third-country status before applied MRA */
+	private String originalTCStatus;
+
+	/** Original third-country type before applied MRA */
+	private String originalTCType;
+
+	/** Original third-country captured qualifiers before applied MRA */
+	private List<String> originalCapturedQualifiers;
+
+	/** Original third-country captured qualifiers before applied MRA */
+	private List<String> originalTCAdditionalServiceInfos;
 
 	/**
 	 * Gets corresponding Trusted List
@@ -305,12 +325,130 @@ public class TrustedServiceWrapper {
 		this.additionalServiceInfos = additionalServiceInfos;
 	}
 
+	/**
+	 * Gets whether MRA has been enacted for this Trusted Service
+	 *
+	 * @return {@link Boolean}
+	 */
+	public boolean isEnactedMRA() {
+		return enactedMRA != null && enactedMRA;
+	}
+
+	/**
+	 * Sets whether MRA has been enacted for this Trusted Service
+	 *
+	 * @param enactedMRA {@link Boolean}
+	 */
 	public void setEnactedMRA(Boolean enactedMRA) {
 		this.enactedMRA = enactedMRA;
 	}
 
-	public Boolean getEnactedMRA() {
-		return enactedMRA;
+	/**
+	 * Gets the Trust Service Legal Identifier matching the Trust Service defined within MRA
+	 *
+	 * @return {@link String}
+	 */
+	public String getMraTrustServiceLegalIdentifier() {
+		return mraTrustServiceLegalIdentifier;
+	}
+
+	/**
+	 * Sets the Trust Service Legal Identifier matching the Trust Service defined within MRA
+	 *
+	 * @param mraTrustServiceLegalIdentifier {@link String}
+	 */
+	public void setMraTrustServiceLegalIdentifier(String mraTrustServiceLegalIdentifier) {
+		this.mraTrustServiceLegalIdentifier = mraTrustServiceLegalIdentifier;
+	}
+
+	/**
+	 * Gets the Trust Service equivalence status starting time defined within MRA
+	 *
+	 * @return {@link Date}
+	 */
+	public Date getMraTrustServiceEquivalenceStatusStartingTime() {
+		return mraTrustServiceEquivalenceStatusStartingTime;
+	}
+
+	/**
+	 * Sets the Trust Service equivalence status starting time defined within MRA
+	 *
+	 * @param mraTrustServiceEquivalenceStatusStartingTime {@link Date}
+	 */
+	public void setMraTrustServiceEquivalenceStatusStartingTime(Date mraTrustServiceEquivalenceStatusStartingTime) {
+		this.mraTrustServiceEquivalenceStatusStartingTime = mraTrustServiceEquivalenceStatusStartingTime;
+	}
+
+	/**
+	 * Gets original third-country status defined within Trusted List (before applied MRA)
+	 *
+	 * @return {@link String}
+	 */
+	public String getOriginalTCStatus() {
+		return originalTCStatus;
+	}
+
+	/**
+	 * Sets original third-country status defined within Trusted List (before applied MRA)
+	 *
+	 * @param originalTCStatus {@link String}
+	 */
+	public void setOriginalTCStatus(String originalTCStatus) {
+		this.originalTCStatus = originalTCStatus;
+	}
+
+	/**
+	 * Gets original third-country type defined within Trusted List (before applied MRA)
+	 *
+	 * @return {@link String}
+	 */
+	public String getOriginalTCType() {
+		return originalTCType;
+	}
+
+	/**
+	 * Sets original third-country type defined within Trusted List (before applied MRA)
+	 *
+	 * @param originalTCType {@link String}
+	 */
+	public void setOriginalTCType(String originalTCType) {
+		this.originalTCType = originalTCType;
+	}
+
+	/**
+	 * Gets original third-country captured qualifiers defined within Trusted List (before applied MRA)
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOriginalCapturedQualifiers() {
+		return originalCapturedQualifiers;
+	}
+
+	/**
+	 * Sets original third-country captured qualifiers defined within Trusted List (before applied MRA)
+	 *
+	 * @param originalCapturedQualifiers a list of {@link String}s
+	 */
+	public void setOriginalCapturedQualifiers(List<String> originalCapturedQualifiers) {
+		this.originalCapturedQualifiers = originalCapturedQualifiers;
+	}
+
+	/**
+	 * Gets original third-country additional service informations defined within Trusted List (before applied MRA)
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOriginalTCAdditionalServiceInfos() {
+		return originalTCAdditionalServiceInfos;
+	}
+
+	/**
+	 * Sets original third-country additional service informations defined within Trusted List (before applied MRA)
+	 *
+	 * @param originalTCAdditionalServiceInfos a list of {@link String}s
+	 */
+	public void setOriginalTCAdditionalServiceInfos(List<String> originalTCAdditionalServiceInfos) {
+		this.originalTCAdditionalServiceInfos = originalTCAdditionalServiceInfos;
 	}
 
 }

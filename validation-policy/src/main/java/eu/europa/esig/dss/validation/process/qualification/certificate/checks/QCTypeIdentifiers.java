@@ -69,7 +69,7 @@ public final class QCTypeIdentifiers {
 	}
 
 	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCType qcType) {
-		List<QCType> qcTypes = certificate.getQCTypes();
+		List<QCType> qcTypes = certificate.getQcTypes();
 		if (Utils.isCollectionNotEmpty(qcTypes)) {
 			return qcTypes.contains(qcType);
 		}

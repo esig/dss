@@ -255,7 +255,7 @@ public abstract class PKIFactoryAccess {
 
 	private byte[] getKeystoreContent(String keystoreName) {
 		DataLoader dataLoader = getFileCacheDataLoader();
-		String keystoreUrl = PKI_FACTORY_HOST + KEYSTORE_ROOT_PATH + keystoreName;
+		String keystoreUrl = PKI_FACTORY_HOST + KEYSTORE_ROOT_PATH + DSSUtils.encodeURI(keystoreName);
 		return dataLoader.get(keystoreUrl);
 	}
 

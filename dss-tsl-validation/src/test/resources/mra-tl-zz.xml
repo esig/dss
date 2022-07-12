@@ -429,6 +429,25 @@
             </ServiceDigitalIdentity>
             <ServiceStatus>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
             <StatusStartingTime>2020-11-10T00:00:00Z</StatusStartingTime>
+            <ServiceInformationExtensions>
+              <Extension Critical="true">
+                <ns5:Qualifications>
+                  <ns5:QualificationElement>
+                    <ns5:Qualifiers>
+                      <ns5:Qualifier uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                    </ns5:Qualifiers>
+                    <ns5:CriteriaList assert="all">
+                      <ns5:PolicySet>
+                        <ns5:PolicyIdentifier>
+                          <ns3:Identifier>1.3.6.1.4.1.314159.1.2</ns3:Identifier>
+                        </ns5:PolicyIdentifier>
+                      </ns5:PolicySet>
+                      <ns5:Description/>
+                    </ns5:CriteriaList>
+                  </ns5:QualificationElement>
+                </ns5:Qualifications>
+              </Extension>
+            </ServiceInformationExtensions>
           </ServiceInformation>
         </TSPService>
       </TSPServices>

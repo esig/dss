@@ -234,7 +234,7 @@ public class SimpleReportForCertificateBuilder {
 		Boolean enactedMRA = null;
 		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();
 		for (TrustedServiceWrapper trustedServiceWrapper : trustedServices) {
-			if (Utils.isTrue(trustedServiceWrapper.getEnactedMRA())) {
+			if (trustedServiceWrapper.isEnactedMRA()) {
 				enactedMRA = true;
 				break;
 			}

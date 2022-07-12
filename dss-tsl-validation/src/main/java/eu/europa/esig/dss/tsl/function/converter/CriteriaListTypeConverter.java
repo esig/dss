@@ -4,7 +4,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
-import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
@@ -20,6 +19,7 @@ import eu.europa.esig.trustedlist.jaxb.mra.QcStatementListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QcStatementType;
 import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
+import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * This class is used to convert a list of {@code CriteriaListType} to {@code Condition}
+ *
+ */
 public class CriteriaListTypeConverter implements Function<CriteriaListType, Condition> {
 
 	@Override
@@ -80,16 +84,15 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 	/**
 	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
 	 * 
-	 * @param otherCriteriaList
-	 * @param condition
+	 * @param otherCriteriaList {@link eu.europa.esig.xades.jaxb.xades132.AnyType}
+	 * @param condition {@link CompositeCondition}
 	 */
-	@SuppressWarnings("rawtypes")
 	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList,
 			CompositeCondition condition) {
 		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
 			for (Object content : otherCriteriaList.getContent()) {
 				if (content instanceof JAXBElement) {
-					JAXBElement jaxbElement = (JAXBElement) content;
+					JAXBElement<?> jaxbElement = (JAXBElement<?>) content;
 					Object objectValue = jaxbElement.getValue();
 					if (objectValue instanceof CertSubjectDNAttributeType) {
 						CertSubjectDNAttributeType certSubDNAttr = (CertSubjectDNAttributeType) objectValue;
@@ -106,11 +109,10 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 						CompositeCondition composite = new CompositeCondition(Assert.ALL);
 						List<QcStatementType> qcStatement = qcStatementList.getQcStatement();
 						for (QcStatementType qcStatementType : qcStatement) {
-							String oid = null;
+							String oid = qcStatementType.getQcStatementId().getIdentifier().getValue();
 							String legislation = null;
 							String type = null;
 
-							oid = qcStatementType.getQcStatementId().getIdentifier().getValue();
 							QcStatementInfoType qcStatementInfo = qcStatementType.getQcStatementInfo();
 							if (qcStatementInfo != null) {
 								legislation = qcStatementInfo.getQcCClegislation();

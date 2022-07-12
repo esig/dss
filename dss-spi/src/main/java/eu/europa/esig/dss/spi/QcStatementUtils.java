@@ -96,36 +96,127 @@ public class QcStatementUtils {
             return null;
         }
 
-        QcStatements result = new QcStatements();
+        final QcStatements result = new QcStatements();
         for (int i = 0; i < qcStatementsSeq.size(); i++) {
             final QCStatement statement = getQCStatement(qcStatementsSeq.getObjectAt(i));
             if (statement != null) {
                 final ASN1ObjectIdentifier objectIdentifier = statement.getStatementId();
+                String oid = objectIdentifier.getId();
                 final ASN1Encodable statementInfo = statement.getStatementInfo();
-                if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.equals(objectIdentifier)) {
+                if (isQcCompliance(oid)) {
                     result.setQcCompliance(true);
-                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.equals(objectIdentifier)) {
+                } else if (isQcLimitValue(oid)) {
                     result.setQcLimitValue(getQcLimitValue(statementInfo));
-                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.equals(objectIdentifier)) {
+                } else if (isQcRetentionPeriod(oid)) {
                     result.setQcEuRetentionPeriod(getQcEuRetentionPeriod(statementInfo));
-                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.equals(objectIdentifier)) {
+                } else if (isQcSSCD(oid)) {
                     result.setQcQSCD(true);
-                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.equals(objectIdentifier)) {
+                } else if (isQcPds(oid)) {
                     result.setQcEuPDS(getQcEuPDS(statementInfo));
-                } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.equals(objectIdentifier)) {
+                } else if (isQcType(oid)) {
                     result.setQcTypes(getQcTypes(statementInfo));
-                } else if (OID.id_etsi_qcs_QcCClegislation.equals(objectIdentifier)) {
+                } else if (isQcCClegislation(oid)) {
                     result.setQcLegislationCountryCodes(getQcLegislationCountryCodes(statementInfo));
-                } else if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.equals(objectIdentifier)) {
+                } else if (isQcSemanticsIdentifier(oid)) {
                     result.setQcSemanticsIdentifier(getQcSemanticsIdentifier(statementInfo));
-                } else if (OID.psd2_qcStatement.equals(objectIdentifier)) {
-                    result.setPsd2QcType(getPsdc2QcType(statementInfo));
+                } else if (isPsd2QcType(oid)) {
+                    result.setPsd2QcType(getPsd2QcType(statementInfo));
                 } else {
-                    LOG.warn("Not supported QcStatement with oid {}", objectIdentifier.getId());
+                    LOG.warn("Not supported QcStatement with oid {}", oid);
                 }
             }
         }
         return result;
+    }
+
+    /**
+     * This method verifies of the given OID is a QcCompliance statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcCompliance, FALSE otherwise
+     */
+    public static boolean isQcCompliance(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcLimitValue statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcLimitValue, FALSE otherwise
+     */
+    public static boolean isQcLimitValue(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcRetentionPeriod statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcRetentionPeriod, FALSE otherwise
+     */
+    public static boolean isQcRetentionPeriod(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcSSCD statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcSSCD, FALSE otherwise
+     */
+    public static boolean isQcSSCD(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcPds statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcPds, FALSE otherwise
+     */
+    public static boolean isQcPds(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcType statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcType, FALSE otherwise
+     */
+    public static boolean isQcType(String oid) {
+        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcCClegislation statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcCClegislation, FALSE otherwise
+     */
+    public static boolean isQcCClegislation(String oid) {
+        return OID.id_etsi_qcs_QcCClegislation.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a QcSemanticsIdentifier statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if QcSemanticsIdentifier, FALSE otherwise
+     */
+    public static boolean isQcSemanticsIdentifier(String oid) {
+        return RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.getId().equals(oid);
+    }
+
+    /**
+     * This method verifies of the given OID is a Psd2QcType statement
+     *
+     * @param oid {@link String} to check
+     * @return TRUE if Psd2QcType, FALSE otherwise
+     */
+    public static boolean isPsd2QcType(String oid) {
+        return OID.psd2_qcStatement.getId().equals(oid);
     }
 
     private static QCStatement getQCStatement(ASN1Encodable qcStatement) {
@@ -260,26 +351,6 @@ public class QcStatementUtils {
         return result;
     }
 
-    /**
-     * This method verifies of the given OID is a QcCompliance statement
-     *
-     * @param oid {@link String} to check
-     * @return TRUE if QcCompliance, FALSE otherwise
-     */
-    public static boolean isQcCompliance(String oid) {
-        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(oid);
-    }
-
-    /**
-     * This method verifies of the given OID is a QcSSCD statement
-     *
-     * @param oid {@link String} to check
-     * @return TRUE if QcSSCD, FALSE otherwise
-     */
-    public static boolean isQcSSCD(String oid) {
-        return ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(oid);
-    }
-
     private static List<String> getQcLegislationCountryCodes(ASN1Encodable statementInfo) {
         List<String> result = new ArrayList<>();
         try {
@@ -320,7 +391,7 @@ public class QcStatementUtils {
         return null;
     }
 
-    private static PSD2QcType getPsdc2QcType(ASN1Encodable statementInfo) {
+    private static PSD2QcType getPsd2QcType(ASN1Encodable statementInfo) {
         try {
             PSD2QcType result = new PSD2QcType();
 
@@ -360,33 +431,24 @@ public class QcStatementUtils {
      * @return TRUE if a QCStatement with the given OID is present, FALSE otherwise
      */
     public static boolean isQcStatementPresent(QcStatements qcStatements, String qcStatementOid) {
-        if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcCompliance.getId().equals(qcStatementOid)) {
+        if (isQcCompliance(qcStatementOid)) {
             return qcStatements.isQcCompliance();
-
-        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_LimiteValue.getId().equals(qcStatementOid)) {
+        } else if (isQcLimitValue(qcStatementOid)) {
             return qcStatements.getQcLimitValue() != null;
-
-        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_RetentionPeriod.getId().equals(qcStatementOid)) {
+        } else if (isQcRetentionPeriod(qcStatementOid)) {
             return qcStatements.getQcEuRetentionPeriod() != null;
-
-        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcSSCD.getId().equals(qcStatementOid)) {
+        } else if (isQcSSCD(qcStatementOid)) {
             return qcStatements.isQcQSCD();
-
-        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcPds.getId().equals(qcStatementOid)) {
+        } else if (isQcPds(qcStatementOid)) {
             return Utils.isCollectionNotEmpty(qcStatements.getQcEuPDS());
-
-        } else if (ETSIQCObjectIdentifiers.id_etsi_qcs_QcType.getId().equals(qcStatementOid)) {
+        } else if (isQcType(qcStatementOid)) {
             return Utils.isCollectionNotEmpty(qcStatements.getQcTypes());
-
-        } else if (OID.id_etsi_qcs_QcCClegislation.getId().equals(qcStatementOid)) {
+        } else if (isQcCClegislation(qcStatementOid)) {
             return Utils.isCollectionNotEmpty(qcStatements.getQcLegislationCountryCodes());
-
-        } else if (RFC3739QCObjectIdentifiers.id_qcs_pkixQCSyntax_v2.getId().equals(qcStatementOid)) {
+        } else if (isQcSemanticsIdentifier(qcStatementOid)) {
             return qcStatements.getQcSemanticsIdentifier() != null;
-
-        } else if (OID.psd2_qcStatement.getId().equals(qcStatementOid)) {
+        } else if (isPsd2QcType(qcStatementOid)) {
             return qcStatements.getPsd2QcType() != null;
-
         } else {
             return false;
         }

@@ -354,26 +354,6 @@
 							</xsl:if>
 
 							<xsl:apply-templates select="dss:QualificationDetails" />
-							
-							<xsl:if test="dss:SignatureLevel/@enactedMRA">
-								<fo:table-row>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-
-											The qualification level has been determined using the mutual recognition agreement concluded with the EU.
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-							</xsl:if>
 						
 							<fo:table-row>
 								<xsl:attribute name="margin-top">1px</xsl:attribute>

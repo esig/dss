@@ -34,16 +34,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * This class is used to extract MRA equivalence scheme for a Trusted List
+ *
+ */
 public class TrustServiceEquivalenceConverter implements Function<TrustServiceEquivalenceInformationType, ServiceEquivalence> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceEquivalenceConverter.class);
 
-	private CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
+	/** The used {@code CriteriaListTypeConverter} */
+	private final CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
 
 	@Override
 	public ServiceEquivalence apply(TrustServiceEquivalenceInformationType t) {
 		ServiceEquivalence result = new ServiceEquivalence();
-		result.setLegalInfo(t.getTrustServiceLegalIdentifier());
+		result.setLegalInfoIdentifier(t.getTrustServiceLegalIdentifier());
 		result.setStartDate(t.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime());
 		result.setStatus(t.getTrustServiceEquivalenceStatus());
 
@@ -134,41 +139,40 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 
 	private QCStatementOids getQCStatementOids(Condition condition) {
 		QCStatementOids result = new QCStatementOids();
+
 		List<String> qcStatementIds = new ArrayList<>();
 		List<String> qcTypeIds = new ArrayList<>();
+		List<String> qcCClegislations = new ArrayList<>();
+
+		List<String> qcStatementIdsToRemove = new ArrayList<>();
+		List<String> qcTypeIdsToRemove = new ArrayList<>();
+		List<String> qcCClegislationsToRemove = new ArrayList<>();
 
 		if (condition instanceof CompositeCondition) {
 			CompositeCondition composite = (CompositeCondition) condition;
 			switch (composite.getMatchingCriteriaIndicator()) {
 				case ALL:
 					for (Condition childCondition : composite.getChildren()) {
-						QCStatementOids childResult = getQCStatementOids(childCondition);
-						for (String childQCStatementId : childResult.getQcStatementIds()) {
-							if (!qcStatementIds.contains(childQCStatementId))
-								qcStatementIds.add(childQCStatementId);
-						}
-						for (String childQCTypeId : childResult.getQcTypeIds()) {
-							if (!qcTypeIds.contains(childQCTypeId))
-								qcTypeIds.add(childQCTypeId);
-						}
+						populateFromChild(childCondition, qcStatementIds, qcTypeIds, qcCClegislations,
+								qcStatementIdsToRemove, qcTypeIdsToRemove, qcCClegislationsToRemove);
 					}
 					break;
 
 				case AT_LEAST_ONE:
-					Condition childCondition = composite.getChildren().get(0);
-					QCStatementOids childResult = getQCStatementOids(childCondition);
-					for (String childQCStatementId : childResult.getQcStatementIds()) {
-						if (!qcStatementIds.contains(childQCStatementId))
-							qcStatementIds.add(childQCStatementId);
+					if (composite.getChildren().size() > 1) {
+						LOG.info("First equivalence condition is used out of '{}'!", composite.getChildren().size());
 					}
-					for (String childQCTypeId : childResult.getQcTypeIds()) {
-						if (!qcTypeIds.contains(childQCTypeId))
-							qcTypeIds.add(childQCTypeId);
-					}
+					Condition firstCondition = composite.getChildren().get(0);
+					populateFromChild(firstCondition, qcStatementIds, qcTypeIds, qcCClegislations,
+							qcStatementIdsToRemove, qcTypeIdsToRemove, qcCClegislationsToRemove);
 					break;
 
 				case NONE:
-					// nothing
+					for (Condition childCondition : composite.getChildren()) {
+						// Reversed lists for NONE
+						populateFromChild(childCondition, qcStatementIdsToRemove, qcTypeIdsToRemove, qcCClegislationsToRemove,
+								qcStatementIds, qcTypeIds, qcCClegislations);
+					}
 					break;
 
 				default:
@@ -187,11 +191,54 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 			if (Utils.isStringNotEmpty(type)) {
 				qcTypeIds.add(type);
 			}
+			String legislation = qcCondition.getLegislation();
+			if (Utils.isStringNotEmpty(legislation)) {
+				qcCClegislations.add(legislation);
+			}
 		}
 
 		result.setQcStatementIds(qcStatementIds);
 		result.setQcTypeIds(qcTypeIds);
+		result.setQcCClegislations(qcCClegislations);
+		result.setQcStatementIdsToRemove(qcStatementIdsToRemove);
+		result.setQcTypeIdsToRemove(qcTypeIdsToRemove);
+		result.setQcCClegislationsToRemove(qcCClegislationsToRemove);
 		return result;
+	}
+
+	private void populateFromChild(Condition condition, List<String> qcStatementIds, List<String> qcTypeIds, List<String> qcCClegislations,
+								   List<String> qcStatementIdsToRemove, List<String> qcTypeIdsToRemove, List<String> qcCClegislationsToRemove) {
+		QCStatementOids conditionResult = getQCStatementOids(condition);
+		for (String conditionQCStatementId : conditionResult.getQcStatementIds()) {
+			if (!qcStatementIds.contains(conditionQCStatementId)) {
+				qcStatementIds.add(conditionQCStatementId);
+			}
+		}
+		for (String conditionQCTypeId : conditionResult.getQcTypeIds()) {
+			if (!qcTypeIds.contains(conditionQCTypeId)) {
+				qcTypeIds.add(conditionQCTypeId);
+			}
+		}
+		for (String conditionQcCClegislation : conditionResult.getQcCClegislations()) {
+			if (!qcCClegislations.contains(conditionQcCClegislation)) {
+				qcCClegislations.add(conditionQcCClegislation);
+			}
+		}
+		for (String childQCStatementId : conditionResult.getQcStatementIdsToRemove()) {
+			if (!qcStatementIdsToRemove.contains(childQCStatementId)) {
+				qcStatementIdsToRemove.add(childQCStatementId);
+			}
+		}
+		for (String childQCTypeId : conditionResult.getQcTypeIdsToRemove()) {
+			if (!qcTypeIdsToRemove.contains(childQCTypeId)) {
+				qcTypeIdsToRemove.add(childQCTypeId);
+			}
+		}
+		for (String childQcCClegislation : conditionResult.getQcCClegislationsToRemove()) {
+			if (!qcCClegislationsToRemove.contains(childQcCClegislation)) {
+				qcCClegislationsToRemove.add(childQcCClegislation);
+			}
+		}
 	}
 
 	private void fillQualifierEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {

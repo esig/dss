@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TrustedServiceQSCDConsistencyTest {
 
@@ -43,21 +42,21 @@ public class TrustedServiceQSCDConsistencyTest {
 	@Test
 	public void testQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testNoQSCD() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
 		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD, ServiceQualification.QC_WITH_QSCD));
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri(), ServiceQualification.QC_WITH_QSCD.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

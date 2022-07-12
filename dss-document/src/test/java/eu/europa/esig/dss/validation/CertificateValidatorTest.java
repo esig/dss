@@ -156,8 +156,8 @@ public class CertificateValidatorTest {
 		CertificateWrapper certificateWrapper = usedCertificates.get(0);
 		assertTrue(certificateWrapper.isQcCompliance());
 		assertFalse(certificateWrapper.isSupportedByQSCD());
-		assertEquals(1, certificateWrapper.getQCTypes().size());
-		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQCTypes().iterator().next());
+		assertEquals(1, certificateWrapper.getQcTypes().size());
+		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQcTypes().iterator().next());
 		assertEquals(1, certificateWrapper.getQcLegislationCountryCodes().size());
 		assertEquals("TC", certificateWrapper.getQcLegislationCountryCodes().iterator().next());
 	}
