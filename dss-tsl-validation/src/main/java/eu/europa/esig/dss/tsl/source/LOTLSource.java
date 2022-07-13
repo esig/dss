@@ -20,10 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.source;
 
-import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
 import java.util.function.Predicate;
@@ -48,14 +46,14 @@ public class LOTLSource extends TLSource {
 	 * 
 	 * Default : filter the XML European list of trusted list (LOTL)
 	 */
-	private Predicate<OtherTSLPointerType> lotlPredicate = new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer());
+	private Predicate<OtherTSLPointerType> lotlPredicate = TLPredicateFactory.createEULOTLPredicate();
 
 	/**
 	 * Predicate which filters the TLs
 	 * 
 	 * Default : filter all XML trusted lists (TL) for European countries
 	 */
-	private Predicate<OtherTSLPointerType> tlPredicate = new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer());
+	private Predicate<OtherTSLPointerType> tlPredicate = TLPredicateFactory.createEUTLPredicate();
 
 	/**
 	 * Optional : Predicate which filters the URL where the provided signing

@@ -26,16 +26,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -179,12 +177,7 @@ public class LOTLParsingTaskTest {
 	@Test
 	public void parseLOTLOnlyBEandPTPointers() {
 		LOTLSource lotlSource = new LOTLSource();
-
-		Set<String> countries = new HashSet<>();
-		countries.add("BE");
-		countries.add("PT");
-
-		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(countries).and(new XMLOtherTSLPointer()));
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("BE", "PT"));
 
 		LOTLParsingTask task = new LOTLParsingTask(LOTL, lotlSource);
 

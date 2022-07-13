@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
 import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
@@ -95,7 +96,7 @@ public class QualifiedTest {
 	@Test
 	public void testPreQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Collections.emptyList(),
-				Arrays.asList(QCType.QCT_ESIGN));
+				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		notQC(signingCertificate);
 	}
 
@@ -149,21 +150,21 @@ public class QualifiedTest {
 	@Test
 	public void testPostQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Collections.emptyList(),
-				Arrays.asList(QCType.QCT_ESIGN));
+				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		notQC(signingCertificate);
 	}
 
 	@Test
 	public void testPostQcCompliantQcTypeEsig() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList(),
-				Arrays.asList(QCType.QCT_ESIGN));
+				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		qc(signingCertificate);
 	}
 
 	@Test
 	public void testPostQcCompliantQcTypeEseals() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList(),
-				Arrays.asList(QCType.QCT_ESEAL));
+				Arrays.asList(QCTypeEnum.QCT_ESEAL));
 		qc(signingCertificate);
 	}
 

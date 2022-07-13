@@ -122,7 +122,8 @@ public class QcStatementUtils {
                 } else if (isPsd2QcType(oid)) {
                     result.setPsd2QcType(getPsd2QcType(statementInfo));
                 } else {
-                    LOG.warn("Not supported QcStatement with oid {}", oid);
+                    LOG.warn("Not supported QcStatement with OID : '{}'", oid);
+                    result.addOtherOid(oid);
                 }
             }
         }
@@ -315,7 +316,7 @@ public class QcStatementUtils {
                     oids.add(oid.getId());
 
                 } else {
-                    LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifer, but {}",
+                    LOG.warn("ASN1Sequence in QcTypes does not contain ASN1ObjectIdentifier, but {}",
                             e1.getClass().getName());
                 }
             }
@@ -341,11 +342,11 @@ public class QcStatementUtils {
     public static List<QCType> getQcTypes(List<String> oids) {
         List<QCType> result = new ArrayList<>();
         for (String oid : oids) {
-            QCType type = QCType.fromOid(oid);
-            if (type != null) {
+            if (Utils.isStringNotBlank(oid)) {
+                QCType type = QCType.fromOid(oid);
                 result.add(type);
             } else {
-                LOG.warn("Not supported QcType : {}", oid);
+                LOG.warn("Empty QcType OID is skipped.");
             }
         }
         return result;
@@ -450,7 +451,7 @@ public class QcStatementUtils {
         } else if (isPsd2QcType(qcStatementOid)) {
             return qcStatements.getPsd2QcType() != null;
         } else {
-            return false;
+            return qcStatements.getOtherOids().contains(qcStatementOid);
         }
     }
 

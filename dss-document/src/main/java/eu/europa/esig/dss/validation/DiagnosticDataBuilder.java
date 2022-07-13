@@ -328,8 +328,8 @@ public abstract class DiagnosticDataBuilder {
 	private void linkCertificatesAndTrustServices(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				List<XmlTrustedServiceProvider> trustedServiceProviders = new XmlTrustedServiceProviderBuilder(
-						allCertificateSources, xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
+				List<XmlTrustedServiceProvider> trustedServiceProviders =
+						new XmlTrustedServiceProviderBuilder(xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
 						.build(certificateToken, getRelatedTrustServices(certificateToken));
 				if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
 					XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());

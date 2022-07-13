@@ -573,6 +573,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of QcStatements OIDs not supported by the implementation
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOtherQcStatements() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getOtherOIDs() != null) {
+			return getOidValues(certificate.getQcStatements().getOtherOIDs());
+		}
+		return Collections.emptyList();
+	}
+
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
 		List<String> result = new ArrayList<>();
 		if (xmlOids != null) {
@@ -646,6 +658,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public List<String> getOriginalThirdCountryQcLegislationCountryCodes() {
 		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
 			return getOriginalThirdCountryMapping().getQcCClegislation();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of QcStatements OIDs not supported by the implementation
+	 * defined in a third-country Trusted List before MRA mapping
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOriginalThirdCountryOtherQcStatements() {
+		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
+			return getOidValues(getOriginalThirdCountryMapping().getOtherOIDs());
 		}
 		return Collections.emptyList();
 	}

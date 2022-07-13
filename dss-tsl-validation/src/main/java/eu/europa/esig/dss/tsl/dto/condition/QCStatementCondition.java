@@ -35,12 +35,15 @@ public class QCStatementCondition implements Condition {
 	@Override
 	public boolean check(CertificateToken certificateToken) {
 		final QcStatements qcStatements = QcStatementUtils.getQcStatements(certificateToken);
-		if (qcStatements != null && QcStatementUtils.isQcStatementPresent(qcStatements, oid)) {
-			if (Utils.isStringNotEmpty(type)) {
-				return QcStatementUtils.isQcTypePresent(qcStatements, type);
+		if (qcStatements != null) {
+			if (Utils.isStringNotEmpty(oid) && !QcStatementUtils.isQcStatementPresent(qcStatements, oid)) {
+				return false;
 			}
-			if (Utils.isStringNotEmpty(legislation)) {
-				return QcStatementUtils.isQcLegislationPresent(qcStatements, legislation);
+			if (Utils.isStringNotEmpty(type) && !QcStatementUtils.isQcTypePresent(qcStatements, type)) {
+				return false;
+			}
+			if (Utils.isStringNotEmpty(legislation) && !QcStatementUtils.isQcLegislationPresent(qcStatements, legislation)) {
+				return false;
 			}
 			return true;
 		}

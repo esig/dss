@@ -498,6 +498,7 @@
 			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
 			<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
 			<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
+			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
 
 			<xs:element name="MRACertificateMapping" type="MRACertificateMapping" minOccurs="0" />
 
@@ -518,6 +519,7 @@
 			<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
 			<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
 			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
+			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -554,6 +556,12 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	<xs:complexType name="OIDs">
+		<xs:sequence>
+			<xs:element name="OID" type="OID" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="PSD2QcInfo">
 		<xs:sequence>
@@ -569,18 +577,18 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="RoleOfPSP">
+		<xs:sequence>
+			<xs:element name="oid" type="OID" minOccurs="0" />
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:complexType name="QcEuLimitValue">
 		<xs:sequence>
 			<xs:element name="currency" type="xs:string" />
 			<xs:element name="amount" type="xs:int" />
 			<xs:element name="exponent" type="xs:int" />
-		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="RoleOfPSP">
-		<xs:sequence>
-			<xs:element name="oid" type="OID" minOccurs="0" />
-			<xs:element name="name" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	

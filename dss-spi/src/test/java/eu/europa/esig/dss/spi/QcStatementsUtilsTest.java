@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.spi;
 
-import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.PSD2QcType;
@@ -60,7 +60,7 @@ public class QcStatementsUtilsTest {
         assertNull(qcStatements.getQcEuRetentionPeriod());
         assertEquals(2, qcStatements.getQcEuPDS().size());
         assertEquals(1, qcStatements.getQcTypes().size());
-        assertTrue(qcStatements.getQcTypes().contains(QCType.QCT_WEB));
+        assertTrue(qcStatements.getQcTypes().contains(QCTypeEnum.QCT_WEB));
         PSD2QcType psd2QcType = qcStatements.getPsd2QcType();
         assertNotNull(psd2QcType);
         assertNotNull(psd2QcType.getNcaId());
@@ -82,7 +82,7 @@ public class QcStatementsUtilsTest {
         assertNull(qcStatements.getQcEuRetentionPeriod());
         assertEquals(1, qcStatements.getQcEuPDS().size());
         assertEquals(1, qcStatements.getQcTypes().size());
-        assertTrue(qcStatements.getQcTypes().contains(QCType.QCT_ESEAL));
+        assertTrue(qcStatements.getQcTypes().contains(QCTypeEnum.QCT_ESEAL));
 
         assertNotNull(qcStatements.getQcSemanticsIdentifier());
         assertEquals(SemanticsIdentifier.qcsSemanticsIdLegal, qcStatements.getQcSemanticsIdentifier());

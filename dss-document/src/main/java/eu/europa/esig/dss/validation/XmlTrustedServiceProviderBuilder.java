@@ -16,6 +16,7 @@ import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.QcStatementUtils;
 import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
@@ -30,7 +31,6 @@ import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +51,6 @@ import java.util.stream.Collectors;
 public class XmlTrustedServiceProviderBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlTrustedServiceProviderBuilder.class);
-
-    /**
-     * List of all available certificate sources
-     */
-    private final ListCertificateSource allCertificateSources;
 
     /**
      * The map of certificates identifiers and their corresponding XML representations
@@ -80,16 +75,13 @@ public class XmlTrustedServiceProviderBuilder {
     /**
      * Default constructor
      *
-     * @param allCertificateSources {@link ListCertificateSource} representing all available certificate sources
      * @param xmlCertsMap a map of certificate identifiers and corresponding XML representations
      * @param xmlTrustedListsMap a map of trusted list identifiers and corresponding XML representations
      * @param tlInfoMap a map of trusted list identifiers and corresponding {@link TLInfo}s
      */
-    public XmlTrustedServiceProviderBuilder(final ListCertificateSource allCertificateSources,
-                                            final Map<String, XmlCertificate> xmlCertsMap,
+    public XmlTrustedServiceProviderBuilder(final Map<String, XmlCertificate> xmlCertsMap,
                                             final Map<String, XmlTrustedList> xmlTrustedListsMap,
                                             final Map<String, TLInfo> tlInfoMap) {
-        this.allCertificateSources = allCertificateSources;
         this.xmlCertsMap = xmlCertsMap;
         this.xmlTrustedListsMap = xmlTrustedListsMap;
         this.tlInfoMap = tlInfoMap;
@@ -201,11 +193,10 @@ public class XmlTrustedServiceProviderBuilder {
     private MRA getMRA(TrustProperties trustProperties) {
         if (trustProperties.getTLIdentifier() != null) {
             TLInfo tlInfo = tlInfoMap.get(trustProperties.getTLIdentifier().asXmlId());
-            if (tlInfo == null) {
-                throw new IllegalStateException(String.format(
-                        "TLInfo with Id '%s' is not present within the corresponding map", trustProperties.getTLIdentifier().asXmlId()));
+            if (tlInfo != null) {
+                // may be null when no TLValidationJob is used
+                return tlInfo.getMra();
             }
-            return tlInfo.getMra();
         }
         return null;
     }
@@ -375,7 +366,7 @@ public class XmlTrustedServiceProviderBuilder {
 
             } else if (qcCompliance) {
                 // qcCompliance + no type -> foreSign
-                if (isQcTypeMatch(QCType.QCT_ESIGN, serviceTypeASi)) {
+                if (isQcTypeMatch(QCTypeEnum.QCT_ESIGN, serviceTypeASi)) {
                     return true;
                 }
 
@@ -389,11 +380,11 @@ public class XmlTrustedServiceProviderBuilder {
     
     private boolean isQcTypeMatch(QCType qcType, ServiceTypeASi serviceTypeASi) {
         String asi = serviceTypeASi.getAsi();
-        if (QCType.QCT_ESIGN.equals(qcType)) {
+        if (QCTypeEnum.QCT_ESIGN.equals(qcType)) {
             return AdditionalServiceInformation.isForeSignatures(asi);
-        } else if (QCType.QCT_ESEAL.equals(qcType)) {
+        } else if (QCTypeEnum.QCT_ESEAL.equals(qcType)) {
             return AdditionalServiceInformation.isForeSeals(asi);
-        } else if (QCType.QCT_WEB.equals(qcType)) {
+        } else if (QCTypeEnum.QCT_WEB.equals(qcType)) {
             return AdditionalServiceInformation.isForWebAuth(asi);
         }
         return false;
@@ -632,6 +623,10 @@ public class XmlTrustedServiceProviderBuilder {
         List<String> qcCClegislations = qcStatements.getQcCClegislation();
         if (Utils.isCollectionNotEmpty(qcCClegislations)) {
             originalQcStatements.setQcCClegislation(new ArrayList<>(qcCClegislations));
+        }
+        List<XmlOID> otherOIDs = qcStatements.getOtherOIDs();
+        if (Utils.isCollectionNotEmpty(otherOIDs)) {
+            originalQcStatements.setOtherOIDs(new ArrayList<>(otherOIDs));
         }
         return originalQcStatements;
     }

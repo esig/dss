@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
@@ -157,7 +157,7 @@ public class CertificateValidatorTest {
 		assertTrue(certificateWrapper.isQcCompliance());
 		assertFalse(certificateWrapper.isSupportedByQSCD());
 		assertEquals(1, certificateWrapper.getQcTypes().size());
-		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQcTypes().iterator().next());
+		assertEquals(QCTypeEnum.QCT_ESIGN, certificateWrapper.getQcTypes().iterator().next());
 		assertEquals(1, certificateWrapper.getQcLegislationCountryCodes().size());
 		assertEquals("TC", certificateWrapper.getQcLegislationCountryCodes().iterator().next());
 	}

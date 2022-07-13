@@ -69,7 +69,6 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 		result.setCountryCode(currentTL.getCountryCode());
 		result.setURL(currentTL.getUrl());
 		result.setId(currentTL.getId());
-		result.setMra(currentTL.isMra());
 
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;

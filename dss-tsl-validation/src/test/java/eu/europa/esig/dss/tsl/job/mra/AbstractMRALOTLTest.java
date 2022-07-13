@@ -30,8 +30,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
-import eu.europa.esig.dss.tsl.function.TypeOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -642,7 +641,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         lotlKeystore.addCertificate(getCertificate(SIGNER_LOTL_NAME));
         lotlSource.setCertificateSource(lotlKeystore);
 
-        lotlSource.setTlPredicate(new TypeOtherTSLPointer("http://example/TSLType/CCgeneric").and(new XMLOtherTSLPointer()));
+        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://example/TSLType/CCgeneric"));
 
         tlValidationJob.setListOfTrustedListSources(lotlSource);
 

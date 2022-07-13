@@ -83,7 +83,6 @@
 				<xs:attribute name="CountryCode" type="xs:string" use="optional" /> <!-- can be null in case of parsing task failure -->
 				<xs:attribute name="URL" type="xs:string" use="required" />
 				<xs:attribute name="Id" type="xs:string" use="required" />
-				<xs:attribute name="mra" type="xs:boolean" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

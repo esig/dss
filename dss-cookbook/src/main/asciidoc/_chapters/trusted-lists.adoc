@@ -113,6 +113,8 @@ The following predicates are provided within the framework:
 * `PDFOtherTSLPointer` - filters PDF TL pointers;
 * `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
 
+NOTE: For ready-to-use predicates, please see `TLPredicateFactory` that contains a list of methods to create the most commonly used predicates in a simplified way.
+
 [source,java,indent=0]
 .Examples of TSL Loading Predicates configuration
 ----

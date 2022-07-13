@@ -58,6 +58,9 @@ public class XmlQcStatementsBuilder {
         if (qcStatements.getPsd2QcType() != null) {
             result.setPSD2QcInfo(buildPSD2QcInfo(qcStatements.getPsd2QcType()));
         }
+        if (Utils.isCollectionNotEmpty(qcStatements.getOtherOids())) {
+            result.setOtherOIDs(buildXmlOIDs(qcStatements.getOtherOids()));
+        }
         return result;
     }
 
@@ -158,6 +161,24 @@ public class XmlQcStatementsBuilder {
                 XmlOID xmlOID = new XmlOID();
                 xmlOID.setValue(qcType.getOid());
                 xmlOID.setDescription(qcType.getDescription());
+                result.add(xmlOID);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Builds a list of {@code XmlOID}s from a list of {@link String}s
+     *
+     * @param oids a list of {@link String}s
+     * @return a list of {@link XmlOID}
+     */
+    private List<XmlOID> buildXmlOIDs(List<String> oids) {
+        List<XmlOID> result = new ArrayList<>();
+        if (Utils.isCollectionNotEmpty(oids)) {
+            for (String oid : oids) {
+                XmlOID xmlOID = new XmlOID();
+                xmlOID.setValue(oid);
                 result.add(xmlOID);
             }
         }
