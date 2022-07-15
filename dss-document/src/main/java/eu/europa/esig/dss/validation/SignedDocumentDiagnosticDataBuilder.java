@@ -548,6 +548,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlCommitmentTypeIndication.setIdentifier(commitmentTypeIndication.getIdentifier());
 		xmlCommitmentTypeIndication.setDescription(commitmentTypeIndication.getDescription());
 		xmlCommitmentTypeIndication.setDocumentationReferences(commitmentTypeIndication.getDocumentReferences());
+		if (commitmentTypeIndication.isAllDataSignedObjects()) {
+			xmlCommitmentTypeIndication.setAllDataSignedObjects(commitmentTypeIndication.isAllDataSignedObjects());
+		} else {
+			xmlCommitmentTypeIndication.setObjectReferences(commitmentTypeIndication.getObjectReferences());
+		}
 		return xmlCommitmentTypeIndication;
 	}
 

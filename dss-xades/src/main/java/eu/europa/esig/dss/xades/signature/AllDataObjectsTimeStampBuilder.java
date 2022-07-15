@@ -38,6 +38,7 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
+import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
@@ -93,13 +94,14 @@ public class AllDataObjectsTimeStampBuilder {
 		assertTimestampCreationPossible(documents);
 
 		// Prepare references
-		ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
 		List<DSSReference> references = signatureParameters.getReferences();
-		if (Utils.isCollectionNotEmpty(references)) {
-			referenceBuilder.checkReferencesValidity();
-		} else {
+		if (Utils.isCollectionEmpty(references)) {
+			final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
 			references = referenceBuilder.build();
 			signatureParameters.getContext().setReferences(references);
+		} else {
+			final ReferenceVerifier referenceVerifier = new ReferenceVerifier(signatureParameters);
+			referenceVerifier.checkReferencesValidity();
 		}
 
 		byte[] dataToBeDigested;

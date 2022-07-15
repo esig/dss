@@ -524,6 +524,16 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentCommitmentObjectReferencesPath() {
+		return fromCurrentPosition(XAdES111Element.OBJECT_REFERENCE);
+	}
+
+	@Override
+	public String getCurrentCommitmentAllSignedDataObjectsPath() {
+		return fromCurrentPosition(XAdES111Element.ALL_SIGNED_DATA_OBJECTS);
+	}
+
+	@Override
 	public String getCurrentInclude() {
 		return null;
 	}

@@ -120,7 +120,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 
 		String signatureValueId = xadesSignature.getSignatureValueId();
 		if (Utils.isStringNotEmpty(signatureValueId)) {
-			reference.setUri("#" + signatureValueId);
+			reference.setUri(DomUtils.toElementReference(signatureValueId));
 			DSSTransform transform = new CanonicalizationTransform(parameters.getCounterSignatureCanonicalizationMethod());
 			reference.setTransforms(Collections.singletonList(transform));
 			
