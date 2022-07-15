@@ -39,6 +39,6 @@
         <BestSignatureTime>2021-07-09T10:04:33Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
-        <SignatureScope scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-6E69ED670AC0AE41C815735B21F939DE4E0E4EA8A202F2497510EAAF5A4F998F" scope="FULL">Full document</SignatureScope>
     </Signature>
 </SimpleReport>
