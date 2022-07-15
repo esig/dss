@@ -29,6 +29,13 @@ import java.util.List;
 public interface ParsingInfoRecord extends InfoRecord {
 
 	/**
+	 * Gets the LOTL/TL TSLType
+	 *
+	 * @return {@link TSLType}
+	 */
+	TSLType getTSLType();
+
+	/**
 	 * Gets the LOTL/TL sequence number
 	 *
 	 * @return {@link Integer}

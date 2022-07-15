@@ -502,6 +502,9 @@ public abstract class DiagnosticDataBuilder {
 			result.setUrl(tlInfo.getUrl());
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 			if (parsingCacheInfo != null) {
+				if (parsingCacheInfo.getTSLType() != null) {
+					result.setTSLType(parsingCacheInfo.getTSLType().getUri());
+				}
 				result.setCountryCode(parsingCacheInfo.getTerritory());
 				result.setIssueDate(parsingCacheInfo.getIssueDate());
 				result.setNextUpdate(parsingCacheInfo.getNextUpdateDate());

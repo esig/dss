@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.parsing;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.tsl.TSLType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;
@@ -89,12 +90,20 @@ public abstract class AbstractParsingTask {
 	 * @param schemeInformation {@link TSLSchemeInformationType}
 	 */
 	protected void commonParseSchemeInformation(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
+		extractTSLType(result, schemeInformation);
 		extractSequenceNumber(result, schemeInformation);
 		extractTerritory(result, schemeInformation);
 		extractVersion(result, schemeInformation);
 		extractIssueDate(result, schemeInformation);
 		extractNextUpdateDate(result, schemeInformation);
 		extractDistributionPoints(result, schemeInformation);
+	}
+	
+	private void extractTSLType(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
+		String tslType = schemeInformation.getTSLType();
+		if (Utils.isStringNotEmpty(tslType)) {
+			result.setTSLType(TSLType.fromUri(tslType));
+		}
 	}
 
 	private void extractSequenceNumber(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {

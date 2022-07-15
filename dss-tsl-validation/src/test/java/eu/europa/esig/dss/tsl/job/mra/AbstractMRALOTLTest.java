@@ -64,11 +64,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
-    private static final String LOTL_LOCATION = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/mra_lotl.xml";
-    private static final String ZZ_TL_LOCATION = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_tl_zz.xml";
+    protected static final String LOTL_LOCATION = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/mra_lotl.xml";
+    protected static final String ZZ_TL_LOCATION = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_tl_zz.xml";
 
-    private static final String SIGNER_LOTL_NAME = "ZZ-LOTL-signer";
-    private static final String SIGNER_ZZ_TL_NAME = "ZZ-TL-signer";
+    protected static final String SIGNER_LOTL_NAME = "ZZ-LOTL-signer";
+    protected static final String SIGNER_ZZ_TL_NAME = "ZZ-TL-signer";
     private static final String TRUSTED_ROOT_CA_NAME = "Test-QTSP-1-RootCA-from-ZZ";
 
     private static final DSSDocument ORIGINAL_LOTL = new FileDocument("src/test/resources/mra-lotl.xml");
@@ -83,7 +83,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     private static String signer;
 
     @BeforeAll
-    private static void init() {
+    public static void init() {
         DomUtils.registerNamespace(XMLDSigNamespace.NS);
         DomUtils.registerNamespace(XAdESNamespaces.XADES_132);
         DomUtils.registerNamespace(TL_NAMESPACE);
@@ -98,7 +98,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         return fileCacheDataLoader;
     }
 
-    private DSSDocument createZZTL() throws Exception {
+    protected DSSDocument createZZTL() {
         Document tlDocument = DomUtils.buildDOM(ORIGINAL_TL);
         Element lotlCertElement = DomUtils.getElement(tlDocument.getDocumentElement(),
                 "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer/tl:ServiceDigitalIdentities/tl:ServiceDigitalIdentity/tl:DigitalId/tl:X509Certificate");
@@ -159,7 +159,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         return signedTL;
     }
 
-    private DSSDocument createZZLOTL() throws Exception {
+    protected DSSDocument createZZLOTL() {
         Document lotlDocument = DomUtils.buildDOM(ORIGINAL_LOTL);
 
         NodeList tslPointers = DomUtils.getNodeList(lotlDocument.getDocumentElement(), "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer");

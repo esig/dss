@@ -34,9 +34,7 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	
 	private static final long serialVersionUID = -1505115221927652721L;
 
-	/**
-	 * Address of the source
-	 */
+	/** Address of the source */
 	private final String url;
 	
 	/** The download result record */

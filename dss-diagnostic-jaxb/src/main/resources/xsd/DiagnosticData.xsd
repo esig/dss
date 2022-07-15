@@ -1219,7 +1219,8 @@
 	<xs:complexType name="TrustedList">
 		<xs:sequence>
 			<xs:element name="CountryCode" type="xs:string" minOccurs="0" />
-			<xs:element name="Url" type="xs:string" />	
+			<xs:element name="Url" type="xs:string" />
+			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
 			<xs:element name="SequenceNumber" type="xs:int" minOccurs="0" />
 			<xs:element name="Version" type="xs:int" minOccurs="0" />
 			<xs:element name="LastLoading" type="xs:dateTime" minOccurs="0" />
