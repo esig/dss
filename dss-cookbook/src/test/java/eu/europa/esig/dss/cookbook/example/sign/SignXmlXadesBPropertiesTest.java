@@ -28,7 +28,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.CommitmentQualifier;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -95,6 +98,22 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
+
+			// Alternatively a custom CommitmentType may be defined
+			CommonCommitmentType commitmentType = new CommonCommitmentType();
+			commitmentType.setUri("http://some.server.com/custom-commitment");
+			commitmentType.setDescription("This is a custom test commitment");
+			commitmentType.setDocumentationReferences("http://some.server.com/custom-commitment/documentation");
+
+			// It is also possible to define a custom qualifier, by providing its content (e.g. XML-encoded for XAdES)
+			CommitmentQualifier commitmentQualifier = new CommitmentQualifier();
+			String xmlContent = "<base:ext xmlns:base=\"http://same.server.com/custom-namespace\">Custom qualifier</base:ext>";
+			commitmentQualifier.setContent(new InMemoryDocument(xmlContent.getBytes()));
+			commitmentType.setCommitmentTypeQualifiers(commitmentQualifier);
+
+			// Add custom commitment to the list
+			commitmentTypeIndications.add(commitmentType);
+
 			// NOTE: CommitmentType supports also IDQualifier and documentationReferences.
 			// To use it, you need to have a custom implementation of the interface.
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
