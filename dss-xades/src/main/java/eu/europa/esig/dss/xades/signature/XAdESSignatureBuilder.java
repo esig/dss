@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -1296,7 +1297,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </xsd:complexType
 	 */
 	private void incorporateCommitmentTypeIndications() {
-
 		List<CommitmentType> commitmentTypeIndications = params.bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
@@ -1370,7 +1370,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				}
 
 				String[] signedDataObjects = null;
-				DSSDocument[] commitmentTypeQualifiers = null;
+				CommitmentQualifier[] commitmentTypeQualifiers = null;
 				if (commitmentTypeIndication instanceof CommonCommitmentType) {
 					CommonCommitmentType commonCommitmentType = (CommonCommitmentType) commitmentTypeIndication;
 					signedDataObjects = commonCommitmentType.getSignedDataObjects();
@@ -1399,9 +1399,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					final Element commitmentTypeQualifiersElement = DomUtils.addElement(documentDom, commitmentTypeIndicationDom,
 							getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeQualifiers());
 
-					for (DSSDocument content : commitmentTypeQualifiers) {
+					for (CommitmentQualifier commitmentQualifier : commitmentTypeQualifiers) {
+						Objects.requireNonNull(commitmentQualifier, "CommitmentTypeQualifier cannot be null!");
+						DSSDocument content = commitmentQualifier.getContent();
 						if (content == null) {
-							throw new IllegalArgumentException("CommitmentTypeQualifier cannot be null!");
+							throw new IllegalArgumentException("CommitmentTypeQualifier content cannot be null!");
 						}
 
 						final Element commitmentTypeQualifierElement = DomUtils.addElement(documentDom, commitmentTypeQualifiersElement,
@@ -1412,6 +1414,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 							objectContentDom = DomUtils.buildDOM(content).getDocumentElement();
 							objectContentDom = documentDom.importNode(objectContentDom, true);
 						} else {
+							LOG.info("None XML encoded CommitmentTypeQualifier has been provided. Incorporate as text node.");
 							objectContentDom = documentDom.createTextNode(new String(DSSUtils.toByteArray(content)));
 						}
 						commitmentTypeQualifierElement.appendChild(objectContentDom);

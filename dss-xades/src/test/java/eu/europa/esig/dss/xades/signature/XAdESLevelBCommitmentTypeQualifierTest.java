@@ -4,6 +4,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -56,11 +57,17 @@ public class XAdESLevelBCommitmentTypeQualifierTest extends AbstractXAdESTestSig
 
         xmlDocument = new FileDocument("src/test/resources/ns-prefixes-sample.xml");
 
+        CommitmentQualifier xmlCommitmentQualifier = new CommitmentQualifier();
+        xmlCommitmentQualifier.setContent(xmlDocument);
+
         DSSDocument image = new FileDocument("src/test/resources/sample.png");
         String base64EncodedImage = Utils.toBase64(DSSUtils.toByteArray(image));
         base64Document = new InMemoryDocument(base64EncodedImage.getBytes());
 
-        commitmentTypeIndication.setCommitmentTypeQualifiers(xmlDocument, base64Document);
+        CommitmentQualifier base64CommitmentQualifier = new CommitmentQualifier();
+        base64CommitmentQualifier.setContent(base64Document);
+
+        commitmentTypeIndication.setCommitmentTypeQualifiers(xmlCommitmentQualifier, base64CommitmentQualifier);
 
         signatureParameters.bLevel().setCommitmentTypeIndications(Collections.singletonList(commitmentTypeIndication));
     }

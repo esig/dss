@@ -146,7 +146,7 @@ public abstract class AbstractJAdESTestSignature
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (signatureWrapper.getEncryptionAlgorithm() != null && signatureWrapper.getDigestAlgorithm() != null &&
 					signatureWrapper.getEncryptionAlgorithm().isEquivalent(EncryptionAlgorithm.ECDSA)) {
-				assertFalse(DSSASN1Utils.isAsn1Encoded(signatureWrapper.getSignatureValue()), "PLAIN-ECDSA is expected!");
+				assertFalse(DSSASN1Utils.isAsn1EncodedSignatureValue(signatureWrapper.getSignatureValue()), "PLAIN-ECDSA is expected!");
 
 				int bitLength = DSSASN1Utils.getSignatureValueBitLength(signatureWrapper.getSignatureValue());
 				switch (signatureWrapper.getDigestAlgorithm()) {

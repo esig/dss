@@ -50,7 +50,7 @@ public class CommonCommitmentType implements CommitmentType {
      * Defines custom CommitmentTypeQualifiers list
      * Use : OPTIONAL
      */
-    private DSSDocument[] commitmentTypeQualifiers;
+    private CommitmentQualifier[] commitmentTypeQualifiers;
 
     @Override
     public String getUri() {
@@ -169,22 +169,19 @@ public class CommonCommitmentType implements CommitmentType {
      *
      * @return array of {@link DSSDocument}s
      */
-    public DSSDocument[] getCommitmentTypeQualifiers() {
+    public CommitmentQualifier[] getCommitmentTypeQualifiers() {
         return commitmentTypeQualifiers;
     }
 
     /**
      * Sets custom CommitmentTypeQualifiers List.
      *
-     * The content of a qualifier may be anytype, but developers may need to ensure
-     * the content corresponds to the used signature format (i.e. XML for XAdES, ASN.1 for CAdES, etc.).
-     *
      * Use : OPTIONAL
      *
-     * @param commitmentTypeQualifiers array of {@link DSSDocument}s representing content
+     * @param commitmentTypeQualifiers array of {@link CommitmentQualifier}s representing content
      *                                 of the CommitmentTypeQualifier element
      */
-    public void setCommitmentTypeQualifiers(DSSDocument... commitmentTypeQualifiers) {
+    public void setCommitmentTypeQualifiers(CommitmentQualifier... commitmentTypeQualifiers) {
         this.commitmentTypeQualifiers = commitmentTypeQualifiers;
     }
 

@@ -3,6 +3,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -62,7 +63,9 @@ public class XAdESSignedPropertiesCanonicalizationTest extends AbstractXAdESTest
 
         CommonCommitmentType commitmentTypeIndication = new CommonCommitmentType();
         commitmentTypeIndication.setUri("http://nowina.lu/approved");
-        commitmentTypeIndication.setCommitmentTypeQualifiers(new FileDocument("src/test/resources/ns-prefixes-sample.xml"));
+        CommitmentQualifier commitmentQualifier = new CommitmentQualifier();
+        commitmentQualifier.setContent(new FileDocument("src/test/resources/ns-prefixes-sample.xml"));
+        commitmentTypeIndication.setCommitmentTypeQualifiers(commitmentQualifier);
         signatureParameters.bLevel().setCommitmentTypeIndications(Collections.singletonList(commitmentTypeIndication));
 
         service = new XAdESService(getOfflineCertificateVerifier());

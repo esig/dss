@@ -23,19 +23,18 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
-import eu.europa.esig.dss.enumerations.CommitmentType;
-import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -64,12 +63,13 @@ public class JAdESWithCustomCommitmentTypeTest extends AbstractJAdESTestSignatur
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-		
-		MockCommitmentType commitmentTypeApproval = new MockCommitmentType("http://nowina.lu/approved");
+
+		CommonCommitmentType commitmentTypeApproval = new CommonCommitmentType();
+		commitmentTypeApproval.setUri("http://nowina.lu/approved");
 		commitmentTypeApproval.setDescription("Approved");
-		commitmentTypeApproval.setDocumentReferences("http://nowina.lu/approved.pdf", "https://uri.etsi.org/01903/v1.2.2/ts_101903v010202p.pdf");
+		commitmentTypeApproval.setDocumentationReferences("http://nowina.lu/approved.pdf", "https://uri.etsi.org/01903/v1.2.2/ts_101903v010202p.pdf");
 		
-		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(commitmentTypeApproval));
+		signatureParameters.bLevel().setCommitmentTypeIndications(Collections.singletonList(commitmentTypeApproval));
 		
 		return signatureParameters;
 	}
@@ -98,53 +98,6 @@ public class JAdESWithCustomCommitmentTypeTest extends AbstractJAdESTestSignatur
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
-	}
-	
-	private static class MockCommitmentType implements CommitmentType {
-
-		private static final long serialVersionUID = -9091840631960045608L;
-
-		private final String uri;
-		private String description;
-		private String[] documentReferences;
-		
-		public MockCommitmentType(String uri) {
-			this.uri = uri;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public void setDocumentReferences(String... documentReferences) {
-			this.documentReferences = documentReferences;
-		}
-		
-		@Override
-		public String getOid() {
-			return null;
-		}
-
-		@Override
-		public String getUri() {
-			return uri;
-		}
-
-		@Override
-		public String getDescription() {
-			return description;
-		}
-
-		@Override
-		public String[] getDocumentationReferences() {
-			return documentReferences;
-		}
-
-		@Override
-		public ObjectIdentifierQualifier getQualifier() {
-			return null;
-		}
-		
 	}
 
 }

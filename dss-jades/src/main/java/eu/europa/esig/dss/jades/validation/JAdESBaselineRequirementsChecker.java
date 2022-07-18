@@ -90,7 +90,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         if (Utils.isMapNotEmpty(jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.X5T_O))) ++certHeaders;
         if (Utils.isCollectionNotEmpty(jws.getProtectedHeaderValueAsList(JAdESHeaderParameterNames.SIG_X5T_S))) ++certHeaders;
         if (certHeaders != 1) {
-            LOG.warn("Only one of x5t#256, x5t#o, sigX5ts headers shall be present " +
+            LOG.warn("One and only one of x5t#256, x5t#o, sigX5ts headers shall be present " +
                     "for JAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }

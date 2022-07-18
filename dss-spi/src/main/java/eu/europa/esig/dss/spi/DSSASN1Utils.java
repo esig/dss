@@ -1539,11 +1539,27 @@ public final class DSSASN1Utils {
 	/**
 	 * Checks if the binaries are ASN.1 encoded.
 	 *
-	 * @param binaries
-	 *            byte array to check.
-	 * @return if the binaries are ASN.1 encoded.
+	 * @param binaries byte array to check.
+	 * @return if the SignatureValue binaries are ASN.1 encoded.
 	 */
 	public static boolean isAsn1Encoded(byte[] binaries) {
+		if (Utils.isArrayEmpty(binaries)) {
+			return false;
+		}
+		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
+			return is.readObject() != null;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if the SignatureValue binaries are ASN.1 encoded.
+	 *
+	 * @param binaries byte array to check.
+	 * @return if the SignatureValue binaries are ASN.1 encoded.
+	 */
+	public static boolean isAsn1EncodedSignatureValue(byte[] binaries) {
 		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return seq != null && seq.size() == 2;
@@ -1565,7 +1581,7 @@ public final class DSSASN1Utils {
 	 */
 	public static byte[] ensurePlainSignatureValue(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
 		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.PLAIN_ECDSA == algorithm ||
-				EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
+				EncryptionAlgorithm.DSA == algorithm) && isAsn1EncodedSignatureValue(signatureValue)) {
 			return toPlainDSASignatureValue(signatureValue);
 		} else {
 			return signatureValue;
@@ -1624,7 +1640,7 @@ public final class DSSASN1Utils {
 		try {
 			BigInteger rValue;
 			BigInteger sValue;
-			if (DSSASN1Utils.isAsn1Encoded(signatureValue)) {
+			if (DSSASN1Utils.isAsn1EncodedSignatureValue(signatureValue)) {
 				ASN1Sequence seq = (ASN1Sequence) ASN1Primitive.fromByteArray(signatureValue);
 				if (seq.size() != 2) {
 					throw new IllegalArgumentException("ASN1 Sequence size should be 2!");

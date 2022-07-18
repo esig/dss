@@ -64,6 +64,11 @@ public final class JAdESHeaderParameterNames {
 	public static final String COMM_ID = "commId";
 
 	/**
+	 * Commitment Qualifiers
+	 */
+	public static final String COMM_QUALS = "commQuals";
+
+	/**
 	 * Signature production place
 	 */
 	public static final String SIG_PL = "sigPl";

@@ -4,6 +4,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -94,9 +95,12 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
         initialPublicationDateElement.setTextContent(DSSUtils.formatDateToRFC(signature.getSigningTime()));
         commitmentTypeQualifierDocument.appendChild(initialPublicationDateElement);
 
+        CommitmentQualifier commitmentQualifier = new CommitmentQualifier();
+        commitmentQualifier.setContent(DomUtils.createDssDocumentFromDomDocument(commitmentTypeQualifierDocument, null));
+
         CommonCommitmentType commitmentType = new CommonCommitmentType();
         commitmentType.setUri("http://some-server.eu/oj-resigning");
-        commitmentType.setCommitmentTypeQualifiers(DomUtils.createDssDocumentFromDomDocument(commitmentTypeQualifierDocument, null));
+        commitmentType.setCommitmentTypeQualifiers(commitmentQualifier);
 
         signatureParameters.bLevel().setCommitmentTypeIndications(Collections.singletonList(commitmentType));
 
