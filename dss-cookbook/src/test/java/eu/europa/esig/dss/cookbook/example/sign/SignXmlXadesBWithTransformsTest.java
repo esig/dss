@@ -70,7 +70,19 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
-			
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.SignaturePackaging;
+			// import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
+			// import eu.europa.esig.dss.xades.reference.DSSReference;
+			// import eu.europa.esig.dss.xades.reference.DSSTransform;
+			// import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
+			// import eu.europa.esig.dss.xades.signature.XAdESService;
+			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+			// import javax.xml.crypto.dsig.CanonicalizationMethod;
+			// import java.util.ArrayList;
+			// import java.util.List;
+
 			// Prepare transformations in the proper order
 			List<DSSTransform> transforms = new ArrayList<>();
 			// tag::demoEnvelopedTransform[]
@@ -142,6 +154,12 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			testFinalDocument(signedDocument);
 
 			// tag::demoPrefixes[]
+			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+			// import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+			// import eu.europa.esig.dss.definition.DSSNamespace;
+			// import javax.xml.crypto.dsig.XMLSignature;
+
+			parameters = new XAdESSignatureParameters();
 			
 			// Allows setting of a XAdES namespace (changes a XAdES format)
 			// Default : XAdESNamespaces.XADES_132 (produces XAdES 1.3.2)
@@ -170,6 +188,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			DSSDocument document = new InMemoryDocument("Hello World!".getBytes(), "Hello.txt", MimeType.BINARY);
 			List<DSSTransform> transforms = new ArrayList<>();
 			// tag::demoBase64Transform[]
+			// import eu.europa.esig.dss.xades.reference.Base64Transform;
+			// import eu.europa.esig.dss.xades.reference.DSSTransform;
+
 			DSSTransform base64Transform = new Base64Transform();
 			// end::demoBase64Transform[]
 			transforms.add(base64Transform);
@@ -235,6 +256,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			List<DSSTransform> transforms = new ArrayList<>();
 			// tag::demoEnvelopedXPathTransform[]
+			// import eu.europa.esig.dss.xades.reference.DSSTransform;
+			// import eu.europa.esig.dss.xades.reference.XPathTransform;
+
 			DSSTransform envelopedTransform = new XPathTransform("not(ancestor-or-self::ds:Signature)");
 			// end::demoEnvelopedXPathTransform[]
 			transforms.add(envelopedTransform);
@@ -299,6 +323,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			List<DSSTransform> transforms = new ArrayList<>();
 			// tag::demoEnvelopedXPath2FilterTransform[]
+			// import eu.europa.esig.dss.xades.reference.DSSTransform;
+			// import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
+
 			DSSTransform envelopedTransform = new XPath2FilterTransform("descendant::ds:Signature", "subtract");
 			// end::demoEnvelopedXPath2FilterTransform[]
 			transforms.add(envelopedTransform);

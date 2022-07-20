@@ -70,6 +70,26 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
+			// import eu.europa.esig.dss.enumerations.SignerTextPosition;
+			// import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
+			// import eu.europa.esig.dss.enumerations.TextWrapping;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.InMemoryDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.pades.DSSFileFont;
+			// import eu.europa.esig.dss.pades.DSSFont;
+			// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+			// import eu.europa.esig.dss.pades.SignatureFieldParameters;
+			// import eu.europa.esig.dss.pades.SignatureImageParameters;
+			// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+			// import eu.europa.esig.dss.pades.signature.PAdESService;
+			// import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import java.awt.Color;
 
 			// tag::parameters-configuration[]
 			// Preparing parameters for the PAdES signature

@@ -70,6 +70,9 @@ public class SignTwoAsicAndMergeTest extends CookbookTools {
             DSSDocument secondContainerSignature = service.signDocument(documentsToBeSignedBySecondSignature, parameters, signatureValue);
 
             // tag::demo[]
+            // import eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger;
+            // import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
+            // import eu.europa.esig.dss.model.DSSDocument;
 
             // DefaultContainerMerger will load a relevant implementation for the given containers
             ASiCContainerMerger asicContainerMerger = DefaultContainerMerger.fromDocuments(firstContainerSignature, secondContainerSignature);

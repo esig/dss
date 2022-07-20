@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -38,6 +33,10 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
 
@@ -57,6 +56,14 @@ public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+			// import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import java.util.List;
 
 			// Preparing the documents to be embedded in the container and signed
 			List<DSSDocument> documentsToBeSigned = new ArrayList<>();

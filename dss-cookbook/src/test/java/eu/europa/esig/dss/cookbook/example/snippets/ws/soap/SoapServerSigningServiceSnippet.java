@@ -38,10 +38,11 @@ public class SoapServerSigningServiceSnippet {
     @SuppressWarnings("unused")
     public void demo() {
         // tag::demo[]
+        // import eu.europa.esig.dss.ws.server.signing.soap.SoapSignatureTokenConnectionImpl;
+        // import eu.europa.esig.dss.ws.server.signing.soap.client.SoapSignatureTokenConnection;
 
         // Instantiate a SoapSignatureTokenConnection
         SoapSignatureTokenConnection remoteToken = new SoapSignatureTokenConnectionImpl();
-
         // end::demo[]
 
         // Retrieves available keys on server side

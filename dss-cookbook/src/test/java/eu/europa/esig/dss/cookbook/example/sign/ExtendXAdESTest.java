@@ -28,7 +28,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -65,10 +64,17 @@ public class ExtendXAdESTest extends CookbookTools {
 		}
 
 		// tag::demoTExtend[]
+		// import eu.europa.esig.dss.enumerations.SignatureLevel;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
 
+		// Create signature parameters with target extension level
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
+		// Create a CertificateVerifier (empty configuration is possible for T-level extension)
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 
 		// Init service for signature augmentation
@@ -82,38 +88,55 @@ public class ExtendXAdESTest extends CookbookTools {
 		// end::demoTExtend[]
 
 		// tag::demoLTExtend[]
+		// import eu.europa.esig.dss.enumerations.SignatureLevel;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+		// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
 
+		// Create signature parameters with target extension level
 		parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
+		// Create a CertificateVerifier with revocation sources for -LT level extension
 		certificateVerifier = new CommonCertificateVerifier();
 
-		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
-
 		// init revocation sources for CRL/OCSP requesting
-		certificateVerifier.setCrlSource(new OnlineCRLSource(commonsDataLoader));
+		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 
 		// Trust anchors should be defined for revocation data requesting
 		certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
 
+		// Init service for signature augmentation
 		xadesService = new XAdESService(certificateVerifier);
-		xadesService.setTspSource(getOnlineTSPSource());
 		DSSDocument ltLevelDocument = xadesService.extendDocument(tLevelSignature, parameters);
 
 		// end::demoLTExtend[]
 
 		// tag::demoLTAExtend[]
+		// import eu.europa.esig.dss.enumerations.SignatureLevel;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+		// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
 
+		// Create signature parameters with target extension level
 		parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		// Initialize CertificateVerifier with data revocation data requesting
 		certificateVerifier = new CommonCertificateVerifier();
 
+		// init revocation sources for CRL/OCSP requesting
 		certificateVerifier.setCrlSource(new OnlineCRLSource());
 		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 
+		// Trust anchors should be defined for revocation data requesting
 		certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
 
 		// Initialize signature service with TSP Source for time-stamp requesting

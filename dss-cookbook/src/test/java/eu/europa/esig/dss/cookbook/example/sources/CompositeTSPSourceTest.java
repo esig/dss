@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sources;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
@@ -37,6 +27,15 @@ import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * How to configure a Composite TSP Source.
@@ -49,6 +48,15 @@ public class CompositeTSPSourceTest {
 	public void test() throws IOException {
 
 		// tag::demo[]
+		// import java.util.HashMap;
+		// import java.util.Map;
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.model.TimestampBinary;
+		// import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
+		// import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+		// import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
+		// import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 		// Create a map with several TSPSources
 		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();// uses the specific content-type

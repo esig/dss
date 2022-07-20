@@ -36,6 +36,16 @@ public class SignPdfWithTempFileTest extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // tag::demo[]
+            // import eu.europa.esig.dss.enumerations.SignatureLevel;
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+            // import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+            // import eu.europa.esig.dss.pades.signature.PAdESService;
+            // import eu.europa.esig.dss.pdf.IPdfObjFactory;
+            // import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+            // import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
             // Preparing parameters for the PAdES signature
             PAdESSignatureParameters parameters = new PAdESSignatureParameters();

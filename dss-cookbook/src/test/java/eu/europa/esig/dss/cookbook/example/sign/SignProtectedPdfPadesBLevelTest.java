@@ -31,6 +31,8 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // tag::sign[]
+            // import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+
             // Preparing parameters for the PAdES signature
             PAdESSignatureParameters parameters = new PAdESSignatureParameters();
             // Provide a password for the protected document
@@ -51,6 +53,10 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
             DSSDocument signedDocument = service.signDocument(protectedDocument, parameters, signatureValue);
 
             // tag::validate[]
+            // import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.validation.reports.Reports;
+
             // Prepare DocumentValidator
             PDFDocumentValidator documentValidator = new PDFDocumentValidator(signedDocument);
             documentValidator.setCertificateVerifier(new CommonCertificateVerifier());

@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.validate;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
@@ -36,6 +30,11 @@ import eu.europa.esig.dss.validation.CertificateValidator;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CertificateValidationTest {
 
@@ -43,6 +42,17 @@ public class CertificateValidationTest {
 	public void getCertificateStatus() {
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.detailedreport.DetailedReport;
+		// import eu.europa.esig.dss.diagnostic.DiagnosticData;
+		// import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+		// import eu.europa.esig.dss.model.x509.CertificateToken;
+		// import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+		// import eu.europa.esig.dss.validation.CertificateValidator;
+		// import eu.europa.esig.dss.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.reports.CertificateReports;
+		// import java.io.File;
 
 		// Firstly, we load the certificate to be validated
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));

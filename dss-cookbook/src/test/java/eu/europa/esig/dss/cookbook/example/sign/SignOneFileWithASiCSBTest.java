@@ -22,8 +22,6 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import eu.europa.esig.dss.asic.common.SecureContainerHandler;
 import eu.europa.esig.dss.asic.common.ZipUtils;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -36,6 +34,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
 
 /**
  * How to sign with ASiC_S_BASELINE_B
@@ -61,6 +60,15 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+			// import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+			// import eu.europa.esig.dss.enumerations.ASiCContainerType;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the AsicS signature
 			ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();
@@ -99,6 +107,8 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			// end::demo[]
 
 			// tag::zipUtils[]
+			// import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+			// import eu.europa.esig.dss.asic.common.ZipUtils;
 
 			// Instantiate a SecureContainerHandler in order to configure ZIP securities
 			SecureContainerHandler secureContainerHandler = new SecureContainerHandler();

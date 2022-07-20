@@ -59,6 +59,16 @@ public class SignDetachedDocumentTest extends CookbookTools {
             DSSDocument originalDocument = new InMemoryDocument("Hello World!".getBytes());
 
             // tag::demo[]
+            // import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+            // import eu.europa.esig.dss.cades.signature.CAdESService;
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.DigestDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.validation.DocumentValidator;
+            // import eu.europa.esig.dss.validation.reports.Reports;
+            // import java.util.Arrays;
 
             // Create a DigestDocument from original DSSDocument
             DigestDocument digestDocument = new DigestDocument();

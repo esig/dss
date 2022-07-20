@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.transform.Templates;
-import javax.xml.validation.Schema;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
@@ -49,15 +38,39 @@ import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.transform.Templates;
+import javax.xml.validation.Schema;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SignedDocumentValidatorTest {
 
 	@Test
 	public void test() throws Exception {
 
-		DSSDocument document = new FileDocument(new File("src/test/resources/signature-pool/signedXmlXadesLT.xml"));
-
 		// tag::demo[]
+		// import java.util.Arrays;
+		// import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.model.FileDocument;
+		// import eu.europa.esig.dss.model.InMemoryDocument;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+		// import eu.europa.esig.dss.spi.x509.CertificateSource;
+		// import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+		// import eu.europa.esig.dss.validation.executor.ValidationLevel;
+		// import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+		// Load document to validate
+		DSSDocument document = new FileDocument("src/test/resources/signature-pool/signedXmlXadesLT.xml");
 		
 		// The method allows instantiation of a related validator for a provided document 
 		// independently on its format (the target dss module must be added as dependency)
@@ -114,6 +127,10 @@ public class SignedDocumentValidatorTest {
 		assertNotNull(etsiValidationReport);
 
 		// tag::demo-facade[]
+		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+		// import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+		// import eu.europa.esig.dss.validation.reports.Reports;
+
 		Reports completeReports = documentValidator.validateDocument();
 		
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
@@ -134,6 +151,12 @@ public class SignedDocumentValidatorTest {
 		assertNotNull(htmlDetailedReport);
 
 		// tag::demo-xml-definer[]
+		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+		// import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
+		// import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
+		// import javax.xml.bind.JAXBContext;
+		// import javax.xml.transform.Templates;
+		// import javax.xml.validation.Schema;
 
 		// The JAXB Object Factory
 		ObjectFactory objectFactory = DetailedReportXmlDefiner.OBJECT_FACTORY;

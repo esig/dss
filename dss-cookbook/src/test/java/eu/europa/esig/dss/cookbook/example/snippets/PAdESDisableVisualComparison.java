@@ -49,6 +49,8 @@ public class PAdESDisableVisualComparison {
         IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
         // tag::visual-change-finder[]
+        // import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+
         DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
         // NOTE: setting '0' as MaximalPagesAmountForVisualComparison will skip the visual changes detection
         pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
@@ -57,6 +59,8 @@ public class PAdESDisableVisualComparison {
         // end::visual-change-finder[]
 
         // tag::object-modifications[]
+        // import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
+
         DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
         // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
         pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);

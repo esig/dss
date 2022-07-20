@@ -78,6 +78,16 @@ public class CounterSignXadesBTest extends CookbookTools {
             DSSDocument signedDocument = signatureService.signDocument(toSignDocument, parameters, signatureValueToSign);
 
             // tag::demo[]
+            // import eu.europa.esig.dss.enumerations.SignatureLevel;
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+            // import eu.europa.esig.dss.validation.AdvancedSignature;
+            // import eu.europa.esig.dss.validation.DocumentValidator;
+            // import eu.europa.esig.dss.validation.SignedDocumentValidator;
+            // import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
+            // import eu.europa.esig.dss.xades.signature.XAdESService;
+            // import java.util.List;
 
             // Initialize counter signature parameters
             XAdESCounterSignatureParameters counterSignatureParameters = new XAdESCounterSignatureParameters();

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
+// tag::demo[]
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -53,9 +54,7 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
-			
-			// tag::demo[]
-			
+
 			// Initialize the rest client
 			RestDocumentSignatureService restClient = new RestDocumentSignatureServiceImpl();
 			
@@ -97,10 +96,10 @@ public class RestSignatureServiceSnippet extends CookbookTools {
 			
 			// Timestamp a provided document (available for PDF, ASiC-E and ASiC-S container formats)
 			RemoteDocument timestampedDocument = restClient.timestampDocument(timestampOneDocumentDTO);
-			
-			// end::demo[]
+
 		}
 		
 	}
 
 }
+// end::demo[]

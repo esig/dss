@@ -20,26 +20,28 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportXmlDefiner;
+import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportXmlDefiner;
-import eu.europa.esig.dss.simplereport.SimpleReportFacade;
-import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 
 public class StylesheetSnippet {
 	
 	@SuppressWarnings("unused")
 	public void demo() {
-		
-		XmlSimpleReport xmlSimpleReport = new XmlSimpleReport();
+
 		try {
 			// tag::demo[]
+			// import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
+			// import eu.europa.esig.dss.simplereport.SimpleReportFacade;
+
+			XmlSimpleReport xmlSimpleReport = new XmlSimpleReport();
 			String bootstrap4Report = SimpleReportFacade.newFacade().generateHtmlReport(xmlSimpleReport);
 			// end::demo[]
 		} catch (Exception e) {
@@ -48,6 +50,14 @@ public class StylesheetSnippet {
 		
 		String simpleReport = null;
 		// tag::custom[]
+		// import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportXmlDefiner;
+		// import javax.xml.transform.Transformer;
+		// import javax.xml.transform.stream.StreamResult;
+		// import javax.xml.transform.stream.StreamSource;
+		// import java.io.StringReader;
+		// import java.io.StringWriter;
+		// import java.io.Writer;
+
 		try (Writer writer = new StringWriter()) {
 			Transformer transformer = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates().newTransformer();
 			// specify custom parameters if needed

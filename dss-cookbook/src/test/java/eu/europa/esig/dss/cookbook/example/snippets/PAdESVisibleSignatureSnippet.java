@@ -38,6 +38,18 @@ public class PAdESVisibleSignatureSnippet {
 	public void demo() {
 
 		// tag::visibleSigParams[]
+		// import eu.europa.esig.dss.enumerations.ImageScaling;
+		// import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
+		// import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
+		// import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+		// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+		// import eu.europa.esig.dss.pades.SignatureFieldParameters;
+		// import eu.europa.esig.dss.pades.SignatureImageParameters;
+		// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+		// import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
+		// import org.apache.pdfbox.pdmodel.font.PDType1Font;
+		// import java.awt.Color;
+
 		// Instantiate PAdES-specific parameters
 		PAdESSignatureParameters padesSignatureParameters = new PAdESSignatureParameters();
 		

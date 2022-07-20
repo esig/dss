@@ -52,6 +52,15 @@ public class CertificateVerifierSnippet {
 		OCSPSource ocspSource = null;
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+		// import eu.europa.esig.dss.alert.LogOnStatusAlert;
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+		// import eu.europa.esig.dss.validation.RevocationDataVerifier;
+		// import org.slf4j.event.Level;
+		// import java.util.Arrays;
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
@@ -145,6 +154,12 @@ public class CertificateVerifierSnippet {
 		final Date validationTime = new Date();
 
 		// tag::rev-data-verifier[]
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+		// import eu.europa.esig.dss.validation.RevocationDataVerifier;
+		// import java.util.Arrays;
+		// import java.util.HashMap;
+		// import java.util.Map;
 
 		// The following method is used to create a RevocationDataVerifier synchronized with a default validation policy
 		revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();

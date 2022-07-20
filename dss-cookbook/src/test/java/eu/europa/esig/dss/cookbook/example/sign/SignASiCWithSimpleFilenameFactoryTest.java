@@ -46,6 +46,12 @@ public class SignASiCWithSimpleFilenameFactoryTest extends CookbookTools {
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 
             // tag::demo[]
+            // import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+            // import eu.europa.esig.dss.asic.xades.signature.SimpleASiCWithXAdESFilenameFactory;
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+
             // Create ASiC service for signature
             ASiCWithXAdESService service = new ASiCWithXAdESService(commonCertificateVerifier);
 

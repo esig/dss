@@ -23,8 +23,8 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.trustedlist.TrustedListFacade;
-import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -36,12 +36,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CreateTLSnippet {
 
-    /** The objet factory to use */
-    private final ObjectFactory objectFactory = new ObjectFactory();
-
     @Test
     void createTrustedList() throws Exception {
         // tag::demoSign[]
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
+        // import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+        // import eu.europa.esig.trustedlist.TrustedListFacade;
+        // import java.io.ByteArrayOutputStream;
+
+        // The object factory to use
+        ObjectFactory objectFactory = new ObjectFactory();
         // Create an empty 'TrustServiceStatusList' element
         TrustStatusListType trustStatusListType = objectFactory.createTrustStatusListType();
 
@@ -63,6 +68,14 @@ public class CreateTLSnippet {
     @Test
     void editValidTrustedList() throws Exception {
         // tag::demoEdit[]
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.InMemoryDocument;
+        // import eu.europa.esig.trustedlist.TrustedListFacade;
+        // import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+        // import java.io.ByteArrayOutputStream;
+        // import java.io.File;
+        // import java.math.BigInteger;
+
         // Load original Trusted List
         final File file = new File("src/main/resources/trusted-list.xml");
 

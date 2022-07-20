@@ -61,6 +61,14 @@ public class SignPdfPadesBTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.pades.signature.PAdESService;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.DSSDocument;
 
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();
@@ -100,6 +108,10 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// end::demo[]
 
 			// tag::policy[]
+			// import eu.europa.esig.dss.model.Policy;
+			// import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+
 			// Instantiate a Policy object
 			Policy signaturePolicy = new Policy();
 			// The string representation of the OID of the signature policy to use when signing.

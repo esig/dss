@@ -60,6 +60,11 @@ public class ServerSignTest extends CookbookTools {
         CAdESService service = new CAdESService(commonCertificateVerifier);
 
         // tag::demo[]
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.Digest;
+        // import eu.europa.esig.dss.model.SignatureValue;
+        // import eu.europa.esig.dss.model.ToBeSigned;
+        // import eu.europa.esig.dss.spi.DSSUtils;
 
         // Get the SignedInfo segment that need to be signed providing the original document
         ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
