@@ -119,8 +119,7 @@
 			            </dt>
 			            <dd>
 			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-			            
-							The qualification level has been determined using the mutual recognition agreement concluded with the EU.
+							The qualification level has been determined using an enacted trust service equivalence mapping.
 			            </dd>
 					</dl>
 				</xsl:if>			

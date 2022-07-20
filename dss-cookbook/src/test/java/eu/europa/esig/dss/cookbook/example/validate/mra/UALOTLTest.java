@@ -47,17 +47,35 @@ public class UALOTLTest {
     public static void init() {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
-        LOTLSource lotlSource = new LOTLSource();
-        lotlSource.setUrl(UA_LOTL_URI);
-        lotlSource.setMraSupport(true);
-
         CommonTrustedCertificateSource lotlKeystore = new CommonTrustedCertificateSource();
         lotlKeystore.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString("MIIDTjCCAjagAwIBAgIBATANBgkqhkiG9w0BAQ0FADBRMRQwEgYDVQQDDAtzZWxmLXNpZ25lZDEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMB4XDTIxMDcxMTA3MDEyOVoXDTIzMDcxMTA3MDEyOVowUTEUMBIGA1UEAwwLc2VsZi1zaWduZWQxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALFPKQYVrMVQuvdym/ZtwT1FgpwMj680IQECLw69mJNMJcAc+E5MxIXDSpN8ar9EpmcIS1r42xsMSz0n6uiT1WRM1VBOlSbKLymp7uuA6esmWKNg1lqlyT/nG7ZdMJo5uqV/ElykFBUi3SqdA4M0Fj7sX6qPKbjRTuoVWvFuVkjKXFKk4XcJIA8Qi6hE0WYgT+D4b3ei+8f+bskF/YPlGnUKFPlu6911DxbXh8gat+Oc2oGPpLwb1OpPywn+3aavc7jRYt3YysEUChHNCBKxLj9o2S9JPZFkYp9TZ6BfltiGavI9TPqqWvLAHA+AAO9crEdRjPrCCDeEZBVZ+cU1GZUCAwEAAaMxMC8wDgYDVR0PAQH/BAQDAgZAMB0GA1UdDgQWBBSHZziIPD9aURH3lnv7nBQ2YwA8djANBgkqhkiG9w0BAQ0FAAOCAQEAlOL8AR6pmXnqRSNYg0D1tfh7KzzxkrCCXtOIkdArZFPf/9/07hYA7OlgcL466CUiKMV1LrWvibCXTtuFz0myD74nRHPE7a1T6nb6FqN8QDK/8vxAO9LCsuN1YIeI3rEPYX08Ksb0laQvW/lCFcyPqCPOgjXqCU8ERTKUrP5GKA6p+bd8AJJ8UD1GB4gC6VaK4xWEKaRAW8N8nhp+bDLlO2d4O5Fs568JOZShUQ8rqCqNX49XCG9+8MFASjPOLNC2NYHdp5tt/gKFoa9UZf+Nt3QTYsZ8Dhb/9tECAPrZrqlZVB0NjoGdS54aXyacorPfCjqrsnpys1I5iNU9aw86HQ=="));
-        lotlSource.setCertificateSource(lotlKeystore);
 
-        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/UAlist"));
+        LOTLSource euLOTL = new LOTLSource();
 
-        tlValidationJob.setListOfTrustedListSources(lotlSource);
+        // tag::demo[]
+
+        // Create LOTLSource supporting the trust service equivalence mapping
+        LOTLSource mraEnactedLOTLSource = new LOTLSource();
+        // Provide URL pointing to the LOTLSource location
+        mraEnactedLOTLSource.setUrl("http://server.com/zz_lotl.xml");
+        // Set MRA Support in order to enable trust service equivalence mapping support
+        mraEnactedLOTLSource.setMraSupport(true);
+        // Provide keystore containing the certificate used to sign the LOTL
+        mraEnactedLOTLSource.setCertificateSource(lotlKeystore);
+        // Specify filter of Trusted Lists by the corresponding TSLType defined within the LOTL
+        // NOTE : by default "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" TSLType is used
+        mraEnactedLOTLSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist"));
+
+        // Provide the LOTL to the TLValidationJob (may be used alone or with other LOTL/TLs, e.g. with EU LOTL)
+        tlValidationJob.setListOfTrustedListSources(euLOTL, mraEnactedLOTLSource);
+
+        // end::demo[]
+
+        // NOTE : overwrite to UA values
+        mraEnactedLOTLSource.setUrl(UA_LOTL_URI);
+        mraEnactedLOTLSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/UAlist"));
+
+        tlValidationJob.setListOfTrustedListSources(mraEnactedLOTLSource);
 
         Map<String, byte[]> inMemoryMap = new HashMap<>();
         inMemoryMap.put(UA_LOTL_URI, DSSUtils.toByteArray(new FileDocument("src/test/resources/mra/lotl-ua.xml")));

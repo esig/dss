@@ -89,7 +89,8 @@ public class LOTLSource extends TLSource {
 	}
 
 	/**
-	 * Sets of the LOTL shall support MRA (Mutual Recognition Agreement).
+	 * Sets if the LOTL shall support MRA (Mutual Recognition Agreement) scheme defining trust service equivalence
+	 * mapping between the LOTL and a third-country Trusted List
 	 *
 	 * Setting this condition to TRUE will allow to process LOTL containing pointers to a third-country trusted lists,
 	 * including a special scheme for transition the qualification scope rules.

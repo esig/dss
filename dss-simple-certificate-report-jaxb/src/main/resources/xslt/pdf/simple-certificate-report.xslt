@@ -373,8 +373,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 					<xsl:attribute name="font-size">7pt</xsl:attribute>
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					
-					The qualification level has been determined using the mutual recognition agreement concluded with the EU.
+					The qualification level has been determined using an enacted trust service equivalence mapping.
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
