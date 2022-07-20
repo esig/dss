@@ -13,7 +13,7 @@
            
 	<xsd:complexType name="ConstraintsParameters">
 		<xsd:annotation>
-			<xsd:documentation>Root element for the DSS validation policy : that allows to customize the validation process : add/remove a check and set its criticality.</xsd:documentation>
+			<xsd:documentation>Root element for the DSS validation policy : that allows customization of the validation process : add/remove checks and set its criticality.</xsd:documentation>
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="Description" type="xsd:string">
@@ -237,7 +237,7 @@
 			</xsd:element>
 			<xsd:element name="ContentType" type="ValueConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the content-type attribute (CAdES) has the expected value</xsd:documentation>
+					<xsd:documentation>Checks if the content-type attribute has the expected value</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ContentHints" type="ValueConstraint" minOccurs="0">

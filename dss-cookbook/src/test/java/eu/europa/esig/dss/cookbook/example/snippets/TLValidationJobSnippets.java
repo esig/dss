@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -47,16 +47,15 @@ import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -149,10 +148,35 @@ public class TLValidationJobSnippets {
 	}
 	// end::job-loaders[]
 
-	// tag::custom-strategy[]
-	public SynchronizationStrategy allValidTrustedListsStrategy() {
-		
-		return new SynchronizationStrategy() {
+	public void synchronizationStrategyConfiguration() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// tag::synchronization-strategy[]
+		// AcceptAllStrategy will accept all Trusted Lists, despite its signature validation status (used by default)
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy());
+
+		// ExpirationAndSignatureCheckStrategy allow configuring acceptance of various checks to be performed on Trusted Lists
+		ExpirationAndSignatureCheckStrategy checkStrategy = new ExpirationAndSignatureCheckStrategy();
+		// This check configures whether expired LOTLs shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptExpiredListOfTrustedLists(false);
+		// This check configures whether expired TLs shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptExpiredTrustedList(false);
+		// This check configures whether LOTLs with invalid signatures shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptInvalidListOfTrustedLists(false);
+		// This check configures whether TLs with invalid signatures shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptInvalidTrustedList(false);
+		// Provide the configured strategy to the TLValidationJob
+		tlValidationJob.setSynchronizationStrategy(checkStrategy);
+		// end::synchronization-strategy[]
+	}
+
+	public void allValidTrustedListsStrategy() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// tag::custom-strategy[]
+		// Create a custom strategy by implementing the interface
+		// This strategy will accept only LOTL/TLs with valid signatures
+		SynchronizationStrategy customStrategy = new SynchronizationStrategy() {
 
 			@Override
 			public boolean canBeSynchronized(TLInfo trustedList) {
@@ -163,11 +187,14 @@ public class TLValidationJobSnippets {
 			public boolean canBeSynchronized(LOTLInfo listOfTrustedList) {
 				return listOfTrustedList.getValidationCacheInfo().isValid();
 			}
-			
+
 		};
 
+		// Provide the strategy to the TLValidationJob
+		tlValidationJob.setSynchronizationStrategy(customStrategy);
+		// end::custom-strategy[]
+
 	}
-	// end::custom-strategy[]
 
 	// tag::cache-cleaner[]
 	public CacheCleaner cacheCleaner() {
@@ -203,7 +230,7 @@ public class TLValidationJobSnippets {
 				// code to send an email
 				SampleUtils.sendEmail(newOJUrl);
 			}
-			
+
 		};
 
 		// The europeanLOTLSource is configured with an
@@ -232,11 +259,11 @@ public class TLValidationJobSnippets {
 
 		};
 		LOTLAlert lotlLocationChangeAlert = new LOTLAlert(new LOTLLocationChangeDetection(europeanLOTLSource()), databaseUpgrader);
-		
+
 		// add all alerts on the job
 		job.setLOTLAlerts(Arrays.asList(officialJournalDesynchronizationAlert, lotlLocationChangeAlert));
 		job.setTLAlerts(Arrays.asList(tlBrokenSignatureAlert));
-		
+
 		// end::alerting[]
 	}
 
@@ -244,22 +271,39 @@ public class TLValidationJobSnippets {
 		LOTLSource lotlSource = new LOTLSource();
 
 		// tag::predicates[]
-		// the predicates filter TSL pointers to XML documents with
-		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		// the predicate filters TSL pointers to XML documents with
+		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type (referring a EU LOTL)
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
+
+		// the predicate filters TSL pointers to XML documents with
+		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type (referring a EU TL)
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLPredicate());
+
+		// the predicate filters TSL pointers to XML documents with
+		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist" type for a third-country Trusted List
+		lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist"));
 
 		// tag::predicate-country[]
-		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
+		// the predicate filters only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
-		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE","RO"))
-				.and(new EULOTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
 		// end::predicate-country[]
+
+		// the predicate filters TSL pointers to XML documents with all types
+		lotlSource.setTlPredicate(TLPredicateFactory.createXMLOtherTSLPointerPredicate());
+
+		// the predicate filters TSL pointers to PDF documents with all types
+		lotlSource.setTlPredicate(TLPredicateFactory.createPDFOtherTSLPointerPredicate());
+
+		// the predicate filters TSL pointers with a custom defined MimeType
+		lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomMimeType("application/vnd.etsi.tsl+xml"));
+
 		// end::predicates[]
 	}
-	
+
 	private void executorService() {
 		TLValidationJob tlValidationJob = new TLValidationJob();
-		
+
 		// tag::executor-service[]
 		// Allows configuration of the execution process
 		// Default : Executors.newCachedThreadPool() is used
@@ -298,7 +342,7 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		tlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
-		
+
 		//instance of CertificateSource where all trusted certificates and their properties (service type,...) are stored.
 		tlValidationJob.setTrustedListSources(tlSource);
 		// end::french-tl-source[]
@@ -381,13 +425,15 @@ public class TLValidationJobSnippets {
 		// Optional : the predicate which allows to find the LOTL definition in the LOTL
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : European configuration
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		// Hint : Use TLPredicateFactory for a list of default configurations
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
 		// Optional : the predicate which allows to find and/or filter the TL
 		// definitions in the LOTL
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : all found trusted lists in the European LOTL
-		lotlSource.setTlPredicate(new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		// Hint : Use TLPredicateFactory for a list of default configurations
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLPredicate());
 
 		// Optional : a predicate which allows to find back the signing certificates for
 		// the current LOTL
@@ -411,7 +457,7 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
-		
+
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		// end::european-lotl-source[]
 

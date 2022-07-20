@@ -66,8 +66,16 @@ The `SynchronizationStrategy` defines the trusted lists or list(s) of trusted li
 
 DSS provides two implementations within the framework:
 
-* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
 * `AcceptAllStrategy` (default) - accepts all Trusted List, whatever the validation status is.
+* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
+
+The use of the strategies is demonstrated within the example below:
+
+[source,java,indent=0]
+.Example of a custom  SynchronizationStrategy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=synchronization-strategy]
+----
 
 An example of a custom implementation of `SynchronizationStrategy` can be found below:
 
@@ -113,10 +121,57 @@ The following predicates are provided within the framework:
 * `PDFOtherTSLPointer` - filters PDF TL pointers;
 * `SchemeTerritoryOtherTSLPointer` - filters TL pointers with a specific scheme territory (i.e. filter by country).
 
+NOTE: For ready-to-use predicates, please see `TLPredicateFactory` that contains a list of methods to create the most commonly used predicates in a simplified way.
+
 [source,java,indent=0]
 .Examples of TSL Loading Predicates configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicates]
+----
+
+==== Trust Service Provider predicates
+
+Defined within `TLSource` predicated allow filtering of `TrustServiceProvider`s based on the JAXB object containing information extracted about the `TrustServiceProvider` from an XML Trusted List.
+
+The Trusted Service Provider predicates are not enforced by default, therefore in a plain configuration, DSS would accept all found Trust Service Providers and extract the corresponding information from them.
+
+Within the framework the following `TrustServiceProviderPredicate`s are provided:
+
+* `TrustServiceProviderByTSPName` - this predicate is meant to filter trust service providers with the given TSP name. All other Trust Service Providers will be skipped.
+* `NonEmptyTrustService` - this predicate filters trust service providers that have at least one `TSPService` defined within it.
+
+Below you may find an example of `TrustServiceProviderPredicate` configuration:
+
+[source,java,indent=0]
+.Examples of Trust Service Provider Predicate configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-service-provider-predicate]
+----
+
+It is also possible to create a custom `TrustServiceProviderPredicate`, see an example below, used to filter TrustServiceProviders with a particular TSPName:
+
+[source,java,indent=0]
+.Custom Trust Service Provider Predicate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-service-provider-custom-predicate]
+----
+
+==== TSP Service predicates
+
+Defined within `TLSource` predicated allow filtering of specific `TSPService`s based on the JAXB object containing information extracted about the `TSPService` from an XML Trusted List.
+
+The TSP Service predicates are not enforced by default, therefore in a plain configuration, DSS would accept all found TSP Services and extract the corresponding information from them.
+
+Within the framework the following `TrustServicePredicate` is provided:
+
+* `GrantedTrustService` - this predicate is meant to filter trusted services containing an acceptable (i.e. accredited or granted) status with despite it was defined before or after eIDAS regulation.
+
+Below you may find an example of `TrustServicePredicate` configuration:
+
+[source,java,indent=0]
+.Examples of Trust Service Predicate configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-service-predicate]
 ----
 
 ==== Executor Service

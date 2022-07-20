@@ -193,6 +193,8 @@ In order to run a validation process with a custom validation policy, an XML fil
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicy]
 ----
 
+For a description of available for configuration constraints within the XML validation policy please see the <<validationPolicy>> chapter.
+
 ==== XML policy structure
 
 The validation policy allows defining different behavior for various token types or signature formats. The following groups are considered:

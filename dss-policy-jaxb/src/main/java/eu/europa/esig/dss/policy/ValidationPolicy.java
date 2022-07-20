@@ -649,7 +649,7 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityIdConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Indicates if the end user certificate used in validating the signature is issued to a natural person.
+	 * Indicates if signing-certificate has been identified.
 	 *
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if Recognition for a given context element is present in the constraint file,

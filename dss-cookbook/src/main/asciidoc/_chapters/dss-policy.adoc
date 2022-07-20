@@ -1,0 +1,2150 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: images/
+
+==== General
+
+A Signature validation policy is a set of rules/constraints that need to be fulfilled to validate a signature. When checking a constraints fails, this leads to a sub-indication in the validation report.
+
+==== Validation policy constraints
+
+This chapter describes available constraints within the XML Validation Policy used in DSS and their applicability rules.
+
+This document is completed with conformance to the https://github.com/esig/dss/blob/master/dss-policy-jaxb/src/main/resources/xsd/policy.xsd[policy.xsd] schema of the latest version of DSS.
+
+===== Container constraints
+
+The `<ContainerConstraints>` block defines rules for processing ASiC containers. The `<ContainerConstraints>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.ContainerConstraints element definition
+----
+<ConstraintsParameters>
+    ...
+    <ContainerConstraints>
+        ...
+    </ContainerConstraints>
+    ...
+</ConstraintsParameters>
+----
+
+ * `AcceptableContainerTypes` - this constraint is used to define a list of container types to be supported by the current validation process (e.g. `ASiC-E` and/or `ASiC-S`). When enforced, validator will accept only those container types, that are defined within the constraint. For other types, the check will fail.
+
+Default: `FAIL` (`ASiC-S` and `ASiC-E`)
+
+[source,xml,indent=0]
+.Example of AcceptableContainerTypes usage (with FAIL validation level)
+----
+<ContainerConstraints>
+    ...
+    <AcceptableContainerTypes Level="FAIL">
+        <Id>ASiC-S</Id>
+        <Id>ASiC-E</Id>
+    </AcceptableContainerTypes>
+ ...
+</ContainerConstraints>
+----
+
+ * `ZipCommentPresent` - this constraint is used to check whether the ".ZIP file comment" field of the container is not null. When enforced, the validator will accept only containers with a defined ".ZIP file comment" field. In other cases, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ZipCommentPresent usage (with WARN validation level)
+----
+<ContainerConstraints>
+    ...
+    <ZipCommentPresent Level="WARN" />
+    ...
+</ContainerConstraints>
+----
+
+* `AcceptableZipComment` - this constraint is used to check whether the ".ZIP file comment" field contains one of the acceptable values. When enforced, the validator will accept only containers with one of the defined values of ".ZIP file comment" field. In other cases, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of AcceptableZipComment usage (with WARN validation level)
+----
+<ContainerConstraints>
+    ...
+    <AcceptableZipComment Level="WARN">
+        <Id>mimetype=application/vnd.etsi.asic-s+zip</Id>
+        <Id>mimetype=application/vnd.etsi.asic-e+zip</Id>
+    </AcceptableZipComment>
+    ...
+</ContainerConstraints>
+----
+
+* `MimeTypeFilePresent` - this constraint is used to check whether the "mimetype" file is present within the container. When enforced, the validator will accept only containers containing a "mimetype" file document. In other cases, the check will fail.
+
+Default: `INFORM`
+
+[source,xml,indent=0]
+.Example of MimeTypeFilePresent usage (with INFORM validation level)
+----
+<ContainerConstraints>
+    ...
+    <MimeTypeFilePresent Level="INFORM" />
+    ...
+</ContainerConstraints>
+----
+
+* `AcceptableMimeTypeFileContent` - this constraint is used to check whether the "mimetype" document contains one of the acceptable values. When enforced, the validator will accept only containers with one of the defined values within the "mimetype" file document. In other cases, the check will fail.
+
+Default: `WARN` (`mimetype=application/vnd.etsi.asic-s+zip` and `mimetype=application/vnd.etsi.asic-e+zip`)
+
+[source,xml,indent=0]
+.Example of AcceptableMimeTypeFileContent usage (with WARN validation level)
+----
+<ContainerConstraints>
+    ...
+    <AcceptableMimeTypeFileContent Level="WARN">
+        <Id>mimetype=application/vnd.etsi.asic-s+zip</Id>
+        <Id>mimetype=application/vnd.etsi.asic-e+zip</Id>
+    </AcceptableMimeTypeFileContent>
+    ...
+</ContainerConstraints>
+----
+
+* `ManifestFilePresent` - this constraint is used to check whether the manifest file is defined within the container according to the rules of the applicable standard. The check requires one or more manifest files to be present for ASiC-E container type, while none of the manifest documents shall be present within the container for ASiC-S container type. In other cases, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ManifestFilePresent usage (with FAIL validation level)
+----
+<ContainerConstraints>
+    ...
+    <ManifestFilePresent Level="FAIL" />
+    ...
+</ContainerConstraints>
+----
+
+* `SignedFilesPresent` - this constraint is used to check whether the ASiC container contains documents present on the root level (for ASiC-S) or outside the /META-INF folder (ASiC-E). If the container does not contain those documents, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SignedFilesPresent usage (with FAIL validation level)
+----
+<ContainerConstraints>
+    ...
+    <SignedFilesPresent Level="FAIL" />
+    ...
+</ContainerConstraints>
+----
+
+* `AllFilesSigned` - this constraint is used to check whether all documents present on the root level of the ASiC container (for ASiC-S) or outside the /META-INF folder (for ASiC-E) are actually signed by the signature. If the container contains other documents not covered by the signature, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of AllFilesSigned usage (with WARN validation level)
+----
+<ContainerConstraints>
+    ...
+    <AllFilesSigned Level="WARN" />
+    ...
+</ContainerConstraints>
+----
+
+===== Signature constraints
+
+The `<SignatureConstraints>` block defines rules for checking signature validation rules, signed and unsigned attributes. The `<SignatureConstraints>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.SignatureConstraints element definition
+----
+<ConstraintsParameters>
+    ...
+    <SignatureConstraints>
+        ...
+    </SignatureConstraints>
+    ...
+</ConstraintsParameters>
+----
+
+* `StructuralValidation` - this constraint is used to check whether the validation of the signature's structure has passed the validation (e.g. validation against XSD for XAdES signature). If the signature document does not pass the structure validation, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of StructuralValidation usage (with WARN validation level)
+----
+<SignatureConstraints>
+    ...
+    <StructuralValidation Level="WARN" />
+    ...
+</SignatureConstraints>
+----
+
+ * `AcceptablePolicies` - this constraint is used to check if the signature policy defined within the signature's signed attribute is one of the acceptable values. If the signature has been defined with a different policy, the check will fail.
+
+The constraint allows definition of acceptable signature policy identifiers (e.g. OID) or one of the special values:
+
+ * `NO_POLICY` - to accept signatures without any defined signature policy;
+ * `ANY_POLICY` - to accept signatures defined any signature policy;
+ * `IMPLICIT_POLICY` - to accept signatures defined implicit signature policy.
+
+Default: `FAIL` (`NO_POLICY` and `ANY_POLICY`)
+
+[source,xml,indent=0]
+.Example of AcceptablePolicies usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <AcceptablePolicies Level="FAIL">
+        <Id>ANY_POLICY</Id>
+        <Id>NO_POLICY</Id>
+    </AcceptablePolicies>
+    ...
+</SignatureConstraints>
+----
+
+* `PolicyAvailable` - this constraint is used to check whether the signature policy's document is accessible (e.g. from online source or from unsigned property SignaturePolicyStore). If the signature policy document is not accessible, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of PolicyAvailable usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <PolicyAvailable Level="FAIL" />
+    ...
+</SignatureConstraints>
+----
+
+* `SignaturePolicyStorePresent` - this constraint is used to check whether the unsigned property SignaturePolicyStore is present within the signature. If the SignaturePolicyStore is not present, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SignaturePolicyStorePresent usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <SignaturePolicyStorePresent Level="FAIL" />
+    ...
+</SignatureConstraints>
+----
+
+* `PolicyHashMatch` - this constraint is used to check whether the hash of the signature policy defined within the signed property of the signature matched the computed hash of the actual extracted signature policy document. If the hash does not match, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of PolicyHashMatch usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <PolicyHashMatch Level="FAIL" />
+    ...
+</SignatureConstraints>
+----
+
+* `AcceptableFormats` - this constraint is used to check whether the format of the current signature corresponds to one of the signature formats defined in the list (e.g. `XAdES-BASELINE-B`). If the signature format corresponds to none of the defined signature formats, the check will fail.
+
+Default: `FAIL` (accepting all formats `*`)
+
+[source,xml,indent=0]
+.Example of AcceptableFormats usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <AcceptableFormats Level="FAIL">
+        <Id>*</Id>
+    </AcceptableFormats>
+    ...
+</SignatureConstraints>
+----
+
+* `FullScope` - this constraint is used to check whether the signature covers a complete document. If the signature covers a part of the references document, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of FullScope usage (with FAIL validation level)
+----
+<SignatureConstraints>
+    ...
+    <FullScope Level="FAIL" />
+    ...
+</SignatureConstraints>
+----
+
+====== Basic Signature Constraints
+
+The `<BasicSignatureConstraints>` block contains checks on basic signature constraints. The `<BasicSignatureConstraints>` element shall be a child of `SignatureParameters`:
+
+[source,xml,indent=0]
+.BasicSignatureConstraints element definition
+----
+<SignatureParameters>
+    ...
+    <BasicSignatureConstraints>
+        ...
+    </BasicSignatureConstraints>
+    ...
+</SignatureParameters>
+----
+
+* `ReferenceDataExistence` - this constraint is used to check whether the signature signs the original document. If the signature does not cover an original document, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ReferenceDataExistence usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataExistence Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ReferenceDataIntact` - this constraint is used to check whether the digest defined within the signature reference match to the digest of the original document (formatted, when applicable). If the digest does not match, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ReferenceDataIntact usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataIntact Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectExistence` - this constraint is used to check whether the original documents referenced within the signed manifest have been provided to the validation process. If the original documents references from the manifest have not been provided to the validation process, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ManifestEntryObjectExistence usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectExistence Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `SignatureIntact` - this constraint is used to check whether the signature value may be successfully decrypted using the public key of the corresponding identified signing-certificate against the computed Data To Be Signed Representation (DTBSR). If the signature value fails the decryption, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SignatureIntact usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <SignatureIntact Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `SignatureValid` - this constraint is used to check whether the signature is intact and all references have passed the validation. If the signature is not intact or one of the references has failed the validation, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SignatureValid usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <SignatureValid Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `SignatureDuplicated` - this constraint is used to check whether the signature is defined uniquely and may be unambiguously identified (e.g. defined with unique identifier). If the signature cannot be unambiguously identified, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SignatureDuplicated usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <SignatureDuplicated Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ProspectiveCertificateChain` - this constraint is used to check whether the trust anchor has been reached during the certificate chain building process. If a trust anchor cannot be reached for the certificate chain, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ProspectiveCertificateChain usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ProspectiveCertificateChain Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `SignerInformationStore` - this constraint is used to check whether CMS Signed Data Signer Information Store has only one signer information (PAdES only). If a CMS Signed Data Signer Information Store contains multiple signer informations, the check will fail.
+
+Default: `FAIL`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of SignerInformationStore usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <SignerInformationStore Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `PdfPageDifference` - this constraint is used to check whether a signed PDF document revision contains the same number of pages as the final validating PDF document revision. If a signed PDF document revision contains a different number of pages than the final PDF document revision, the check will fail.
+
+Default: `FAIL`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of PdfPageDifference usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <PdfPageDifference Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `PdfAnnotationOverlap` - this constraint is used to check whether the provided PDF document contains ovelapping annotations. If a PDF document contains overlapping annotations, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of PdfAnnotationOverlap usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <PdfAnnotationOverlap Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `PdfVisualDifference` - this constraint is used to check whether the final PDF document revision have visual differences against the signed PDF document revision, excluding added annotations. If a final PDF document revision contains visual differences against the signed PDF document revision, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of PdfVisualDifference usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <PdfVisualDifference Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `DocMDP` - this constraint is used to check validity of a PDF document against the /DocMDP field, when present. If a provided PDF document does not satisfy the requirements defined within the present /DocMDP field, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of DocMDP usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <DocMDP Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `FieldMDP` - this constraint is used to check validity of a PDF document against the /FieldMDP field, when present. If a provided PDF document does not satisfy the requirements defined within the present /FieldMDP field, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of FieldMDP usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <FieldMDP Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `SigFieldLock` - this constraint is used to check validity of a PDF document against the /SigFieldLock field, when present. If a provided PDF document does not satisfy the requirements defined within the present /SigFieldLock field, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of SigFieldLock usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <SigFieldLock Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `UndefinedChanges` - this constraint is used to check whether a PDF document does not contain any undefined (suspicious) changes, i.e. no signature addition, extension, timestamp addition or annotation addition/edition. If a provided PDF document contains undefined changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of UndefinedChanges usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <UndefinedChanges Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `TrustedServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TrustedServiceTypeIdentifier usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <TrustedServiceTypeIdentifier Level="WARN">
+        <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
+    </TrustedServiceTypeIdentifier>
+    ...
+</BasicSignatureConstraints>
+----
+
+* `TrustedServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TrustedServiceStatus usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <TrustedServiceStatus Level="FAIL">
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+    </TrustedServiceStatus>
+    ...
+</BasicSignatureConstraints>
+----
+
+======= Certificate Constraints
+
+The block of `CertificateConstraints` type verifies the applicability rules for the corresponding certificate. The `CertificateConstraints` may be defined for a signing-certificate or for a CA certificate, using `<SigningCertificate>` and `<CACertificate>` within the `<BasicSignatureConstraints>`, respectively.
+
+[source,xml,indent=0]
+.Certificate constraints element definition
+----
+<BasicSignatureConstraints>
+    ...
+    <SigningCertificate>
+        ...
+    </SigningCertificate>
+
+    <CACertificate>
+        ...
+    </CACertificate>
+    ...
+</BasicSignatureConstraints>
+----
+
+* `Recognition` - this constraint is used to check whether the signing-certificate has been identified. If the signing-certificate has not been identified, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of Recognition usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <Recognition Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `Signature` - this constraint is used to check whether the certificate is well signed (the signature is valid). Otherwise, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of Signature usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <Signature Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `NotExpired` - this constraint is used to check whether the certificate is not yet expired. If the certificate has expired at control time, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of NotExpired usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <NotExpired Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `AuthorityInfoAccessPresent` - this constraint is used to check whether the certificate has AuthorityInfoAccess url(s) to extract CA issuers. If the certificate does not have AIA url, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of AuthorityInfoAccessPresent usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <AuthorityInfoAccessPresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationInfoAccessPresent` - this constraint is used to check whether the certificate has access points to extract revocation information about the certificate (i.e. CRL access points or AIA OCSP urls). If the certificate does not contain revocation access points, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of RevocationInfoAccessPresent usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationInfoAccessPresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationDataAvailable` - this constraint is used to check whether the certificate has the revocation data (obtained from a signature or remote sources). If the certificate does not have associated revocation data, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationDataAvailable usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationDataAvailable Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `AcceptableRevocationDataFound` - this constraint is used to check whether the certificate has an acceptable revocation data (i.e. valid and consistent). If the certificate does not have an acceptable revocation data, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of AcceptableRevocationDataFound usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <AcceptableRevocationDataFound Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `CRLNextUpdatePresent` - this constraint is used to check whether `nextUpdate` field is present within the CRL revocation data. If a CRL does not contain `nextUpdate` field, the check will fail.
+
+Default: `WARN`
+
+Note: applicable only for CRLs
+
+[source,xml,indent=0]
+.Example of CRLNextUpdatePresent usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <CRLNextUpdatePresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `OCSPNextUpdatePresent` - this constraint is used to check whether `nextUpdate` field is present within the OCSP revocation data. If a OCSP does not contain `nextUpdate` field, the check will fail.
+
+Default: not executed
+
+Note: applicable only for CRLs
+
+[source,xml,indent=0]
+.Example of OCSPNextUpdatePresent usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <OCSPNextUpdatePresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationFreshness` - this constraint is used to check whether the corresponding revocation data is fresh enough against the defined time constraint. If the revocation data has been issued at or before the best-signature-time plus the defined time constraint, the check will fail.
+
+Default: `IGNORE` (with 0 DAYS as a time constraint)
+
+[source,xml,indent=0]
+.Example of RevocationFreshness usage (with IGNORE validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationFreshnessNextUpdate` - this constraint is used to check whether the corresponding revocation data shall be checked against the best-signature-time plus the difference between `thisUpdate` and `nextUpdate` in case the `RevocationFreshness` check is not defined in the policy. If the revocation data has been issued at or before the best-signature-time plus the time difference between `thisUpdate` and `nextUpdate`, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of RevocationFreshnessNextUpdate usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationFreshnessNextUpdate Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `KeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable key usages. If the certificate does not have one of the key usages defined within the list, the check will fail.
+
+Default: `WARN` (`nonRepudiation`)
+
+[source,xml,indent=0]
+.Example of KeyUsage usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <KeyUsage Level="WARN">
+        <Id>nonRepudiation</Id>
+    </KeyUsage>
+    ...
+</SigningCertificate>
+----
+
+* `ExtendedKeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable extended key usages. If the certificate does not have one of the extended key usages defined within the list, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ExtendedKeyUsage usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <ExtendedKeyUsage Level="WARN">
+        <Id>timeStamping</Id>
+    </ExtendedKeyUsage>
+    ...
+</SigningCertificate>
+----
+
+* `Surname` - this constraint is used to check whether the certificate's subject distinguished name contains the Surname attribute with one of the acceptable values. If the Surname attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Surname usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Surname Level="WARN">
+        <Id>Banner</Id>
+    </Surname>
+    ...
+</SigningCertificate>
+----
+
+* `GivenName` - this constraint is used to check whether the certificate's subject distinguished name contains the GivenName attribute with one of the acceptable values. If the GivenName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of GivenName usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <GivenName Level="WARN">
+        <Id>Robert</Id>
+    </GivenName>
+    ...
+</SigningCertificate>
+----
+
+* `CommonName` - this constraint is used to check whether the certificate's subject distinguished name contains the CommonName attribute with one of the acceptable values. If the CommonName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of CommonName usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <CommonName Level="WARN">
+        <Id>Hulk</Id>
+    </CommonName>
+    ...
+</SigningCertificate>
+----
+
+* `Pseudonym` - this constraint is used to check whether the certificate's subject distinguished name contains the Pseudonym attribute with one of the acceptable values. If the Pseudonym attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Pseudonym usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Pseudonym Level="WARN">
+        <Id>The Incredible Hulk</Id>
+    </Pseudonym>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationUnit` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationUnit attribute with one of the acceptable values. If the OrganizationUnit attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OrganizationUnit usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <OrganizationUnit Level="WARN">
+        <Id>Avengers</Id>
+    </OrganizationUnit>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationName` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationName attribute with one of the acceptable values. If the OrganizationName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OrganizationName usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <OrganizationName Level="WARN">
+        <Id>Marvel</Id>
+    </OrganizationName>
+    ...
+</SigningCertificate>
+----
+
+* `Country` - this constraint is used to check whether the certificate's subject distinguished name contains the Country attribute with one of the acceptable values. If the Country attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Country usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Country Level="WARN">
+        <Id>USA</Id>
+    </Country>
+    ...
+</SigningCertificate>
+----
+
+* `SerialNumberPresent` - this constraint is used to check whether the certificate contains serialNumber field. If the certificate does not contain serialNumber field, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SerialNumberPresent usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <SerialNumberPresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `NotRevoked` - this constraint is used to check whether the certificate is not revoked. If the certificate is revoked, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of NotRevoked usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <NotRevoked Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `NotOnHold` - this constraint is used to check whether the certificate's revocation status is not certificateHold. If the certificate's revocation status is certificateHold, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of NotOnHold usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <NotOnHold Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationIssuerNotExpired` - this constraint is used to check whether the issuer of the corresponding revocation data has not yet expired. If the issuer of the certificate's revocation data has expired at control time, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationIssuerNotExpired usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationIssuerNotExpired Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `SelfSigned` - this constraint is used to check whether the certificate is self-signed. If the certificate is not self-signed, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SelfSigned usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <SelfSigned Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
+* `NotSelfSigned` - this constraint is used to check whether the certificate is not self-signed. If the certificate is self-signed, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of NotSelfSigned usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <NotSelfSigned Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `PolicyIds` - this constraint is used to check whether the certificate is defined with one of the certificate policies corresponding to one of the values within the given list. If the certificate contains none of certificate policy oids listed in the values list, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PolicyIds usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PolicyIds Level="WARN">
+        <Id>0.4.0.1456.1.1</Id>
+        <Id>00.4.0.194112.1.3</Id>
+        <Id>0.4.0.194112.1.2</Id>
+    </PolicyIds>
+    ...
+</SigningCertificate>
+----
+
+* `PolicyQualificationIds` - this constraint is used to check whether the certificate contains one of the certificate policies identifying a qualified certificate (no TL overrule). If the certificate contains none of certificate policy oids corresponding to a qualified certificate, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PolicyQualificationIds usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PolicyQualificationIds Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `PolicySupportedByQSCDIds` - this constraint is used to check whether the certificate contains one of the certificate policies identifying a certificate supported by a QSCD/SSCD (no TL overrule). If the certificate contains none of certificate policy oids corresponding to a certificate supported by a QSCD/SSCD, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PolicyQualificationIds usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PolicySupportedByQSCDIds Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `QcCompliance` - this constraint is used to check whether the certificate contains a QcCompliance QcStatement. If the certificate does not contain QcCompliance QcStatement, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcCompliance usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcCompliance Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `QcEuLimitValueCurrency` - this constraint is used to check whether the certificate contains a QcLimiteValue QcStatement with one of the allowed currency names. If the certificate does not contain QcLimiteValue QcStatement with one of the allowed currency names, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcEuLimitValueCurrency usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcEuLimitValueCurrency Level="WARN">
+        <Id>EUR</Id>
+    </QcEuLimitValueCurrency>
+    ...
+</SigningCertificate>
+----
+
+* `MinQcEuLimitValue` - this constraint is used to check whether the certificate contains a QcLimiteValue QcStatement which is same or larger the defined value. If the certificate does not contain QcLimiteValue QcStatement same or bigger than the defined value, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of MinQcEuLimitValue usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <MinQcEuLimitValue Level="WARN">10000</QcEuLimitValueCurrency>
+    ...
+</SigningCertificate>
+----
+
+* `MinQcEuRetentionPeriod` - this constraint is used to check whether the certificate contains a QcEuRetentionPeriod QcStatement which is same or larger the defined value. If the certificate does not contain QcEuRetentionPeriod QcStatement same or bigger than the defined value, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of MinQcEuRetentionPeriod usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcEuLimitValueCurrency Level="WARN">10</QcEuLimitValueCurrency>
+    ...
+</SigningCertificate>
+----
+
+* `QcSSCD` - this constraint is used to check whether the certificate contains a QcSSCD QcStatement. If the certificate does not contain QcSSCD QcStatement, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcSSCD usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcSSCD Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `QcEuPDSLocation` - this constraint is used to check whether the certificate contains a QcEuPDSLocation QcStatement with one of the defined values. If the certificate does not contain QcEuPDSLocation QcStatement with one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcEuPDSLocation usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcEuPDSLocation Level="WARN">
+        <Id>FR</Id>
+        <Id>LU</Id>
+    </QcEuPDSLocation>
+    ...
+</SigningCertificate>
+----
+
+* `QcType` - this constraint is used to check whether the certificate contains a QcType QcStatement with one of the defined values. If the certificate does not contain QcType QcStatement with one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcType usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcType Level="WARN">
+        <Id>0.4.0.1862.1.6.1</Id>
+        <Id>0.4.0.1862.1.6.2</Id>
+    </QcEuPDSLocation>
+    ...
+</SigningCertificate>
+----
+
+* `QcLegislationCountryCodes` - this constraint is used to check whether the certificate contains a QcCCLegislations QcStatement with one of the defined values. If the certificate does not contain QcCCLegislations QcStatement with one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of QcLegislationCountryCodes usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <QcLegislationCountryCodes Level="WARN">
+        <Id>FR</Id>
+        <Id>LU</Id>
+    </QcEuPDSLocation>
+    ...
+</SigningCertificate>
+----
+
+* `IssuedToNaturalPerson` - this constraint is used to check whether the certificate contains a certificate policy declaring that the certificate has been issued to a natural person. If the certificate does not contain a certificate policy declaring that the certificate has been issued to a natural person, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of IssuedToNaturalPerson usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <IssuedToNaturalPerson Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `IssuedToLegalPerson` - this constraint is used to check whether the certificate contains a certificate policy declaring that the certificate has been issued to a legal person. If the certificate does not contain a certificate policy declaring that the certificate has been issued to a legal person, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of IssuedToLegalPerson usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <IssuedToLegalPerson Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `SemanticsIdentifier` - this constraint is used to check whether the certificate contains a QcCSemanticsIdentifier QcStatement with one of the defined values. If the certificate does not contain QcCSemanticsIdentifier QcStatement with one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SemanticsIdentifier usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <SemanticsIdentifier Level="WARN">
+        <Id>0.4.0.194121.1.1</Id>
+        <Id>0.4.0.194121.1.2</Id>
+    </SemanticsIdentifier>
+    ...
+</SigningCertificate>
+----
+
+* `PSD2QcTypeRolesOfPSP` - this constraint is used to check whether the certificate contains a Psd2QcType QcStatement with one of the defined roles of PSP values. If the certificate does not contain Psd2QcType QcStatement with one of the defined roles of PSP values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PSD2QcTypeRolesOfPSP usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PSD2QcTypeRolesOfPSP Level="WARN">
+        <Id>0.4.0.19495.1.1</Id>
+    </PSD2QcTypeRolesOfPSP>
+    ...
+</SigningCertificate>
+----
+
+* `PSD2QcCompetentAuthorityName` - this constraint is used to check whether the certificate contains a Psd2QcType QcStatement with one of the defined NCA (Competent Authority Name) values. If the certificate does not contain Psd2QcType QcStatement with one of the defined NCA (Competent Authority Name) values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PSD2QcCompetentAuthorityName usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PSD2QcCompetentAuthorityName Level="WARN">
+        <Id>Lux National Bank</Id>
+    </PSD2QcCompetentAuthorityName>
+    ...
+</SigningCertificate>
+----
+
+* `PSD2QcCompetentAuthorityId` - this constraint is used to check whether the certificate contains a Psd2QcType QcStatement with one of the defined NCA (Competent Authority Name) Identifier values. If the certificate does not contain Psd2QcType QcStatement with one of the defined NCA (Competent Authority Name) Identifier values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of PSD2QcCompetentAuthorityId usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PSD2QcCompetentAuthorityId Level="WARN">
+        <Id>LU-LNB</Id>
+    </PSD2QcCompetentAuthorityId>
+    ...
+</SigningCertificate>
+----
+
+* `UsePseudonym` - this constraint is used to check whether the certificate's subject distinguished name contains the Pseudonym attribute. If the certificate's subject distinguished name contains Pseudonym attribute, the check will fail.
+
+Default: `INFORM`
+
+[source,xml,indent=0]
+.Example of UsePseudonym usage (with INFORM validation level)
+----
+<SigningCertificate>
+    ...
+    <UsePseudonym Level="INFORM" />
+    ...
+</SigningCertificate>
+----
+
+====== Signed attribute constraints
+
+The `<SignedAttributes>` block defines rules for checking applicability rules for signed attributes of the signature. The `<SignedAttributes>` element may be a child of `SignatureConstraints` or a `Timestamp` element, to correspond to the validation of a signature or a timestamp constraints, respectively:
+
+[source,xml,indent=0]
+.SignedAttributes element definition
+----
+<SignatureConstraints>
+    ...
+    <SignedAttributes>
+        ...
+    </SignedAttributes>
+    ...
+</SignatureConstraints>
+----
+
+* `SigningCertificatePresent` - this constraint checks whether the `SigningCertificate` attribute is present within the signed properties of the signature. If the signature does not contain `SigningCertificate` attribute, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SigningCertificatePresent usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <SigningCertificatePresent Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `UnicitySigningCertificate` - this constraint checks whether one and only one `SigningCertificate` attribute is present within the signature. If the signature does not contain `SigningCertificate` attribute or contains more than one, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of UnicitySigningCertificate usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <UnicitySigningCertificate Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `SigningCertificateRefersCertificateChain` - this constraint checks whether references defined within `SigningCertificate` attributes refer only the certificates present within the found signature certificate chain. If the signature contains `SigningCertificate` attribute referencing a certificate outside the found certificate chain, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SigningCertificateRefersCertificateChain usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <SigningCertificateRefersCertificateChain Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `ReferencesToAllCertificateChainPresent` - this constraint checks whether all certificates from the signature's certificate chain are referenced within the "SigningCertificate" attribute references. If a certificate within the signature's certificate chain is not referenced from `SigningCertificates` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ReferencesToAllCertificateChainPresent usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <ReferencesToAllCertificateChainPresent Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `SigningCertificateDigestAlgorithm` - this constraint checks whether the digest algorithm used to calculate the hash of the "SigningCertificate" reference is acceptable against the `CryptographicConstraints`. If the digest algorithm used within "SigningCertificate" reference does not pass verification against the defined `CryptograpicConstraints`, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SigningCertificateDigestAlgorithm usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <SigningCertificateDigestAlgorithm Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `CertDigestPresent` - this constraint checks whether the "SigningCertificate" reference contains digest value. If "SigningCertificate" attribute does not contain digest, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of CertDigestPresent usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <CertDigestPresent Level="FAIL" />
+    ...
+</SignedAttributes>
+----
+
+* `CertDigestMatch` - this constraint checks whether the digest present within "SigningCertificate" attribute match the digest of the found signature signing-certificate. If digest of the "SigningCertificate" attribute does not match the digests of the signing-certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of CertDigestMatch usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <CertDigestMatch Level="FAIL" />
+    ...
+</SignedAttributes>
+----
+
+* `IssuerSerialMatch` - this constraint checks whether the issuer serial within "SigningCertificate" attribute matches the information about the issuer of the signing-certificate, when present. If issuer serial from the "SigningCertificate" attribute does not match the issuer certificate of the signing-certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of IssuerSerialMatch usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <IssuerSerialMatch Level="FAIL" />
+    ...
+</SignedAttributes>
+----
+
+* `KeyIdentifierPresent` - this constraint checks whether the 'kid' signed attribute is present within the JAdES signature. If the 'kid' signed attribute is not present within the signature, the check will fail.
+
+Default: not executed
+
+Note: the check is executed only for JAdES
+
+[source,xml,indent=0]
+.Example of KeyIdentifierPresent usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <KeyIdentifierPresent Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `KeyIdentifierMatch` - this constraint checks whether the value of the 'kid' signed attribute matches the signing-certificate, when attribute is present. If the value of 'kid' signed attribute does not match the signing-certificate, the check will fail.
+
+Default: `WARN`
+
+Note: the check is executed only for JAdES
+
+[source,xml,indent=0]
+.Example of KeyIdentifierMatch usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <KeyIdentifierMatch Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `SigningTime` - this constraint checks whether the "signing-time" signed attribute is present. If the "signing-time" attribute is not present, the check will fail.
+
+Default: `FAIL`
+
+Note: the check is executed only for JAdES
+
+[source,xml,indent=0]
+.Example of SigningTime usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <SigningTime Level="FAIL" />
+    ...
+</SignedAttributes>
+----
+
+* `ContentType` - this constraint checks whether the "content-type" signed attribute has the expected value. If the "content-type" attribute's value does not match the expected value, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ContentType usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <ContentType Level="FAIL" value="1.2.840.113549.1.7.1" />
+    ...
+</SignedAttributes>
+----
+
+* `ContentHints` - this constraint checks whether the "content-hints" signed attribute has the expected value. If the "content-hints" attribute's value does not match the expected value, the check will fail.
+
+Default: not executed
+
+Note: executed for CAdES only
+
+[source,xml,indent=0]
+.Example of ContentHints usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <ContentHints Level="FAIL" value="1.2.840.113549.1.7.1" />
+    ...
+</SignedAttributes>
+----
+
+* `ContentIdentifier` - this constraint checks whether the "content-identifier" signed attribute has the expected value. If the "content-identifier" attribute's value does not match the expected value, the check will fail.
+
+Default: not executed
+
+Note: executed for CAdES only
+
+[source,xml,indent=0]
+.Example of ContentIdentifier usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <ContentIdentifier Level="FAIL" value="1.2.840.113549.1.7.1" />
+    ...
+</SignedAttributes>
+----
+
+* `MessageDigestOrSignedPropertiesPresent` - this constraint checks whether the "message-digest" (for CAdES) or "SignedProperties" (for XAdES) are present within the signature. If no "message-digest" (for CAdES) nor "SignedProperties" (for XAdES) are present within the signature, the check will fail.
+
+Default: `FAIL`
+
+Note: executed for XAdES, CAdES, PAdES
+
+[source,xml,indent=0]
+.Example of MessageDigestOrSignedPropertiesPresent usage (with FAIL validation level)
+----
+<SignedAttributes>
+    ...
+    <MessageDigestOrSignedPropertiesPresent Level="FAIL" />
+    ...
+</SignedAttributes>
+----
+
+* `EllipticCurveKeySize` - this constraint checks whether the elliptic curve's key size of the private key used to create the signature matches the defined signature algorithm (as per RFC 7518). If the elliptic curve's key size of the private key used to create the signature does not match the defined signature algorithm (as per RFC 7518), the check will fail.
+
+Default: `WARN`
+
+Note: executed for JAdES only
+
+[source,xml,indent=0]
+.Example of EllipticCurveKeySize usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <EllipticCurveKeySize Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `CommitmentTypeIndication` - this constraint checks whether the commitment type indication present within the signed values corresponds to one of the values present within the list. If a commitment type indication extracted from the signature does not match to one of the values defined in the acceptable values list, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of CommitmentTypeIndication usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <CommitmentTypeIndication Level="WARN">
+        <Id>1.2.840.113549.1.9.16.6.1</Id>
+        <Id>1.2.840.113549.1.9.16.6.4</Id>
+        <Id>1.2.840.113549.1.9.16.6.5</Id>
+        <Id>1.2.840.113549.1.9.16.6.6</Id>
+    </CommitmentTypeIndication>
+    ...
+</SignedAttributes>
+----
+
+* `SignerLocation` - this constraint checks the presence of the "signer-location" signed attribute. If a signature does not contain "signer-location" signed attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SignerLocation usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <SignerLocation Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `ClaimedRoles` - this constraint checks if one of the values defined within "claimed-roles" signed attribute matches one of the values defines within the acceptable values list. If none of the "claimed-roles" signed attribute's values matches the values defined in the values list, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ClaimedRoles usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <ClaimedRoles Level="WARN">
+        <Id>supplier</Id>
+    </ClaimedRoles>
+    ...
+</SignedAttributes>
+----
+
+* `CertifiedRoles` - this constraint checks if one of the values defined within "certified-roles" signed attribute matches one of the values defines within the acceptable values list. If none of the "certified-roles" signed attribute's values matches the values defined in the values list, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of CertifiedRoles usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <CertifiedRoles Level="WARN">
+        <Id>*</Id>
+    </CertifiedRoles>
+    ...
+</SignedAttributes>
+----
+
+* `ContentTimeStamp` - this constraint checks if a "content-time-stamp" attribute is present within the signature. If a "content-time-stamp" attribute is not present within the signature, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ContentTimeStamp usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <ContentTimeStamp Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+* `ContentTimeStampMessageImprint` - this constraint checks if a digest present withint "content-time-stamp" attribute matches the digest of the extacted (formatted) signed data, when attribute is present. If a digest present within "content-time-stamp" attribute does not match the digest computed on signed data, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ContentTimeStampMessageImprint usage (with WARN validation level)
+----
+<SignedAttributes>
+    ...
+    <ContentTimeStampMessageImprint Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+====== Unsigned attribute constraints
+
+The `<UnsignedAttributes>` block defines rules for checking applicability rules for unsigned attributes of the signature. The `<UnsignedAttributes>` element shall be a child of `SignatureConstraints`:
+
+[source,xml,indent=0]
+.SignedAttributes element definition
+----
+<SignatureConstraints>
+    ...
+    <UnsignedAttributes>
+        ...
+    </UnsignedAttributes>
+    ...
+</SignatureConstraints>
+----
+
+* `CounterSignature` - this constraint checks whether the `counter-signature` attribute is present within the unsigned properties of the signature. If the signature does not contain `counter-signature` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of CounterSignature usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <CounterSignature Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+===== Timestamp constraints
+
+The `<Timestamp>` block defines rules for checking timestamp applicability rules. The `<Timestamp>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.TimestampConstraints element definition
+----
+<ConstraintsParameters>
+    ...
+    <Timestamp>
+        ...
+    </Timestamp>
+    ...
+</ConstraintsParameters>
+----
+
+* `TimestampDelay` - this constraint defines a maximum time interval between claimed signing time and the best-signature-time (production time of the signature-time-stamp). If the interval between claimed signing time and the best-signature-time obtained from a signature exceeds the value, the check will fail.
+
+Default: `IGNORE` (`DAYS=0`)
+
+[source,xml,indent=0]
+.Example of TimestampDelay usage (with IGNORE validation level)
+----
+<Timestamp>
+    ...
+    <TimestampDelay Level="IGNORE" Unit="DAYS" Value="0" />
+    ...
+</Timestamp>
+----
+
+* `RevocationTimeAgainstBestSignatureTime` - this constraint checks whether a certificate's revocation has occurred after the best-signature-time. If the revocation has been taken place before or at the best-signature-time, then the check will fail.
+
+Default: `FAIL` (`DAYS=0`)
+
+[source,xml,indent=0]
+.Example of RevocationTimeAgainstBestSignatureTime usage (with FAIL validation level)
+----
+<Timestamp>
+    ...
+    <RevocationTimeAgainstBestSignatureTime	Level="FAIL" />
+    ...
+</Timestamp>
+----
+
+* `BestSignatureTimeBeforeExpirationDateOfSigningCertificate` - this constraint checks whether the best-signature-time is before or at expiration date of the signing-certificate (notAfter field of the certificate). If the best-signature-time is after the expiration date of the signing-certificate, then the check will fail.
+
+Default: `FAIL` (`DAYS=0`)
+
+[source,xml,indent=0]
+.Example of BestSignatureTimeBeforeExpirationDateOfSigningCertificate usage (with FAIL validation level)
+----
+<Timestamp>
+    ...
+    <BestSignatureTimeBeforeExpirationDateOfSigningCertificate	Level="FAIL" />
+    ...
+</Timestamp>
+----
+
+* `Coherence` - this constraint verifies if the order of timestamps is correct within the signature. Each next timestamp shall be produced at the same time or after the previous timestamp, but also have the same or a superior type (i.g. content-time-stamp -> signature-time-stamp -> archive-time-stamp). If the next following timestamp embedded into signature has been produced before the previous timestamp, then the check will fail.
+
+Default: `WARN` (`DAYS=0`)
+
+[source,xml,indent=0]
+.Example of Coherence usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <Coherence	Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `TSAGeneralNamePresent` - this constraint checks if the TSTInfo.tsa field is present for the timestamp. If the field TSTInfo.tsa is not present within the timestamp, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TSAGeneralNamePresent usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <TSAGeneralNamePresent	Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `TSAGeneralNameContentMatch` - this constraint checks if the TSTInfo.tsa field within the timestamp, when present, matches the timestamp's issuer distinguishing name. This check ignores order of attributes and compares only the values. If the field TSTInfo.tsa does not match the timestamp's issuer distinguishing name, the check will fail.
+
+Default: `WARN` (`DAYS=0`)
+
+[source,xml,indent=0]
+.Example of TSAGeneralNameContentMatch usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <TSAGeneralNameContentMatch	Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `TSAGeneralNameOrderMatch` - this constraint checks if the TSTInfo.tsa field within the timestamp, when present, matches the timestamp's issuer distinguishing name including the order of attributes. If the field TSTInfo.tsa does not match the timestamp's issuer distinguishing name, in values or in order, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TSAGeneralNameOrderMatch usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <TSAGeneralNameOrderMatch Level="WARN" />
+    ...
+</Timestamp>
+----
+
+===== Revocation constraints
+
+The `<Revocation>` block defines rules for checking revocation data applicability rules (CRLs and OCSPs). The `<Revocation>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.TimestampConstraints element definition
+----
+<ConstraintsParameters>
+    ...
+    <Revocation>
+        ...
+    </Revocation>
+    ...
+</ConstraintsParameters>
+----
+
+* `UnknownStatus` - this constraint checks whether the status obtained from the revocation data is not "unknown". If the revocation status is "unknown", the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of UnknownStatus usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <UnknownStatus Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `OCSPCertHashPresent` - this constraint checks whether the OCSP response contains "certHash" field. If the OCSP response does not contain "certHash" field, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OCSPCertHashPresent usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <OCSPCertHashPresent Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `OCSPCertHashMatch` - this constraint checks whether the "certHash" field present within OCSP response matches the digest of the corresponding certificate token, the revocation has been issued for. If the "certHash" field of OCSP response does not match the corresponding certificate's digest, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OCSPCertHashMatch usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <OCSPCertHashMatch Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `SelfIssuedOCSP` - this constraint checks whether the certificate chain of the OCSP responder does not contain the certificate token it has been issued for. If the certificate chain of the OCSP responder contains the certificate token the OCSP response has been issued for, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SelfIssuedOCSP usage (with WARN validation level)
+----
+<Revocation>
+    ...
+    <SelfIssuedOCSP Level="WARN" />
+    ...
+</Revocation>
+----
+
+===== Cryptographic Constraints
+
+The `<Cryptographic>` block defines list of acceptable digest and encryption algorithms, as well as the dates of their expiration. The `<Cryptographic>` element may be defined for each particular token (e.g. for a signing-certificate, for revocation data, etc.) to define specific rules for the algorithms processing within the given token, as well as may be defined within `<ConstraintsParameters>` to define the general rules for all token types, if no specific rules are defined.
+
+* `AcceptableEncryptionAlgo` - this constraint defines a list of acceptable encryption algorithms. If a different encryption algorithm is used from the defined list, the check will fail.
+
+Default: `FAIL` (`RSA`, `DSA`, `ECDSA`, `PLAIN-ECDSA`)
+
+[source,xml,indent=0]
+.Example of AcceptableEncryptionAlgo usage (with FAIL validation level)
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AcceptableEncryptionAlgo>
+        <Algo>RSA</Algo>
+        <Algo>DSA</Algo>
+        <Algo>ECDSA</Algo>
+        <Algo>PLAIN-ECDSA</Algo>
+    </AcceptableEncryptionAlgo>
+    ...
+</Cryptographic>
+----
+
+* `MiniPublicKeySize` - this constraint defines a list of acceptable encryption algorithms with the corresponding minimal acceptable key length. If an encryption algorithm is used with a key length smaller than the one defined in the list for the corresponding encryption algorithm, the check will fail.
+
+Default: `FAIL` (`RSA=1024`, `DSA=1024`, `ECDSA=160`, `PLAIN-ECDSA=160`)
+
+[source,xml,indent=0]
+.Example of MiniPublicKeySize usage (with FAIL validation level)
+----
+<Cryptographic Level="FAIL">
+    ...
+    <MiniPublicKeySize>
+        <Algo Size="1024">DSA</Algo>
+        <Algo Size="1024">RSA</Algo>
+        <Algo Size="160">ECDSA</Algo>
+        <Algo Size="160">PLAIN-ECDSA</Algo>
+    </MiniPublicKeySize>
+    ...
+</Cryptographic>
+----
+
+* `AcceptableDigestAlgo` - this constraint defines a list of acceptable digest algorithms. If a different digest algorithm is used from the defined list, the check will fail.
+
+Default: `FAIL` (`MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA384`, `SHA512`, `SHA3-256`, `SHA3-384`, `SHA3-512`, `RIPEMD160`, `WHIRLPOOL`)
+
+[source,xml,indent=0]
+.Example of AcceptableDigestAlgo usage (with FAIL validation level)
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AcceptableDigestAlgo>
+        <Algo>MD5</Algo>
+        <Algo>SHA1</Algo>
+        <Algo>SHA224</Algo>
+        <Algo>SHA256</Algo>
+        <Algo>SHA384</Algo>
+        <Algo>SHA512</Algo>
+        <Algo>SHA3-256</Algo>
+        <Algo>SHA3-384</Algo>
+        <Algo>SHA3-512</Algo>
+        <Algo>RIPEMD160</Algo>
+        <Algo>WHIRLPOOL</Algo>
+    </AcceptableDigestAlgo>
+    ...
+</Cryptographic>
+----
+
+* `AlgoExpirationDate` - this constraint defines a list of acceptable algorithms with the corresponding expiration date for this algorithm. If an algorithm has been used after the defined date, the check will fail.
+
+Default: `FAIL` (see values below)
+
+[source,xml,indent=0]
+.Example of AcceptableDigestAlgo usage (with FAIL validation level)
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Format="yyyy">
+			<!-- Digest algorithms -->
+			<Algo Date="2005">MD5</Algo>
+			<Algo Date="2009">SHA1</Algo>
+			<Algo Date="2026">SHA224</Algo>
+			<Algo Date="2029">SHA256</Algo>
+			<Algo Date="2029">SHA384</Algo>
+			<Algo Date="2029">SHA512</Algo>
+			<Algo Date="2029">SHA3-256</Algo>
+			<Algo Date="2029">SHA3-384</Algo>
+			<Algo Date="2029">SHA3-512</Algo>
+			<Algo Date="2011">RIPEMD160</Algo>
+			<Algo Date="2015">WHIRLPOOL</Algo>
+			<!-- end Digest algorithms -->
+			<!-- Encryption algorithms -->
+			<Algo Date="2013" Size="1024">DSA</Algo>
+			<Algo Date="2026" Size="2048">DSA</Algo>
+			<Algo Date="2029" Size="3072">DSA</Algo>
+			<Algo Date="2009" Size="1024">RSA</Algo>
+			<Algo Date="2016" Size="1536">RSA</Algo>
+			<Algo Date="2026" Size="1900">RSA</Algo>
+			<Algo Date="2029" Size="3000">RSA</Algo>
+			<Algo Date="2013" Size="160">ECDSA</Algo>
+			<Algo Date="2013" Size="192">ECDSA</Algo>
+			<Algo Date="2016" Size="224">ECDSA</Algo>
+			<Algo Date="2029" Size="256">ECDSA</Algo>
+			<Algo Date="2029" Size="384">ECDSA</Algo>
+			<Algo Date="2029" Size="512">ECDSA</Algo>
+			<Algo Date="2013" Size="160">PLAIN-ECDSA</Algo>
+			<Algo Date="2013" Size="192">PLAIN-ECDSA</Algo>
+			<Algo Date="2016" Size="224">PLAIN-ECDSA</Algo>
+			<Algo Date="2029" Size="256">PLAIN-ECDSA</Algo>
+			<Algo Date="2029" Size="384">PLAIN-ECDSA</Algo>
+			<Algo Date="2029" Size="512">PLAIN-ECDSA</Algo>
+			<!-- end Encryption algorithms -->
+		</AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+
+===== Model constraint
+
+The `<Model>` element defines a model for processing of certificate chain. The `<Model>` element shall be a child of '<ConstraintsParameters>' element.
+
+Model may have one of the following values:
+
+ * `SHELL` - processes the certificates within the certificate chain relatively to the control time (the common model);
+ * `CHAIN` - processes the certificates within the certificate chain relatively the issuance time of the child certificate (used in Germany);
+ * `HYBRID` - processed the certificates within the certificate chain relatively the issuance time of the signing-certificate.
+
+[source,xml,indent=0]
+.Model element definition
+----
+<ConstraintsParameters>
+    ...
+    <Model Value="SHELL" />
+    ...
+</ConstraintsParameters>
+----
+
+===== eIDAS constraint
+
+The `<eIDAS>` element defines constraint for checking applicability rules for corresponding Trusted Lists (or Lists of Trusted Lists). The `<eIDAS>` element shall be a child of '<ConstraintsParameters>' element.
+
+[source,xml,indent=0]
+.eIDAS element definition
+----
+<ConstraintsParameters>
+    ...
+    <eIDAS>
+        ...
+    </eIDAS>
+    ...
+</ConstraintsParameters>
+----
+
+* `TLFreshness` - this constraint checks whether the Trusted List has been issued not before than the validation time minus the defined time value. If the Trusted List has been issued before than the validation time minus the defined time value (i.e. not fresh enough), the check will fail.
+
+Default: `WARN` (`HOURS=6`)
+
+[source,xml,indent=0]
+.Example of TLFreshness usage (with WARN validation level)
+----
+<eIDAS>
+    ...
+    <TLFreshness Level="WARN" Unit="HOURS" Value="6" />
+    ...
+</eIDAS>
+----
+
+* `TLNotExpired` - this constraint checks whether the "nextUpdate" attribute defined within the Trusted List is not before the validation time. If the Trusted List's "nextUpdate" attribute has the value before the validation time, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of TLNotExpired usage (with WARN validation level)
+----
+<eIDAS>
+    ...
+    <TLNotExpired Level="WARN" />
+    ...
+</eIDAS>
+----
+
+* `TLWellSigned` - this constraint checks whether the signature of the Trusted List is valid according the signature validation process. If the Trusted List's signature is not valid, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of TLWellSigned usage (with WARN validation level)
+----
+<eIDAS>
+    ...
+    <TLWellSigned Level="WARN" />
+    ...
+</eIDAS>
+----
+
+* `TLVersion` - this constraint checks whether the "version" attribute of the Trusted List corresponds to the defined value. If the version of the Trusted List matches the expected value, the check will fail.
+
+Default: `WARN` (`5`)
+
+[source,xml,indent=0]
+.Example of TLVersion usage (with WARN validation level)
+----
+<eIDAS>
+    ...
+    <TLVersion Level="FAIL" value="5" />
+    ...
+</eIDAS>
+----
+
+==== Validation results correspondence table
+
+This table defines the correspondence between the enforced validation policy constraints and the final validation results in case the related check fails.
+
+.Validation policy constraints
+[%header,cols="5*^.^1"]
+|===
+   |Block                         |Constraint                      |Type                              |Indication            |SubIndication
+.8+|ContainerConstraints          |AcceptableContainerTypes        |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+                                  |ZipCommentPresent               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AcceptableZipComment            |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+                                  |MimeTypeFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AcceptableMimeTypeFileContent   |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+                                  |ManifestFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |SignedFilesPresent              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AllFilesSigned                  |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.10+|SignatureConstraints         |StructuralValidation            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |AcceptablePolicies              |MultiValuesConstraint             |INDETERMINATE         |POLICY_PROCESSING_ERROR
+                                  |PolicyAvailable                 |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
+                                  |SignaturePolicyStorePresent     |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
+                                  |PolicyHashMatch                 |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
+                                  |AcceptableFormats               |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+                                  |FullScope                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
+                                  |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
+                                  |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
+.19+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
+                                  |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |TrustedServiceTypeIdentifier    |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustedServiceStatus            |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
+                                  |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
+                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+                                  |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                               .2+|NotExpired                      .2+|LevelConstraint                |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
+                                                                                                                              OUT_OF_BOUNDS_NOT_REVOKED
+                                                                                                      |FAILED                |EXPIRED
+                                  |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
+                                  |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+.12+|CertificateConstraints       |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
+                                                                                                                              REVOKED_CA_NO_POE
+                                                                                                      |FAILED                |REVOKED
+.12+|CertificateConstraints       |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |RevocationIssuerNotExpired      |LevelConstraint                   |INDETERMINATE         |REVOCATION_OUT_OF_BOUNDS_NO_POE
+                                  |SelfSigned                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.11+|CertificateConstraints       |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcLegislationCountryCodes       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+.10+|SignedAttributesConstraints  |SigningCertificatePresent       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |UnicitySigningCertificate       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |SigningCertificateRefersCertificateChain  |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ReferencesToAllCertificateChainPresent    |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |SigningCertificateDigestAlgorithm         |LevelConstraint         |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE
+                                  |CertDigestPresent               |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+                                  |CertDigestMatch                 |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+                                  |IssuerSerialMatch               |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+                                  |KeyIdentifierPresent            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |KeyIdentifierMatch              |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.11+|SignedAttributesConstraints  |SigningTime                     |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContentType                     |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContentHints                    |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContentIdentifier               |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |MessageDigestOrSignedPropertiesPresent    |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |CommitmentTypeIndication        |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |SignerLocation                  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ClaimedRoles                    |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |CertifiedRoles                  |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContentTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContentTimeStampMessageImprint  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+|UnsignedAttributesConstraints    |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.9+|TimestampConstraints          |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
+                                                                                                                              REVOKED_CA_NO_POE
+                                  |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
+                                  |Coherence                       |LevelConstraint                   |INDETERMINATE         |TIMESTAMP_ORDER_FAILURE
+                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
+                                  |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
+                                  |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.5+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
+.4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
+                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
+                                  |MiniPublicKeySize               |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
+                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
+                                  |AcceptableDigestAlgo            |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
+                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
+                                  |AlgoExpirationDate              |AlgoExpirationDate                |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
+                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
+.4+|eIDAS                         |TLFreshness                     |TimeConstraint                    |FAILED                |-
+                                  |TLNotExpired                    |LevelConstraint                   |FAILED                |-
+                                  |TLWellSigned                    |LevelConstraint                   |FAILED                |-
+                                  |TLVersion                       |ValueConstraint                   |FAILED                |-

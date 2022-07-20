@@ -19,7 +19,9 @@ The different formats of the digital signature make possible to cover a wide ran
 
 ==== Signature profiles
 
-To ensure interoperability of electronic signatures in the EU, the eIDAS Regulation has declared through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) that the advanced electronic signatures in the EU shall comply with the baseline standards defined by the following ETSI technical specifications:
+The eIDAS Regulation (910/2014) sets the legal framework for electronic signatures in the European Union. It defines who can use electronic signatures and in what context. To ensure that electronic signatures can be created and validated anywhere in Europe, a number of standards were identified for their implementation.
+
+To ensure cross-border interoperability the eIDAS Regulation through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) specifies minimum formats of advanced electronic signatures and advanced seals to be recognised by member states. It defines a number of baseline profiles:
 
 * XAdES Baseline Profile: ETSI TS 103171 v.2.1.1;
 * CAdES Baseline Profile: ETSI TS 103173 v.2.2.1;

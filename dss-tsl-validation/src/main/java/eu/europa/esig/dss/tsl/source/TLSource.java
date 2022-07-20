@@ -22,10 +22,11 @@ package eu.europa.esig.dss.tsl.source;
 
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
-import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
-import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
+import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * Represent a Trusted List source
@@ -47,14 +48,14 @@ public class TLSource {
 	 * 
 	 * Default : all trust service providers are selected
 	 */
-	private TrustServiceProviderPredicate trustServiceProviderPredicate;
+	private Predicate<TSPType> trustServiceProviderPredicate;
 
 	/**
 	 * Allow to filter the collected trust service(s) with a predicate
 	 * 
 	 * Default : all trust services are selected
 	 */
-	private TrustServicePredicate trustServicePredicate;
+	private Predicate<TSPServiceType> trustServicePredicate;
 	
 	/**
 	 * The cached CacheKey value (the key is computed from url parameter)
@@ -102,36 +103,36 @@ public class TLSource {
 	/**
 	 * Gets a predicate to filter TrustServiceProviders
 	 *
-	 * @return {@link TrustServiceProviderPredicate}
+	 * @return {@link Predicate}
 	 */
-	public TrustServiceProviderPredicate getTrustServiceProviderPredicate() {
+	public Predicate<TSPType> getTrustServiceProviderPredicate() {
 		return trustServiceProviderPredicate;
 	}
 
 	/**
 	 * Sets a  predicate to filter TrustServiceProviders
 	 *
-	 * @param trustServiceProviderPredicate {@link TrustServiceProviderPredicate}
+	 * @param trustServiceProviderPredicate {@link Predicate<TSPType>}
 	 */
-	public void setTrustServiceProviderPredicate(TrustServiceProviderPredicate trustServiceProviderPredicate) {
+	public void setTrustServiceProviderPredicate(Predicate<TSPType> trustServiceProviderPredicate) {
 		this.trustServiceProviderPredicate = trustServiceProviderPredicate;
 	}
 
 	/**
 	 * Gets a predicate to filter TrustServices
 	 *
-	 * @return {@link TrustServicePredicate}
+	 * @return {@link Predicate}
 	 */
-	public TrustServicePredicate getTrustServicePredicate() {
+	public Predicate<TSPServiceType> getTrustServicePredicate() {
 		return trustServicePredicate;
 	}
 
 	/**
 	 * Sets a  predicate to filter TrustServices
 	 *
-	 * @param trustServicePredicate {@link TrustServicePredicate}
+	 * @param trustServicePredicate {@link Predicate}
 	 */
-	public void setTrustServicePredicate(TrustServicePredicate trustServicePredicate) {
+	public void setTrustServicePredicate(Predicate<TSPServiceType> trustServicePredicate) {
 		this.trustServicePredicate = trustServicePredicate;
 	}
 
