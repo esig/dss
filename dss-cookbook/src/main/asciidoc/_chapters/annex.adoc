@@ -33,7 +33,7 @@ The usage of alerts is available in the following classes:
 [.landscape]
 <<<
 
-[[validationPolicy]]
+[[validationPolicyConstraints]]
 === Configuration of validation policy in different use cases
 
 include::dss-policy.adoc[]
@@ -43,6 +43,7 @@ include::dss-policy.adoc[]
 [.portrait]
 <<<
 
+[[AdESValidation]]
 ==== AdES validation
 
 According to ETSI EN 319 102-1 (cf. <<R09>>), the signature validation process can be separated to different levels:

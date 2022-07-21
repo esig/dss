@@ -67,7 +67,7 @@ The `SynchronizationStrategy` defines the trusted lists or list(s) of trusted li
 DSS provides two implementations within the framework:
 
 * `AcceptAllStrategy` (default) - accepts all Trusted List, whatever the validation status is.
-* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired. The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
+* `ExpirationAndSignatureCheckStrategy` - rejects Trusted Lists with invalid signature or expired Trusted Lists (nextUpdate is before the control time). The certificates from a such Trusted List are not loaded to the `TrustedListsCertificateSource`.
 
 The use of the strategies is demonstrated within the example below:
 
@@ -131,7 +131,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== Trust Service Provider predicates
 
-Defined within `TLSource` predicated allow filtering of `TrustServiceProvider`s based on the JAXB object containing information extracted about the `TrustServiceProvider` from an XML Trusted List.
+Defined within `TLSource` predicated allow filtering of `TrustServiceProvider` elements based on the JAXB object containing information extracted about the `TrustServiceProvider` from an XML Trusted List.
 
 The Trusted Service Provider predicates are not enforced by default, therefore in a plain configuration, DSS would accept all found Trust Service Providers and extract the corresponding information from them.
 
@@ -158,7 +158,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 ==== TSP Service predicates
 
-Defined within `TLSource` predicated allow filtering of specific `TSPService`s based on the JAXB object containing information extracted about the `TSPService` from an XML Trusted List.
+Defined within `TLSource` predicated allow filtering of specific `TSPService` elements based on the JAXB object containing information extracted about the `TSPService` from an XML Trusted List.
 
 The TSP Service predicates are not enforced by default, therefore in a plain configuration, DSS would accept all found TSP Services and extract the corresponding information from them.
 

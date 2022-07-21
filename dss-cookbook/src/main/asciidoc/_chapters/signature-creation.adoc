@@ -707,7 +707,6 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/MultipleSignXa
 
 ==== Sequential signatures
 DSS allows creation of sequential signatures according to the PAdES formats (cf. <<SequentialSignatures>>).
-// TODO: code
 
 [source,java,indent=0]
 .Sequential signatures creation

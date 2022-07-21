@@ -989,7 +989,7 @@ Default: not executed
 </SigningCertificate>
 ----
 
-* `PolicySupportedByQSCDIds` - this constraint is used to check whether the certificate contains one of the certificate policies identifying a certificate supported by a QSCD/SSCD (no TL overrule). If the certificate contains none of certificate policy oids corresponding to a certificate supported by a QSCD/SSCD, the check will fail.
+* `PolicySupportedByQSCDIds` - this constraint is used to check whether the certificate contains one of the certificate policies identifying a certificate supported by a QSCD/SSCD (no TL overrule). If the certificate contains none of certificate policy OIDs corresponding to a certificate supported by a QSCD/SSCD, the check will fail.
 
 Default: not executed
 

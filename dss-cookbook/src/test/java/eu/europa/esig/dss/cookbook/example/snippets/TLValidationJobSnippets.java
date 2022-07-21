@@ -50,8 +50,10 @@ import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
+import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
@@ -223,6 +225,35 @@ public class TLValidationJobSnippets {
 		tlValidationJob.setSynchronizationStrategy(customStrategy);
 		// end::custom-strategy[]
 
+	}
+
+	public void trustServiceProviderPredicate() {
+		// tag::trust-service-provider-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
+		// import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
+
+		TLSource tlSource = new TLSource();
+		// This predicate will accept only TrustServiceProviders with TSPName "LuxTrust S.A."
+		tlSource.setTrustServiceProviderPredicate(new TrustServiceProviderByTSPName("LuxTrust S.A."));
+		// This predicate will accept all TrustServiceProviders which have at least one TSPService
+		tlSource.setTrustServiceProviderPredicate(new NonEmptyTrustService());
+		// It is also possible to create combined predicates. For example, this predicate will accept
+		// TrustServiceProviders with one of "LuxTrust S.A." or "Cryptolog International" names
+		tlSource.setTrustServiceProviderPredicate(new TrustServiceProviderByTSPName("LuxTrust S.A.").or
+				(new TrustServiceProviderByTSPName("Cryptolog International")));
+		// end::trust-service-provider-predicate[]
+	}
+
+	public void trustServicePredicate() {
+		// tag::trust-service-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustService;
+
+		TLSource tlSource = new TLSource();
+		// This predicate filters Trusted Services which has an acceptable (e.g. accredited or granted) status
+		tlSource.setTrustServicePredicate(new GrantedTrustService());
+		// end::trust-service-predicate[]
 	}
 
 	public CacheCleaner cacheCleaner() {
@@ -526,6 +557,14 @@ public class TLValidationJobSnippets {
 		return cs;
 	}
 
+	// tag::trust-service-provider-custom-predicate[]
+	// import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
+	// import eu.europa.esig.dss.utils.Utils;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
+
 	private static class CryptologOnlyTrustServiceProvider implements TrustServiceProviderPredicate {
 
 		@Override
@@ -546,6 +585,7 @@ public class TLValidationJobSnippets {
 		}
 
 	}
+	// end::trust-service-provider-custom-predicate[]
 
 	private static class SampleUtils {
 

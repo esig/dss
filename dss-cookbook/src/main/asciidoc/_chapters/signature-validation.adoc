@@ -12,7 +12,7 @@
 
 The signature validation starts from a validation of a certificate chain (cf. <<CertificatePathValidation>>). For a given certificate, the framework builds a certificate path until a known trust anchor (trusted list, keystore,...), validates each found certificate (OCSP / CRL) and determines its European "qualification".
 
-To determine the certificate qualification, DSS follows the standard ETSI TS 119 615 (<<R14>>). It analyses the certificate properties (QCStatements, Certificate Policies, etc.) and applies possible overrules from the related trusted list ("catched" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R11>>).
+To determine the certificate qualification, DSS follows the standard ETSI TS 119 615 (<<R14>>). It analyses the certificate properties (QCStatements, Certificate Policies, etc.) and applies possible overrules from the related trusted list ("caught" qualifiers from a trust service). More information about qualifiers can be found in the standard ETSI TS 119 612 (<<R11>>).
 
 DSS always computes the status at 2 different times: certificate issuance and signing/validation time. The certificate qualification can evolve in time, its status is not immutable (e.g.: a trust service provider can lose the granted status). The eIDAS regulation (<<R12>>) clearly defines these different times in the Article 32 and related Annex I.
 
@@ -193,7 +193,7 @@ In order to run a validation process with a custom validation policy, an XML fil
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicy]
 ----
 
-For a description of available for configuration constraints within the XML validation policy please see the <<validationPolicy>> chapter.
+For a description of available for configuration constraints within the XML validation policy please see the <<validationPolicyConstraints>> chapter.
 
 ==== XML policy structure
 
@@ -401,37 +401,99 @@ It is also possible to use a stylesheet to generate an SVG image from an XML doc
 
 === Various DSS validation options
 
-// TODO: add code for each subsection
-
 ==== Validation level
-There exist four signature levels: `BASELINE-B`, `BASELINE-T`, `BASELINE-LT` and `BASELINE-LTA` (cf. <<SignatureClasses>>). For signature validation, DSS allows indicating which level of the signature needs to be validated. The validation process can be for basic signatures, signatures with long-term validation data or signatures with archival data.
 
-// TODO : explain what each validation level means
+While there exist four signature levels: `BASELINE-B`, `BASELINE-T`, `BASELINE-LT` and `BASELINE-LTA` (cf. <<SignatureClasses>>), for signature validation according to ETSI EN 319 102-1 (cf. <<R09>>) DSS allows processing the validation of signature with following levels:
+
+ * `BASIC_SIGNATURES` - the basic signature validation process, supporting validation of signatures where the time of validation lies within the validity period of the signing-certificate and the signing-certificate is not revoked. This level corresponds to section "5.3 Validation process for Basic Signatures" of the standard.
+ * `TIMESTAMPS` - the validation process combines the basic signature validation process and the basic validation of embedded timestamp tokens, which signing-certificate is valid at validation time and not revoked. This level corresponds to section "5.4 Time-stamp validation building block" of the standard.
+ * `LONG_TERM_DATA` - performs a validation of a signature with time and signatures with long-term validation material. The signing-certificate of a signature passed to this process shall be retrospectively valid, taking into account the available signature-time-stamp and long-term validation material. This level corresponds to section "5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Material" of the standard.
+ * `ARCHIVAL_DATA` - performs validation of signatures providing long-term availability and integrity of validation material. The signing-certificate of a signature passed to this process shall be retrospectively valid with relation to all the available POEs (signature and archive time-stamps) and long-term validation material. This level corresponds to section "5.6 Validation process for Signatures providing Long Term Availability and Integrity of Validation Material" of the standard.
+
+For configuration examples please see <<AdESValidation>> section.
 
 ==== Signing Certificate
+
 DSS allows adding the certificate that was used to sign the document to the inputs for the validation process. This might be useful if the signing certificate was not included as a signed attribute, for example when validating non-AdES signatures.
 
+[source,java,indent=0]
+.Provide signing-certificate to the validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-signing-certificate]
+----
+
+==== Trusted Certificates
+
+To build a prospective certificate chain, a list of pre-configured trust anchors must be provided to the validator. It may be done manually by adding a keystore or a set of certificates to the trusted certificate source, or in an automated way, e.g. using the EU LOTL (see <<tlValidationJob>> for more information).
+
+[source,java,indent=0]
+.Provide trusted certificate source to a CertificateVerifier
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=trusted-cert-source]
+----
+
 ==== Adjunct Certificates
+
 DSS allows adding a set of certificates that could be used for a certificate path building, e.g. a timestamp certificate, CA certificate, and so on.
 
+[source,java,indent=0]
+.Provide adjunct certificate source to a CertificateVerifier
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=adjunct-cert-source]
+----
+
 ==== Certificates
+
 In DSS, it is possible to return the certificates, included in the signature, as output of the validation process.
 
+[source,java,indent=0]
+.Extract certificate tokens
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-extract-certificates]
+----
+
 ==== Timestamps
+
 DSS allows returning the timestamps, included in the signature, as output of the validation process.
 
+[source,java,indent=0]
+.Extract timestamp tokens
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-extract-timestamps]
+----
+
 ==== Revocation data
+
 In DSS, it is possible to return the revocation data (CRLs and OCSPs), included in the signature, as output of the validation process.
 
+[source,java,indent=0]
+.Extract revocation data tokens
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-extract-revocation]
+----
+
 ==== User-friendly identifiers
+
 DSS supports the use of user-friendly identifiers instead of hash-based values to represent signatures and tokens. A hash-base representation could be "S-651B6527872B53437C7B9A8696BD9F7A6C311CE6EE418EFE34A4A994C05D08C8". The same information but presented in a user-friendly way is a string composed of "SIGNATURE" to indicate that it is a signature, the name in the certificate chain, the signature claimed time and so on.
 
+[source,java,indent=0]
+.Configure token identifier provider
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-identifier-provider]
+----
+
 ==== Semantics
+
 With DSS, it is possible to add a "Semantics" section at the end of the reports explaining the meaning of the result indications, i.e. `TOTAL_PASSED`, `PASSED`, `INDETERMINATE`, `NO_CERTIFICATE_CHAIN_FOUND`.
 
+[source,java,indent=0]
+.Configure token identifier provider
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-semantics]
+----
+
 [[ServiceLoaderValidation]]
-=== DocumentValidator implementation management
-// TODO: change title !!!
+=== DocumentValidator implementations
 
 For signature document or a signature policy validation, DSS is able to load a corresponding implementation of validator for the given document format at runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
 

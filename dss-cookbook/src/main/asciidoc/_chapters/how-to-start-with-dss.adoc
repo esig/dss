@@ -237,7 +237,7 @@ This chapter provides an overview on modules available within https://github.com
 ===== Shared modules
 
 dss-enumerations:: Contains a list of all used enumerations in the DSS project.
-dss-alerts:: Allows configuration of triggers and handers for arbitrary defined events.
+dss-alerts:: Allows configuration of triggers and handlers for arbitrary defined events.
 dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
 
 ===== JAXB model modules

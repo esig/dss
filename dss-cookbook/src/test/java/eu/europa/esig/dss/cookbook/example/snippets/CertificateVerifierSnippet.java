@@ -64,13 +64,17 @@ public class CertificateVerifierSnippet {
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
+		// tag::trusted-cert-source[]
 		// The trusted certificate source is used to provide trusted certificates
 		// (the trust anchors where the certificate chain building should stop)
 		cv.setTrustedCertSources(trustedCertSource);
+		// end::trusted-cert-source[]
 
+		// tag::adjunct-cert-source[]
 		// The adjunct certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)
 		cv.setAdjunctCertSources(adjunctCertSource);
+		// end::adjunct-cert-source[]
 
 		// The AIA source is used to collect certificates from external resources (AIA)
 		cv.setAIASource(aiaSource);

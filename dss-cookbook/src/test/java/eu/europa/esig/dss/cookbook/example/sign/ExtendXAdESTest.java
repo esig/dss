@@ -112,6 +112,9 @@ public class ExtendXAdESTest extends CookbookTools {
 
 		// Init service for signature augmentation
 		xadesService = new XAdESService(certificateVerifier);
+		xadesService.setTspSource(getOnlineTSPSource());
+
+		// Extend signature
 		DSSDocument ltLevelDocument = xadesService.extendDocument(tLevelSignature, parameters);
 
 		// end::demoLTExtend[]
@@ -143,6 +146,7 @@ public class ExtendXAdESTest extends CookbookTools {
 		xadesService = new XAdESService(certificateVerifier);
 		xadesService.setTspSource(getOnlineTSPSource());
 
+		// Extend signature
 		DSSDocument ltaLevelDocument = xadesService.extendDocument(ltLevelDocument, parameters);
 
 		// end::demoLTAExtend[]

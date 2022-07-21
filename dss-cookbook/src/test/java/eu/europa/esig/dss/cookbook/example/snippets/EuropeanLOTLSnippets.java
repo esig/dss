@@ -222,7 +222,6 @@ public class EuropeanLOTLSnippets {
 		LogLOTLLocationChangeAlertHandler handler = new LogLOTLLocationChangeAlertHandler();
 		return new LOTLAlert(lotlLocationDetection, handler);
 	}
-
 	// end::complete-european-lotl-config[]
 
 }

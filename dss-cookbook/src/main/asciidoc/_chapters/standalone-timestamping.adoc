@@ -3,7 +3,9 @@
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
 :imagesdir: images/
+
 == Standalone timestamping
+
 The DSS framework allows an independent document timestamping (without a signature). These are standalone time assertions, i.e. that no augmentation to the level `BASELINE-T` nor a creation of a signature to this level occurs.
 
 The following Document Signature Services support the standalone timestamping :
@@ -14,6 +16,7 @@ The following Document Signature Services support the standalone timestamping :
 DSS also provides a validation service for timestamped documents.
 
 === Timestamping a PDF
+
 When timestamping a PDF document, a standalone timestamp can be used, creating a new revision. This algorithm ensures that no existing signature nor timestamp will not be broken, for example because of adding the timestamp to the existing CMS signature (as it can be done in CAdES or XAdES, for instance). The same timestamping procedure is used for timestamping a PDF document without embedded signatures.
 
 The code below illustrates a time-stamping process for a PDF document.
@@ -46,8 +49,8 @@ In order to create an `ASiC-S`, just change the expected container property in t
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/timestamp/TimestampWithContainerTest.java[tags=asics]
 ----
 
-
 === Standalone timestamps repetition
+
 It is also worth noting that time assertions can cover each other, i.e. that a timestamp can be added over previously created timestamps. In this case, the validation data for a timestamp is incorporated within the previous (last) time assertion and the digest of that timestamp is added to the new created ArchiveManifest XML file, which is covered by a new timestamp.
 
 This is a procedure similar to the augmentation of ASiC with CAdES with multiple LTA levels. LTA timestamps are created in different time-assertion files instead of an archive-time-stamp attribute like it is the case in a CAdES signature.
