@@ -212,14 +212,4 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 		context = null;
 	}
 
-	/**
-	 * This method re-inits the deterministicId to force to recompute it
-	 *
-	 * Deprecated since DSS 5.10. Use {@code reinit()} method
-	 */
-	@Deprecated
-	public void reinitDeterministicId() {
-		reinit();
-	}
-
 }

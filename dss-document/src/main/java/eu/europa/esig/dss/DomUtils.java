@@ -272,25 +272,6 @@ public final class DomUtils {
 	}
 
 	/**
-	 * This method returns true if the provided {@code InputStream} is a valid
-	 * {@link org.w3c.dom.Document}
-	 * 
-	 * @param inputStream {@link InputStream} to be tested
-	 * @return true if the document is an XML
-	 * @deprecated since 5.10. Use {@code isDOM(DSSDocument dssDocument)} or {@code isDOM(byte[] bytes)}
-	 *                         for a fast failure in case of invalid XML document (this does not verify XML preamble).
-	 */
-	@Deprecated
-	public static boolean isDOM(final InputStream inputStream) {
-		try {
-			final Document dom = buildDOM(inputStream);
-			return dom != null;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	/**
 	 * This method returns true if the provided document is a valid XML
 	 * {@link org.w3c.dom.Document}
 	 * 
