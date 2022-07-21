@@ -137,12 +137,12 @@
 					            </goals>
 					            <configuration>
 					                <backend>html5</backend>
-					                <source-highlighter>coderay</source-highlighter>
 					                <attributes>
 		                                <toc>left</toc>
 		                                <sectanchors>true</sectanchors>
 		                                <linkcss>true</linkcss>
 		    							<dssVersion>${project.version}</dssVersion>
+										<source-highlighter>rouge</source-highlighter>
 					                </attributes>
 					            </configuration>
 					        </execution>
@@ -154,13 +154,13 @@
 		                        </goals>
 								<configuration>
 									<backend>pdf</backend>
-					                <source-highlighter>coderay</source-highlighter>
 									<attributes>
 										<icons>font</icons>
 										<pagenums />
 										<toc />
 										<idseparator>-</idseparator>
 		    							<dssVersion>${project.version}</dssVersion>
+										<source-highlighter>rouge</source-highlighter>
 									</attributes>
 								</configuration>
 							</execution>
