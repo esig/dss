@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +35,8 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public class FileDocument extends CommonDocument {
+
+	private static final Logger LOG = LoggerFactory.getLogger(FileDocument.class);
 
 	/** The file */
 	private final File file;
@@ -55,7 +60,10 @@ public class FileDocument extends CommonDocument {
 	public FileDocument(final File file) {
 		Objects.requireNonNull(file, "File cannot be null");
 		if (!file.exists()) {
-			throw new DSSException("File Not Found: " + file.getAbsolutePath());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("File '{}' does not exist!", file.getAbsolutePath());
+			}
+			throw new DSSException(String.format("Unable to create FileDocument for File with name '%s'", file.getName()));
 		}
 		this.file = file;
 		this.name = file.getName();

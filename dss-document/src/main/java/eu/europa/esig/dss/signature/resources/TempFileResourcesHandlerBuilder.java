@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.signature.resources;
 
 import eu.europa.esig.dss.model.DSSException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.List;
  * This class creates a {@code TempFileResourcesHandlerBuilder} storing temporary objects to temporary filesystem documents
  */
 public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuilder {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TempFileResourcesHandlerBuilder.class);
 
     /** The default prefix of a temporary created file */
     private final static String DEFAULT_PREFIX = "dss-";
@@ -85,7 +89,11 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
         if (!tempFileDirectory.exists()) {
             boolean dirCreated = tempFileDirectory.mkdirs();
             if (!dirCreated) {
-                throw new DSSException(String.format("Unable to create a new directory '%s'!", tempFileDirectory.getPath()));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("An occurred when trying to create a directory '{}'", tempFileDirectory.getAbsolutePath());
+                }
+                throw new DSSException(String.format("Unable to create TempFileResourcesHandler for a file with name '%s'!",
+                        tempFileDirectory.getName()));
             }
         }
         TempFileResourcesHandler handler = new TempFileResourcesHandler(fileNamePrefix, fileNameSuffix, tempFileDirectory);

@@ -157,7 +157,7 @@ public class AbstractCacheDTO implements InfoRecord {
 	}
 
 	/**
-	 * Sets the first time of a the exception occurrence
+	 * Sets the first time of the exception occurrence
 	 *
 	 * @param exceptionFirstOccurrenceTime {@link Date}
 	 */

@@ -43,9 +43,8 @@ import java.util.Objects;
  * - Trusted certificates source;<br>
  * - Adjunct certificates source (not trusted);<br>
  * - OCSP source;<br>
- * - CRL source.<br>
- *
- * The {@code DataLoader} should be provided to give access to the certificates through AIA.
+ * - CRL source;<br>
+ * - AIA source to give access to the certificates through AIA.
  *
  */
 public class CommonCertificateVerifier implements CertificateVerifier {

@@ -31,7 +31,6 @@ import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -65,10 +64,6 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 	@Override
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		super.checkAdvancedSignatures(signatures);
-
-		DocumentValidator documentValidator = SignedDocumentValidator.fromDocument(getSignedDocument());
-		// configure
-		documentValidator
 
 		assertEquals(2, signatures.size());
 

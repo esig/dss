@@ -296,7 +296,7 @@ public class GoogleGuavaUtils implements IUtils {
 	public void cleanDirectory(File directory) throws IOException {
 		Objects.requireNonNull(directory, "Directory cannot be null");
 		if (!directory.exists() || !directory.isDirectory()) {
-			throw new FileNotFoundException("Directory '" + directory.getAbsolutePath() + "' not found");
+			throw new FileNotFoundException(String.format("Directory with name '%s' not found", directory.getName()));
 		} else if (directory.isDirectory()) {
 			File[] listFiles = directory.listFiles();
 			if (listFiles != null) {
@@ -305,7 +305,7 @@ public class GoogleGuavaUtils implements IUtils {
 						cleanDirectory(file);
 					} else if (file.isFile()) {
 						if (!file.delete()) {
-							throw new IOException("Unable to delete file " + file.getAbsolutePath());
+							throw new IOException(String.format("Unable to delete file with name '%s'", file.getName()));
 						}
 					}
 				}
