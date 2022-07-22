@@ -13,6 +13,7 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
@@ -88,6 +89,7 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
         assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getDigest()));
         assertNotNull(pdfSignatureCache.getToBeSignedDocument());
         assertTrue(pdfSignatureCache.getToBeSignedDocument() instanceof FileDocument);
+        assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(pdfSignatureCache.getToBeSignedDocument())));
 
         DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
