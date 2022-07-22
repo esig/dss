@@ -53,6 +53,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAException
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignDocumentWithXRefsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTCRLCounterTest;
@@ -103,7 +104,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
 		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
 		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
-		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class })
+		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class, PAdESLevelLTASignDocumentWithXRefsTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

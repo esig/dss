@@ -44,7 +44,7 @@
 		<xmlsec.version>2.3.0</xmlsec.version>
 		<jose4j.version>0.7.11</jose4j.version>
 		<pdfbox.version>2.0.26</pdfbox.version>
-		<openpdf.version>1.3.27</openpdf.version>
+		<openpdf.version>1.3.29</openpdf.version>
 		<httpclient5.version>5.1.3</httpclient5.version>
 		<commons-codec.version>1.15</commons-codec.version> <!-- Synchronized with santuario -->
 
