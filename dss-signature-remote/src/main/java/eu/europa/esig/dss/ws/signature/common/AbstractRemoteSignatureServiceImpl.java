@@ -141,6 +141,12 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		return parameters;
 	}
 
+	/**
+	 * Gets XAdES signature parameters
+	 *
+	 * @param remoteParameters {@link RemoteSignatureParameters}
+	 * @return {@link SerializableSignatureParameters}
+	 */
 	protected SerializableSignatureParameters getXAdESSignatureParameters(RemoteSignatureParameters remoteParameters) {
 		XAdESSignatureParameters xadesParams = new XAdESSignatureParameters();
 		xadesParams.setEmbedXML(remoteParameters.isEmbedXML());
