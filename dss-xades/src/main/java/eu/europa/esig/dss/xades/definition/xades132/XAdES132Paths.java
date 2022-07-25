@@ -550,6 +550,16 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentCommitmentObjectReferencesPath() {
+		return fromCurrentPosition(XAdES132Element.OBJECT_REFERENCE);
+	}
+
+	@Override
+	public String getCurrentCommitmentAllSignedDataObjectsPath() {
+		return fromCurrentPosition(XAdES132Element.ALL_SIGNED_DATA_OBJECTS);
+	}
+
+	@Override
 	public String getCurrentInclude() {
 		return fromCurrentPosition(XAdES132Element.INCLUDE);
 	}

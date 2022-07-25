@@ -84,6 +84,9 @@ public final class DomUtils {
 	/** The default value of the used Transformer */
 	private static final String TRANSFORMER_METHOD_VALUE = "xml";
 
+	/** The hash '#' character */
+	private static final String HASH = "#";
+
 	/** The 'xmlns' opener */
 	private static final String XNS_OPEN = "xmlns(";
 
@@ -666,7 +669,7 @@ public final class DomUtils {
 	 * @return TRUE if {@code uri} is starts from "#", FALSE otherwise
 	 */
 	public static boolean startsFromHash(String uri) {
-		return Utils.isStringNotBlank(uri) && uri.startsWith("#");
+		return Utils.isStringNotBlank(uri) && uri.startsWith(HASH);
 	}
 	
 	/**
@@ -677,6 +680,23 @@ public final class DomUtils {
 	 */
 	public static boolean isElementReference(String uri) {
 		return startsFromHash(uri) && !isXPointerQuery(uri);
+	}
+
+	/**
+	 * This method translates the given {@code String} to a local element reference with the given URI.
+	 *
+	 * Ex.: "r-123-id" to "#r-123-id"
+	 *      "sample.xml" to "#sample.xml"
+	 *      "#r-xades-enveloped" to "#r-xades-enveloped"
+	 *
+	 * @param uri {@link String}
+	 * @return {@link String}
+	 */
+	public static String toElementReference(String uri) {
+		if (!startsFromHash(uri)) {
+			uri = HASH + uri;
+		}
+		return uri;
 	}
 
 	/**

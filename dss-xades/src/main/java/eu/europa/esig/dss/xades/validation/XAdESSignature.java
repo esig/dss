@@ -1496,16 +1496,35 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					LOG.warn("The Identifier for a CommitmentTypeIndication is not defined! The CommitmentType is skipped.");
 					continue;
 				}
-				CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
+				if (DSSUtils.isUrnOid(uri)) {
+					uri = DSSUtils.getOidCode(uri);
+				}
+
+				final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
 				
-				Element descriptionNode = DomUtils.getElement(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentDescriptionPath());
+				final Element descriptionNode = DomUtils.getElement(commitmentTypeIndicationNode,
+						xadesPaths.getCurrentCommitmentDescriptionPath());
 				if (descriptionNode != null) {
 					commitmentTypeIndication.setDescription(descriptionNode.getTextContent());
 				}
-				Element docRefsNode = DomUtils.getElement(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentDocumentationReferencesPath());
+				final Element docRefsNode = DomUtils.getElement(commitmentTypeIndicationNode,
+						xadesPaths.getCurrentCommitmentDocumentationReferencesPath());
 				if (docRefsNode != null) {
 					commitmentTypeIndication.setDocumentReferences(getDocumentationReferences(docRefsNode));
 				}
+
+				final Element allSignedDataObjectsNode = DomUtils.getElement(commitmentTypeIndicationNode,
+						xadesPaths.getCurrentCommitmentAllSignedDataObjectsPath());
+				if (allSignedDataObjectsNode != null) {
+					commitmentTypeIndication.setAllDataSignedObjects(true);
+				} else {
+					final NodeList commitmentObjectReferencesNodeList = DomUtils.getNodeList(commitmentTypeIndicationNode,
+							xadesPaths.getCurrentCommitmentObjectReferencesPath());
+					if (commitmentObjectReferencesNodeList != null && commitmentObjectReferencesNodeList.getLength() > 0) {
+						commitmentTypeIndication.setObjectReferences(getObjectReferences(commitmentObjectReferencesNodeList));
+					}
+				}
+
 				result.add(commitmentTypeIndication);
 			}
 		}
@@ -1513,7 +1532,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 	
 	private List<String> getDocumentationReferences(Element docRefsNode) {
-		NodeList docRefsChildNodes = DomUtils.getNodeList(docRefsNode, xadesPaths.getCurrentDocumentationReference());
+		final NodeList docRefsChildNodes = DomUtils.getNodeList(docRefsNode, xadesPaths.getCurrentDocumentationReference());
 		if (docRefsChildNodes.getLength() > 0) {
 			List<String> docRefs = new ArrayList<>();
 			for (int jj = 0; jj < docRefsChildNodes.getLength(); jj++) {
@@ -1523,6 +1542,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return docRefs;
 		}
 		return null;
+	}
+
+	private List<String> getObjectReferences(NodeList commitmentObjectReferencesNodeList) {
+		List<String> signedDataObjects = new ArrayList<>();
+		for (int i = 0; i < commitmentObjectReferencesNodeList.getLength(); i++) {
+			signedDataObjects.add(DomUtils.getId(commitmentObjectReferencesNodeList.item(i).getTextContent()));
+		}
+		return signedDataObjects;
 	}
 
 	/**

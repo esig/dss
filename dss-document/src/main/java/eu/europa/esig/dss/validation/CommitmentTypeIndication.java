@@ -37,6 +37,12 @@ public class CommitmentTypeIndication {
     /** The list of document references */
     private List<String> documentReferences;
 
+	/** List of signed data referenced by the current commitment (XAdES) */
+	private List<String> objectReferences;
+
+	/** Defines if AllSignedDataObjects element is present (XAdES) */
+	private boolean allDataSignedObjects;
+
 	/**
 	 * The default constructor
 	 *
@@ -89,6 +95,42 @@ public class CommitmentTypeIndication {
 	 */
 	public void setDocumentReferences(List<String> documentReferences) {
 		this.documentReferences = documentReferences;
+	}
+
+	/**
+	 * Gets a list of signed data objects referenced by the current CommitmentType
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getObjectReferences() {
+		return objectReferences;
+	}
+
+	/**
+	 * Sets a list of signed data objects referenced by the current CommitmentType
+	 *
+	 * @param objectReferences a list of {@link String}s
+	 */
+	public void setObjectReferences(List<String> objectReferences) {
+		this.objectReferences = objectReferences;
+	}
+
+	/**
+	 * Gets if AllDataSignedObjects are referenced by the current CommitmentType (XAdES only)
+	 *
+	 * @return TRUE if AllDataSignedObjects element is present, FALSE otherwise
+	 */
+	public boolean isAllDataSignedObjects() {
+		return allDataSignedObjects;
+	}
+
+	/**
+	 * Sets if AllDataSignedObjects are referenced by the current CommitmentType (XAdES only)
+	 *
+	 * @param allDataSignedObjects whether AllDataSignedObjects element is present
+	 */
+	public void setAllDataSignedObjects(boolean allDataSignedObjects) {
+		this.allDataSignedObjects = allDataSignedObjects;
 	}
 
 }

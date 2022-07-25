@@ -31,6 +31,8 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.DERUTCTime;
+import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -49,6 +51,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -418,7 +421,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	private void assertSignatureValueValid(byte[] signatureValue, boolean asn1Encoded) {
-		assertEquals(asn1Encoded, DSSASN1Utils.isAsn1Encoded(signatureValue));
+		assertEquals(asn1Encoded, DSSASN1Utils.isAsn1EncodedSignatureValue(signatureValue));
 
 		byte[] encodedSignatureValue;
 		if (asn1Encoded) {
@@ -426,7 +429,7 @@ public class DSSASN1UtilsTest {
 		} else {
 			encodedSignatureValue = DSSASN1Utils.toStandardDSASignatureValue(signatureValue);
 		}
-		assertEquals(!asn1Encoded, DSSASN1Utils.isAsn1Encoded(encodedSignatureValue));
+		assertEquals(!asn1Encoded, DSSASN1Utils.isAsn1EncodedSignatureValue(encodedSignatureValue));
 
 		byte[] decodedSignatureValue;
 		if (asn1Encoded) {
@@ -435,6 +438,24 @@ public class DSSASN1UtilsTest {
 			decodedSignatureValue = DSSASN1Utils.toPlainDSASignatureValue(encodedSignatureValue);
 		}
 		assertArrayEquals(signatureValue, decodedSignatureValue);
+	}
+
+	@Test
+	public void isAsn1EncodedTest() throws Exception {
+		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERUTCTime(new Date()).getEncoded()));
+		assertTrue(DSSASN1Utils.isAsn1Encoded(DSSASN1Utils.getDEREncoded(new DERUTCTime(new Date()))));
+		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERUTF8String("Hello World!").getEncoded()));
+
+		ASN1EncodableVector asn1EncodableVector = new ASN1EncodableVector();
+		asn1EncodableVector.add(new DERUTF8String("Hello World!"));
+		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERSet(asn1EncodableVector).getEncoded()));
+		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERSequence(asn1EncodableVector).getEncoded()));
+
+		assertFalse(DSSASN1Utils.isAsn1Encoded("Hello World!".getBytes()));
+		assertFalse(DSSASN1Utils.isAsn1Encoded(new byte[] { '1', 'A', 'B' }));
+		assertFalse(DSSASN1Utils.isAsn1Encoded(new Date().toString().getBytes()));
+		assertFalse(DSSASN1Utils.isAsn1Encoded(DSSUtils.EMPTY_BYTE_ARRAY));
+		assertFalse(DSSASN1Utils.isAsn1Encoded(null));
 	}
 
 }

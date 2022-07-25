@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -120,11 +121,21 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setArchiveTimestampParameters(new XAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setBLevelParams(new BLevelParameters());
+
+		BLevelParameters bLevelParameters = new BLevelParameters();
+		signatureParameters.setBLevelParams(bLevelParameters);
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setCertificateChain(Collections.emptyList());
+
+		CommonCommitmentType commitmentType = new CommonCommitmentType();
+		bLevelParameters.setCommitmentTypeIndications(Collections.singletonList(commitmentType));
+
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("The URI or OID must be defined for commitmentTypeIndication for XAdES creation!", exception.getMessage());
+
+		commitmentType.setUri("http://nowina.lu/approval");
+		signAndValidate(documentToSign, signatureParameters);
+
+		signatureParameters.setCertificateChain(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setCertificateChain((List<CertificateToken>)null);

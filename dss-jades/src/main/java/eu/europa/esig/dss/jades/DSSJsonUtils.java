@@ -127,9 +127,6 @@ public class DSSJsonUtils {
 
 	/** Format date-time as specified in RFC 3339 5.6 */
 	private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
-	/** The URN OID prefix (RFC 3061) */
-	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 	
 	/**
 	 * Copied from org.jose4j.base64url.internal.apache.commons.codec.binary.Base64
@@ -392,23 +389,9 @@ public class DSSJsonUtils {
 		 */
 		String uri = objectIdentifier.getUri();
 		if (uri == null && objectIdentifier.getOid() != null) {
-			uri = toUrnOid(objectIdentifier.getOid());
+			uri = DSSUtils.toUrnOid(objectIdentifier.getOid());
 		}
 		return uri;
-	}
-
-	/**
-	 * Returns a URN URI generated from the given OID:
-	 *
-	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-	 *
-	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
-	 *
-	 * @param oid {@link String} to be converted to URN URI
-	 * @return URI based on the algorithm's OID
-	 */
-	public static String toUrnOid(String oid) {
-		return OID_NAMESPACE_PREFIX + oid;
 	}
 
 	/**

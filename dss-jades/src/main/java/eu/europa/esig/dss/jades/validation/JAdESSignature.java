@@ -279,6 +279,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					if (Utils.isMapNotEmpty(commIdMap)) {
 						String uri = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.ID);
 						if (Utils.isStringNotBlank(uri)) {
+							if (DSSUtils.isUrnOid(uri)) {
+								uri = DSSUtils.getOidCode(uri);
+							}
 							CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
 							String desc = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.DESC);
 							commitmentTypeIndication.setDescription(desc);

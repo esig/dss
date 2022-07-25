@@ -623,6 +623,20 @@ public interface XAdESPaths extends Serializable {
 	String getCurrentObjectIdentifier();
 
 	/**
+	 * Gets path "./xades:ObjectReference"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentCommitmentObjectReferencesPath();
+
+	/**
+	 * Gets path "./xades:AllSignedDataObjects"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentCommitmentAllSignedDataObjectsPath();
+
+	/**
 	 * Gets path "./xades:MimeType"
 	 *
 	 * @return {@link String} path

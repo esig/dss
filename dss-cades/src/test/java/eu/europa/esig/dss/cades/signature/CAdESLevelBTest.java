@@ -271,14 +271,14 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			}
 			assertEquals(encodeHexDigest, embeddedDigest);
 
-			ASN1OctetString encryptedInfoOctedString = signedInfo.getEncryptedDigest();
-			String signatureValue = Hex.toHexString(encryptedInfoOctedString.getOctets());
+			ASN1OctetString encryptedInfoOctetString = signedInfo.getEncryptedDigest();
+			String signatureValue = Hex.toHexString(encryptedInfoOctetString.getOctets());
 
 			logger.info("SIGNATURE VALUE : " + signatureValue);
 
 			Cipher cipher = Cipher.getInstance("RSA");
 			cipher.init(Cipher.DECRYPT_MODE, signerCertificate);
-			byte[] decrypted = cipher.doFinal(encryptedInfoOctedString.getOctets());
+			byte[] decrypted = cipher.doFinal(encryptedInfoOctetString.getOctets());
 
 			ASN1InputStream inputDecrypted = new ASN1InputStream(decrypted);
 

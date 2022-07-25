@@ -25,7 +25,6 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -33,9 +32,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import org.apache.xml.security.transforms.Transforms;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,8 +45,6 @@ import java.util.Objects;
  *
  */
 public class ReferenceBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ReferenceBuilder.class);
 
 	/**
 	 * List of documents to create references for
@@ -218,7 +212,7 @@ public class ReferenceBuilder {
 			assertXmlManifestSignaturePossible(manifestElement);
 
 			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
-			reference.setUri("#" + manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName()));
+			reference.setUri(DomUtils.toElementReference(manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName())));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Collections.singletonList(xmlTransform));
 
@@ -226,14 +220,14 @@ public class ReferenceBuilder {
 			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
 
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
-			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
+			reference.setUri(DomUtils.toElementReference(OBJECT_ID_PREFIX + refId));
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), DSSXMLUtils.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Collections.singletonList(xmlTransform));
 
 		} else {
 			reference.setType(XMLDSigPaths.OBJECT_TYPE);
-			reference.setUri("#" + OBJECT_ID_PREFIX + refId);
+			reference.setUri(DomUtils.toElementReference(OBJECT_ID_PREFIX + refId));
 
 			DSSTransform base64Transform = new Base64Transform(signatureParameters.getXmldsigNamespace());
 			reference.setTransforms(Collections.singletonList(base64Transform));
@@ -267,7 +261,7 @@ public class ReferenceBuilder {
 		Document dom = DomUtils.buildDOM(document);
 		String identifier = DSSXMLUtils.getIDIdentifier(dom.getDocumentElement());
 		Objects.requireNonNull(identifier, "ID not defined on the root xml element");
-		reference.setUri("#" + identifier);
+		reference.setUri(DomUtils.toElementReference(identifier));
 
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
@@ -292,45 +286,6 @@ public class ReferenceBuilder {
 
 	private DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
 		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
-	}
-	
-	/**
-	 * Verifies a compatibility of defined signature parameters and reference transformations
-	 */
-	public void checkReferencesValidity() {
-		if (signatureParameters != null) {
-			String referenceWrongMessage = "Reference setting is not correct! ";
-			for (DSSReference reference : signatureParameters.getReferences()) {
-				List<DSSTransform> transforms = reference.getTransforms();
-				if (Utils.isCollectionNotEmpty(transforms)) {
-					for (DSSTransform transform : transforms) {
-						if (Transforms.TRANSFORM_BASE64_DECODE.equals(transform.getAlgorithm())) {
-							if (signatureParameters.isEmbedXML()) {
-								throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
-							} else if (signatureParameters.isManifestSignature()) {
-								throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-							} else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-								throw new IllegalArgumentException(referenceWrongMessage +
-										String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
-							} else if (transforms.size() > 1) {
-								throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
-							}
-						}
-					}
-
-				} else {
-					String uri = reference.getUri();
-					if (Utils.isStringBlank(uri) || DomUtils.isElementReference(uri)) {
-						LOG.warn("A reference with id='{}' and uri='{}' points to an XML Node, while no transforms are defined! "
-								+ "The configuration can lead to an unexpected result!", reference.getId(), uri);
-					}
-					if (SignaturePackaging.ENVELOPED.equals(signatureParameters.getSignaturePackaging()) && Utils.isStringBlank(uri)) {
-						throw new IllegalArgumentException(referenceWrongMessage + "Enveloped signature must have an enveloped transformation!");
-					}
-
-				}
-			}
-		}
 	}
 
 }

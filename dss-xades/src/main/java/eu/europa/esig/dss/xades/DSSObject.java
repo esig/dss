@@ -132,4 +132,10 @@ public class DSSObject implements Serializable {
         this.encodingAlgorithm = encodingAlgorithm;
     }
 
+    @Override
+    public String toString() {
+        return "DSSObject{" + "content=" + content + ", id='" + id + '\'' + ", mimeType=" + mimeType +
+                ", encodingAlgorithm='" + encodingAlgorithm + '\'' + '}';
+    }
+
 }
