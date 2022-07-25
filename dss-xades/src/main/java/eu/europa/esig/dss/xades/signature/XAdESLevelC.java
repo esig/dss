@@ -174,6 +174,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	private void incorporateCertificateRefs(Element parentDom, Collection<CertificateToken> certificatesToBeAdded,
 											String indent) {
+		// TODO : review indent usage
 		if (Utils.isCollectionNotEmpty(certificatesToBeAdded)) {
 			final Element completeCertificateRefsDom = createCompleteCertificateRefsDom(parentDom);
 			final Element certRefsDom = createCertRefsDom(completeCertificateRefsDom);

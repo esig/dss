@@ -1045,8 +1045,8 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 			sslContextBuilder.setProtocol(sslProtocol);
-			
-			TrustStrategy trustStrategy = getTrustStrategy();
+
+			final TrustStrategy trustStrategy = getTrustStrategy();
 			if (trustStrategy != null) {
 				LOG.debug("Set the TrustStrategy");
 				sslContextBuilder.loadTrustMaterial(null, trustStrategy);

@@ -351,7 +351,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	 */
 	protected List<CommitmentType> toCommitmentTypeList(List<CommitmentTypeEnum> commitmentTypeEnums) {
 		if (Utils.isCollectionNotEmpty(commitmentTypeEnums)) {
-			return commitmentTypeEnums.stream().map(obj -> (CommitmentType) obj).collect(Collectors.toList());
+			return commitmentTypeEnums.stream().map(CommitmentType.class::cast).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
 	}

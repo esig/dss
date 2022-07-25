@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -34,7 +35,9 @@ import java.util.List;
  * @param <T>
  *            sub type of TimeDependent
  */
-public class TimeDependentValues<T extends TimeDependent> implements Iterable<T> {
+public class TimeDependentValues<T extends TimeDependent> implements Iterable<T>, Serializable {
+
+	private static final long serialVersionUID = -5066393438144711346L;
 
 	/** The linked list of values */
 	protected final List<T> list = new LinkedList<>();

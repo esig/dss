@@ -35,7 +35,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -319,7 +319,7 @@ public class CryptographicConstraintWrapper {
 	 * @return a map of {@link EncryptionAlgorithm}s or their minimal accepted key length
 	 */
 	public Map<EncryptionAlgorithm, Integer> getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(Date validationTime) {
-		Map<EncryptionAlgorithm, Integer> reliableEncryptionAlgorithms = new HashMap<>();
+		Map<EncryptionAlgorithm, Integer> reliableEncryptionAlgorithms = new EnumMap<>(EncryptionAlgorithm.class);
 		ListAlgo acceptableEncryptionAlgo = constraint.getAcceptableEncryptionAlgo();
 		if (acceptableEncryptionAlgo != null) {
 			List<String> reliableEncryptionAlgorithmNames = acceptableEncryptionAlgo.getAlgos().stream()

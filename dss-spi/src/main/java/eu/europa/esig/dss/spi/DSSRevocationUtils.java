@@ -189,8 +189,6 @@ public final class DSSRevocationUtils {
 		final DEROctetString derBasicOCSPResp = new DEROctetString(basicOCSPRespBinary);
 		final ResponseBytes responseBytes = new ResponseBytes(OCSPObjectIdentifiers.id_pkix_ocsp_basic, derBasicOCSPResp);
 		final OCSPResponse ocspResponse = new OCSPResponse(responseStatus, responseBytes);
-		// !!! todo to be checked: System.out.println("===> RECREATED: " +
-		// ocspResp.hashCode());
 		return new OCSPResp(ocspResponse);
 	}
 	

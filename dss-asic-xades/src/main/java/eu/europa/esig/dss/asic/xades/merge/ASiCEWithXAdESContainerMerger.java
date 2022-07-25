@@ -142,19 +142,24 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
     }
 
     private List<String> getCoveredDocumentNames() {
-        List<String> result = new ArrayList<>();
+        final List<String> result = new ArrayList<>();
         for (ASiCContent asicContent : asicContents) {
             for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
                 XMLDocumentValidator documentValidator = new XMLDocumentValidator(signatureDocument);
                 for (AdvancedSignature signature : documentValidator.getSignatures()) {
-                    XAdESSignature xadesSignature = (XAdESSignature) signature;
-                    for (Reference reference : xadesSignature.getReferences()) {
-                        String referenceURI = DSSXMLUtils.getReferenceURI(reference);
-                        if (!DomUtils.startsFromHash(referenceURI) && !DomUtils.isXPointerQuery(referenceURI)) {
-                            result.add(referenceURI);
-                        }
-                    }
+                    result.addAll(getCoveredDocumentNames((XAdESSignature) signature));
                 }
+            }
+        }
+        return result;
+    }
+
+    private List<String> getCoveredDocumentNames(XAdESSignature signature) {
+        final List<String> result = new ArrayList<>();
+        for (Reference reference : signature.getReferences()) {
+            String referenceURI = DSSXMLUtils.getReferenceURI(reference);
+            if (!DomUtils.startsFromHash(referenceURI) && !DomUtils.isXPointerQuery(referenceURI)) {
+                result.add(referenceURI);
             }
         }
         return result;

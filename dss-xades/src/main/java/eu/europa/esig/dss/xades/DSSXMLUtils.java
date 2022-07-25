@@ -610,11 +610,9 @@ public final class DSSXMLUtils {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName();
 			final String nodeName = item.getNodeName();
-			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
-					childElement.setIdAttribute(nodeName, true);
-					break;
-				}
+			if (localName != null && Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
+				childElement.setIdAttribute(nodeName, true);
+				break;
 			}
 		}
 	}

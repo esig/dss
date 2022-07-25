@@ -36,10 +36,10 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
     private static final Logger LOG = LoggerFactory.getLogger(TempFileResourcesHandlerBuilder.class);
 
     /** The default prefix of a temporary created file */
-    private final static String DEFAULT_PREFIX = "dss-";
+    private static final String DEFAULT_PREFIX = "dss-";
 
     /** The default suffix of a temporary created file */
-    private final static String DEFAULT_SUFFIX = ".tmp";
+    private static final String DEFAULT_SUFFIX = ".tmp";
 
     /** Cached list of created handlers by the current builder */
     private final List<TempFileResourcesHandler> handlers = new ArrayList<>();

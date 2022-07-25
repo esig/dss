@@ -46,7 +46,7 @@ public class SignedAssertions extends ASN1Object {
      * @return {@link SignedAssertions}
      */
     public static SignedAssertions getInstance(Object obj) {
-        if (obj instanceof SignedAssertion) {
+        if (obj instanceof SignedAssertions) {
             return (SignedAssertions) obj;
         } else if (obj != null) {
             return new SignedAssertions(ASN1Sequence.getInstance(obj));

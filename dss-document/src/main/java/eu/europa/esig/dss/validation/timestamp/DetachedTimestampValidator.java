@@ -118,10 +118,10 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		Objects.requireNonNull(document, "The timestampFile must be defined!");
 		Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
 		try {
-			final TimestampToken timestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
-			timestampToken.setFileName(document.getName());
-			timestampToken.matchData(getTimestampedData());
-			return timestampToken;
+			final TimestampToken newTimestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
+			newTimestampToken.setFileName(document.getName());
+			newTimestampToken.matchData(getTimestampedData());
+			return newTimestampToken;
 
 		} catch (CMSException | TSPException | IOException e) {
 			throw new DSSException(String.format("Unable to create a TimestampToken. Reason : %s", e.getMessage()), e);
@@ -182,8 +182,8 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 
 	@Override
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
-		// TODO
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("getOriginalDocuments(AdvancedSignature) is " +
+				"not supported for DetachedTimestampValidator!");
 	}
 
 }

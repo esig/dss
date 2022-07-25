@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -99,11 +100,10 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			return detachedContents;
 		}
-		ProfileParameters context = getContext();
 		if (context != null) {
 			return context.getDetachedContents();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
-import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -31,18 +29,12 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class is used to merge ASiC-S with CAdES containers.
  *
  */
 public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContainerMerger {
-
-    /**
-     * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
-     */
-    protected ASiCWithCAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithCAdESFilenameFactory();
 
     /**
      * Empty constructor
@@ -66,17 +58,6 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
      */
     public ASiCSWithCAdESContainerMerger(ASiCContent... asicContents) {
         super(asicContents);
-    }
-
-    /**
-     * Sets {@code ASiCWithCAdESFilenameFactory} defining a set of rules for naming of newly create ZIP entries,
-     * such as signature files.
-     *
-     * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
-     */
-    public void setAsicFilenameFactory(ASiCWithCAdESFilenameFactory asicFilenameFactory) {
-        Objects.requireNonNull(asicFilenameFactory, "ASiCWithCAdESFilenameFactory cannot be null!");
-        this.asicFilenameFactory = asicFilenameFactory;
     }
 
     @Override

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import java.io.Serializable;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.Objects;
@@ -29,7 +30,9 @@ import java.util.zip.ZipEntry;
  * Contains metadata for a ZIP-container entry
  *
  */
-public class DSSZipEntry {
+public class DSSZipEntry implements Serializable {
+
+    private static final long serialVersionUID = -6639922911484163896L;
 
     /**
      * ZIP entry name

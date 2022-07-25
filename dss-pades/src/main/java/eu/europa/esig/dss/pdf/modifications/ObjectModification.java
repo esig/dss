@@ -138,9 +138,9 @@ public class ObjectModification {
      */
     public String getFieldName() {
         String fieldName = null;
-        if (originalObject != null && originalObject instanceof PdfDict) {
+        if (originalObject instanceof PdfDict) {
             fieldName = ((PdfDict) originalObject).getStringValue(PAdESConstants.FIELD_NAME_NAME);
-        } else if (finalObject != null && finalObject instanceof PdfDict) {
+        } else if (finalObject instanceof PdfDict) {
             fieldName = ((PdfDict) finalObject).getStringValue(PAdESConstants.FIELD_NAME_NAME);
         }
         return fieldName;
@@ -153,9 +153,9 @@ public class ObjectModification {
      */
     public String getType() {
         String type = null;
-        if (originalObject != null && originalObject instanceof PdfDict) {
+        if (originalObject instanceof PdfDict) {
             type = getType((PdfDict) originalObject);
-        } else if (finalObject != null && finalObject instanceof PdfDict) {
+        } else if (finalObject instanceof PdfDict) {
             type = getType((PdfDict) finalObject);
         }
         return type;

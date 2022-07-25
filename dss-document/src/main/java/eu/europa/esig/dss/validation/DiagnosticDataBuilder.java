@@ -696,11 +696,9 @@ public abstract class DiagnosticDataBuilder {
 			for (int i = 0; i < certChain.size(); i++) {
 				XmlChainItem chainItem = certChain.get(i);
 				XmlCertificate certificate = chainItem.getCertificate();
-				if (certificate != null && certificate.getSigningCertificate() == null) {
-					if (i + 1 < certChain.size()) {
-						certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
-						certificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
-					}
+				if (certificate != null && certificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
+					certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
+					certificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
 				}
 			}
 		}

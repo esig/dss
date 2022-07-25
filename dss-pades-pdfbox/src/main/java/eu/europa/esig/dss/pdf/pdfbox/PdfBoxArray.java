@@ -86,7 +86,7 @@ class PdfBoxArray implements PdfArray {
 		if (val instanceof COSObject) {
 			COSObject o = (COSObject) val;
 			final COSBase object = o.getObject();
-			if (object != null && object instanceof COSStream) {
+			if (object instanceof COSStream) {
 				cosStream = (COSStream) object;
 			}
 		}
@@ -101,7 +101,7 @@ class PdfBoxArray implements PdfArray {
 	@Override
 	public Long getObjectNumber(int i) {
 		COSBase val = wrapped.get(i);
-		if (val != null && val instanceof COSObject) {
+		if (val instanceof COSObject) {
 			return ((COSObject) val).getObjectNumber();
 		}
 		return null;

@@ -66,8 +66,7 @@ public class OnlineTSPSourceTest {
 		assertNotNull(tsBinary);
 	}
 
-	@Test
-	public void policyTest() {
+	public void policySnippet() {
 		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 
 		// tag::policy[]

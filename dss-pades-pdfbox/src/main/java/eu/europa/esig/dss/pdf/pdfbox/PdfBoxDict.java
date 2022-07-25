@@ -182,7 +182,7 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public Long getObjectNumber(String name) {
 		COSBase dictionaryObject = wrapped.getItem(name);
-		if (dictionaryObject != null && dictionaryObject instanceof COSObject) {
+		if (dictionaryObject instanceof COSObject) {
 			return ((COSObject) dictionaryObject).getObjectNumber();
 		}
 		return null;

@@ -84,11 +84,11 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
     }
 
     private ASiCContent[] toASiCContentArray(DSSDocument... containers) {
-        ASiCContent[] asicContents = new ASiCContent[containers.length];
+        ASiCContent[] asicContentArray = new ASiCContent[containers.length];
         for (int i = 0; i < containers.length; i++) {
-            asicContents[i] = getContainerExtractor(containers[i]).extract();
+            asicContentArray[i] = getContainerExtractor(containers[i]).extract();
         }
-        return asicContents;
+        return asicContentArray;
     }
 
     /**

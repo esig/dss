@@ -33,6 +33,8 @@ import java.util.Objects;
  */
 public class MutableTimeDependentValues<T extends TimeDependent> extends TimeDependentValues<T> {
 
+	private static final long serialVersionUID = -7260622365917872977L;
+
 	/**
 	 * Empty constructor
 	 */

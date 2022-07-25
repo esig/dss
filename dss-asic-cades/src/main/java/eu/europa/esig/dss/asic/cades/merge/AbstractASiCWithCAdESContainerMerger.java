@@ -44,7 +44,6 @@ import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.CollectionStore;
@@ -196,7 +195,6 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
         return new CollectionStore<>(result);
     }
 
-    @SuppressWarnings("unchecked")
     private Store<Encodable> getCRLStore(List<CMSSignedData> cmsSignedDataList) {
         List<Encodable> result = new ArrayList<>();
         for (CMSSignedData signedData : cmsSignedDataList) {
@@ -207,12 +205,8 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
                 }
             }
         }
-        for (Encodable otherRevocationInfo : getOtherRevocationInfoStore(cmsSignedDataList, id_pkix_ocsp_basic)) {
-            result.add(otherRevocationInfo);
-        }
-        for (Encodable otherRevocationInfo : getOtherRevocationInfoStore(cmsSignedDataList, id_ri_ocsp_response)) {
-            result.add(otherRevocationInfo);
-        }
+        result.addAll(getOtherRevocationInfoStore(cmsSignedDataList, id_pkix_ocsp_basic));
+        result.addAll(getOtherRevocationInfoStore(cmsSignedDataList, id_ri_ocsp_response));
         return new CollectionStore<>(result);
     }
 
@@ -237,13 +231,6 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
             result.addAll(cmsSignedData.getDigestAlgorithmIDs());
         }
         return result;
-    }
-
-    private CMSTypedData getSignedContent(List<CMSSignedData> cmsSignedDataList) {
-        if (Utils.isCollectionNotEmpty(cmsSignedDataList)) {
-            return cmsSignedDataList.get(0).getSignedContent();
-        }
-        throw new IllegalInputException("At least one signature file shall contain a CMS Signed Data for merging!");
     }
 
     private String getSignatureDocumentName(List<DSSDocument> signatureDocuments) {

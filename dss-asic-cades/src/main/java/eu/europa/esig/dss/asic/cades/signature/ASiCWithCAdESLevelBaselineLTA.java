@@ -57,6 +57,8 @@ import java.util.List;
  */
 public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtension {
 
+    private static final long serialVersionUID = 5337864432054920568L;
+
     /**
      * Defines rules for filename creation for timestamp and archive manifest file.
      */

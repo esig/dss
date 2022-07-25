@@ -25,6 +25,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,7 +36,9 @@ import java.util.Objects;
  * This class contains common methods for ASiC filename factory.
  *
  */
-public abstract class AbstractASiCFilenameFactory {
+public abstract class AbstractASiCFilenameFactory implements Serializable {
+
+    private static final long serialVersionUID = 7868238704099416943L;
 
     /**
      * This method returns the next available suffix (i.e. number) for a new file entry across given document names.
@@ -43,7 +46,7 @@ public abstract class AbstractASiCFilenameFactory {
      * Ex.: For provided two signature documents, the method will return "003" suffix,
      * to be used for a signature file creation with a name "META-INF/signature003.xml".
      *
-     * @param nameTemplate {@link String} defyning the String template of the final name
+     * @param nameTemplate {@link String} defining the String template of the final name
      * @param existingDocumentNames a list of {@link String} document names forbidden for usage
      * @return {@link String} available document name suffix
      */

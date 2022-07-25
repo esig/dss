@@ -548,8 +548,8 @@ public class TimestampToken extends Token {
 	/**
 	 * @return true if the message imprint data was found, false otherwise
 	 */
-	public Boolean isMessageImprintDataFound() {
-		return messageImprintData;
+	public boolean isMessageImprintDataFound() {
+		return Utils.isTrue(messageImprintData);
 	}
 
 	/**
@@ -561,7 +561,7 @@ public class TimestampToken extends Token {
 		if (!processed) {
 			throw new IllegalStateException("Invoke matchData(byte[] data) method before!");
 		}
-		return messageImprintIntact;
+		return Utils.isTrue(messageImprintIntact);
 	}
 	
 	/**

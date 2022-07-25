@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -141,7 +141,7 @@ public class RevocationDataVerifier {
         } else {
             LOG.info("No enforced cryptographic constraints have been found in the provided validation policy. Accept all cryptographic algorithms.");
             acceptableDigestAlgorithms = Arrays.asList(DigestAlgorithm.values());
-            acceptableEncryptionAlgorithms = new HashMap<>();
+            acceptableEncryptionAlgorithms = new EnumMap<>(EncryptionAlgorithm.class);
             for (EncryptionAlgorithm encryptionAlgorithm : EncryptionAlgorithm.values()) {
                 acceptableEncryptionAlgorithms.put(encryptionAlgorithm, 0);
             }

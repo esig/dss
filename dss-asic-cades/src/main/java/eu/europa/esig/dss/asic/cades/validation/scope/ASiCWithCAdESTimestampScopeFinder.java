@@ -91,20 +91,26 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
         if (Utils.isCollectionNotEmpty(containerDocuments)) {
             List<DSSDocument> rootLevelDocuments = ASiCUtils.getRootLevelDocuments(containerDocuments);
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (manifestEntry.isIntact()) {
-                    for (DSSDocument document : containerDocuments) {
-                        if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
-                            if (Utils.collectionSize(rootLevelDocuments) == 1 && isASiCSContainer(document)) {
-                                result.addAll(getTimestampSignatureScopeForZipPackage(document));
-                            } else {
-                                result.addAll(super.getTimestampSignatureScopeForDocument(document));
-                            }
-                        }
+                result.addAll(getTimestampSignatureScopeForManifestEntry(manifestEntry, rootLevelDocuments));
+            }
+        }
+        return result;
+    }
+
+    private List<SignatureScope> getTimestampSignatureScopeForManifestEntry(ManifestEntry manifestEntry,
+                                                                            List<DSSDocument> rootLevelDocuments) {
+        if (manifestEntry.isIntact()) {
+            for (DSSDocument document : containerDocuments) {
+                if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
+                    if (Utils.collectionSize(rootLevelDocuments) == 1 && isASiCSContainer(document)) {
+                        return getTimestampSignatureScopeForZipPackage(document);
+                    } else {
+                        return super.getTimestampSignatureScopeForDocument(document);
                     }
                 }
             }
         }
-        return result;
+        return Collections.emptyList();
     }
 
     @Override

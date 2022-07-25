@@ -41,6 +41,8 @@ import eu.europa.esig.dss.utils.Utils;
  */
 public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFilenameFactory {
 
+    private static final long serialVersionUID = 8401330459709076998L;
+
     /** Defines a name of a creating signature file (e.g. "signature001.p7s") */
     private String signatureFilename;
 
