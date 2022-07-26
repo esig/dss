@@ -549,7 +549,6 @@
             <ProductionDate>2018-12-10T20:51:03Z</ProductionDate>
             <ThisUpdate>2018-12-10T20:51:03Z</ThisUpdate>
             <NextUpdate>2018-12-11T20:51:03Z</NextUpdate>
-            <ExpiredCertsOnCRL>2018-12-09T00:00:00Z</ExpiredCertsOnCRL>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>

@@ -32,6 +32,8 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -41,6 +43,8 @@ import java.util.Date;
  * @param <T> {@link XmlConstraintsConclusion}
  */
 public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(RevocationConsistentCheck.class);
 
 	/** The certificate in question */
 	protected final CertificateWrapper certificate;
@@ -102,7 +106,12 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		 */
 		Date expiredCertsOnCRL = revocationData.getExpiredCertsOnCRL();
 		if (expiredCertsOnCRL != null) {
-			notAfterRevoc = expiredCertsOnCRL;
+			if (expiredCertsOnCRL.before(notAfterRevoc)) {
+				notAfterRevoc = expiredCertsOnCRL;
+			} else {
+				LOG.info("ExpiredCertsOnCRL : '{}' is not before revocation's thisUpdate : '{}'.",
+						ValidationProcessUtils.getFormattedDate(expiredCertsOnCRL), ValidationProcessUtils.getFormattedDate(notAfterRevoc));
+			}
 		}
 
 		/*
@@ -112,16 +121,23 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		 */
 		Date archiveCutOff = revocationData.getArchiveCutOff();
 		if (archiveCutOff != null) {
-			notAfterRevoc = archiveCutOff;
+			if (archiveCutOff.before(notAfterRevoc)) {
+				notAfterRevoc = archiveCutOff;
+			} else {
+				LOG.info("ArchiveCutoff : '{}' is not before revocation's thisUpdate : '{}'.",
+						ValidationProcessUtils.getFormattedDate(archiveCutOff), ValidationProcessUtils.getFormattedDate(notAfterRevoc));
+			}
 		}
 
 		/* expiredCertsRevocationInfo Extension from TL */
-		if (expiredCertsOnCRL != null || archiveCutOff != null) {
-			CertificateWrapper revocCert = revocationData.getSigningCertificate();
-			if (revocCert != null) {
-				Date expiredCertsRevocationInfo = revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
-				if (expiredCertsRevocationInfo != null && expiredCertsRevocationInfo.before(notAfterRevoc)) {
+		if (expiredCertsOnCRL == null && archiveCutOff == null) {
+			Date expiredCertsRevocationInfo = getExpiredCertsRevocationInfo(revocationData);
+			if (expiredCertsRevocationInfo != null) {
+				if (expiredCertsRevocationInfo.before(notAfterRevoc)) {
 					notAfterRevoc = expiredCertsRevocationInfo;
+				} else {
+					LOG.info("ExpiredCertsRevocationInfo : '{}' is not before revocation's thisUpdate : '{}'.",
+							ValidationProcessUtils.getFormattedDate(expiredCertsRevocationInfo), ValidationProcessUtils.getFormattedDate(notAfterRevoc));
 				}
 			}
 		}
@@ -135,6 +151,14 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		return checkThisUpdateDefined() && checkRevocationDataHasInformationAboutCertificate() &&
 				checkIssuerKnowsCertificate() && checkRevocationIssuerKnown() &&
 				checkIssuerValidAtProductionTime();
+	}
+
+	private Date getExpiredCertsRevocationInfo(RevocationWrapper revocationData) {
+		CertificateWrapper revocCert = revocationData.getSigningCertificate();
+		if (revocCert != null) {
+			return revocCert.getCertificateTSPServiceExpiredCertsRevocationInfo();
+		}
+		return null;
 	}
 
 	private boolean checkThisUpdateDefined() {
@@ -171,6 +195,23 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
 		return producedAt.compareTo(revocationIssuer.getNotBefore()) >= 0 &&
 						producedAt.compareTo(revocationIssuer.getNotAfter()) <= 0;
+	}
+
+	private boolean checkRevocationThisUpdateIsInCertificateValidityRange() {
+		return revocationData.getThisUpdate().compareTo(certNotBefore) >= 0 &&
+				revocationData.getThisUpdate().compareTo(certNotAfter) <= 0;
+	}
+
+	private boolean checkExpiredCertsOnCRLPresent() {
+		return revocationData.getExpiredCertsOnCRL() != null;
+	}
+
+	private boolean checkArchiveCutOffPresent() {
+		return revocationData.getArchiveCutOff() != null;
+	}
+
+	private boolean checkExpiredCertsRevocationInfoPresent() {
+		return getExpiredCertsRevocationInfo(revocationData) != null;
 	}
 
 	@Override
@@ -210,11 +251,23 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 		} else if (!checkIssuerValidAtProductionTime()) {
 			return getRevocationProducesAtOutOfBoundsMessage();
 
+		} else if (checkRevocationThisUpdateIsInCertificateValidityRange()) {
+			return getRevocationConsistentMessage();
+
 		} else if (checkCertHashMatches()) {
 			return getRevocationCertHashOkMessage();
 
+		} else if (checkExpiredCertsOnCRLPresent()) {
+			return getRevocationConsistentWithExpiredCertsOnCRLMessage();
+
+		} else if (checkArchiveCutOffPresent()) {
+			return getRevocationConsistentWithArchiveCutoffMessage();
+
+		} else if (checkExpiredCertsRevocationInfoPresent()) {
+			return getRevocationConsistentWithExpiredCertsRevocationInfoMessage();
+
 		} else {
-			return getRevocationConsistentMessage();
+			return getRevocationInfoMessage();
 		}
 	}
 
@@ -290,6 +343,57 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 	 */
 	protected String getRevocationConsistentMessage() {
 		return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message when the revocation is consistent with expiredCertsOnCRL
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationConsistentWithExpiredCertsOnCRLMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_CRL,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(revocationData.getExpiredCertsOnCRL()),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message when the revocation is consistent with archiveCutoff
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationConsistentWithArchiveCutoffMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_OCSP,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(revocationData.getArchiveCutOff()),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message when the revocation is consistent with archiveCutoff
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationConsistentWithExpiredCertsRevocationInfoMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_TL,
+				ValidationProcessUtils.getFormattedDate(thisUpdate),
+				ValidationProcessUtils.getFormattedDate(getExpiredCertsRevocationInfo(revocationData)),
+				ValidationProcessUtils.getFormattedDate(certNotBefore),
+				ValidationProcessUtils.getFormattedDate(certNotAfter));
+	}
+
+	/**
+	 * Returns the additional information message for revocation data in case of other events
+	 *
+	 * @return {@link String}
+	 */
+	protected String getRevocationInfoMessage() {
+		return i18nProvider.getMessage(MessageTag.REVOCATION_INFO,
 				ValidationProcessUtils.getFormattedDate(thisUpdate),
 				ValidationProcessUtils.getFormattedDate(certNotBefore),
 				ValidationProcessUtils.getFormattedDate(certNotAfter));
