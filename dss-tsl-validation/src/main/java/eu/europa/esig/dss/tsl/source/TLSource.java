@@ -112,7 +112,7 @@ public class TLSource {
 	/**
 	 * Sets a  predicate to filter TrustServiceProviders
 	 *
-	 * @param trustServiceProviderPredicate {@link Predicate<TSPType>}
+	 * @param trustServiceProviderPredicate {@link Predicate}
 	 */
 	public void setTrustServiceProviderPredicate(Predicate<TSPType> trustServiceProviderPredicate) {
 		this.trustServiceProviderPredicate = trustServiceProviderPredicate;
