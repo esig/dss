@@ -20,15 +20,17 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractOpenDocumentTestValidation extends AbstractASiCWithXAdESTestValidation {
 	
@@ -42,25 +44,27 @@ public abstract class AbstractOpenDocumentTestValidation extends AbstractASiCWit
 	private boolean areManifestAndMimetypeCovered(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
-		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
-		assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
+		assertTrue(Utils.isCollectionNotEmpty(signatureScopes));
 		boolean isManifestCovered = false;
 		boolean isMimetypeCovered = false;
-		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if (digestMatcher.getName().contains("manifest.xml")) {
+		for (XmlSignatureScope signatureScope : signatureScopes) {
+			if (signatureScope.getName().contains("manifest.xml")) {
 				isManifestCovered = true;
-			} else if (digestMatcher.getName().contains("mimetype")) {
+			} else if (signatureScope.getName().contains("mimetype")) {
 				isMimetypeCovered = true;
 			}
 		}
 		return isManifestCovered && isMimetypeCovered;
 	}
 	
-//	@Override
-//	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-//		for (AdvancedSignature advancedSignature : validator.getSignatures()) {
-//			assertTrue(Utils.isCollectionEmpty(validator.getOriginalDocuments(advancedSignature)));
-//		}
-//	}
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+		for (AdvancedSignature advancedSignature : validator.getSignatures()) {
+			if (!advancedSignature.isCounterSignature()) {
+				assertTrue(Utils.isCollectionNotEmpty(validator.getOriginalDocuments(advancedSignature)));
+			}
+		}
+	}
 
 }

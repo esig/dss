@@ -364,6 +364,8 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void removeControlCharactersTest() {
+		assertNull(DSSUtils.removeControlCharacters(null));
+		assertEquals("", DSSUtils.removeControlCharacters(""));
 		assertEquals(" ", DSSUtils.removeControlCharacters(" "));
 		assertEquals("Nowina Solutions", DSSUtils.removeControlCharacters("Nowina Solutions"));
 		assertEquals("Новина", DSSUtils.removeControlCharacters("Новина"));

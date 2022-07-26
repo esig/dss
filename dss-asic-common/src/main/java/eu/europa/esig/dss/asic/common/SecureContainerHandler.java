@@ -168,7 +168,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		resetCounters();
 
 		List<DSSDocument> result = new ArrayList<>();
-		if (zipArchive instanceof FileDocument) {
+		if (isInFileProcessingSupported(zipArchive)) {
 			FileDocument zipFileDocument = (FileDocument) zipArchive;
 			List<ZipEntry> zipEntries = extractZipEntries(zipFileDocument);
 			if (!malformedEntriesDetected()) {
@@ -194,6 +194,25 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			throw new IllegalInputException("Unable to extract content from zip archive", e);
 		}
 		return result;
+	}
+
+	/**
+	 * This method used to verify whether the provided archive container is supported by
+	 * java.util.zip.ZipFile implementation
+	 *
+	 * @param zipArchive {@link DSSDocument} to be checked
+	 * @return TRUE if the in-file processing is supported, FALSE otherwise
+	 */
+	private boolean isInFileProcessingSupported(DSSDocument zipArchive) {
+		if (zipArchive instanceof FileDocument) {
+			try (ZipFile zipFile = new ZipFile(((FileDocument) zipArchive).getFile())) {
+				return true;
+			} catch (IOException e) {
+				LOG.warn("Unable to process archive with name '{}' using in-file processing. " +
+						"Continue validation using in-memory processing. Reason : {}", zipArchive.getName(), e.getMessage(), e);
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -683,13 +683,13 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContent}
 	 */
 	public static ASiCContent ensureMimeTypeAndZipComment(ASiCContent asicContent, ASiCParameters asicParameters) {
-		MimeType mimeType = getMimeType(asicContent, asicParameters);
 		if (asicContent.getMimeTypeDocument() == null) {
+			MimeType mimeType = getMimeType(asicContent, asicParameters);
 			DSSDocument mimetypeDocument = createMimetypeDocument(mimeType);
 			asicContent.setMimeTypeDocument(mimetypeDocument);
 		}
-		String zipComment = getZipComment(asicContent, asicParameters);
 		if (Utils.isStringEmpty(asicContent.getZipComment())) {
+			String zipComment = getZipComment(asicContent, asicParameters);
 			asicContent.setZipComment(zipComment);
 		}
 		return asicContent;
@@ -779,7 +779,7 @@ public final class ASiCUtils {
 		final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
 
 		// Check the buffer from the end
-		for (int ii = len - magicDirEnd.length - 22; ii >= 0; ii--) {
+		for (int ii = len - 22; ii >= 0; ii--) {
 			boolean isMagicStart = true;
 			for (int jj = 0; jj < magicDirEnd.length; jj++) {
 				if (buffer[ii + jj] != magicDirEnd[jj]) {
@@ -793,6 +793,9 @@ public final class ASiCUtils {
 				int realLen = len - ii - 22;
 				if (commentLen != realLen) {
 					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
+				}
+				if (realLen == 0) {
+					return null;
 				}
 				return new String(buffer, ii + 22, realLen);
 			}

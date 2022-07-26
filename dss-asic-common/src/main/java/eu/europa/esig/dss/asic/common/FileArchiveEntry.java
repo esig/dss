@@ -112,6 +112,11 @@ public class FileArchiveEntry extends CommonDocument implements DSSZipEntryDocum
         }
 
         @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return entryInputStream.read(b, off, len);
+        }
+
+        @Override
         public void close() throws IOException {
             entryInputStream.close();
             zipFile.close();
