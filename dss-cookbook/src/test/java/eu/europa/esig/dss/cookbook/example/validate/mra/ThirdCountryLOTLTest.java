@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UALOTLTest {
+public class ThirdCountryLOTLTest {
 
     private static final String UA_LOTL_URI = "ua_lotl.xml";
     private static final String UA_TL_URI = "https://www.czo.gov.ua/download/tl/TL-UA.xml";

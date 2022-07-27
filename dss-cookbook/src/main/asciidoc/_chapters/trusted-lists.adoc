@@ -233,7 +233,7 @@ Starting from the version 5.11, DSS supports a trust service equivalence mapping
 The two trust service equivalence mapping schemes are supported:
 
  * Mutual Recognition Agreement (MRA) as per Article 14 of the eIDAS Regulation (<<R12>>) - establishes that "trust services provided by trust service providers established in a third country shall be recognised as legally equivalent to qualified trust services provided by qualified trust service providers established in the Union where the trust services originating from the third country are recognised under an agreement concluded between the Union and the third country in question or an international organisation in accordance with Article 218 TFEU"; and
- * Trust service equivalence mapping, in the context of Article 27(1) and Article 37(1) of the eIDAS Regulation (<<R12>>) - supporting that "if a Member State requires an advanced electronic signature/seal to use an online service offered by, or on behalf of, a public sector body, that Member State shall recognise advanced electronic signatures/seal, advanced electronic signatures/seal based on a qualified certificate for electronic signatures/seal, and qualified electronic signatures/seal in at least the formats or using methods defined in the implementing acts referred to in paragraph 5".
+ * Trust service equivalence mapping to facilitate the validation of third countries advanced electronic signatures and advanced electronic seals in public services of voluntary Member States, in the context of Article 27(1) and Article 37(1) of the eIDAS Regulation (<<R12>>).
 
 A Pilot for the International Compatibility of Trust Services based on the Mutual Recognition Agreement (as per Article 14 of eIDAS Regulation) can be found by the https://esignature.ec.europa.eu/efda/intl-pilot/#/screen/home/demo[link].
 
@@ -242,7 +242,7 @@ To enable Trust Service Equivalence Mapping in DSS, the corresponding instance o
 [source,java,indent=0]
 .Sign a Trusted List with the TrustedListSignatureParametersBuilder
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/mra/UALOTLTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/mra/ThirdCountryLOTLTest.java[tags=demo]
 ----
 
 === Signing a trusted list
