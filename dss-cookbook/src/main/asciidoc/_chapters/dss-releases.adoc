@@ -13,6 +13,36 @@
 |===
 |Version           |Release date             |Features
 
+|v5.11.RC1         |July 2022              a|Main new features / improvements :
+
+                                            * PAdES : improved PDF-signing performance (add caching of the temporary revision);
+                                            * PAdES : introduce temporary document processing factory (e.g. in-file or in-memory);
+                                            * PAdES : simplified configuration of modification detection modules;
+                                            * PAdES : added signing app name for signature;
+                                            * ASiC : introduce ASiC Merger;
+                                            * ASiC : improved ASiC in-file processing (avoid loading document into memory);
+                                            * XAdES : add support of a custom CommitmentType qualifier;
+                                            * CAdES : improved signature file extension naming;
+                                            * TL-validation : Trust Service equivalence scheme and Mutual Recognition Agreement support;
+                                            * Other : dependencies update (Apache Santuario, PdfBox, OpenPdf, httpclient5, etc.);
+                                            * Demo : eSignature Validation Test Cases automated validation module;
+                                            * Demo : added ASiC Merger webpage;
+                                            * Standalone app : add TL signing function;
+                                            * Standalone app : add XMLManifest signing function;
+                                            * Java 18 support.
+
+|v5.11.RC1             |July 2022              a|Bug fixes :
+
+                                            * Qualification determination : Improved algorithm to comply with TS 119 615 + fixed issues;
+                                            * JAdES : signature can be created with ECDSA algorithm using a wrong elliptic curve;
+                                            * LTA signature is indeterminate because no revocations lists found;
+                                            * Exception when a not supported encryption algorithm is provided;
+                                            * Validation for ASiC without mimetype returns FORMAT_FAILURE;
+                                            * Skipped AcceptableRevocationDataFound constraint may lead to false positive validation result;
+                                            * ASiC : unable to proceed validation of CEN-header invalid files.
+
+|v5.10             |March 2022              a|Bug fixes :
+
 |v5.10.1           |April 2022              a|Bug fixes :
 
                                               * ASiC-E with XAdES parallel signature creation regression;
