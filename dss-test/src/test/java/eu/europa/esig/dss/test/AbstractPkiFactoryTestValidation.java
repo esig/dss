@@ -2081,7 +2081,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertEquals(0, otherCounter);
 			
 		} else {
-			assertEquals(0, diagnosticData.getSignatures().size());
 			assertEquals(0, diagnosticData.getUsedCertificates().size());
 			assertEquals(0, diagnosticData.getAllRevocationData().size());
 			assertEquals(0, diagnosticData.getTimestampList().size());
