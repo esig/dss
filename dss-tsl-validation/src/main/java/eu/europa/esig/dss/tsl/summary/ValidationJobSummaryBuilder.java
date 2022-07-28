@@ -23,6 +23,7 @@ package eu.europa.esig.dss.tsl.summary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
@@ -107,7 +108,14 @@ public class ValidationJobSummaryBuilder {
 				List<TLInfo> tlInfos = new ArrayList<>();
 				List<TLSource> currentTLSources = extractTLSources(lotlParsingResult);
 				for (TLSource tlSource : currentTLSources) {
-					tlInfos.add(buildTLInfo(tlSource));
+					TLInfo tlInfo;
+					if (lotlSource.isMraSupport()) {
+						MRA mra = getMRA(lotlParsingResult.getTlOtherPointers(), tlSource.getUrl());
+						tlInfo = buildTLInfo(tlSource, lotlInfo, mra);
+					} else {
+						tlInfo = buildTLInfo(tlSource, lotlInfo);
+					}
+					tlInfos.add(tlInfo);
 				}
 				lotlInfo.setTlInfos(tlInfos);
 
@@ -159,11 +167,32 @@ public class ValidationJobSummaryBuilder {
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl());
 	}
 
+	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo) {
+		CacheKey cacheKey = tlSource.getCacheKey();
+		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo);
+	}
+
+	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo, MRA mra) {
+		CacheKey cacheKey = tlSource.getCacheKey();
+		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo, mra);
+	}
+
 	private PivotInfo buildPivotInfo(LOTLSource pivotSource, Map<CertificateToken, CertificatePivotStatus> certificateChangesMap, 
 			String associatedLOTLLocation) {
 		CacheKey cacheKey = pivotSource.getCacheKey();
 		return new PivotInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), pivotSource.getUrl(), certificateChangesMap, associatedLOTLLocation);
+	}
+
+	private MRA getMRA(List<OtherTSLPointer> tlOtherPointers, String tslPointerLocation) {
+		for (OtherTSLPointer otherTSLPointer : tlOtherPointers) {
+			if (Utils.areStringsEqual(tslPointerLocation, otherTSLPointer.getLocation())) {
+				return otherTSLPointer.getMra();
+			}
+		}
+		return null;
 	}
 
 	private List<TLSource> extractTLSources(ParsingCacheDTO lotlParsingResult) {

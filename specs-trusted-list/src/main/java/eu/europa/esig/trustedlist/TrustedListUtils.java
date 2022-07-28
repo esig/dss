@@ -67,8 +67,10 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 	@Override
 	public JAXBContext getJAXBContext() throws JAXBException {
 		if (jc == null) {
-			jc = JAXBContext.newInstance(eu.europa.esig.xmldsig.jaxb.ObjectFactory.class, eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
-					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class, ObjectFactory.class, eu.europa.esig.trustedlist.jaxb.tslx.ObjectFactory.class,
+			jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.xmldsig.jaxb.ObjectFactory.class,
+					eu.europa.esig.xades.jaxb.xades132.ObjectFactory.class,
+					eu.europa.esig.xades.jaxb.xades141.ObjectFactory.class,
+					eu.europa.esig.trustedlist.jaxb.tslx.ObjectFactory.class,
 					eu.europa.esig.trustedlist.jaxb.ecc.ObjectFactory.class);
 		}
 		return jc;

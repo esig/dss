@@ -27,7 +27,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
@@ -418,6 +421,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 						wrapper.setEndDate(trustedService.getEndDate());
 						wrapper.setCapturedQualifiers(new ArrayList<>(trustedService.getCapturedQualifiers()));
 						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustedService.getAdditionalServiceInfoUris()));
+						wrapper.setEnactedMRA(trustedService.isEnactedMRA());
+
+						XmlMRATrustServiceMapping mraTrustServiceMapping = trustedService.getMRATrustServiceMapping();
+						if (mraTrustServiceMapping != null) {
+							wrapper.setMraTrustServiceLegalIdentifier(mraTrustServiceMapping.getTrustServiceLegalIdentifier());
+							wrapper.setMraTrustServiceEquivalenceStatusStartingTime(mraTrustServiceMapping.getEquivalenceStatusStartingTime());
+							XmlOriginalThirdCountryTrustedServiceMapping originalThirdCountryMapping = mraTrustServiceMapping.getOriginalThirdCountryMapping();
+							if (originalThirdCountryMapping != null) {
+								wrapper.setOriginalTCType(originalThirdCountryMapping.getServiceType());
+								wrapper.setOriginalTCStatus(originalThirdCountryMapping.getStatus());
+								wrapper.setOriginalCapturedQualifiers(originalThirdCountryMapping.getCapturedQualifiers());
+								wrapper.setOriginalTCAdditionalServiceInfos(originalThirdCountryMapping.getAdditionalServiceInfoUris());
+							}
+						}
+
 						result.add(wrapper);
 					}
 				}
@@ -509,16 +527,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns if the certificate is supported by QSCD (has id-etsi-qcs-QcSSCD extension)
-	 *
-	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
-	 */
-	public boolean isSupportedByQSCD() {
-		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcSSCD() != null
-				&& certificate.getQcStatements().getQcSSCD().isPresent();
-	}
-
-	/**
 	 * Returns if the certificate is QC compliant (has id-etsi-qcs-QcCompliance extension)
 	 *
 	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
@@ -529,11 +537,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns if the certificate is supported by QSCD (has id-etsi-qcs-QcSSCD extension)
+	 *
+	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
+	 */
+	public boolean isSupportedByQSCD() {
+		return certificate.getQcStatements() != null && certificate.getQcStatements().getQcSSCD() != null
+				&& certificate.getQcStatements().getQcSSCD().isPresent();
+	}
+
+	/**
 	 * Returns a list of QCTypes (present inside id-etsi-qcs-QcType extension)
 	 *
 	 * @return a list of {@link QCType}s
 	 */
-	public List<QCType> getQCTypes() {
+	public List<QCType> getQcTypes() {
 		List<QCType> result = new ArrayList<>();
 		if (certificate.getQcStatements() != null && certificate.getQcStatements().getQcTypes() != null) {
 			for (XmlOID oid : certificate.getQcStatements().getQcTypes()) {
@@ -555,6 +573,18 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Returns a list of QcStatements OIDs not supported by the implementation
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOtherQcStatements() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getOtherOIDs() != null) {
+			return getOidValues(certificate.getQcStatements().getOtherOIDs());
+		}
+		return Collections.emptyList();
+	}
+
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {
 		List<String> result = new ArrayList<>();
 		if (xmlOids != null) {
@@ -563,6 +593,86 @@ public class CertificateWrapper extends AbstractTokenProxy {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * This method returns a name of a Trusted Service used to apply translation for the certificate QcStatements
+	 * based on the defined Mutual Recognition Agreement scheme
+	 *
+	 * @return {@link String}
+	 */
+	public String getMRAEnactedTrustServiceLegalIdentifier() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getMRACertificateMapping() != null) {
+			return certificate.getQcStatements().getMRACertificateMapping().getEnactedTrustServiceLegalIdentifier();
+		}
+		return null;
+	}
+
+	private XmlOriginalThirdCountryQcStatementsMapping getOriginalThirdCountryMapping() {
+		if (certificate.getQcStatements() != null && certificate.getQcStatements().getMRACertificateMapping() != null) {
+			return certificate.getQcStatements().getMRACertificateMapping().getOriginalThirdCountryMapping();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns if the certificate has been defined as QC compliant in a third-country Trusted List before MRA mapping
+	 *
+	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
+	 */
+	public boolean isOriginalThirdCountryQcCompliance() {
+		return getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCompliance() != null
+				&& getOriginalThirdCountryMapping().getQcCompliance().isPresent();
+	}
+
+	/**
+	 * Returns if the certificate has been defined as supported by QSCD in a third-country Trusted List before MRA mapping
+	 *
+	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
+	 */
+	public boolean isOriginalThirdCountrySupportedByQSCD() {
+		return getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcSSCD() != null
+				&& getOriginalThirdCountryMapping().getQcSSCD().isPresent();
+	}
+
+	/**
+	 * Returns a list of QCTypes defined in a third-country Trusted List before MRA mapping
+	 *
+	 * @return a list of {@link QCType}s
+	 */
+	public List<QCType> getOriginalThirdCountryQCTypes() {
+		List<QCType> result = new ArrayList<>();
+		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcTypes() != null) {
+			for (XmlOID oid : getOriginalThirdCountryMapping().getQcTypes()) {
+				result.add(QCType.fromOid(oid.getValue()));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of QCLegislation Country Codes defined in a third-country Trusted List before MRA mapping
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOriginalThirdCountryQcLegislationCountryCodes() {
+		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
+			return getOriginalThirdCountryMapping().getQcCClegislation();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of QcStatements OIDs not supported by the implementation
+	 * defined in a third-country Trusted List before MRA mapping
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getOriginalThirdCountryOtherQcStatements() {
+		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
+			return getOidValues(getOriginalThirdCountryMapping().getOtherOIDs());
+		}
+		return Collections.emptyList();
 	}
 
 	@Override

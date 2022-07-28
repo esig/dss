@@ -1,0 +1,1190 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>ua-eseal.asice</DocumentName>
+    <ValidationDate>2022-07-11T00:00:00Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/ASiCManifest001.xml</Filename>
+                <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
+                <Entries>
+                    <Entry>UA_DIIA-A-E-C-B-B-V-2.pdf</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>UA_DIIA-A-E-C-B-B-V-2.pdf</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-08D8164CF07FAF704EB86606D505CEC097AD1EDD6623C5732B679B3EEA72DA19">
+            <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
+            <ClaimedSigningTime>2022-07-07T17:56:42Z</ClaimedSigningTime>
+            <SignatureFormat>CAdES-C</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST" name="META-INF/ASiCManifest001.xml">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>DrnJemey/6EhDyfz7IB3ayIHD7QLjjfYJYztTlK48bY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" name="UA_DIIA-A-E-C-B-B-V-2.pdf">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>wOWeXgQ0MadXEgU0G2uEleegtJ6o1DWURqrntQfvKM8=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-24A9B320ABBBEBD2C520FA6A0F5386C51DBF5A7189CF65AE62C63B211C9AD237"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-24A9B320ABBBEBD2C520FA6A0F5386C51DBF5A7189CF65AE62C63B211C9AD237"/>
+                <ChainItem Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OID.2.5.4.97=NTRUA-43395033, L=Kyiv, C=UA, SERIALNUMBER=UA-43395033-1110, CN="\"DIIA\". Qualified Trust Services Provider", OU=Department of Electronic Trust Services, O="State enterprise \"DIIA\""</IssuerName>
+                    <SerialNumber>299466534628299283585212284163077842399273125632</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                    <CertificateRef>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
+                        <IssuerSerial match="true">MIHwMIHXpIHUMIHRMTYwNAYDVQQKDC1NaW5pc3RyeSBvZiBkaWdpdGFsIHRyYW5zZm9ybWF0aW9uIG9mIFVrcmFpbmUxHjAcBgNVBAsMFUFkbWluaXN0cmF0b3IgSVRTIENDQTEoMCYGA1UEAwwfQ2VudHJhbCBjZXJ0aWZpY2F0aW9uIGF1dGhvcml0eTEYMBYGA1UEBQwPVUEtNDMyMjA4NTEtMjU2MQswCQYDVQQGEwJVQTENMAsGA1UEBwwES3lpdjEXMBUGA1UEYQwOTlRSVUEtNDMyMjA4NTECFF6Sh7W/bVvqAQAAAAEAAADjAAAA</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>R6a9Jf4DR1F8yuWDVtFlcxbTqf8=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-24A9B320ABBBEBD2C520FA6A0F5386C51DBF5A7189CF65AE62C63B211C9AD237">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIH3MIHepIHbMIHYMSAwHgYDVQQKDBdTdGF0ZSBlbnRlcnByaXNlICJESUlBIjEwMC4GA1UECwwnRGVwYXJ0bWVudCBvZiBFbGVjdHJvbmljIFRydXN0IFNlcnZpY2VzMTIwMAYDVQQDDCkiRElJQSIuIFF1YWxpZmllZCBUcnVzdCBTZXJ2aWNlcyBQcm92aWRlcjEZMBcGA1UEBRMQVUEtNDMzOTUwMzMtMTExMDELMAkGA1UEBhMCVUExDTALBgNVBAcMBEt5aXYxFzAVBgNVBGEMDk5UUlVBLTQzMzk1MDMzAhQ0dIs5SiveLwQAAAABq0oAt0+HAA==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>JKmzIKu769LFIPpqD1OGxR2/WnGJz2WuYsY7IRya0jc=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                    <CertificateRef>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
+                        <IssuerSerial match="true">MIHwMIHXpIHUMIHRMTYwNAYDVQQKDC1NaW5pc3RyeSBvZiBkaWdpdGFsIHRyYW5zZm9ybWF0aW9uIG9mIFVrcmFpbmUxHjAcBgNVBAsMFUFkbWluaXN0cmF0b3IgSVRTIENDQTEoMCYGA1UEAwwfQ2VudHJhbCBjZXJ0aWZpY2F0aW9uIGF1dGhvcml0eTEYMBYGA1UEBQwPVUEtNDMyMjA4NTEtMjU2MQswCQYDVQQGEwJVQTENMAsGA1UEBwwES3lpdjEXMBUGA1UEYQwOTlRSVUEtNDMyMjA4NTECFF6Sh7W/bVvqAQAAAAEAAADPAAAA</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>3fSZwlKGQ9ttwOw0Ojl6v70Bdno=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-3C70CE2D3321FC5EC7B0E837DC14D14D71FF6E60BEBBDCEDF5EB3D3AD3D39103">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <OrphanRevocation Token="R-8ED872F693563CCA78A0D14EFF460AE1A534220B39B9E8772632C98CE5083A24">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-A1A049777D6640ADD9B22BC1562EEC22C6D202B4">
+                    <Type>OCSP</Type>
+                    <RevocationRef>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>oaBJd31mQK3ZsivBVi7sIsbSArQ=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <ProducedAt>2022-07-07T17:56:45Z</ProducedAt>
+                        <ResponderId>
+                            <IssuerName>OID.2.5.4.97=NTRUA-43220851, L=Kyiv, C=UA, SERIALNUMBER=UA-43220851-2020, CN=OCSP-server Central certification authority, OU=Administrator ITS CCA, O=Ministry of digital transformation of Ukraine</IssuerName>
+                        </ResponderId>
+                    </RevocationRef>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-6B9C3E7404342B7D9A113610CAC7AB1966312F0E">
+                    <Type>OCSP</Type>
+                    <RevocationRef>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>a5w+dAQ0K32aETYQyserGWYxLw4=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <ProducedAt>2022-07-07T17:56:45Z</ProducedAt>
+                        <ResponderId>
+                            <IssuerName>OID.2.5.4.97=NTRUA-43395033, L=Kyiv, C=UA, SERIALNUMBER=UA-43395033-4120, CN="OCSP-server \"DIIA\"", OU=Department of Electronic Trust Services, O="State enterprise \"DIIA\""</IssuerName>
+                        </ResponderId>
+                    </RevocationRef>
+                </OrphanRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-51EEEB31B1E394041B8623E0DB9BD679B256DFE22DF43B502BC01352DB3F06C1"/>
+                <FoundTimestamp Timestamp="T-1CE40484D32201576FF44629B2863BBB3DCFA33EB432CB8EF0B30A1EAFC320B3"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCManifest001.xml</Name>
+                    <Description>Manifest document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-8F198E487ABE31DCF42B9B38F40608755170DDD04D65333793D35E3FC45BCB95">
+                    <Scope>FULL</Scope>
+                    <Name>UA_DIIA-A-E-C-B-B-V-2.pdf</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>N2ic6H/hyg+9oKAEtaT9rmXxYhYqfXVAW609kcTv8qg=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>a7IHP6qOS8VVFt51rR7cEFZQl4bWdZBuTMAjZEBc4AY=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>MEUCIQDNCVKVicP9N7f1gYDTTa9t3hH8yjMPK7XWw4nc6/8V6wIgYbeD5WCYb+sNfb6nfnyg8bKki8wDWHGKsvkpTHO8zBw=</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-24A9B320ABBBEBD2C520FA6A0F5386C51DBF5A7189CF65AE62C63B211C9AD237">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#130734383933343431,cn=state enterprise \"diia\",o=state enterprise \"diia\"</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#130734383933343431,CN=State enterprise \"DIIA\",O=State enterprise \"DIIA\"</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#131055412d34333339353033332d31313130,cn=\"diia\". qualified trust services provider,ou=department of electronic trust services,o=state enterprise \"diia\"</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#131055412d34333339353033332d31313130,CN=\"DIIA\". Qualified Trust Services Provider,OU=Department of Electronic Trust Services,O=State enterprise \"DIIA\"</IssuerDistinguishedName>
+            <SerialNumber>299466534628299283585212284163077842399273125632</SerialNumber>
+            <SubjectSerialNumber>4893441</SubjectSerialNumber>
+            <CommonName>State enterprise "DIIA"</CommonName>
+            <Locality>Kyiv</Locality>
+            <CountryName>UA</CountryName>
+            <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
+            <OrganizationName>State enterprise "DIIA"</OrganizationName>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://ca.informjust.ua/uploads/certificates/diia.p7b</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://ca.informjust.ua/download/crls/CA-B4748B39-Full.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ca.informjust.ua/services/ocsp/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2024-07-06T20:59:59Z</NotAfter>
+            <NotBefore>2022-07-06T21:00:00Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7E8A661771DC13A528DBBE30606650E45EA0DA7DCA4EBAD3D30AE0D2224350F9</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements enactedMRA="true">
+                <QcCompliance present="false"/>
+                <QcSSCD present="false"/>
+                <QcTypes>
+                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                </QcTypes>
+                <QcCClegislation>
+                    <CountryName>UA</CountryName>
+                </QcCClegislation>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                <MRACertificateMapping>
+                    <EnactedTrustServiceLegalIdentifier>PKCForAdESeal</EnactedTrustServiceLegalIdentifier>
+                    <OriginalThirdCountryMapping>
+                        <QcCompliance present="true"/>
+                        <QcSSCD present="false"/>
+                        <QcTypes>
+                            <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                        </QcTypes>
+                        <QcCClegislation>
+                            <CountryName>UA</CountryName>
+                        </QcCClegislation>
+                    </OriginalThirdCountryMapping>
+                </MRACertificateMapping>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
+                        <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Central certification authority</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukrane</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                            <ServiceNames>
+                                <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-01-21T00:49:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
+                        <TSPName lang="uk">ДП "ДІЯ"</TSPName>
+                        <TSPName lang="en">State enterprise "DIIA"</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="uk">"Дія". Кваліфікований надавач електронних довірчих послуг</TSPTradeName>
+                        <TSPTradeName lang="uk">Державне підприємство "Національні інформаційні системи"</TSPTradeName>
+                        <TSPTradeName lang="uk">ДП "НАІС"</TSPTradeName>
+                        <TSPTradeName lang="en">"DIIA". Qualified Trust Services Provider</TSPTradeName>
+                        <TSPTradeName lang="en">CA of the Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "National information systems"</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "NAIS"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESig</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <CapturedQualifiers/>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <CapturedQualifiers/>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-3C70CE2D3321FC5EC7B0E837DC14D14D71FF6E60BEBBDCEDF5EB3D3AD3D39103">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JKmzIKu769LFIPpqD1OGxR2/WnGJz2WuYsY7IRya0jc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#131055412d34333339353033332d31313130,cn=\"diia\". qualified trust services provider,ou=department of electronic trust services,o=state enterprise \"diia\"</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#131055412d34333339353033332d31313130,CN=\"DIIA\". Qualified Trust Services Provider,OU=Department of Electronic Trust Services,O=State enterprise \"DIIA\"</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c0f55412d34333232303835312d323536,cn=central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c0f55412d34333232303835312d323536,CN=Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</IssuerDistinguishedName>
+            <SerialNumber>539912863260585958371211594063947570488373411840</SerialNumber>
+            <SubjectSerialNumber>UA-43395033-1110</SubjectSerialNumber>
+            <CommonName>"DIIA". Qualified Trust Services Provider</CommonName>
+            <Locality>Kyiv</Locality>
+            <CountryName>UA</CountryName>
+            <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
+            <OrganizationName>State enterprise "DIIA"</OrganizationName>
+            <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://czo.gov.ua/services/ocsp/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2025-06-03T07:43:00Z</NotAfter>
+            <NotBefore>2020-06-03T07:43:00Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E705D7BA08B6667BF06CF41A2A996263C12604E7D6FBDA38CD6B6C3D8012C1D7</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements enactedMRA="true">
+                <QcCompliance present="false"/>
+                <QcSSCD present="false"/>
+                <QcEuPDS>
+                    <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
+                </QcEuPDS>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <QcCClegislation/>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                <MRACertificateMapping>
+                    <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                    <OriginalThirdCountryMapping>
+                        <QcCompliance present="true"/>
+                        <QcSSCD present="true"/>
+                    </OriginalThirdCountryMapping>
+                </MRACertificateMapping>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
+                        <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Central certification authority</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukrane</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                            <ServiceNames>
+                                <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-01-21T00:49:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
+                        <TSPName lang="uk">ДП "ДІЯ"</TSPName>
+                        <TSPName lang="en">State enterprise "DIIA"</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="uk">"Дія". Кваліфікований надавач електронних довірчих послуг</TSPTradeName>
+                        <TSPTradeName lang="uk">Державне підприємство "Національні інформаційні системи"</TSPTradeName>
+                        <TSPTradeName lang="uk">ДП "НАІС"</TSPTradeName>
+                        <TSPTradeName lang="en">"DIIA". Qualified Trust Services Provider</TSPTradeName>
+                        <TSPTradeName lang="en">CA of the Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "National information systems"</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "NAIS"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESig</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>c7LkDP6nm9XPn2sQDsgmLeSzFJnIC9ffErxobDtvC2s=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c0f55412d34333232303835312d323536,cn=central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c0f55412d34333232303835312d323536,CN=Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c0f55412d34333232303835312d323536,cn=central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c0f55412d34333232303835312d323536,CN=Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</IssuerDistinguishedName>
+            <SerialNumber>539912863260585958371211594063947570488037867520</SerialNumber>
+            <SubjectSerialNumber>UA-43220851-256</SubjectSerialNumber>
+            <CommonName>Central certification authority</CommonName>
+            <Locality>Kyiv</Locality>
+            <CountryName>UA</CountryName>
+            <OrganizationIdentifier>NTRUA-43220851</OrganizationIdentifier>
+            <OrganizationName>Ministry of digital transformation of Ukraine</OrganizationName>
+            <OrganizationalUnit>Administrator ITS CCA</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2030-01-21T00:49:00Z</NotAfter>
+            <NotBefore>2020-01-21T00:49:00Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-5F260FFBD972B85C8F9D0162D9871E04D8AFB4B9A8BE99E9417DA0AEB9FBE0A5</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                </QcTypes>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
+                        <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Central certification authority</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukrane</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                            <ServiceNames>
+                                <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-01-21T00:49:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lE8eAUCPD9CiCCC8uSBElx5fFaxdxphxFJv80LvzAW0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9AD8DD8CDB086564D8E556DC14527B69BA6C2C0414AA104B418B163417A48255">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#131055412d34333339353033332d34313230,cn=ocsp-server \"diia\",ou=department of electronic trust services,o=state enterprise \"diia\"</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#131055412d34333339353033332d34313230,CN=OCSP-server \"DIIA\",OU=Department of Electronic Trust Services,O=State enterprise \"DIIA\"</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#131055412d34333339353033332d31313130,cn=\"diia\". qualified trust services provider,ou=department of electronic trust services,o=state enterprise \"diia\"</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#131055412d34333339353033332d31313130,CN=\"DIIA\". Qualified Trust Services Provider,OU=Department of Electronic Trust Services,O=State enterprise \"DIIA\"</IssuerDistinguishedName>
+            <SerialNumber>299466534628299283584593314143386938674900463104</SerialNumber>
+            <SubjectSerialNumber>UA-43395033-4120</SubjectSerialNumber>
+            <CommonName>OCSP-server "DIIA"</CommonName>
+            <Locality>Kyiv</Locality>
+            <CountryName>UA</CountryName>
+            <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
+            <OrganizationName>State enterprise "DIIA"</OrganizationName>
+            <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>https://ca.informjust.ua/uploads/certificates/diia.p7b</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2023-02-01T10:25:00Z</NotAfter>
+            <NotBefore>2022-02-01T10:25:00Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D11F5D37CC5FB5473B977755B63A2FD8663A972AABCA2D5A720580EC919A0147</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements enactedMRA="true">
+                <QcCompliance present="false"/>
+                <QcSSCD present="false"/>
+                <QcEuPDS>
+                    <PdsLocation lang="en">https://ca.informjust.ua/</PdsLocation>
+                </QcEuPDS>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <QcCClegislation/>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                <MRACertificateMapping>
+                    <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                    <OriginalThirdCountryMapping>
+                        <QcCompliance present="true"/>
+                        <QcSSCD present="true"/>
+                    </OriginalThirdCountryMapping>
+                </MRACertificateMapping>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
+                        <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Central certification authority</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukrane</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                            <ServiceNames>
+                                <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-01-21T00:49:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
+                        <TSPName lang="uk">ДП "ДІЯ"</TSPName>
+                        <TSPName lang="en">State enterprise "DIIA"</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="uk">"Дія". Кваліфікований надавач електронних довірчих послуг</TSPTradeName>
+                        <TSPTradeName lang="uk">Державне підприємство "Національні інформаційні системи"</TSPTradeName>
+                        <TSPTradeName lang="uk">ДП "НАІС"</TSPTradeName>
+                        <TSPTradeName lang="en">"DIIA". Qualified Trust Services Provider</TSPTradeName>
+                        <TSPTradeName lang="en">CA of the Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "National information systems"</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "NAIS"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESig</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-06-03T07:43:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <AdditionalServiceInfoUris>
+                                        <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                                    </AdditionalServiceInfoUris>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mtjdjNsIZWTY5VbcFFJ7abpsLAQUqhBLQYsWNBekglU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433333935303333,l=kyiv,c=ua,2.5.4.5=#131055412d34333339353033332d32323230,cn=tsa-server \"diia\",ou=department of electronic trust services,o=state enterprise \"diia\"</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433333935303333,L=Kyiv,C=UA,2.5.4.5=#131055412d34333339353033332d32323230,CN=TSA-server \"DIIA\",OU=Department of Electronic Trust Services,O=State enterprise \"DIIA\"</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c0f55412d34333232303835312d323536,cn=central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c0f55412d34333232303835312d323536,CN=Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</IssuerDistinguishedName>
+            <SerialNumber>539912863260585958371521079073768915553658929152</SerialNumber>
+            <SubjectSerialNumber>UA-43395033-2220</SubjectSerialNumber>
+            <CommonName>TSA-server "DIIA"</CommonName>
+            <Locality>Kyiv</Locality>
+            <CountryName>UA</CountryName>
+            <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
+            <OrganizationName>State enterprise "DIIA"</OrganizationName>
+            <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints>
+                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://czo.gov.ua/services/ocsp/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2027-01-14T12:11:00Z</NotAfter>
+            <NotBefore>2022-01-14T12:11:00Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BD6FA8CE34EAE114EE5812B5AC67AB7361EA2D9199FE2C3DD243C2DB711AC3AE</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcEuPDS>
+                    <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
+                </QcEuPDS>
+                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+            </QcStatements>
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
+                        <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Central certification authority</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">Ministry of Justice of Ukrane</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                            <ServiceNames>
+                                <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2020-01-21T00:49:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                    <TSPNames>
+                        <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
+                        <TSPName lang="uk">ДП "ДІЯ"</TSPName>
+                        <TSPName lang="en">State enterprise "DIIA"</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="uk">"Дія". Кваліфікований надавач електронних довірчих послуг</TSPTradeName>
+                        <TSPTradeName lang="uk">Державне підприємство "Національні інформаційні системи"</TSPTradeName>
+                        <TSPTradeName lang="uk">ДП "НАІС"</TSPTradeName>
+                        <TSPTradeName lang="en">"DIIA". Qualified Trust Services Provider</TSPTradeName>
+                        <TSPTradeName lang="en">CA of the Justice of Ukraine</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "National information systems"</TSPTradeName>
+                        <TSPTradeName lang="en">State enterprise "NAIS"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151" enactedMRA="true">
+                            <ServiceNames>
+                                <ServiceName lang="en">TSA-server "DIIA" (UA-43395033-2220)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2022-01-19T16:02:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>u+RSnU4bokmMNgOmZ+PjyUOJv7U3wC1xzBBMyua/UVE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-3C70CE2D3321FC5EC7B0E837DC14D14D71FF6E60BEBBDCEDF5EB3D3AD3D39103">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2022-07-07T17:56:45Z</ProductionDate>
+            <ThisUpdate>2022-07-07T17:56:45Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9AD8DD8CDB086564D8E556DC14527B69BA6C2C0414AA104B418B163417A48255"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9AD8DD8CDB086564D8E556DC14527B69BA6C2C0414AA104B418B163417A48255"/>
+                <ChainItem Certificate="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-9AD8DD8CDB086564D8E556DC14527B69BA6C2C0414AA104B418B163417A48255">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>OID.2.5.4.97=NTRUA-43395033, L=Kyiv, C=UA, SERIALNUMBER=UA-43395033-4120, CN="OCSP-server \"DIIA\"", OU=Department of Electronic Trust Services, O="State enterprise \"DIIA\""</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PHDOLTMh/F7HsOg33BTRTXH/bmC+u9zt9es9OtPTkQM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="CONTENT_TIMESTAMP" Id="T-51EEEB31B1E394041B8623E0DB9BD679B256DFE22DF43B502BC01352DB3F06C1">
+            <ProductionTime>2022-07-07T17:56:44Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>DrnJemey/6EhDyfz7IB3ayIHD7QLjjfYJYztTlK48bY=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OID.2.5.4.97=NTRUA-43220851, L=Kyiv, C=UA, SERIALNUMBER=UA-43220851-256, CN=Central certification authority, OU=Administrator ITS CCA, O=Ministry of digital transformation of Ukraine</IssuerName>
+                    <SerialNumber>539912863260585958371521079073768915553658929152</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151">
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIHwMIHXpIHUMIHRMTYwNAYDVQQKDC1NaW5pc3RyeSBvZiBkaWdpdGFsIHRyYW5zZm9ybWF0aW9uIG9mIFVrcmFpbmUxHjAcBgNVBAsMFUFkbWluaXN0cmF0b3IgSVRTIENDQTEoMCYGA1UEAwwfQ2VudHJhbCBjZXJ0aWZpY2F0aW9uIGF1dGhvcml0eTEYMBYGA1UEBQwPVUEtNDMyMjA4NTEtMjU2MQswCQYDVQQGEwJVQTENMAsGA1UEBwwES3lpdjEXMBUGA1UEYQwOTlRSVUEtNDMyMjA4NTECFF6Sh7W/bVvqAgAAAAEAAAAWAQAA</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>u+RSnU4bokmMNgOmZ+PjyUOJv7U3wC1xzBBMyua/UVE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCManifest001.xml</Name>
+                    <Description>Manifest document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-8F198E487ABE31DCF42B9B38F40608755170DDD04D65333793D35E3FC45BCB95">
+                    <Scope>FULL</Scope>
+                    <Name>UA_DIIA-A-E-C-B-B-V-2.pdf</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Ue7rMbHjlAQbhiPg25vWebJW3+It9DtQK8ATUts/BsE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-1CE40484D32201576FF44629B2863BBB3DCFA33EB432CB8EF0B30A1EAFC320B3">
+            <ProductionTime>2022-07-07T17:56:44Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>LHpzzbQ5CljT8wzyEZbVGiTdhmq++d2JIyFpxLOHoB8=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151"/>
+                <ChainItem Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OID.2.5.4.97=NTRUA-43220851, L=Kyiv, C=UA, SERIALNUMBER=UA-43220851-256, CN=Central certification authority, OU=Administrator ITS CCA, O=Ministry of digital transformation of Ukraine</IssuerName>
+                    <SerialNumber>539912863260585958371521079073768915553658929152</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIHwMIHXpIHUMIHRMTYwNAYDVQQKDC1NaW5pc3RyeSBvZiBkaWdpdGFsIHRyYW5zZm9ybWF0aW9uIG9mIFVrcmFpbmUxHjAcBgNVBAsMFUFkbWluaXN0cmF0b3IgSVRTIENDQTEoMCYGA1UEAwwfQ2VudHJhbCBjZXJ0aWZpY2F0aW9uIGF1dGhvcml0eTEYMBYGA1UEBQwPVUEtNDMyMjA4NTEtMjU2MQswCQYDVQQGEwJVQTENMAsGA1UEBwwES3lpdjEXMBUGA1UEYQwOTlRSVUEtNDMyMjA4NTECFF6Sh7W/bVvqAgAAAAEAAAAWAQAA</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>u+RSnU4bokmMNgOmZ+PjyUOJv7U3wC1xzBBMyua/UVE=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                    <CertificateRef>
+                        <Origin>COMPLETE_CERTIFICATE_REFS</Origin>
+                        <IssuerSerial match="true">MIHwMIHXpIHUMIHRMTYwNAYDVQQKDC1NaW5pc3RyeSBvZiBkaWdpdGFsIHRyYW5zZm9ybWF0aW9uIG9mIFVrcmFpbmUxHjAcBgNVBAsMFUFkbWluaXN0cmF0b3IgSVRTIENDQTEoMCYGA1UEAwwfQ2VudHJhbCBjZXJ0aWZpY2F0aW9uIGF1dGhvcml0eTEYMBYGA1UEBQwPVUEtNDMyMjA4NTEtMjU2MQswCQYDVQQGEwJVQTENMAsGA1UEBwwES3lpdjEXMBUGA1UEYQwOTlRSVUEtNDMyMjA4NTECFF6Sh7W/bVvqAQAAAAEAAADPAAAA</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>3fSZwlKGQ9ttwOw0Ojl6v70Bdno=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <OrphanRevocation Token="R-E58A33141089487C813935893700C3468EB7EF3AD3F1B522F1E43FEEE397F3E2">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </OrphanRevocation>
+                <OrphanRevocation Token="R-15C8C2BEC66AD460E4ACB9CCBDA2ED61E20755DD">
+                    <Type>OCSP</Type>
+                    <RevocationRef>
+                        <Origin>COMPLETE_REVOCATION_REFS</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>FcjCvsZq1GDkrLnMvaLtYeIHVd0=</DigestValue>
+                        </DigestAlgoAndValue>
+                        <ProducedAt>2022-07-07T17:56:44Z</ProducedAt>
+                        <ResponderId>
+                            <IssuerName>OID.2.5.4.97=NTRUA-43220851, L=Kyiv, C=UA, SERIALNUMBER=UA-43220851-2020, CN=OCSP-server Central certification authority, OU=Administrator ITS CCA, O=Ministry of digital transformation of Ukraine</IssuerName>
+                        </ResponderId>
+                    </RevocationRef>
+                </OrphanRevocation>
+            </FoundRevocations>
+            <TimestampedObjects>
+                <TimestampedObject Token="T-51EEEB31B1E394041B8623E0DB9BD679B256DFE22DF43B502BC01352DB3F06C1" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151" Category="CERTIFICATE"/>
+                <TimestampedObject Token="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8F198E487ABE31DCF42B9B38F40608755170DDD04D65333793D35E3FC45BCB95" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-08D8164CF07FAF704EB86606D505CEC097AD1EDD6623C5732B679B3EEA72DA19" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-24A9B320ABBBEBD2C520FA6A0F5386C51DBF5A7189CF65AE62C63B211C9AD237" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HOQEhNMiAVdv9EYpsoY7uz3Poz60MsuO8LMKHq/DILM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OrphanTokens>
+        <OrphanCertificate EncapsulationType="BINARIES" Id="C-1965F1527343CA96390826D5AEDB90A457D43B6B76FD56C3A1DFC277F0E97E73">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c1055412d34333232303835312d32303230,cn=ocsp-server central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c1055412d34333232303835312d32303230,CN=OCSP-server Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0e4e545255412d3433323230383531,l=kyiv,c=ua,2.5.4.5=#0c0f55412d34333232303835312d323536,cn=central certification authority,ou=administrator its cca,o=ministry of digital transformation of ukraine</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0e4e545255412d3433323230383531,L=Kyiv,C=UA,2.5.4.5=#0c0f55412d34333232303835312d323536,CN=Central certification authority,OU=Administrator ITS CCA,O=Ministry of digital transformation of Ukraine</IssuerDistinguishedName>
+            <SerialNumber>539912863260585958371521079073768915556796203008</SerialNumber>
+            <NotAfter>2025-01-21T03:08:00Z</NotAfter>
+            <NotBefore>2020-01-21T03:08:00Z</NotBefore>
+            <EntityKey>PK-410461D150DB105CA18F8FB1D8D5B961019C900742B69F0D5E5C5650B849C687</EntityKey>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GWXxUnNDypY5CCbVrtuQpFfUO2t2/VbDod/Cd/DpfnM=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanCertificate>
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-8ED872F693563CCA78A0D14EFF460AE1A534220B39B9E8772632C98CE5083A24">
+            <RevocationType>OCSP</RevocationType>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jthy9pNWPMp4oNFO/0YK4aU0Igs5ueh3JjLJjOUIOiQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanRevocation>
+        <OrphanRevocation EncapsulationType="REFERENCE" Id="R-A1A049777D6640ADD9B22BC1562EEC22C6D202B4">
+            <RevocationType>OCSP</RevocationType>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>oaBJd31mQK3ZsivBVi7sIsbSArQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanRevocation>
+        <OrphanRevocation EncapsulationType="REFERENCE" Id="R-6B9C3E7404342B7D9A113610CAC7AB1966312F0E">
+            <RevocationType>OCSP</RevocationType>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>a5w+dAQ0K32aETYQyserGWYxLw4=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanRevocation>
+        <OrphanRevocation EncapsulationType="BINARIES" Id="R-E58A33141089487C813935893700C3468EB7EF3AD3F1B522F1E43FEEE397F3E2">
+            <RevocationType>OCSP</RevocationType>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5YozFBCJSHyBOTWJNwDDRo637zrT8bUi8eQ/7uOX8+I=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanRevocation>
+        <OrphanRevocation EncapsulationType="REFERENCE" Id="R-15C8C2BEC66AD460E4ACB9CCBDA2ED61E20755DD">
+            <RevocationType>OCSP</RevocationType>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA1</DigestMethod>
+                <DigestValue>FcjCvsZq1GDkrLnMvaLtYeIHVd0=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanRevocation>
+    </OrphanTokens>
+    <OriginalDocuments>
+        <SignerData Id="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54">
+            <ReferencedName>META-INF/ASiCManifest001.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>DrnJemey/6EhDyfz7IB3ayIHD7QLjjfYJYztTlK48bY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-A399FADF023DC32B0528E9214AD97C61CFCF3A948868FE082FCD70199668DF54" Id="D-8F198E487ABE31DCF42B9B38F40608755170DDD04D65333793D35E3FC45BCB95">
+            <ReferencedName>UA_DIIA-A-E-C-B-B-V-2.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wOWeXgQ0MadXEgU0G2uEleegtJ6o1DWURqrntQfvKM8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" mra="true">
+            <CountryCode>UA</CountryCode>
+            <Url>https://www.czo.gov.ua/download/tl/TL-UA.xml</Url>
+            <SequenceNumber>33</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-07-12T10:07:05Z</LastLoading>
+            <IssueDate>2022-04-19T09:25:00Z</IssueDate>
+            <NextUpdate>2022-07-19T09:25:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>ua_lotl.xml</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-07-12T10:07:05Z</LastLoading>
+            <IssueDate>2022-06-27T09:30:08Z</IssueDate>
+            <NextUpdate>2032-06-27T09:30:08Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

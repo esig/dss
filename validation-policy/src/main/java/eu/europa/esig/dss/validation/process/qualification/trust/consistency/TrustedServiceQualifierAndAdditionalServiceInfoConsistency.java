@@ -21,17 +21,22 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class verifies consistency of the qualifiers and AdditionalServiceInformation within a Trusted Service
+ *
+ */
 class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
 
-	private static final Map<String, String> CORRESPONDANCE_MAP_QUALIFIER_ASI;
+	/** The correspondence map */
+	private static final Map<ServiceQualification, AdditionalServiceInformation> CORRESPONDANCE_MAP_QUALIFIER_ASI;
 
 	static {
 		CORRESPONDANCE_MAP_QUALIFIER_ASI = new HashMap<>();
@@ -43,21 +48,19 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 
 	@Override
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-
 		List<String> asis = trustedService.getAdditionalServiceInfos();
 		List<String> qualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
-
 		return isQualifierInAdditionServiceInfos(qualifiers, asis);
 	}
 
 	private boolean isQualifierInAdditionServiceInfos(List<String> qualifiers, List<String> asis) {
 		if (Utils.collectionSize(asis) >= 1) {
-			// Cannot have more than 1 usage (>1 is covered in
-			// TrustedServiceUsageConsistency)
+			// Cannot have more than 1 usage (>1 is covered in TrustedServiceUsageConsistency)
 			if (Utils.collectionSize(qualifiers) == 1) {
 				String currentUsage = qualifiers.get(0);
-				String expectedASI = CORRESPONDANCE_MAP_QUALIFIER_ASI.get(currentUsage);
-				return asis.contains(expectedASI);
+				ServiceQualification serviceQualification = ServiceQualification.getByUri(currentUsage);
+				AdditionalServiceInformation expectedASI = CORRESPONDANCE_MAP_QUALIFIER_ASI.get(serviceQualification);
+				return expectedASI != null && asis.contains(expectedASI.getUri());
 			}
 		}
 		return true;

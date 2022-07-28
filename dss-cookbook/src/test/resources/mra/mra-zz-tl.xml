@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:mra="http://ec.europa.eu/tools/lotl/mra/schema/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="ZZ-TL-TEST-001" TSLTag="http://uri.etsi.org/19612/TSLTag">
+  <SchemeInformation>
+    <TSLVersionIdentifier>5</TSLVersionIdentifier>
+    <TSLSequenceNumber>4</TSLSequenceNumber>
+    <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist</TSLType>
+    <SchemeOperatorName>
+      <Name xml:lang="en">ZZ TLSO</Name>
+    </SchemeOperatorName>
+    <SchemeOperatorAddress>
+      <PostalAddresses>
+        <PostalAddress xml:lang="en">
+          <StreetAddress>Central avenue n°1</StreetAddress>
+          <Locality>Metropolis</Locality>
+          <StateOrProvince>Midlands</StateOrProvince>
+          <PostalCode>2718</PostalCode>
+          <CountryName>ZZ</CountryName>
+        </PostalAddress>
+      </PostalAddresses>
+      <ElectronicAddress>
+        <URI xml:lang="en">mailto:tlso@mail.zz</URI>
+        <URI xml:lang="en">https://www.tlso.zz/contact</URI>
+      </ElectronicAddress>
+    </SchemeOperatorAddress>
+    <SchemeName>
+      <Name xml:lang="en">ZZ: Third Country supervision systems for Third Country QTSP and the QTS they provide in accordance with the Third Country laws.</Name>
+    </SchemeName>
+    <SchemeInformationURI>
+      <URI xml:lang="en">https://www.tlso.zz/schemeinfo</URI>
+    </SchemeInformationURI>
+    <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/StatusDetn/ZZdetermination</StatusDeterminationApproach>
+    <SchemeTypeCommunityRules>
+      <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/ZZ</URI>
+    </SchemeTypeCommunityRules>
+    <SchemeTerritory>ZZ</SchemeTerritory>
+    <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+    <PointersToOtherTSL>
+      <OtherTSLPointer>
+        <ServiceDigitalIdentities>
+          <ServiceDigitalIdentity>
+            <DigitalId>
+              <X509Certificate>MIIDZzCCAk+gAwIBAgIDB6EgMA0GCSqGSIb3DQEBCwUAMFQxFzAVBgNVBAMMDlpaLUxPVEwtc2lnbmVyMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwNzEzMDkwMzEwWhcNMjUwNzEzMDkwMzEwWjBUMRcwFQYDVQQDDA5aWi1MT1RMLXNpZ25lcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjtkwfK8NplyrRD2Kd6SUe7Va7dQGiN2fN/U6jO/GqvA8s0Yvof9iNAftZPQfJYBzMGPYsZ8IPCjoWGCfhH2DWglqyUBSKJuB1TAZOpXmdYBRMq25/1AmSx9E4ICoQdIUDFqNiQdLf/YGOqdOAts2aNUnTL05VGchuWPUmotpSyvy01FsPyQRz00mD/ZM1Dpd1pge1s5QsaPKQNLLTVje5zJMqqWzvdugKOp7S4jCm3WVAMelbVwnWGPFfCOVj+Hd8Lq5tqXJbkNnVobmL5hdknXH976gNysXScHikcF06TBUWWrsbMBiK04KIteIszXGeqb7jNMl8Te9If6ZE2GyPwIDAQABo0IwQDAOBgNVHQ8BAf8EBAMCBsAwHQYDVR0OBBYEFKcw5AM8mryNt4vmGj61AJG/9QI+MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAILwc5+cjyOgxJVzJhjEzbR7pYJKvqXgNU/eQeNdZ1zWqbVv0fJ0XzcvDobVu5MWj/oK1P1Ng9jGofE9+4XkXNdme98yiCPr1wO4l6u3g4a3WWAH9QWza42zOBBlSwT5yELUMWHUBVN17DSgnEOQ9hifhhy/fM7AlYYtUl3RXW13qkWmG83KK12FX6qDBxkKfhJ5v2xM0sZnEs906NVshVHcOiI/HIxi5V83aDLxBNVthHvlu0oDop0z5yuEuPOyFEOZbvoJBVCKpMcqvGM8lQ29cWxuQSmnNDO3fcVFpmEWXi4UUa6WXgl/YamdoMPgUDh8w4U5/FyZSpGbYdKSAJY=</X509Certificate>
+            </DigitalId>
+          </ServiceDigitalIdentity>
+        </ServiceDigitalIdentities>
+        <TSLLocation>https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/mra_lotl.xml</TSLLocation>
+        <AdditionalInformation>
+          <OtherInformation>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+          </OtherInformation>
+          <OtherInformation>
+            <SchemeTerritory>EU</SchemeTerritory>
+          </OtherInformation>
+          <OtherInformation>
+            <ns4:MimeType>application/vnd.etsi.tsl+xml</ns4:MimeType>
+          </OtherInformation>
+          <OtherInformation>
+            <SchemeOperatorName>
+              <Name xml:lang="en">European Commission</Name>
+            </SchemeOperatorName>
+          </OtherInformation>
+          <OtherInformation>
+            <SchemeTypeCommunityRules>
+              <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+            </SchemeTypeCommunityRules>
+          </OtherInformation>
+          <OtherInformation>
+            <mra:MutualRecognitionAgreementInformation MRADepth="1" pointedContractingPartyLegislation="uri/.../" pointingContractingPartyLegislation="uri/.../" technicalType="1" version="1">
+              <mra:TrustServiceEquivalenceInformation>
+                <mra:TrustServiceLegalIdentifier>QCForESig</mra:TrustServiceLegalIdentifier>
+                <mra:TrustServiceTSLTypeEquivalenceList>
+                  <mra:TrustServiceTSLTypeListPointingParty>
+                    <mra:TrustServiceTSLType>
+                      <ServiceTypeIdentifier>http://zz-trusted-list.go.zz/TrstSvc/Svctype/CA/QC/for-eSig</ServiceTypeIdentifier>										
+                    </mra:TrustServiceTSLType>
+                  </mra:TrustServiceTSLTypeListPointingParty>
+                  <mra:TrustServiceTSLTypeListPointedParty>
+                    <mra:TrustServiceTSLType>
+                      <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                      <AdditionalServiceInformation> 
+                        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>  
+                      </AdditionalServiceInformation>
+                    </mra:TrustServiceTSLType>
+                  </mra:TrustServiceTSLTypeListPointedParty>
+                </mra:TrustServiceTSLTypeEquivalenceList>
+                <mra:TrustServiceEquivalenceStatus>http://zz-trusted-list.go.zz/trust-services/mutualrecognitionagreement/enacted</mra:TrustServiceEquivalenceStatus>					
+                <mra:TrustServiceEquivalenceStatusStartingTime>2020-05-16T23:59:59Z</mra:TrustServiceEquivalenceStatusStartingTime>
+                <mra:TrustServiceTSLStatusEquivalenceList>
+                  <mra:TrustServiceTSLStatusValidEquivalence>
+                    <mra:TrustServiceTSLStatusListPointingParty>
+                      <ServiceStatus>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                    </mra:TrustServiceTSLStatusListPointingParty>
+                    <mra:TrustServiceTSLStatusListPointedParty>
+                      <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                    </mra:TrustServiceTSLStatusListPointedParty>
+                  </mra:TrustServiceTSLStatusValidEquivalence>
+                  <mra:TrustServiceTSLStatusInvalidEquivalence>
+                    <mra:TrustServiceTSLStatusListPointingParty>
+                      <ServiceStatus>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                    </mra:TrustServiceTSLStatusListPointingParty>
+                    <mra:TrustServiceTSLStatusListPointedParty>
+                      <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                    </mra:TrustServiceTSLStatusListPointedParty>
+                  </mra:TrustServiceTSLStatusInvalidEquivalence>
+                </mra:TrustServiceTSLStatusEquivalenceList>
+                <mra:CertificateContentReferencesEquivalenceList>
+                  <mra:CertificateContentReferenceEquivalence>
+                    <mra:CertificateContentReferenceEquivalenceContext>http://zz-trusted-list.go.zz/trust-services/mutualrecognitionagreement/QcCompliance</mra:CertificateContentReferenceEquivalenceContext>				
+                    <mra:CertificateContentDeclarationPointingParty assert="all">
+                      <ns5:otherCriteriaList>
+                        <mra:QcStatementSet>
+                          <mra:QcStatement>
+                            <mra:QcStatementId>
+                              <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                            </mra:QcStatementId>
+                          </mra:QcStatement>
+                          <mra:QcStatement>
+                            <mra:QcStatementId>
+                              <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
+                            </mra:QcStatementId>
+                            <mra:QcStatementInfo>
+                              <mra:QcCClegislation>XX</mra:QcCClegislation>
+                            </mra:QcStatementInfo>
+                          </mra:QcStatement>
+                        </mra:QcStatementSet>
+                      </ns5:otherCriteriaList>
+                    </mra:CertificateContentDeclarationPointingParty>
+                    <mra:CertificateContentDeclarationPointedParty assert="all">
+                      <ns5:CriteriaList assert="all">
+                        <ns5:otherCriteriaList>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.1</ns3:Identifier>
+                              </mra:QcStatementId>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                        </ns5:otherCriteriaList>
+                      </ns5:CriteriaList>
+                      <ns5:CriteriaList assert="none">
+                        <ns5:otherCriteriaList>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.7</ns3:Identifier>
+                              </mra:QcStatementId>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                        </ns5:otherCriteriaList>
+                      </ns5:CriteriaList>
+                    </mra:CertificateContentDeclarationPointedParty>
+                  </mra:CertificateContentReferenceEquivalence>
+                  <mra:CertificateContentReferenceEquivalence>
+                    <mra:CertificateContentReferenceEquivalenceContext>http://zz-trusted-list.go.zz/trust-services/mutualrecognitionagreement/QcType</mra:CertificateContentReferenceEquivalenceContext>
+                    <mra:CertificateContentDeclarationPointingParty assert="all">
+                      <ns5:CriteriaList assert="atLeastOne">
+                        <ns5:CriteriaList assert="all">
+                          <ns5:otherCriteriaList>
+                            <mra:QcStatementSet>
+                              <mra:QcStatement>
+                                <mra:QcStatementId>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                </mra:QcStatementId>
+                                <mra:QcStatementInfo>
+                                  <mra:QcType>
+                                    <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                  </mra:QcType>
+                                </mra:QcStatementInfo>
+                              </mra:QcStatement>
+                            </mra:QcStatementSet>
+                          </ns5:otherCriteriaList>
+                        </ns5:CriteriaList>
+                        <ns5:CriteriaList assert="none">
+                          <ns5:otherCriteriaList>
+                            <mra:QcStatementSet>
+                              <mra:QcStatement>
+                                <mra:QcStatementId>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                </mra:QcStatementId>
+                                <mra:QcStatementInfo>
+                                  <mra:QcType>
+                                    <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                  </mra:QcType>
+                                </mra:QcStatementInfo>
+                              </mra:QcStatement>
+                            </mra:QcStatementSet>
+                          </ns5:otherCriteriaList>
+                        </ns5:CriteriaList>
+                      </ns5:CriteriaList>
+                      <ns5:CriteriaList assert="none">
+                        <ns5:otherCriteriaList>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                              </mra:QcStatementId>
+                              <mra:QcStatementInfo>
+                                <mra:QcType>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.2</ns3:Identifier>
+                                </mra:QcType>
+                              </mra:QcStatementInfo>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                              </mra:QcStatementId>
+                              <mra:QcStatementInfo>
+                                <mra:QcType>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.3</ns3:Identifier>
+                                </mra:QcType>
+                              </mra:QcStatementInfo>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                        </ns5:otherCriteriaList>
+                      </ns5:CriteriaList>
+                    </mra:CertificateContentDeclarationPointingParty>
+                    <mra:CertificateContentDeclarationPointedParty assert="all">
+                      <ns5:CriteriaList assert="atLeastOne">
+                        <ns5:CriteriaList assert="all">
+                          <ns5:otherCriteriaList>
+                            <mra:QcStatementSet>
+                              <mra:QcStatement>
+                                <mra:QcStatementId>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                </mra:QcStatementId>
+                                <mra:QcStatementInfo>
+                                  <mra:QcType>
+                                    <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                  </mra:QcType>
+                                </mra:QcStatementInfo>
+                              </mra:QcStatement>
+                            </mra:QcStatementSet>
+                          </ns5:otherCriteriaList>
+                        </ns5:CriteriaList>
+                        <ns5:CriteriaList assert="none">
+                          <ns5:otherCriteriaList>
+                            <mra:QcStatementSet>
+                              <mra:QcStatement>
+                                <mra:QcStatementId>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                                </mra:QcStatementId>
+                                <mra:QcStatementInfo>
+                                  <mra:QcType>
+                                    <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.1</ns3:Identifier>
+                                  </mra:QcType>
+                                </mra:QcStatementInfo>
+                              </mra:QcStatement>
+                            </mra:QcStatementSet>
+                          </ns5:otherCriteriaList>
+                        </ns5:CriteriaList>
+                      </ns5:CriteriaList>
+                      <ns5:CriteriaList assert="none">
+                        <ns5:otherCriteriaList>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                              </mra:QcStatementId>
+                              <mra:QcStatementInfo>
+                                <mra:QcType>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.2</ns3:Identifier>
+                                </mra:QcType>
+                              </mra:QcStatementInfo>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                          <mra:QcStatementSet>
+                            <mra:QcStatement>
+                              <mra:QcStatementId>
+                                <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6</ns3:Identifier>
+                              </mra:QcStatementId>
+                              <mra:QcStatementInfo>
+                                <mra:QcType>
+                                  <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.6.3</ns3:Identifier>
+                                </mra:QcType>
+                              </mra:QcStatementInfo>
+                            </mra:QcStatement>
+                          </mra:QcStatementSet>
+                        </ns5:otherCriteriaList>
+                      </ns5:CriteriaList>
+                    </mra:CertificateContentDeclarationPointedParty>
+                  </mra:CertificateContentReferenceEquivalence>
+                  <mra:CertificateContentReferenceEquivalence>
+                    <mra:CertificateContentReferenceEquivalenceContext>http://zz-trusted-list.go.zz/trust-services/mutualrecognitionagreement/QcQSCD</mra:CertificateContentReferenceEquivalenceContext>
+                    <mra:CertificateContentDeclarationPointingParty assert="all">
+                      <ns5:otherCriteriaList>
+                        <mra:QcStatementSet>
+                          <mra:QcStatement>
+                            <mra:QcStatementId>
+                              <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                            </mra:QcStatementId>
+                          </mra:QcStatement>
+                        </mra:QcStatementSet>
+                      </ns5:otherCriteriaList>
+                    </mra:CertificateContentDeclarationPointingParty>
+                    <mra:CertificateContentDeclarationPointedParty assert="all">
+                      <ns5:otherCriteriaList>
+                        <mra:QcStatementSet>
+                          <mra:QcStatement>
+                            <mra:QcStatementId>
+                              <ns3:Identifier Qualifier="OIDAsURN">urn:oid:0.4.0.1862.1.4</ns3:Identifier>
+                            </mra:QcStatementId>
+                          </mra:QcStatement>
+                        </mra:QcStatementSet>
+                      </ns5:otherCriteriaList>
+                    </mra:CertificateContentDeclarationPointedParty>
+                  </mra:CertificateContentReferenceEquivalence>
+                </mra:CertificateContentReferencesEquivalenceList>
+                <mra:TrustServiceTSLQualificationExtensionEquivalenceList>
+                  <mra:TrustServiceTSLQualificationExtensionName>
+                    <mra:TrustServiceTSLQualificationExtensionNamePointingParty>Sie:Q</mra:TrustServiceTSLQualificationExtensionNamePointingParty>
+                    <mra:TrustServiceTSLQualificationExtensionNamePointedParty>Sie:Q</mra:TrustServiceTSLQualificationExtensionNamePointedParty>
+                  </mra:TrustServiceTSLQualificationExtensionName>
+                  <mra:QualifierEquivalenceList>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForWSA"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/NotQualified"/>
+                    </mra:QualifierEquivalence>
+                    <mra:QualifierEquivalence>
+                      <mra:QualifierPointingParty uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QcStatement"/>
+                      <mra:QualifierPointedParty uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QcStatement"/>
+                    </mra:QualifierEquivalence>
+                  </mra:QualifierEquivalenceList>
+                </mra:TrustServiceTSLQualificationExtensionEquivalenceList>
+              </mra:TrustServiceEquivalenceInformation>
+            </mra:MutualRecognitionAgreementInformation>
+          </OtherInformation>
+        </AdditionalInformation>
+      </OtherTSLPointer>
+    </PointersToOtherTSL>
+    <ListIssueDateTime>2022-06-08T13:37:21.646+02:00</ListIssueDateTime>
+    <NextUpdate>
+      <dateTime>2032-06-08T13:37:21.646+02:00</dateTime>
+    </NextUpdate>
+    <DistributionPoints>
+      <URI>https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_tl_zz.xml</URI>
+    </DistributionPoints>
+  </SchemeInformation>
+  <TrustServiceProviderList>
+    <TrustServiceProvider>
+      <TSPInformation>
+        <TSPName>
+          <Name xml:lang="en">Third Country QTSP Company</Name>
+        </TSPName>
+        <TSPTradeName>
+          <Name xml:lang="en">VATZZ-31415926535</Name>
+          <Name xml:lang="en">Third Country eTrust</Name>
+        </TSPTradeName>
+        <TSPAddress>
+          <PostalAddresses>
+            <PostalAddress xml:lang="en">
+              <StreetAddress>Central avenue n°2</StreetAddress>
+              <Locality>Metropolis</Locality>
+              <StateOrProvince>Midlands</StateOrProvince>
+              <PostalCode>2718</PostalCode>
+              <CountryName>ZZ</CountryName>
+            </PostalAddress>
+          </PostalAddresses>
+          <ElectronicAddress>
+            <URI xml:lang="en">mailto:contact@etrust.zz</URI>
+            <URI xml:lang="en">https://www.etrust.zz/contact</URI>
+          </ElectronicAddress>
+        </TSPAddress>
+        <TSPInformationURI>
+          <URI xml:lang="en">https://www.etrust.zz/en/documentation</URI>
+        </TSPInformationURI>
+      </TSPInformation>
+      <TSPServices>
+        <TSPService>
+          <ServiceInformation>
+            <ServiceTypeIdentifier>http://zz-trusted-list.go.zz/TrstSvc/Svctype/CA/QC/for-eSig</ServiceTypeIdentifier>
+            <ServiceName>
+              <Name xml:lang="en">ZZ eTrust QC for eSignatures CA</Name>
+            </ServiceName>
+            <ServiceDigitalIdentity>
+              <DigitalId>
+                <X509Certificate>MIIEXTCCA0WgAwIBAgIDAYcEMA0GCSqGSIb3DQEBCwUAMGIxJTAjBgNVBAMMHFRlc3QtTmF0aW9uYWwtUm9vdENBLWZyb20tWloxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTAeFw0yMTA4MTMwOTAzMDhaFw0yMzA2MTMwOTAzMDhaMH8xIzAhBgNVBAMMGlRlc3QtUVRTUC0xLVJvb3RDQS1mcm9tLVpaMTgwNgYDVQQKDC9UZXN0IFF1YWxpZmllZCBUcnVzdCBTZXJ2aWNlIFByb3ZpZGVyIDEgZnJvbSBaWjERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAlpaMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoPsg9dIteInHtpLtHqpqcxbYFJZe1w0Fe+xrGOsOvd12gcnsoRcXFi+Lv7o/e0oyu2BWoffXLpKkNnLCDHCrajhc9ShiJ4zHPdHv+q4l5FbZNvi31oerSAgfFZM2VNh9B3EHrNT41U0X52mDw5lkKitP+X155bvMmRXblXg+fOS/PRh3ECAN2JgQmNRny4YmwUGqLhQMFCp8rlfft5yG4wof36jFhD9BL9Ywr79He6EEHNoeUBPNBQzMWfN3gRrn5vzpeuYLOar5NPuenuMlJwkMV6UNJDUBa1qkIZKKLieZ2RkEeSAf8N62xw3izMdM8/G3XE+qHoI451xVJ5zz9QIDAQABo4H+MIH7MA4GA1UdDwEB/wQEAwIBBjBWBgNVHR8ETzBNMEugSaBHhkVodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcmwvVGVzdC1OYXRpb25hbC1Sb290Q0EtZnJvbS1aWi5jcmwwYQYIKwYBBQUHAQEEVTBTMFEGCCsGAQUFBzAChkVodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvVGVzdC1OYXRpb25hbC1Sb290Q0EtZnJvbS1aWi5jcnQwHQYDVR0OBBYEFD0wYpBbpyaPwYJi5X+tClLOw24RMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAJAn8STlGwBckv3mLVeVctM2ozF5O/QG5KIxXnUzWUEue2erUtPS9W13qkJBbiOgYYzEeQJGk7OYL47XN7D3FneazlidEfqsoo1n2FAqiwdlZ+MKIxsA0v9aoNJb++Knb4df1xNPNOQp7ugWUuyIvOUz5PtKyVDNn5vv3L1W44k4NP2KrF60NCERAwjfzl9mAALUwYWJ/9isQBjy5HhAFkQUo33grCWGH9ha8UMFfza2whyydCRkPUEFA4R/KNRqjh5QSZdDnqdPNb8KujQYlNIemGJKZyH472WqyBYElW8wPpU+KCtWS6x4FWrrFVp90Z3x0boBUvxM39rZ0Hu1hZA=</X509Certificate>
+              </DigitalId>
+            </ServiceDigitalIdentity>
+            <ServiceStatus>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+            <StatusStartingTime>2020-11-10T00:00:00Z</StatusStartingTime>
+            <ServiceInformationExtensions>
+              <Extension Critical="true">
+                <ns5:Qualifications>
+                  <ns5:QualificationElement>
+                    <ns5:Qualifiers>
+                      <ns5:Qualifier uri="http://zz-trusted-list.go.zz/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                    </ns5:Qualifiers>
+                    <ns5:CriteriaList assert="all">
+                      <ns5:PolicySet>
+                        <ns5:PolicyIdentifier>
+                          <ns3:Identifier>1.3.6.1.4.1.314159.1.2</ns3:Identifier>
+                        </ns5:PolicyIdentifier>
+                      </ns5:PolicySet>
+                      <ns5:Description/>
+                    </ns5:CriteriaList>
+                  </ns5:QualificationElement>
+                </ns5:Qualifications>
+              </Extension>
+            </ServiceInformationExtensions>
+          </ServiceInformation>
+        </TSPService>
+      </TSPServices>
+    </TrustServiceProvider>
+  </TrustServiceProviderList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-3ca6252f2b7687828c656d34c9bfd401"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="ref-enveloped-signature" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>WJj8hxFgfRYcThw4pK/126zNPjTXPSu1/Kubv0aSYMc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-3ca6252f2b7687828c656d34c9bfd401"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>LO9B4LHmml5IZ1bS4adAhU9/LrT7kdGxcJh6064qbn0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-3ca6252f2b7687828c656d34c9bfd401">ooPpztJ6AM+SnycbiMA1pvKyHuJ/GcM5plPKhBLBSE0fFAk3JrL8bI09SCBU8RizSHrHsqlaERiBSLX604W/XY+S5qPIMCKXTlcAWq+HL4+3ZIAAJHw4ae+nfwPJ1OAF/qnnicOgw6U+Bvo7HCiVj5l8Syo5/KervdNNndMmdhwrBHgd+xydknmBKUOvk2p24elOmNxtjp/8Omc2ktle7OPDRRp1mK8JCnlFraUQfiQ/pHS2QEoSmrZi9J4OJdttqvlGCFRV6ELvydG75aGCJgYRUMBDGayb+HZLLEiybb733/1bPK6Aj+nnW6jk0SJf+ozm8O1mZ/8I00kvzSL3BA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDYzCCAkugAwIBAgIDB6GEMA0GCSqGSIb3DQEBCwUAMFIxFTATBgNVBAMMDFpaLVRMLXNpZ25lcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMB4XDTIxMDcxMzA5MDMxMFoXDTIzMDcxMzA5MDMxMFowUjEVMBMGA1UEAwwMWlotVEwtc2lnbmVyMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCrY21WvlQEIRdBVCd8gKiYtkHUefaPGqh5fF7AC5h4/hGD6Ud5lv0AI2ss1ReWRiq3bGy6m+is4t31CGZA8HuYnEnqfjMeeNBPuYxDZy3YnFseCvEN4jpSOdzyEAGmpeiiCpoHU6wFYCzYZxcoBsHb07uPWyKDc2TjnQ2joHF0oOWsONtx71En5hO+340R9JQQti/va2t0RTI73f44jqqzBIkp+iQrEzlLk0T5hYrfJ1C9Qrqkk+f8Aa+BysO7xCvx5aUJy1M17imrt+/OT9+rP86CNrZ2mO3Do5cXB0n6i8Ov7QWr8ufNVBdijf/JOMtacHvZ0mk2gjDjQ5xSP8XZAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIGwDAdBgNVHQ4EFgQUNo/0fxKw5PeekwGeiYeC4k+uYyMwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAI/2m5YEtk4stuampmtc+XCKuffg91YZFcM741CjNlK45cNPXtlWtJgkTC3jVi9KU7MRG55elykA7CS1oZJ6ksrBQD989RWkB0cXmK3n9aMVGhsgWSt28T1nEABrxSRDynCjG5MQjJTM3TcBw/cfWN10aS7mp6O+7gCWOWwF/b71s0QUYvyco7x01uC3HRuZw8DQhttx5MekTMW6kmiopfjusp7Z/hpiZ8cUB56F3hOaJtRjCQ2Z8oxe78S6MKu8c9fyMtLq1GWbK9+KnqS13CrVu6fikN9g1U8MpL/wCh+qp0KBtkUeL+1T8Pk7Szc89gScmRUMfOKItlwWZbwCXrA==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-3ca6252f2b7687828c656d34c9bfd401"><xades:SignedProperties Id="xades-id-3ca6252f2b7687828c656d34c9bfd401"><xades:SignedSignatureProperties><xades:SigningTime>2022-07-28T08:37:32Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>9ZMw9CQDbtDQ39FdeNestNBEJ2v7/hshZFV3WTNc/eaH4tV5VoCL81dinPSAzlgs/ZlLaaXI4rP1RgMdUIOV5Q==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ZZ-TL-signer</ds:X509IssuerName><ds:X509SerialNumber>500100</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#ref-enveloped-signature"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

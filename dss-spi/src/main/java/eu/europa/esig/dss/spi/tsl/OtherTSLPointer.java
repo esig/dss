@@ -38,15 +38,20 @@ public class OtherTSLPointer implements Serializable {
 	/** List of certificates */
 	private final List<CertificateToken> certificates;
 
+	/** Mutual Recognition Agreement block */
+	private final MRA mra;
+
 	/**
 	 * Default constructor
 	 *
 	 * @param location {@link String} url
 	 * @param certificates list of {@link CertificateToken}s
+	 * @param mra {@link MRA}
 	 */
-	public OtherTSLPointer(String location, List<CertificateToken> certificates) {
+	public OtherTSLPointer(String location, List<CertificateToken> certificates, MRA mra) {
 		this.location = location;
 		this.certificates = certificates;
+		this.mra = mra;
 	}
 
 	/**
@@ -65,6 +70,15 @@ public class OtherTSLPointer implements Serializable {
 	 */
 	public List<CertificateToken> getCertificates() {
 		return certificates;
+	}
+
+	/**
+	 * Gets a Mutual Recognition Agreement block
+	 *
+	 * @return {@link MRA}
+	 */
+	public MRA getMra() {
+		return mra;
 	}
 
 }

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
-import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void esig() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESIGN);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESIGN, strategy.getType());
@@ -64,7 +64,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void eseal() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESEAL);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESEAL, strategy.getType());
@@ -72,7 +72,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void wsa() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_WEB);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_WEB);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.WSA, strategy.getType());
@@ -81,7 +81,7 @@ public class TypeByCertificatePostEIDASTest {
 	// MUST be overruled
 	@Test
 	public void multiple() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESIGN, QCType.QCT_ESEAL);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN, QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.UNKNOWN, strategy.getType());

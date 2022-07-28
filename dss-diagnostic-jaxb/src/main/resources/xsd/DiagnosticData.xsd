@@ -489,41 +489,63 @@
 
 	<xs:complexType name="QcStatements">
 		<xs:sequence>
-			<xs:element name="QcCompliance" minOccurs="0">
-				<xs:complexType>
-					<xs:attribute name="present" type="xs:boolean" use="required" />
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="QcCompliance" type="QcCompliance" minOccurs="0" />
 			<xs:element name="QcEuLimitValue" type="QcEuLimitValue" minOccurs="0" />
 			<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
-			<xs:element name="QcSSCD" minOccurs="0">
-				<xs:complexType>
-					<xs:attribute name="present" type="xs:boolean" use="required" />
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="QcEuPDS" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="PdsLocation" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="QcTypes" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="QcType" type="OID" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			<xs:element name="QcCClegislation" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
+			<xs:element name="QcEuPDS" type="QcEuPDS" minOccurs="0" />
+			<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
+			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
 			<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
 			<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
+			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
+
+			<xs:element name="MRACertificateMapping" type="MRACertificateMapping" minOccurs="0" />
+
+		</xs:sequence>
+		<xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="MRACertificateMapping">
+		<xs:sequence>
+			<xs:element name="EnactedTrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryQcStatementsMapping" /> <!-- Values before MRA -->
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="OriginalThirdCountryQcStatementsMapping">
+		<xs:sequence>
+			<xs:element name="QcCompliance" type="QcCompliance" minOccurs="0" />
+			<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
+			<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
+			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
+			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="QcCompliance">
+		<xs:attribute name="present" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="QcSSCD">
+		<xs:attribute name="present" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="QcEuPDS">
+		<xs:sequence>
+			<xs:element name="PdsLocation" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="QcTypes">
+		<xs:sequence>
+			<xs:element name="QcType" type="OID" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="QcCClegislation">
+		<xs:sequence>
+			<xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -533,6 +555,12 @@
 				<xs:attribute name="Description" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="OIDs">
+		<xs:sequence>
+			<xs:element name="OID" type="OID" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="PSD2QcInfo">
@@ -549,18 +577,18 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="RoleOfPSP">
+		<xs:sequence>
+			<xs:element name="oid" type="OID" minOccurs="0" />
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<xs:complexType name="QcEuLimitValue">
 		<xs:sequence>
 			<xs:element name="currency" type="xs:string" />
 			<xs:element name="amount" type="xs:int" />
 			<xs:element name="exponent" type="xs:int" />
-		</xs:sequence>
-	</xs:complexType>
-	
-	<xs:complexType name="RoleOfPSP">
-		<xs:sequence>
-			<xs:element name="oid" type="OID" minOccurs="0" />
-			<xs:element name="name" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -1201,7 +1229,8 @@
 	<xs:complexType name="TrustedList">
 		<xs:sequence>
 			<xs:element name="CountryCode" type="xs:string" minOccurs="0" />
-			<xs:element name="Url" type="xs:string" />	
+			<xs:element name="Url" type="xs:string" />
+			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
 			<xs:element name="SequenceNumber" type="xs:int" minOccurs="0" />
 			<xs:element name="Version" type="xs:int" minOccurs="0" />
 			<xs:element name="LastLoading" type="xs:dateTime" minOccurs="0" />
@@ -1211,6 +1240,8 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="LOTL" type="xs:boolean" default="false" use="optional" />
+		<xs:attribute name="parent" type="xs:IDREF" use="optional" />
+		<xs:attribute name="mra" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="TrustedServiceProvider">
@@ -1262,22 +1293,9 @@
 			<xs:element name="Status" type="xs:string" />
 			<xs:element name="StartDate" type="xs:dateTime" />
 			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
-			
-			<xs:element name="CapturedQualifiers" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
-			
-			<xs:element name="AdditionalServiceInfoUris" minOccurs="0">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="AdditionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+
+			<xs:element name="CapturedQualifiers" type="CapturedQualifiers" minOccurs="0" />
+			<xs:element name="AdditionalServiceInfoUris" type="AdditionalServiceInfoUris" minOccurs="0" />
 			
 			<xs:element name="ServiceSupplyPoints" minOccurs="0">
 				<xs:complexType>
@@ -1288,8 +1306,10 @@
 			</xs:element>
 			
 			<xs:element name="ExpiredCertsRevocationInfo" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="MRATrustServiceMapping" type="MRATrustServiceMapping" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="ServiceDigitalIdentifier" type="xs:IDREF" use="required" />
+		<xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
 	<xs:complexType name="DigestAlgoAndValues">
@@ -1304,6 +1324,35 @@
 				<xs:attribute name="lang" type="xs:string" use="required" />
 			</xs:extension>
 		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="CapturedQualifiers">
+		<xs:sequence>
+			<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="AdditionalServiceInfoUris">
+		<xs:sequence>
+			<xs:element name="AdditionalServiceInfoUri" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="MRATrustServiceMapping">
+		<xs:sequence>
+			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
+			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="OriginalThirdCountryTrustedServiceMapping">
+		<xs:sequence>
+			<xs:element name="ServiceType" type="xs:string" minOccurs="0" />
+			<xs:element name="Status" type="xs:string" minOccurs="0" />
+			<xs:element name="CapturedQualifiers" type="CapturedQualifiers" minOccurs="0" />
+			<xs:element name="AdditionalServiceInfoUris" type="AdditionalServiceInfoUris" minOccurs="0" />
+		</xs:sequence>
 	</xs:complexType>
 	
 </xs:schema>

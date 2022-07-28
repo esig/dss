@@ -58,7 +58,7 @@ public class CertificateQcTypeCheck extends AbstractMultiValuesCheckItem<XmlSubX
     @Override
     protected boolean process() {
         List<String> qcTypes = new ArrayList<>();
-        for (QCType qcType : certificate.getQCTypes()) {
+        for (QCType qcType : certificate.getQcTypes()) {
             // allow descriptions and oids
             qcTypes.add(qcType.getDescription());
             qcTypes.add(qcType.getOid());

@@ -249,8 +249,12 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected AbstractKeyStoreTokenConnection getToken() {
-		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getSigningAlias() + ".p12"), KEYSTORE_TYPE,
+		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getKeystoreName()), KEYSTORE_TYPE,
 				new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD.toCharArray()));
+	}
+
+	protected String getKeystoreName() {
+		return DSSUtils.encodeURI(getSigningAlias() + ".p12");
 	}
 
 	private byte[] getKeystoreContent(String keystoreName) {
@@ -372,14 +376,22 @@ public abstract class PKIFactoryAccess {
 	
 	protected CertificateToken getCertificate(String certificateId) {
 		DataLoader dataLoader = getFileCacheDataLoader();
-		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + certificateId + CERT_EXTENSION;
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + getCertificateName(certificateId);
 		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
+
+	protected String getCertificateName(String certificateId) {
+		return DSSUtils.encodeURI(certificateId + CERT_EXTENSION);
 	}
 	
 	protected CertificateToken getCertificateByPrimaryKey(String issuerName, long serialNumber) {
 		DataLoader dataLoader = getFileCacheDataLoader();
-		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + issuerName + "/" + serialNumber + CERT_EXTENSION;
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + getCertificateNameByPrimaryKey(issuerName, serialNumber);
 		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
+
+	protected String getCertificateNameByPrimaryKey(String issuerName, long serialNumber) {
+		return DSSUtils.encodeURI(issuerName + "/" + serialNumber + CERT_EXTENSION);
 	}
 
 	// Allows to configure a proxy

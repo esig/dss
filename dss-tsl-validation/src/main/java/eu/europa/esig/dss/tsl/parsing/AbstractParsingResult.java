@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
 import java.util.Date;
@@ -29,6 +30,9 @@ import java.util.List;
  * Abstract parsing result
  */
 public abstract class AbstractParsingResult implements CachedResult {
+
+	/** The LOTL/TL TSLType */
+	private TSLType tslType;
 
 	/** The LOTL/TL sequence number */
 	private int sequenceNumber;
@@ -47,6 +51,24 @@ public abstract class AbstractParsingResult implements CachedResult {
 
 	/** The distribution points urls */
 	private List<String> distributionPoints;
+
+	/**
+	 * Gets the TSLType
+	 *
+	 * @return {@link TSLType}
+	 */
+	public TSLType getTSLType() {
+		return tslType;
+	}
+
+	/**
+	 * Sets the TSLType
+	 *
+	 * @param tslType {@link String}
+	 */
+	public void setTSLType(TSLType tslType) {
+		this.tslType = tslType;
+	}
 
 	/**
 	 * Gets the sequence number

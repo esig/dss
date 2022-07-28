@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.GrantedServiceFilter;
 
 import java.util.List;

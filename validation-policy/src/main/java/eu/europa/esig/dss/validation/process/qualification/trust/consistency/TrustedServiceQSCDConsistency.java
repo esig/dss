@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 
 import java.util.List;
 

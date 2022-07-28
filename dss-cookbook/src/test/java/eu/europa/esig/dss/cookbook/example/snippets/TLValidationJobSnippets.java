@@ -47,15 +47,12 @@ import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -347,13 +344,12 @@ public class TLValidationJobSnippets {
 		LOTLSource lotlSource = new LOTLSource();
 		// the predicates filter TSL pointers to XML documents with
 		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
 		// tag::predicate-country[]
 		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
-		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE","RO"))
-				.and(new EULOTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
 		// end::predicate-country[]
 		// end::predicates[]
 	}
@@ -504,14 +500,14 @@ public class TLValidationJobSnippets {
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : European configuration
 		// Hint : Use TLPredicateFactory for a list of default configurations
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
 		// Optional : the predicate which allows to find and/or filter the TL
 		// definitions in the LOTL
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : all found trusted lists in the European LOTL
 		// Hint : Use TLPredicateFactory for a list of default configurations
-		lotlSource.setTlPredicate(new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLPredicate());
 
 		// Optional : a predicate which allows to find back the signing certificates for
 		// the current LOTL

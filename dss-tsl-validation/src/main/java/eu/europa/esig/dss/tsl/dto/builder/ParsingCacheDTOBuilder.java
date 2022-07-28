@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto.builder;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
@@ -54,6 +55,7 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 	public ParsingCacheDTO build() {
 		ParsingCacheDTO parsingCacheDTO = new ParsingCacheDTO(super.build());
 		if (isResultExist()) {
+			parsingCacheDTO.setTSLType(getTSLType());
 			parsingCacheDTO.setSequenceNumber(getSequenceNumber());
 			parsingCacheDTO.setVersion(getVersion());
 			parsingCacheDTO.setTerritory(getTerritory());
@@ -74,6 +76,10 @@ public class ParsingCacheDTOBuilder extends AbstractCacheDTOBuilder<AbstractPars
 	
 	private boolean isLOTL() {
 		return getResult() instanceof LOTLParsingResult;
+	}
+
+	private TSLType getTSLType() {
+		return getResult().getTSLType();
 	}
 	
 	private Integer getSequenceNumber() {

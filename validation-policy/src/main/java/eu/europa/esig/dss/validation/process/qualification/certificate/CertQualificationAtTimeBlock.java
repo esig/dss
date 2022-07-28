@@ -43,6 +43,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.Is
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsNoQualificationConflictDetected;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QSCDCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QualifiedCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustedServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ServiceConsistencyCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.TrustedCertificateMatchTrustedServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd.QSCDStrategy;
@@ -148,15 +149,33 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	@Override
 	protected void initChain() {
 
+		ChainItem<XmlValidationCertificateQualification> item = null;
+
 		// 1. Filter by date
 		TrustedServiceFilter filterByDate = TrustedServicesFilterFactory.createFilterByDate(date);
 		List<TrustedServiceWrapper> caqcServicesAtTime = filterByDate.filter(caqcServices);
+
+		// Execute only for Trusted Lists with defined MRA
+		if (isMRAEnactedForTrustedList(caqcServices)) {
+			TrustedServiceFilter filterByMRAEnacted = TrustedServicesFilterFactory.createMRAEnactedFilter();
+			caqcServicesAtTime = filterByMRAEnacted.filter(caqcServicesAtTime);
+
+			// verified against certificate's issuance time, as the MRA equivalence is applied in DD builder
+			filterByMRAEnacted = TrustedServicesFilterFactory.createFilterByMRAEquivalenceStartingDate(signingCertificate.getNotBefore());
+			caqcServicesAtTime = filterByMRAEnacted.filter(caqcServicesAtTime);
+
+			item = firstItem = hasMraEnactedTrustedService(caqcServicesAtTime);
+		}
 
 		// 2. Filter by cert type (current type or overruled)
 		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory.createFilterByCertificateType(signingCertificate);
 		caqcServicesAtTime = filterByCertificateType.filter(caqcServicesAtTime);
 
-		ChainItem<XmlValidationCertificateQualification> item = firstItem = hasCaQc(caqcServicesAtTime);
+		if (item == null) {
+			item = firstItem = hasCaQc(caqcServicesAtTime);
+		} else {
+			item = item.setNextItem(hasCaQc(caqcServicesAtTime));
+		}
 
 		// 3. Run consistency checks to get warnings
 		for (TrustedServiceWrapper trustedService : caqcServicesAtTime) {
@@ -250,6 +269,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		result.setDateTime(date);
 	}
 
+	private ChainItem<XmlValidationCertificateQualification> hasMraEnactedTrustedService(List<TrustedServiceWrapper> caqcServicesAtTime) {
+		return new RelatedToMraEnactedTrustedServiceCheck<>(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
+	}
+
 	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustedServiceWrapper> caqcServicesAtTime) {
 		return new CaQcCheck(i18nProvider, result, caqcServicesAtTime, getFailLevelConstraint());
 	}
@@ -299,6 +322,15 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	private ChainItem<XmlValidationCertificateQualification> isQscd(QSCDStatus qscdStatus) {
 		return new QSCDCheck(i18nProvider, result, qscdStatus, validationTime, getWarnLevelConstraint());
+	}
+
+	private boolean isMRAEnactedForTrustedList(List<TrustedServiceWrapper> trustedServices) {
+		for (TrustedServiceWrapper trustedService : trustedServices) {
+			if (Utils.isTrue(trustedService.getTrustedList().isMra())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

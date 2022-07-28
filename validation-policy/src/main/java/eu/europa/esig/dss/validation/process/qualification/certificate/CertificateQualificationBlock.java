@@ -146,12 +146,12 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	
 				filter = TrustedServicesFilterFactory.createFilterByCaQc();
 				List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
-	
+
 				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 						signingCertificate, caqcServices);
 				result.getValidationCertificateQualification().add(certQualAtIssuanceBlock.execute());
-	
-				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.VALIDATION_TIME, 
+
+				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.VALIDATION_TIME,
 						validationTime, signingCertificate, caqcServices);
 				result.getValidationCertificateQualification().add(certQualAtSigningTimeBlock.execute());
 			

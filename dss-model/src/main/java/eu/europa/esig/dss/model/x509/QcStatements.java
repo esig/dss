@@ -23,6 +23,7 @@ package eu.europa.esig.dss.model.x509;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,6 +87,11 @@ public class QcStatements {
      * id-etsi-psd2-qcStatement OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4) etsi(0) psd2(19495) qcstatement(2) }
      */
     private PSD2QcType psd2QcType;
+
+    /**
+     * This list contains OIDs defined in QcStatements, which are not supported by the current implementation
+     */
+    private List<String> otherOids = new ArrayList<>();
 
     /**
      * Gets if the certificate is qc-compliant
@@ -247,6 +253,24 @@ public class QcStatements {
      */
     public void setPsd2QcType(PSD2QcType psd2QcType) {
         this.psd2QcType = psd2QcType;
+    }
+
+    /**
+     * This method returns a list of found OIDs not supported by the current implementation
+     *
+     * @return a list of {@link String}
+     */
+    public List<String> getOtherOids() {
+        return otherOids;
+    }
+
+    /**
+     * Adds a found OID not supported by the implementation
+     *
+     * @param oid {@link String}
+     */
+    public void addOtherOid(String oid) {
+        this.otherOids.add(oid);
     }
 
 }

@@ -56,24 +56,17 @@ public class TrustProperties implements Serializable {
 	 */
 	public TrustProperties(Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this.lotlId = null;
-		this.tlId = tlId;
-		this.trustServiceProvider = trustServiceProvider;
-		this.trustService = trustService;
+		this(null, tlId, trustServiceProvider, trustService);
 	}
 
 	/**
 	 * Constructor for extracted information from trusted list which is linked to a
-	 * LOTL
+	 * LOTL with MRA
 	 * 
-	 * @param lotlId
-	 *                             the LOTL identifier
-	 * @param tlId
-	 *                             the TL identifier
-	 * @param trustServiceProvider
-	 *                             the trust service provider information
-	 * @param trustService
-	 *                             the current trust service
+	 * @param lotlId               the LOTL identifier
+	 * @param tlId                 the TL identifier
+	 * @param trustServiceProvider the trust service provider information
+	 * @param trustService         the current trust service
 	 */
 	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {

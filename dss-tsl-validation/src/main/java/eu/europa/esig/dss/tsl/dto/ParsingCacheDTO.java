@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TrustService;
@@ -35,6 +36,9 @@ import java.util.List;
 public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoRecord {
 	
 	private static final long serialVersionUID = 5464908480606825440L;
+
+	/** The LOTL/TL TSLType */
+	private TSLType tslType;
 
 	/** The LOTL/TL sequence number */
 	private Integer sequenceNumber;
@@ -81,6 +85,20 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	 */
 	public ParsingCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
+	}
+
+	@Override
+	public TSLType getTSLType() {
+		return tslType;
+	}
+
+	/**
+	 * Sets the TSLType
+	 *
+	 * @param tslType {@link TSLType}
+	 */
+	public void setTSLType(TSLType tslType) {
+		this.tslType = tslType;
 	}
 
 	@Override

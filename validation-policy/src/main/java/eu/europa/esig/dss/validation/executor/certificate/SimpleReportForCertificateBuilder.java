@@ -25,6 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
@@ -87,7 +88,7 @@ public class SimpleReportForCertificateBuilder {
 
 		CertificateWrapper certificate = diagnosticData.getUsedCertificateById(certificateId);
 		XmlChainItem firstChainItem = getChainItem(certificate);
-		addQualifications(firstChainItem);
+		addQualifications(firstChainItem, certificate);
 		chain.add(firstChainItem);
 
 		List<CertificateWrapper> certificateChain = certificate.getCertificateChain();
@@ -226,9 +227,19 @@ public class SimpleReportForCertificateBuilder {
 		return listUrls;
 	}
 
-	private void addQualifications(XmlChainItem firstChainItem) {
+	private void addQualifications(XmlChainItem firstChainItem, CertificateWrapper certificate) {
 		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance(certificateId));
 		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation(certificateId));
+
+		Boolean enactedMRA = null;
+		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();
+		for (TrustedServiceWrapper trustedServiceWrapper : trustedServices) {
+			if (trustedServiceWrapper.isEnactedMRA()) {
+				enactedMRA = true;
+				break;
+			}
+		}
+		firstChainItem.setEnactedMRA(enactedMRA);
 	}
 
 }
