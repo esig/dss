@@ -87,6 +87,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
@@ -9729,6 +9730,128 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 			assertTrue(mraTrustedServiceCheckFound);
 		}
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void mraQeSigArt14Test() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/mra/diag-data-mra-qesig.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTrustedList xmlTrustedList = xmlDiagnosticData.getTrustedLists().get(1);
+		xmlTrustedList.setTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists");
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V1)));
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
+		String tlId = trustedServices.get(0).getTrustedList().getId();
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
+		assertNotNull(tlAnalysis);
+
+		boolean mraFound = false;
+		for (XmlConstraint constraint : tlAnalysis.getConstraint()) {
+			if (MessageTag.QUAL_TL_IMRA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.INFORMATION, constraint.getStatus());
+				assertEquals(MessageTag.QUAL_TL_IMRA_ANS_V1.getId(), constraint.getInfo().getKey());
+				mraFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(mraFound);
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+		assertEquals(SignatureQualification.QESIG, validationSignatureQualification.getSignatureQualification());
+
+		assertEquals(Indication.PASSED, validationSignatureQualification.getConclusion().getIndication());
+		assertTrue(checkMessageValuePresence(convert(validationSignatureQualification.getConclusion().getInfos()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V1)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void mraQeSigArt27Test() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/mra/diag-data-mra-qesig.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlTrustedList xmlTrustedList = xmlDiagnosticData.getTrustedLists().get(1);
+		xmlTrustedList.setTSLType("http://ec.europa.eu/tools/lotl/mra/ades-lotl-tsl-type");
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V2)));
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		CertificateWrapper signingCertificate = signature.getSigningCertificate();
+		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
+		String tlId = trustedServices.get(0).getTrustedList().getId();
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
+		assertNotNull(tlAnalysis);
+
+		boolean mraFound = false;
+		for (XmlConstraint constraint : tlAnalysis.getConstraint()) {
+			if (MessageTag.QUAL_TL_IMRA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.INFORMATION, constraint.getStatus());
+				assertEquals(MessageTag.QUAL_TL_IMRA_ANS_V2.getId(), constraint.getInfo().getKey());
+				mraFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(mraFound);
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+		assertEquals(SignatureQualification.QESIG, validationSignatureQualification.getSignatureQualification());
+
+		assertEquals(Indication.PASSED, validationSignatureQualification.getConclusion().getIndication());
+		assertTrue(checkMessageValuePresence(convert(validationSignatureQualification.getConclusion().getInfos()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V2)));
 
 		checkReports(reports);
 	}

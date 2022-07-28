@@ -284,6 +284,12 @@
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken" />
         </jaxb:property>
     </jaxb:bindings>
+
+    <jaxb:bindings node="//xs:complexType[@name='TrustedList']//xs:attribute[@name='parent']">
+	    <jaxb:property>
+		    <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
+	    </jaxb:property>
+    </jaxb:bindings>
     
     <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:attribute[@name='ServiceDigitalIdentifier']">
         <jaxb:property>

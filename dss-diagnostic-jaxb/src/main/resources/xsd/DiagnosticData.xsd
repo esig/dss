@@ -1230,6 +1230,7 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="LOTL" type="xs:boolean" default="false" use="optional" />
+		<xs:attribute name="parent" type="xs:IDREF" use="optional" />
 		<xs:attribute name="mra" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	

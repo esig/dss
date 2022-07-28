@@ -4,6 +4,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TSLTypeEnum;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -44,6 +45,16 @@ public class TLMRACheck extends ChainItem<XmlTLAnalysis> {
 
     @Override
     protected MessageTag getErrorMessageTag() {
+        XmlTrustedList parentTL = currentTL.getParent();
+        if (parentTL != null) {
+            String tslType = parentTL.getTSLType();
+            if (TSLTypeEnum.EUlistofthelists.getUri().equals(tslType)) {
+                return MessageTag.QUAL_TL_IMRA_ANS_V1;
+            } else if (TSLTypeEnum.AdESlistofthelists.getUri().equals(tslType)) {
+                return MessageTag.QUAL_TL_IMRA_ANS_V2;
+            }
+        }
+        // default
         return MessageTag.QUAL_TL_IMRA_ANS;
     }
 

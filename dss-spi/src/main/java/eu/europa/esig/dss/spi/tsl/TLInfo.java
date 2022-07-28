@@ -36,6 +36,9 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 
 	/** Address of the source */
 	private final String url;
+
+	/** The parent LOTL/TL referencing the current Trusted List */
+	private final TLInfo parent;
 	
 	/** The download result record */
 	private final DownloadInfoRecord downloadCacheInfo;
@@ -64,22 +67,38 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 				  final ValidationInfoRecord validationCacheInfo, final String url) {
 		this(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url, null);
 	}
-	
+
 	/**
-	 * The constructor with Mutual Recognition Agreement
+	 * The default constructor with parent TLInfo
 	 *
 	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
 	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
 	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
 	 * @param url {@link String} address used to extract the entry
+	 * @param parent {@link TLInfo} referencing the current Trusted List
+	 */
+	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
+				  final ValidationInfoRecord validationCacheInfo, final String url, final TLInfo parent) {
+		this(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url, parent, null);
+	}
+	
+	/**
+	 * The constructor with parent LOTLInfo and Mutual Recognition Agreement
+	 *
+	 * @param downloadCacheInfo {@link DownloadInfoRecord} a download cache result
+	 * @param parsingCacheInfo {@link ParsingInfoRecord} a parsing cache result
+	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
+	 * @param url {@link String} address used to extract the entry
+	 * @param parent {@link TLInfo} referencing the current Trusted List
 	 * @param mra {@link MRA} Mutual Recognition Agreement
 	 */
 	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
-			final ValidationInfoRecord validationCacheInfo, final String url, final MRA mra) {
+			final ValidationInfoRecord validationCacheInfo, final String url, final TLInfo parent, final MRA mra) {
 		this.downloadCacheInfo = downloadCacheInfo;
 		this.parsingCacheInfo = parsingCacheInfo;
 		this.validationCacheInfo = validationCacheInfo;
 		this.url = url;
+		this.parent = parent;
 		this.mra = mra;
 	}
 	
@@ -119,6 +138,15 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 		return url;
 	}
 	
+	/**
+	 * Returns the {@code TLInfo} referencing the current Trusted List
+	 *
+	 * @return {@link TLInfo}
+	 */
+	public TLInfo getParent() {
+		return parent;
+	}
+
 	/**
 	 * Gets the MRA (Mutual Recognition Agreement) element when applicable
 	 *

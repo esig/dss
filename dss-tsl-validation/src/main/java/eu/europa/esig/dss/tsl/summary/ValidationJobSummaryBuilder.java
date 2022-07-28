@@ -111,9 +111,9 @@ public class ValidationJobSummaryBuilder {
 					TLInfo tlInfo;
 					if (lotlSource.isMraSupport()) {
 						MRA mra = getMRA(lotlParsingResult.getTlOtherPointers(), tlSource.getUrl());
-						tlInfo = buildTLInfo(tlSource, mra);
+						tlInfo = buildTLInfo(tlSource, lotlInfo, mra);
 					} else {
-						tlInfo = buildTLInfo(tlSource);
+						tlInfo = buildTLInfo(tlSource, lotlInfo);
 					}
 					tlInfos.add(tlInfo);
 				}
@@ -167,10 +167,16 @@ public class ValidationJobSummaryBuilder {
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl());
 	}
 
-	private TLInfo buildTLInfo(TLSource tlSource, MRA mra) {
+	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo) {
 		CacheKey cacheKey = tlSource.getCacheKey();
 		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
-				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), mra);
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo);
+	}
+
+	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo, MRA mra) {
+		CacheKey cacheKey = tlSource.getCacheKey();
+		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo, mra);
 	}
 
 	private PivotInfo buildPivotInfo(LOTLSource pivotSource, Map<CertificateToken, CertificatePivotStatus> certificateChangesMap, 

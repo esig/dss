@@ -500,6 +500,9 @@ public abstract class DiagnosticDataBuilder {
 			}
 			result.setId(identifierProvider.getIdAsString(tlInfo));
 			result.setUrl(tlInfo.getUrl());
+			if (tlInfo.getParent() != null) {
+				result.setParent(getXmlTrustedList(tlInfo.getParent()));
+			}
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
 			if (parsingCacheInfo != null) {
 				if (parsingCacheInfo.getTSLType() != null) {

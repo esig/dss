@@ -573,7 +573,7 @@
         </SignerData>
     </OriginalDocuments>
     <TrustedLists>
-        <TrustedList Id="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" mra="true">
+        <TrustedList Id="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" parent="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55" mra="true">
             <CountryCode>ZZ</CountryCode>
             <Url>https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_tl_zz.xml</Url>
             <SequenceNumber>4</SequenceNumber>
