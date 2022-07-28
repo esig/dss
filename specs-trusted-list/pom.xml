@@ -62,7 +62,7 @@
 <!-- 					<schemaInclude>ts_119612v020201_201601xsd.xsd</schemaInclude> -->
 <!-- 					<schemaInclude>ts_119612v020101_sie_xsd.xsd</schemaInclude>-->
 						<schemaInclude>ts_119612v020101_additionaltypes_xsd.xsd</schemaInclude>
-						<schemaInclude>mra/mra_element.xsd</schemaInclude>
+						<schemaInclude>mra/mra_schema_v2.xsd</schemaInclude>
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>
 					<bindingIncludes>

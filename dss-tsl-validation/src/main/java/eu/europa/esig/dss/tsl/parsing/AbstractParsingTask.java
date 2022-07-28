@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.tsl.TSLType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;

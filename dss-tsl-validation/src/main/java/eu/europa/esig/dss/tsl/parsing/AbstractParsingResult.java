@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import eu.europa.esig.dss.spi.tsl.TSLType;
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
 
 import java.util.Date;

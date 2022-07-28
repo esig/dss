@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.enumerations.TSLType;
+
 import java.util.Date;
 import java.util.List;
 

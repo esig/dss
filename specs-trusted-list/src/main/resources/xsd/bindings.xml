@@ -9,7 +9,7 @@
 		<jaxb:serializable uid="1" />
 	</jaxb:globalBindings>
 
-	<jaxb:bindings schemaLocation="mra/mra_element.xsd" node="/xs:schema">
+	<jaxb:bindings schemaLocation="mra/mra_schema_v2.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.trustedlist.jaxb.mra" />
 		</jaxb:schemaBindings>

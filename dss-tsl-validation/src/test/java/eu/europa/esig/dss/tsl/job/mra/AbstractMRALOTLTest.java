@@ -72,10 +72,10 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     private static final String TRUSTED_ROOT_CA_NAME = "Test-QTSP-1-RootCA-from-ZZ";
 
     private static final DSSDocument ORIGINAL_LOTL = new FileDocument("src/test/resources/mra-lotl.xml");
-    private static final DSSDocument ORIGINAL_TL = new FileDocument("src/test/resources/mra-tl-zz.xml");
+    private static final DSSDocument ORIGINAL_TL = new FileDocument("src/test/resources/mra-zz-tl.xml");
 
     private static final DSSNamespace TL_NAMESPACE = new DSSNamespace("http://uri.etsi.org/02231/v2#", "tl");
-    private static final DSSNamespace MRA_NAMESPACE = new DSSNamespace("http://mra.europa.eu/v1#", "mra");
+    private static final DSSNamespace MRA_NAMESPACE = new DSSNamespace("http://ec.europa.eu/tools/lotl/mra/schema/v2#", "mra");
     private static final DSSNamespace CONDITION_NAMESPACE = new DSSNamespace("http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#", "ns5");
 
     private static final DSSDocument DOC_TO_SIGN = new InMemoryDocument("Hello World".getBytes());
@@ -641,7 +641,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         lotlKeystore.addCertificate(getCertificate(SIGNER_LOTL_NAME));
         lotlSource.setCertificateSource(lotlKeystore);
 
-        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://example/TSLType/CCgeneric"));
+        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist"));
 
         tlValidationJob.setListOfTrustedListSources(lotlSource);
 

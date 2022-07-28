@@ -20,7 +20,7 @@ public class MRAUtils extends XSDAbstractUtils {
     public static final ObjectFactory OBJECT_FACTORY = TrustedListUtils.OBJECT_FACTORY;
 
     /** The MRA XSD schema location */
-    public static final String MRA_SCHEMA_LOCATION = "/xsd/mra/mra_element.xsd";
+    public static final String MRA_SCHEMA_LOCATION = "/xsd/mra/mra_schema_v2.xsd";
 
     /** Singleton */
     private static MRAUtils singleton;

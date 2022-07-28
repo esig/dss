@@ -2,9 +2,9 @@ package eu.europa.esig.dss.enumerations;
 
 public enum MRAStatus implements UriBasedEnum {
 
-	ENACTED("http://ec.europa.eu/trust-services/mutualrecognitionagreement/enacted"),
+	ENACTED("http://ec.europa.eu/tools/lotl/mra/enacted"),
 
-	REPEALED("http://ec.europa.eu/trust-services/mutualrecognitionagreement/repealed");
+	REPEALED("http://ec.europa.eu/tools/lotl/mra/repealed");
 
 	private final String uri;
 

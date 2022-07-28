@@ -1,13 +1,14 @@
 package eu.europa.esig.dss.tsl.job.mra;
 
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
 public class MRAWithRepealedTrustServiceEquivalenceStatusTest extends AbstractMRALOTLTest {
 
     @Override
     protected String getTrustServiceEquivalenceStatus() {
-        return "http://ec.europa.eu/trust-services/mutualrecognitionagreement/repealed";
+        return MRAStatus.REPEALED.getUri();
     }
 
     @Override

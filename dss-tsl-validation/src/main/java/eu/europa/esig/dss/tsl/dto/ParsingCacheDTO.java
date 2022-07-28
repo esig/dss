@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.TSLType;
 import eu.europa.esig.dss.spi.tsl.TrustService;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.utils.Utils;

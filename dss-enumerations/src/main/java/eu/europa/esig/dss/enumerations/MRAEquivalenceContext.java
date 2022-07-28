@@ -2,11 +2,11 @@ package eu.europa.esig.dss.enumerations;
 
 public enum MRAEquivalenceContext implements UriBasedEnum {
 
-	QC_COMPLIANCE("http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcCompliance"),
+	QC_COMPLIANCE("http://ec.europa.eu/tools/lotl/mra/QcCompliance"),
 
-	QC_TYPE("http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcType"),
+	QC_TYPE("http://ec.europa.eu/tools/lotl/mra/QcType"),
 
-	QC_QSCD("http://ec.europa.eu/trust-services/mutualrecognitionagreement/QcQSCD");
+	QC_QSCD("http://ec.europa.eu/tools/lotl/mra/QcQSCD");
 
 	private final String uri;
 
