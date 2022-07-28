@@ -351,7 +351,7 @@ public class XmlTrustedServiceProviderBuilder {
         CertificateWrapper certificateWrapper = new CertificateWrapper(xmlCertificate);
         boolean qcCompliance = certificateWrapper.isQcCompliance();
         List<QCType> qcTypes = certificateWrapper.getQcTypes();
-        for (ServiceTypeASi serviceTypeASi : typeAsiEquivalenceMap.keySet()) {
+        for (ServiceTypeASi serviceTypeASi : typeAsiEquivalenceMap.values()) {
             if (serviceTypeASi.getAsi() == null) {
                 // no aSI -> accept all
                 return true;

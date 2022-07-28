@@ -27,7 +27,7 @@ public class MRAWithCustomTrustServiceTSLTypeListPointingPartyAdditionalServiceI
 
     @Override
     protected String getMRAEnactedTrustServiceLegalIdentifier() {
-        return "QCForESig";
+        return null;
     }
 
 }
