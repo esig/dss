@@ -10,6 +10,8 @@ import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
  */
 public class CommonCommitmentType implements CommitmentType {
 
+    private static final long serialVersionUID = 8102201740643836228L;
+
     /**
      * Defines URI of the CommitmentType (used in XAdES, JAdES).
      * Use : CONDITIONAL (should be present in XAdES, JAdES).

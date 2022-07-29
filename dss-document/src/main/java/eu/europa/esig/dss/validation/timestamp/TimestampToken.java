@@ -559,7 +559,7 @@ public class TimestampToken extends Token {
 	 *
 	 * @return true if the message imprint data is intact, false otherwise
 	 */
-	public Boolean isMessageImprintDataIntact() {
+	public boolean isMessageImprintDataIntact() {
 		if (!processed) {
 			throw new IllegalStateException("Invoke matchData(byte[] data) method before!");
 		}

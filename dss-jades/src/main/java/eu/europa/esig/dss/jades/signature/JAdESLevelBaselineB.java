@@ -432,7 +432,7 @@ public class JAdESLevelBaselineB {
 
 						} catch (JoseException e) {
 							throw new IllegalArgumentException(String.format(
-									"Unable to parse JSON Commitment Type Qualifier : %s", e.getMessage(), e));
+									"Unable to parse JSON Commitment Type Qualifier : %s", e.getMessage()), e);
 						}
 
 					} else {

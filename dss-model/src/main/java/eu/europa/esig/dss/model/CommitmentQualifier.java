@@ -1,10 +1,14 @@
 package eu.europa.esig.dss.model;
 
+import java.io.Serializable;
+
 /**
  * This class is used to define a CommitmentTypeQualifier to be incorporated within a signature
  *
  */
-public class CommitmentQualifier {
+public class CommitmentQualifier implements Serializable {
+
+    private static final long serialVersionUID = -1291715111587521496L;
 
     /** Defines unique commitment qualifier identifier (CAdES/PAdES only) */
     private String oid;
