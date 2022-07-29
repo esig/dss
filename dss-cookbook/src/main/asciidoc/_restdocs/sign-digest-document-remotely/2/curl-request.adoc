@@ -46,7 +46,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1654177805900,
+      "signingDate" : 1659102779503,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

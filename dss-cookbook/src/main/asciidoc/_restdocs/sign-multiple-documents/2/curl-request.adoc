@@ -44,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/signDoc
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1654177802793,
+      "signingDate" : 1659102776808,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -63,7 +63,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/signDoc
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "HUocloJGSnG4q8NyGzgly4POAE7Rp1OlYHdx2ZcmEMGNN9o2ZXBJ2dRD5e8ucCX0/THNmZUvY1wXzg+/Up2OPFWBjp1qPskHBILc/3BseeWpUJEojiJpGf6KuzLhsTeDi5ChGAdWyH+z8K521IQPbrdX5L51+i9C7CMkqk5FbquRBe6r7AIJXeXie0ntcAghzt3A2LnQA+MK/HwvYRH38nLBxiX1amqdQ3wuqRBe51j31Vk7CNT1F4j4ERBUzq1u9T0S1ZkADOSfFGZckgt8t+dMkJvNYFG87ns8Z2lIBxqK3nwHBpTJtOVymvUZ9PRE4me2pv1Tw3bEpDqhgOvXKA=="
+    "value" : "iZWjY2dA7emWz70MwAYy6pMxBWvL7GRil7/UIpFzTDxlWdwVyJW/2D199Rwehgmu4SwkfXUI8IUPJzt2+fP20goJ3KudJrIk4GuKRInmBX4C7Wa3gQ8DUtvgdC88Q8wFLZEvsKZgaC1t+m/UFxctYC3lAL87NpxZtUqZwLqadzC/cPu70DUUU84bcbW6wdMr28AobHCFGxYDUN+ARkDNQM3L9roqQyqO9n2GLwtYBHz24PJvYRBHqUGSWjizqQXyWelm3ZySCp7YHXqUuY/auNZYCI2B77Kz98h1pIuNX/J8Yy0McRwcLDznR8oMT8ExRQYGsxhBwR9+aPG+0dGzaA=="
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",
