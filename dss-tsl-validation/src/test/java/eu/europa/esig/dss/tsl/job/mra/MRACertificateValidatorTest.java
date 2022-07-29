@@ -37,7 +37,7 @@ public class MRACertificateValidatorTest extends AbstractMRALOTLTest {
         lotlKeystore.addCertificate(getCertificate(SIGNER_LOTL_NAME));
         lotlSource.setCertificateSource(lotlKeystore);
 
-        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://example/TSLType/CCgeneric"));
+        lotlSource.setTlPredicate(TLPredicateFactory.createPredicateWithCustomTSLType("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/ZZlist"));
 
         tlValidationJob.setListOfTrustedListSources(lotlSource);
 
