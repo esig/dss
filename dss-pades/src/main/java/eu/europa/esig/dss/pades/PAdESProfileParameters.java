@@ -39,6 +39,12 @@ public class PAdESProfileParameters extends ProfileParameters {
     private PdfSignatureCache pdfToBeSignedCache;
 
     /**
+     * Default constructor
+     */
+    public PAdESProfileParameters() {
+    }
+
+    /**
      * Gets the PDF signature cache
      *
      * @return {@link PdfSignatureCache}

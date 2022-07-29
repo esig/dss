@@ -58,6 +58,12 @@ import java.util.List;
  */
 public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 
+	/**
+	 * Default constructor
+	 */
+	public PAdESDiagnosticDataBuilder() {
+	}
+
 	@Override
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = super.buildDetachedXmlSignature(signature);

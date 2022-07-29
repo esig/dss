@@ -53,6 +53,12 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsX509CRLImpl.class);
 
 	/**
+	 * Default constructor
+	 */
+	public CRLUtilsX509CRLImpl() {
+	}
+
+	/**
 	 * This method verifies: the signature of the CRL, the key usage of its signing certificate and the coherence
 	 * between the subject names of the CRL signing
 	 * certificate and the issuer name of the certificate for which the verification of the revocation data is carried

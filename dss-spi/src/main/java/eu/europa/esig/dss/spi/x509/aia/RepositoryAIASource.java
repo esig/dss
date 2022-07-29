@@ -52,6 +52,12 @@ public abstract class RepositoryAIASource implements AIASource {
     protected OnlineAIASource proxiedSource;
 
     /**
+     * Default constructor instantiating object with null proxied source
+     */
+    protected RepositoryAIASource() {
+    }
+
+    /**
      * Sets a source to access an AIA in case the requested certificates are not present in the repository
      *
      * @param proxiedSource {@link OnlineAIASource}

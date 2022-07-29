@@ -34,6 +34,12 @@ import eu.europa.esig.dss.validation.scope.SignatureScope;
 public abstract class PdfRevisionScopeFinder extends AbstractSignatureScopeFinder {
 
     /**
+     * Default constructor
+     */
+    protected PdfRevisionScopeFinder() {
+    }
+
+    /**
      * Finds signature scopes from a {@code PdfCMSRevision}
      *
      * @param pdfRevision {@link PdfCMSRevision}

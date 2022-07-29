@@ -52,6 +52,12 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	/** The visual signature appearance */
 	protected PdfSignatureAppearance appearance;
 
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected AbstractITextSignatureDrawer() {
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {
 		this.parameters = parameters;

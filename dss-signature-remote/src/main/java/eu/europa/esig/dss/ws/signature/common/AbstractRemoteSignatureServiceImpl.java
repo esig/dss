@@ -78,6 +78,12 @@ import java.util.stream.Collectors;
 public abstract class AbstractRemoteSignatureServiceImpl {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractRemoteSignatureServiceImpl() {
+	}
+
+	/**
 	 * Gets the ASiC Signature Parameters
 	 *
 	 * @param asicContainerType {@link ASiCContainerType}

@@ -49,6 +49,12 @@ public class SignaturePolicyStore {
 	private String sigPolDocLocalURI;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public SignaturePolicyStore() {
+	}
+
+	/**
 	 * Get Id (optional)
 	 * 
 	 * @return {@link String}

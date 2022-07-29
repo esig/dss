@@ -278,6 +278,12 @@ public class JdbcCacheConnector {
         private final Map<String, Object> row = new HashMap<>();
 
         /**
+         * Default constructor initializing an empty map
+         */
+        public JdbcResultRecord() {
+        }
+
+        /**
          * The method allows to populate the map
          *
          * @param columnName {@link String} represents the column name

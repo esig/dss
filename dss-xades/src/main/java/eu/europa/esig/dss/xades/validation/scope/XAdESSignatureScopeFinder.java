@@ -51,6 +51,12 @@ import java.util.List;
  */
 public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
 	
+	/**
+	 * Default constructor
+	 */
+	public XAdESSignatureScopeFinder() {
+	}
+
 	@Override
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 

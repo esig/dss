@@ -149,6 +149,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Cached instance of the signing certificate token
 	 */
 	private CertificateToken signingCertificateToken;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public DefaultAdvancedSignature() {
+	}
 	
 	/**
 	 * Returns a builder to define and build a signature Id

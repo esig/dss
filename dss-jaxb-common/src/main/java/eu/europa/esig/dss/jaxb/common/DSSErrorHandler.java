@@ -43,6 +43,12 @@ public class DSSErrorHandler implements ErrorHandler {
 	/** List of warning exceptions */
 	private final List<SAXException> warnings = new ArrayList<>();
 
+	/**
+	 * Default constructor initializing empty lists of messages
+	 */
+	public DSSErrorHandler() {
+	}
+
 	@Override
 	public void error(SAXParseException arg0) throws SAXException {
 		errors.add(arg0);

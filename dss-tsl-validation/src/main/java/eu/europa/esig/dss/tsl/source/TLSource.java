@@ -63,6 +63,12 @@ public class TLSource {
 	private CacheKey cacheKey;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public TLSource() {
+	}
+
+	/**
 	 * Gets the TL URL
 	 *
 	 * @return {@link String}

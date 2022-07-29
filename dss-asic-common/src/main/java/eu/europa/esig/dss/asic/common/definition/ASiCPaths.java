@@ -48,5 +48,11 @@ public class ASiCPaths extends AbstractPaths {
 	 * "./asic:SigReference@URI"
 	 */
 	public static final String SIG_REFERENCE_URI_PATH = fromCurrentPosition(ASiCElement.SIG_REFERENCE, ASiCAttribute.URI);
+
+	/**
+	 * Default constructor
+	 */
+	public ASiCPaths() {
+	}
 	
 }

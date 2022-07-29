@@ -42,6 +42,12 @@ public class JoinedPseudoStrategy implements PseudoStrategy {
         STRATEGIES.add(new PseudoGermanyStrategy());
     }
 
+    /**
+     * Default constructor
+     */
+    public JoinedPseudoStrategy() {
+    }
+
     @Override
     public String getPseudo(CertificateWrapper certificate) {
         for (PseudoStrategy strategy : STRATEGIES) {

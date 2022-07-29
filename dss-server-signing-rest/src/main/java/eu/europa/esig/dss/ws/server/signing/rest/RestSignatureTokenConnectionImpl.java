@@ -42,6 +42,12 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	private RemoteSignatureTokenConnection token;
 
 	/**
+	 * Default construction instantiating object with null token connection
+	 */
+	public RestSignatureTokenConnectionImpl() {
+	}
+
+	/**
 	 * Sets remote token connection
 	 *
 	 * @param token {@link RemoteSignatureTokenConnection}

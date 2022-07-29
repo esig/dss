@@ -13,6 +13,12 @@ public class CommitmentQualifier {
     private DSSDocument content;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public CommitmentQualifier() {
+    }
+
+    /**
      * Gets unique object identifier of the Commitment Qualifier
      *
      * @return {@link String}

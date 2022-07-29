@@ -30,6 +30,12 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
  */
 public class ASiCWithCAdESDiagnosticDataBuilder extends ASiCContainerDiagnosticDataBuilder {
 
+	/**
+	 * Default constructor
+	 */
+	public ASiCWithCAdESDiagnosticDataBuilder() {
+	}
+
 	@Override
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		CAdESDiagnosticDataBuilder cadesDiagnosticDataBuilder = new CAdESDiagnosticDataBuilder();

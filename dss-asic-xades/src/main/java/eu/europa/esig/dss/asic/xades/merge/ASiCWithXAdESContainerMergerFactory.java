@@ -34,6 +34,12 @@ import java.util.Objects;
  */
 public class ASiCWithXAdESContainerMergerFactory implements ASiCContainerMergerFactory {
 
+    /**
+     * Default constructor
+     */
+    public ASiCWithXAdESContainerMergerFactory() {
+    }
+
     @Override
     public boolean isSupported(DSSDocument... containers) {
         Objects.requireNonNull(containers, "Containers shall be provided!");

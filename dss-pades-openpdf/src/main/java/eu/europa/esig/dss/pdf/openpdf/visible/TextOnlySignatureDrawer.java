@@ -55,6 +55,12 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	 *
 	 */
 	private Font iTextFont;
+
+	/**
+	 * Default constructor with null font
+	 */
+	public TextOnlySignatureDrawer() {
+	}
 	
 	@Override
 	public void init(SignatureImageParameters parameters, PdfReader reader, PdfSignatureAppearance appearance) {

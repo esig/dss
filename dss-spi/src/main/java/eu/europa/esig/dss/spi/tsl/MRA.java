@@ -25,6 +25,12 @@ public class MRA {
 	private List<ServiceEquivalence> serviceEquivalence;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public MRA() {
+	}
+
+	/**
 	 * Gets the technical type attribute value
 	 *
 	 * @return {@link String}

@@ -36,6 +36,12 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	private ASiCParameters asicParams = new ASiCParameters();
 
 	/**
+	 * Default constructor instantiating object with default ASiCParameters
+	 */
+	public ASiCWithXAdESSignatureParameters() {
+	}
+
+	/**
 	 * Returns ASiCParameters
 	 *
 	 * @return {@link ASiCParameters}

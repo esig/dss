@@ -41,6 +41,12 @@ public abstract class AbstractASiCFilenameFactory implements Serializable {
     private static final long serialVersionUID = 7868238704099416943L;
 
     /**
+     * Default constructor
+     */
+    protected AbstractASiCFilenameFactory() {
+    }
+
+    /**
      * This method returns the next available suffix (i.e. number) for a new file entry across given document names.
      *
      * Ex.: For provided two signature documents, the method will return "003" suffix,

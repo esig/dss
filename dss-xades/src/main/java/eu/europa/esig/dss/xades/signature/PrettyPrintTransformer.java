@@ -43,6 +43,12 @@ public class PrettyPrintTransformer {
 
 	/** The indent amount (4 by default) */
 	private int indentAmount = DomUtils.TRANSFORMER_INDENT_NUMBER;
+
+	/**
+	 * Default constructor
+	 */
+	public PrettyPrintTransformer() {
+	}
 	
 	/**
 	 * Configures the amount of spaces to add

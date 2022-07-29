@@ -60,6 +60,12 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	 * If true, removes revocation tokens from DB with nextUpdate before the current date
 	 */
 	private boolean removeExpired = true;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected RepositoryRevocationSource() {
+	}
 	
 	/**
 	 * Initialize a list of revocation token keys {@link String} from the given {@link CertificateToken}
@@ -157,6 +163,8 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	}
 	
 	/**
+	 * Sets whether the proxied revocation source to be called if the data is not available in the cache
+	 *
 	 * @param removeExpired
 	 *            the removeExpired to set
 	 */

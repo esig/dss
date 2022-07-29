@@ -11,6 +11,12 @@ import java.util.List;
  */
 public class ServiceByMRAEnactedFilter implements TrustedServiceFilter {
 
+    /**
+     * Default constructor
+     */
+    public ServiceByMRAEnactedFilter() {
+    }
+
     @Override
     public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
         List<TrustedServiceWrapper> result = new ArrayList<>();

@@ -45,6 +45,12 @@ public class XAdES111Paths extends AbstractPaths implements XAdESPaths {
 	/** The path "./xades111:HashDataInfo/xades111:Transforms/xades111:Transform" */
 	public static final String HASH_DATA_INFO_TRANSFORM_PATH = fromCurrentPosition(XAdES111Element.HASH_DATA_INFO, XAdES111Element.TRANSFORMS, XMLDSigElement.TRANSFORM);
 
+	/**
+	 * Default constructor
+	 */
+	public XAdES111Paths() {
+	}
+
 	@Override
 	public DSSNamespace getNamespace() {
 		return XAdESNamespaces.XADES_111;

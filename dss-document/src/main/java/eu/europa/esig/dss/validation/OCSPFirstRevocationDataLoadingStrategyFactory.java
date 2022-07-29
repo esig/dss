@@ -26,6 +26,12 @@ package eu.europa.esig.dss.validation;
  */
 public class OCSPFirstRevocationDataLoadingStrategyFactory implements RevocationDataLoadingStrategyFactory {
 
+    /**
+     * Default constructor
+     */
+    public OCSPFirstRevocationDataLoadingStrategyFactory() {
+    }
+
     @Override
     public RevocationDataLoadingStrategy create() {
         return new OCSPFirstRevocationDataLoadingStrategy();

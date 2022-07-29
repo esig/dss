@@ -67,6 +67,12 @@ public class ReferenceValidation implements Serializable {
 	private List<ReferenceValidation> dependentReferenceValidations;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ReferenceValidation() {
+	}
+
+	/**
 	 * Returns type of the validated reference
 	 *
 	 * @return {@link DigestMatcherType}

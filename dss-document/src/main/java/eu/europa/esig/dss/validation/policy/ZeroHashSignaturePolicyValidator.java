@@ -33,6 +33,12 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
  */
 public class ZeroHashSignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
+	/**
+	 * Default constructor
+	 */
+	public ZeroHashSignaturePolicyValidator() {
+	}
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		return signaturePolicy.isZeroHash();

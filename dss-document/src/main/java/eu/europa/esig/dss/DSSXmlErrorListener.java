@@ -34,6 +34,12 @@ public class DSSXmlErrorListener implements ErrorListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSXmlErrorListener.class);
 
+	/**
+	 * Default constructor
+	 */
+	public DSSXmlErrorListener() {
+	}
+
 	@Override
 	public void warning(TransformerException e) throws TransformerException {
 		LOG.warn(e.getMessage(), e);

@@ -35,6 +35,12 @@ public class QCLimitValue {
     private int exponent;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public QCLimitValue() {
+    }
+
+    /**
      * Gets the currency
      *
      * @return {@link String}

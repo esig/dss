@@ -40,6 +40,12 @@ public class RevocationFreshnessStatus extends TokenStatus {
     private final Map<Token, Date> tokenRevocationNextUpdateMap = new HashMap<>();
 
     /**
+     * Default constructor initializing an empty map
+     */
+    public RevocationFreshnessStatus() {
+    }
+
+    /**
      * Adds concerned token and nextUpdate time of the revocation data
      *
      * @param token {@link Token}

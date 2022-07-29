@@ -27,6 +27,12 @@ public class QCStatementOids {
 	private List<String> qcCClegislationsToRemove;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public QCStatementOids() {
+	}
+
+	/**
 	 * Gets QcStatement identifiers to be included
 	 *
 	 * @return a list of {@code String}s

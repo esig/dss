@@ -72,6 +72,12 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	private List<TimestampToken> contentTimestamps;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected AbstractSignatureParameters() {
+	}
+
+	/**
 	 * Returns the list of the {@code TimestampToken} to be incorporated within the signature and representing the
 	 * content-timestamp.
 	 *

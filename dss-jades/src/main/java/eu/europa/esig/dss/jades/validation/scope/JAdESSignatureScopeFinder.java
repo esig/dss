@@ -55,6 +55,12 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignatureScopeFinder.class);
 
+	/**
+	 * Default constructor
+	 */
+	public JAdESSignatureScopeFinder() {
+	}
+
 	@Override
 	public List<SignatureScope> findSignatureScope(final JAdESSignature jadesSignature) {
 		List<SignatureScope> result = new ArrayList<>();

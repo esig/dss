@@ -46,6 +46,12 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	 * Connects to SQL database and performs queries
 	 */
 	protected transient JdbcCacheConnector jdbcCacheConnector;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected JdbcRevocationSource() {
+	}
 	
 	/**
 	 * Returns CREATE_TABLE sql query

@@ -62,6 +62,12 @@ public class LOTLSource extends TLSource {
 	private LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate;
 
 	/**
+	 * Default constructor instantiating object with minimal EU configuration
+	 */
+	public LOTLSource() {
+	}
+
+	/**
 	 * Gets if the LOTL configuration supports pivots
 	 *
 	 * @return TRUE if supports pivots, FALSE otherwise

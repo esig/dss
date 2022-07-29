@@ -34,6 +34,14 @@ import java.util.List;
  */
 public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFactory implements ASiCWithXAdESFilenameFactory {
 
+    private static final long serialVersionUID = -3252975270136045191L;
+
+    /**
+     * Default constructor
+     */
+    public DefaultASiCWithXAdESFilenameFactory() {
+    }
+
     @Override
     public String getSignatureFilename(ASiCContent asicContent) {
         assertASiCContentIsValid(asicContent);

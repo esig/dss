@@ -53,6 +53,12 @@ public class SignatureProductionPlace implements Serializable {
 	private List<String> postalAddress;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public SignatureProductionPlace() {
+	}
+
+	/**
 	 * Gets location (city)
 	 *
 	 * @return {@link String}

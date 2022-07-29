@@ -52,6 +52,12 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
     private final Map<RevocationToken<OCSP>, Set<Long>> ocspTokenMap = new HashMap<>();
 
     /**
+     * Default constructor instantiation an object with empty mpa of OCSP token objects
+     */
+    public PdfCompositeDssDictOCSPSource() {
+    }
+
+    /**
      * This method allows adding OCSP tokens extracted from a /DSS revision
      *
      * @param dssDictionary {@link PdfDssDict} representing a /DSS revision's content

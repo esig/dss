@@ -36,6 +36,12 @@ public class ServiceEquivalence {
 	private Map<String, String> qualifierEquivalence;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ServiceEquivalence() {
+	}
+
+	/**
 	 * Gets TrustServiceLegalIdentifier value
 	 *
 	 * @return {@link String}

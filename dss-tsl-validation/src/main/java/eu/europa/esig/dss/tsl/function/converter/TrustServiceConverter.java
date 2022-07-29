@@ -74,6 +74,12 @@ import java.util.function.Function;
  */
 public class TrustServiceConverter implements Function<TSPServiceType, TrustService> {
 
+	/**
+	 * Default constructor
+	 */
+	public TrustServiceConverter() {
+	}
+
 	@Override
 	public TrustService apply(TSPServiceType original) {
 		TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();

@@ -52,6 +52,12 @@ public class CommonCommitmentType implements CommitmentType {
      */
     private CommitmentQualifier[] commitmentTypeQualifiers;
 
+    /**
+     * Default constructor instantiating object with null values
+     */
+    public CommonCommitmentType() {
+    }
+
     @Override
     public String getUri() {
         return uri;

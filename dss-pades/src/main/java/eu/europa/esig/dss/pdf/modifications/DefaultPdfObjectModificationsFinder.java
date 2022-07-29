@@ -52,6 +52,12 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     private PdfObjectModificationsFilter pdfObjectModificationsFilter = new PdfObjectModificationsFilter();
 
     /**
+     * Default constructor instantiating object with default configuration
+     */
+    public DefaultPdfObjectModificationsFinder() {
+    }
+
+    /**
      * Sets the maximum objects verification deepness of enveloped objects to be compared.
      *
      * NOTE: In case of large PDFs, a too deep object nesting structure may lead to a StackOverflowError.

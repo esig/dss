@@ -58,6 +58,12 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 	private boolean acceptInvalidListOfTrustedLists = false;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ExpirationAndSignatureCheckStrategy() {
+	}
+
+	/**
 	 * Sets if expired trusted lists are supported (next update after current time)
 	 * 
 	 * @param acceptExpiredTrustedList

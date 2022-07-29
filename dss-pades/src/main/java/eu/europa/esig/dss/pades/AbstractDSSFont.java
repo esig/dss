@@ -35,6 +35,12 @@ public abstract class AbstractDSSFont implements DSSFont, Serializable {
 	/** The size of the font */
 	protected float size = DEFAULT_TEXT_SIZE;
 
+	/**
+	 * Default constructor instantiating object with default configuration
+	 */
+	protected AbstractDSSFont() {
+	}
+
 	@Override
 	public float getSize() {
 		return size;

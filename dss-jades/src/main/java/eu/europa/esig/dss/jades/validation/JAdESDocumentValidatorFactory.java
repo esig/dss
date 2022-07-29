@@ -28,6 +28,12 @@ import eu.europa.esig.dss.validation.DocumentValidatorFactory;
  */
 public class JAdESDocumentValidatorFactory implements DocumentValidatorFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public JAdESDocumentValidatorFactory() {
+	}
+
 	@Override
 	public boolean isSupported(DSSDocument document) {
 		JWSCompactDocumentValidator compactValidator = new JWSCompactDocumentValidator();

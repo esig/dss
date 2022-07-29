@@ -39,6 +39,12 @@ public class RestTrustedListSignatureServiceImpl implements RestTrustedListSigna
     private RemoteTrustedListSignatureService service;
 
     /**
+     * Default construction instantiating object with null RemoteTrustedListSignatureService
+     */
+    public RestTrustedListSignatureServiceImpl() {
+    }
+
+    /**
      * Sets the remote service for XML Trusted List signing
      *
      * @param service {@link RemoteTrustedListSignatureService}

@@ -33,6 +33,12 @@ public class LogTLExpirationAlertHandler implements AlertHandler<TLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogTLExpirationAlertHandler.class);
 
+	/**
+	 * Default constructor
+	 */
+	public LogTLExpirationAlertHandler() {
+	}
+
 	@Override
 	public void process(TLInfo currentInfo) {
 		LOG.warn("The '{}' TL has expired. Last update : {}", currentInfo.getUrl(), currentInfo.getParsingCacheInfo().getNextUpdateDate());

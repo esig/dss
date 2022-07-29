@@ -35,6 +35,12 @@ public class PseudoGermanyStrategy implements PseudoStrategy {
 	/** Suffix used for certificate's pseudo definition within X500 Attributes */
 	private static final String PSEUDO_SUFFIX = ":PN";
 
+	/**
+	 * Default constructor
+	 */
+	public PseudoGermanyStrategy() {
+	}
+
 	@Override
 	public String getPseudo(CertificateWrapper certificate) {
 		if (GERMANY_COUNTRY_CODE.equals(certificate.getCountryName())) {

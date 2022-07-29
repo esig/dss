@@ -51,6 +51,12 @@ import java.util.Set;
 public abstract class AbstractTimestampSource {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractTimestampSource() {
+	}
+
+	/**
 	 * Adds {@code referenceToAdd} to {@code referenceList} without duplicates
 	 *
 	 * @param referenceList - list of {@link TimestampedReference}s to be extended

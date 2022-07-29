@@ -32,6 +32,12 @@ import java.util.Date;
  */
 public class TrustedServiceStatusPreEIDASConsistency implements TrustedServiceCondition {
 
+    /**
+     * Default constructor
+     */
+    public TrustedServiceStatusPreEIDASConsistency() {
+    }
+
     @Override
     public boolean isConsistent(TrustedServiceWrapper trustedService) {
         Date startDate = trustedService.getStartDate();

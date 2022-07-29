@@ -36,6 +36,12 @@ public class SoapTimestampServiceImpl implements SoapTimestampService {
 	private RemoteTimestampService timestampService;
 
 	/**
+	 * Default construction instantiating object with null RemoteTimestampService
+	 */
+	public SoapTimestampServiceImpl() {
+	}
+
+	/**
 	 * Sets the timestamping service
 	 *
 	 * @param timestampService {@link RemoteTimestampService}

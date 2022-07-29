@@ -25,7 +25,7 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.List;
 
 /**
- * The interface contains necessary information about a PDF visual or structure modifications
+ * The class contains necessary information about a PDF visual or structure modifications
  *
  */
 public class PdfModificationDetection {
@@ -41,6 +41,12 @@ public class PdfModificationDetection {
 
 	/** Filtered collection of {@code ObjectModification}s between a signed and final revisions */
 	private PdfObjectModifications objectModifications;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public PdfModificationDetection() {
+	}
 
 	/**
 	 * Returns information about annotations overlapping

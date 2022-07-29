@@ -1,11 +1,12 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Defines a TSLType element of a Trusted List
+ * Defines common TSLType values supported by the implementation
  *
  */
 public enum TSLTypeEnum implements TSLType {
 
+    /** EU List of the Trusted Lists */
     EUlistofthelists("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists", "EU List of the Trusted Lists"),
 
     /** EU Trusted Lists */

@@ -42,6 +42,12 @@ public class SigFieldPermissions {
     private CertificationPermission certificationPermission;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public SigFieldPermissions() {
+    }
+
+    /**
      * Gets the defined action
      *
      * @return {@link PdfLockAction}

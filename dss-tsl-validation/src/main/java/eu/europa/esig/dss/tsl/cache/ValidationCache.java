@@ -28,6 +28,12 @@ import eu.europa.esig.dss.tsl.validation.ValidationResult;
  */
 public class ValidationCache extends AbstractCache<ValidationResult> {
 
+	/**
+	 * Default constructor
+	 */
+	public ValidationCache() {
+	}
+
 	@Override
 	protected CacheType getCacheType() {
 		return CacheType.VALIDATION;

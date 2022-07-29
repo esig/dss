@@ -34,6 +34,12 @@ import java.util.Set;
  */
 public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
+	/**
+	 * Default constructor
+	 */
+	public CertificateDiagnosticDataBuilder() {
+	}
+
 	@Override
 	public CertificateDiagnosticDataBuilder usedCertificates(Set<CertificateToken> usedCertificates) {
 		return (CertificateDiagnosticDataBuilder) super.usedCertificates(usedCertificates);

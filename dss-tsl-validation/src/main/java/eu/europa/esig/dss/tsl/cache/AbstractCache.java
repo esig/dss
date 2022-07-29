@@ -47,6 +47,12 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * Map between {@code CacheKey} and the related result wrapper {@code CachedEntry<CachedResult>}
 	 */
 	private Map<CacheKey, CachedEntry<R>> cachedEntriesMap = new ConcurrentHashMap<>();
+
+	/**
+	 * Default constructor instantiating cache with empty map
+	 */
+	protected AbstractCache() {
+	}
 	
 	/**
 	 * Returns all current keys

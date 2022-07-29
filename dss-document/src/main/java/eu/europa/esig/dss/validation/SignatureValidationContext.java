@@ -171,6 +171,12 @@ public class SignatureValidationContext implements ValidationContext {
 	protected Date currentTime = new Date();
 
 	/**
+	 * Default constructor instantiating object with null or empty values and current time
+	 */
+	public SignatureValidationContext() {
+	}
+
+	/**
 	 * @param certificateVerifier
 	 *            The certificate verifier (eg: using the TSL as list of trusted certificates).
 	 */

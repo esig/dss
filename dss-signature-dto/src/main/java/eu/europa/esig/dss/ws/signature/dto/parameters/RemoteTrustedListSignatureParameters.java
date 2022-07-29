@@ -56,6 +56,12 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     private DigestAlgorithm referenceDigestAlgorithm;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public RemoteTrustedListSignatureParameters() {
+    }
+
+    /**
      * Gets the signing certificate
      *
      * @return {@link RemoteCertificate}

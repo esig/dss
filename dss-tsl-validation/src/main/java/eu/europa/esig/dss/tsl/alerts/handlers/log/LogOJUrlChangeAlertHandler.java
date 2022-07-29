@@ -33,6 +33,12 @@ public class LogOJUrlChangeAlertHandler implements AlertHandler<LOTLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogOJUrlChangeAlertHandler.class);
 
+	/**
+	 * Default constructor
+	 */
+	public LogOJUrlChangeAlertHandler() {
+	}
+
 	@Override
 	public void process(LOTLInfo currentInfo) {
 		LOG.warn("The Official Journal URL has changed - new location : {}", currentInfo.getParsingCacheInfo().getSigningCertificateAnnouncementUrl());

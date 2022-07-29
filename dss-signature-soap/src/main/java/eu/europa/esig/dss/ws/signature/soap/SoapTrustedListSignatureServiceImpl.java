@@ -39,6 +39,12 @@ public class SoapTrustedListSignatureServiceImpl implements SoapTrustedListSigna
     private RemoteTrustedListSignatureService service;
 
     /**
+     * Default construction instantiating object with null RemoteTrustedListSignatureService
+     */
+    public SoapTrustedListSignatureServiceImpl() {
+    }
+
+    /**
      * Sets the remote XML Trusted List signing service
      *
      * @param service {@link RemoteTrustedListSignatureService}

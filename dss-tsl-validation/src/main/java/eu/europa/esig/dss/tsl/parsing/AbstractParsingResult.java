@@ -53,6 +53,12 @@ public abstract class AbstractParsingResult implements CachedResult {
 	private List<String> distributionPoints;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected AbstractParsingResult() {
+	}
+
+	/**
 	 * Gets the TSLType
 	 *
 	 * @return {@link TSLType}

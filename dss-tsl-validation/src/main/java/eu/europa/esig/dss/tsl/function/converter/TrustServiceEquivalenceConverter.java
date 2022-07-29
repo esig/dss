@@ -45,6 +45,12 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 	/** The used {@code CriteriaListTypeConverter} */
 	private final CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
 
+	/**
+	 * Default constructor instantiating a CriteriaListTypeConverter
+	 */
+	public TrustServiceEquivalenceConverter() {
+	}
+
 	@Override
 	public ServiceEquivalence apply(TrustServiceEquivalenceInformationType t) {
 		ServiceEquivalence result = new ServiceEquivalence();

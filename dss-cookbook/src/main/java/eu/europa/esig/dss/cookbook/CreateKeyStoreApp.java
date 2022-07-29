@@ -31,10 +31,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +50,12 @@ public class CreateKeyStoreApp {
 	private static final boolean ALLOW_EXPIRED = false;
 	private static final String KEYSTORE_TYPE = "PKCS12";
 	private static final String KEYSTORE_FILEPATH = "target/keystore.p12";
+
+	/**
+	 * Executable application
+	 */
+	private CreateKeyStoreApp() {
+	}
 
 	/**
 	 * Main method
@@ -69,10 +76,10 @@ public class CreateKeyStoreApp {
 		addCertificate(kscs, "src/main/resources/oj_2019/ec.europa.eu.7.cer");
 		addCertificate(kscs, "src/main/resources/oj_2019/ec.europa.eu.8.cer");
 
-
-		OutputStream fos = new FileOutputStream(KEYSTORE_FILEPATH);
-		kscs.store(fos);
-		Utils.closeQuietly(fos);
+		try (OutputStream fos = Files.newOutputStream(Paths.get(KEYSTORE_FILEPATH))) {
+			kscs.store(fos);
+			Utils.closeQuietly(fos);
+		}
 
 		LOG.info("****************");
 

@@ -43,6 +43,12 @@ public class ASiCContainerDiagnosticDataBuilder extends SignedDocumentDiagnostic
 	private ContainerInfo containerInfo;
 
 	/**
+	 * Default constructor instantiating builder with null values
+	 */
+	public ASiCContainerDiagnosticDataBuilder() {
+	}
+
+	/**
 	 * This method allows to set the container info (ASiC)
 	 * 
 	 * @param containerInfo the container information

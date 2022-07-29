@@ -36,6 +36,12 @@ public class ProxyConfig implements Serializable {
 	private ProxyProperties httpsProperties;
 
 	/**
+	 * Default constructor with null properties
+	 */
+	public ProxyConfig() {
+	}
+
+	/**
 	 * Gets HTTP {@code ProxyProperties}
 	 *
 	 * @return {@link ProxyProperties}

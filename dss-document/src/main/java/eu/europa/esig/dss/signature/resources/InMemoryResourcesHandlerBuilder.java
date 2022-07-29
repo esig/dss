@@ -27,6 +27,12 @@ package eu.europa.esig.dss.signature.resources;
  */
 public class InMemoryResourcesHandlerBuilder implements DSSResourcesHandlerBuilder {
 
+    /**
+     * Default constructor
+     */
+    public InMemoryResourcesHandlerBuilder() {
+    }
+
     @Override
     public InMemoryResourcesHandler createResourcesHandler() {
         return new InMemoryResourcesHandler();

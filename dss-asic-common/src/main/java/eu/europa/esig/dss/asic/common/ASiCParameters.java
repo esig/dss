@@ -53,6 +53,12 @@ public class ASiCParameters implements Serializable {
 	private String signatureFileName;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ASiCParameters() {
+	}
+
+	/**
 	 * Indicates if the ZIP comment must include the mime-type.
 	 *
 	 * @return {@code boolean}

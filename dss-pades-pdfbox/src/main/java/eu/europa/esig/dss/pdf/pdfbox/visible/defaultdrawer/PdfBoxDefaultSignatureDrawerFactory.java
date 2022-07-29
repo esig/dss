@@ -29,6 +29,12 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
  */
 public class PdfBoxDefaultSignatureDrawerFactory implements PdfBoxSignatureDrawerFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public PdfBoxDefaultSignatureDrawerFactory() {
+	}
+
 	@Override
 	public PdfBoxSignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters) {
 		// Custom drawer(s) can be injected with a new Factory and a custom instance of

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
  */
 public interface QCType extends OidDescription {
 
+    /** Logger */
     Logger LOG = LoggerFactory.getLogger(QCType.class);
 
     /** Defines a description for a type unknown by the current implementation */

@@ -63,6 +63,12 @@ public abstract class RevocationDataLoadingStrategy {
 	protected boolean fallbackEnabled = false;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected RevocationDataLoadingStrategy() {
+	}
+
+	/**
 	 * Sets the CRLSource
 	 *
 	 * @param crlSource {@link RevocationSource}

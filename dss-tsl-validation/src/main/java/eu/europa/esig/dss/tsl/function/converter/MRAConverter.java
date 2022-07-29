@@ -18,6 +18,12 @@ public class MRAConverter implements Function<MutualRecognitionAgreementInformat
 	/** The TrustServiceEquivalence converter */
 	private TrustServiceEquivalenceConverter converter = new TrustServiceEquivalenceConverter();
 
+	/**
+	 * Default constructor
+	 */
+	public MRAConverter() {
+	}
+
 	@Override
 	public MRA apply(MutualRecognitionAgreementInformationType t) {
 		MRA result = new MRA();

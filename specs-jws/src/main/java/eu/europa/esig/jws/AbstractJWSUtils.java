@@ -52,6 +52,12 @@ public abstract class AbstractJWSUtils {
 	 * JSON Schema for a JWS Unprotected Header validation
 	 */
 	private Schema jwsUnprotectedHeaderSchema;
+
+	/**
+	 * Default constructor instantiating the object with null values
+	 */
+	protected AbstractJWSUtils() {
+	}
 	
 	/**
 	 * Returns a JWS Schema for a root signature element validation

@@ -43,6 +43,12 @@ public abstract class AbstractCRLUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractCRLUtils.class);
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractCRLUtils() {
+	}
+
+	/**
 	 * Builds the {@code CRLBinary} object
 	 *
 	 * @param binaries byte array representing the CRL (DER or PEM encoded)

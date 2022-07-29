@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+
+import java.io.Serializable;
 
 /**
  * Parameters which allow to create a new signature field in a PDF document
@@ -48,6 +48,12 @@ public class SignatureFieldParameters implements Serializable {
 
 	/** Signature field height */
 	private float height;
+
+	/**
+	 * Defaultconstructor instantiating object with null values
+	 */
+	public SignatureFieldParameters() {
+	}
 
 	/**
 	 * Gets signature field id

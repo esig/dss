@@ -108,6 +108,12 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 */
 	private TimeZone signingTimeZone = TimeZone.getDefault();
 
+	/**
+	 * Default constructor instantiating object with default parameters
+	 */
+	public PAdESSignatureParameters() {
+	}
+
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.PAdES != signatureLevel.getSignatureForm()) {

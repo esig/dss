@@ -30,6 +30,12 @@ import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
  */
 public class TLSignatureErrorDetection implements AlertDetector<TLInfo> {
 
+	/**
+	 * Default constructor
+	 */
+	public TLSignatureErrorDetection() {
+	}
+
 	@Override
 	public boolean detect(TLInfo info) {
 

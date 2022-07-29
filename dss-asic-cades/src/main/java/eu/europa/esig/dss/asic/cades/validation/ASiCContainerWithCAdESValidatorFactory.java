@@ -30,6 +30,12 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class ASiCContainerWithCAdESValidatorFactory implements DocumentValidatorFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public ASiCContainerWithCAdESValidatorFactory() {
+	}
+
 	@Override
 	public boolean isSupported(DSSDocument document) {
 		ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();

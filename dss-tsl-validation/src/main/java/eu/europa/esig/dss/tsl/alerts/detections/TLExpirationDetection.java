@@ -31,6 +31,12 @@ import java.util.Date;
  */
 public class TLExpirationDetection implements AlertDetector<TLInfo> {
 
+	/**
+	 * Default constructor
+	 */
+	public TLExpirationDetection() {
+	}
+
 	@Override
 	public boolean detect(TLInfo info) {
 		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();

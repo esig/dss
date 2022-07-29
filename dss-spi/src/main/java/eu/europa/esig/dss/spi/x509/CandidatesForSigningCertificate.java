@@ -46,6 +46,14 @@ public class CandidatesForSigningCertificate implements Serializable {
 	private List<CertificateValidity> certificateValidityList = new ArrayList<>();
 
 	/**
+	 * Default constructor with null or empty values
+	 */
+	public CandidatesForSigningCertificate() {
+	}
+
+	/**
+	 * Gets a certificate validity list
+	 *
 	 * @return the list of candidates for the signing certificate.
 	 */
 	public List<CertificateValidity> getCertificateValidityList() {

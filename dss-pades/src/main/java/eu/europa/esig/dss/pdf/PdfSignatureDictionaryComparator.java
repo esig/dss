@@ -37,6 +37,12 @@ public class PdfSignatureDictionaryComparator implements Comparator<PdfSignature
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfSignatureDictionaryComparator.class);
 
+	/**
+	 * Default constructor
+	 */
+	public PdfSignatureDictionaryComparator() {
+	}
+
 	@Override
 	public int compare(PdfSignatureDictionary o1, PdfSignatureDictionary o2) {
 		/*

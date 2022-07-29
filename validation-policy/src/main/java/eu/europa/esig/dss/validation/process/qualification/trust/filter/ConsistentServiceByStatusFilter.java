@@ -33,6 +33,12 @@ import java.util.List;
  */
 public class ConsistentServiceByStatusFilter implements TrustedServiceFilter {
 
+    /**
+     * Default constructor
+     */
+    public ConsistentServiceByStatusFilter() {
+    }
+
     @Override
     public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
         List<TrustedServiceWrapper> result = new ArrayList<>();

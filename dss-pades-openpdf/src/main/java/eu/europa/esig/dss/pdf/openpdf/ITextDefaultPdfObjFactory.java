@@ -30,6 +30,12 @@ import eu.europa.esig.dss.pdf.openpdf.visible.ITextDefaultSignatureDrawerFactory
  */
 public class ITextDefaultPdfObjFactory extends AbstractPdfObjFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public ITextDefaultPdfObjFactory() {
+	}
+
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
 		return configure(new ITextPDFSignatureService(PDFServiceMode.SIGNATURE, new ITextDefaultSignatureDrawerFactory()));

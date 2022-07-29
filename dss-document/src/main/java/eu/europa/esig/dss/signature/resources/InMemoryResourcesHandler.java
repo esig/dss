@@ -35,6 +35,13 @@ import java.io.OutputStream;
  */
 public class InMemoryResourcesHandler extends AbstractResourcesHandler {
 
+    /**
+     * Default constructor
+     *
+     */
+    public InMemoryResourcesHandler() {
+    }
+
     @Override
     protected ByteArrayOutputStream buildOutputStream() {
         return new ByteArrayOutputStream();

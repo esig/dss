@@ -38,6 +38,12 @@ public class DefaultASiCWithCAdESFilenameFactory extends AbstractASiCFilenameFac
 
     private static final long serialVersionUID = -4144978379851552021L;
 
+    /**
+     * Default constructor
+     */
+    public DefaultASiCWithCAdESFilenameFactory() {
+    }
+
     @Override
     public String getSignatureFilename(ASiCContent asicContent) {
         assertASiCContentIsValid(asicContent);

@@ -488,6 +488,8 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
+	 * Gets the proxy configuration
+	 *
 	 * @return associated {@code ProxyConfig}
 	 */
 	public ProxyConfig getProxyConfig() {
@@ -495,6 +497,8 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
+	 * Sets the proxy configuration
+	 *
 	 * @param proxyConfig
 	 *            the proxyConfig to set
 	 */

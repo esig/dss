@@ -36,6 +36,12 @@ import java.security.KeyStore.PasswordProtection;
  */
 public class AppleSignatureToken extends AbstractKeyStoreTokenConnection {
 
+    /**
+     * Default constructor
+     */
+    public AppleSignatureToken() {
+    }
+
     @Override
     protected KeyStore getKeyStore() throws DSSException {
         KeyStore keyStore;

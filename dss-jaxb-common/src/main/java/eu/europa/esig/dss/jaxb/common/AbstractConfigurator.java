@@ -50,6 +50,12 @@ public abstract class AbstractConfigurator<F> {
     private StatusAlert securityExceptionAlert = new ExceptionOnStatusAlert();
 
     /**
+     * Default constructor initializing empty maps of security features and attributes
+     */
+    protected AbstractConfigurator() {
+    }
+
+    /**
      * This method allows to configure a custom alert on security exception in the
      * builder
      *

@@ -50,6 +50,12 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
     private List<DSSDocument> archiveDocuments;
 
     /**
+     * Default constructor instantiating object with empty lists of documents
+     */
+    public ASiCWithCAdESTimestampScopeFinder() {
+    }
+
+    /**
      * Sets a list of container original documents
      *
      * @param containerDocuments a list of {@link DSSDocument}s

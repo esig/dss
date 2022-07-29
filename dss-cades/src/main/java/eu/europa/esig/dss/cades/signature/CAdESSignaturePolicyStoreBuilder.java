@@ -59,6 +59,12 @@ public class CAdESSignaturePolicyStoreBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignaturePolicyStoreBuilder.class);
 
 	/**
+	 * Default constructor
+	 */
+	public CAdESSignaturePolicyStoreBuilder() {
+	}
+
+	/**
 	 * Extends all signatures within the given document, matching the provided policy in {@code SignaturePolicyStore}
 	 *
 	 * @param signatureDocument {@link DSSDocument} to extend

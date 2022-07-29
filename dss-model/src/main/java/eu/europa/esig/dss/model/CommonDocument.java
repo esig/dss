@@ -55,6 +55,12 @@ public abstract class CommonDocument implements DSSDocument {
 	 */
 	protected String name;
 
+	/**
+	 * Default constructor instantiating object with null values and empty digest map
+	 */
+	protected CommonDocument() {
+	}
+
 	@Override
 	public void save(final String path) throws IOException {
 		try (FileOutputStream fos = new FileOutputStream(path)) {

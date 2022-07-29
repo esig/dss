@@ -83,6 +83,7 @@ public class TLPredicateFactory {
      *
      * Example : "application/vnd.etsi.tsl+xml" to filter XML Trusted Lists (TL)
      *
+     * @param mimetype {@link String} defyining the MimeType
      * @return {@link Predicate}
      */
     public static Predicate<OtherTSLPointerType> createPredicateWithCustomMimeType(String mimetype) {

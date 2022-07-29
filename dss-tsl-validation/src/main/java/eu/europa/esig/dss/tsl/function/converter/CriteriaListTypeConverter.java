@@ -34,6 +34,12 @@ import java.util.function.Function;
  */
 public class CriteriaListTypeConverter implements Function<CriteriaListType, Condition> {
 
+	/**
+	 * Default constructor
+	 */
+	public CriteriaListTypeConverter() {
+	}
+
 	@Override
 	public Condition apply(CriteriaListType criteriaList) {
 		Assert matchingCriteriaIndicator = criteriaList.getAssert();

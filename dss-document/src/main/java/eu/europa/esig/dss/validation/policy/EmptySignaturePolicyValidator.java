@@ -27,6 +27,12 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
  */
 public class EmptySignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
+	/**
+	 * Default constructor
+	 */
+	public EmptySignaturePolicyValidator() {
+	}
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		return signaturePolicy.getPolicyContent() == null && !signaturePolicy.isZeroHash();

@@ -169,6 +169,12 @@ public abstract class DiagnosticDataBuilder {
 	protected Map<String, TLInfo> tlInfoMap = new HashMap<>();
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected DiagnosticDataBuilder() {
+	}
+
+	/**
 	 * This method allows to set the used certificates
 	 * 
 	 * @param usedCertificates the used certificates

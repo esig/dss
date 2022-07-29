@@ -33,6 +33,12 @@ public class CRLFirstRevocationDataLoadingStrategy extends RevocationDataLoading
 
     private static final Logger LOG = LoggerFactory.getLogger(CRLFirstRevocationDataLoadingStrategy.class);
 
+    /**
+     * Default constructor
+     */
+    public CRLFirstRevocationDataLoadingStrategy() {
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public RevocationToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {

@@ -74,6 +74,12 @@ public class ASiCContent implements Serializable {
 	private List<DSSDocument> containerDocuments = new ArrayList<>();
 
 	/**
+	 * Default constructor instantiating object with null values and empty list of documents
+	 */
+	public ASiCContent() {
+	}
+
+	/**
 	 * Gets the original ASiC container
 	 *
 	 * @return {@link DSSDocument}

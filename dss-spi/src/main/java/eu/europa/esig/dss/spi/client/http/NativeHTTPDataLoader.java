@@ -61,6 +61,12 @@ public class NativeHTTPDataLoader implements DataLoader {
 	private long timeout = 0;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public NativeHTTPDataLoader() {
+	}
+
+	/**
 	 * Execute the request
 	 *
 	 * @param url {@link String}

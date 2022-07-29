@@ -64,6 +64,12 @@ public class POEExtraction {
 	private final Map<String, List<POE>> poeMap = new HashMap<>();
 
 	/**
+	 * Default constructor initializing an empty map
+	 */
+	public POEExtraction() {
+	}
+
+	/**
 	 * Instantiates a controlTime POE for all used tokens
 	 * 
 	 * @param diagnosticData {@link DiagnosticData} containing all tokens to initialize the POE for

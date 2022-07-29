@@ -52,6 +52,12 @@ import java.util.Objects;
  */
 public class ApacheCommonsUtils implements IUtils {
 
+	/**
+	 * Default constructor
+	 */
+	public ApacheCommonsUtils() {
+	}
+
 	@Override
 	public boolean isStringEmpty(String text) {
 		return StringUtils.isEmpty(text);

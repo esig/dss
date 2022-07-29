@@ -33,6 +33,12 @@ import java.util.Arrays;
 public class CertificateTokenRefMatcher {
 
 	/**
+	 * Default constructor
+	 */
+	public CertificateTokenRefMatcher() {
+	}
+
+	/**
 	 * This method verifies if the given {@code CertificateToken} matches the {@code CertificateRef}
 	 *
 	 * @param certificateToken {@link CertificateToken}

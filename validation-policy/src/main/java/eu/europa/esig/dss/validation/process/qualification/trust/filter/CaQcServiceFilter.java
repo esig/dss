@@ -29,6 +29,12 @@ import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIden
  */
 public class CaQcServiceFilter extends AbstractTrustedServiceFilter {
 
+	/**
+	 * Default constructor
+	 */
+	public CaQcServiceFilter() {
+	}
+
 	@Override
 	boolean isAcceptable(TrustedServiceWrapper service) {
 		return ServiceTypeIdentifier.isCaQc(service.getType());

@@ -46,6 +46,12 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignatureScopeFinder.class);
 
+    /**
+     * Default constructor
+     */
+    public CAdESSignatureScopeFinder() {
+    }
+
     @Override
     public List<SignatureScope> findSignatureScope(final CAdESSignature cadesSignature) {
         List<ReferenceValidation> referenceValidations = cadesSignature.getReferenceValidations();

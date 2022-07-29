@@ -35,6 +35,12 @@ public class ServiceLoaderPdfObjFactory extends AbstractPdfObjFactory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServiceLoaderPdfObjFactory.class);
 
+	/**
+	 * Default constructor
+	 */
+	public ServiceLoaderPdfObjFactory() {
+	}
+
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
 		return configure(getIPdfObjFactory().newPAdESSignatureService());

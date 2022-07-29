@@ -38,6 +38,12 @@ public class TokenStatus extends ObjectStatus {
     private final Map<Token, String> relatedTokenMap = new HashMap<>();
 
     /**
+     * Default constructor instantiating an empty map of related tokens
+     */
+    public TokenStatus() {
+    }
+
+    /**
      * Adds concerned token and information about the occurred event
      *
      * @param token {@link Token}

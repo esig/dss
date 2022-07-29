@@ -33,6 +33,12 @@ public class LogTLParsingErrorAlertHandler implements AlertHandler<TLInfo> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LogTLParsingErrorAlertHandler.class);
 
+	/**
+	 * Default constructor
+	 */
+	public LogTLParsingErrorAlertHandler() {
+	}
+
 	@Override
 	public void process(TLInfo currentInfo) {
 		LOG.warn("There was an error while parsing a TL : {}", currentInfo.getUrl());

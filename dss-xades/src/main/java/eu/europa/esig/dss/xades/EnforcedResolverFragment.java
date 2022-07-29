@@ -42,6 +42,12 @@ public class EnforcedResolverFragment extends ResolverFragment {
 	/** The XPath filter */
 	private static final String XPATH_CHAR_FILTER = "()='[]:,*/ ";
 
+	/**
+	 * Default constructor
+	 */
+	public EnforcedResolverFragment() {
+	}
+
 	@Override
 	public boolean engineCanResolveURI(ResourceResolverContext context) {
 		return checkValueForXpathInjection(context.uriToResolve) && super.engineCanResolveURI(context);

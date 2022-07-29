@@ -35,6 +35,12 @@ import java.util.List;
 public abstract class AbstractASiCDataToSignHelperBuilder {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractASiCDataToSignHelperBuilder() {
+	}
+
+	/**
 	 * This method returns a document to be signed in case of an ASiC-S container
 	 *
 	 * @param filesToBeSigned a list of {@link DSSDocument}s to be signed

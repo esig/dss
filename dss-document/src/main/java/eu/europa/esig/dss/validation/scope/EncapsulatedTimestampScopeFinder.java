@@ -37,6 +37,12 @@ public class EncapsulatedTimestampScopeFinder extends AbstractSignatureScopeFind
     protected AdvancedSignature signature;
 
     /**
+     * Default constructor instantiating object with null signature
+     */
+    public EncapsulatedTimestampScopeFinder() {
+    }
+
+    /**
      * This method sets an encapsulating {@code AdvancedSignature}
      *
      * @param signature {@link AdvancedSignature}

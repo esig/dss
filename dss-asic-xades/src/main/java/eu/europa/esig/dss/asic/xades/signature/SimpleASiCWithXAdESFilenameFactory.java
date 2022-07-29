@@ -49,6 +49,12 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
     /** Defines a name of a creating ZIP archive, containing multiple signer documents (in case of ASiC-S container) */
     private String dataPackageFilename;
 
+    /**
+     * Default constructor instantiating factory with null values
+     */
+    public SimpleASiCWithXAdESFilenameFactory() {
+    }
+
     @Override
     public String getSignatureFilename(ASiCContent asicContent) {
         if (Utils.isStringNotEmpty(signatureFilename)) {

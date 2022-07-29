@@ -45,6 +45,12 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
      */
     private PdfObjectModificationsFinder pdfObjectModificationsFinder;
 
+    /**
+     * Default constructor instantiating object with null values
+     */
+    protected AbstractPdfObjFactory() {
+    }
+
     @Override
     public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
         this.resourcesHandlerBuilder = resourcesHandlerBuilder;

@@ -71,6 +71,12 @@ public class RemoteMultipleDocumentsSignatureServiceImpl extends AbstractRemoteS
 	private MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> asicWithXAdESService;
 
 	/**
+	 * Default constructor instantiating object with null services
+	 */
+	public RemoteMultipleDocumentsSignatureServiceImpl() {
+	}
+
+	/**
 	 * Sets the XAdES multiple signature service
 	 *
 	 * @param xadesService {@link MultipleDocumentsSignatureService}

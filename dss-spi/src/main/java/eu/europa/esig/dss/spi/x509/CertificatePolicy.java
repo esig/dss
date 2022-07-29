@@ -33,6 +33,12 @@ public class CertificatePolicy {
 	private String cpsUrl;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public CertificatePolicy() {
+	}
+
+	/**
 	 * Gets OID of the certificate policy
 	 *
 	 * @return {@link String}

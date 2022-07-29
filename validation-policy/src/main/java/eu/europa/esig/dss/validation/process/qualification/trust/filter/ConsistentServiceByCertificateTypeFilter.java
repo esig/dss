@@ -32,6 +32,12 @@ import java.util.List;
  */
 public class ConsistentServiceByCertificateTypeFilter implements TrustedServiceFilter {
 
+    /**
+     * Default constructor
+     */
+    public ConsistentServiceByCertificateTypeFilter() {
+    }
+
     @Override
     public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
         List<TrustedServiceWrapper> result = new ArrayList<>();

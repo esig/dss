@@ -35,6 +35,12 @@ import java.util.List;
  */
 public class PAdESTimestampScopeFinder extends PdfRevisionScopeFinder implements TimestampScopeFinder {
 
+    /**
+     * Default constructor
+     */
+    public PAdESTimestampScopeFinder() {
+    }
+
     @Override
     public List<SignatureScope> findTimestampScope(TimestampToken timestampToken) {
         if (timestampToken.isMessageImprintDataIntact() && timestampToken instanceof PdfTimestampToken) {

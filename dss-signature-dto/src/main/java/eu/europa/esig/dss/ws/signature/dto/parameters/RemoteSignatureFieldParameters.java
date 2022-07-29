@@ -47,6 +47,12 @@ public class RemoteSignatureFieldParameters implements Serializable {
 
 	/** The page number to create the field on */
     private Integer page;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public RemoteSignatureFieldParameters() {
+	}
 	
 	/**
 	 * Returns the field Id to be signed

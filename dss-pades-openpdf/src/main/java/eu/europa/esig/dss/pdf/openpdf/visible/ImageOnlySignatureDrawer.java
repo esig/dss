@@ -40,6 +40,12 @@ import java.io.IOException;
  */
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
+	/**
+	 * Default constructor
+	 */
+	public ImageOnlySignatureDrawer() {
+	}
+
 	@Override
 	public void draw() {
 		Image image = getImage();

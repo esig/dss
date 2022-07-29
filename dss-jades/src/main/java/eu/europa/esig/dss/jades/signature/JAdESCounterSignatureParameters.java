@@ -24,7 +24,7 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 
 /**
- * Parameters to create a JAdES counter signature
+ * Parameters to create a JAdES counter-signature
  *
  */
 public class JAdESCounterSignatureParameters extends JAdESSignatureParameters implements SerializableCounterSignatureParameters {
@@ -32,9 +32,15 @@ public class JAdESCounterSignatureParameters extends JAdESSignatureParameters im
 	private static final long serialVersionUID = 369732165720690096L;
 
 	/**
-	 * Signature Id to be counter signed
+	 * Signature Id to be counter-signed
 	 */
 	private String signatureIdToCounterSign;
+
+	/**
+	 * Default constructor instantiating object with null signature id to be counter-signed
+	 */
+	public JAdESCounterSignatureParameters() {
+	}
 
 	@Override
 	public String getSignatureIdToCounterSign() {

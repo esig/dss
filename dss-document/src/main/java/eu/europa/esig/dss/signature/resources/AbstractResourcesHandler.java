@@ -32,6 +32,12 @@ public abstract class AbstractResourcesHandler implements DSSResourcesHandler {
     /** OutputStream instance */
     private OutputStream os;
 
+    /**
+     * Default constructor instantiating object with null OutputStream
+     */
+    protected AbstractResourcesHandler() {
+    }
+
     @Override
     public OutputStream createOutputStream() throws IOException {
         if (os != null) {

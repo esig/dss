@@ -86,6 +86,12 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
 	/**
+	 * Default constructor instantiating object with default parameter values
+	 */
+	public NativePdfBoxVisibleSignatureDrawer() {
+	}
+
+	/**
 	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
 	 *
 	 * When set to TRUE, only the used glyphs will be embedded to a font.

@@ -34,6 +34,12 @@ import java.util.List;
  */
 public class TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency implements TrustedServiceCondition {
 
+    /**
+     * Default constructor
+     */
+    public TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency() {
+    }
+
     @Override
     public boolean isConsistent(TrustedServiceWrapper trustedService) {
         Date startDate = trustedService.getStartDate();

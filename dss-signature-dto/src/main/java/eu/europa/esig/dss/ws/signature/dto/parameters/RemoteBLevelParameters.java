@@ -93,6 +93,8 @@ public class RemoteBLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Gets if the trust anchor policy is used for -B and -LT levels
+	 *
 	 * @return indicates the trust anchor policy shall be used when creating -B and -LT levels
 	 */
 	public boolean isTrustAnchorBPPolicy() {

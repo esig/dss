@@ -68,6 +68,12 @@ public class DefaultPdfDifferencesFinder implements PdfDifferencesFinder {
         this.maximalPagesAmountForVisualComparison = pagesAmount;
     }
 
+    /**
+     * Default constructor instantiating object with default configuration
+     */
+    public DefaultPdfDifferencesFinder() {
+    }
+
     @Override
     public List<PdfModification> getAnnotationOverlaps(final PdfDocumentReader reader) {
         List<PdfModification> annotationOverlaps = new ArrayList<>();

@@ -105,6 +105,12 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 		findOCSPRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_LOC, String.class));
 	}
 
+	/**
+	 * Default constructor
+	 */
+	public JdbcCacheOCSPSource() {
+	}
+
 	@Override
 	protected String getCreateTableQuery() {
 		return SQL_INIT_CREATE_TABLE;

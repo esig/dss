@@ -47,6 +47,12 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
     private final ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>();
 
     /**
+     * Default constructor instantiating object with empte resources
+     */
+    public DetachedTimestampSource() {
+    }
+
+    /**
      * Returns a list of processed detached timestamps
      *
      * @return a list of {@link TimestampToken}s

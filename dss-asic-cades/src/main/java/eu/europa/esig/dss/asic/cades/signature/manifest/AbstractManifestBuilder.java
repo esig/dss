@@ -42,6 +42,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 public abstract class AbstractManifestBuilder {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractManifestBuilder() {
+	}
+
+	/**
 	 * Adds a {@code <SigReference>} element
 	 *
 	 * @param documentDom {@link Document} to add the SigReference to

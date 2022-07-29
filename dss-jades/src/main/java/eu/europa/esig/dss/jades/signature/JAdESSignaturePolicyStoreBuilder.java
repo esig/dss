@@ -58,6 +58,12 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignaturePolicyStoreBuilder.class);
 
 	/**
+	 * Default constructor
+	 */
+	public JAdESSignaturePolicyStoreBuilder() {
+	}
+
+	/**
 	 * Adds {@code signaturePolicyStore} to all signatures inside the {@code document}
 	 * matching the given {@code SignaturePolicyStore}.
 	 * 

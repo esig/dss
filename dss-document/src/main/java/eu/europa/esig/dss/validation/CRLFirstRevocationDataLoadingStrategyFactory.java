@@ -26,6 +26,12 @@ package eu.europa.esig.dss.validation;
  */
 public class CRLFirstRevocationDataLoadingStrategyFactory implements RevocationDataLoadingStrategyFactory {
 
+    /**
+     * Default constructor
+     */
+    public CRLFirstRevocationDataLoadingStrategyFactory() {
+    }
+
     @Override
     public RevocationDataLoadingStrategy create() {
         return new CRLFirstRevocationDataLoadingStrategy();

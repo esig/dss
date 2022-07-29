@@ -43,6 +43,12 @@ public class OCSPTokenRefMatcher implements RevocationTokenRefMatcher<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OCSPTokenRefMatcher.class);
 
+	/**
+	 * Default constructor
+	 */
+	public OCSPTokenRefMatcher() {
+	}
+
 	@Override
 	public boolean match(RevocationToken<OCSP> token, RevocationRef<OCSP> reference) {
 		final OCSPToken ocspToken = (OCSPToken) token;

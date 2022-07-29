@@ -52,7 +52,14 @@ import java.util.Objects;
  */
 public class GoogleGuavaUtils implements IUtils {
 
+	/** Defined an empty String */
 	private static final String STRING_EMPTY = "";
+
+	/**
+	 * Default constructor
+	 */
+	public GoogleGuavaUtils() {
+	}
 
 	@Override
 	public boolean isStringEmpty(String text) {

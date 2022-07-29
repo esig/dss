@@ -38,6 +38,12 @@ public class ProfileParameters implements Serializable {
     private List<DSSDocument> detachedContents;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public ProfileParameters() {
+    }
+
+    /**
      * Gets the detached contents
      *
      * @return a list of {@link DSSDocument}s

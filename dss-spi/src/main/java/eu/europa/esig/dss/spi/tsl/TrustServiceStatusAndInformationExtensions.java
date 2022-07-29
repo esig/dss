@@ -179,6 +179,8 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 
 		/**
 		 * Constructor with {@code TrustServiceStatusAndInformationExtensions}
+		 *
+		 * @param status {@link TrustServiceStatusAndInformationExtensions}
 		 */
 		public TrustServiceStatusAndInformationExtensionsBuilder(TrustServiceStatusAndInformationExtensions status) {
 			this.names = status.getNames();

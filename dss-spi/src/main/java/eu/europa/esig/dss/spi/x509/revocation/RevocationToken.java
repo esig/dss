@@ -105,6 +105,12 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 * The reason of the revocation.
 	 */
 	protected RevocationReason reason;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected RevocationToken() {
+	}
 	
 	/**
 	 * Returns the Revocation Token type (CRL or OCSP)

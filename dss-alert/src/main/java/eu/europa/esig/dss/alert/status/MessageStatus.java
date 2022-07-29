@@ -31,6 +31,12 @@ public class MessageStatus implements Status {
     /** Message describing the occurred event */
     private String message;
 
+    /**
+     * Default constructor initializing a null message
+     */
+    public MessageStatus() {
+    }
+
     @Override
     public String getMessage() {
         return message;

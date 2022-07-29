@@ -35,6 +35,12 @@ public class OCSPFirstRevocationDataLoadingStrategy extends RevocationDataLoadin
 
     private static final Logger LOG = LoggerFactory.getLogger(OCSPFirstRevocationDataLoadingStrategy.class);
 
+    /**
+     * Default constructor
+     */
+    public OCSPFirstRevocationDataLoadingStrategy() {
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public RevocationToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {

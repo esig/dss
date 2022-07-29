@@ -94,6 +94,12 @@ public class QcStatements {
     private List<String> otherOids = new ArrayList<>();
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public QcStatements() {
+    }
+
+    /**
      * Gets if the certificate is qc-compliant
      *
      * @return TRUE if qc-compliance extension is present, FALSE otherwise

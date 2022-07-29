@@ -45,6 +45,12 @@ public class ProxyProperties implements Serializable {
 	private Collection<String> excludedHosts;
 
 	/**
+	 * Default constructor with null values
+	 */
+	public ProxyProperties() {
+	}
+
+	/**
 	 * Returns the proxy host to use
 	 * 
 	 * @return the proxy host

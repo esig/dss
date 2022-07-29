@@ -50,6 +50,12 @@ public class RemoteDocumentValidationService {
 	private CertificateVerifier verifier;
 
 	/**
+	 * Default construction instantiating object with null certificate verifier
+	 */
+	public RemoteDocumentValidationService() {
+	}
+
+	/**
 	 * Sets the certificate verifier
 	 *
 	 * @param verifier {@link CertificateVerifier}

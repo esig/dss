@@ -52,6 +52,12 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
     private final Map<RevocationToken<CRL>, Set<Long>> crlTokenMap = new HashMap<>();
 
     /**
+     * Default constructor instantiation an object with empty mpa of CRL token objects
+     */
+    public PdfCompositeDssDictCRLSource() {
+    }
+
+    /**
      * This method allows adding CRL tokens extracted from a /DSS revision
      *
      * @param dssDictionary {@link PdfDssDict} representing a /DSS revision's content

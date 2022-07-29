@@ -2,14 +2,11 @@ package eu.europa.esig.dss.enumerations;
 
 import java.util.Objects;
 
-public interface TSLType {
-
-    /**
-     * Gets URI
-     *
-     * @return {@link String}
-     */
-    String getUri();
+/**
+ * Defines a TSLType element of a Trusted List
+ *
+ */
+public interface TSLType extends UriBasedEnum {
 
     /**
      * Gets label

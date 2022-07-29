@@ -42,6 +42,12 @@ public abstract class AbstractSignatureScopeFinder {
 	private TokenIdentifierProvider tokenIdentifierProvider = new OriginalIdentifierProvider();
 
 	/**
+	 * Default constructor instantiating the object with default values
+	 */
+	protected AbstractSignatureScopeFinder() {
+	}
+
+	/**
 	 * Returns the used {@code DigestAlgorithm}
 	 *
 	 * @return {@link DigestAlgorithm}

@@ -24,16 +24,22 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 
 /**
- * Parameters for a CAdES counter signature creation
+ * Parameters for a CAdES counter-signature creation
  */
 public class CAdESCounterSignatureParameters extends CAdESSignatureParameters implements SerializableCounterSignatureParameters {
 
 	private static final long serialVersionUID = -1964623380368542439L;
 
 	/**
-	 * Signature Id to be counter signed
+	 * Signature Id to be counter-signed
 	 */
 	private String signatureIdToCounterSign;
+
+	/**
+	 * Default constructor with empty signature id to be counter-signed
+	 */
+	public CAdESCounterSignatureParameters() {
+	}
 
 	@Override
 	public String getSignatureIdToCounterSign() {

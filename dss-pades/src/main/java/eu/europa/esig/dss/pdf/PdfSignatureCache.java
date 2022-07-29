@@ -44,6 +44,12 @@ public class PdfSignatureCache implements Serializable {
     private DSSDocument toBeSignedDocument;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public PdfSignatureCache() {
+    }
+
+    /**
      * Gets digest of the ByteRange
      *
      * @return byte array representing digest value

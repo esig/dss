@@ -54,6 +54,12 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePolicyStoreBuilder.class);
 
 	/**
+	 * Default constructor
+	 */
+	public SignaturePolicyStoreBuilder() {
+	}
+
+	/**
 	 * Adds a signaturePolicyStore to all signatures inside the document, matching the incorporated signature policy
 	 *
 	 * @param signatureDocument {@link DSSDocument} containing signatures to add signature policy store into

@@ -34,6 +34,12 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
     /** The error key to be used for general errors */
     protected static final String GENERAL_ERROR_KEY = "general";
 
+    /**
+     * Default constructor
+     */
+    protected AbstractSignaturePolicyValidator() {
+    }
+
     @Override
     public Digest getComputedDigest(DSSDocument policyDocument, DigestAlgorithm digestAlgorithm) {
         return DSSUtils.getDigest(digestAlgorithm, policyDocument);

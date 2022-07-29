@@ -44,6 +44,12 @@ import java.util.List;
  */
 public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder {
 
+	/**
+	 * Default constructor
+	 */
+	public ASiCWithCAdESSignatureScopeFinder() {
+	}
+
     @Override
     public List<SignatureScope> findSignatureScope(final CAdESSignature cadesSignature) {
         List<SignatureScope> result = new ArrayList<>();

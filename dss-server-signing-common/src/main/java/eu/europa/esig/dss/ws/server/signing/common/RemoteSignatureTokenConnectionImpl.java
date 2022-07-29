@@ -47,6 +47,12 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	private AbstractKeyStoreTokenConnection token;
 
 	/**
+	 * Default construction instantiating object with null token connection
+	 */
+	public RemoteSignatureTokenConnectionImpl() {
+	}
+
+	/**
 	 * Sets the connection to the KeyStore
 	 *
 	 * @param token {@link AbstractKeyStoreTokenConnection}

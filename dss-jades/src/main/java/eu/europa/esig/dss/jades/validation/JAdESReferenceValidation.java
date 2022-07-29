@@ -36,6 +36,12 @@ public class JAdESReferenceValidation extends ReferenceValidation {
 	private List<String> errorMessages = new ArrayList<>();
 
 	/**
+	 * Default constructor with empty list of error messages
+	 */
+	public JAdESReferenceValidation() {
+	}
+
+	/**
 	 * Gets error messages occurred during the reference validation
 	 *
 	 * @return a list of {@link String} messages

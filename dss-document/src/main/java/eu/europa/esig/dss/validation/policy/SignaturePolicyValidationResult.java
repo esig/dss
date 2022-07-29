@@ -50,6 +50,12 @@ public class SignaturePolicyValidationResult {
     private Map<String, String> errors;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public SignaturePolicyValidationResult() {
+    }
+
+    /**
      * Returns if the signature policy has been obtained successfully
      *
      * @return TRUE if the signature policy has been identified, FALSE otherwise

@@ -102,6 +102,12 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	private SigDMechanism sigDMechanism;
 
+	/**
+	 * Default constructor instantiating object with default parameters
+	 */
+	public JAdESSignatureParameters() {
+	}
+
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.JAdES != signatureLevel.getSignatureForm()) {

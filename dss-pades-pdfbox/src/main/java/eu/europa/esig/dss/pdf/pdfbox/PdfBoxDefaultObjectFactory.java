@@ -31,6 +31,12 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatur
  */
 public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public PdfBoxDefaultObjectFactory() {
+	}
+
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
 		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxDefaultSignatureDrawerFactory()));

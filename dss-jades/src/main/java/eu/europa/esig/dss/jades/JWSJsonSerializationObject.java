@@ -49,6 +49,12 @@ public class JWSJsonSerializationObject implements Serializable {
 	private List<String> structuralValidationErrors;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public JWSJsonSerializationObject() {
+	}
+
+	/**
 	 * Gets the base64url encoded payload of a signature
 	 *
 	 * @return {@link String} base64url encoded payload

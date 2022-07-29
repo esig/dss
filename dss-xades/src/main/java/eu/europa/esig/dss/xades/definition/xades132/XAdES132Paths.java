@@ -41,6 +41,12 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
 			XAdES132Element.COUNTER_SIGNATURE);
 
+	/**
+	 * Default constructor
+	 */
+	public XAdES132Paths() {
+	}
+
 	@Override
 	public DSSNamespace getNamespace() {
 		return XAdESNamespaces.XADES_132;

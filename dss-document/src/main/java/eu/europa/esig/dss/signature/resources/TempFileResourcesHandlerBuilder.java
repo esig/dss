@@ -45,6 +45,12 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
     private final List<TempFileResourcesHandler> handlers = new ArrayList<>();
 
     /**
+     * Default constructor instantiating an empty list of processed handlers
+     */
+    public TempFileResourcesHandlerBuilder() {
+    }
+
+    /**
      * The prefix (beginning) of a filename to be used for created documents
      *
      * Default : "dss-"

@@ -172,6 +172,12 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
 
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public XAdESSignatureParameters() {
+	}
+
 	@Override
 	public void setSignatureLevel(SignatureLevel signatureLevel) {
 		if (signatureLevel == null || SignatureForm.XAdES != signatureLevel.getSignatureForm()) {

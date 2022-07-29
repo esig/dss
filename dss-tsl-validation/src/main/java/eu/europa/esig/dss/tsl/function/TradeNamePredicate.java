@@ -29,6 +29,12 @@ public class TradeNamePredicate implements Predicate<String> {
 
 	private OfficialRegistrationIdentifierPredicate registrationIdentifier = new OfficialRegistrationIdentifierPredicate();
 
+	/**
+	 * Default constructor instantiating OfficialRegistrationIdentifierPredicate
+	 */
+	public TradeNamePredicate() {
+	}
+
 	@Override
 	public boolean test(String t) {
 		return t != null && !registrationIdentifier.test(t);

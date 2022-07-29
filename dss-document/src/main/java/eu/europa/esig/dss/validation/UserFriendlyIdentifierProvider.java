@@ -129,6 +129,12 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private String dateFormat = "yyyyMMdd-HHmm";
 
     /**
+     * Default constructor instantiating empty maps of processed tokens
+     */
+    public UserFriendlyIdentifierProvider() {
+    }
+
+    /**
      * Sets the prefix to be used for signature identifiers
      *
      * Default = "SIGNATURE"

@@ -140,6 +140,12 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	/** The cached map of original signed data */
 	protected Map<String, XmlSignerData> xmlSignedDataMap = new HashMap<>();
 
+	/**
+	 * Default constructor instantiating object with null values and empty maps
+	 */
+	public SignedDocumentDiagnosticDataBuilder() {
+	}
+
 	@Override
 	public SignedDocumentDiagnosticDataBuilder usedCertificates(Set<CertificateToken> usedCertificates) {
 		return (SignedDocumentDiagnosticDataBuilder) super.usedCertificates(usedCertificates);

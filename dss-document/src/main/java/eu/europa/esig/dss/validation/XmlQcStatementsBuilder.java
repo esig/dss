@@ -28,6 +28,12 @@ import java.util.List;
 public class XmlQcStatementsBuilder {
 
     /**
+     * Default constructor
+     */
+    public XmlQcStatementsBuilder() {
+    }
+
+    /**
      * Builds the {@code XmlQcStatements}
      *
      * @param qcStatements {@link QcStatements}

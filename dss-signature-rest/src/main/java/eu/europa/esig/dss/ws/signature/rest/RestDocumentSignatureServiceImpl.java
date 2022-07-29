@@ -42,6 +42,12 @@ public class RestDocumentSignatureServiceImpl implements RestDocumentSignatureSe
 	private RemoteDocumentSignatureService service;
 
 	/**
+	 * Default construction instantiating object with null RemoteDocumentSignatureService
+	 */
+	public RestDocumentSignatureServiceImpl() {
+	}
+
+	/**
 	 * Sets the remote signature service
 	 *
 	 * @param service {@link RemoteDocumentSignatureService}

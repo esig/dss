@@ -47,6 +47,12 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 
 	private static final Logger LOG = LoggerFactory.getLogger(BasicASNSignaturePolicyValidator.class);
 
+	/**
+	 * Default constructor
+	 */
+	public BasicASNSignaturePolicyValidator() {
+	}
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		if (signaturePolicy.getPolicyContent() != null) {

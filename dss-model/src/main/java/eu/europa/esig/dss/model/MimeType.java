@@ -177,6 +177,8 @@ public class MimeType implements Serializable {
 	}
 
 	/**
+	 * Gets String identifying the MimeType
+	 *
 	 * @return the mimeTypeString
 	 */
 	public String getMimeTypeString() {

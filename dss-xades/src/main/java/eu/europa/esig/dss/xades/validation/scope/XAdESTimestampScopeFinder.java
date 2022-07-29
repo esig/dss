@@ -37,6 +37,12 @@ import java.util.List;
  */
 public class XAdESTimestampScopeFinder extends EncapsulatedTimestampScopeFinder {
 
+    /**
+     * Default constructor
+     */
+    public XAdESTimestampScopeFinder() {
+    }
+
     @Override
     protected List<SignatureScope> filterCoveredSignatureScopes(TimestampToken timestampToken) {
         final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();

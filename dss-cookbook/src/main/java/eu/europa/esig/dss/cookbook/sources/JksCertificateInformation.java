@@ -38,6 +38,12 @@ import java.util.List;
 public class JksCertificateInformation {
 
 	/**
+	 * Executable application
+	 */
+	private JksCertificateInformation() {
+	}
+
+	/**
 	 * Main method
 	 *
 	 * @param args not applicable
@@ -46,7 +52,7 @@ public class JksCertificateInformation {
 	public static void main(final String[] args) throws Exception {
 
 		try (InputStream is = new FileInputStream("src/main/resources/keystore.jks");
-				JKSSignatureToken jksSignatureToken = new JKSSignatureToken(is, new PasswordProtection("dss-password".toCharArray()))) {
+			 JKSSignatureToken jksSignatureToken = new JKSSignatureToken(is, new PasswordProtection("dss-password".toCharArray()))) {
 
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
@@ -66,4 +72,5 @@ public class JksCertificateInformation {
 
 		}
 	}
+
 }

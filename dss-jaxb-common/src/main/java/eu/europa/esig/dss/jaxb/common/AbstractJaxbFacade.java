@@ -50,6 +50,12 @@ import java.util.Objects;
 public abstract class AbstractJaxbFacade<T> {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractJaxbFacade() {
+	}
+
+	/**
 	 * This method returns the instance of {@link JAXBContext} which can handle the
 	 * JAXB Object
 	 * 

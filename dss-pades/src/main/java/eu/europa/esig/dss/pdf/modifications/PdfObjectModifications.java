@@ -53,6 +53,12 @@ public class PdfObjectModifications {
     private final List<ObjectModification> undefinedChanges = new ArrayList<>();
 
     /**
+     * Default constructor instantiating object with empty differences lists
+     */
+    public PdfObjectModifications() {
+    }
+
+    /**
      * Adds a secure change concerning signature augmentation (DSS dictionary, DocTimeStamp)
      *
      * @param objectModification {@link ObjectModification}

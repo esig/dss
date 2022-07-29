@@ -111,6 +111,12 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
 		findCRLRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_ISSUER, byte[].class));
 	}
+
+	/**
+	 * Default constructor
+	 */
+	public JdbcCacheCRLSource() {
+	}
 	
 	@Override
 	protected String getCreateTableQuery() {

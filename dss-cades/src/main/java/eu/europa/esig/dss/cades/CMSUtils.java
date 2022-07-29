@@ -91,6 +91,9 @@ public final class CMSUtils {
 	/** 01-01-2050 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
 	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
 
+	/**
+	 * Utils class
+	 */
 	private CMSUtils() {
 	}
 
@@ -173,6 +176,8 @@ public final class CMSUtils {
 	}
 
 	/**
+	 * Gets the DER SignedAttributes table from the given {@code SignerInformation}
+	 *
 	 * @param signerInformation
 	 *            {@code SignerInformation}
 	 * @return {@code DERTaggedObject} representing the signed attributes

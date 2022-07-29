@@ -34,6 +34,12 @@ import java.util.List;
 public class PdfObjectModificationsFilter {
 
     /**
+     * Default constructor
+     */
+    public PdfObjectModificationsFilter() {
+    }
+
+    /**
      * Categorizes the given collection of {@code ObjectModification}s to various categories and
      * returns {@code PdfObjectModifications} containing the result of filtering.
      *

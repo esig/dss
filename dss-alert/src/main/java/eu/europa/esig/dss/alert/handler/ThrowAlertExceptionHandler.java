@@ -29,6 +29,12 @@ import eu.europa.esig.dss.alert.exception.AlertException;
  */
 public class ThrowAlertExceptionHandler<T> implements AlertHandler<T> {
 
+	/**
+	 * Default constructor
+	 */
+	public ThrowAlertExceptionHandler() {
+	}
+
 	@Override
 	public void process(T object) {
 		throw new AlertException(object.toString());
