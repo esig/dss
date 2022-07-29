@@ -41,8 +41,6 @@
                                             * Skipped AcceptableRevocationDataFound constraint may lead to false positive validation result;
                                             * ASiC : unable to proceed validation of CEN-header invalid files.
 
-|v5.10             |March 2022              a|Bug fixes :
-
 |v5.10.1           |April 2022              a|Bug fixes :
 
                                               * ASiC-E with XAdES parallel signature creation regression;
