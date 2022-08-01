@@ -40,7 +40,7 @@
 		<slf4j.version>1.7.36</slf4j.version>
 		<logback-classic.version>1.2.11</logback-classic.version>
 
-		<bouncycastle.version>1.71</bouncycastle.version>
+		<bouncycastle.version>1.70</bouncycastle.version>
 		<xmlsec.version>2.3.1</xmlsec.version>
 		<jose4j.version>0.7.12</jose4j.version>
 		<pdfbox.version>2.0.26</pdfbox.version>
@@ -896,12 +896,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-jdk18on</artifactId>
+				<artifactId>bcprov-jdk15on</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcpkix-jdk18on</artifactId>
+				<artifactId>bcpkix-jdk15on</artifactId>
 				<version>${bouncycastle.version}</version>
 			</dependency>
 			<dependency>
