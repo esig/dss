@@ -24,7 +24,7 @@
                                             * XAdES : add support of a custom CommitmentType qualifier;
                                             * CAdES : improved signature file extension naming;
                                             * TL-validation : Trust Service equivalence scheme and Mutual Recognition Agreement support;
-                                            * Other : dependencies update (Apache Santuario, BouncyCastle, PdfBox, OpenPdf, httpclient5, etc.);
+                                            * Other : dependencies update (Apache Santuario, PdfBox, OpenPdf, httpclient5, etc.);
                                             * Demo : eSignature Validation Test Cases automated validation module;
                                             * Demo : added ASiC Merger webpage;
                                             * Standalone app : add TL signing function;

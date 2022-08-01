@@ -33,12 +33,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KeyStoreCertificateSourceTest {
@@ -127,15 +125,6 @@ public class KeyStoreCertificateSourceTest {
 
 		certificates = kscs.getCertificates();
 		assertTrue(Utils.isCollectionEmpty(certificates));
-	}
-
-	@Test
-	public void extractKeystore() {
-		assertTimeout(ofMillis(1000), () -> {
-			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(
-					new File("src/test/resources/good-user.p12"), "PKCS12", "ks-password");
-			assertEquals(1, kscs.getCertificates().size());
-		});
 	}
 
 }
