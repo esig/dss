@@ -20,21 +20,19 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Arrays;
+
 import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 
 public class CertificateSourceCasesTest {
 
@@ -141,8 +139,11 @@ public class CertificateSourceCasesTest {
 	}
 
 	@Test
-	public void extractTLSKeystore() throws IOException {
-		assertTimeout(ofMillis(3000), () -> {
+	public void extractTLSKeystore() {
+		// Note : the timeout for the unit test has been increased due to introduction of security checking.
+		// The test keystore contains ~2500 certificates, that significantly impacts the execution time.
+		// See : {@link https://github.com/bcgit/bc-java/issues/1144}
+		assertTimeout(ofMillis(30000), () -> {
 			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"),
 					"PKCS12", "ks-password");
 	
