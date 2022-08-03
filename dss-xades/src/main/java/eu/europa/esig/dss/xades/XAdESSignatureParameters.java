@@ -176,6 +176,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * Default constructor instantiating object with null values
 	 */
 	public XAdESSignatureParameters() {
+		// empty
 	}
 
 	@Override

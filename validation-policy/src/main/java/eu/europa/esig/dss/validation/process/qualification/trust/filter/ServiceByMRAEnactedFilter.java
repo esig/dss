@@ -35,6 +35,7 @@ public class ServiceByMRAEnactedFilter implements TrustedServiceFilter {
      * Default constructor
      */
     public ServiceByMRAEnactedFilter() {
+        // empty
     }
 
     @Override

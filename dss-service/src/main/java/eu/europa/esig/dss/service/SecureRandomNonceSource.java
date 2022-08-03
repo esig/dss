@@ -37,6 +37,7 @@ public class SecureRandomNonceSource implements NonceSource {
 	 * Default constructor instantiating a SecureRandom
 	 */
 	public SecureRandomNonceSource() {
+		// empty
 	}
 
 	@Override

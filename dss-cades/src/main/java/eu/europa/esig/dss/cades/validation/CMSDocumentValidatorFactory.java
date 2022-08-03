@@ -33,6 +33,7 @@ public class CMSDocumentValidatorFactory implements DocumentValidatorFactory {
 	 * Default constructor
 	 */
 	public CMSDocumentValidatorFactory() {
+		// empty
 	}
 
 	@Override

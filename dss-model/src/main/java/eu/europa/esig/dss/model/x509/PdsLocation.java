@@ -37,6 +37,7 @@ public class PdsLocation {
      * Default constructor instantiating object with null values
      */
     public PdsLocation() {
+        // empty
     }
 
     /**

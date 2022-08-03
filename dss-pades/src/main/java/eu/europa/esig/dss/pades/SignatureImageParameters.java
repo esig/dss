@@ -99,6 +99,7 @@ public class SignatureImageParameters implements Serializable {
 	 * Default constructor instantiating object with default parameters
 	 */
 	public SignatureImageParameters() {
+		// empty
 	}
 
 	/**

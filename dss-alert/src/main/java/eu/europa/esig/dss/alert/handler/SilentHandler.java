@@ -29,6 +29,7 @@ public class SilentHandler<T> implements AlertHandler<T> {
 	 * Default constructor
 	 */
 	public SilentHandler() {
+		// empty
 	}
 
 	@Override

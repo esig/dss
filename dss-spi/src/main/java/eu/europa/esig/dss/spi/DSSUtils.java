@@ -125,9 +125,10 @@ public final class DSSUtils {
 	public static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
 	/**
-	 * This class is an utility class and cannot be instantiated.
+	 * This class is a utility class and cannot be instantiated.
 	 */
 	private DSSUtils() {
+		// empty
 	}
 
 	/**

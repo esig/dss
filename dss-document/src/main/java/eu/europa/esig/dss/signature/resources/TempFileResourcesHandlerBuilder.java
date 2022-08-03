@@ -48,6 +48,7 @@ public class TempFileResourcesHandlerBuilder implements DSSResourcesHandlerBuild
      * Default constructor instantiating an empty list of processed handlers
      */
     public TempFileResourcesHandlerBuilder() {
+        // empty
     }
 
     /**

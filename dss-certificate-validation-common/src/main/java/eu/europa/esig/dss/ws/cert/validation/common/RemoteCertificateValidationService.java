@@ -51,6 +51,7 @@ public class RemoteCertificateValidationService {
 	 * Default construction instantiating object with null CertificateVerifier
 	 */
 	public RemoteCertificateValidationService() {
+		// empty
 	}
 
 	/**

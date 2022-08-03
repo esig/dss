@@ -37,6 +37,7 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 	 * Default constructor
 	 */
 	public MSCAPISignatureToken() {
+		// empty
 	}
 
 	@Override

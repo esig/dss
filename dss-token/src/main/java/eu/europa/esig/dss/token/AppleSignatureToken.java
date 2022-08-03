@@ -40,6 +40,7 @@ public class AppleSignatureToken extends AbstractKeyStoreTokenConnection {
      * Default constructor
      */
     public AppleSignatureToken() {
+        // empty
     }
 
     @Override

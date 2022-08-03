@@ -41,6 +41,7 @@ public class SignatureStatus extends ObjectStatus {
      * Default constructor initializing an empty map
      */
     public SignatureStatus() {
+        // empty
     }
 
     /**

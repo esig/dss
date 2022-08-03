@@ -78,6 +78,7 @@ public class CommonCommitmentType implements CommitmentType {
      * Default constructor instantiating object with null values
      */
     public CommonCommitmentType() {
+        // empty
     }
 
     @Override

@@ -36,6 +36,7 @@ public class CertificateContentEquivalence {
 	 * Default constructor instantiating object with null values
 	 */
 	public CertificateContentEquivalence() {
+		// empty
 	}
 
 	/**

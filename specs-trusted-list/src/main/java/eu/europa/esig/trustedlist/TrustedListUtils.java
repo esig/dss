@@ -50,6 +50,7 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 	private JAXBContext jc;
 
 	private TrustedListUtils() {
+		// empty
 	}
 
 	/**

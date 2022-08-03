@@ -53,6 +53,7 @@ public class SignaturePolicyValidationResult {
      * Default constructor instantiating object with null values
      */
     public SignaturePolicyValidationResult() {
+        // empty
     }
 
     /**

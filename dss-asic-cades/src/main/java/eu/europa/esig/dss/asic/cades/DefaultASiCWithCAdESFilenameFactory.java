@@ -42,6 +42,7 @@ public class DefaultASiCWithCAdESFilenameFactory extends AbstractASiCFilenameFac
      * Default constructor
      */
     public DefaultASiCWithCAdESFilenameFactory() {
+        // empty
     }
 
     @Override

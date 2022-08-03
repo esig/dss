@@ -60,6 +60,7 @@ public class ManifestEntry implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public ManifestEntry() {
+		// empty
 	}
 
 	/**

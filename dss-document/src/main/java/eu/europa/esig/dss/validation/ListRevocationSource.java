@@ -46,6 +46,7 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * Default constructor
 	 */
 	public ListRevocationSource() {
+		// empty
 	}
 
 	/**

@@ -34,6 +34,7 @@ public class DetachedTimestampValidatorFactory implements DocumentValidatorFacto
 	 * Default constructor
 	 */
 	public DetachedTimestampValidatorFactory() {
+		// empty
 	}
 
 	@Override

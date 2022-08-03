@@ -38,6 +38,7 @@ public abstract class AbstractSignaturePolicyValidator implements SignaturePolic
      * Default constructor
      */
     protected AbstractSignaturePolicyValidator() {
+        // empty
     }
 
     @Override

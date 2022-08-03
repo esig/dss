@@ -174,6 +174,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * Default constructor instantiating object with null or empty values and current time
 	 */
 	public SignatureValidationContext() {
+		// empty
 	}
 
 	/**

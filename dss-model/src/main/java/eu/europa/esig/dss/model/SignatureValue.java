@@ -42,6 +42,7 @@ public final class SignatureValue implements Serializable {
 	 * Empty constructor
 	 */
 	public SignatureValue() {
+		// empty
 	}
 
 	/**

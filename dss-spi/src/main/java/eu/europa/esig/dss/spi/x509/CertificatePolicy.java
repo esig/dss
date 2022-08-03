@@ -36,6 +36,7 @@ public class CertificatePolicy {
 	 * Default constructor instantiating object with null values
 	 */
 	public CertificatePolicy() {
+		// empty
 	}
 
 	/**

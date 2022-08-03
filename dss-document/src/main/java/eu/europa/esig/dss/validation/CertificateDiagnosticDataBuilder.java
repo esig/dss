@@ -38,6 +38,7 @@ public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * Default constructor
 	 */
 	public CertificateDiagnosticDataBuilder() {
+		// empty
 	}
 
 	@Override

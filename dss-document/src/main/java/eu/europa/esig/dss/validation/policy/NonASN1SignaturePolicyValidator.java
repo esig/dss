@@ -37,6 +37,7 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 	 * Default constructor
 	 */
 	public NonASN1SignaturePolicyValidator() {
+		// empty
 	}
 
 	@Override

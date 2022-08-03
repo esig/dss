@@ -71,6 +71,7 @@ public class RemoteSignatureImageTextParameters implements Serializable {
      * Default constructor instantiating object with null values
      */
     public RemoteSignatureImageTextParameters() {
+        // empty
     }
 
     /**

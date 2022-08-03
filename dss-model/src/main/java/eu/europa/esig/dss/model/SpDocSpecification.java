@@ -50,6 +50,7 @@ public class SpDocSpecification implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public SpDocSpecification() {
+		// empty
 	}
 
 	/**

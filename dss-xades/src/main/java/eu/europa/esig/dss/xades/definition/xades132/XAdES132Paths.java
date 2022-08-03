@@ -45,6 +45,7 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	 * Default constructor
 	 */
 	public XAdES132Paths() {
+		// empty
 	}
 
 	@Override

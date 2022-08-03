@@ -38,6 +38,7 @@ public class QCLimitValue {
      * Default constructor instantiating object with null values
      */
     public QCLimitValue() {
+        // empty
     }
 
     /**

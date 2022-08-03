@@ -53,6 +53,7 @@ public abstract class AbstractConfigurator<F> {
      * Default constructor initializing empty maps of security features and attributes
      */
     protected AbstractConfigurator() {
+        // empty
     }
 
     /**

@@ -61,6 +61,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * Empty constructor
      */
     protected DefaultContainerMerger() {
+        // empty
     }
 
     /**

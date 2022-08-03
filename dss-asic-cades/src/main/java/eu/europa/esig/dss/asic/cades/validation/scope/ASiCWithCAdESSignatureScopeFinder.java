@@ -48,6 +48,7 @@ public class ASiCWithCAdESSignatureScopeFinder extends CAdESSignatureScopeFinder
 	 * Default constructor
 	 */
 	public ASiCWithCAdESSignatureScopeFinder() {
+		// empty
 	}
 
     @Override

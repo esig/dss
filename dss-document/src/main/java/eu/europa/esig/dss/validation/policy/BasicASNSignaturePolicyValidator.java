@@ -51,6 +51,7 @@ public class BasicASNSignaturePolicyValidator extends AbstractSignaturePolicyVal
 	 * Default constructor
 	 */
 	public BasicASNSignaturePolicyValidator() {
+		// empty
 	}
 
 	@Override

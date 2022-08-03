@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class ServiceEquivalence {
 	private Map<List<String>, List<String>> statusEquivalence;
 
 	/** CertificateContentReferencesEquivalenceList */
-	private EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences;
+	private Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences;
 
 	/** QualifierEquivalenceList equivalencies */
 	private Map<String, String> qualifierEquivalence;
@@ -59,6 +58,7 @@ public class ServiceEquivalence {
 	 * Default constructor instantiating object with null values
 	 */
 	public ServiceEquivalence() {
+		// empty
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class ServiceEquivalence {
 	 *
 	 * @return a map between {@link MRAEquivalenceContext} type and {@code CertificateContentEquivalence} value
 	 */
-	public EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> getCertificateContentEquivalences() {
+	public Map<MRAEquivalenceContext, CertificateContentEquivalence> getCertificateContentEquivalences() {
 		return certificateContentEquivalences;
 	}
 
@@ -167,7 +167,7 @@ public class ServiceEquivalence {
 	 *                                       {@code CertificateContentEquivalence} value
 	 */
 	public void setCertificateContentEquivalences(
-			EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences) {
+			Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences) {
 		this.certificateContentEquivalences = certificateContentEquivalences;
 	}
 

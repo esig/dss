@@ -40,6 +40,7 @@ public class EncapsulatedTimestampScopeFinder extends AbstractSignatureScopeFind
      * Default constructor instantiating object with null signature
      */
     public EncapsulatedTimestampScopeFinder() {
+        // empty
     }
 
     /**

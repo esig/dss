@@ -50,6 +50,7 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public CertificateRef() {
+		// empty
 	}
 
 	/**

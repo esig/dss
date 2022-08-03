@@ -55,6 +55,7 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
      * Default constructor instantiation an object with empty mpa of OCSP token objects
      */
     public PdfCompositeDssDictOCSPSource() {
+        // empty
     }
 
     /**

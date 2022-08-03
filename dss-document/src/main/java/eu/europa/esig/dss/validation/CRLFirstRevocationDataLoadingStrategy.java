@@ -37,6 +37,7 @@ public class CRLFirstRevocationDataLoadingStrategy extends RevocationDataLoading
      * Default constructor
      */
     public CRLFirstRevocationDataLoadingStrategy() {
+        // empty
     }
 
     @Override

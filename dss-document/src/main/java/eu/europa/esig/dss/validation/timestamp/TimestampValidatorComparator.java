@@ -38,6 +38,7 @@ public class TimestampValidatorComparator implements Comparator<TimestampValidat
      * Default constructor instantiating TimestampTokenComparator
      */
     public TimestampValidatorComparator() {
+        // empty
     }
 
     @Override

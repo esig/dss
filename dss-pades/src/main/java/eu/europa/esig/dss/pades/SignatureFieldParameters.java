@@ -50,9 +50,10 @@ public class SignatureFieldParameters implements Serializable {
 	private float height;
 
 	/**
-	 * Defaultconstructor instantiating object with null values
+	 * Default constructor instantiating object with null values
 	 */
 	public SignatureFieldParameters() {
+		// empty
 	}
 
 	/**

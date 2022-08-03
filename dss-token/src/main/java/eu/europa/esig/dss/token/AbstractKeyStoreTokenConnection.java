@@ -44,6 +44,7 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	 * Default constructor
 	 */
 	protected AbstractKeyStoreTokenConnection() {
+		// empty
 	}
 
 	/**

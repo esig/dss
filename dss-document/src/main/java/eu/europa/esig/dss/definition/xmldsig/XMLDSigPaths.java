@@ -122,6 +122,7 @@ public class XMLDSigPaths extends AbstractPaths {
 	 * Default constructor
 	 */
 	public XMLDSigPaths() {
+		// empty
 	}
 
 }

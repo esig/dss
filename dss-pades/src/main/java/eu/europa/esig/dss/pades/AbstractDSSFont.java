@@ -39,6 +39,7 @@ public abstract class AbstractDSSFont implements DSSFont, Serializable {
 	 * Default constructor instantiating object with default configuration
 	 */
 	protected AbstractDSSFont() {
+		// empty
 	}
 
 	@Override

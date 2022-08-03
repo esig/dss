@@ -71,6 +71,7 @@ public class BLevelParameters implements Serializable {
 	 * Default constructor instantiating object with default values
 	 */
 	public BLevelParameters() {
+		// empty
 	}
 
 	/**

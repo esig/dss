@@ -53,6 +53,7 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 * Default constructor
 	 */
 	public JAdESCounterSignatureBuilder() {
+		// empty
 	}
 	
 	/**

@@ -58,7 +58,6 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -570,7 +569,7 @@ public class XmlTrustedServiceProviderBuilder {
     }
 
     private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
-        EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
+        Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
         if (Utils.isMapEmpty(certificateContentEquivalences)) {
             LOG.debug("No MRA equivalence is defined for certificate content.");
             return;

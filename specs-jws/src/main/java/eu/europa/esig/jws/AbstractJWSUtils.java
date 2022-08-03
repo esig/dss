@@ -57,6 +57,7 @@ public abstract class AbstractJWSUtils {
 	 * Default constructor instantiating the object with null values
 	 */
 	protected AbstractJWSUtils() {
+		// empty
 	}
 	
 	/**

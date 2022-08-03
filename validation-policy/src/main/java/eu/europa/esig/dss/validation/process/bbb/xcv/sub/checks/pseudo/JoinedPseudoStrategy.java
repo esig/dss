@@ -46,6 +46,7 @@ public class JoinedPseudoStrategy implements PseudoStrategy {
      * Default constructor
      */
     public JoinedPseudoStrategy() {
+        // empty
     }
 
     @Override

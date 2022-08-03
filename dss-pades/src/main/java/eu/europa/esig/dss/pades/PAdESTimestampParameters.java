@@ -84,6 +84,7 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 * Empty constructor
 	 */
 	public PAdESTimestampParameters() {
+		// empty
 	}
 
 	/**

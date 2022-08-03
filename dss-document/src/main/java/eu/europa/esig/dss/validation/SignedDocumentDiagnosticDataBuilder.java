@@ -144,6 +144,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * Default constructor instantiating object with null values and empty maps
 	 */
 	public SignedDocumentDiagnosticDataBuilder() {
+		// empty
 	}
 
 	@Override

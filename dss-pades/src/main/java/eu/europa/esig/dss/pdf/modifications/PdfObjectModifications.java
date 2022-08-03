@@ -56,6 +56,7 @@ public class PdfObjectModifications {
      * Default constructor instantiating object with empty differences lists
      */
     public PdfObjectModifications() {
+        // empty
     }
 
     /**

@@ -72,6 +72,7 @@ public class Policy implements Serializable {
 	 * Empty constructor
 	 */
 	public Policy() {
+		// empty
 	}
 
 	/**

@@ -49,6 +49,7 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 	 * Default constructor instantiating object with null values
 	 */
 	public CAdESSignatureParameters() {
+		// empty
 	}
 
 	/**

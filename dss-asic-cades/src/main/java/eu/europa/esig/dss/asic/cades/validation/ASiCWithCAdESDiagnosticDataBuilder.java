@@ -34,6 +34,7 @@ public class ASiCWithCAdESDiagnosticDataBuilder extends ASiCContainerDiagnosticD
 	 * Default constructor
 	 */
 	public ASiCWithCAdESDiagnosticDataBuilder() {
+		// empty
 	}
 
 	@Override

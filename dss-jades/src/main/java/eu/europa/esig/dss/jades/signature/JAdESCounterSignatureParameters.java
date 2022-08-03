@@ -40,6 +40,7 @@ public class JAdESCounterSignatureParameters extends JAdESSignatureParameters im
 	 * Default constructor instantiating object with null signature id to be counter-signed
 	 */
 	public JAdESCounterSignatureParameters() {
+		// empty
 	}
 
 	@Override

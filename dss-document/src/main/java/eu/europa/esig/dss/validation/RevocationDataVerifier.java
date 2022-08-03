@@ -92,6 +92,7 @@ public class RevocationDataVerifier {
      * Default constructor
      */
     private RevocationDataVerifier() {
+        // empty
     }
 
     /**

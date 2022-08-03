@@ -41,6 +41,7 @@ public class ProfileParameters implements Serializable {
      * Default constructor instantiating object with null values
      */
     public ProfileParameters() {
+        // empty
     }
 
     /**

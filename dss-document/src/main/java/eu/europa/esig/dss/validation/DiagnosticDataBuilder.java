@@ -172,6 +172,7 @@ public abstract class DiagnosticDataBuilder {
 	 * Default constructor instantiating object with null values
 	 */
 	protected DiagnosticDataBuilder() {
+		// empty
 	}
 
 	/**

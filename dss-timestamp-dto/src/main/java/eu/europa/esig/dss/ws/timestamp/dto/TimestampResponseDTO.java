@@ -36,6 +36,7 @@ public class TimestampResponseDTO implements Serializable {
 	 * Default constructor
 	 */
 	public TimestampResponseDTO() {
+		// empty
     }
 
 	/**

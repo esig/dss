@@ -39,6 +39,7 @@ public class ObjectStatus extends MessageStatus {
      * Default constructor initializing an empty objects map
      */
     public ObjectStatus() {
+        // empty
     }
 
     /**

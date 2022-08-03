@@ -49,6 +49,7 @@ public class ContainerInfo {
 	 * Default constructor instantiating object with null values
 	 */
 	public ContainerInfo() {
+		// empty
 	}
 
 	/**

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +36,14 @@ import java.util.Map;
 class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
 
 	/** The correspondence map */
-	private static final Map<ServiceQualification, AdditionalServiceInformation> CORRESPONDANCE_MAP_QUALIFIER_ASI;
+	private static final Map<ServiceQualification, AdditionalServiceInformation> CORRESPONDENCE_MAP_QUALIFIER_ASI;
 
 	static {
-		CORRESPONDANCE_MAP_QUALIFIER_ASI = new HashMap<>();
+		CORRESPONDENCE_MAP_QUALIFIER_ASI = new EnumMap<>(ServiceQualification.class);
 
-		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESIG, AdditionalServiceInformation.FOR_ESIGNATURES);
-		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESEAL, AdditionalServiceInformation.FOR_ESEALS);
-		CORRESPONDANCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_WSA, AdditionalServiceInformation.FOR_WEB_AUTHENTICATION);
+		CORRESPONDENCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESIG, AdditionalServiceInformation.FOR_ESIGNATURES);
+		CORRESPONDENCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_ESEAL, AdditionalServiceInformation.FOR_ESEALS);
+		CORRESPONDENCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_WSA, AdditionalServiceInformation.FOR_WEB_AUTHENTICATION);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 			if (Utils.collectionSize(qualifiers) == 1) {
 				String currentUsage = qualifiers.get(0);
 				ServiceQualification serviceQualification = ServiceQualification.getByUri(currentUsage);
-				AdditionalServiceInformation expectedASI = CORRESPONDANCE_MAP_QUALIFIER_ASI.get(serviceQualification);
+				AdditionalServiceInformation expectedASI = CORRESPONDENCE_MAP_QUALIFIER_ASI.get(serviceQualification);
 				return expectedASI != null && asis.contains(expectedASI.getUri());
 			}
 		}

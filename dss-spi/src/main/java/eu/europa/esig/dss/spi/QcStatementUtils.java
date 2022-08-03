@@ -58,6 +58,7 @@ public class QcStatementUtils {
      * Singleton
      */
     private QcStatementUtils() {
+        // empty
     }
 
     /**

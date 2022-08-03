@@ -39,6 +39,7 @@ public class JAdESReferenceValidation extends ReferenceValidation {
 	 * Default constructor with empty list of error messages
 	 */
 	public JAdESReferenceValidation() {
+		// empty
 	}
 
 	/**

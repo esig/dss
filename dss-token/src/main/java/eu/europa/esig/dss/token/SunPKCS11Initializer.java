@@ -36,6 +36,7 @@ public final class SunPKCS11Initializer {
 	private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
 	private SunPKCS11Initializer() {
+		// empty
 	}
 
 	/**

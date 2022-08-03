@@ -35,6 +35,7 @@ public class InMemoryDocument extends CommonDocument {
 	private byte[] bytes;
 
 	public InMemoryDocument() {
+		// empty
 	}
 
 	/**

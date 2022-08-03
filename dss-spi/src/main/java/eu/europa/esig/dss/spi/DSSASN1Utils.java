@@ -155,9 +155,10 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This class is an utility class and cannot be instantiated.
+	 * This class is a utility class and cannot be instantiated.
 	 */
 	private DSSASN1Utils() {
+		// empty
 	}
 
 	/**

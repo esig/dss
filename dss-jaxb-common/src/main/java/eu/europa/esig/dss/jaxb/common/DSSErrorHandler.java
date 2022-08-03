@@ -47,6 +47,7 @@ public class DSSErrorHandler implements ErrorHandler {
 	 * Default constructor initializing empty lists of messages
 	 */
 	public DSSErrorHandler() {
+		// empty
 	}
 
 	@Override

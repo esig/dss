@@ -180,6 +180,7 @@ public final class DSSXMLUtils {
 	 * This class is an utility class and cannot be instantiated.
 	 */
 	private DSSXMLUtils() {
+		// empty
 	}
 
 	/**

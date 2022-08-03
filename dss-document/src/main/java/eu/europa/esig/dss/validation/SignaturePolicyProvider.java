@@ -50,6 +50,7 @@ public class SignaturePolicyProvider {
 	 * Default constructor instantiating object with null data loaded and empty maps
 	 */
 	public SignaturePolicyProvider() {
+		// empty
 	}
 
 	/**

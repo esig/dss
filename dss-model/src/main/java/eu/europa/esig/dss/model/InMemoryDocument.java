@@ -40,6 +40,7 @@ public class InMemoryDocument extends CommonDocument {
 	 * Empty constructor
 	 */
 	public InMemoryDocument() {
+		// empty
 	}
 
 	/**

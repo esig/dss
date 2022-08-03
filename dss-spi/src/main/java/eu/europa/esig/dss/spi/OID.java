@@ -29,6 +29,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 public class OID {
 
 	private OID() {
+		// empty
 	}
 
 	/**

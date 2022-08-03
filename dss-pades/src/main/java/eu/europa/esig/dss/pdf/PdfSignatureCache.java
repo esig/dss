@@ -47,6 +47,7 @@ public class PdfSignatureCache implements Serializable {
      * Default constructor instantiating object with null values
      */
     public PdfSignatureCache() {
+        // empty
     }
 
     /**

@@ -36,6 +36,7 @@ public class TrustedServiceStatusPreEIDASConsistency implements TrustedServiceCo
      * Default constructor
      */
     public TrustedServiceStatusPreEIDASConsistency() {
+        // empty
     }
 
     @Override

@@ -70,6 +70,7 @@ public class ReferenceValidation implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public ReferenceValidation() {
+		// empty
 	}
 
 	/**

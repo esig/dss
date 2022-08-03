@@ -31,6 +31,7 @@ public class OriginalIdentifierProvider implements TokenIdentifierProvider {
      * Default constructor
      */
     public OriginalIdentifierProvider() {
+        // empty
     }
 
     @Override

@@ -101,6 +101,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * Default constructor instantiating handler with default configuration
 	 */
 	public SecureContainerHandler() {
+		// empty
 	}
 
 	/**

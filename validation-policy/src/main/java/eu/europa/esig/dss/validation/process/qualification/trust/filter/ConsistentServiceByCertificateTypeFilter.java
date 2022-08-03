@@ -36,6 +36,7 @@ public class ConsistentServiceByCertificateTypeFilter implements TrustedServiceF
      * Default constructor
      */
     public ConsistentServiceByCertificateTypeFilter() {
+        // empty
     }
 
     @Override

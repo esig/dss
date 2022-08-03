@@ -147,7 +147,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		if (certificateContentEquivalenceList != null
 				&& Utils.isCollectionNotEmpty(certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
 
-			EnumMap<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = new EnumMap<>(MRAEquivalenceContext.class);
+			Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = new EnumMap<>(MRAEquivalenceContext.class);
 			for (CertificateContentReferenceEquivalenceType certEquiv : certificateContentEquivalenceList.getCertificateContentReferenceEquivalence()) {
 				CriteriaListType expected = certEquiv.getCertificateContentDeclarationPointedParty();
 				CriteriaListType substitute = certEquiv.getCertificateContentDeclarationPointingParty();

@@ -59,6 +59,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	 * Default constructor
 	 */
 	public JAdESSignatureScopeFinder() {
+		// empty
 	}
 
 	@Override

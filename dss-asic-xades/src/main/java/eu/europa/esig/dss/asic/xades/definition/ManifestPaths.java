@@ -37,6 +37,7 @@ public class ManifestPaths extends AbstractPaths {
 	 * Default constructor
 	 */
 	public ManifestPaths() {
+		// empty
 	}
 
 	/**

@@ -38,6 +38,7 @@ public class ASiCWithXAdESContainerMergerFactory implements ASiCContainerMergerF
      * Default constructor
      */
     public ASiCWithXAdESContainerMergerFactory() {
+        // empty
     }
 
     @Override

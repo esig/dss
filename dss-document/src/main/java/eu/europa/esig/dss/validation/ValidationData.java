@@ -64,6 +64,7 @@ public class ValidationData {
 	 * Default constructor instantiating empty maps of tokens
 	 */
 	public ValidationData() {
+		// empty
 	}
 
 	/**

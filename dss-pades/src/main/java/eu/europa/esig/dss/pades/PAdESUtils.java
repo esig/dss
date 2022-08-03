@@ -82,6 +82,7 @@ public final class PAdESUtils {
 	 * Empty constructor (singleton)
 	 */
 	private PAdESUtils() {
+		// empty
 	}
 
 	/**

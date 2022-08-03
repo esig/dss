@@ -112,6 +112,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 * Default constructor instantiating object with default parameters
 	 */
 	public PAdESSignatureParameters() {
+		// empty
 	}
 
 	@Override

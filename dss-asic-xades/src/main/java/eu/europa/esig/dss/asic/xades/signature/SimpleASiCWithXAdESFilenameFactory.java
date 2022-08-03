@@ -53,6 +53,7 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
      * Default constructor instantiating factory with null values
      */
     public SimpleASiCWithXAdESFilenameFactory() {
+        // empty
     }
 
     @Override

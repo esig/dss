@@ -31,6 +31,7 @@ public class EmptySignaturePolicyValidator extends AbstractSignaturePolicyValida
 	 * Default constructor
 	 */
 	public EmptySignaturePolicyValidator() {
+		// empty
 	}
 
 	@Override

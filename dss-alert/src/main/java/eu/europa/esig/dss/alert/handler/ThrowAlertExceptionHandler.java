@@ -33,6 +33,7 @@ public class ThrowAlertExceptionHandler<T> implements AlertHandler<T> {
 	 * Default constructor
 	 */
 	public ThrowAlertExceptionHandler() {
+		// empty
 	}
 
 	@Override

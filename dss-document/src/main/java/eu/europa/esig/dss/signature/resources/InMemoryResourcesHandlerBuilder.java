@@ -31,6 +31,7 @@ public class InMemoryResourcesHandlerBuilder implements DSSResourcesHandlerBuild
      * Default constructor
      */
     public InMemoryResourcesHandlerBuilder() {
+        // empty
     }
 
     @Override

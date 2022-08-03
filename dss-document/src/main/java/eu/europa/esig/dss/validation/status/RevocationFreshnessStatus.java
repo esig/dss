@@ -43,6 +43,7 @@ public class RevocationFreshnessStatus extends TokenStatus {
      * Default constructor initializing an empty map
      */
     public RevocationFreshnessStatus() {
+        // empty
     }
 
     /**

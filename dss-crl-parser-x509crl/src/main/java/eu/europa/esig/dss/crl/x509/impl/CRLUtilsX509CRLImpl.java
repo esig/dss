@@ -56,6 +56,7 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * Default constructor
 	 */
 	public CRLUtilsX509CRLImpl() {
+		// empty
 	}
 
 	/**

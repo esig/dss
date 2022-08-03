@@ -40,6 +40,7 @@ public class InMemoryResourcesHandler extends AbstractResourcesHandler {
      *
      */
     public InMemoryResourcesHandler() {
+        // empty
     }
 
     @Override

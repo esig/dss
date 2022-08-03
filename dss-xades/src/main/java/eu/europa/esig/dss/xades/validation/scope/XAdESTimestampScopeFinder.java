@@ -41,6 +41,7 @@ public class XAdESTimestampScopeFinder extends EncapsulatedTimestampScopeFinder 
      * Default constructor
      */
     public XAdESTimestampScopeFinder() {
+        // empty
     }
 
     @Override

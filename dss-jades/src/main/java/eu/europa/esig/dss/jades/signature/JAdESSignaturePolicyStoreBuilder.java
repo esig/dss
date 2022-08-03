@@ -61,6 +61,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	 * Default constructor
 	 */
 	public JAdESSignaturePolicyStoreBuilder() {
+		// empty
 	}
 
 	/**

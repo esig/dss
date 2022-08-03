@@ -41,6 +41,7 @@ public class PdfSignatureDictionaryComparator implements Comparator<PdfSignature
 	 * Default constructor
 	 */
 	public PdfSignatureDictionaryComparator() {
+		// empty
 	}
 
 	@Override

@@ -51,6 +51,7 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	 * Default constructor initializing object with null signing certificate candidates list
 	 */
 	protected SignatureCertificateSource() {
+		// empty
 	}
 
 	/**

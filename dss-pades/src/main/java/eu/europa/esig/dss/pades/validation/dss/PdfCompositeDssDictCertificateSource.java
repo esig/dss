@@ -48,6 +48,7 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
      * Default constructor instantiation an object with empty mpa of certificate token objects
      */
     public PdfCompositeDssDictCertificateSource() {
+        // empty
     }
 
     /**

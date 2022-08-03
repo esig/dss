@@ -42,6 +42,7 @@ public class DetachedTimestampScopeFinder extends AbstractSignatureScopeFinder i
      * Default constructor instantiating object with null timestamped data document
      */
     public DetachedTimestampScopeFinder() {
+        // empty
     }
 
     /**

@@ -50,6 +50,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	 * Default constructor
 	 */
 	protected AbstractSignatureTokenConnection() {
+		// empty
 	}
 
 	@Override

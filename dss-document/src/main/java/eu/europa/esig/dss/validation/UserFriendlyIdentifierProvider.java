@@ -132,6 +132,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
      * Default constructor instantiating empty maps of processed tokens
      */
     public UserFriendlyIdentifierProvider() {
+        // empty
     }
 
     /**

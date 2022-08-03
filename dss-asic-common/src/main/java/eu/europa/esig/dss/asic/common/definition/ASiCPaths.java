@@ -53,6 +53,7 @@ public class ASiCPaths extends AbstractPaths {
 	 * Default constructor
 	 */
 	public ASiCPaths() {
+		// empty
 	}
 	
 }

@@ -52,6 +52,7 @@ public class SignaturePolicyStore {
 	 * Default constructor instantiating object with null values
 	 */
 	public SignaturePolicyStore() {
+		// empty
 	}
 
 	/**

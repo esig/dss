@@ -40,6 +40,7 @@ public class ASiCSWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
      * Empty constructor
      */
     ASiCSWithCAdESContainerMerger() {
+        // empty
     }
 
     /**

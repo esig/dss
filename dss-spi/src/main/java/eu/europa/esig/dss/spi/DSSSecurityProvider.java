@@ -34,6 +34,7 @@ public final class DSSSecurityProvider {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSSecurityProvider.class);
 
 	private DSSSecurityProvider() {
+		// empty
 	}
 
 	/** Provider */

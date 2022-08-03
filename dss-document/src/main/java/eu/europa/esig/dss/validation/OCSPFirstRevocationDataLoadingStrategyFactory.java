@@ -30,6 +30,7 @@ public class OCSPFirstRevocationDataLoadingStrategyFactory implements Revocation
      * Default constructor
      */
     public OCSPFirstRevocationDataLoadingStrategyFactory() {
+        // empty
     }
 
     @Override

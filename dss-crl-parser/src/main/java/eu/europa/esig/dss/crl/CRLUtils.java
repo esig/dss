@@ -34,6 +34,7 @@ import java.util.ServiceLoader;
 public class CRLUtils {
 
 	private CRLUtils() {
+		// empty
 	}
 
 	/**

@@ -106,6 +106,7 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Default constructor instantiating object with default parameters
 	 */
 	public JAdESSignatureParameters() {
+		// empty
 	}
 
 	@Override

@@ -106,6 +106,7 @@ public final class DomUtils {
 	private static final byte[] xmlWithBomPreample = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
 
 	private DomUtils() {
+		// empty
 	}
 
 	/** The used XPathFactory */

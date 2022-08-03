@@ -129,6 +129,7 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
      * Default constructor with null JdbcCacheConnector
      */
     public JdbcCacheAIASource() {
+        // empty
     }
 
     /**

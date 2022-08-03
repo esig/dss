@@ -26,6 +26,7 @@ package eu.europa.esig.dss.jades;
 public final class JAdESHeaderParameterNames {
 	
 	private JAdESHeaderParameterNames() {
+		// empty
 	}
 
 	/**

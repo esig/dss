@@ -34,6 +34,7 @@ public class CAdESDiagnosticDataBuilder extends SignedDocumentDiagnosticDataBuil
 	 * Default constructor
 	 */
 	public CAdESDiagnosticDataBuilder() {
+		// empty
 	}
 
 	@Override

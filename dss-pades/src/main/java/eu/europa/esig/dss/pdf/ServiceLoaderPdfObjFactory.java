@@ -39,6 +39,7 @@ public class ServiceLoaderPdfObjFactory extends AbstractPdfObjFactory {
 	 * Default constructor
 	 */
 	public ServiceLoaderPdfObjFactory() {
+		// empty
 	}
 
 	@Override

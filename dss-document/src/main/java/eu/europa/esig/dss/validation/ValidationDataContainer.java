@@ -46,6 +46,7 @@ public class ValidationDataContainer {
      * Default constructor instantiating empty maps of tokens and validation data relationships
      */
     public ValidationDataContainer() {
+        // empty
     }
 
     /**

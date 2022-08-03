@@ -51,6 +51,7 @@ public class XmlQcStatementsBuilder {
      * Default constructor
      */
     public XmlQcStatementsBuilder() {
+        // empty
     }
 
     /**

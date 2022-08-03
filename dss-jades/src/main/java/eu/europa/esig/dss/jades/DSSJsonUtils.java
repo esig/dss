@@ -170,6 +170,7 @@ public class DSSJsonUtils {
 	}
 	
 	private DSSJsonUtils() {
+		// empty
 	}
 	
 	/**

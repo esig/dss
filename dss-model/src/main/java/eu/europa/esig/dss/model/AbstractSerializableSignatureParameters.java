@@ -123,6 +123,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * Default constructor instantiating object with default values
 	 */
 	protected AbstractSerializableSignatureParameters() {
+		// empty
 	}
 
 	@Override

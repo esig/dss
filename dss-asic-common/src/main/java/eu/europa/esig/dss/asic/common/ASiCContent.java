@@ -77,6 +77,7 @@ public class ASiCContent implements Serializable {
 	 * Default constructor instantiating object with null values and empty list of documents
 	 */
 	public ASiCContent() {
+		// empty
 	}
 
 	/**

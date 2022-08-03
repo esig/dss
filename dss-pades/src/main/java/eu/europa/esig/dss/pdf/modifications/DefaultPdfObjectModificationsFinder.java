@@ -55,6 +55,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
      * Default constructor instantiating object with default configuration
      */
     public DefaultPdfObjectModificationsFinder() {
+        // empty
     }
 
     /**

@@ -39,6 +39,7 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	 * Default constructor instantiating object with default ASiCParameters
 	 */
 	public ASiCWithXAdESSignatureParameters() {
+		// empty
 	}
 
 	/**

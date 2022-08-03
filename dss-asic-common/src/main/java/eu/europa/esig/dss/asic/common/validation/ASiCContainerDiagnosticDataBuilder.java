@@ -46,6 +46,7 @@ public class ASiCContainerDiagnosticDataBuilder extends SignedDocumentDiagnostic
 	 * Default constructor instantiating builder with null values
 	 */
 	public ASiCContainerDiagnosticDataBuilder() {
+		// empty
 	}
 
 	/**

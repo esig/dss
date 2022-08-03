@@ -36,6 +36,7 @@ public class TLPredicateFactory {
      * Default constructor
      */
     private TLPredicateFactory() {
+        // empty
     }
 
     /**

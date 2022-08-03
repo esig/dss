@@ -72,6 +72,7 @@ public class DefaultPdfDifferencesFinder implements PdfDifferencesFinder {
      * Default constructor instantiating object with default configuration
      */
     public DefaultPdfDifferencesFinder() {
+        // empty
     }
 
     @Override

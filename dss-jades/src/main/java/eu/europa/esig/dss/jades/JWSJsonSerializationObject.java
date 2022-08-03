@@ -52,6 +52,7 @@ public class JWSJsonSerializationObject implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public JWSJsonSerializationObject() {
+		// empty
 	}
 
 	/**

@@ -52,6 +52,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	 * Default constructor
 	 */
 	public CRLUtilsStreamImpl() {
+		// empty
 	}
 
 	@Override

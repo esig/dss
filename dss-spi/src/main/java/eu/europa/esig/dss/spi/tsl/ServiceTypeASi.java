@@ -36,6 +36,7 @@ public class ServiceTypeASi {
 	 * Default constructor instantiating object with null values
 	 */
 	public ServiceTypeASi() {
+		// empty
 	}
 
 	/**

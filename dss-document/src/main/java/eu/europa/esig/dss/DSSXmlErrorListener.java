@@ -38,6 +38,7 @@ public class DSSXmlErrorListener implements ErrorListener {
 	 * Default constructor
 	 */
 	public DSSXmlErrorListener() {
+		// empty
 	}
 
 	@Override

@@ -49,6 +49,7 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
      * Default constructor instantiating object with null values
      */
     protected AbstractPdfObjFactory() {
+        // empty
     }
 
     @Override

@@ -59,6 +59,7 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      * Default constructor instantiating object with null values
      */
     public RemoteTrustedListSignatureParameters() {
+        // empty
     }
 
     /**

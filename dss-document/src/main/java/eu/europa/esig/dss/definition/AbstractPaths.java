@@ -33,6 +33,7 @@ public abstract class AbstractPaths implements Serializable {
 	 * Default constructor
 	 */
 	protected AbstractPaths() {
+		// empty
 	}
 
 	/**

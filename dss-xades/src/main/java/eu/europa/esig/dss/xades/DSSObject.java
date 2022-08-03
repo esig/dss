@@ -57,6 +57,7 @@ public class DSSObject implements Serializable {
      * Default constructor
      */
     public DSSObject() {
+        // empty
     }
 
     /**

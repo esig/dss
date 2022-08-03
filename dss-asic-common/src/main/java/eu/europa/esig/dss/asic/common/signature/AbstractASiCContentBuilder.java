@@ -46,6 +46,7 @@ public abstract class AbstractASiCContentBuilder {
      * Default constructor
      */
     protected AbstractASiCContentBuilder() {
+        // empty
     }
 
     /**

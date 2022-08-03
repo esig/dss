@@ -136,6 +136,7 @@ public class MimeType implements Serializable {
 	 * This constructor is used only by the web-services.
 	 */
 	public MimeType() {
+		// empty
 	}
 
 	/**

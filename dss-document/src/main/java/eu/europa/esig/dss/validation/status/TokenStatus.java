@@ -41,6 +41,7 @@ public class TokenStatus extends ObjectStatus {
      * Default constructor instantiating an empty map of related tokens
      */
     public TokenStatus() {
+        // empty
     }
 
     /**

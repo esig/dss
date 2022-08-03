@@ -38,6 +38,7 @@ public class TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency 
      * Default constructor
      */
     public TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency() {
+        // empty
     }
 
     @Override

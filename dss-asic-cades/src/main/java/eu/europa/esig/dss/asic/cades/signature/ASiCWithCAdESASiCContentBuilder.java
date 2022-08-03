@@ -39,6 +39,7 @@ public class ASiCWithCAdESASiCContentBuilder extends AbstractASiCContentBuilder 
      * Default constructor
      */
     public ASiCWithCAdESASiCContentBuilder() {
+        // empty
     }
 
     @Override

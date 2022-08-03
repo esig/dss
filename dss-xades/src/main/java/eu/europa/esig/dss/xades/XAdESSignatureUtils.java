@@ -50,6 +50,7 @@ public final class XAdESSignatureUtils {
 	 * Empty constructor
 	 */
 	private XAdESSignatureUtils() {
+		// empty
 	}
 	
 	/**

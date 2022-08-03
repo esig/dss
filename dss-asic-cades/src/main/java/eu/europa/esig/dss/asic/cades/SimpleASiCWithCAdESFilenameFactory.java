@@ -62,6 +62,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      * Default constructor instantiating factory with null values
      */
     public SimpleASiCWithCAdESFilenameFactory() {
+        // empty
     }
 
     @Override

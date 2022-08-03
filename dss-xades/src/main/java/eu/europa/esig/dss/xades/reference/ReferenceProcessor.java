@@ -52,6 +52,7 @@ public class ReferenceProcessor {
      * Empty constructor (to be used for non-signature references, e.g. for a Manifest)
      */
     public ReferenceProcessor() {
+        // empty
     }
 
     /**

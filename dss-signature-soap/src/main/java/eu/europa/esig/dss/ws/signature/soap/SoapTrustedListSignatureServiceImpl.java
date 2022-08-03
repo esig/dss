@@ -42,6 +42,7 @@ public class SoapTrustedListSignatureServiceImpl implements SoapTrustedListSigna
      * Default construction instantiating object with null RemoteTrustedListSignatureService
      */
     public SoapTrustedListSignatureServiceImpl() {
+        // empty
     }
 
     /**

@@ -40,9 +40,10 @@ public abstract class SignatureIntegrityValidator {
 	private List<String> errorMessages = null;
 
 	/**
-	 * Default constructor instantiating object with null list of errros
+	 * Default constructor instantiating object with null list of erros
 	 */
 	protected SignatureIntegrityValidator() {
+		// empty
 	}
 	
 	/**

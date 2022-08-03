@@ -169,6 +169,7 @@ public final class PAdESConstants {
 	 * Utils class
 	 */
 	private PAdESConstants() {
+		// empty
 	}
 
 }

@@ -30,6 +30,7 @@ public class CRLFirstRevocationDataLoadingStrategyFactory implements RevocationD
      * Default constructor
      */
     public CRLFirstRevocationDataLoadingStrategyFactory() {
+        // empty
     }
 
     @Override

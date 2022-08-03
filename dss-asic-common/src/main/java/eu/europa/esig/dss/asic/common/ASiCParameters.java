@@ -56,6 +56,7 @@ public class ASiCParameters implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public ASiCParameters() {
+		// empty
 	}
 
 	/**

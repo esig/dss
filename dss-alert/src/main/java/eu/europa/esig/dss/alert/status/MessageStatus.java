@@ -35,6 +35,7 @@ public class MessageStatus implements Status {
      * Default constructor initializing a null message
      */
     public MessageStatus() {
+        // empty
     }
 
     @Override

@@ -55,6 +55,7 @@ public class CreateKeyStoreApp {
 	 * Executable application
 	 */
 	private CreateKeyStoreApp() {
+		// empty
 	}
 
 	/**

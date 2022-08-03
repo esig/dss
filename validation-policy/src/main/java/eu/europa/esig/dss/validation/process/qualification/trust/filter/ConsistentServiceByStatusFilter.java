@@ -37,6 +37,7 @@ public class ConsistentServiceByStatusFilter implements TrustedServiceFilter {
      * Default constructor
      */
     public ConsistentServiceByStatusFilter() {
+        // empty
     }
 
     @Override

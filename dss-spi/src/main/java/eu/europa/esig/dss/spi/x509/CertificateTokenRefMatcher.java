@@ -36,6 +36,7 @@ public class CertificateTokenRefMatcher {
 	 * Default constructor
 	 */
 	public CertificateTokenRefMatcher() {
+		// empty
 	}
 
 	/**

@@ -78,6 +78,7 @@ public class XPathExpressionBuilder {
 	 * Default constructor instantiating object with empty configuration
 	 */
 	public XPathExpressionBuilder() {
+		// empty
 	}
 
 	/**

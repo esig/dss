@@ -75,6 +75,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 * Default constructor instantiating object with null values
 	 */
 	protected AbstractSignatureParameters() {
+		// empty
 	}
 
 	/**

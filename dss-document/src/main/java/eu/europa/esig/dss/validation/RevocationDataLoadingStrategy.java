@@ -66,6 +66,7 @@ public abstract class RevocationDataLoadingStrategy {
 	 * Default constructor instantiating object with null values
 	 */
 	protected RevocationDataLoadingStrategy() {
+		// empty
 	}
 
 	/**

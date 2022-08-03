@@ -49,6 +49,7 @@ public class CandidatesForSigningCertificate implements Serializable {
 	 * Default constructor with null or empty values
 	 */
 	public CandidatesForSigningCertificate() {
+		// empty
 	}
 
 	/**

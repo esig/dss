@@ -153,7 +153,8 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * Default constructor instantiating object with null values
 	 */
-	public DefaultAdvancedSignature() {
+	protected DefaultAdvancedSignature() {
+		// empty
 	}
 	
 	/**

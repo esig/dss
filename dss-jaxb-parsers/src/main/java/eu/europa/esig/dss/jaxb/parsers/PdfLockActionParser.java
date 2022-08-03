@@ -32,6 +32,7 @@ public class PdfLockActionParser {
      * Default constructor
      */
     private PdfLockActionParser() {
+        // empty
     }
 
     /**

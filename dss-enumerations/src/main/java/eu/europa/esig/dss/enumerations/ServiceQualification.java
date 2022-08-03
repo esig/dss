@@ -295,7 +295,7 @@ public enum ServiceQualification {
      */
     public static List<String> getUsageQualifiers(List<String> qualifiers) {
         List<String> filteredQualifiers = new ArrayList<>();
-        if (qualifiers != null && qualifiers.size() > 0) {
+        if (qualifiers != null && !qualifiers.isEmpty()) {
             if (qualifiers.contains(QC_FOR_ESIG.getUri())) {
                 filteredQualifiers.add(QC_FOR_ESIG.getUri());
             }
@@ -310,7 +310,7 @@ public enum ServiceQualification {
     }
 
     private static boolean listContains(List<String> qualifiers, ServiceQualification... expecteds) {
-        if (qualifiers != null && qualifiers.size() > 0) {
+        if (qualifiers != null && !qualifiers.isEmpty()) {
             for (ServiceQualification expected : expecteds) {
                 if (qualifiers.contains(expected.getUri())) {
                     return true;

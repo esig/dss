@@ -37,6 +37,7 @@ public class PdfObjectModificationsFilter {
      * Default constructor
      */
     public PdfObjectModificationsFilter() {
+        // empty
     }
 
     /**

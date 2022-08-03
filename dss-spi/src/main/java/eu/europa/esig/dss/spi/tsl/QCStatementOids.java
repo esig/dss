@@ -50,6 +50,7 @@ public class QCStatementOids {
 	 * Default constructor instantiating object with null values
 	 */
 	public QCStatementOids() {
+		// empty
 	}
 
 	/**

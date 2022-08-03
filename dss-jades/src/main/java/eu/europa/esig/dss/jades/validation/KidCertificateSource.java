@@ -45,6 +45,7 @@ public class KidCertificateSource extends CommonCertificateSource {
 	 * Default constructor instantiating object with empty map of 'kid' identifiers and certificate tokens relation
 	 */
 	public KidCertificateSource() {
+		// empty
 	}
 
 	@Override

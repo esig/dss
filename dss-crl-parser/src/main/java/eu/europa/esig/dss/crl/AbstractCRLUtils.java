@@ -46,6 +46,7 @@ public abstract class AbstractCRLUtils {
 	 * Default constructor
 	 */
 	protected AbstractCRLUtils() {
+		// empty
 	}
 
 	/**

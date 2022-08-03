@@ -97,6 +97,7 @@ public class QcStatements {
      * Default constructor instantiating object with null values
      */
     public QcStatements() {
+        // empty
     }
 
     /**

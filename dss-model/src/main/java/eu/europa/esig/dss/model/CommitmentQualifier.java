@@ -40,6 +40,7 @@ public class CommitmentQualifier implements Serializable {
      * Default constructor instantiating object with null values
      */
     public CommitmentQualifier() {
+        // empty
     }
 
     /**

@@ -67,6 +67,7 @@ public class TrustServiceProvider implements Serializable {
 	 * Empty constructor
 	 */
 	public TrustServiceProvider() {
+		// empty
 	}
 
 	/**

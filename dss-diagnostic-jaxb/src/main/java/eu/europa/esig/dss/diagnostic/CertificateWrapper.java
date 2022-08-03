@@ -621,8 +621,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is QC compliant, FALSE otherwise
 	 */
 	public boolean isOriginalThirdCountryQcCompliance() {
-		return getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCompliance() != null
-				&& getOriginalThirdCountryMapping().getQcCompliance().isPresent();
+		XmlOriginalThirdCountryQcStatementsMapping originalThirdCountryMapping = getOriginalThirdCountryMapping();
+		return originalThirdCountryMapping != null && originalThirdCountryMapping.getQcCompliance() != null
+				&& originalThirdCountryMapping.getQcCompliance().isPresent();
 	}
 
 	/**
@@ -631,8 +632,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is supported by QSCD, FALSE otherwise
 	 */
 	public boolean isOriginalThirdCountrySupportedByQSCD() {
-		return getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcSSCD() != null
-				&& getOriginalThirdCountryMapping().getQcSSCD().isPresent();
+		XmlOriginalThirdCountryQcStatementsMapping originalThirdCountryMapping = getOriginalThirdCountryMapping();
+		return originalThirdCountryMapping != null && originalThirdCountryMapping.getQcSSCD() != null
+				&& originalThirdCountryMapping.getQcSSCD().isPresent();
 	}
 
 	/**
@@ -642,8 +644,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public List<QCType> getOriginalThirdCountryQCTypes() {
 		List<QCType> result = new ArrayList<>();
-		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcTypes() != null) {
-			for (XmlOID oid : getOriginalThirdCountryMapping().getQcTypes()) {
+		XmlOriginalThirdCountryQcStatementsMapping originalThirdCountryMapping = getOriginalThirdCountryMapping();
+		if (originalThirdCountryMapping != null && originalThirdCountryMapping.getQcTypes() != null) {
+			for (XmlOID oid : originalThirdCountryMapping.getQcTypes()) {
 				result.add(QCType.fromOid(oid.getValue()));
 			}
 		}
@@ -656,8 +659,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String}s
 	 */
 	public List<String> getOriginalThirdCountryQcLegislationCountryCodes() {
-		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
-			return getOriginalThirdCountryMapping().getQcCClegislation();
+		XmlOriginalThirdCountryQcStatementsMapping originalThirdCountryMapping = getOriginalThirdCountryMapping();
+		if (originalThirdCountryMapping != null && originalThirdCountryMapping.getQcCClegislation() != null) {
+			return originalThirdCountryMapping.getQcCClegislation();
 		}
 		return Collections.emptyList();
 	}
@@ -669,8 +673,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return a list of {@link String}s
 	 */
 	public List<String> getOriginalThirdCountryOtherQcStatements() {
-		if (getOriginalThirdCountryMapping() != null && getOriginalThirdCountryMapping().getQcCClegislation() != null) {
-			return getOidValues(getOriginalThirdCountryMapping().getOtherOIDs());
+		XmlOriginalThirdCountryQcStatementsMapping originalThirdCountryMapping = getOriginalThirdCountryMapping();
+		if (originalThirdCountryMapping != null && originalThirdCountryMapping.getOtherOIDs() != null) {
+			return getOidValues(originalThirdCountryMapping.getOtherOIDs());
 		}
 		return Collections.emptyList();
 	}

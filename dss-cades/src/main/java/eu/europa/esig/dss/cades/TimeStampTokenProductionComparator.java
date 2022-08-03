@@ -45,6 +45,7 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 	 * Default constructor
 	 */
 	public TimeStampTokenProductionComparator() {
+		// empty
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public class ASiCWithCAdESSignatureParameters extends CAdESSignatureParameters i
 	 * Default constructor instantiating object with default ASiCParameters
 	 */
 	public ASiCWithCAdESSignatureParameters() {
+		// empty
 	}
 
 	@Override

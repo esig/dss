@@ -54,6 +54,7 @@ public class ManifestFile implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public ManifestFile() {
+		// empty
 	}
 
 	/**

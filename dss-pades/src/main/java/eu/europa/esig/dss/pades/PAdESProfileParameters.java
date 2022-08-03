@@ -42,6 +42,7 @@ public class PAdESProfileParameters extends ProfileParameters {
      * Default constructor
      */
     public PAdESProfileParameters() {
+        // empty
     }
 
     /**

@@ -46,6 +46,7 @@ public class EnforcedResolverFragment extends ResolverFragment {
 	 * Default constructor
 	 */
 	public EnforcedResolverFragment() {
+		// empty
 	}
 
 	@Override

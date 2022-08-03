@@ -46,6 +46,7 @@ public final class DSSPKUtils {
 	private static final String UNKNOWN_KEY_SIZE = "?";
 
 	private DSSPKUtils() {
+		// empty
 	}
 
 	/**

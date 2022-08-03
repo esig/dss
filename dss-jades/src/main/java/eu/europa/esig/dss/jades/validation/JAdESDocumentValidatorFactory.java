@@ -32,6 +32,7 @@ public class JAdESDocumentValidatorFactory implements DocumentValidatorFactory {
 	 * Default constructor
 	 */
 	public JAdESDocumentValidatorFactory() {
+		// empty
 	}
 
 	@Override

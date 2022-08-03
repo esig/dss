@@ -33,6 +33,7 @@ public abstract class RevocationCertificateSource extends TokenCertificateSource
      * Default constructor
      */
     protected RevocationCertificateSource() {
+        // empty
     }
 	
 }

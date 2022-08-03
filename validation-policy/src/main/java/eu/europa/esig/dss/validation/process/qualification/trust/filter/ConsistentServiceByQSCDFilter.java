@@ -36,6 +36,7 @@ public class ConsistentServiceByQSCDFilter implements TrustedServiceFilter {
      * Default constructor
      */
     public ConsistentServiceByQSCDFilter() {
+        // empty
     }
 
     @Override

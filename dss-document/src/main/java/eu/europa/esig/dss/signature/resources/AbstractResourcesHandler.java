@@ -36,6 +36,7 @@ public abstract class AbstractResourcesHandler implements DSSResourcesHandler {
      * Default constructor instantiating object with null OutputStream
      */
     protected AbstractResourcesHandler() {
+        // empty
     }
 
     @Override

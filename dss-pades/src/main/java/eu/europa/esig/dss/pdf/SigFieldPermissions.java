@@ -45,6 +45,7 @@ public class SigFieldPermissions {
      * Default constructor instantiating object with null values
      */
     public SigFieldPermissions() {
+        // empty
     }
 
     /**

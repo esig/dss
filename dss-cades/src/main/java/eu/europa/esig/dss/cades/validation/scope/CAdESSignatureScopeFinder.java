@@ -50,6 +50,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
      * Default constructor
      */
     public CAdESSignatureScopeFinder() {
+        // empty
     }
 
     @Override

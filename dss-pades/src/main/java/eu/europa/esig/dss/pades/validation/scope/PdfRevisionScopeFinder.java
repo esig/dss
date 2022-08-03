@@ -37,6 +37,7 @@ public abstract class PdfRevisionScopeFinder extends AbstractSignatureScopeFinde
      * Default constructor
      */
     protected PdfRevisionScopeFinder() {
+        // empty
     }
 
     /**

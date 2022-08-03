@@ -39,6 +39,7 @@ public class CAdESCounterSignatureParameters extends CAdESSignatureParameters im
 	 * Default constructor with empty signature id to be counter-signed
 	 */
 	public CAdESCounterSignatureParameters() {
+		// empty
 	}
 
 	@Override

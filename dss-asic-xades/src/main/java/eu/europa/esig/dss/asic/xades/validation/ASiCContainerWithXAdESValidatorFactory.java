@@ -35,6 +35,7 @@ public class ASiCContainerWithXAdESValidatorFactory implements DocumentValidator
 	 * Default constructor
 	 */
 	public ASiCContainerWithXAdESValidatorFactory() {
+		// empty
 	}
 
 	@Override

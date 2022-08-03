@@ -56,6 +56,7 @@ public class SignatureProductionPlace implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public SignatureProductionPlace() {
+		// empty
 	}
 
 	/**

@@ -39,6 +39,7 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 	 * Default constructor
 	 */
 	public TimestampTokenComparator() {
+		// empty
 	}
 
 	@Override

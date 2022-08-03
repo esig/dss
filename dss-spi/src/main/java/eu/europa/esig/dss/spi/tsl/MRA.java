@@ -48,6 +48,7 @@ public class MRA {
 	 * Default constructor instantiating object with null values
 	 */
 	public MRA() {
+		// empty
 	}
 
 	/**

@@ -55,6 +55,7 @@ public abstract class RepositoryAIASource implements AIASource {
      * Default constructor instantiating object with null proxied source
      */
     protected RepositoryAIASource() {
+        // empty
     }
 
     /**

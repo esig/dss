@@ -37,6 +37,7 @@ public class ZeroHashSignaturePolicyValidator extends AbstractSignaturePolicyVal
 	 * Default constructor
 	 */
 	public ZeroHashSignaturePolicyValidator() {
+		// empty
 	}
 
 	@Override

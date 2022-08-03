@@ -52,6 +52,7 @@ public class MRAUtils extends XSDAbstractUtils {
      * Empty constructor
      */
     private MRAUtils() {
+        // empty
     }
 
     /**

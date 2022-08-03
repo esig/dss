@@ -40,6 +40,7 @@ public class RestCertificateValidationServiceImpl implements RestCertificateVali
 	 * Default construction instantiating object with null RemoteCertificateValidationService
 	 */
 	public RestCertificateValidationServiceImpl() {
+		// empty
 	}
 
 	/**

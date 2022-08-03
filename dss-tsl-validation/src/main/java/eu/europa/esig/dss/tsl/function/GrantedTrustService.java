@@ -37,6 +37,7 @@ public class GrantedTrustService implements TrustServicePredicate {
      * Default constructor
      */
     public GrantedTrustService() {
+        // empty
     }
 
     @Override

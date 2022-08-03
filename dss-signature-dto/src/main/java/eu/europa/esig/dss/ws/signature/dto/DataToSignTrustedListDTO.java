@@ -41,6 +41,7 @@ public class DataToSignTrustedListDTO {
      * Empty constructor
      */
     public DataToSignTrustedListDTO() {
+        // empty
     }
 
     /**

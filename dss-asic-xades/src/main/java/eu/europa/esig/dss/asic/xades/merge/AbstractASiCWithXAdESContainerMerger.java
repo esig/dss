@@ -46,6 +46,7 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
      * Empty constructor
      */
     AbstractASiCWithXAdESContainerMerger() {
+        // empty
     }
 
     /**

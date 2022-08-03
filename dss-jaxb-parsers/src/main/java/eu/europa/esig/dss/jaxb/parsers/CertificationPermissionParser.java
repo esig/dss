@@ -33,6 +33,7 @@ public class CertificationPermissionParser {
      * Default constructor
      */
     private CertificationPermissionParser() {
+        // empty
     }
 
     /**

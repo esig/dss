@@ -33,6 +33,7 @@ public final class DateUtils {
 	public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	private DateUtils() {
+		// empty
 	}
 
 	/**

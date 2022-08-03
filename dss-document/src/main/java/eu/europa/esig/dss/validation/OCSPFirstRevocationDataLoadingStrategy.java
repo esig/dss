@@ -39,6 +39,7 @@ public class OCSPFirstRevocationDataLoadingStrategy extends RevocationDataLoadin
      * Default constructor
      */
     public OCSPFirstRevocationDataLoadingStrategy() {
+        // empty
     }
 
     @Override

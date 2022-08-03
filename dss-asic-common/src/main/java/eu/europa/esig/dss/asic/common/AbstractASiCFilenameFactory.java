@@ -44,6 +44,7 @@ public abstract class AbstractASiCFilenameFactory implements Serializable {
      * Default constructor
      */
     protected AbstractASiCFilenameFactory() {
+        // empty
     }
 
     /**

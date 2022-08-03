@@ -31,6 +31,7 @@ public class StatusDetector implements AlertDetector<Status> {
 	 * Default constructor
 	 */
 	public StatusDetector() {
+		// empty
 	}
 
 	@Override

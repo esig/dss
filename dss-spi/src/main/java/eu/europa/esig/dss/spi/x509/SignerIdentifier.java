@@ -57,6 +57,7 @@ public class SignerIdentifier implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public SignerIdentifier() {
+		// empty
 	}
 
 	/**

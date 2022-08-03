@@ -78,6 +78,7 @@ public final class DSSRevocationUtils {
 	}
 
 	private DSSRevocationUtils() {
+		// empty
 	}
 
 	/**

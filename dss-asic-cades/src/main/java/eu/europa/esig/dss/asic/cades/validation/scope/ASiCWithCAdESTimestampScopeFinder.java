@@ -53,6 +53,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
      * Default constructor instantiating object with empty lists of documents
      */
     public ASiCWithCAdESTimestampScopeFinder() {
+        // empty
     }
 
     /**

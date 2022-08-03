@@ -62,6 +62,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	 * Default constructor
 	 */
 	public CAdESSignaturePolicyStoreBuilder() {
+		// empty
 	}
 
 	/**

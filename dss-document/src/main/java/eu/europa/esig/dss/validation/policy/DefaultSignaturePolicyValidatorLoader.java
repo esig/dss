@@ -42,6 +42,7 @@ public class DefaultSignaturePolicyValidatorLoader implements SignaturePolicyVal
      * Default constructor instantiating object with null SignaturePolicyValidator
      */
     public DefaultSignaturePolicyValidatorLoader() {
+        // empty
     }
 
     /**

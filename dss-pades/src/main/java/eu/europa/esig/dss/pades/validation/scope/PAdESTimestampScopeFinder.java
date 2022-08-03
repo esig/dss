@@ -39,6 +39,7 @@ public class PAdESTimestampScopeFinder extends PdfRevisionScopeFinder implements
      * Default constructor
      */
     public PAdESTimestampScopeFinder() {
+        // empty
     }
 
     @Override

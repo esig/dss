@@ -59,6 +59,7 @@ public abstract class CommonDocument implements DSSDocument {
 	 * Default constructor instantiating object with null values and empty digest map
 	 */
 	protected CommonDocument() {
+		// empty
 	}
 
 	@Override

@@ -55,6 +55,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      * Default constructor instantiation an object with empty mpa of CRL token objects
      */
     public PdfCompositeDssDictCRLSource() {
+        // empty
     }
 
     /**

@@ -38,6 +38,7 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	 * Empty constructor
 	 */
 	public JAdESTimestampParameters() {
+		// empty
 	}
 
 	/**

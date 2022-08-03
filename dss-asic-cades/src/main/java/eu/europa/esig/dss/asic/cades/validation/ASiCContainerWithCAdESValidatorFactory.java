@@ -34,6 +34,7 @@ public class ASiCContainerWithCAdESValidatorFactory implements DocumentValidator
 	 * Default constructor
 	 */
 	public ASiCContainerWithCAdESValidatorFactory() {
+		// empty
 	}
 
 	@Override

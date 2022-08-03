@@ -42,6 +42,7 @@ public class RestTrustedListSignatureServiceImpl implements RestTrustedListSigna
      * Default construction instantiating object with null RemoteTrustedListSignatureService
      */
     public RestTrustedListSignatureServiceImpl() {
+        // empty
     }
 
     /**

@@ -57,6 +57,7 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
      * Default constructor instantiating object with null XAdESService
      */
     public RemoteTrustedListSignatureServiceImpl() {
+        // empty
     }
 
     /**

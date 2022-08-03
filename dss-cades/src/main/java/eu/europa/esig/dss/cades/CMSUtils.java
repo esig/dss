@@ -95,6 +95,7 @@ public final class CMSUtils {
 	 * Utils class
 	 */
 	private CMSUtils() {
+		// empty
 	}
 
 	/**
