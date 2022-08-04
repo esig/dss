@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignatureValidationContext;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -42,12 +44,14 @@ import org.bouncycastle.cms.CMSTypedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Performs checks according to EN 319 142-1 v1.1.1
@@ -191,16 +195,38 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
     }
 
     private boolean isBaselineLTATimestamp(TimestampToken timestampToken) {
-        return coversLTLevelData(timestampToken) && containsRFC3161SubFilter(timestampToken);
+        return containsRFC3161SubFilter(timestampToken) && coversLTLevelData(timestampToken);
     }
 
     private boolean coversLTLevelData(TimestampToken timestampToken) {
         if (ArchiveTimestampType.PAdES.equals(timestampToken.getArchiveTimestampType())) {
             ValidationContext validationContext = getValidationContext();
             ValidationData signatureValidationData = validationContext.getValidationData(signature);
+            Set<CertificateToken> certificateTokens = signatureValidationData.getCertificateTokens();
             Set<CRLToken> crlTokens = signatureValidationData.getCrlTokens();
             Set<OCSPToken> ocspTokens = signatureValidationData.getOcspTokens();
-            return coversRevocationTokens(timestampToken, crlTokens, ocspTokens);
+            List<TimestampToken> allTimestamps = signature.getAllTimestamps();
+
+            if (Utils.isCollectionEmpty(crlTokens) && Utils.isCollectionEmpty(ocspTokens)) {
+                return coversDSSCertificateTokens(timestampToken, certificateTokens);
+            } else {
+                return coversRevocationTokens(timestampToken, crlTokens, ocspTokens) &&
+                        (coversTimestampTokens(timestampToken, allTimestamps) || coversOwnRevocationData(timestampToken));
+            }
+        }
+        return false;
+    }
+
+    private boolean coversDSSCertificateTokens(TimestampToken timestampToken, Collection<CertificateToken> certificateTokens) {
+        List<CertificateToken> dssCertificates = new ArrayList<>();
+        dssCertificates.addAll(signature.getCertificateSource().getDSSDictionaryCertValues());
+        dssCertificates.addAll(signature.getCertificateSource().getVRIDictionaryCertValues());
+        if (Utils.isCollectionNotEmpty(dssCertificates)) {
+            for (CertificateToken certificateToken : certificateTokens) {
+                if (dssCertificates.contains(certificateToken) && coversToken(timestampToken, certificateToken)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -234,6 +260,42 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             }
         }
         return true;
+    }
+
+    private boolean coversTimestampTokens(TimestampToken timestampToken, Collection<TimestampToken> signatureTimestampTokens) {
+        List<TimestampedReference> timestampedReferences = timestampToken.getTimestampedReferences();
+        if (Utils.isCollectionNotEmpty(timestampedReferences)) {
+            for (TimestampToken sigTst : signatureTimestampTokens) {
+                if (timestampedReferences.stream().anyMatch(r -> sigTst.getDSSIdAsString().equals(r.getObjectId()))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean coversOwnRevocationData(TimestampToken timestampToken) {
+        SignatureValidationContext validationContext = new SignatureValidationContext();
+        validationContext.initialize(offlineCertificateVerifier);
+
+        validationContext.addDocumentCertificateSource(signature.getCompleteCertificateSource());
+        validationContext.addDocumentCRLSource(signature.getCompleteCRLSource());
+        validationContext.addDocumentOCSPSource(signature.getCompleteOCSPSource());
+
+        validationContext.addTimestampTokenForVerification(timestampToken);
+        validationContext.validate();
+
+        ValidationData validationData = validationContext.getValidationData(timestampToken);
+        Set<String> revocationTokenIdentifiers = new HashSet<>();
+        revocationTokenIdentifiers.addAll(validationData.getCrlTokens().stream().map(CRLToken::getDSSIdAsString).collect(Collectors.toSet()));
+        revocationTokenIdentifiers.addAll(validationData.getOcspTokens().stream().map(OCSPToken::getDSSIdAsString).collect(Collectors.toSet()));
+
+        if (Utils.isCollectionEmpty(revocationTokenIdentifiers)) {
+            return validationContext.checkAllRequiredRevocationDataPresent();
+        }
+
+        List<TimestampedReference> timestampedReferences = timestampToken.getTimestampedReferences();
+        return timestampedReferences.stream().anyMatch(r -> revocationTokenIdentifiers.contains(r.getObjectId()));
     }
 
     /**

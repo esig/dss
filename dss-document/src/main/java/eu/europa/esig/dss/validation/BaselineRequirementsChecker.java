@@ -48,7 +48,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     protected final AS signature;
 
     /** The offline copy of a CertificateVerifier */
-    private final CertificateVerifier offlineCertificateVerifier;
+    protected final CertificateVerifier offlineCertificateVerifier;
 
     /** Cached ValidationContext object to ensure validation is processed only once */
     private ValidationContext validationContext;
