@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.validation.RevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -99,6 +100,7 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 		public Boolean call() throws Exception {
 			DSSDocument doc = new FileDocument("src/test/resources/dss-817-test.xml");
 			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
+			validator.setSignaturePolicyProvider(new SignaturePolicyProvider());
 			validator.setCertificateVerifier(certificateVerifier);
 
 			return validator.validateDocument() != null;
@@ -181,7 +183,6 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 
 			Reports reports = validator.validateDocument();
 			SimpleReport simpleReport = reports.getSimpleReport();
-			System.out.println(simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 			return Indication.TOTAL_PASSED.equals(simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		}
 
