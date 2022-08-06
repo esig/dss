@@ -227,9 +227,9 @@ The standard ETSI EN 319 102-1 clause 4 (<<R09>>) provides a complete conceptual
 * Computing the signature value by encrypting the DTBSR using the appropriate algorithm (this is usually done by activating the private key within a “Signature creation device” (SCDev), that will perform the operation);
 * Formatting the result into a “signed data object” (SDO) complying with the desired signature format (e.g. XAdES, PAdES, etc).
 
-As mentionned above, the activation of the private key and the operation of creating the signature value is assumed to be performed by a specific device. It is in general desirable that this device is a secure (e.g. tamper-proof) device that require authentication for the activation of the key (e.g. using PIN codes).
+As mentioned above, the activation of the private key and the operation of creating the signature value is assumed to be performed by a specific device. It is in general desirable that this device is a secure (e.g. tamper-proof) device that requires authentication for the activation of the key (e.g. using PIN codes).
 
-When the private key contained in that device is controlled by an end-entity, this device is usually called “signature creation device” or *SCDev*. This can be a local SCDev such as a smartcard, but it can also be a remote SCDev managed by a CA or TSP.
+When the private key contained in that device is controlled by an end-entity, this device is usually called a “signature creation device” or *SCDev*. This can be a local SCDev such as a smartcard, but it can also be a remote SCDev managed by a CA or TSP.
 
 When the private key is used by a CA for signing certificates, this device is usually called a “hardware security module” or *HSM*.
 
