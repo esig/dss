@@ -9,7 +9,7 @@
 
 === AdES specificities
 ==== Existing formats
-The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus, we distinguish the following formats:
+The different digital signature formats make it possible to cover a wide range of real life use cases of this technique. Thus, we distinguish the following formats:
 
 * *XAdES* - for XML Advanced Electronic Signatures (cf. <<R01>>);
 * *CAdES* - for CMS Advanced Electronic Signatures (cf. <<R02>>);
