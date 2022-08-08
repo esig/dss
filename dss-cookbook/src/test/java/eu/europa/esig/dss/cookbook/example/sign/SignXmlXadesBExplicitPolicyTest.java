@@ -65,6 +65,12 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			parameters.setCertificateChain(privateKey.getCertificateChain());
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.model.BLevelParameters;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.InMemoryDocument;
+			// import eu.europa.esig.dss.model.Policy;
+			// import eu.europa.esig.dss.spi.DSSUtils;
 
 			BLevelParameters bLevelParameters = parameters.bLevel();
 
@@ -101,6 +107,10 @@ public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
 			// tag::addSPS[]
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignaturePolicyStore;
+			// import eu.europa.esig.dss.model.SpDocSpecification;
+			// import eu.europa.esig.dss.xades.signature.XAdESService;
 
 			// Create the SignaturePolicyStore object
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();

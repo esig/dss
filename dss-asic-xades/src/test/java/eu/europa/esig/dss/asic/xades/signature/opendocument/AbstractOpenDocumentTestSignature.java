@@ -114,6 +114,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractASiCEXAd
 	protected void checkExtractedContent(ASiCContent asicContent) {
 		assertNotNull(asicContent);
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getRootLevelSignedDocuments()));
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
 		assertNotNull(asicContent.getMimeTypeDocument());
 
@@ -123,6 +124,7 @@ public abstract class AbstractOpenDocumentTestSignature extends AbstractASiCEXAd
 
 		assertNotNull(asicContent.getMimeTypeDocument());
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getRootLevelSignedDocuments()));
 
 		assertEquals(1, asicContent.getManifestDocuments().size());
 		assertEquals("META-INF/manifest.xml", asicContent.getManifestDocuments().get(0).getName());

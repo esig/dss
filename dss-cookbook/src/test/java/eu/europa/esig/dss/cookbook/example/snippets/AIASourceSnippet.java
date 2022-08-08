@@ -38,16 +38,24 @@ public class AIASourceSnippet {
     @SuppressWarnings({ "unused", "null" })
     public static void main(String[] args) throws SQLException {
 
-        AIASource aiaSource = null;
         CertificateToken certificateToken = null;
 
         // tag::demo[]
+        // import eu.europa.esig.dss.spi.x509.aia.AIASource;
+        // import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+        // import eu.europa.esig.dss.model.x509.CertificateToken;
+
+        AIASource aiaSource = new DefaultAIASource();
         Set<CertificateToken> certificates = aiaSource.getCertificatesByAIA(certificateToken);
         // end::demo[]
 
         DataSource dataSource = null;
 
         // tag::demo-online[]
+        // import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+        // import eu.europa.esig.dss.spi.client.http.Protocol;
+        // import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+        // import java.util.Collections;
 
         // Instantiates a new DefaultAIASource object
         DefaultAIASource onlineAIASource = new DefaultAIASource();
@@ -63,6 +71,10 @@ public class AIASourceSnippet {
         // end::demo-online[]
 
         // tag::demo-cached[]
+        // import eu.europa.esig.dss.model.x509.CertificateToken;
+        // import eu.europa.esig.dss.service.x509.aia.JdbcCacheAIASource;
+        // import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+
         // Creates an instance of JdbcCacheAIASource
         JdbcCacheAIASource cacheAIASource = new JdbcCacheAIASource();
 

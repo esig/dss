@@ -87,11 +87,6 @@ public class PAdESDoubleSignatureLTAAndLTTest extends AbstractPAdESTestSignature
     }
 
     @Override
-    protected void onDocumentSigned(byte[] byteArray) {
-        // skip (checks number of signatures)
-    }
-
-    @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
         assertEquals(2, diagnosticData.getSignatures().size());
     }

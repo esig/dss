@@ -136,6 +136,7 @@ public class MimeType implements Serializable {
 	 * This constructor is used only by the web-services.
 	 */
 	public MimeType() {
+		// empty
 	}
 
 	/**
@@ -177,6 +178,8 @@ public class MimeType implements Serializable {
 	}
 
 	/**
+	 * Gets String identifying the MimeType
+	 *
 	 * @return the mimeTypeString
 	 */
 	public String getMimeTypeString() {

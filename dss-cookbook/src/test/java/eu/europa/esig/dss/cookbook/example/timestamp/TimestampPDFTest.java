@@ -41,6 +41,11 @@ public class TimestampPDFTest extends CookbookTools {
 	public void test() throws Exception {
 
 		// tag::creation[]
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.model.FileDocument;
+		// import java.io.File;
+		// import eu.europa.esig.dss.pades.signature.PAdESService;
+
 		// Loads a document to be timestamped
 		DSSDocument documentToTimestamp = new FileDocument(new File("src/main/resources/hello-world.pdf"));
 		
@@ -53,6 +58,9 @@ public class TimestampPDFTest extends CookbookTools {
 		// end::creation[]
 
 		// tag::validation[]
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+		// import eu.europa.esig.dss.validation.reports.Reports;
+
 		// Load a document validator. The appropriate validator class will be determined automatically.
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestampedDoc);
 		// Configure the validator. Provide a certificate verifier.

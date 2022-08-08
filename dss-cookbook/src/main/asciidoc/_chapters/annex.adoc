@@ -33,156 +33,17 @@ The usage of alerts is available in the following classes:
 [.landscape]
 <<<
 
+[[validationPolicyConstraints]]
 === Configuration of validation policy in different use cases
-==== General
-A Signature validation policy is a set of rules/constraints that need to be fulfilled to validate a signature. When checking a constraints fails, this leads to a sub-indication in the validation report.
-//TODO: Fill the “subindication” column of the table to indicate what subindications each constraint can lead to.
 
-.Validation policy constraints
-[%header,cols="5*^.^1"]
-|===
-   |Block                         |Constraint                      |Type                              |Indication            |SubIndication
-.8+|ContainerConstraints          |AcceptableContainerTypes        |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
-                                  |ZipCommentPresent               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |AcceptableZipComment            |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
-                                  |MimeTypeFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |AcceptableMimeTypeFileContent   |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
-                                  |ManifestFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |SignedFilesPresent              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |AllFilesSigned                  |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-.10+|SignatureConstraints         |StructuralValidation            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |AcceptablePolicies              |MultiValuesConstraint             |INDETERMINATE         |POLICY_PROCESSING_ERROR
-                                  |PolicyAvailable                 |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
-                                  |SignaturePolicyStorePresent     |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
-                                  |PolicyHashMatch                 |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
-                                  |AcceptableFormats               |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
-                                  |FullScope                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
-                                  |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
-                                  |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
-.19+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
-                                  |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
-                                  |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
-                                  |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
-                                  |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustedServiceTypeIdentifier    |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |TrustedServiceStatus            |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
-                                  |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
-                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
-                                  |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                               .2+|NotExpired                      .2+|LevelConstraint                |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
-                                                                                                                              OUT_OF_BOUNDS_NOT_REVOKED
-                                                                                                      |FAILED                |EXPIRED
-                                  |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
-                                  |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
-                                                                                                                              REVOKED_CA_NO_POE
-                                                                                                      |FAILED                |REVOKED
-.12+|CertificateConstraints       |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |RevocationIssuerNotExpired      |LevelConstraint                   |INDETERMINATE         |REVOCATION_OUT_OF_BOUNDS_NO_POE
-                                  |SelfSigned                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.11+|CertificateConstraints       |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |QcLegislationCountryCodes       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.10+|SignedAttributesConstraints  |SigningCertificatePresent       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |UnicitySigningCertificate       |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |SigningCertificateRefersCertificateChain  |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ReferencesToAllCertificateChainPresent    |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |SigningCertificateDigestAlgorithm         |LevelConstraint         |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE
-                                  |CertDigestPresent               |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
-                                  |CertDigestMatch                 |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
-                                  |IssuerSerialMatch               |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
-                                  |KeyIdentifierPresent            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |KeyIdentifierMatch              |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.11+|SignedAttributesConstraints  |SigningTime                     |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ContentType                     |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ContentHints                    |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ContentIdentifier               |ValueConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |MessageDigestOrSignedPropertiesPresent    |LevelConstraint         |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |CommitmentTypeIndication        |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |SignerLocation                  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ClaimedRoles                    |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |CertifiedRoles                  |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ContentTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |ContentTimeStampMessageImprint  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-|UnsignedAttributesConstraints    |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.9+|TimestampConstraints          |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
-                                                                                                                              REVOKED_CA_NO_POE
-                                  |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
-                                  |Coherence                       |LevelConstraint                   |INDETERMINATE         |TIMESTAMP_ORDER_FAILURE
-                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
-                                  |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
-                                  |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-                                  |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.5+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
-.4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
-                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
-                                  |MiniPublicKeySize               |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
-                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
-                                  |AcceptableDigestAlgo            |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
-                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
-                                  |AlgoExpirationDate              |AlgoExpirationDate                |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
-                                                                                                                              CRYPTO_CONSTRAINTS_FAILURE
-.4+|eIDAS                         |TLFreshness                     |TimeConstraint                    |FAILED                |-
-                                  |TLNotExpired                    |LevelConstraint                   |FAILED                |-
-                                  |TLWellSigned                    |LevelConstraint                   |FAILED                |-
-                                  |TLVersion                       |ValueConstraint                   |FAILED                |-
+include::dss-policy.adoc[]
 
 |===
 
 [.portrait]
 <<<
 
+[[AdESValidation]]
 ==== AdES validation
 
 According to ETSI EN 319 102-1 (cf. <<R09>>), the signature validation process can be separated to different levels:
@@ -575,3 +436,52 @@ We discussed above the validation processes defined in ETSI EN 319 102-1. The de
 Without going into details, ETSI TS 119 615 specifies procedures for interpreting the content of EUMS trusted lists, including procedures for validating EUMS trusted lists.
 
 Illustrated in the figure above are the results of the main steps defined in that standard.
+
+[[ASiCMerger]]
+=== ASiC Merger
+
+Since DSS v5.11 the framework provides a possibility to merge ASiC containers of the same type (e.g. `ASiC-E` with `XAdES` merge with another `ASiC-E` with `XAdES`). This can benefit from creating signature containers in parallel by different users and/or on different machines and finally merging them after obtaining all signatures, without breaking the cryptographical validity of signatures.
+
+The possibility is provided with introduction of `DefaultContainerMerger` class that chooses a relevant implementation of `ASiCContainerMerger` based on the provided containers types, evaluates a technical possibility to execute the merge and creates the merged container, when possible.
+
+[source,java,indent=0]
+.Sign multiple files within an ASiC-E container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTwoAsicAndMergeTest.java[tags=demo]
+----
+
+The following implementations of `ASiCContainerMerger` are provided within the framework:
+
+ * `ASiCSWithXAdESContainerMerger` - a part of `dss-asic-xades` module. The class supports a merging of `ASiC-S` with `XAdES` containers, containing the same signed data.
+* `ASiCEWithXAdESContainerMerger` - a part of `dss-asic-xades` module. The class supports a merging of `ASiC-E` with `XAdES` containers, including merging of containers signing a different set of signed data.
+* `ASiCSWithCAdESContainerMerger` - a part of `dss-asic-cades` module. The class supports a merging of `ASiC-S` with `CAdES` containers, containing the same signed data.
+* `ASiCEWithCAdESContainerMerger` - a part of `dss-asic-cades` module. The class supports a merging of `ASiC-E` with `CAdES` containers, including merging of containers signing/timestamping a different set of signed data, provided that signature/timestamp document names are different.
+
+NOTE: The merging classes are able to resolve conflicts between container entries, when feasible. If the extension is not possible, a corresponding exception will be thrown.
+
+In order to use a selected class, the corresponding module shall be loaded within the project. `DefaultContainerMerger` will choose a relevant implementation across available modules using <<ServiceLoaderAdvanced>>.
+
+When using provided implementations of the `ASiCContainerMerger`, a user can also benefit from merging a corresponding ASiC container with a simple not-signed ZIP archive, or even from merging not signed ZIP archives.
+
+[[asicFilenameFactory]]
+=== ASiC Filename Factory
+
+In order to customize file naming within ASiC containers, DSS introduces `ASiCWithXAdESFilenameFactory` and `ASiCWithCAdESFilenameFactory` (for `ASiC` with `XAdES` and `CAdES`, respectively), allowing customization of the created files, such as signature, manifest, timestamp and other documents.
+
+For each container entry being created, the underlying service is making a call to the factory providing the current content of an ASiC container using an `ASiCContent` object.
+Based on the defined rules within a factory, it returns a valid file name for the current container.
+
+The following implementations are provided within DSS framework:
+
+* `DefaultASiCWithXAdESFilenameFactory`/`DefaultASiCWithCAdESFilenameFactory` (for `XAdES` and `CAdES`, respectively) - the default implementation used in DSS code, providing a user-friendly filename, conformant to EN 319 162 (cf. <<R04>>) (e.g. `META-INF/signatures001.xml`).
+* `SimpleASiCWithXAdESFilenameFactory`/`SimpleASiCWithCAdESFilenameFactory` (for `XAdES` and `CAdES`, respectively) - allows definition of custom document names, using corresponding setters. The factories verify the conformance of the defined names according to EN 319 162 (cf. <<R04>>), when applicable.
+
+NOTE: When using `SimpleASiCWithXAdESFilenameFactory` or `SimpleASiCWithCAdESFilenameFactory`, the name of signature, manifest or timestamp files may be defined without `META-INF/` directory prefix. The factory will add the required directory to the filename, when applicable.
+
+Below you can find an example of a `SimpleASiCWithXAdESFilenameFactory` use within an `ASiCWithXAdESService` for a container signature creation with a custom filename:
+
+[source,java,indent=0]
+.SimpleASiCWithXAdESFilenameFactory use for a a custom signature filename
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignASiCWithSimpleFilenameFactoryTest.java[tags=demo]
+----

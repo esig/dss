@@ -27,6 +27,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,6 +65,11 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 		super.validate();
 	}
 
+	@AfterEach
+	public void reset() {
+		ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler());
+	}
+
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return document;
@@ -97,8 +103,6 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 
 		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESValidator(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
-
-		ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler()); // return settings
 	}
 
 	@Test

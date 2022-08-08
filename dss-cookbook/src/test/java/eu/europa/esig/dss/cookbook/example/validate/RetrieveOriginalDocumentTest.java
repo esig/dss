@@ -48,6 +48,12 @@ public class RetrieveOriginalDocumentTest {
 		String targetPath = path.toString();
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.model.FileDocument;
+		// import eu.europa.esig.dss.validation.AdvancedSignature;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
 		// We have our signed document, we want to retrieve the original/signed data
 		DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 

@@ -488,6 +488,8 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
+	 * Gets the proxy configuration
+	 *
 	 * @return associated {@code ProxyConfig}
 	 */
 	public ProxyConfig getProxyConfig() {
@@ -495,6 +497,8 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
+	 * Sets the proxy configuration
+	 *
 	 * @param proxyConfig
 	 *            the proxyConfig to set
 	 */
@@ -1045,8 +1049,8 @@ public class CommonsDataLoader implements DataLoader {
 		try {
 			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 			sslContextBuilder.setProtocol(sslProtocol);
-			
-			TrustStrategy trustStrategy = getTrustStrategy();
+
+			final TrustStrategy trustStrategy = getTrustStrategy();
 			if (trustStrategy != null) {
 				LOG.debug("Set the TrustStrategy");
 				sslContextBuilder.loadTrustMaterial(null, trustStrategy);

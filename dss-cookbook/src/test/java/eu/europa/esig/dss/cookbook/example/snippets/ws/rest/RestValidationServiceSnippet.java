@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
+// tag::demo[]
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -35,7 +36,6 @@ public class RestValidationServiceSnippet {
     @SuppressWarnings("unused")
     public void demo() throws Exception {
 
-        // tag::demo[]
 
         // Initialize the rest client
         RestDocumentValidationService validationService = new RestDocumentValidationServiceImpl();
@@ -58,7 +58,7 @@ public class RestValidationServiceSnippet {
         // Validate the signature
         WSReportsDTO result = validationService.validateSignature(toValidate);
 
-        // end::demo[]
     }
 
 }
+// end::demo[]

@@ -26,6 +26,7 @@ package eu.europa.esig.dss.jades;
 public final class JAdESHeaderParameterNames {
 	
 	private JAdESHeaderParameterNames() {
+		// empty
 	}
 
 	/**
@@ -62,6 +63,11 @@ public final class JAdESHeaderParameterNames {
 	 * Commitment Id
 	 */
 	public static final String COMM_ID = "commId";
+
+	/**
+	 * Commitment Qualifiers
+	 */
+	public static final String COMM_QUALS = "commQuals";
 
 	/**
 	 * Signature production place
@@ -457,5 +463,10 @@ public final class JAdESHeaderParameterNames {
 	 * Signature policy document
 	 */
 	public static final String SIG_POL_DOC = "sigPolDoc";
+
+	/**
+	 * Signature policy document local URI
+	 */
+	public static final String SIG_POL_LOCAL_URI = "sigPolLocalURI";
 
 }

@@ -39,6 +39,13 @@ public class DefaultSignaturePolicyValidatorLoader implements SignaturePolicyVal
     private SignaturePolicyValidator defaultSignaturePolicyValidator;
 
     /**
+     * Default constructor instantiating object with null SignaturePolicyValidator
+     */
+    public DefaultSignaturePolicyValidatorLoader() {
+        // empty
+    }
+
+    /**
      * This method sets a {@code SignaturePolicyValidator} to be used for default signature policy processing
      * according to the signature format (when {@code SignaturePolicy.hashAsInTechnicalSpecification == false})
      *

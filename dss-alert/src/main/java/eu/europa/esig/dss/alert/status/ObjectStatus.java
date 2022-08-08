@@ -36,6 +36,13 @@ public class ObjectStatus extends MessageStatus {
     private Map<String, String> relatedObjectMap = new HashMap<>();
 
     /**
+     * Default constructor initializing an empty objects map
+     */
+    public ObjectStatus() {
+        // empty
+    }
+
+    /**
      * Adds concerned object identifier and information about the occurred event
      *
      * @param objectId {@link String}

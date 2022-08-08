@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
+import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
@@ -62,7 +63,7 @@ public abstract class AbstractParsingTask {
 	 */
 	protected TrustStatusListType getJAXBObject() {
 		try (InputStream is = document.openStream()) {
-			return TrustedListFacade.newFacade().unmarshall(is);
+			return createTrustedListFacade().unmarshall(is);
 		} catch (Exception e) {
 			String message = "Unable to parse binaries. Reason : '%s'";
 			// get complete error message in case if the message string is not defined directly
@@ -74,18 +75,35 @@ public abstract class AbstractParsingTask {
 	}
 
 	/**
+	 * This method loads a {@code TrustedListFacade}
+	 *
+	 * @return {@link TrustedListFacade}
+	 */
+	protected TrustedListFacade createTrustedListFacade() {
+		return TrustedListFacade.newFacade();
+	}
+
+	/**
 	 * Extracts the common values
 	 *
 	 * @param result {@link AbstractParsingResult}
 	 * @param schemeInformation {@link TSLSchemeInformationType}
 	 */
 	protected void commonParseSchemeInformation(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
+		extractTSLType(result, schemeInformation);
 		extractSequenceNumber(result, schemeInformation);
 		extractTerritory(result, schemeInformation);
 		extractVersion(result, schemeInformation);
 		extractIssueDate(result, schemeInformation);
 		extractNextUpdateDate(result, schemeInformation);
 		extractDistributionPoints(result, schemeInformation);
+	}
+	
+	private void extractTSLType(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
+		String tslType = schemeInformation.getTSLType();
+		if (Utils.isStringNotEmpty(tslType)) {
+			result.setTSLType(TSLType.fromUri(tslType));
+		}
 	}
 
 	private void extractSequenceNumber(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {

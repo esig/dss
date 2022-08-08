@@ -44,6 +44,7 @@ public class DSSDictionaryExtractionUtils {
 	 * Empty constructor
 	 */
 	private DSSDictionaryExtractionUtils() {
+		// empty
 	}
 
 	/**

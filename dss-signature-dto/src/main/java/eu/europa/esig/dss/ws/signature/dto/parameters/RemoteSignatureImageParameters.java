@@ -67,6 +67,12 @@ public class RemoteSignatureImageParameters implements Serializable {
     private Integer zoom;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public RemoteSignatureImageParameters() {
+	}
+
+	/**
 	 * Gets the signature field horizontal alignment on the page
 	 *
 	 * @return {@link VisualSignatureAlignmentHorizontal}

@@ -30,6 +30,13 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class DetachedTimestampValidatorFactory implements DocumentValidatorFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public DetachedTimestampValidatorFactory() {
+		// empty
+	}
+
 	@Override
 	public boolean isSupported(DSSDocument document) {
 		DetachedTimestampValidator validator = new DetachedTimestampValidator();

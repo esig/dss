@@ -53,6 +53,21 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 		this.certificate = certificate;
 	}
 
+	/**
+	 * Default constructor with token id
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param certificate {@link CertificateWrapper}
+	 * @param constraint {@link LevelConstraint}
+	 * @param tokenId {@link String} to be set for the given check
+	 */
+	public RevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+										LevelConstraint constraint, String tokenId) {
+		super(i18nProvider, result, constraint, tokenId);
+		this.certificate = certificate;
+	}
+
 	@Override
 	protected boolean process() {
 		return certificate.isRevocationDataAvailable();

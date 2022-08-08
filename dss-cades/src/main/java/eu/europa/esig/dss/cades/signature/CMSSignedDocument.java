@@ -55,8 +55,21 @@ public class CMSSignedDocument extends CommonDocument {
 	 *            the CMSSignedData
 	 */
 	public CMSSignedDocument(final CMSSignedData data) {
+		this(data, null);
+	}
+
+	/**
+	 * The constructor for CMSSignedDocument with a custom document name
+	 *
+	 * @param data
+	 *            the CMSSignedData
+	 * @param name
+	 * 			  {@link String} document name
+	 */
+	public CMSSignedDocument(final CMSSignedData data, String name) {
 		Objects.requireNonNull(data, "The CMSSignedData cannot be null");
 		this.signedData = data;
+		this.name = name;
 		this.mimeType = MimeType.PKCS7;
 	}
 

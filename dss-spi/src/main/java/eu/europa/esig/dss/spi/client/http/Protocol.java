@@ -50,6 +50,8 @@ public enum Protocol {
 	}
 
 	/**
+	 * Gets the name of the protocol
+	 *
 	 * @return the name of the protocol
 	 */
 	public String getName() {

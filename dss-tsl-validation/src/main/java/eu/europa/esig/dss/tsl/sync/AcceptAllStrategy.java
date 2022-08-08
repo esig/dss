@@ -28,6 +28,12 @@ import eu.europa.esig.dss.spi.tsl.TLInfo;
  */
 public class AcceptAllStrategy implements SynchronizationStrategy {
 
+	/**
+	 * Default constructor
+	 */
+	public AcceptAllStrategy() {
+	}
+
 	@Override
 	public boolean canBeSynchronized(TLInfo trustedList) {
 		return true;

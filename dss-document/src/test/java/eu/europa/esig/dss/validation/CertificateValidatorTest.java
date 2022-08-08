@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
-import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
@@ -156,8 +156,8 @@ public class CertificateValidatorTest {
 		CertificateWrapper certificateWrapper = usedCertificates.get(0);
 		assertTrue(certificateWrapper.isQcCompliance());
 		assertFalse(certificateWrapper.isSupportedByQSCD());
-		assertEquals(1, certificateWrapper.getQCTypes().size());
-		assertEquals(QCType.QCT_ESIGN, certificateWrapper.getQCTypes().iterator().next());
+		assertEquals(1, certificateWrapper.getQcTypes().size());
+		assertEquals(QCTypeEnum.QCT_ESIGN, certificateWrapper.getQcTypes().iterator().next());
 		assertEquals(1, certificateWrapper.getQcLegislationCountryCodes().size());
 		assertEquals("TC", certificateWrapper.getQcLegislationCountryCodes().iterator().next());
 	}
@@ -254,12 +254,13 @@ public class CertificateValidatorTest {
 		}
 		assertNotNull(crlSource);
 
-		CertificateValidator cv = CertificateValidator.fromCertificate(certToken);
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setCrlSource(crlSource);
 		CommonTrustedCertificateSource trustedCertSources = new CommonTrustedCertificateSource();
 		trustedCertSources.addCertificate(caToken);
 		certificateVerifier.setTrustedCertSources(trustedCertSources);
+
+		CertificateValidator cv = CertificateValidator.fromCertificate(certToken);
 		cv.setCertificateVerifier(certificateVerifier);
 
 		CertificateReports reports = cv.validate();

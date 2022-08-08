@@ -70,7 +70,7 @@ public class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCh
 
     @Override
     protected boolean process() {
-        return contentTimestamp.getProductionTime() != null &&
+        return contentTimestamp.getProductionTime() != null && cryptographicValidation.getNotAfter() != null &&
                 !contentTimestamp.getProductionTime().after(cryptographicValidation.getNotAfter());
     }
 

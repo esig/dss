@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -59,7 +58,7 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
 		this.id = reference.getId();
-		this.uri = extractUri(reference);
+		this.uri = DSSXMLUtils.getReferenceURI(reference);
 	}
 
 	/**
@@ -79,18 +78,6 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	public String getUri() {
 		return uri;
 	}
-
-	/** Method is used due to Apache Santuario Signature does return empty instead of null result */
-	private String extractUri(Reference reference) {
-		if (reference != null) {
-			Element element = reference.getElement();
-			if (element != null) {
-				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Returns original bytes of the referenced document
 	 *

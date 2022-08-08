@@ -56,6 +56,17 @@ public class SignatureLevelValidationTest {
         trustedCertSource.importAsTrusted(keystoreCertSource);
 
         // tag::demo[]
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.FileDocument;
+        // import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+        // import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+        // import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+        // import eu.europa.esig.dss.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.validation.SignedDocumentValidator;
+        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+        // import eu.europa.esig.dss.validation.reports.Reports;
+        // import java.io.File;
 
         // The document to be validated (any kind of signature file)
         DSSDocument document = new FileDocument(new File("src/test/resources/signature-pool/signedXmlXadesLT.xml"));
@@ -96,11 +107,23 @@ public class SignatureLevelValidationTest {
         assertNotNull(simpleReport);
 
         // tag::demo-ltv[]
+        // import eu.europa.esig.dss.validation.SignedDocumentValidator;
+        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+
+        documentValidator = SignedDocumentValidator.fromDocument(document);
+        // configure
+
         // Validate the signature with long-term validation material
         documentValidator.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
         // end::demo-ltv[]
 
         // tag::demo-lta[]
+        // import eu.europa.esig.dss.validation.SignedDocumentValidator;
+        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+
+        documentValidator = SignedDocumentValidator.fromDocument(document);
+        // configure
+
         // Validate the signature with long-term availability and integrity material
         documentValidator.setValidationLevel(ValidationLevel.ARCHIVAL_DATA);
         // end::demo-lta[]

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Builds JWS Compact Signature
@@ -81,6 +82,9 @@ public class JAdESCompactBuilder extends AbstractJAdESBuilder {
 
 	@Override
 	protected void assertConfigurationValidity(JAdESSignatureParameters signatureParameters) {
+		Objects.requireNonNull(signatureParameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
+		Objects.requireNonNull(signatureParameters.getSignatureLevel(), "SignatureLevel shall be defined!");
+
 		SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
 		if (!(SignaturePackaging.ENVELOPING.equals(packaging)) && !(SignaturePackaging.DETACHED.equals(packaging))) {
 			throw new IllegalArgumentException("Unsupported signature packaging for JAdES Compact Signature: " + packaging);

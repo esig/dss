@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2022-05-20T00:00:00Z</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="C-7DA9241EC8BBAE3FAB9A29AE06C7B185B62C6FDE319DD985E5AA2E6F780C4EAA">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#616b6973406174686578677161b442e4b61726169736b26f75702e6772,2.5.4.5=#030303138203132323020131335313031230323635,2.5.4.42=#130944696d697472696f73,2.5.4.4=#169736b6130b4b6172616b6973,cn=test user,c=gr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#616b6973406174686578677161b442e4b61726169736b26f75702e6772,2.5.4.5=#030303138203132323020131335313031230323635,2.5.4.42=#130944696d697472696f73,2.5.4.4=#169736b6130b4b6172616b6973,CN=Test User,C=GR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=athex ca g2,o=athens,c=gr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ATHEX CA G2,O=ATHENS,C=GR</IssuerDistinguishedName>
+            <SerialNumber>616178465948748197984619868</SerialNumber>
+            <SubjectSerialNumber>26849</SubjectSerialNumber>
+            <CommonName>Test User</CommonName>
+            <CountryName>GR</CountryName>
+            <GivenName>Test</GivenName>
+            <Surname>User</Surname>
+            <Email>T.User@athex.gr</Email>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://www.athex.gr/pki.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://www.athex.gr/pki.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.athexgroup.gr/</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2020-10-01T07:25:10Z</NotAfter>
+            <NotBefore>2019-09-05T07:25:10Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BF4F2D73BD38ECDE845C1CB18D6DBE212BC7A7BADD4009BF52BF3482A9F4F907</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate />
+            <CertificateChain />
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies />
+            <TrustedServiceProviders>
+                <TrustedServiceProvider TL="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="el">ΕΛΛΗΝΙΚΑ ΧΡΗΜΑΤΙΣΤΗΡΙΑ</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="el">ΧΡΗΜΑΤΙΣΤΗΡΙΟ ΑΘΗΝΩΝ</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATEL-755109908</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustedServices>
+                        <TrustedService ServiceDigitalIdentifier="C-7DA9241EC8BBAE3FAB9A29AE06C7B185B62C6FDE319DD985E5AA2E6F780C4EAA">
+                            <ServiceNames>
+                                <ServiceName lang="en">ATHEX CA G2</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2021-12-23T11:00:24Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                        <TrustedService ServiceDigitalIdentifier="C-7DA9241EC8BBAE3FAB9A29AE06C7B185B62C6FDE319DD985E5AA2E6F780C4EAA">
+                            <ServiceNames>
+                                <ServiceName lang="en">ATHEX CA G2</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2021-12-23T11:00:24Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustedService>
+                    </TrustedServices>
+                </TrustedServiceProvider>
+            </TrustedServiceProviders>
+            <Revocations />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Ka4Gx7GFtixv3jGd2YXlfakkHsi7rj+rmqoub3gMTqo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations />
+    <TrustedLists>
+        <TrustedList Id="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE">
+            <CountryCode>EL</CountryCode>
+            <Url>https://www.eett.gr/tsl/EL-TSL.xml</Url>
+            <SequenceNumber>63</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-05-20T12:01:58Z</LastLoading>
+            <IssueDate>2022-03-24T16:35:51Z</IssueDate>
+            <NextUpdate>2022-09-24T15:34:51Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>306</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-05-20T12:01:56Z</LastLoading>
+            <IssueDate>2022-03-15T10:00:29Z</IssueDate>
+            <NextUpdate>2022-09-14T09:00:29Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

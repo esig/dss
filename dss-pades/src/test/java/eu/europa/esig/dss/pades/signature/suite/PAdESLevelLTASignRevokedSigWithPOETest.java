@@ -62,6 +62,8 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
+        certificateVerifier.setRevocationFallback(true);
+
         service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
     }

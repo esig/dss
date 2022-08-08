@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -112,7 +113,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 
 	private boolean definedFilename(ResourceResolverContext context) {
 		Attr uriAttr = context.attr;
-		return uriAttr != null && Utils.isStringNotBlank(uriAttr.getNodeValue()) && !uriAttr.getNodeValue().startsWith("#");
+		return uriAttr != null && Utils.isStringNotBlank(uriAttr.getNodeValue()) && !DomUtils.startsFromHash(uriAttr.getNodeValue());
 	}
 
 	private boolean isDocumentNamesDefined() {

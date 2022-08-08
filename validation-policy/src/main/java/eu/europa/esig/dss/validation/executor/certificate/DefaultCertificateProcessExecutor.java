@@ -36,6 +36,12 @@ public class DefaultCertificateProcessExecutor extends AbstractProcessExecutor i
 	/** Id of a certificate to validate */
 	private String certificateId;
 
+	/**
+	 * Default constructor instantiating object with null certificate id
+	 */
+	public DefaultCertificateProcessExecutor() {
+	}
+
 	@Override
 	public void setCertificateId(String certificateId) {
 		this.certificateId = certificateId;

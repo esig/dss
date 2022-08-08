@@ -116,11 +116,6 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
     }
 
     @Override
-    protected void onDocumentSigned(byte[] byteArray) {
-        // skip
-    }
-
-    @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
         assertEquals(5, diagnosticData.getAllSignatures().size());
     }

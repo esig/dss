@@ -69,6 +69,26 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.SignaturePackaging;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+			// import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+			// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+			// import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+			// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+			// import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+			// import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+			// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+			// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+			// import eu.europa.esig.dss.tsl.source.LOTLSource;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+			// import eu.europa.esig.dss.xades.signature.XAdESService;
+			// import java.io.File;
 
 			// Preparing parameters for the XAdES signature
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();

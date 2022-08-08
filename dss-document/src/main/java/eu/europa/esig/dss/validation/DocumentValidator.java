@@ -76,9 +76,9 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * Sets the TokenIdentifierProvider
 	 *
-	 * @param identifierProvider {@link TokenIdentifierProvider}
+	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider}
 	 */
-	void setTokenIdentifierProvider(TokenIdentifierProvider identifierProvider);
+	void setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider);
 	
 	/**
 	 * This method allows to enable/disable the semantics inclusion in the reports

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
+// tag::demo[]
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
@@ -31,7 +32,6 @@ public class RestTimestampServiceSnippet {
 
     @SuppressWarnings("unused")
     public void demo() throws Exception {
-        // tag::demo[]
 
         // Initialize the rest client
         RestTimestampService timestampService = new RestTimestampServiceImpl();
@@ -49,7 +49,7 @@ public class RestTimestampServiceSnippet {
         // Timestamp the digest
         TimestampResponseDTO timestampResponse = timestampService.getTimestampResponse(digest);
 
-        // end::demo[]
     }
 
 }
+// end::demo[]

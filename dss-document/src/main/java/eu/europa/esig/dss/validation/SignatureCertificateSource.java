@@ -48,6 +48,13 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 	protected CandidatesForSigningCertificate candidatesForSigningCertificate;
 
 	/**
+	 * Default constructor initializing object with null signing certificate candidates list
+	 */
+	protected SignatureCertificateSource() {
+		// empty
+	}
+
+	/**
 	 * Retrieves the list of all certificates present in a signed element (i.e. the CMS Signed data (CAdES))
 	 *
 	 * @return list of all certificates present in a signed element

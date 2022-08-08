@@ -52,7 +52,7 @@ public class InMemoryDocumentTest {
 		assertNull(doc.getName());
 		assertNull(doc.getBytes());
 		NullPointerException exception = assertThrows(NullPointerException.class, () -> doc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals("Bytes are null", exception.getMessage());
+		assertEquals("Byte array is not defined!", exception.getMessage());
 
 		byte[] bytes = new byte[] { 1, 2, 3 };
 		doc.setBytes(bytes);

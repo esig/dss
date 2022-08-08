@@ -36,6 +36,12 @@ public class RestTimestampServiceImpl implements RestTimestampService {
 	private RemoteTimestampService timestampService;
 
 	/**
+	 * Default construction instantiating object with null RemoteTimestampService
+	 */
+	public RestTimestampServiceImpl() {
+	}
+
+	/**
 	 * Sets the timestamping service
 	 *
 	 * @param timestampService {@link RemoteTimestampService}

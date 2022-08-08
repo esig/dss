@@ -46,6 +46,13 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
+	/**
+	 * Default constructor
+	 */
+	protected AbstractSignatureTokenConnection() {
+		// empty
+	}
+
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		return sign(toBeSigned, digestAlgorithm, null, keyEntry);

@@ -63,6 +63,39 @@ public class EuropeanLOTLSnippets {
 	private static Logger LOG = LoggerFactory.getLogger(EuropeanLOTLSnippets.class);
 
 	// tag::complete-european-lotl-config[]
+	// import eu.europa.esig.dss.model.DSSException;
+	// import eu.europa.esig.dss.model.FileDocument;
+	// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+	// import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+	// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+	// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+	// import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+	// import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+	// import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+	// import eu.europa.esig.dss.spi.x509.CertificateSource;
+	// import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+	// import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+	// import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
+	// import eu.europa.esig.dss.tsl.alerts.TLAlert;
+	// import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
+	// import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
+	// import eu.europa.esig.dss.tsl.alerts.detections.TLExpirationDetection;
+	// import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
+	// import eu.europa.esig.dss.tsl.alerts.handlers.log.LogLOTLLocationChangeAlertHandler;
+	// import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
+	// import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLExpirationAlertHandler;
+	// import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
+	// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+	// import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+	// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+	// import eu.europa.esig.dss.tsl.source.LOTLSource;
+	// import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+	// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+	// import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+	// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+	// import java.io.File;
+	// import java.io.IOException;
+	// import java.util.Arrays;
 
 	// Should be externalized
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
@@ -189,7 +222,6 @@ public class EuropeanLOTLSnippets {
 		LogLOTLLocationChangeAlertHandler handler = new LogLOTLLocationChangeAlertHandler();
 		return new LOTLAlert(lotlLocationDetection, handler);
 	}
-
 	// end::complete-european-lotl-config[]
 
 }

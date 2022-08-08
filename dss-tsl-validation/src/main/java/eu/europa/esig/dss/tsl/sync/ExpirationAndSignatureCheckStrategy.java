@@ -28,7 +28,8 @@ import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import java.util.Date;
 
 /**
- * Allows to skip expired/invalid trusted lists
+ * Allows skipping expired or invalid trusted lists
+ *
  */
 public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrategy {
 
@@ -57,6 +58,12 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 	private boolean acceptInvalidListOfTrustedLists = false;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ExpirationAndSignatureCheckStrategy() {
+	}
+
+	/**
 	 * Sets if expired trusted lists are supported (next update after current time)
 	 * 
 	 * @param acceptExpiredTrustedList
@@ -68,8 +75,8 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 	}
 
 	/**
-	 * Sets if invalid trusted lists are supported (signature with INVALID or
-	 * INDERTERMINATE Indication)
+	 * Sets if invalid trusted lists are supported (signature with FAILED or
+	 * INDETERMINATE Indication)
 	 * 
 	 * @param acceptInvalidTrustedList
 	 *                                 true/false if invalid trusted lists can be
@@ -93,7 +100,7 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 
 	/**
 	 * Sets if invalid list of trusted lists and their TLs are supported (signature
-	 * with INVALID or INDERTERMINATE Indication)
+	 * with FAILED or INDETERMINATE Indication)
 	 * 
 	 * @param acceptInvalidListOfTrustedLists
 	 *                                        true/false if invalid list of trusted

@@ -51,6 +51,7 @@ public final class SimpleCertificateReportXmlDefiner {
 	private static final String SIMPLE_CERTIFICATE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-certificate-report.xslt";
 
 	private SimpleCertificateReportXmlDefiner() {
+		// empty
 	}
 
 	/** The object factory to use */

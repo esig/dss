@@ -48,6 +48,7 @@ public final class ValidationReportUtils extends XSDAbstractUtils {
 	private JAXBContext jc;
 
 	private ValidationReportUtils() {
+		// empty
 	}
 
 	/**

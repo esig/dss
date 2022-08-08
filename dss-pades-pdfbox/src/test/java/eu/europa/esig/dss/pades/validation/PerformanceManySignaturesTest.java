@@ -51,9 +51,10 @@ public class PerformanceManySignaturesTest {
     void extractSigDictionaries() throws IOException {
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
 
-        PdfBoxDocumentReader reader = new PdfBoxDocumentReader(inMemoryDocument);
-        Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = reader.extractSigDictionaries();
-        assertNotNull(pdfSignatureDictionaryListMap);
+        try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(inMemoryDocument)) {
+            Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = reader.extractSigDictionaries();
+            assertNotNull(pdfSignatureDictionaryListMap);
+        }
     }
 
     @Test

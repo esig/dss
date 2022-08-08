@@ -35,6 +35,12 @@ public class RoleOfPSP {
 	private String pspName;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public RoleOfPSP() {
+	}
+
+	/**
 	 * Gets the role OID
 	 *
 	 * @return {@link RoleOfPspOid}

@@ -133,6 +133,12 @@ public class TLValidationJob {
     private List<Alert<TLInfo>> tlAlerts;
 
 	/**
+	 * Default constructor instantiating object with null configuration
+	 */
+	public TLValidationJob() {
+	}
+
+	/**
 	 * Sets the additional TL Sources
 	 *
 	 * @param trustedListSources {@link TLSource}s

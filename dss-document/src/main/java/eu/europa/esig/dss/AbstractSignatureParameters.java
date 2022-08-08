@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,6 +72,13 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	private List<TimestampToken> contentTimestamps;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected AbstractSignatureParameters() {
+		// empty
+	}
+
+	/**
 	 * Returns the list of the {@code TimestampToken} to be incorporated within the signature and representing the
 	 * content-timestamp.
 	 *
@@ -99,11 +107,10 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			return detachedContents;
 		}
-		ProfileParameters context = getContext();
 		if (context != null) {
 			return context.getDetachedContents();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -210,16 +217,6 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 */
 	public void reinit() {
 		context = null;
-	}
-
-	/**
-	 * This method re-inits the deterministicId to force to recompute it
-	 *
-	 * Deprecated since DSS 5.10. Use {@code reinit()} method
-	 */
-	@Deprecated
-	public void reinitDeterministicId() {
-		reinit();
 	}
 
 }

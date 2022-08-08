@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.enumerations.TSLType;
+
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +29,13 @@ import java.util.List;
  * Represents a parsing result record
  */
 public interface ParsingInfoRecord extends InfoRecord {
+
+	/**
+	 * Gets the LOTL/TL TSLType
+	 *
+	 * @return {@link TSLType}
+	 */
+	TSLType getTSLType();
 
 	/**
 	 * Gets the LOTL/TL sequence number

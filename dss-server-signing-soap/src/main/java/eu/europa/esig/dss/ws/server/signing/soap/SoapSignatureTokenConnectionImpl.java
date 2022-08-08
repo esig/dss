@@ -41,6 +41,12 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	private RemoteSignatureTokenConnection token;
 
 	/**
+	 * Default construction instantiating object with null token connection
+	 */
+	public SoapSignatureTokenConnectionImpl() {
+	}
+
+	/**
 	 * Sets remote token connection
 	 *
 	 * @param token {@link RemoteSignatureTokenConnection}

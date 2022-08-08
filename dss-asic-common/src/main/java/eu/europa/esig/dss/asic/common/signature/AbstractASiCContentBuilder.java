@@ -43,6 +43,13 @@ public abstract class AbstractASiCContentBuilder {
     private static final String ZIP_ENTRY_DETACHED_FILE = "detached-file";
 
     /**
+     * Default constructor
+     */
+    protected AbstractASiCContentBuilder() {
+        // empty
+    }
+
+    /**
      * Builds the {@code ASiCContent} from the
      *
      * @param documents representing an ASiC Container or a list of documents to be signed

@@ -184,9 +184,10 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	/**
 	 * Initializes and fills {@code ValidationContext} for a certificate token validation
 	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to be used
 	 * @return {@link ValidationContext}
 	 */
-	protected ValidationContext prepareValidationContext() {
+	protected ValidationContext prepareValidationContext(CertificateVerifier certificateVerifier) {
 		SignatureValidationContext svc = new SignatureValidationContext();
 		svc.initialize(certificateVerifier);
 		svc.addCertificateTokenForVerification(token);
@@ -200,7 +201,9 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link DiagnosticDataBuilder}
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder() {
-		ValidationContext validationContext = prepareValidationContext();
+		final CertificateVerifier certificateVerifierForValidation =
+				new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
+		final ValidationContext validationContext = prepareValidationContext(certificateVerifierForValidation);
 		validationContext.validate();
 		return createDiagnosticDataBuilder(validationContext);
 	}

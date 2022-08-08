@@ -122,7 +122,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
+	protected List<AdvancedSignature> buildSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<>();
 		if (cmsSignedData != null) {
 			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
@@ -139,6 +139,15 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 			}
 		}
 		return signatures;
+	}
+
+	/**
+	 * This method returns a CMSSignedData
+	 *
+	 * @return {@link CMSSignedData}
+	 */
+	public CMSSignedData getCmsSignedData() {
+		return cmsSignedData;
 	}
 
 	@Override

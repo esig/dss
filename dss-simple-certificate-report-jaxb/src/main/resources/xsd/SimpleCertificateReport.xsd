@@ -67,6 +67,7 @@
 			</xs:element>
 			<xs:element name="qualificationAtIssuance" type="CertificateQualification" minOccurs="0" />
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" minOccurs="0" />
+			<xs:element name="enactedMRA" type="xs:boolean" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
@@ -159,15 +160,18 @@
 		
 			<xs:enumeration value="QC for eSig with QSCD" />
 			<xs:enumeration value="QC for eSeal with QSCD" />
+			<xs:enumeration value="QC for unknown type with QSCD" />
 			<!-- non sense <xs:enumeration value="QC Cert for WSA with QSCD" /> -->
 			
 			<xs:enumeration value="QC for eSig" />
 			<xs:enumeration value="QC for eSeal" />
 			<xs:enumeration value="QC for WSA" />
-			
+			<xs:enumeration value="QC for unknown type" />
+
 			<xs:enumeration value="Cert for eSig" />
 			<xs:enumeration value="Cert for eSeal" />
 			<xs:enumeration value="Cert for WSA" />
+			<xs:enumeration value="Cert for unknown type" />
 			
 			<xs:enumeration value="N/A" />
 		</xs:restriction>

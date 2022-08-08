@@ -41,6 +41,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
 			XAdES132Element.COUNTER_SIGNATURE);
 
+	/**
+	 * Default constructor
+	 */
+	public XAdES132Paths() {
+		// empty
+	}
+
 	@Override
 	public DSSNamespace getNamespace() {
 		return XAdESNamespaces.XADES_132;
@@ -550,6 +557,16 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentCommitmentObjectReferencesPath() {
+		return fromCurrentPosition(XAdES132Element.OBJECT_REFERENCE);
+	}
+
+	@Override
+	public String getCurrentCommitmentAllSignedDataObjectsPath() {
+		return fromCurrentPosition(XAdES132Element.ALL_SIGNED_DATA_OBJECTS);
+	}
+
+	@Override
 	public String getCurrentInclude() {
 		return fromCurrentPosition(XAdES132Element.INCLUDE);
 	}
@@ -649,9 +666,13 @@ public class XAdES132Paths extends AbstractPaths implements XAdESPaths {
 	}
 
 	@Override
+	public String getCurrentSigPolDocLocalURI() {
+		return fromCurrentPosition(XAdES141Element.SIG_POL_DOC_LOCAL_URI);
+	}
+
+	@Override
 	public XSDAbstractUtils getXSDUtils() {
 		return XAdES319132Utils.getInstance();
 	}
-
 
 }

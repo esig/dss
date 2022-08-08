@@ -31,7 +31,7 @@ import java.util.Objects;
 /**
  * Abstract validation process executor
  */
-public class AbstractProcessExecutor {
+public abstract class AbstractProcessExecutor {
 
 	/** Validation time */
 	protected Date currentTime = new Date();
@@ -44,6 +44,12 @@ public class AbstractProcessExecutor {
 
 	/** i18n provider */
 	private I18nProvider i18nProvider;
+
+	/**
+	 * Default constructor instantiating object with null values and current time
+	 */
+	protected AbstractProcessExecutor() {
+	}
 
 	/**
 	 * Sets the validation time

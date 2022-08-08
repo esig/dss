@@ -44,6 +44,12 @@ public class RemoteKeyEntry implements Serializable {
 	private RemoteCertificate[] certificateChain;
 
 	/**
+	 * Default constructor initializing object with null values
+	 */
+	public RemoteKeyEntry() {
+	}
+
+	/**
 	 * Gets the alias
 	 *
 	 * @return {@link String}

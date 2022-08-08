@@ -29,8 +29,10 @@ import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
+import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.simplereport.jaxb.XmlToken;
 
 import java.util.ArrayList;
@@ -498,6 +500,15 @@ public class SimpleReport {
 			for (XmlToken token : tokens) {
 				if (tokenId.equals(token.getId())) {
 					return token;
+				} else if (token instanceof XmlSignature) {
+					XmlTimestamps timestamps = ((XmlSignature) token).getTimestamps();
+					if (timestamps != null) {
+						for (XmlTimestamp timestamp : timestamps.getTimestamp()) {
+							if (tokenId.equals(timestamp.getId())) {
+								return timestamp;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -550,7 +561,28 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This methods returns the jaxb model of the simple report
+	 * This method returns a list of {@code XmlSignatureScope}s for the token (signature or timestamp) with a given Id
+	 *
+	 * @param tokenId {@link String} id of a token to get {@code XmlSignatureScope}s for
+	 * @return a list of {@link XmlSignatureScope}s
+	 */
+	public List<XmlSignatureScope> getSignatureScopes(String tokenId) {
+		XmlToken tokenById = getTokenById(tokenId);
+		if (tokenById != null) {
+			if (tokenById instanceof XmlSignature) {
+				return ((XmlSignature) tokenById).getSignatureScope();
+			} else if (tokenById instanceof XmlTimestamp) {
+				return ((XmlTimestamp) tokenById).getTimestampScope();
+			} else {
+				throw new UnsupportedOperationException(String.format(
+						"Signature scope extraction is not supported for an object of class '%s'", tokenById.getClass()));
+			}
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns the jaxb model of the simple report
 	 * 
 	 * @return the jaxb model
 	 */

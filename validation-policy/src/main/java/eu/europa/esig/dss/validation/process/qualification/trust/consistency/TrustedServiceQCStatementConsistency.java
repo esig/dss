@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
+
+import java.util.List;
 
 /**
  * A Trusted service can not have QCStatement and NotQualified qualifiers for the same certificate.

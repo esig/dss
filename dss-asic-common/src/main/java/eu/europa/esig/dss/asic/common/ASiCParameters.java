@@ -53,6 +53,13 @@ public class ASiCParameters implements Serializable {
 	private String signatureFileName;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ASiCParameters() {
+		// empty
+	}
+
+	/**
 	 * Indicates if the ZIP comment must include the mime-type.
 	 *
 	 * @return {@code boolean}
@@ -62,7 +69,7 @@ public class ASiCParameters implements Serializable {
 	}
 
 	/**
-	 * This method allows to indicate if the zip comment will contain the mime type.
+	 * This method sets if the zip comment will contain the mime type.
 	 *
 	 * @param zipComment
 	 *            true if a zip comment needs to be added
@@ -114,6 +121,7 @@ public class ASiCParameters implements Serializable {
 	 * @return signature file name
 	 */
 	public String getSignatureFileName() {
+		// TODO : remove with #setSignatureFileName(signatureFileName) method
 		return signatureFileName;
 	}
 
@@ -122,7 +130,15 @@ public class ASiCParameters implements Serializable {
 	 *
 	 * @param signatureFileName
 	 *            signature file name
+	 *
+	 * @deprecated since DSS 5.11.
+	 * Use {@code
+	 *         SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+	 *         asicFilenameFactory.setSignatureFilename(signatureFilename);
+	 *         ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
+	 *     }
 	 */
+	@Deprecated
 	public void setSignatureFileName(final String signatureFileName) {
 		this.signatureFileName = signatureFileName;
 	}

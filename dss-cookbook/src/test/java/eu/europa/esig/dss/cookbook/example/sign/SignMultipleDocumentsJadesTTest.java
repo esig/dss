@@ -60,18 +60,21 @@ public class SignMultipleDocumentsJadesTTest extends CookbookTools {
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-            JAdESSignatureParameters parameters = new JAdESSignatureParameters();
-            parameters.setSigningCertificate(privateKey.getCertificate());
-            parameters.setCertificateChain(privateKey.getCertificateChain());
-            parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-            parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-            parameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
-
             // tag::clearEtsiU[]
+            // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+
+            JAdESSignatureParameters parameters = new JAdESSignatureParameters();
             parameters.setBase64UrlEncodedEtsiUComponents(false);
             // end::clearEtsiU[]
 
             // tag::demo[]
+            // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+            // import eu.europa.esig.dss.enumerations.SigDMechanism;
+            // import eu.europa.esig.dss.enumerations.SignaturePackaging;
+            // import eu.europa.esig.dss.model.FileDocument;
+            // import java.util.ArrayList;
+
+            parameters = new JAdESSignatureParameters();
             parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
             parameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
             // Prepare the documents to be signed
@@ -79,6 +82,12 @@ public class SignMultipleDocumentsJadesTTest extends CookbookTools {
             documentsToBeSigned.add(new FileDocument("src/main/resources/hello-world.pdf"));
             documentsToBeSigned.add(new FileDocument("src/main/resources/xml_example.xml"));
             // end::demo[]
+
+            parameters.setSigningCertificate(privateKey.getCertificate());
+            parameters.setCertificateChain(privateKey.getCertificateChain());
+            parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+            parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
+            parameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
             JAdESService service = new JAdESService(commonCertificateVerifier);

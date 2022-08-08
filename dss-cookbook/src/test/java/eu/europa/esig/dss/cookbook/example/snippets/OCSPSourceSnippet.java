@@ -43,13 +43,19 @@ public class OCSPSourceSnippet {
 		CertificateToken issuerCertificateToken = null;
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo[]
 
 		DataSource dataSource = null;
 		
 		// tag::demo-online[]
-		
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.service.SecureRandomNonceSource;
+		// import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+		// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+
 		// Instantiates a new OnlineOCSPSource object
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
 		
@@ -71,6 +77,10 @@ public class OCSPSourceSnippet {
 		// end::demo-online[]
 
 		// tag::demo-cached[]
+		// import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
+		// import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+		// import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+
 		// Creates an instance of JdbcCacheOCSPSource
 		JdbcCacheOCSPSource cacheOCSPSource = new JdbcCacheOCSPSource();
 

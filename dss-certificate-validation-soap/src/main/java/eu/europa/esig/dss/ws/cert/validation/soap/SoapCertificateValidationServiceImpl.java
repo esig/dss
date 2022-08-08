@@ -39,6 +39,13 @@ public class SoapCertificateValidationServiceImpl implements SoapCertificateVali
 	private RemoteCertificateValidationService validationService;
 
 	/**
+	 * Default construction instantiating object with null RemoteCertificateValidationService
+	 */
+	public SoapCertificateValidationServiceImpl() {
+		// empty
+	}
+
+	/**
 	 * Sets the certificate validation service
 	 *
 	 * @param validationService {@link RemoteCertificateValidationService}

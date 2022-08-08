@@ -24,11 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxSignatureService;
-import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -45,50 +43,36 @@ public class PAdESDisableVisualComparison {
         // Provide an instance of CertificateVerifier
         validator.setCertificateVerifier(new CommonCertificateVerifier());
 
-        // Provide a custom instance of PdfObjFactory, that uses a PDFSignatureService with skipped visual comparison
-        validator.setPdfObjFactory(getPdfObjFactory());
+        // Initialize IPdfObjFactory
+        // Note : example uses ServiceLoaderPdfObjFactory loading the available implementation in runtime.
+        //        A custom implementation of IPdfObjFactory may be also provided, when applicable (e.g. PdfBoxNativeObjectFactory).
+        IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
+        // tag::visual-change-finder[]
+        // import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+
+        DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+        // NOTE: setting '0' as MaximalPagesAmountForVisualComparison will skip the visual changes detection
+        pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+        // Provide a customized PdfDifferencesFinder within IPdfObjFactory
+        pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+        // end::visual-change-finder[]
+
+        // tag::object-modifications[]
+        // import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
+
+        DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+        // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
+        pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);
+        // Provide a customized PdfObjectModificationsFinder within IPdfObjFactory
+        pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+        // end::object-modifications[]
+
+        // Set the factory to the DocumentValidator
+        validator.setPdfObjFactory(pdfObjFactory);
 
         // Validate document
         Reports reports = validator.validateDocument();
-    }
-
-    private IPdfObjFactory getPdfObjFactory() {
-        return new MockNativePdfObjFactory();
-    }
-
-    private class MockNativePdfObjFactory extends PdfBoxNativeObjectFactory {
-
-        @Override
-        public PDFSignatureService newPAdESSignatureService() {
-            PdfBoxSignatureService service = new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxNativeSignatureDrawerFactory());
-            // Skip visual comparison
-            service.setMaximalPagesAmountForVisualComparison(0);
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newContentTimestampService() {
-            PdfBoxSignatureService service =  new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory());
-            // Skip visual comparison
-            service.setMaximalPagesAmountForVisualComparison(0);
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newSignatureTimestampService() {
-            PdfBoxSignatureService service =  new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory());
-            // Skip visual comparison
-            service.setMaximalPagesAmountForVisualComparison(0);
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newArchiveTimestampService() {
-            PdfBoxSignatureService service =  new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory());
-            // Skip visual comparison
-            service.setMaximalPagesAmountForVisualComparison(0);
-            return service;
-        }
 
     }
 

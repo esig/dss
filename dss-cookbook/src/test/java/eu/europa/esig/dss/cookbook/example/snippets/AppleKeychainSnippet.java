@@ -34,6 +34,13 @@ public class AppleKeychainSnippet {
     public static void main(String[] args) {
 
         // tag::demo[]
+        // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+        // import eu.europa.esig.dss.model.SignatureValue;
+        // import eu.europa.esig.dss.model.ToBeSigned;
+        // import eu.europa.esig.dss.token.AppleSignatureToken;
+        // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+        // import eu.europa.esig.dss.utils.Utils;
+        // import java.util.List;
 
         try (AppleSignatureToken token = new AppleSignatureToken()) {
 

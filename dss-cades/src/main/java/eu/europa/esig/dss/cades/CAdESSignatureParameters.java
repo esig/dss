@@ -46,6 +46,13 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 	private String contentIdentifierSuffix;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public CAdESSignatureParameters() {
+		// empty
+	}
+
+	/**
 	 * Returns if the signature shall be created according to ETSI EN 319 122
 	 *
 	 * @return TRUE if the signature shall be created according to ETSI EN 319 122, otherwise as an old format

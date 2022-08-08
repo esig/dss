@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
-import java.util.Objects;
-
+import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import java.util.Objects;
 
 /**
  * The class is used to clean outdated cache entries
@@ -51,6 +50,12 @@ public class CacheCleaner {
 	 * The {@code DSSFileLoader} used to remove files from the File System
 	 */
 	private DSSFileLoader dssFileLoader;
+
+	/**
+	 * Default constructor instantiating object with default configuration and null file loader
+	 */
+	public CacheCleaner() {
+	}
 	
 	/**
 	 * Setter for cleanMemory property

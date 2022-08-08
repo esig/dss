@@ -49,6 +49,7 @@ public class OidRepository {
 	}
 
 	private OidRepository() {
+		// empty
 	}
 
 	/**

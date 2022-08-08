@@ -49,6 +49,7 @@ public class HostConnection implements Serializable {
      * Empty constructor
      */
     public HostConnection() {
+        // empty
     }
 
     /**

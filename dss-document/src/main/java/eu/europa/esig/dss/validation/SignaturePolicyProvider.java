@@ -47,6 +47,13 @@ public class SignaturePolicyProvider {
 	private Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 
 	/**
+	 * Default constructor instantiating object with null data loaded and empty maps
+	 */
+	public SignaturePolicyProvider() {
+		// empty
+	}
+
+	/**
 	 * Sets the {@code DataLoader} to retrieve signature policy documents (e.g. from online)
 	 *
 	 * @param dataLoader {@link DataLoader}

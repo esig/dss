@@ -101,29 +101,29 @@ public class CompositeCondition implements Condition {
 	@Override
 	public boolean check(final CertificateToken certificateToken) {
 		switch (matchingCriteriaIndicator) {
-		case ALL:
-			for (final Condition condition : children) {
-				if (!condition.check(certificateToken)) {
-					return false;
+			case ALL:
+				for (final Condition condition : children) {
+					if (!condition.check(certificateToken)) {
+						return false;
+					}
 				}
-			}
-			return true;
-		case AT_LEAST_ONE:
-			for (final Condition condition : children) {
-				if (condition.check(certificateToken)) {
-					return true;
+				return true;
+			case AT_LEAST_ONE:
+				for (final Condition condition : children) {
+					if (condition.check(certificateToken)) {
+						return true;
+					}
 				}
-			}
-			return false;
-		case NONE:
-			for (final Condition condition : children) {
-				if (condition.check(certificateToken)) {
-					return false;
+				return false;
+			case NONE:
+				for (final Condition condition : children) {
+					if (condition.check(certificateToken)) {
+						return false;
+					}
 				}
-			}
-			return true;
-		default:
-			throw new DSSException("Unsupported MatchingCriteriaIndicator : " + matchingCriteriaIndicator);
+				return true;
+			default:
+				throw new DSSException("Unsupported MatchingCriteriaIndicator : " + matchingCriteriaIndicator);
 		}
 	}
 

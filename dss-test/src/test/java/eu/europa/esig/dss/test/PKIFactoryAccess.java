@@ -121,12 +121,15 @@ public abstract class PKIFactoryAccess {
 	protected static final String GOOD_USER_CROSS_CERTIF = "cc-good-user-crossed";
 	protected static final String GOOD_USER_WITH_PSEUDO = "good-user-with-pseudo";
 	protected static final String GOOD_USER_WITH_CRL_AND_OCSP = "good-user-crl-ocsp";
+	protected static final String GOOD_USER_WITH_OCSP_CERT_ID_DIGEST = "good-user-ocsp-certid-digest";
 	protected static final String GOOD_USER_WITH_PEM_CRL = "good-user-pem-crl";
 	protected static final String REVOKED_USER = "revoked-user";
 	protected static final String EXPIRED_USER = "expired-user";
 	protected static final String NOT_YET_VALID_USER = "not-yet-valid-user";
 	protected static final String DSA_USER = "good-dsa-user";
 	protected static final String ECDSA_USER = "good-ecdsa-user";
+	protected static final String ECDSA_384_USER = "good-ecdsa-384-user";
+	protected static final String ECDSA_521_USER = "good-ecdsa-521-user";
 	protected static final String RSA_SHA3_USER = "sha3-good-user";
 	protected static final String SELF_SIGNED_USER = "self-signed";
 	protected static final String EE_GOOD_USER = "ee-good-user";
@@ -246,8 +249,12 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected AbstractKeyStoreTokenConnection getToken() {
-		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getSigningAlias() + ".p12"), KEYSTORE_TYPE,
+		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getKeystoreName()), KEYSTORE_TYPE,
 				new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD.toCharArray()));
+	}
+
+	protected String getKeystoreName() {
+		return DSSUtils.encodeURI(getSigningAlias() + ".p12");
 	}
 
 	private byte[] getKeystoreContent(String keystoreName) {
@@ -344,7 +351,7 @@ public abstract class PKIFactoryAccess {
 		return getOnlineTSPSourceByNameAndTime(GOOD_TSA, date);
 	}
 	
-	private OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
+	protected OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
 		return getTSPSourceByUrl(getTsaUrl(tsaName, date));
 	}
 	
@@ -369,14 +376,22 @@ public abstract class PKIFactoryAccess {
 	
 	protected CertificateToken getCertificate(String certificateId) {
 		DataLoader dataLoader = getFileCacheDataLoader();
-		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + certificateId + CERT_EXTENSION;
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + getCertificateName(certificateId);
 		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
+
+	protected String getCertificateName(String certificateId) {
+		return DSSUtils.encodeURI(certificateId + CERT_EXTENSION);
 	}
 	
 	protected CertificateToken getCertificateByPrimaryKey(String issuerName, long serialNumber) {
 		DataLoader dataLoader = getFileCacheDataLoader();
-		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + issuerName + "/" + serialNumber + CERT_EXTENSION;
+		String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + getCertificateNameByPrimaryKey(issuerName, serialNumber);
 		return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+	}
+
+	protected String getCertificateNameByPrimaryKey(String issuerName, long serialNumber) {
+		return DSSUtils.encodeURI(issuerName + "/" + serialNumber + CERT_EXTENSION);
 	}
 
 	// Allows to configure a proxy

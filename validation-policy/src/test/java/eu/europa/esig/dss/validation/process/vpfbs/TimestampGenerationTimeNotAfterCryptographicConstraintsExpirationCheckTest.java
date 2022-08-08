@@ -96,4 +96,29 @@ public class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCh
         assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
     }
 
+    @Test
+    public void nullTest() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, 1);
+
+        XmlTimestamp xmlTimestamp = new XmlTimestamp();
+        xmlTimestamp.setProductionTime(calendar.getTime());
+
+        XmlCryptographicValidation xmlCryptographicValidation = new XmlCryptographicValidation();
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
+        TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck tgtnaccec =
+                new TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck<>(
+                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, constraint);
+        tgtnaccec.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
 }

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,18 @@ public class SignatureAlgorithmTest {
 					sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, sigAlgo.getDigestAlgorithm());
 				}
 				assertEquals(sigAlgo, SignatureAlgorithm.forXML(sigAlgo.getUri()));
+			}
+		}
+	}
+
+	@Test
+	public void forXMLWithDefault() {
+		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+			if (digestAlgo.getUri() != null) {
+				SignatureAlgorithm sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+				if (sigAlgo != null) {
+					assertEquals(sigAlgo, SignatureAlgorithm.forXML(digestAlgo.getUri(), sigAlgo));
+				}
 			}
 		}
 	}
@@ -79,6 +92,18 @@ public class SignatureAlgorithmTest {
 					sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, sigAlgo.getDigestAlgorithm());
 				}
 				assertEquals(sigAlgo, SignatureAlgorithm.forJWA(sigAlgo.getJWAId()));
+			}
+		}
+	}
+
+	@Test
+	public void forJWAWithDefault() {
+		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
+			if (digestAlgo.getJAdESId() != null) {
+				SignatureAlgorithm sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
+				if (sigAlgo != null) {
+					assertEquals(sigAlgo, SignatureAlgorithm.forJWA(digestAlgo.getJAdESId(), sigAlgo));
+				}
 			}
 		}
 	}

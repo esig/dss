@@ -42,13 +42,21 @@ public class CRLSourceSnippet {
 		CertificateToken issuerCertificateToken = null;
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+
 		CRLToken crlToken = crlSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo[]
 
 		DataSource dataSource = null;
 
 		// tag::demo-online[]
-		
+		// import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
+		// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+		// import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+		// import eu.europa.esig.dss.spi.client.http.Protocol;
+		// import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+		// import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+
 		// Instantiates a new OnlineCRLSource
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
 		

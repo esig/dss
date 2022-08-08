@@ -45,6 +45,7 @@ public class UserNotice implements Serializable {
      * Empty constructor
      */
     public UserNotice() {
+        // empty constructor
     }
 
     /**

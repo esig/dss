@@ -180,6 +180,7 @@ public final class DSSXMLUtils {
 	 * This class is an utility class and cannot be instantiated.
 	 */
 	private DSSXMLUtils() {
+		// empty
 	}
 
 	/**
@@ -610,11 +611,9 @@ public final class DSSXMLUtils {
 			final Node item = attributes.item(jj);
 			final String localName = item.getLocalName();
 			final String nodeName = item.getNodeName();
-			if (localName != null) {
-				if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
-					childElement.setIdAttribute(nodeName, true);
-					break;
-				}
+			if (localName != null && Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
+				childElement.setIdAttribute(nodeName, true);
+				break;
 			}
 		}
 	}
@@ -1199,6 +1198,24 @@ public final class DSSXMLUtils {
 					reference.getId(), e.getMessage(), e);
 			return null;
 		}
+	}
+
+	/**
+	 * This method retrieves a URI attribute value of the given reference, when applicable
+	 *
+	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
+	 *
+	 * @param reference {@link Reference} to get value of URI attribute
+	 * @return {@link String} URI attribute value if available, NULL otherwise
+	 */
+	public static String getReferenceURI(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+			}
+		}
+		return null;
 	}
 
 	/**

@@ -61,6 +61,11 @@ public class MultipleSignPadesBTest extends CookbookTools {
         signingAlias = GOOD_USER;
 
         // tag::demo[]
+        // import eu.europa.esig.dss.model.SignatureValue;
+        // import eu.europa.esig.dss.model.ToBeSigned;
+        // import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+        // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+        // import eu.europa.esig.dss.token.SignatureTokenConnection;
 
         // Load the user token to create the first signature
         try (SignatureTokenConnection goodUserToken = getPkcs12Token()) {

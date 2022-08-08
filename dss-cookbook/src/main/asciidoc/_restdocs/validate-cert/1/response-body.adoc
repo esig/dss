@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2022-02-02T13:31:13Z",
+    "ValidationDate" : "2022-07-29T13:53:01Z",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -106,6 +106,7 @@
       "pdsUrl" : null,
       "qualificationAtIssuance" : "N/A",
       "qualificationAtValidation" : "N/A",
+      "enactedMRA" : null,
       "revocation" : {
         "thisUpdate" : null,
         "revocationDate" : null,
@@ -115,7 +116,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2022-02-02T13:31:13Z"
+    "ValidationTime" : "2022-07-29T13:53:01Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

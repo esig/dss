@@ -66,7 +66,10 @@ class EnvelopingSignatureBuilder extends XAdESSignatureBuilder {
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 			// <ds:Object>
-			if (params.isManifestSignature()) {
+			if (reference.getObject() != null) {
+				incorporateObject(reference.getObject());
+
+			} else if (params.isManifestSignature()) {
 
 				Document doc = DomUtils.buildDOM(reference.getContents());
 				Element root = doc.getDocumentElement();

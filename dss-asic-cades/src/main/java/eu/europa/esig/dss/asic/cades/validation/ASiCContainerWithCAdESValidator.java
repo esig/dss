@@ -32,6 +32,7 @@ import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
@@ -98,6 +99,13 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
+	public boolean isSupported(ASiCContent asicContent) {
+		List<String> entryNames = DSSUtils.getDocumentNames(asicContent.getAllDocuments());
+		return !ASiCUtils.isASiCWithXAdES(entryNames) &&
+				(!ASiCUtils.areFilesContainMimetype(entryNames) || !ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument()));
+	}
+
+	@Override
 	protected AbstractASiCContainerExtractor getContainerExtractor() {
 		return new ASiCWithCAdESContainerExtractor(document);
 	}
@@ -139,51 +147,56 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		if (timestampValidators == null) {
 			timestampValidators = new ArrayList<>();
 			for (final DSSDocument timestamp : getTimestampDocuments()) {
-
-				DSSDocument timestampedDocument;
-				TimestampType timestampType = TimestampType.CONTENT_TIMESTAMP;
-				ManifestFile manifestFile = null;
-
-				DSSDocument archiveManifest = ASiCWithCAdESManifestParser.getLinkedManifest(
-						getAllManifestDocuments(), timestamp.getName());
-				if (archiveManifest != null) {
-					timestampedDocument = archiveManifest;
-					manifestFile = toValidatedManifestFile(archiveManifest);
-					if (manifestFile != null) {
-						timestampType = getTimestampType(manifestFile);
-					} else {
-						LOG.warn("A linked manifest is not found for a timestamp with name [{}]!",
-								archiveManifest.getName());
-					}
-
-				} else {
-					List<DSSDocument> rootLevelSignedDocuments = ASiCUtils.getRootLevelSignedDocuments(asicContent);
-					if (Utils.collectionSize(rootLevelSignedDocuments) == 1) {
-						timestampedDocument = rootLevelSignedDocuments.get(0);
-					} else {
-						LOG.warn("Timestamp {} is skipped (no linked archive manifest found / unique file)",
-								timestamp.getName());
-						continue;
-					}
+				ASiCWithCAdESTimestampValidator timestampValidator = getTimestampValidator(timestamp);
+				if (timestampValidator != null) {
+					timestampValidators.add(timestampValidator);
 				}
-
-				ASiCWithCAdESTimestampValidator timestampValidator = new ASiCWithCAdESTimestampValidator(
-						timestamp, timestampType);
-				timestampValidator.setTimestampedData(timestampedDocument);
-				timestampValidator.setManifestFile(manifestFile);
-				timestampValidator.setOriginalDocuments(getAllDocuments());
-				timestampValidator.setArchiveDocuments(getArchiveDocuments());
-				timestampValidator.setCertificateVerifier(certificateVerifier);
-
-				timestampValidators.add(timestampValidator);
 			}
 			timestampValidators.sort(new TimestampValidatorComparator());
 		}
 		return timestampValidators;
 	}
+
+	private ASiCWithCAdESTimestampValidator getTimestampValidator(DSSDocument timestampDocument) {
+		DSSDocument timestampedDocument;
+		TimestampType timestampType = TimestampType.CONTENT_TIMESTAMP;
+		ManifestFile manifestFile = null;
+
+		DSSDocument archiveManifest = ASiCWithCAdESManifestParser.getLinkedManifest(
+				getAllManifestDocuments(), timestampDocument.getName());
+		if (archiveManifest != null) {
+			timestampedDocument = archiveManifest;
+			manifestFile = toValidatedManifestFile(archiveManifest);
+			if (manifestFile != null) {
+				timestampType = getTimestampType(manifestFile);
+			} else {
+				LOG.warn("A linked manifest is not found for a timestamp with name [{}]!",
+						archiveManifest.getName());
+			}
+
+		} else {
+			List<DSSDocument> rootLevelSignedDocuments = ASiCUtils.getRootLevelSignedDocuments(asicContent);
+			if (Utils.collectionSize(rootLevelSignedDocuments) == 1) {
+				timestampedDocument = rootLevelSignedDocuments.get(0);
+			} else {
+				LOG.warn("Timestamp {} is skipped (no linked archive manifest found / unique file)",
+						timestampDocument.getName());
+				return null;
+			}
+		}
+
+		final ASiCWithCAdESTimestampValidator timestampValidator = new ASiCWithCAdESTimestampValidator(
+				timestampDocument, timestampType);
+		timestampValidator.setTimestampedData(timestampedDocument);
+		timestampValidator.setManifestFile(manifestFile);
+		timestampValidator.setOriginalDocuments(getAllDocuments());
+		timestampValidator.setArchiveDocuments(getArchiveDocuments());
+		timestampValidator.setCertificateVerifier(certificateVerifier);
+		return timestampValidator;
+	}
 	
 	@Override
-	public List<TimestampToken> getDetachedTimestamps() {
+	protected List<TimestampToken> buildDetachedTimestamps() {
 		DetachedTimestampSource detachedTimestampSource = new DetachedTimestampSource();
 		for (DetachedTimestampValidator timestampValidator : getTimestampValidators()) {
 			detachedTimestampSource.addExternalTimestamp(timestampValidator.getTimestamp());

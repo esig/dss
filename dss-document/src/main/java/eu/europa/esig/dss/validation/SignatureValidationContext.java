@@ -22,14 +22,12 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.CertificateReorderer;
 import eu.europa.esig.dss.enumerations.RevocationReason;
-import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -140,8 +138,14 @@ public class SignatureValidationContext implements ValidationContext {
 	/** External CRL source */
 	private RevocationSource<CRL> remoteCRLSource;
 
-	/** This strategy defines the revocation loading logic and returns OCSP or CRL token for a provided certificate */
-	private RevocationDataLoadingStrategy revocationDataLoadingStrategy;
+	/** Used to build a strategy deciding how to retrieve a revocation data (e.g. CRL or OCSP) */
+	private RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory;
+
+	/** This class is used to verify the validity (i.e. consistency) of a revocation data */
+	private RevocationDataVerifier revocationDataVerifier;
+
+	/** Defines whether a revocation data still shall be returned, when validation of obtained revocation tokens failed */
+	private boolean revocationFallback;
 
 	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
@@ -156,9 +160,22 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean checkRevocationForUntrustedChains;
 
 	/**
+	 * This variable indicates whether a POE should be extracted from timestamps
+	 * with certificate chains from untrusted sources.
+	 */
+	private boolean extractPOEFromUntrustedChains;
+
+	/**
 	 * This is the time at what the validation is carried out. It is used only for test purpose.
 	 */
 	protected Date currentTime = new Date();
+
+	/**
+	 * Default constructor instantiating object with null or empty values and current time
+	 */
+	public SignatureValidationContext() {
+		// empty
+	}
 
 	/**
 	 * @param certificateVerifier
@@ -172,10 +189,14 @@ public class SignatureValidationContext implements ValidationContext {
 		this.remoteCRLSource = certificateVerifier.getCrlSource();
 		this.remoteOCSPSource = certificateVerifier.getOcspSource();
 		this.aiaSource = certificateVerifier.getAIASource();
-		this.revocationDataLoadingStrategy = certificateVerifier.getRevocationDataLoadingStrategy();
 		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
+		this.extractPOEFromUntrustedChains = certificateVerifier.isExtractPOEFromUntrustedChains();
+		this.revocationDataLoadingStrategyFactory = certificateVerifier.getRevocationDataLoadingStrategyFactory();
+		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
+		this.revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
+		this.revocationFallback = certificateVerifier.isRevocationFallback();
 	}
 
 	@Override
@@ -379,16 +400,23 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// Find issuer candidates from a particular certificate source
 		Set<CertificateToken> candidates = Collections.emptySet();
-		if (token instanceof OCSPToken) {
-			candidates = getIssuersFromSource(token, ((OCSPToken) token).getCertificateSource());
-		}
-		if (token instanceof TimestampToken) {
-			candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
-		}
 
-		// Find issuer candidates from document sources
-		if (Utils.isCollectionEmpty(candidates)) {
-			candidates = getIssuersFromSources(token, documentCertificateSource);
+		// Avoid repeating over stateless sources
+		if (!tokenIssuerMap.containsKey(token)) {
+
+			if (token instanceof OCSPToken) {
+				candidates = getIssuersFromSource(token, ((OCSPToken) token).getCertificateSource());
+			}
+
+			if (token instanceof TimestampToken) {
+				candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
+			}
+
+			// Find issuer candidates from document sources
+			if (Utils.isCollectionEmpty(candidates)) {
+				candidates = getIssuersFromSources(token, documentCertificateSource);
+			}
+
 		}
 
 		// Find issuer candidates from all sources
@@ -404,7 +432,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 		issuerCertificateToken = new TokenIssuerSelector(token, candidates).getIssuer();
 
-		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null) {
+		// Request AIA only when no issuer has been found yet
+		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null &&
+				!tokenIssuerMap.containsKey(token)) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
 			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
@@ -420,8 +450,10 @@ public class SignatureValidationContext implements ValidationContext {
 
 		if (issuerCertificateToken != null) {
 			addCertificateTokenForVerification(issuerCertificateToken);
-			tokenIssuerMap.put(token, issuerCertificateToken);
 		}
+
+		// Cache the result (successful or unsuccessful)
+		tokenIssuerMap.put(token, issuerCertificateToken);
 
 		return issuerCertificateToken;
 	}
@@ -643,9 +675,37 @@ public class SignatureValidationContext implements ValidationContext {
 				lastTimestampCertChainDates.put(cert, usageDate);
 			}
 		}
-		for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
-			registerPOE(timestampedReference.getObjectId(), timestampToken);
+		if (isTimestampValid(timestampToken)) {
+			LOG.debug("Extracting POE from timestamp : {}", timestampToken.getDSSIdAsString());
+			for (TimestampedReference timestampedReference : timestampToken.getTimestampedReferences()) {
+				registerPOE(timestampedReference.getObjectId(), timestampToken);
+			}
 		}
+	}
+
+	/**
+	 * This method verifies whether a {@code timestampToken} is valid and
+	 * can be used as a valid POE for covered objects
+	 *
+	 * @param timestampToken {@link TimestampToken} to be checked
+	 * @return TRUE if the timestamp is valid, FALSE otherwise
+	 */
+	protected boolean isTimestampValid(TimestampToken timestampToken) {
+		if (!extractPOEFromUntrustedChains && !containsTrustAnchor(getCertChain(timestampToken))) {
+			LOG.warn("POE extraction is skipped for untrusted timestamp : {}.", timestampToken.getDSSIdAsString());
+			return false;
+		}
+		if (!timestampToken.isMessageImprintDataIntact()) {
+			LOG.warn("POE extraction is skipped for timestamp : {}. The message-imprint is not intact!",
+					timestampToken.getDSSIdAsString());
+			return false;
+		}
+		if (!timestampToken.isSignatureIntact()) {
+			LOG.warn("POE extraction is skipped for timestamp : {}. The signature is not intact!",
+					timestampToken.getDSSIdAsString());
+			return false;
+		}
+		return true;
 	}
 
 	private void registerPOE(String tokenId, TimestampToken timestampToken) {
@@ -739,8 +799,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// add processed revocation tokens
 		revocations.addAll(getRelatedRevocationTokens(certToken));
-		
-		if (Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations)) {
+
+		if ((remoteOCSPSource != null || remoteCRLSource != null) &&
+				(Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations))) {
 			LOG.debug("The signature does not contain relative revocation data.");
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
 				LOG.trace("Revocation update is in progress for certificate : {}", certToken.getDSSIdAsString());
@@ -774,35 +835,37 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private <T extends Token> Token getFirstTrustAnchor(List<T> certChain) {
-		for (T token : certChain) {
-			if (isTrusted(token)) {
-				return token;
+		if (Utils.isCollectionNotEmpty(certChain)) {
+			for (T token : certChain) {
+				if (isTrusted(token)) {
+					return token;
+				}
 			}
 		}
 		return null;
 	}
 
 	private RevocationToken<?> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificate,
-											   CertificateToken trustAnchor) {
+												  CertificateToken trustAnchor) {
 		// configure the CompositeRevocationSource
 		RevocationSource<OCSP> currentOCSPSource;
 		RevocationSource<CRL> currentCRLSource;
-		ListCertificateSource currentCertSource = null;
-		if (!trustedCertSources.isEmpty() && (trustAnchor != null)) {
+		if (!trustedCertSources.isEmpty() && trustAnchor != null) {
 			LOG.trace("Initializing a revocation verifier for a trusted chain...");
 			currentOCSPSource = instantiateOCSPWithTrustServices(trustAnchor);
 			currentCRLSource = instantiateCRLWithTrustServices(trustAnchor);
-			currentCertSource = trustedCertSources;
 		} else {
 			LOG.trace("Initializing a revocation verifier for not trusted chain...");
 			currentOCSPSource = remoteOCSPSource;
 			currentCRLSource = remoteCRLSource;
 		}
-		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
-		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
-		revocationDataLoadingStrategy.setTrustedCertificateSource(currentCertSource);
 
 		// fetch the data
+		final RevocationDataLoadingStrategy revocationDataLoadingStrategy = revocationDataLoadingStrategyFactory.create();
+		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
+		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
+		revocationDataLoadingStrategy.setRevocationDataVerifier(revocationDataVerifier);
+		revocationDataLoadingStrategy.setFallbackEnabled(revocationFallback);
 		return revocationDataLoadingStrategy.getRevocationToken(certificateToken, issuerCertificate);
 	}
 
@@ -1027,13 +1090,22 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		boolean freshRevocationDataFound = false;
 		for (RevocationToken<?> revocationToken : revocations) {
+			final List<CertificateToken> certificateTokenChain = toCertificateTokenChain(getCertChain(revocationToken));
+			if (Utils.isCollectionEmpty(certificateTokenChain)) {
+				LOG.debug("Certificate chain is not found for a revocation data '{}'!", revocationToken.getDSSIdAsString());
+				continue;
+			}
+
+			final CertificateToken issuerCertificateToken = certificateTokenChain.iterator().next();
 			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getThisUpdate()))
 					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
-					&& isConsistent(revocationToken, certToken))) {
+					&& isRevocationAcceptable(revocationToken, issuerCertificateToken)
+					&& hasValidPOE(revocationToken, certToken, issuerCertificateToken))) {
 				freshRevocationDataFound = true;
 				break;
 			}
 		}
+
 		if (!freshRevocationDataFound) {
 			LOG.debug("Revocation data refresh is needed");
 			return true;
@@ -1055,70 +1127,32 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		return lowestPOE;
 	}
+
+	private boolean isRevocationAcceptable(RevocationToken<?> revocation, CertificateToken issuerCertificateToken) {
+		return revocationDataVerifier.isAcceptable(revocation, issuerCertificateToken);
+	}
 	
-	private boolean isConsistent(RevocationToken<?> revocation, CertificateToken certToken) {
-		List<CertificateToken> certificateTokenChain = toCertificateTokenChain(getCertChain(revocation));
-		if (Utils.isCollectionEmpty(certificateTokenChain)) {
-			LOG.debug("The revocation {} is not consistent! Issuer CertificateToken is not found.",
-					revocation.getDSSIdAsString());
-			return false;
-		}
-
-		if (!revocationDataHasInformationAboutCertificate(revocation, certToken)) {
-			LOG.debug("The revocation '{}' has been produced before the start of the validity of the certificate '{}'!",
-					revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
-			return false;
-		}
-
-		if (RevocationType.OCSP.equals(revocation.getRevocationType()) &&
-				!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocation)) {
-			LOG.debug("The revocation '{}' is not consistent! The revocation has been produced outside " +
-					"the issuer certificate's validity range!", revocation.getDSSIdAsString());
-			return false;
-		}
-
-		if (RevocationType.CRL.equals(revocation.getRevocationType()) && (
-				!isInCertificateValidityRange(revocation, certToken))) {
-			LOG.debug("The revocation '{}' was not issued during the validity period of the certificate! Certificate: {}",
-					revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
-			return false;
-		}
-
+	private boolean hasValidPOE(RevocationToken<?> revocation, CertificateToken relatedCertToken, CertificateToken issuerCertToken) {
 		if (revocation.getNextUpdate() != null && !hasPOEAfterProductionAndBeforeNextUpdate(revocation)) {
 			LOG.debug("There is no POE for the revocation '{}' after its production time and before the nextUpdate! " +
-							"Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+							"Certificate: {}", revocation.getDSSIdAsString(), relatedCertToken.getDSSIdAsString());
 			return false;
 		}
-
 		// useful for short-life certificates (i.e. ocsp responder)
-		CertificateToken revocationIssuer = certificateTokenChain.iterator().next();
-		if (!isTrusted(revocationIssuer) && !hasPOEInTheValidityRange(revocationIssuer)) {
+		if (issuerCertToken != null && !isTrusted(issuerCertToken) && !hasPOEInTheValidityRange(issuerCertToken)) {
 			LOG.debug("There is no POE for the revocation issuer '{}' for revocation '{}' within its validity range! " +
-					"Certificate: {}", revocationIssuer.getDSSIdAsString(), revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+					"Certificate: {}", issuerCertToken.getDSSIdAsString(), revocation.getDSSIdAsString(), relatedCertToken.getDSSIdAsString());
 			return false;
 		}
-
-		LOG.debug("The revocation '{}' is consistent. Certificate: {}", revocation.getDSSIdAsString(), certToken.getDSSIdAsString());
+		LOG.debug("The revocation '{}' has a valid POE. Certificate: {}", revocation.getDSSIdAsString(), relatedCertToken.getDSSIdAsString());
 		return true;
-	}
-
-	private boolean revocationDataHasInformationAboutCertificate(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
-		return certificateToken.getNotBefore().compareTo(revocationToken.getThisUpdate()) <= 0;
-	}
-
-	private boolean isInCertificateValidityRange(RevocationToken<?> revocationToken, CertificateToken certificateToken) {
-		final Date thisUpdate = revocationToken.getThisUpdate();
-		final Date nextUpdate = revocationToken.getNextUpdate();
-		final Date notAfter = certificateToken.getNotAfter();
-		final Date notBefore = certificateToken.getNotBefore();
-		return thisUpdate.compareTo(notAfter) <= 0 && (nextUpdate != null && nextUpdate.compareTo(notBefore) >= 0);
 	}
 	
 	private boolean hasPOEAfterProductionAndBeforeNextUpdate(RevocationToken<?> revocation) {
 		List<POE> poeTimeList = poeTimes.get(revocation.getDSSIdAsString());
 		if (Utils.isCollectionNotEmpty(poeTimeList)) {
 			for (POE poeTime : poeTimeList) {
-				if (isConsistentOnTime(revocation, poeTime.getTime())) {
+				if (isConsistentAtTime(revocation, poeTime.getTime())) {
 					return true;
 				}
 			}
@@ -1139,7 +1173,7 @@ public class SignatureValidationContext implements ValidationContext {
 		return false;
 	}
 	
-	private boolean isConsistentOnTime(RevocationToken<?> revocationToken, Date date) {
+	private boolean isConsistentAtTime(RevocationToken<?> revocationToken, Date date) {
 		Date productionDate = revocationToken.getProductionDate();
 		Date nextUpdate = revocationToken.getNextUpdate();
 		return date.compareTo(productionDate) >= 0 && date.compareTo(nextUpdate) <= 0;

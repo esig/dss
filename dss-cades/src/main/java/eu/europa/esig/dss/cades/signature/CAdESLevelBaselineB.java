@@ -26,6 +26,8 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.model.CommitmentQualifier;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
@@ -42,6 +44,7 @@ import org.bouncycastle.asn1.ASN1GeneralizedTime;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -50,6 +53,7 @@ import org.bouncycastle.asn1.DERUTF8String;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
+import org.bouncycastle.asn1.esf.CommitmentTypeQualifier;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
 import org.bouncycastle.asn1.esf.SigPolicyQualifiers;
@@ -72,6 +76,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_contentHint;
@@ -298,28 +303,75 @@ public class CAdESLevelBaselineB {
 	 * @param signedAttributes {@link ASN1EncodableVector} signed attributes
 	 */
 	private void addCommitmentType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {
-
-		// TODO (19/08/2014): commitmentTypeQualifier is not implemented
 		final List<CommitmentType> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
-
 			final int size = commitmentTypeIndications.size();
 			ASN1Encodable[] asn1Encodables = new ASN1Encodable[size];
 			for (int ii = 0; ii < size; ii++) {
-				
 				final CommitmentType commitmentType = commitmentTypeIndications.get(ii);
-				if (commitmentType.getOid() == null) {
+				if (Utils.isStringEmpty(commitmentType.getOid())) {
 					throw new IllegalArgumentException("The commitmentTypeIndication OID must be defined for CAdES creation!");
 				}
-
 				final ASN1ObjectIdentifier objectIdentifier = new ASN1ObjectIdentifier(commitmentType.getOid());
-				final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(objectIdentifier);
+				final ASN1Sequence qualifiers = getCommitmentQualifiers(commitmentType);
+				final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(objectIdentifier, qualifiers);
 				asn1Encodables[ii] = commitmentTypeIndication.toASN1Primitive(); // DER encoded
 			}
 			final DERSet attrValues = new DERSet(asn1Encodables);
 			final Attribute attribute = new Attribute(id_aa_ets_commitmentType, attrValues);
 			signedAttributes.add(attribute);
 		}
+	}
+
+	/**
+	 * This method creates a set of CommitmentQualifiers.
+	 *
+	 * CommitmentTypeQualifier ::= SEQUENCE {
+	 *  commitmentQualifierId COMMITMENT-QUALIFIER.&id,
+	 *  qualifier COMMITMENT-QUALIFIER.&Qualifier OPTIONAL
+	 * }
+	 * COMMITMENT-QUALIFIER ::= CLASS {
+	 *  &id OBJECT IDENTIFIER UNIQUE,
+	 *  &Qualifier OPTIONAL }
+	 * WITH SYNTAX {
+	 *  COMMITMENT-QUALIFIER-ID &id
+	 *  [COMMITMENT-TYPE &Qualifier] }
+	 *
+	 * @param commitmentType {@link CommitmentType}
+	 * @return {@link ASN1Sequence}
+	 */
+	private ASN1Sequence getCommitmentQualifiers(CommitmentType commitmentType) {
+		ASN1Sequence qualifiers = null;
+		if (commitmentType instanceof CommonCommitmentType) {
+			CommitmentQualifier[] commitmentTypeQualifiers = ((CommonCommitmentType) commitmentType).getCommitmentTypeQualifiers();
+			if (Utils.isArrayNotEmpty(commitmentTypeQualifiers)) {
+				ASN1EncodableVector vector = new ASN1EncodableVector(commitmentTypeQualifiers.length);
+				for (CommitmentQualifier commitmentQualifier : commitmentTypeQualifiers) {
+					Objects.requireNonNull(commitmentQualifier, "CommitmentTypeQualifier cannot be null!");
+
+					if (Utils.isStringEmpty(commitmentQualifier.getOid())) {
+						throw new IllegalArgumentException("CommitmentTypeQualifier OID cannot be null for CAdES!");
+					}
+					ASN1ObjectIdentifier commitmentIdentifier = new ASN1ObjectIdentifier(commitmentQualifier.getOid());
+
+					DSSDocument content = commitmentQualifier.getContent();
+					if (content == null) {
+						throw new IllegalArgumentException("CommitmentTypeQualifier content cannot be null!");
+					}
+					ASN1Encodable qualifier;
+					byte[] binaries = DSSUtils.toByteArray(content);
+					if (DSSASN1Utils.isAsn1Encoded(binaries)) {
+						qualifier = DSSASN1Utils.toASN1Primitive(binaries);
+					} else {
+						LOG.info("None ASN.1 encoded CommitmentTypeQualifier has been provided. Incorporate as DERUTF8String.");
+						qualifier = new DERUTF8String(new String(binaries));
+					}
+					vector.add(new CommitmentTypeQualifier(commitmentIdentifier, qualifier));
+				}
+				qualifiers = new DERSequence(vector);
+			}
+		}
+		return qualifiers;
 	}
 
 	/**

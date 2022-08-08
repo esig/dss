@@ -135,9 +135,6 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
         signatureParameters.aSiC().setMimeType(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
         
-        signatureParameters.aSiC().setSignatureFileName(Utils.EMPTY_STRING);
-        signAndValidate(documentToSign, signatureParameters);
-        
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, ASiCWithXAdESSignatureParameters signatureParameters) throws IOException {

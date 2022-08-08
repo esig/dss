@@ -237,10 +237,16 @@ public class CMSSignedDataBuilder {
 			CAdESSignatureParameters parameters) throws OperatorCreationException {
 		final CertificateToken signingCertificate = parameters.getSigningCertificate();
 
-		if (signingCertificate == null && parameters.isGenerateTBSWithoutCertificate()) {
-			// Generate data-to-be-signed without signing certificate
-			final SignerId signerId = new SignerId(DSSUtils.EMPTY_BYTE_ARRAY);
-			return signerInfoGeneratorBuilder.build(contentSigner, signerId.getSubjectKeyIdentifier());
+		if (signingCertificate == null) {
+			if (parameters.isGenerateTBSWithoutCertificate()) {
+				// Generate data-to-be-signed without signing certificate
+				final SignerId signerId = new SignerId(DSSUtils.EMPTY_BYTE_ARRAY);
+				return signerInfoGeneratorBuilder.build(contentSigner, signerId.getSubjectKeyIdentifier());
+
+			} else {
+				throw new IllegalArgumentException("Signing certificate is not provided! " +
+						"Provide a certificate or use parameters.setGenerateTBSWithoutCertificate(true).");
+			}
 		}
 
 		final X509CertificateHolder certHolder = DSSASN1Utils.getX509CertificateHolder(signingCertificate);

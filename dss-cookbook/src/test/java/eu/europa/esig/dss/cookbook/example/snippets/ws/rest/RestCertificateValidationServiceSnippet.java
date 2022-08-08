@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
+// tag::demo[]
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
@@ -38,7 +39,6 @@ public class RestCertificateValidationServiceSnippet {
 
     @SuppressWarnings("unused")
     public void demo() throws Exception {
-        // tag::demo[]
 
         // Instantiate a rest certificate validation service
         RestCertificateValidationService validationService = new RestCertificateValidationServiceImpl();
@@ -66,7 +66,7 @@ public class RestCertificateValidationServiceSnippet {
         // Validate the certificate
         CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateToValidateDTO);
 
-        // end::demo[]
     }
 
 }
+// end::demo[]

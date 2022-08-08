@@ -41,6 +41,7 @@ import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
@@ -238,8 +240,8 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtValidationTime());
 	}
 
 	@Test
@@ -548,8 +550,8 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
-		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
 	}
 	
 	@Test
@@ -724,6 +726,50 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 			}
 		}
 		assertTrue(qcCClegislationForEUErrorFound);
+	}
+
+	@Test
+	public void qcComplianceOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/qcCompliance-tl-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-7DA9241EC8BBAE3FAB9A29AE06C7B185B62C6FDE319DD985E5AA2E6F780C4EAA";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlCertificate xmlCertificate = detailedReport.getXmlCertificateById(certId);
+		List<XmlValidationCertificateQualification> validationCertificateQualification = xmlCertificate.getValidationCertificateQualification();
+		assertEquals(2, validationCertificateQualification.size());
+
+		XmlValidationCertificateQualification validationCertificateQualificationAtIssuanceTime = null;
+		for (XmlValidationCertificateQualification validationCertificate : validationCertificateQualification) {
+			if (ValidationTime.CERTIFICATE_ISSUANCE_TIME.equals(validationCertificate.getValidationTime())) {
+				validationCertificateQualificationAtIssuanceTime = validationCertificate;
+				break;
+			}
+		}
+		assertNotNull(validationCertificateQualificationAtIssuanceTime);
+
+		boolean qualificationCheckFound = false;
+		for (XmlConstraint constraint : validationCertificateQualificationAtIssuanceTime.getConstraint()) {
+			if (MessageTag.QUAL_QC_AT_CC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				qualificationCheckFound = true;
+			}
+		}
+		assertTrue(qualificationCheckFound);
 	}
 
 	private void checkReports(CertificateReports reports) {

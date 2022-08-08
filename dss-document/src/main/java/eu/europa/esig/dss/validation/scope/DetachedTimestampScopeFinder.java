@@ -39,6 +39,13 @@ public class DetachedTimestampScopeFinder extends AbstractSignatureScopeFinder i
     protected DSSDocument timestampedData;
 
     /**
+     * Default constructor instantiating object with null timestamped data document
+     */
+    public DetachedTimestampScopeFinder() {
+        // empty
+    }
+
+    /**
      * Sets the timestamped data
      *
      * @param timestampedData {@link DSSDocument}

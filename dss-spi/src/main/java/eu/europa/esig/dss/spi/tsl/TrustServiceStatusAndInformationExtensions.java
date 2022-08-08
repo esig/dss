@@ -178,6 +178,23 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 		}
 
 		/**
+		 * Constructor with {@code TrustServiceStatusAndInformationExtensions}
+		 *
+		 * @param status {@link TrustServiceStatusAndInformationExtensions}
+		 */
+		public TrustServiceStatusAndInformationExtensionsBuilder(TrustServiceStatusAndInformationExtensions status) {
+			this.names = status.getNames();
+			this.type = status.getType();
+			this.status = status.getStatus();
+			this.conditionsForQualifiers = status.getConditionsForQualifiers();
+			this.additionalServiceInfoUris = status.getAdditionalServiceInfoUris();
+			this.serviceSupplyPoints = status.getServiceSupplyPoints();
+			this.expiredCertsRevocationInfo = status.getExpiredCertsRevocationInfo();
+			this.startDate = status.getStartDate();
+			this.endDate = status.getEndDate();
+		}
+
+		/**
 		 * Builds {@code TrustServiceStatusAndInformationExtensions}
 		 *
 		 * @return {@link TrustServiceStatusAndInformationExtensions}

@@ -23,18 +23,27 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategy;
+import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.validation.RevocationDataVerifier;
 import org.slf4j.event.Level;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CertificateVerifierSnippet {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		AIASource aiaSource = null;
 		CertificateSource adjunctCertSource = null;
@@ -43,16 +52,29 @@ public class CertificateVerifierSnippet {
 		OCSPSource ocspSource = null;
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+		// import eu.europa.esig.dss.alert.LogOnStatusAlert;
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+		// import eu.europa.esig.dss.validation.RevocationDataVerifier;
+		// import org.slf4j.event.Level;
+		// import java.util.Arrays;
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
+		// tag::trusted-cert-source[]
 		// The trusted certificate source is used to provide trusted certificates
 		// (the trust anchors where the certificate chain building should stop)
 		cv.setTrustedCertSources(trustedCertSource);
+		// end::trusted-cert-source[]
 
+		// tag::adjunct-cert-source[]
 		// The adjunct certificate source is used to provide missing intermediate certificates
 		// (not trusted certificates)
 		cv.setAdjunctCertSources(adjunctCertSource);
+		// end::adjunct-cert-source[]
 
 		// The AIA source is used to collect certificates from external resources (AIA)
 		cv.setAIASource(aiaSource);
@@ -108,13 +130,71 @@ public class CertificateVerifierSnippet {
 		// Default : ExceptionOnStatusAlert -> interrupt the process
 		cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
 
-		// DSS 5.9+ :
-		// RevocationDataLoadingStrategy defines logic for loading OCSP or CRL data
-		// Default : OCSPFirstRevocationDataLoadingStrategy -> loads OCSP first,
+		// DSS 5.9+ with changes since DSS 5.11+ (see below) :
+		// RevocationDataLoadingStrategyFactory is used to instantiate RevocationDataLoadingStrategy
+		// during the validation process, defining logic for loading OCSP or CRL data
+		// Default : OCSPFirstRevocationDataLoadingStrategyFactory -> loads OCSP first,
 		// 			 if not available or the response is invalid, then tries to load CRL
-		cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+		// NOTE: Since DSS 5.11 a RevocationDataLoadingStrategyFactory shall be provided within CertificateVerifier, instead of RevocationDataLoadingStrategy.
+		cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
+
+		// DSS 5.11+ :
+		// RevocationDataVerifier defines logic for accepting/rejecting revocation data during the validation process.
+		// This included processing of revocation tokens extracted from a signature document,
+		// as well as revocation tokens fetched from online sources.
+		RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+		cv.setRevocationDataVerifier(revocationDataVerifier);
+
+		// DSS 5.11+ :
+		// Defines whether the first obtained revocation data still should be returned,
+		// when none of the fetched revocation tokens have passed the verification.
+		// Default : FALSE - none revocation data is returned, if all of them failed the verification.
+		// NOTE : the property is used for signature extension, but not for validation.
+		cv.setRevocationFallback(false);
 
 		// end::demo[]
+
+		final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		final Date validationTime = new Date();
+
+		// tag::rev-data-verifier[]
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+		// import eu.europa.esig.dss.validation.RevocationDataVerifier;
+		// import java.util.Arrays;
+		// import java.util.HashMap;
+		// import java.util.Map;
+
+		// The following method is used to create a RevocationDataVerifier synchronized with a default validation policy
+		revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+
+		// It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
+		revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+
+		// A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
+		revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicyWithTime(validationPolicy, validationTime);
+
+		// For customization directly in RevocationDataVerifier, the following methods may be used:
+
+		// #setAcceptableDigestAlgorithms method is used to provide a list of DigestAlgorithms
+		// to be accepted during the revocation data validation.
+		// Default : collection of algorithms is synchronized with ETSI 119 312
+		revocationDataVerifier.setAcceptableDigestAlgorithms(Arrays.asList(
+				DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
+				DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512));
+
+		// #setAcceptableEncryptionAlgorithmKeyLength method defines a list of acceptable encryption algorithms and
+		// their corresponding key length. Revocation tokens signed with other algorithms or with a key length smaller
+		// than one defined within the map will be skipped.
+		// Default : collection of algorithms is synchronized with ETSI 119 312
+		Map<EncryptionAlgorithm, Integer> encryptionAlgos = new HashMap<>();
+		encryptionAlgos.put(EncryptionAlgorithm.DSA, 2048);
+		encryptionAlgos.put(EncryptionAlgorithm.RSA, 1900);
+		encryptionAlgos.put(EncryptionAlgorithm.ECDSA, 256);
+		encryptionAlgos.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
+		revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(encryptionAlgos);
+
+		// end::rev-data-verifier[]
 
 	}
 

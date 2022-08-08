@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 02 Feb 2022 13:31:13 GMT
+Date: Fri, 29 Jul 2022 13:53:01 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -14,12 +14,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 6874
+Content-Length: 6902
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2022-02-02T13:31:13Z",
+    "ValidationDate" : "2022-07-29T13:53:01Z",
     "ContainerInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
@@ -122,6 +122,7 @@ Content-Length: 6874
       "pdsUrl" : null,
       "qualificationAtIssuance" : "N/A",
       "qualificationAtValidation" : "N/A",
+      "enactedMRA" : null,
       "revocation" : {
         "thisUpdate" : null,
         "revocationDate" : null,
@@ -131,7 +132,7 @@ Content-Length: 6874
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2022-02-02T13:31:13Z"
+    "ValidationTime" : "2022-07-29T13:53:01Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

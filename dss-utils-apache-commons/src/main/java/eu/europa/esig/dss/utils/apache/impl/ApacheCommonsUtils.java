@@ -27,6 +27,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -50,6 +51,12 @@ import java.util.Objects;
  * Apache Commons implementation of Utils
  */
 public class ApacheCommonsUtils implements IUtils {
+
+	/**
+	 * Default constructor
+	 */
+	public ApacheCommonsUtils() {
+	}
 
 	@Override
 	public boolean isStringEmpty(String text) {
@@ -104,6 +111,11 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public boolean endsWithIgnoreCase(String text, String expected) {
 		return StringUtils.endsWithIgnoreCase(text, expected);
+	}
+
+	@Override
+	public String getFileNameExtension(String filename) {
+		return FilenameUtils.getExtension(filename);
 	}
 
 	@Override

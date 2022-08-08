@@ -37,8 +37,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSSSecureRandomProviderTest {
 
@@ -122,6 +124,44 @@ public class DSSSecureRandomProviderTest {
 	
 	private byte[] getEmptyBytes() {
 		return new byte[16];
+	}
+
+	@Test
+	public void propertiesNullTest() {
+		Exception exception = assertThrows(NullPointerException.class, () -> new DSSSecureRandomProvider((PAdESCommonParameters) null));
+		assertEquals("Parameters must be defined! Unable to instantiate DSSSecureRandomProvider.", exception.getMessage());
+		exception = assertThrows(NullPointerException.class, () -> new DSSSecureRandomProvider((SignatureImageParameters) null));
+		assertEquals("Parameters must be defined! Unable to instantiate DSSSecureRandomProvider.", exception.getMessage());
+	}
+
+	@Test
+	public void signatureImageParametersTest() {
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.getTextParameters().setText("Hello World!");
+
+		byte[] firstByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(imageParameters).getSecureRandom().nextBytes(firstByteArray);
+		byte[] secondByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(imageParameters).getSecureRandom().nextBytes(secondByteArray);
+		assertTrue(Arrays.equals(firstByteArray, secondByteArray));
+
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setImageParameters(imageParameters);
+
+		byte[] firstSigParamsByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(signatureParameters).getSecureRandom().nextBytes(firstSigParamsByteArray);
+		byte[] secondSigParamsByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(signatureParameters).getSecureRandom().nextBytes(secondSigParamsByteArray);
+		assertTrue(Arrays.equals(firstSigParamsByteArray, secondSigParamsByteArray));
+
+		imageParameters.getTextParameters().setText("Bye World!");
+		byte[] thirdByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(imageParameters).getSecureRandom().nextBytes(thirdByteArray);
+		assertFalse(Arrays.equals(firstByteArray, thirdByteArray));
+
+		byte[] thirdSigParamsByteArray = getEmptyBytes();
+		new DSSSecureRandomProvider(signatureParameters).getSecureRandom().nextBytes(thirdSigParamsByteArray);
+		assertFalse(Arrays.equals(firstSigParamsByteArray, thirdSigParamsByteArray));
 	}
 
 }

@@ -21,12 +21,9 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractGetDataToSignHelper;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -35,51 +32,18 @@ import java.util.List;
  */
 public class DataToSignASiCEWithXAdESHelper extends AbstractGetDataToSignHelper implements GetDataToSignASiCWithXAdESHelper {
 
-    /** The default signature filename */
-    private static final String ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
-
-    /** ASiC Container creation parameters */
-    private final ASiCParameters asicParameters;
-
     /**
      * The default constructor
      *
      * @param asicContent {@link ASiCContent}
-     * @param asicParameters {@link ASiCParameters}
      */
-    public DataToSignASiCEWithXAdESHelper(final ASiCContent asicContent, final ASiCParameters asicParameters) {
+    public DataToSignASiCEWithXAdESHelper(final ASiCContent asicContent) {
         super(asicContent);
-        this.asicParameters = asicParameters;
     }
 
     @Override
     public List<DSSDocument> getToBeSigned() {
         return asicContent.getSignedDocuments();
-    }
-
-    @Override
-    public String getSignatureFilename() {
-        if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-            return ASiCUtils.META_INF_FOLDER + asicParameters.getSignatureFileName();
-        }
-        List<DSSDocument>existingSignatures = asicContent.getSignatureDocuments();
-        if (Utils.isCollectionNotEmpty(existingSignatures)) {
-            return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE.replace("001", getSignatureNumber(existingSignatures));
-        } else {
-            return ZIP_ENTRY_ASICE_METAINF_XADES_SIGNATURE;
-        }
-    }
-	
-    private String getSignatureNumber(List<DSSDocument> existingSignatures) {
-        int signatureNumber = existingSignatures.size() + 1;
-        String sigNumberStr = String.valueOf(signatureNumber);
-        String zeroPad = "000";
-        return zeroPad.substring(sigNumberStr.length()) + sigNumberStr; // 2 -> 002
-	}
-
-    @Override
-    public String getTimestampFilename() {
-        throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-E + XAdES");
     }
 
     @Override

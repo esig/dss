@@ -111,10 +111,20 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 		if (tLevelExtensionRequired) {
 			// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-			return timestampDocument(document, parameters.getSignatureTimestampParameters(), parameters.getPasswordProtection());
+			return timestampDocument(document, parameters.getSignatureTimestampParameters(),
+					parameters.getPasswordProtection(), getSignatureTimestampService());
 		} else {
 			return document;
 		}
+	}
+
+	/**
+	 * This method returns a {@code PDFSignatureService} to be used for a signature timestamp creation
+	 *
+	 * @return {@link PDFSignatureService}
+	 */
+	private PDFSignatureService getSignatureTimestampService() {
+		return pdfObjectFactory.newSignatureTimestampService();
 	}
 
 	/**
@@ -123,22 +133,15 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 * @param document {@link DSSDocument} to timestamp
 	 * @param timestampParameters {@link PAdESTimestampParameters}
 	 * @param pwd {@link String} password if required
+	 * @param pdfSignatureService {@link PDFSignatureService} to be used
 	 * @return {@link DSSDocument} timestamped
 	 */
 	protected DSSDocument timestampDocument(final DSSDocument document,
-											final PAdESTimestampParameters timestampParameters, final String pwd) {
-		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, newPdfSignatureService());
+											final PAdESTimestampParameters timestampParameters, final String pwd,
+											final PDFSignatureService pdfSignatureService) {
+		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, pdfSignatureService);
 		timestampParameters.setPasswordProtection(pwd);
 		return padesTimestampService.timestampDocument(document, timestampParameters);
-	}
-
-	/**
-	 * Returns PDF signature service
-	 *
-	 * @return {@link PDFSignatureService}
-	 */
-	protected PDFSignatureService newPdfSignatureService() {
-		return pdfObjectFactory.newSignatureTimestampService();
 	}
 
 	/**

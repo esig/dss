@@ -51,31 +51,40 @@ public final class SigQualificationMatrix {
 	/** Signature with qualified certificate for eSeal with QSCD */
 	private static final int QCERT_FOR_ESEAL_QSCD = 1;
 
+	/** Signature with qualified certificate for unknown type with QSCD */
+	private static final int QCERT_FOR_UNKNOWN_QSCD = 2;
+
 	/** Signature with qualified certificate for eSignature */
-	private static final int QCERT_FOR_ESIG = 2;
+	private static final int QCERT_FOR_ESIG = 3;
 
 	/** Signature with qualified certificate for eSeal */
-	private static final int QCERT_FOR_ESEAL = 3;
+	private static final int QCERT_FOR_ESEAL = 4;
 
 	/** Signature with qualified certificate for Web Authentication */
-	private static final int QCERT_FOR_WSA = 4;
+	private static final int QCERT_FOR_WSA = 5;
+
+	/** Signature with qualified certificate for unknown type */
+	private static final int QCERT_FOR_UNKNOWN = 6;
 
 	/** Signature with certificate for eSignature */
-	private static final int CERT_FOR_ESIG = 5;
+	private static final int CERT_FOR_ESIG = 7;
 
 	/** Signature with certificate for eSeal */
-	private static final int CERT_FOR_ESEAL = 6;
+	private static final int CERT_FOR_ESEAL = 8;
 
 	/** Signature with certificate for Web Authentication */
-	private static final int CERT_FOR_WSA = 7;
+	private static final int CERT_FOR_WSA = 9;
+
+	/** Signature with certificate for unknown type */
+	private static final int CERT_FOR_UNKNOWN = 10;
 
 	/** Not applicable */
-	private static final int NA = 8;
+	private static final int NA = 11;
 
 	/**
 	 * Double array containing the relationship between qualification parameters and the final signature qualification
 	 */
-	private static final SignatureQualification[][] QUALIFS = new SignatureQualification[3][9];
+	private static final SignatureQualification[][] QUALIFS = new SignatureQualification[3][12];
 
 	static {
 
@@ -83,42 +92,54 @@ public final class SigQualificationMatrix {
 
 		QUALIFS[ADES][QCERT_FOR_ESIG_QSCD] = SignatureQualification.QESIG;
 		QUALIFS[ADES][QCERT_FOR_ESEAL_QSCD] = SignatureQualification.QESEAL;
+		QUALIFS[ADES][QCERT_FOR_UNKNOWN_QSCD] = SignatureQualification.UNKNOWN_QC_QSCD;
 
 		QUALIFS[ADES][QCERT_FOR_ESIG] = SignatureQualification.ADESIG_QC;
 		QUALIFS[ADES][QCERT_FOR_ESEAL] = SignatureQualification.ADESEAL_QC;
 		QUALIFS[ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[ADES][QCERT_FOR_UNKNOWN] = SignatureQualification.UNKNOWN_QC;
 
 		QUALIFS[ADES][CERT_FOR_ESIG] = SignatureQualification.ADESIG;
 		QUALIFS[ADES][CERT_FOR_ESEAL] = SignatureQualification.ADESEAL;
 		QUALIFS[ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[ADES][CERT_FOR_UNKNOWN] = SignatureQualification.UNKNOWN;
+
 		QUALIFS[ADES][NA] = SignatureQualification.NA;
 
 		// Indeterminate AdES
 
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESIG_QSCD] = SignatureQualification.INDETERMINATE_QESIG;
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESEAL_QSCD] = SignatureQualification.INDETERMINATE_QESEAL;
+		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_UNKNOWN_QSCD] = SignatureQualification.INDETERMINATE_UNKNOWN_QC_QSCD;
 
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESIG] = SignatureQualification.INDETERMINATE_ADESIG_QC;
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_ESEAL] = SignatureQualification.INDETERMINATE_ADESEAL_QC;
 		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[INDETERMINATE_ADES][QCERT_FOR_UNKNOWN] = SignatureQualification.INDETERMINATE_UNKNOWN_QC;
 
 		QUALIFS[INDETERMINATE_ADES][CERT_FOR_ESIG] = SignatureQualification.INDETERMINATE_ADESIG;
 		QUALIFS[INDETERMINATE_ADES][CERT_FOR_ESEAL] = SignatureQualification.INDETERMINATE_ADESEAL;
 		QUALIFS[INDETERMINATE_ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[INDETERMINATE_ADES][CERT_FOR_UNKNOWN] = SignatureQualification.INDETERMINATE_UNKNOWN;
+
 		QUALIFS[INDETERMINATE_ADES][NA] = SignatureQualification.NA;
 
 		// Not AdES
 
 		QUALIFS[NOT_ADES][QCERT_FOR_ESIG_QSCD] = SignatureQualification.NOT_ADES_QC_QSCD;
 		QUALIFS[NOT_ADES][QCERT_FOR_ESEAL_QSCD] = SignatureQualification.NOT_ADES_QC_QSCD;
+		QUALIFS[NOT_ADES][QCERT_FOR_UNKNOWN_QSCD] = SignatureQualification.NOT_ADES_QC_QSCD;
 
 		QUALIFS[NOT_ADES][QCERT_FOR_ESIG] = SignatureQualification.NOT_ADES_QC;
 		QUALIFS[NOT_ADES][QCERT_FOR_ESEAL] = SignatureQualification.NOT_ADES_QC;
 		QUALIFS[NOT_ADES][QCERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[NOT_ADES][QCERT_FOR_UNKNOWN] = SignatureQualification.NOT_ADES_QC;
 
 		QUALIFS[NOT_ADES][CERT_FOR_ESIG] = SignatureQualification.NOT_ADES;
 		QUALIFS[NOT_ADES][CERT_FOR_ESEAL] = SignatureQualification.NOT_ADES;
 		QUALIFS[NOT_ADES][CERT_FOR_WSA] = SignatureQualification.NOT_ADES;
+		QUALIFS[NOT_ADES][CERT_FOR_UNKNOWN] = SignatureQualification.NOT_ADES;
+
 		QUALIFS[NOT_ADES][NA] = SignatureQualification.NOT_ADES;
 
 	}
@@ -155,18 +176,24 @@ public final class SigQualificationMatrix {
 			return QCERT_FOR_ESIG_QSCD;
 		case QCERT_FOR_ESEAL_QSCD:
 			return QCERT_FOR_ESEAL_QSCD;
+		case QCERT_FOR_UNKNOWN_QSCD:
+			return QCERT_FOR_UNKNOWN_QSCD;
 		case QCERT_FOR_ESIG:
 			return QCERT_FOR_ESIG;
 		case QCERT_FOR_ESEAL:
 			return QCERT_FOR_ESEAL;
 		case QCERT_FOR_WSA:
 			return QCERT_FOR_WSA;
+		case QCERT_FOR_UNKNOWN:
+			return QCERT_FOR_UNKNOWN;
 		case CERT_FOR_ESIG:
 			return CERT_FOR_ESIG;
 		case CERT_FOR_ESEAL:
 			return CERT_FOR_ESEAL;
 		case CERT_FOR_WSA:
 			return CERT_FOR_WSA;
+		case CERT_FOR_UNKNOWN:
+			return CERT_FOR_UNKNOWN;
 		case NA:
 			return NA;
 		default:

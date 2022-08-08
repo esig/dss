@@ -476,6 +476,7 @@
                 <certificatePolicy>1.3.6.1.4.1.21679.1.1.1.2.1</certificatePolicy>
             </CertificatePolicies>
             <QcStatements>
+                <QcCompliance present="true"/>
                 <QcSSCD present="true"/>
             </QcStatements>
             <TrustedServiceProviders>

@@ -61,6 +61,13 @@ public class ValidationData {
 	private final Set<EntityIdentifier> storedPublicKeys = new HashSet<>();
 
 	/**
+	 * Default constructor instantiating empty maps of tokens
+	 */
+	public ValidationData() {
+		// empty
+	}
+
+	/**
 	 * Gets certificate tokens to be included into the signature
 	 *
 	 * @return a set of {@link CertificateToken}s

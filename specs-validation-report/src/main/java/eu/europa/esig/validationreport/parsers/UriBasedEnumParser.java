@@ -57,6 +57,7 @@ public final class UriBasedEnumParser {
 	}
 
 	private UriBasedEnumParser() {
+		// empty
 	}
 
 	/**

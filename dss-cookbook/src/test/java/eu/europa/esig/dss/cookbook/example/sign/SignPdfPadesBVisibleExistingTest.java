@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.awt.Color;
-import java.awt.Font;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -41,6 +36,10 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
+import java.awt.Font;
 
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
@@ -65,6 +64,21 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import java.awt.Color;
+			// import java.awt.Font;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.pades.DSSFont;
+			// import eu.europa.esig.dss.pades.DSSJavaFont;
+			// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+			// import eu.europa.esig.dss.pades.SignatureFieldParameters;
+			// import eu.europa.esig.dss.pades.SignatureImageParameters;
+			// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+			// import eu.europa.esig.dss.pades.signature.PAdESService;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();

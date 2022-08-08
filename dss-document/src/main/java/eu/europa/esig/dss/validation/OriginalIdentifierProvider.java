@@ -27,6 +27,13 @@ import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
  */
 public class OriginalIdentifierProvider implements TokenIdentifierProvider {
 
+    /**
+     * Default constructor
+     */
+    public OriginalIdentifierProvider() {
+        // empty
+    }
+
     @Override
     public String getIdAsString(IdentifierBasedObject object) {
         return object.getDSSId().asXmlId();

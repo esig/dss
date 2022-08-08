@@ -29,6 +29,12 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
  */
 public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public ITextDefaultSignatureDrawerFactory() {
+	}
+
 	@Override
 	public ITextSignatureDrawer getSignatureDrawer(SignatureImageParameters imageParameters) {
 		final DSSDocument image = imageParameters.getImage();

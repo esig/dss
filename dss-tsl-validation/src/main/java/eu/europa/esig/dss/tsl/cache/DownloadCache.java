@@ -33,6 +33,12 @@ import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DownloadCache.class);
+
+	/**
+	 * Default constructor
+	 */
+	public DownloadCache() {
+	}
 	
 	/**
 	 * Checks if the file with the given {@code cacheKey} is up to date

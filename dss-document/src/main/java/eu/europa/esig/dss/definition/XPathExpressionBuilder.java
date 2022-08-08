@@ -75,6 +75,13 @@ public class XPathExpressionBuilder {
 	private DSSElement notParentOf;
 
 	/**
+	 * Default constructor instantiating object with empty configuration
+	 */
+	public XPathExpressionBuilder() {
+		// empty
+	}
+
+	/**
 	 * Starts XPath from the current position
 	 *
 	 * @return this {@link XPathExpressionBuilder}

@@ -24,19 +24,15 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class allows retrieving of Revocation data from CRL or OCSP sources, based on the defined strategy
  *
- * NOTE: The implemented object does not require setting of OCSP/CRL/TrustedCertificate sources
+ * NOTE: The implemented object does not require setting of OCSP/CRL/RevocationDataVerifier sources
  *       on instantiation from the user.
  *       All the values are automatically configured and set in {@code eu.europa.esig.dss.validation.SignatureValidationContext}
  *       based on the parameters defined in the provided {@code eu.europa.esig.dss.validation.CertificateVerifier}
@@ -57,9 +53,21 @@ public abstract class RevocationDataLoadingStrategy {
 	protected RevocationSource<OCSP> ocspSource;
 
 	/**
-	 * The trusted certificate source is used to accept trusted OCSPToken's certificate issuers
+	 * Used to verify the validity of obtained revocation data
 	 */
-	protected ListCertificateSource trustedListCertificateSource;
+	protected RevocationDataVerifier revocationDataVerifier;
+
+	/**
+	 * When enabled, returns first obtained revocation token, if both OCSP and CRL requests failed
+	 */
+	protected boolean fallbackEnabled = false;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected RevocationDataLoadingStrategy() {
+		// empty
+	}
 
 	/**
 	 * Sets the CRLSource
@@ -80,12 +88,24 @@ public abstract class RevocationDataLoadingStrategy {
 	}
 
 	/**
-	 * Sets a trusted certificate source in order to accept trusted OCSPToken's certificate issuers
-	 * 
-	 * @param trustedListCertificateSource {@link ListCertificateSource}
+	 * Sets {@code RevocationDataVerifier}
+	 *
+	 * @param revocationDataVerifier {@link RevocationDataVerifier}
 	 */
-	void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
-		this.trustedListCertificateSource = trustedListCertificateSource;
+	void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
+		this.revocationDataVerifier = revocationDataVerifier;
+	}
+
+	/**
+	 * Sets whether the fallback shall be enabled.
+	 * When set to TRUE, returns the first obtained token, even when it is not acceptable by the verifier.
+	 *
+	 * Default : FALSE - no fallback. If tokens fail the validation, NULL is returned.
+	 *
+	 * @param fallbackEnabled TRUE if the fallback shall be enabled, FALSE otherwise
+	 */
+	void setFallbackEnabled(boolean fallbackEnabled) {
+		this.fallbackEnabled = fallbackEnabled;
 	}
 
 	/**
@@ -100,7 +120,7 @@ public abstract class RevocationDataLoadingStrategy {
 	 * @return an instance of {@code RevocationToken}
 	 */
 	@SuppressWarnings("rawtypes")
-	protected abstract RevocationToken getRevocationToken(CertificateToken certificateToken,
+	public abstract RevocationToken getRevocationToken(CertificateToken certificateToken,
 														  CertificateToken issuerCertificateToken);
 
 	/**
@@ -122,7 +142,7 @@ public abstract class RevocationDataLoadingStrategy {
 		}
 		try {
 			final RevocationToken<CRL> revocationToken = crlSource.getRevocationToken(certificateToken, issuerToken);
-			if (revocationToken != null && containsCertificateStatus(revocationToken)) {
+			if (revocationToken != null) {
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("CRL for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
 				}
@@ -158,8 +178,7 @@ public abstract class RevocationDataLoadingStrategy {
 		}
 		try {
 			final RevocationToken<OCSP> revocationToken = ocspSource.getRevocationToken(certificateToken, issuerToken);
-			if (revocationToken != null && containsCertificateStatus(revocationToken) && isAcceptable(revocationToken)
-					&& isIssuerValidAtRevocationProductionTime(revocationToken)) {
+			if (revocationToken != null) {
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("OCSP response for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
 					LOG.debug("OCSP Response {} status is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
@@ -176,65 +195,18 @@ public abstract class RevocationDataLoadingStrategy {
 		return null;
 	}
 
-	private boolean containsCertificateStatus(RevocationToken<?> revocationToken) {
-		if (revocationToken.getStatus() == null) {
-			LOG.warn("The obtained revocation token does not contain the certificate status. "
-					+ "The token is skipped.");
-			return false;
-		}
-		return true;
-	}
-
-	private boolean isAcceptable(RevocationToken<OCSP> ocspToken) {
-		CertificateToken issuerCertificateToken = ocspToken.getIssuerCertificateToken();
-		if (issuerCertificateToken == null) {
-			LOG.warn("The issuer certificate is not found for the obtained OCSPToken. "
-					+ "The token is skipped.");
-			return false;
-
-		} else if (doesRequireRevocation(issuerCertificateToken) && !hasRevocationAccessPoints(issuerCertificateToken)) {
-			LOG.warn("The issuer certificate of the obtained OCSPToken requires a revocation data, "
-					+ "which is not acceptable due its configuration (no revocation access location points). The token is skipped.");
-			return false;
-
-		}
-		return true;
-	}
-
-	private boolean doesRequireRevocation(final CertificateToken certificateToken) {
-		if (certificateToken.isSelfSigned()) {
-			return false;
-		}
-		if (isTrusted(certificateToken)) {
-			return false;
-		}
-		if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
-			return false;
-		}
-		return true;
-	}
-
-	private boolean isTrusted(CertificateToken certificateToken) {
-		return trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(certificateToken);
-	}
-
-	private boolean hasRevocationAccessPoints(final CertificateToken certificateToken) {
-		if (Utils.isCollectionNotEmpty(DSSASN1Utils.getOCSPAccessLocations(certificateToken))) {
+	/**
+	 * This method verifies whether the obtained revocation token is acceptable
+	 *
+	 * @param revocationToken {@link RevocationToken} to be checked
+	 * @return TRUE if the token is acceptable and can be returned, FALSE otherwise
+	 */
+	protected boolean isAcceptableToken(RevocationToken<?> revocationToken) {
+		if (revocationDataVerifier == null) {
+			LOG.warn("RevocationDataVerifier is null! Validation of retrieved revocation data is skipped.");
 			return true;
 		}
-		if (Utils.isCollectionNotEmpty(DSSASN1Utils.getCrlUrls(certificateToken))) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isIssuerValidAtRevocationProductionTime(RevocationToken<?> revocationToken) {
-		if (!DSSRevocationUtils.checkIssuerValidAtRevocationProductionTime(revocationToken)) {
-			LOG.warn("The revocation token has been produced outside the issuer certificate's validity range. "
-					+ "The token is skipped.");
-			return false;
-		}
-		return true;
+		return revocationDataVerifier.isAcceptable(revocationToken);
 	}
 
 }

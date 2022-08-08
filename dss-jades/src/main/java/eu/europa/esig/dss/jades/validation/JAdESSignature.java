@@ -124,12 +124,20 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		return SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue());
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue(), null);
+		if (signatureAlgorithm == null) {
+			LOG.error("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
+		}
+		return signatureAlgorithm;
 	}
 
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return getSignatureAlgorithm().getEncryptionAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+		if (signatureAlgorithm == null) {
+			return null;
+		}
+		return signatureAlgorithm.getEncryptionAlgorithm();
 	}
 
 	@Override
@@ -235,19 +243,25 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	public SignaturePolicyStore getSignaturePolicyStore() {
 		Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
 		if (Utils.isMapNotEmpty(sigPStMap)) {
-			SpDocSpecification spDocSpecification = null;
-			DSSDocument policyContent = null;
+			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+
 			String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
 			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
-				policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+				DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+				signaturePolicyStore.setSignaturePolicyContent(policyContent);
 			}
+
+			String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
+			if (Utils.isStringNotEmpty(sigPolLocalURI)) {
+				signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
+			}
+
 			Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
 			if (spDSpec != null) {
-				spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+				SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
 			}
-			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-			signaturePolicyStore.setSignaturePolicyContent(policyContent);
-			signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+
 			return signaturePolicyStore;
 		}
 		return null;
@@ -265,6 +279,9 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					if (Utils.isMapNotEmpty(commIdMap)) {
 						String uri = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.ID);
 						if (Utils.isStringNotBlank(uri)) {
+							if (DSSUtils.isUrnOid(uri)) {
+								uri = DSSUtils.getOidCode(uri);
+							}
 							CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
 							String desc = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.DESC);
 							commitmentTypeIndication.setDescription(desc);
@@ -618,55 +635,54 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		signatureValueReferenceValidation.setType(DigestMatcherType.JWS_SIGNING_INPUT_DIGEST);
 		
 		try {
-			SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
-			if (signatureAlgorithm != null) {
-				
-				String encodedHeader = jws.getEncodedHeader();
-				if (Utils.isStringNotEmpty(encodedHeader)) {
-					// get payload for a detached signature
-					try {
-						SigDMechanism sigDMechanism = getSigDMechanism();
-						boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
-						if (!isDetachedSignature()) {
-							// not detached
-							signatureValueReferenceValidation.setFound(true);
+			String encodedHeader = jws.getEncodedHeader();
+			if (Utils.isStringNotEmpty(encodedHeader)) {
+				// get payload for a detached signature
+				try {
+					SigDMechanism sigDMechanism = getSigDMechanism();
+					boolean detachedContentPresent = Utils.isCollectionNotEmpty(detachedContents);
+					if (!isDetachedSignature()) {
+						// not detached
+						signatureValueReferenceValidation.setFound(true);
 
-						} else if (sigDMechanism == null && detachedContentPresent) {
-							// simple detached signature
-							byte[] payload = getIncorporatedPayload();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
+					} else if (sigDMechanism == null && detachedContentPresent) {
+						// simple detached signature
+						byte[] payload = getIncorporatedPayload();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
 
-						} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
-							// detached with HTTP_HEADERS mechanism
-							byte[] payload = getPayloadForHttpHeadersMechanism();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(payload != null);
+					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
+						// detached with HTTP_HEADERS mechanism
+						byte[] payload = getPayloadForHttpHeadersMechanism();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(payload != null);
 
-						} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
-							// detached with OBJECT_ID_BY_URI mechanism
-							byte[] payload = getPayloadForObjectIdByUriMechanism();
-							jws.setPayloadOctets(payload);
-							signatureValueReferenceValidation.setFound(payload != null);
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+						// detached with OBJECT_ID_BY_URI mechanism
+						byte[] payload = getPayloadForObjectIdByUriMechanism();
+						jws.setPayloadOctets(payload);
+						signatureValueReferenceValidation.setFound(payload != null);
 
-						} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
-							// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
-							signatureValueReferenceValidation.setFound(true);
+					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
+						signatureValueReferenceValidation.setFound(true);
 
-						} else {
-							// otherwise original content is not found
-							LOG.warn("The payload is not found! The detached content must be provided!");
-						}
-
-					} catch (Exception e) {
-						String errorMessage = "Enable to determine a JWS payload. Reason : {}";
-						if (LOG.isDebugEnabled()) {
-							LOG.warn(errorMessage, e.getMessage(), e);
-						} else {
-							LOG.warn(errorMessage, e.getMessage());
-						}
+					} else {
+						// otherwise original content is not found
+						LOG.warn("The payload is not found! The detached content must be provided!");
 					}
 
+				} catch (Exception e) {
+					String errorMessage = "Enable to determine a JWS payload. Reason : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
+				}
+
+				SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+				if (signatureAlgorithm != null) {
 					byte[] dataToSign = DSSJsonUtils.getSigningInputBytes(jws);
 					DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
 					Digest digest = new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, dataToSign));

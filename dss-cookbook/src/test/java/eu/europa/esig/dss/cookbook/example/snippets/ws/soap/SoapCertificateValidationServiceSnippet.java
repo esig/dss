@@ -39,10 +39,11 @@ public class SoapCertificateValidationServiceSnippet {
     @SuppressWarnings("unused")
     public void demo() throws Exception {
         // tag::demo[]
+        // import eu.europa.esig.dss.ws.cert.validation.soap.SoapCertificateValidationServiceImpl;
+        // import eu.europa.esig.dss.ws.cert.validation.soap.client.SoapCertificateValidationService;
 
         // Instantiate a soap certificate validation service
         SoapCertificateValidationService validationService = new SoapCertificateValidationServiceImpl();
-
         // end::demo[]
 
         // Instantiate the certificate to be validated

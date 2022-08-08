@@ -96,6 +96,13 @@ public class SignatureImageParameters implements Serializable {
 	private SignatureImageTextParameters textParameters;
 
 	/**
+	 * Default constructor instantiating object with default parameters
+	 */
+	public SignatureImageParameters() {
+		// empty
+	}
+
+	/**
 	 * Returns a {@code DSSDocument} image defined for displaying on the signature field
 	 * @return {@link DSSDocument} image
 	 */

@@ -117,7 +117,7 @@ public class ASiCETimestampLevelLTASignatureTest extends AbstractASiCEWithCAdESM
                     signedDataIds.add(signatureScope.getSignerData().getId());
                 }
             }
-            if ("META-INF/ASiCManifest.xml".equals(signatureScope.getName())) {
+            if ("META-INF/ASiCManifest001.xml".equals(signatureScope.getName())) {
                 signedManifestId = signatureScope.getSignerData().getId();
             }
         }
@@ -137,7 +137,7 @@ public class ASiCETimestampLevelLTASignatureTest extends AbstractASiCEWithCAdESM
             } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
                 int archiveManifestCounter = 0;
                 for (SignerDataWrapper signerDataWrapper : timestampWrapper.getTimestampedSignedData()) {
-                    if ("META-INF/ASiCArchiveManifest1.xml".equals(signerDataWrapper.getReferencedName())) {
+                    if ("META-INF/ASiCArchiveManifest001.xml".equals(signerDataWrapper.getReferencedName())) {
                         ++archiveManifestCounter;
                     }
                     if ("META-INF/ASiCArchiveManifest.xml".equals(signerDataWrapper.getReferencedName())) {

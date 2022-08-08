@@ -29,6 +29,12 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class PDFDocumentValidatorFactory implements DocumentValidatorFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public PDFDocumentValidatorFactory() {
+	}
+
 	@Override
 	public boolean isSupported(DSSDocument document) {
 		PDFDocumentValidator validator = new PDFDocumentValidator();

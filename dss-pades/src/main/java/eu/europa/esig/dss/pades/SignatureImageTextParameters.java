@@ -104,6 +104,13 @@ public class SignatureImageTextParameters implements Serializable {
 	private Color backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	/**
+	 * Default constructor instantiating object with default configuration
+	 */
+	public SignatureImageTextParameters() {
+		// empty
+	}
+
+	/**
 	 * Returns a signer text position respectively to an image
 	 * 
 	 * @return {@link SignerTextPosition}

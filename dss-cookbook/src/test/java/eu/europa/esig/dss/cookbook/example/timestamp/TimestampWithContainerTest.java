@@ -43,6 +43,14 @@ public class TimestampWithContainerTest extends CookbookTools {
     public void test() throws Exception {
 
         // tag::creation[]
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.FileDocument;
+        // import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+        // import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
+        // import eu.europa.esig.dss.enumerations.ASiCContainerType;
+        // import java.io.File;
+        // import java.util.Arrays;
+
         // Loads document(s) to be timestamped
         DSSDocument documentToTimestampOne = new FileDocument(new File("src/main/resources/hello-world.pdf"));
         DSSDocument documentToTimestampTwo = new FileDocument(new File("src/main/resources/xml_example.xml"));
@@ -63,6 +71,9 @@ public class TimestampWithContainerTest extends CookbookTools {
         // end::creation[]
 
         // tag::validation[]
+        // import eu.europa.esig.dss.validation.SignedDocumentValidator;
+        // import eu.europa.esig.dss.validation.reports.Reports;
+
         // Load a document validator. The appropriate validator class will be determined automatically.
         SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestampedDoc);
         // Configure the validator. Provide a certificate verifier.

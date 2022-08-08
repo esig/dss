@@ -36,6 +36,7 @@ public class ToBeSigned implements Serializable{
 	 * Empty constructor
 	 */
 	public ToBeSigned() {
+		// empty
 	}
 
 	/**

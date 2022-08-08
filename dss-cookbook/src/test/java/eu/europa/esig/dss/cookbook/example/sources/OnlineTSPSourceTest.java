@@ -44,6 +44,11 @@ public class OnlineTSPSourceTest {
 	public void test() throws IOException {
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.model.TimestampBinary;
+		// import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
+		// import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+		// import eu.europa.esig.dss.spi.DSSUtils;
 
 		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
@@ -61,11 +66,11 @@ public class OnlineTSPSourceTest {
 		assertNotNull(tsBinary);
 	}
 
-	@Test
-	public void policyTest() {
+	public void policySnippet() {
 		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 
 		// tag::policy[]
+		// import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 
 		OnlineTSPSource tspSource = new OnlineTSPSource(tspServer);
 		tspSource.setPolicyOid("0.4.0.2023.1.1"); // provide a policy OID

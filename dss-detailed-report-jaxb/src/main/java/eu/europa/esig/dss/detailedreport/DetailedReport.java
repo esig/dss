@@ -639,51 +639,59 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets the validation indication to a token with id (signature or timestamp supported only)
+	 * Returns the final validation conclusion for a token with a given Id
+	 *
+	 * @param tokenId {@link String} of a token to get the final validation conclusion result for
+	 * @return {@link XmlConclusion}
+	 */
+	public XmlConclusion getFinalConclusion(String tokenId) {
+		XmlSignature signatureById = getXmlSignatureById(tokenId);
+		if (signatureById != null) {
+			return signatureById.getConclusion();
+		}
+		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
+		if (timestampById != null) {
+			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
+			XmlPSV psv = tstBBB.getPSV();
+			if (psv != null) {
+				return psv.getConclusion();
+			} else {
+				return timestampById.getValidationProcessTimestamp().getConclusion();
+			}
+		}
+		XmlBasicBuildingBlocks bbb = getBasicBuildingBlockById(tokenId);
+		if (bbb != null) {
+			return bbb.getConclusion();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the validation indication to a token with id
 	 * corresponding to the highest validation level
 	 *
 	 * @param tokenId {@link String}
 	 * @return {@link Indication}
 	 */
 	public Indication getFinalIndication(String tokenId) {
-		XmlSignature signatureById = getXmlSignatureById(tokenId);
-		if (signatureById != null) {
-			return signatureById.getConclusion().getIndication();
-		}
-		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
-		if (timestampById != null) {
-			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
-			XmlPSV psv = tstBBB.getPSV();
-			if (psv != null) {
-				return psv.getConclusion().getIndication();
-			} else {
-				return timestampById.getValidationProcessTimestamp().getConclusion().getIndication();
-			}
+		XmlConclusion finalConclusion = getFinalConclusion(tokenId);
+		if (finalConclusion != null) {
+			return finalConclusion.getIndication();
 		}
 		return null;
 	}
 
 	/**
-	 * Gets the validation subIndication to a token with id (signature or timestamp supported only)
+	 * Gets the validation subIndication to a token with id
 	 * corresponding to the highest validation level
 	 *
 	 * @param tokenId {@link String}
 	 * @return {@link Indication}
 	 */
 	public SubIndication getFinalSubIndication(String tokenId) {
-		XmlSignature signatureById = getXmlSignatureById(tokenId);
-		if (signatureById != null) {
-			return signatureById.getConclusion().getSubIndication();
-		}
-		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
-		if (timestampById != null) {
-			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
-			XmlPSV psv = tstBBB.getPSV();
-			if (psv != null) {
-				return psv.getConclusion().getSubIndication();
-			} else {
-				return timestampById.getValidationProcessTimestamp().getConclusion().getSubIndication();
-			}
+		XmlConclusion finalConclusion = getFinalConclusion(tokenId);
+		if (finalConclusion != null) {
+			return finalConclusion.getSubIndication();
 		}
 		return null;
 	}

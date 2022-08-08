@@ -40,6 +40,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
+import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
@@ -106,11 +107,6 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 	}
 	
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		// skip
-	}
-	
-	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(2, diagnosticData.getSignatures().size());
 	}
@@ -173,7 +169,7 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 		return GOOD_USER;
 	}
 	
-	private static class MockLogAlertPdfObjectFactory implements IPdfObjFactory {
+	private static class MockLogAlertPdfObjectFactory extends AbstractPdfObjFactory {
 		
 		private static final IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
 

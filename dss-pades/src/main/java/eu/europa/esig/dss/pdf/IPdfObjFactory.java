@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+
 /**
  * Loads the relevant implementation of {@code PDFSignatureService}
  */
@@ -52,5 +56,29 @@ public interface IPdfObjFactory {
 	 * @return {@link PDFSignatureService}
 	 */
 	PDFSignatureService newArchiveTimestampService();
+
+	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder);
+
+	/**
+	 * This method is used to set a custom {@code PdfDifferencesFinder} to detect differences
+	 * between signed and final PDF document revisions.
+	 *
+	 * @param pdfDifferencesFinder {@link PdfDifferencesFinder}
+	 */
+	void setPdfDifferencesFinder(PdfDifferencesFinder pdfDifferencesFinder);
+
+	/**
+	 * This method is used to set a custom {@code PdfObjectModificationsFinder} to detect modifications occurred
+	 * within internal PDF objects between signed and final PDF document revisions.
+	 *
+	 * @param pdfObjectModificationsFinder {@link PdfObjectModificationsFinder}
+	 */
+	void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder);
 
 }

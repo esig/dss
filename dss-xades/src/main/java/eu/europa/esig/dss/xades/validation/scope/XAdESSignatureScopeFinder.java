@@ -51,6 +51,12 @@ import java.util.List;
  */
 public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder implements SignatureScopeFinder<XAdESSignature> {
 	
+	/**
+	 * Default constructor
+	 */
+	public XAdESSignatureScopeFinder() {
+	}
+
 	@Override
 	public List<SignatureScope> findSignatureScope(final XAdESSignature xadesSignature) {
 
@@ -103,7 +109,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.COUNTER_SIGNATURE.equals(xadesReferenceValidation.getType()) &&
 					xadesSignature.getMasterSignature() != null) {
-            	result.add(new CounterSignatureScope(xadesSignature.getMasterSignature().getId(), getDigest(xadesReferenceValidation.getOriginalContentBytes())));
+            	result.add(new CounterSignatureScope(getTokenIdentifierProvider().getIdAsString(xadesSignature.getMasterSignature()),
+						getDigest(xadesReferenceValidation.getOriginalContentBytes())));
 				
 			} else if (xadesReferenceValidation.isFound() && Utils.EMPTY_STRING.equals(uri)) {
 				byte[] originalContentBytes = xadesReferenceValidation.getOriginalContentBytes();
@@ -158,7 +165,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 					} else if (Utils.isCollectionNotEmpty(transformations)) {
 						return new XmlFullSignatureScope(fileName, transformations, getDigest(detachedDocument));
 	
-					} else if (isASiCSArchive(xadesSignature, detachedDocument)) {
+					} else if (isASiCSArchive(xadesSignature)) {
 						ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(decodedUrl, getDigest(detachedDocument));
 						for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
 							containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(

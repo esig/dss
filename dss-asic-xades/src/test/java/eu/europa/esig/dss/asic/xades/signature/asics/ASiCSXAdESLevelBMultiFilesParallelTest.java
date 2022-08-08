@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
@@ -53,6 +39,20 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
@@ -87,9 +87,12 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument resignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
-		resignedDocument.writeTo(new FileOutputStream("target/resigned.asics"));
+		File file = new File("target/resigned.asics");
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			resignedDocument.writeTo(fos);
+		}
 
-		DSSDocument docToCheck = new FileDocument(new File("target/resigned.asics"));
+		DSSDocument docToCheck = new FileDocument(file);
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(docToCheck);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
@@ -136,6 +139,9 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 			fail(e.getMessage());
 		}
 
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
 	}
 
 	@Override

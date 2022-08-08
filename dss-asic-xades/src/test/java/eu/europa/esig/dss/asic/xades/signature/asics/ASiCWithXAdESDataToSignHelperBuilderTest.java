@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESASiCContentBuilder;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESDataToSignHelperBuilder;
+import eu.europa.esig.dss.asic.xades.signature.DefaultASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -57,7 +58,8 @@ public class ASiCWithXAdESDataToSignHelperBuilderTest {
 
         ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder().build(filesToBeSigned, ASiCContainerType.ASiC_S);
 
-        ASiCWithXAdESDataToSignHelperBuilder builder = new ASiCWithXAdESDataToSignHelperBuilder();
+        ASiCWithXAdESDataToSignHelperBuilder builder =
+                new ASiCWithXAdESDataToSignHelperBuilder(new DefaultASiCWithXAdESFilenameFactory());
         GetDataToSignASiCWithXAdESHelper getDataToSignHelper = builder.build(asicContent, signatureParameters);
         assertNotNull(getDataToSignHelper);
 

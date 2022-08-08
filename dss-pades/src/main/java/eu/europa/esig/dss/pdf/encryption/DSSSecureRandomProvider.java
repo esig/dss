@@ -58,15 +58,32 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 	 * The parameters to compute seed value from
 	 */
 	private PAdESCommonParameters parameters;
+
+	/**
+	 * The image parameters to compute seed value from
+	 */
+	private SignatureImageParameters imageParameters;
 	
 	/**
-	 * The default constructor taking an object to compute seeds from
-	 * Concatenates all attributes from PAdESCommonParameters to a BAOS
+	 * The default constructor taking an object to compute seeds from.
+	 * Concatenates all attributes from PAdESCommonParameters to a BAOS.
 	 * 
 	 * @param parameters {@link PAdESCommonParameters} to compute seed value from
 	 */
 	public DSSSecureRandomProvider(PAdESCommonParameters parameters) {
+		Objects.requireNonNull(parameters, "Parameters must be defined! Unable to instantiate DSSSecureRandomProvider.");
 		this.parameters = parameters;
+	}
+
+	/**
+	 * Constructor to instantiate DSSSecureRandomProvider from image parameters.
+	 * Concatenates all attributes from SignatureImageParameters to a BAOS.
+	 *
+	 * @param imageParameters {@link SignatureImageParameters} to compute seed value from
+	 */
+	public DSSSecureRandomProvider(SignatureImageParameters imageParameters) {
+		Objects.requireNonNull(imageParameters, "Parameters must be defined! Unable to instantiate DSSSecureRandomProvider.");
+		this.imageParameters = imageParameters;
 	}
 	
 	/**
@@ -104,32 +121,36 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 	}
 	
 	private byte[] buildSeed() {
-		Objects.requireNonNull(parameters, "Parameters must be defined! Unable to use DSSFixedSecureRandomProvider.");
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			baos.write(parameters.getContentSize());
-			DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-			if (digestAlgorithm != null) {
-				baos.write(digestAlgorithm.getName().getBytes());
-			}
-			String filter = parameters.getFilter();
-			if (filter != null) {
-				baos.write(filter.getBytes());
-			}
-			SignatureImageParameters imageParameters = parameters.getImageParameters();
-			if (imageParameters != null) {
+			if (parameters != null) {
+				baos.write(parameters.getContentSize());
+				DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+				if (digestAlgorithm != null) {
+					baos.write(digestAlgorithm.getName().getBytes());
+				}
+				String filter = parameters.getFilter();
+				if (filter != null) {
+					baos.write(filter.getBytes());
+				}
+				SignatureImageParameters imageParameters = parameters.getImageParameters();
+				if (imageParameters != null) {
+					baos.write(imageParameters.toString().getBytes());
+				}
+				String passwordProtection = parameters.getPasswordProtection();
+				if (passwordProtection != null) {
+					baos.write(passwordProtection.getBytes());
+				}
+				Date signingDate = parameters.getSigningDate();
+				if (signingDate != null) {
+					baos.write((int)signingDate.getTime());
+				}
+				String subFilter = parameters.getSubFilter();
+				if (subFilter != null) {
+					baos.write(subFilter.getBytes());
+				}
+
+			} else if (imageParameters != null) {
 				baos.write(imageParameters.toString().getBytes());
-			}
-			String passwordProtection = parameters.getPasswordProtection();
-			if (passwordProtection != null) {
-				baos.write(passwordProtection.getBytes());
-			}
-			Date signingDate = parameters.getSigningDate();
-			if (signingDate != null) {
-				baos.write((int)signingDate.getTime());
-			}
-			String subFilter = parameters.getSubFilter();
-			if (subFilter != null) {
-				baos.write(subFilter.getBytes());
 			}
 			return baos.toByteArray();
 			

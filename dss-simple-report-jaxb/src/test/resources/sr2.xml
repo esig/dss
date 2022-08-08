@@ -36,6 +36,6 @@
         <BestSignatureTime>2014-10-14T14:53:02Z</BestSignatureTime>
         <SignedBy>L R</SignedBy>
         <SignatureLevel description="Not applicable">N/A</SignatureLevel>
-        <SignatureScope name="Full XML File" scope="FULL">The full XML file with transformations.</SignatureScope>
+        <SignatureScope Id="D-85DD8DFA026EB2066F5667FFF6ED45F72052B725A76327353F9C2D3565DF6B5E" name="Full XML File" scope="FULL">The full XML file with transformations.</SignatureScope>
     </Signature>
 </SimpleReport>

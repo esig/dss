@@ -49,6 +49,7 @@ public class SignTrustedListDTO implements Serializable {
      * Empty constructor
      */
     public SignTrustedListDTO() {
+        // empty
     }
 
     /**

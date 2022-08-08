@@ -68,6 +68,13 @@ public class RemoteSignatureImageTextParameters implements Serializable {
 	private RemoteColor textColor;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public RemoteSignatureImageTextParameters() {
+        // empty
+    }
+
+    /**
      * Gets the background color of text bounding box
      *
      * @return {@link RemoteColor}

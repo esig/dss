@@ -28,6 +28,12 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
  */
 public class PseudoAttributeStrategy implements PseudoStrategy {
 
+	/**
+	 * Default constructor
+	 */
+	public PseudoAttributeStrategy() {
+	}
+
 	@Override
 	public String getPseudo(CertificateWrapper certificate) {
 		return certificate.getPseudo();

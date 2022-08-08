@@ -59,6 +59,15 @@ public class SignXmlXadesBTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.SignaturePackaging;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+			// import eu.europa.esig.dss.xades.signature.XAdESService;
 
 			// Preparing parameters for the XAdES signature
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();

@@ -82,19 +82,10 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	/**
 	 * Default constructor of the PDFBox implementation of the Reader
 	 * 
-	 * @param dssDocument {@link DSSDocument} to read
-	 * @throws IOException                                                 if an
-	 *                                                                     exception
-	 *                                                                     occurs
-	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the
-	 *                                                                     password
-	 *                                                                     is not
-	 *                                                                     provided
-	 *                                                                     or
-	 *                                                                     invalid
-	 *                                                                     for a
-	 *                                                                     protected
-	 *                                                                     document
+	 * @param dssDocument               {@link DSSDocument} to read
+	 * @throws IOException              if an exception occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
+	 *                                  invalid for a protected document
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
@@ -356,20 +347,14 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public void checkDocumentPermissions() {
 		AccessPermission accessPermission = pdDocument.getCurrentAccessPermission();
-		if (accessPermission.isReadOnly()) {
-			throw new ProtectedDocumentException("The document cannot be modified (read-only)");
-		}
-
 		if (!accessPermission.canModify()) {
-			throw new ProtectedDocumentException("Cannot modify the document");
+			throw new ProtectedDocumentException("The document cannot be modified! Modification is not allowed.");
 		}
-
 		if (!accessPermission.canModifyAnnotations()) {
-			throw new ProtectedDocumentException("Cannot modify the annotation");
+			throw new ProtectedDocumentException("The document cannot be modified! Annotations modification is not allowed.");
 		}
-
 		if (!accessPermission.canFillInForm()) {
-			throw new ProtectedDocumentException("Cannot fill in form");
+			throw new ProtectedDocumentException("The document cannot be modified! Forms fill is forbidden.");
 		}
 	}
 

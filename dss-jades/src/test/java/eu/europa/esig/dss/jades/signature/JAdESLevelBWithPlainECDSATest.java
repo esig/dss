@@ -51,22 +51,40 @@ public class JAdESLevelBWithPlainECDSATest extends AbstractJAdESTestSignature {
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
+    private String signingAlias;
+
     private static Stream<Arguments> data() {
         List<Arguments> args = new ArrayList<>();
 
         for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
             SignatureAlgorithm sa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
             if (sa != null && Utils.isStringNotBlank(sa.getJWAId())) {
-                args.add(Arguments.of(digestAlgo));
+                args.add(Arguments.of(digestAlgo, getSigner(digestAlgo)));
             }
         }
 
         return args.stream();
     }
 
-    @ParameterizedTest(name = "Combination {index} of PLAIN-ECDSA with digest algorithm {0}")
+    private static String getSigner(DigestAlgorithm digestAlgorithm) {
+        switch (digestAlgorithm) {
+            case SHA256:
+                return ECDSA_USER;
+            case SHA384:
+                return ECDSA_384_USER;
+            case SHA512:
+                return ECDSA_521_USER;
+            default:
+                throw new UnsupportedOperationException(String.format(
+                        "DigestAlgorithm '%s' is not supported!", digestAlgorithm));
+        }
+    }
+
+    @ParameterizedTest(name = "Combination {index} of PLAIN-ECDSA with digest algorithm {0} and signer {1}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    public void init(DigestAlgorithm digestAlgo, String signingAlias) {
+        this.signingAlias = signingAlias;
+
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
         signatureParameters = new JAdESSignatureParameters();
@@ -110,7 +128,7 @@ public class JAdESLevelBWithPlainECDSATest extends AbstractJAdESTestSignature {
 
     @Override
     protected String getSigningAlias() {
-        return ECDSA_USER;
+        return signingAlias;
     }
 
 }

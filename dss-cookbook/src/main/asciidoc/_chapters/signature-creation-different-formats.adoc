@@ -33,7 +33,6 @@ The XAdES Profile, as well as a customizable prefixes can be set with following 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoPrefixes]
 ----
 
-
 [[RefTransformations]]
 ==== Reference Transformations
 
@@ -95,7 +94,10 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBW
 
 * `XsltTransform` - This transform requires a 'org.w3.dom.Document' as an input, compatible with the normative https://www.w3.org/TR/xslt-30/[XSLT Specification]. Must be a sole transform.
 
-//TODO: add an example for XsltTransform because it is the only transform mentioned here that has no code associated to it
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoEnvelopedXSLTTransform]
+----
 
 NOTE: All transformations, except Base64, can be applied only to XML objects.
 
@@ -331,6 +333,6 @@ DSS framework has some restrictions on the containers you can generate, dependin
 
 Typical examples of the source code for signing a document using `ASiC-S` based on `XAdES-BASELINE-B` and `ASiC-E` based on `XAdES-BASELINE-B` can be found in sections <<ASiC-S>> and <<ASiC-E>> respectively.
 
-You need to pass only few parameters to the service. Other parameters, although they are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on the DETACHED packaging no matter the packaging that was specified.
+You need to pass only few parameters to the service. Other parameters, although they are positioned, will be overwritten by the internal implementation of the service. Therefore, the obtained signature is always based on the `DETACHED` packaging no matter the packaging that was specified.
 
 It is also possible with the DSS framework to make an augmentation of an ASiC container to the levels `BASELINE-T`, `BASELINE-LT` or `BASELINE-LTA`, respectively for XAdES and CAdES formats.

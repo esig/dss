@@ -29,6 +29,12 @@ import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIden
  */
 public class QTSTServiceFilter extends AbstractTrustedServiceFilter {
 
+	/**
+	 * Default constructor
+	 */
+	public QTSTServiceFilter() {
+	}
+
 	@Override
 	boolean isAcceptable(TrustedServiceWrapper service) {
 		return ServiceTypeIdentifier.isQTST(service.getType());

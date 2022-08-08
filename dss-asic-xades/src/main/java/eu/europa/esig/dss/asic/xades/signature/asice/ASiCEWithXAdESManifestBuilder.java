@@ -21,11 +21,14 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
 import eu.europa.esig.dss.asic.xades.definition.ManifestElement;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.ManifestEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,23 +54,75 @@ import java.util.List;
 public class ASiCEWithXAdESManifestBuilder {
 
 	/** List of documents to be included into the manifest */
-	private final List<DSSDocument> documents;
+	private List<DSSDocument> documents;
+
+	/** List of manifest entries to be included into the manifest */
+	private List<ManifestEntry> entries;
+
+	/** The name of the created manifest document */
+	private String manifestFilename;
+
+	/**
+	 * Empty constructor
+	 */
+	public ASiCEWithXAdESManifestBuilder() {
+	}
 
 	/**
 	 * Default constructor
 	 *
 	 * @param documents a list of {@link DSSDocument}s
+	 *
+	 * @deprecated since DSS 5.11. Use {@code ASiCEWithXAdESManifestBuilder()} and {@code setDocuments(documents)}
 	 */
+	@Deprecated
 	public ASiCEWithXAdESManifestBuilder(List<DSSDocument> documents) {
 		this.documents = documents;
 	}
 
 	/**
+	 * Sets documents to be included into the Manifest
+	 *
+	 * WARN: shall not be used together with {@code setEntries(entries)}
+	 *
+	 * @param documents list of {@link DSSDocument}s
+	 * @return this {@link ASiCEWithXAdESManifestBuilder}
+	 */
+	public ASiCEWithXAdESManifestBuilder setDocuments(List<DSSDocument> documents) {
+		this.documents = documents;
+		return this;
+	}
+
+	/**
+	 * Sets manifest entries to be included into the Manifest
+	 *
+	 * WARN: shall not be used together with {@code setDocuments(documents)}
+	 *
+	 * @param entries list of {@link ManifestEntry}s
+	 * @return this {@link ASiCEWithXAdESManifestBuilder}
+	 */
+	public ASiCEWithXAdESManifestBuilder setEntries(List<ManifestEntry> entries) {
+		this.entries = entries;
+		return this;
+	}
+
+	/**
+	 * Sets the target name of the XML Manifest file to be created
+	 *
+	 * @param manifestFilename {@link String}
+	 * @return this {@link ASiCEWithXAdESManifestBuilder}
+	 */
+	public ASiCEWithXAdESManifestBuilder setManifestFilename(String manifestFilename) {
+		this.manifestFilename = manifestFilename;
+		return this;
+	}
+
+	/**
 	 * Builds the XML manifest
 	 *
-	 * @return {@link Document}
+	 * @return {@link DSSDocument}
 	 */
-	public Document build() {
+	public DSSDocument build() {
 		final Document documentDom = DomUtils.buildDOM();
 		final Element manifestDom = DomUtils.createElementNS(documentDom, ManifestNamespace.NS, ManifestElement.MANIFEST);
 		DomUtils.setAttributeNS(manifestDom, ManifestNamespace.NS, ManifestAttribute.VERSION, "1.2");
@@ -77,16 +132,28 @@ public class ASiCEWithXAdESManifestBuilder {
 		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, "/");
 		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
 
-		for (DSSDocument document : documents) {
+		for (ManifestEntry entry : getEntries()) {
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
-			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, document.getName());
-			MimeType mimeType = document.getMimeType();
+			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, entry.getFileName());
+			MimeType mimeType = entry.getMimeType();
 			if (mimeType != null) {
 				DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, mimeType.getMimeTypeString());
 			}
 		}
 
-		return documentDom;
+		return DomUtils.createDssDocumentFromDomDocument(documentDom, manifestFilename);
+	}
+
+	private List<ManifestEntry> getEntries() {
+		if (Utils.isCollectionNotEmpty(documents) && Utils.isCollectionNotEmpty(entries)) {
+			throw new IllegalArgumentException("Either DSSDocuments or ManifestEntries shall be provided!");
+		} else if (Utils.isCollectionNotEmpty(documents)) {
+			return ASiCUtils.toSimpleManifestEntries(documents);
+		} else if (Utils.isCollectionNotEmpty(entries)) {
+			return entries;
+		} else {
+			throw new NullPointerException("Either DSSDocuments or ManifestEntries shall be provided!");
+		}
 	}
 
 }

@@ -47,6 +47,13 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 	private Identifier identifier;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public CertificateRef() {
+		// empty
+	}
+
+	/**
 	 * Gets the certificate digest
 	 *
 	 * @return {@link Digest}

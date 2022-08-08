@@ -13,6 +13,8 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "asicContainerType" : "ASiC_E",
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
     "signatureAlgorithm" : "RSA_SHA256",
@@ -42,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/getData
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1643808666405,
+      "signingDate" : 1659102776808,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

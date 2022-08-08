@@ -40,6 +40,7 @@ public class DigestDocument extends CommonDocument {
 	 * Initial algorithm and digest must be specified in order to use the object
 	 */
 	public DigestDocument() {
+		// empty
 	}
 
 	/**

@@ -32,6 +32,7 @@ public class PdfObjectModificationTypeParser {
      * Default constructor
      */
     private PdfObjectModificationTypeParser() {
+        // empty
     }
 
     /**

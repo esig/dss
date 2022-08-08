@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,11 +57,9 @@ public abstract class AbstractASiCContainerExtractor {
 	 */
 	public ASiCContent extract() {
 		ASiCContent result = zipParsing(asicContainer);
-		result.setZipComment(getZipComment());
-		result.setContainerType(getContainerType(result));
-		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
-			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
-		}
+		result.setZipComment(ASiCUtils.getZipComment(asicContainer));
+		result.setContainerType(ASiCUtils.getContainerType(result));
+		result.setContainerDocuments(getContainerDocuments(result));
 		return result;
 	}
 
@@ -99,54 +97,34 @@ public abstract class AbstractASiCContainerExtractor {
 					result.setMimeTypeDocument(currentDocument);
 				} else {
 					result.getSignedDocuments().add(currentDocument);
-					if (ASiCUtils.isASiCSArchive(currentDocument)) {
-						result.setContainerDocuments(ZipUtils.getInstance().extractContainerContent(currentDocument));
-					}
 				}
 
 			} else {
 				result.getFolders().add(currentDocument);
 			}
 		}
-		
+
+		if (Utils.isCollectionNotEmpty(result.getUnsupportedDocuments())) {
+			LOG.warn("Unsupported files : {}", result.getUnsupportedDocuments());
+		}
 		return result;
 	}
 
-	/**
-	 * Returns a zip comment {@code String} from the ASiC container
-	 *
-	 * @return {@link String} zip comment
-	 */
-	public String getZipComment() {
-		try (InputStream is = asicContainer.openStream()) {
-			byte[] buffer = Utils.toByteArray(is);
-			final int len = buffer.length;
-			final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
-
-			// Check the buffer from the end
-			for (int ii = len - magicDirEnd.length - 22; ii >= 0; ii--) {
-				boolean isMagicStart = true;
-				for (int jj = 0; jj < magicDirEnd.length; jj++) {
-					if (buffer[ii + jj] != magicDirEnd[jj]) {
-						isMagicStart = false;
-						break;
-					}
+	private List<DSSDocument> getContainerDocuments(ASiCContent asicContent) {
+		List<DSSDocument> containerDocuments = new ArrayList<>();
+		if (ASiCUtils.isASiCSContainer(asicContent)) {
+			for (DSSDocument signerDocument : asicContent.getRootLevelSignedDocuments()) {
+				if (Utils.isCollectionNotEmpty(containerDocuments)) {
+					LOG.warn("More than one ZIP archive found on a root level of the ASiC-S container! " +
+							"Extraction of embedded documents not possible.");
+					return Collections.emptyList();
 				}
-				if (isMagicStart) {
-					// Magic Start found!
-					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
-					int realLen = len - ii - 22;
-					if (commentLen != realLen) {
-						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
-					}
-					return new String(buffer, ii + 22, realLen);
-
+				if (ASiCUtils.isZip(signerDocument)) {
+					containerDocuments.addAll(ZipUtils.getInstance().extractContainerContent(signerDocument));
 				}
 			}
-		} catch (Exception e) {
-			LOG.warn("Unable to extract the ZIP comment : {}", e.getMessage());
 		}
-		return null;
+		return containerDocuments;
 	}
 
 	private boolean isMetaInfFolder(String entryName) {
@@ -155,11 +133,6 @@ public abstract class AbstractASiCContainerExtractor {
 	
 	private boolean isFolder(String entryName) {
 		return entryName.endsWith("/");
-	}
-
-	private ASiCContainerType getContainerType(ASiCContent result) {
-		return ASiCUtils.getContainerType(asicContainer, result.getMimeTypeDocument(), result.getZipComment(),
-				result.getSignedDocuments());
 	}
 
 	/**

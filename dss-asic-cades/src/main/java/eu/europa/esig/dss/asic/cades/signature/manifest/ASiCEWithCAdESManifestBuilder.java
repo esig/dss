@@ -21,8 +21,9 @@
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -63,6 +64,11 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 	private final String documentUri;
 
 	/**
+	 * Defines rules for filename creation for new manifest files.
+	 */
+	private final ASiCWithCAdESFilenameFactory asicFilenameFactory;
+
+	/**
 	 * The default constructor
 	 *
 	 * @param asicContent {@link ASiCContent} representing container's document structure
@@ -71,9 +77,23 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 	 */
 	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
 											final String documentUri) {
+		this(asicContent, digestAlgorithm, documentUri, new DefaultASiCWithCAdESFilenameFactory());
+	}
+
+	/**
+	 * Constructor with filename factory
+	 *
+	 * @param asicContent {@link ASiCContent} representing container's document structure
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
+	 * @param documentUri {@link String} filename of the document associated with the manifest
+	 * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
+	 */
+	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
+											final String documentUri, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
 		this.asicContent = asicContent;
 		this.digestAlgorithm = digestAlgorithm;
 		this.documentUri = documentUri;
+		this.asicFilenameFactory = asicFilenameFactory;
 	}
 
 	/**
@@ -92,9 +112,7 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
 		}
 
-		String newManifestName = ASiCUtils.getNextASiCManifestName(
-				ASiCUtils.ASIC_MANIFEST_FILENAME, asicContent.getManifestDocuments());
-
+		String newManifestName = asicFilenameFactory.getManifestFilename(asicContent);
 		return DomUtils.createDssDocumentFromDomDocument(documentDom, newManifestName);
 	}
 

@@ -40,6 +40,7 @@ public class UserCredentials implements Serializable {
      * Empty constructor
      */
     public UserCredentials() {
+        // empty
     }
 
     /**

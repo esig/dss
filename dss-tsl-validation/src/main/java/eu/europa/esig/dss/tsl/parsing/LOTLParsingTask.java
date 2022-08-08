@@ -26,12 +26,14 @@ import eu.europa.esig.dss.tsl.function.PivotSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSLSchemeInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
+import eu.europa.esig.trustedlist.mra.MRAFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,36 +66,24 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 
 	@Override
 	public LOTLParsingResult get() {
-
 		LOTLParsingResult result = new LOTLParsingResult();
-
 		TrustStatusListType jaxbObject = getJAXBObject();
-
 		parseSchemeInformation(result, jaxbObject.getSchemeInformation());
-
 		return result;
 	}
 
 	private void parseSchemeInformation(LOTLParsingResult result, TSLSchemeInformationType schemeInformation) {
-
 		commonParseSchemeInformation(result, schemeInformation);
-
 		extractOtherTSLPointers(result, schemeInformation);
-
 		extractSchemeInformationURI(result, schemeInformation);
-
 	}
 
 	private void extractOtherTSLPointers(LOTLParsingResult result, TSLSchemeInformationType schemeInformation) {
 		OtherTSLPointersType otherTSLPointersType = schemeInformation.getPointersToOtherTSL();
 		if (otherTSLPointersType != null && Utils.isCollectionNotEmpty(otherTSLPointersType.getOtherTSLPointer())) {
-
 			List<OtherTSLPointerType> otherTSLPointers = otherTSLPointersType.getOtherTSLPointer();
-
-			OtherTSLPointerConverter converter = new OtherTSLPointerConverter();
-
+			OtherTSLPointerConverter converter = new OtherTSLPointerConverter(lotlSource.isMraSupport());
 			result.setLotlPointers(otherTSLPointers.stream().filter(lotlSource.getLotlPredicate()).map(converter).collect(Collectors.toList()));
-
 			result.setTlPointers(otherTSLPointers.stream().filter(lotlSource.getTlPredicate()).map(converter).collect(Collectors.toList()));
 		}
 	}
@@ -125,6 +115,15 @@ public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOT
 			List<String> uris = schemeInformationURI.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
 					.collect(Collectors.toList());
 			result.setPivotURLs(uris);
+		}
+	}
+
+	@Override
+	protected TrustedListFacade createTrustedListFacade() {
+		if (lotlSource.isMraSupport()) {
+			return MRAFacade.newFacade();
+		} else {
+			return super.createTrustedListFacade();
 		}
 	}
 

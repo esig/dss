@@ -48,6 +48,13 @@ public class RemoteCertificateValidationService {
 	private CertificateVerifier verifier;
 
 	/**
+	 * Default construction instantiating object with null CertificateVerifier
+	 */
+	public RemoteCertificateValidationService() {
+		// empty
+	}
+
+	/**
 	 * Sets the CertificateVerifier
 	 *
 	 * @param verifier {@link CertificateVerifier} to be used for validation

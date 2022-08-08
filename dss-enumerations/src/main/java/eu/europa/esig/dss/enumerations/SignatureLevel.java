@@ -53,58 +53,60 @@ public enum SignatureLevel {
 	}
 
 	/**
-	 * @return the {@code SignatureForm} depending on the {@code SignatureLevel}
+	 * Returns the corresponding {@code SignatureForm}
+	 *
+	 * @return the {@link SignatureForm} depending on the {@link SignatureLevel}
 	 */
 	public SignatureForm getSignatureForm() {
-
 		switch (this) {
-		case XML_NOT_ETSI:
-		case XAdES_BES:
-		case XAdES_EPES:
-		case XAdES_T:
-		case XAdES_LT:
-		case XAdES_C:
-		case XAdES_X:
-		case XAdES_XL:
-		case XAdES_A:
-		case XAdES_BASELINE_LTA:
-		case XAdES_BASELINE_LT:
-		case XAdES_BASELINE_T:
-		case XAdES_BASELINE_B:
-			return SignatureForm.XAdES;
-		case CMS_NOT_ETSI:
-		case CAdES_BES:
-		case CAdES_EPES:
-		case CAdES_T:
-		case CAdES_LT:
-		case CAdES_C:
-		case CAdES_X:
-		case CAdES_XL:
-		case CAdES_A:
-		case CAdES_BASELINE_LTA:
-		case CAdES_BASELINE_LT:
-		case CAdES_BASELINE_T:
-		case CAdES_BASELINE_B:
-			return SignatureForm.CAdES;
-		case JSON_NOT_ETSI:
-		case JAdES_BASELINE_B:
-		case JAdES_BASELINE_T:
-		case JAdES_BASELINE_LT:
-		case JAdES_BASELINE_LTA:
-			return SignatureForm.JAdES;
-		case PDF_NOT_ETSI:
-		case PAdES_BASELINE_B:
-		case PAdES_BASELINE_T:
-		case PAdES_BASELINE_LT:
-		case PAdES_BASELINE_LTA:
-			return SignatureForm.PAdES;
-		case PKCS7_B:
-		case PKCS7_T:
-		case PKCS7_LT:
-		case PKCS7_LTA:
-			return SignatureForm.PKCS7;
-		default:
-			throw new UnsupportedOperationException(String.format("The signature level '%s' is not supported!", this));
+			case XML_NOT_ETSI:
+			case XAdES_BES:
+			case XAdES_EPES:
+			case XAdES_T:
+			case XAdES_LT:
+			case XAdES_C:
+			case XAdES_X:
+			case XAdES_XL:
+			case XAdES_A:
+			case XAdES_BASELINE_LTA:
+			case XAdES_BASELINE_LT:
+			case XAdES_BASELINE_T:
+			case XAdES_BASELINE_B:
+				return SignatureForm.XAdES;
+			case CMS_NOT_ETSI:
+			case CAdES_BES:
+			case CAdES_EPES:
+			case CAdES_T:
+			case CAdES_LT:
+			case CAdES_C:
+			case CAdES_X:
+			case CAdES_XL:
+			case CAdES_A:
+			case CAdES_BASELINE_LTA:
+			case CAdES_BASELINE_LT:
+			case CAdES_BASELINE_T:
+			case CAdES_BASELINE_B:
+				return SignatureForm.CAdES;
+			case JSON_NOT_ETSI:
+			case JAdES_BASELINE_B:
+			case JAdES_BASELINE_T:
+			case JAdES_BASELINE_LT:
+			case JAdES_BASELINE_LTA:
+				return SignatureForm.JAdES;
+			case PDF_NOT_ETSI:
+			case PAdES_BASELINE_B:
+			case PAdES_BASELINE_T:
+			case PAdES_BASELINE_LT:
+			case PAdES_BASELINE_LTA:
+				return SignatureForm.PAdES;
+			case PKCS7_B:
+			case PKCS7_T:
+			case PKCS7_LT:
+			case PKCS7_LTA:
+				return SignatureForm.PKCS7;
+			default:
+				throw new UnsupportedOperationException(String.format("The signature level '%s' is not supported!", this));
 		}
 	}
+
 }

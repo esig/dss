@@ -47,16 +47,17 @@ import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
+import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
+import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -77,13 +78,20 @@ public class TLValidationJobSnippets {
 	public void sample() throws IOException {
 
 		// tag::multi-trusted-certificate-sources[]
+		// import eu.europa.esig.dss.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setTrustedCertSources(trustStoreSource(), trustedListSource());
 		// end::multi-trusted-certificate-sources[]
 	}
 
-	// tag::trust-store[]
 	public CertificateSource trustStoreSource() throws IOException {
+		// tag::trust-store[]
+		// import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+		// import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+
 		KeyStoreCertificateSource keystore = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", getPassword());
 
 		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
@@ -92,16 +100,19 @@ public class TLValidationJobSnippets {
 		// Optionally, certificates can also be directly added
 		trustedCertificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIC9TCCAd2gAwIBAgIBAjANBgkqhkiG9w0BAQUFADArMQswCQYDVQQGEwJBQTEMMAoGA1UEChMDRFNTMQ4wDAYDVQQDEwVJQ0EgQTAeFw0xMzEyMDIxNzMzMTBaFw0xNTEyMDIxNzMzMTBaMDAxCzAJBgNVBAYTAkFBMQwwCgYDVQQKEwNEU1MxEzARBgNVBAMTCnVzZXIgQSBSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJUHHAphmSDdQ1t62tppK+dLTANsE2nAj+HCpasS3ohlBsrhteRsvTAbrDyIzCmTYWu/nVI4TGvbzBESwV/QitlkoMLpYFw32MIBf2DLmECzGJ3vm5haw6u8S9quR1h8Vu7QWd+5KMabZuR+j91RiSuoY0xS2ZQxJw1vhvW9hRYjAgMBAAGjgaIwgZ8wCQYDVR0TBAIwADAdBgNVHQ4EFgQU9ESnTWfwg13c3LQZzqqwibY5WVYwUwYDVR0jBEwwSoAUIO1CDsBSUcEoFZxKaWf1PAL1U+uhL6QtMCsxDDAKBgNVBAoTA0RTUzELMAkGA1UEBhMCQUExDjAMBgNVBAMTBVJDQSBBggEBMAsGA1UdDwQEAwIHgDARBgNVHSAECjAIMAYGBFUdIAAwDQYJKoZIhvcNAQEFBQADggEBAGnhhnoyVUhDnr/BSbZ/uWfSuwzFPG+2V9K6WxdIaaXOORFGIdFwGlAwA/Qzpq9snfBxuTkAykxq0uEDhHTj0qXxWRjQ+Dop/DrmccoF/zDvgGusyY1YXaABd/kc3IYt7ns7z3tpiqIz4A7a/UHplBRXfqjyaZurZuJQRaSdxh6CNhdEUiUBxkbb1SdMjuOgjzSDjcDjcegjvDquMKdDetvtu2Qh4ConBBo3fUImwiFRWnbudS5H2HE18ikC7gY/QIuNr7USf1PNyUgcG2g31cMtemj7UTBHZ2V/jPf7ZXqwfnVSaYkNvM3weAI6R3PI0STjdxN6a9qjt9xld40YEdw="));
+		// end::trust-store[]
 
 		return trustedCertificateSource;
 	}
-	// end::trust-store[]
 
-	// tag::trusted-list-source[]
 	public CertificateSource trustedListSource() {
-		return new TrustedListsCertificateSource();
+		// tag::trusted-list-source[]
+		// import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+		// end::trusted-list-source[]
+		return trustedListsCertificateSource;
 	}
-	// end::trusted-list-source[]
 
 	private String getPassword() {
 		return "dss-password";
@@ -109,6 +120,8 @@ public class TLValidationJobSnippets {
 
 	public void jobConfig() {
 		// tag::job-config-sources[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+
 		TLValidationJob validationJob = new TLValidationJob();
 		// Specify where the TL/LOTL is hosted and which are the signing certificate(s) for these TL/LOTL.
 		validationJob.setTrustedListSources(boliviaTLSource(), costaRicaTLSource());
@@ -118,6 +131,8 @@ public class TLValidationJobSnippets {
 
 	public void refresh() {
 		// tag::refresh[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+
 		TLValidationJob validationJob = new TLValidationJob();
 
 		// tag::offline-refresh[]
@@ -132,6 +147,10 @@ public class TLValidationJobSnippets {
 	}
 
 	// tag::job-loaders[]
+	// import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+	// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+	// import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+
 	public DSSFileLoader offlineLoader() {
 		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
 		offlineFileLoader.setCacheExpirationTime(-1); // negative value means cache never expires
@@ -149,10 +168,43 @@ public class TLValidationJobSnippets {
 	}
 	// end::job-loaders[]
 
-	// tag::custom-strategy[]
-	public SynchronizationStrategy allValidTrustedListsStrategy() {
-		
-		return new SynchronizationStrategy() {
+	public void synchronizationStrategyConfiguration() {
+		// tag::synchronization-strategy[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
+		// import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// AcceptAllStrategy will accept all Trusted Lists, despite its signature validation status (used by default)
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy());
+
+		// ExpirationAndSignatureCheckStrategy allow configuring acceptance of various checks to be performed on Trusted Lists
+		ExpirationAndSignatureCheckStrategy checkStrategy = new ExpirationAndSignatureCheckStrategy();
+		// This check configures whether expired LOTLs shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptExpiredListOfTrustedLists(false);
+		// This check configures whether expired TLs shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptExpiredTrustedList(false);
+		// This check configures whether LOTLs with invalid signatures shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptInvalidListOfTrustedLists(false);
+		// This check configures whether TLs with invalid signatures shall be accepted, otherwise they will be skipped (FALSE by default)
+		checkStrategy.setAcceptInvalidTrustedList(false);
+		// Provide the configured strategy to the TLValidationJob
+		tlValidationJob.setSynchronizationStrategy(checkStrategy);
+		// end::synchronization-strategy[]
+	}
+
+	public void allValidTrustedListsStrategy() {
+		TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// tag::custom-strategy[]
+		// import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
+		// import eu.europa.esig.dss.spi.tsl.TLInfo;
+		// import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+
+		// Create a custom strategy by implementing the interface
+		// This strategy will accept only LOTL/TLs with valid signatures
+		SynchronizationStrategy customStrategy = new SynchronizationStrategy() {
 
 			@Override
 			public boolean canBeSynchronized(TLInfo trustedList) {
@@ -163,33 +215,75 @@ public class TLValidationJobSnippets {
 			public boolean canBeSynchronized(LOTLInfo listOfTrustedList) {
 				return listOfTrustedList.getValidationCacheInfo().isValid();
 			}
-			
+
 		};
 
+		// Provide the strategy to the TLValidationJob
+		tlValidationJob.setSynchronizationStrategy(customStrategy);
+		// end::custom-strategy[]
+
 	}
-	// end::custom-strategy[]
 
-	// tag::cache-cleaner[]
+	public void trustServiceProviderPredicate() {
+		// tag::trust-service-provider-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
+		// import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
+
+		TLSource tlSource = new TLSource();
+		// This predicate will accept only TrustServiceProviders with TSPName "LuxTrust S.A."
+		tlSource.setTrustServiceProviderPredicate(new TrustServiceProviderByTSPName("LuxTrust S.A."));
+		// This predicate will accept all TrustServiceProviders which have at least one TSPService
+		tlSource.setTrustServiceProviderPredicate(new NonEmptyTrustService());
+		// It is also possible to create combined predicates. For example, this predicate will accept
+		// TrustServiceProviders with one of "LuxTrust S.A." or "Cryptolog International" names
+		tlSource.setTrustServiceProviderPredicate(new TrustServiceProviderByTSPName("LuxTrust S.A.").or
+				(new TrustServiceProviderByTSPName("Cryptolog International")));
+		// end::trust-service-provider-predicate[]
+	}
+
+	public void trustServicePredicate() {
+		// tag::trust-service-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustService;
+
+		TLSource tlSource = new TLSource();
+		// This predicate filters Trusted Services which has an acceptable (e.g. accredited or granted) status
+		tlSource.setTrustServicePredicate(new GrantedTrustService());
+		// end::trust-service-predicate[]
+	}
+
 	public CacheCleaner cacheCleaner() {
+		// tag::cache-cleaner[]
+		// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+
+		// Create CacheCleaner
 		CacheCleaner cacheCleaner = new CacheCleaner();
-
-		cacheCleaner.setCleanMemory(true); // free the space in memory
-
-		cacheCleaner.setCleanFileSystem(true); // remove the stored file(s) on the file-system
-
+		// free the space in memory
+		cacheCleaner.setCleanMemory(true);
+		// remove the stored file(s) on the file-system
+		cacheCleaner.setCleanFileSystem(true);
 		// if the file-system cleaner is enabled, inject the configured loader from the
 		// online or offline refresh data loader.
 		cacheCleaner.setDSSFileLoader(offlineLoader());
+		// end::cache-cleaner[]
 
 		return cacheCleaner;
 	}
-	// end::cache-cleaner[]
 
 	public void alerting() {
 		// tag::alerting[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
+		// import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
+		// import eu.europa.esig.dss.tsl.alerts.TLAlert;
+		// import eu.europa.esig.dss.alert.handler.AlertHandler;
+		// import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+		// import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
+		// import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
 
 		TLValidationJob job = new TLValidationJob();
-		// ...
+		// configure
 
 		// Add a log message in case of invalid signatures
 		TLAlert tlBrokenSignatureAlert = new TLAlert(new TLSignatureErrorDetection(), new LogTLSignatureErrorAlertHandler());
@@ -203,7 +297,7 @@ public class TLValidationJobSnippets {
 				// code to send an email
 				SampleUtils.sendEmail(newOJUrl);
 			}
-			
+
 		};
 
 		// The europeanLOTLSource is configured with an
@@ -232,35 +326,40 @@ public class TLValidationJobSnippets {
 
 		};
 		LOTLAlert lotlLocationChangeAlert = new LOTLAlert(new LOTLLocationChangeDetection(europeanLOTLSource()), databaseUpgrader);
-		
+
 		// add all alerts on the job
 		job.setLOTLAlerts(Arrays.asList(officialJournalDesynchronizationAlert, lotlLocationChangeAlert));
 		job.setTLAlerts(Arrays.asList(tlBrokenSignatureAlert));
-		
+
 		// end::alerting[]
 	}
 
 	public void predicates() {
-		LOTLSource lotlSource = new LOTLSource();
-
 		// tag::predicates[]
+		// import eu.europa.esig.dss.tsl.source.LOTLSource;
+		// import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
+		// import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
+		// import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
+
+		LOTLSource lotlSource = new LOTLSource();
 		// the predicates filter TSL pointers to XML documents with
 		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
 		// tag::predicate-country[]
 		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
-		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE","RO"))
-				.and(new EULOTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
 		// end::predicate-country[]
 		// end::predicates[]
 	}
-	
+
 	private void executorService() {
-		TLValidationJob tlValidationJob = new TLValidationJob();
-		
 		// tag::executor-service[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import java.util.concurrent.Executors;
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
 		// Allows configuration of the execution process
 		// Default : Executors.newCachedThreadPool() is used
 		tlValidationJob.setExecutorService(Executors.newSingleThreadExecutor());
@@ -276,9 +375,12 @@ public class TLValidationJobSnippets {
 	}
 
 	public TLSource frenchTLSource() {
-		TLValidationJob tlValidationJob = new TLValidationJob();
-
 		// tag::french-tl-source[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustService;
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
 		TLSource tlSource = new TLSource();
 
 		// Mandatory : The url where the TL needs to be downloaded
@@ -298,7 +400,7 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		tlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
-		
+
 		//instance of CertificateSource where all trusted certificates and their properties (service type,...) are stored.
 		tlValidationJob.setTrustedListSources(tlSource);
 		// end::french-tl-source[]
@@ -308,6 +410,15 @@ public class TLValidationJobSnippets {
 
 	public void summary() {
 		// tag::tl-summary[]
+		// import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+		// import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+		// import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
+		// import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+		// import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+		// import eu.europa.esig.dss.spi.tsl.TLInfo;
+		// import java.util.List;
 
 		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
 
@@ -361,9 +472,16 @@ public class TLValidationJobSnippets {
 	}
 
 	public LOTLSource europeanLOTLSource() {
+		// tag::european-lotl-source[]
+		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+		// import eu.europa.esig.dss.tsl.source.LOTLSource;
+		// import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
+		// import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
+		// import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
+		// import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 
 		TLValidationJob tlValidationJob = new TLValidationJob();
-		// tag::european-lotl-source[]
 		LOTLSource lotlSource = new LOTLSource();
 
 		// Mandatory : The url where the LOTL needs to be downloaded
@@ -381,13 +499,15 @@ public class TLValidationJobSnippets {
 		// Optional : the predicate which allows to find the LOTL definition in the LOTL
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : European configuration
-		lotlSource.setLotlPredicate(new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		// Hint : Use TLPredicateFactory for a list of default configurations
+		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
 		// Optional : the predicate which allows to find and/or filter the TL
 		// definitions in the LOTL
 		// Input : implementation of Predicate<OtherTSLPointerType> interface (e.g. OtherTSLPointerPredicate)
 		// Default : all found trusted lists in the European LOTL
-		lotlSource.setTlPredicate(new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer()));
+		// Hint : Use TLPredicateFactory for a list of default configurations
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLPredicate());
 
 		// Optional : a predicate which allows to find back the signing certificates for
 		// the current LOTL
@@ -411,7 +531,7 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
-		
+
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		// end::european-lotl-source[]
 
@@ -433,6 +553,14 @@ public class TLValidationJobSnippets {
 		return cs;
 	}
 
+	// tag::trust-service-provider-custom-predicate[]
+	// import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
+	// import eu.europa.esig.dss.utils.Utils;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
+	// import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
+
 	private static class CryptologOnlyTrustServiceProvider implements TrustServiceProviderPredicate {
 
 		@Override
@@ -453,6 +581,7 @@ public class TLValidationJobSnippets {
 		}
 
 	}
+	// end::trust-service-provider-custom-predicate[]
 
 	private static class SampleUtils {
 

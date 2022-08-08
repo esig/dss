@@ -28,5 +28,12 @@ import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
  */
 @SuppressWarnings("serial")
 public abstract class RevocationCertificateSource extends TokenCertificateSource {
+
+    /**
+     * Default constructor
+     */
+    protected RevocationCertificateSource() {
+        // empty
+    }
 	
 }

@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -36,6 +37,9 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -731,6 +735,32 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		exception = assertThrows(AlertException.class,
 				() -> service.addNewSignatureField(docMinus270Degrees, parameters));
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+	}
+
+	@Test
+	public void testWithTempFileResources() throws IOException {
+		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+		pdfObjFactory.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+		service.setPdfObjFactory(pdfObjFactory);
+
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		// Add a signature field first
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("test");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		DSSDocument doc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(doc);
+		assertTrue(doc instanceof FileDocument);
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("test");
+
+		DSSDocument signed = signAndValidate(doc);
+		assertNotNull(signed);
+		assertTrue(signed instanceof FileDocument);
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {

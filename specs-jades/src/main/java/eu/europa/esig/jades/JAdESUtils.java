@@ -59,6 +59,7 @@ public final class JAdESUtils extends AbstractJWSUtils {
 	private static JAdESUtils singleton;
 
 	private JAdESUtils() {
+		// empty
 	}
 
 	/**

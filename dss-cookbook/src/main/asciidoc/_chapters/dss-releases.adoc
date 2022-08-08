@@ -13,6 +13,34 @@
 |===
 |Version           |Release date             |Features
 
+|v5.11.RC1         |July 2022              a|Main new features / improvements :
+
+                                            * PAdES : improved PDF-signing performance (add caching of the temporary revision);
+                                            * PAdES : introduce temporary document processing factory (e.g. in-file or in-memory);
+                                            * PAdES : simplified configuration of modification detection modules;
+                                            * PAdES : added signing app name for signature;
+                                            * ASiC : introduce ASiC Merger;
+                                            * ASiC : improved ASiC in-file processing (avoid loading document into memory);
+                                            * XAdES : add support of a custom CommitmentType qualifier;
+                                            * CAdES : improved signature file extension naming;
+                                            * TL-validation : Trust Service equivalence scheme and Mutual Recognition Agreement support;
+                                            * Other : dependencies update (Apache Santuario, PdfBox, OpenPdf, httpclient5, etc.);
+                                            * Demo : eSignature Validation Test Cases automated validation module;
+                                            * Demo : added ASiC Merger webpage;
+                                            * Standalone app : add TL signing function;
+                                            * Standalone app : add XMLManifest signing function;
+                                            * Java 18 support.
+
+|v5.11.RC1             |July 2022              a|Bug fixes :
+
+                                            * Qualification determination : Improved algorithm to comply with TS 119 615 + fixed issues;
+                                            * JAdES : signature can be created with ECDSA algorithm using a wrong elliptic curve;
+                                            * LTA signature is indeterminate because no revocations lists found;
+                                            * Exception when a not supported encryption algorithm is provided;
+                                            * Validation for ASiC without mimetype returns FORMAT_FAILURE;
+                                            * Skipped AcceptableRevocationDataFound constraint may lead to false positive validation result;
+                                            * ASiC : unable to proceed validation of CEN-header invalid files.
+
 |v5.10.1           |April 2022              a|Bug fixes :
 
                                               * ASiC-E with XAdES parallel signature creation regression;
@@ -231,6 +259,107 @@ This chapter covers the most significant changes in DSS code occurred between di
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 5.10/5.10.1 to 5.11
+|===
+|Title                               |v5.10                            |v5.11
+|ASiC container: set signature name     a|[source,java]
+----
+ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
+...
+signatureParameters.aSiC().setSignatureFileName("signaturesAAA.xml");
+----
+                                                                     a|[source,java]
+----
+SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+asicFilenameFactory.setSignatureFilename("signaturesAAA.xml");
+ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
+----
+_See <<asicFilenameFactory>> for more details._
+
+
+|Font subset configuration in PDF     a|[source,java]
+----
+NativePdfBoxVisibleSignatureDrawer nativePdfBoxDrawer = new NativePdfBoxVisibleSignatureDrawer();
+nativePdfBoxDrawer.setEmbedFontSubset(true);
+...
+----
+                                                                     a|[source,java]
+----
+DSSFileFont font = // create font
+font.setEmbedFontSubset(true);
+...
+SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+textParameters.setFont(font);
+----
+
+|RevocationDataLoadingStrategy     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+...
+----
+                                                                     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
+...
+----
+
+|Accepted DigestAlgorithms for OnlineOCSPSource
+
+NOTE: list changed from excluding to including
+
+a|[source,java]
+----
+OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA1));
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setOcspSource(ocspSource);
+----
+                                                                     a|[source,java]
+----
+RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+
+List<DigestAlgorithm> digestAlgorithmList = Arrays.asList(DigestAlgorithm.values());
+digestAlgorithmList.remove(DigestAlgorithm.SHA1);
+
+revocationDataVerifier.setAcceptableDigestAlgorithms(digestAlgorithmList);
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataVerifier(revocationDataVerifier);
+----
+
+|Disable visual comparison
+
+a|[source,java]
+----
+AbstractPDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setMaximalPagesAmountForVisualComparison(0);
+...
+class MockPdfObjFactory extends PdfBoxNativeObjectFactory {
+        @Override
+        public PDFSignatureService newPAdESSignatureService() {
+            return pdfSignatureService;
+        }
+...
+}
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(new MockPdfObjFactory());
+----
+                                                                     a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.9 to 5.10
 |===
 |Title                               |v5.9                            |v5.10
@@ -359,6 +488,24 @@ OID semanticsIdentifier = xmlCertificate.getQcStatements().getSemanticsIdentifie
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 5.10 to 5.11
+|===
+|Title                                |v5.10                           |v5.11
+|JWA Elliptic Curve Key Size (see RFC 7518)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SignedAttributes>
+    ...
+    <EllipticCurveKeySize Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+|===
+
 .Policy changes from version 5.9 to 5.10
 |===
 |Title                                |v5.9                            |v5.10
@@ -493,7 +640,7 @@ This chapter covers the most frequently asked questions and issues occurring in 
 ----
 pdfSignatureService.setMaximalPagesAmountForVisualComparison(0); // skip validation
 ----
-For a complete code please see the https://github.com/esig/dss/blob/master/dss-cookbook/src/test/java/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[example].
+Please note that some changes have been made within verson 5.11 (see <<MigrationGuide>>).
 
 |v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use predicates. For example, to filter TLs from Germany and Romania:
 [source,java]

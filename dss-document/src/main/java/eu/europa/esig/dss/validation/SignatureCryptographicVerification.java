@@ -49,6 +49,13 @@ public class SignatureCryptographicVerification implements Serializable {
 	private boolean signatureIntact;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public SignatureCryptographicVerification() {
+		// empty
+	}
+
+	/**
 	 * Gets if (all) references data found
 	 *
 	 * @return if (all) references data found

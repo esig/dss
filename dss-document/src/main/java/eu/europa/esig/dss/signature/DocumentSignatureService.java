@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import java.io.Serializable;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -31,6 +29,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.io.Serializable;
+
 /**
  * This interface {@code DocumentSignatureService} provides operations for the signature creation and for its extension.
  *
@@ -39,8 +39,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 public interface DocumentSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 
 	/**
-	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}
-	 * .
+	 * Retrieves the bytes of the data that need to be signed based on the {@code toSignDocument} and {@code parameters}.
 	 * When {@code toSignDocument} contains an already existing signature the returned bytes are related to a new
 	 * parallel signature.
 	 *
@@ -90,7 +89,7 @@ public interface DocumentSignatureService<SP extends SerializableSignatureParame
 	 *            the signature value to incorporate
 	 * @return the signed document ({@code toSignDocument} with the incorporated signature or the detached signature)
 	 */
-	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, final SignatureValue signatureValue);
+	DSSDocument signDocument(final DSSDocument toSignDocument, final SP parameters, SignatureValue signatureValue);
 
 	/**
 	 * Extends the level of the signatures in the {@code toExtendDocument}

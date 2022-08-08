@@ -41,6 +41,13 @@ public class KidCertificateSource extends CommonCertificateSource {
 	/** Map of kids and related certificate tokens */
 	private Map<String, CertificateToken> mapByKid = new HashMap<>();
 
+	/**
+	 * Default constructor instantiating object with empty map of 'kid' identifiers and certificate tokens relation
+	 */
+	public KidCertificateSource() {
+		// empty
+	}
+
 	@Override
 	public CertificateToken addCertificate(CertificateToken certificateToAdd) {
 		LOG.debug("kid is not provided (generate kid following the JAdES specification)");

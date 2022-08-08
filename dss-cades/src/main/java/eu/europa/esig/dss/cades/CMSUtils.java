@@ -91,7 +91,11 @@ public final class CMSUtils {
 	/** 01-01-2050 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
 	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
 
+	/**
+	 * Utils class
+	 */
 	private CMSUtils() {
+		// empty
 	}
 
 	/**
@@ -173,6 +177,8 @@ public final class CMSUtils {
 	}
 
 	/**
+	 * Gets the DER SignedAttributes table from the given {@code SignerInformation}
+	 *
 	 * @param signerInformation
 	 *            {@code SignerInformation}
 	 * @return {@code DERTaggedObject} representing the signed attributes
@@ -432,15 +438,13 @@ public final class CMSUtils {
 				 * dates with year values before 1950 or after 2049 MUST be encoded
 				 * as GeneralizedTime".
 				 */
-				if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)) {
-					// must be ASN1UTCTime
-					if (!(attrValue.toASN1Primitive() instanceof ASN1UTCTime)) {
-						LOG.error("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
-								"MUST be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
-								"MUST be encoded as GeneralizedTime. Date found is {} encoded as {}",
-								signingDate, attrValue.getClass());
-						return null;
-					}
+				if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)
+						&& !(attrValue.toASN1Primitive() instanceof ASN1UTCTime)) { // must be ASN1UTCTime
+					LOG.error("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
+							"MUST be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
+							"MUST be encoded as GeneralizedTime. Date found is {} encoded as {}",
+							signingDate, attrValue.getClass());
+					return null;
 				}
 				return signingDate;
 			}

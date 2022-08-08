@@ -30,6 +30,13 @@ public abstract class AbstractPaths implements Serializable {
 	private static final long serialVersionUID = 4685307161693054765L;
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractPaths() {
+		// empty
+	}
+
+	/**
 	 * Builds the xpath expression to return entries of the {@code element}
 	 *
 	 * @param element {@link DSSElement}

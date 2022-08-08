@@ -65,6 +65,12 @@ public class SSLCertificateLoader implements Serializable {
     private CommonsDataLoader commonsDataLoader;
 
 	/**
+	 * Default constructor with null CommonsDataLoader
+	 */
+	public SSLCertificateLoader() {
+	}
+
+	/**
 	 * Allows to set a pre-configured CommonsDataLoader
 	 * 
 	 * @param commonsDataLoader {@link CommonsDataLoader} to use

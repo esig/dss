@@ -65,6 +65,12 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 */
 	protected SignatureAlgorithm signatureAlgorithm;
 
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected Token() {
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

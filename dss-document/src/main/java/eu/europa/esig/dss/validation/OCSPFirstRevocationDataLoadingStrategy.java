@@ -35,19 +35,30 @@ public class OCSPFirstRevocationDataLoadingStrategy extends RevocationDataLoadin
 
     private static final Logger LOG = LoggerFactory.getLogger(OCSPFirstRevocationDataLoadingStrategy.class);
 
+    /**
+     * Default constructor
+     */
+    public OCSPFirstRevocationDataLoadingStrategy() {
+        // empty
+    }
+
     @Override
     @SuppressWarnings("rawtypes")
     public RevocationToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerToken) {
-        RevocationToken<?> result = checkOCSP(certificateToken, issuerToken);
-        if (result != null) {
-            return result;
+        RevocationToken<?> ocspToken = checkOCSP(certificateToken, issuerToken);
+        if (ocspToken != null && isAcceptableToken(ocspToken)) {
+            return ocspToken;
         }
-        result = checkCRL(certificateToken, issuerToken);
-        if (result != null) {
-            return result;
+        RevocationToken<?> crlToken = checkCRL(certificateToken, issuerToken);
+        if (crlToken != null && isAcceptableToken(crlToken)) {
+            return crlToken;
         }
-        if (LOG.isDebugEnabled()) {
+        if (ocspToken == null && crlToken == null && LOG.isDebugEnabled()) {
             LOG.debug("There is no response for {} neither from OCSP nor from CRL!", certificateToken.getDSSIdAsString());
+        }
+        if (fallbackEnabled) {
+            // return first successful result
+            return ocspToken != null ? ocspToken : crlToken;
         }
         return null;
     }

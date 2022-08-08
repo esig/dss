@@ -34,6 +34,13 @@ public class TimestampValidatorComparator implements Comparator<TimestampValidat
     /** Used to compare the timestamps */
     private static final TimestampTokenComparator timestampComparator = new TimestampTokenComparator();
 
+    /**
+     * Default constructor instantiating TimestampTokenComparator
+     */
+    public TimestampValidatorComparator() {
+        // empty
+    }
+
     @Override
     public int compare(TimestampValidator tstValidator1, TimestampValidator tstValidator2) {
         return timestampComparator.compare(tstValidator1.getTimestamp(), tstValidator2.getTimestamp());

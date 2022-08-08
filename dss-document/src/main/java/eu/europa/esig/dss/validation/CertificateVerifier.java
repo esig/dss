@@ -71,21 +71,67 @@ public interface CertificateVerifier {
 	void setOcspSource(final RevocationSource<OCSP> ocspSource);
 
 	/**
-	 * Returns a revocation data loading strategy associated with this verifier.
+	 * Returns a factory used to create revocation data loading strategy associated with this verifier.
 	 *
-	 * @return the defined strategy to fetch OCSP or CRL for certificate validation
+	 * @return creates the defined strategy to fetch OCSP or CRL for certificate validation
 	 */
-	RevocationDataLoadingStrategy getRevocationDataLoadingStrategy();
+	RevocationDataLoadingStrategyFactory getRevocationDataLoadingStrategyFactory();
 
 	/**
-	 * Defines a strategy used to fetch OCSP or CRL for certificate validation.
+	 * Creates a strategy used to fetch OCSP or CRL for certificate validation.
 	 *
-	 * Default: {@code OCSPFirstRevocationDataLoadingStrategy} is used to extract OCSP token first and CRL after
+	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyFactory} used to create a strategy
+	 * 					 to extract OCSP token first and CRL after
 	 *
-	 * @param revocationDataLoadingStrategy
-	 *                   {@link RevocationDataLoadingStrategy}
+	 * @param revocationDataLoadingStrategyFactory
+	 *                   {@link RevocationDataLoadingStrategyFactory}
 	 */
-	void setRevocationDataLoadingStrategy(final RevocationDataLoadingStrategy revocationDataLoadingStrategy);
+	void setRevocationDataLoadingStrategyFactory(final RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory);
+
+	/**
+	 * Returns a {@code RevocationDataVerifier} associated with this verifier.
+	 *
+	 * @return {@link RevocationDataVerifier}
+	 */
+	RevocationDataVerifier getRevocationDataVerifier();
+
+	/**
+	 * Sets {@code RevocationDataVerifier} used to validate acceptance of
+	 * the retrieved (from offline or online sources) revocation data.
+	 *
+	 * This class is used to verify revocation data extracted from the validating document itself,
+	 * as well the revocation data retrieved from remote sources during the validation process.
+	 *
+	 * NOTE: It is not recommended to use the same instance of {@code RevocationDataVerifier}
+	 *       within different {@code CertificateVerifier}s, as it may lead to concurrency issues during the execution
+	 *       in multi-threaded environments.
+	 *       Please use a new {@code RevocationDataVerifier} per each {@code CertificateVerifier}.
+	 *
+	 * @param revocationDataVerifier
+	 *                    {@link RevocationDataVerifier}
+	 */
+	void setRevocationDataVerifier(final RevocationDataVerifier revocationDataVerifier);
+
+	/**
+	 * Returns whether revocation data still shall be returned if validation of requested revocation data failed
+	 * (i.e. both for OCSP and CRL).
+	 *
+	 * @return revocation fallback
+	 */
+	boolean isRevocationFallback();
+
+	/**
+	 * Sets whether a revocation data still have to be returned to the validation process,
+	 * in case validation of obtained revocation data has failed (i.e. both for OCSP and CRL).
+	 *
+	 * Default: FALSE (invalid revocation data not returned)
+	 *
+	 * NOTE: Revocation fallback is enforced to TRUE (return even invalid revocation data, when no valid found)
+	 *       on signature validation
+	 *
+	 * @param revocationFallback whether invalid revocation data shall be returned, when not valid revocation available
+	 */
+	void setRevocationFallback(boolean revocationFallback);
 
 	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
@@ -310,5 +356,24 @@ public interface CertificateVerifier {
 	 *         chains
 	 */
 	boolean isCheckRevocationForUntrustedChains();
+
+	/**
+	 * This method allows enabling of POE extraction from timestamps coming
+	 * from untrusted certificate chains.
+	 *
+	 * @param enable
+	 *               true if POE extraction is allowed for timestamps from untrusted
+	 *               certificate chains
+	 */
+	void setExtractPOEFromUntrustedChains(boolean enable);
+
+	/**
+	 * This method returns whether POEs should be extracted from timestamps coming from untrusted
+	 * certificate chains.
+	 *
+	 * @return true if POEs should be extracted from timestamp with untrusted
+	 *         certificate chains
+	 */
+	boolean isExtractPOEFromUntrustedChains();
 
 }

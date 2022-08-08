@@ -119,6 +119,13 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	protected TP archiveTimestampParameters;
 
+	/**
+	 * Default constructor instantiating object with default values
+	 */
+	protected AbstractSerializableSignatureParameters() {
+		// empty
+	}
+
 	@Override
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;

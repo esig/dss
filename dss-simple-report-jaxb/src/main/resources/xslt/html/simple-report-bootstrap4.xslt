@@ -150,7 +150,8 @@
 								<xsl:if test="dss:TimestampLevel">
 									<xsl:attribute name="title"><xsl:value-of select="dss:TimestampLevel/@description" /></xsl:attribute>
 								</xsl:if>
-				    		</i>					
+				    		</i>
+				    		
 			        	</dd>
 			        </dl>
 				</xsl:if>

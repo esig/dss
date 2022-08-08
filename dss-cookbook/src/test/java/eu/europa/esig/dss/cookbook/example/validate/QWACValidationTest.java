@@ -74,6 +74,14 @@ public class QWACValidationTest {
 		cv.setCrlSource(crlSource); // configured CRL Access
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.model.x509.CertificateToken;
+		// import eu.europa.esig.dss.service.http.commons.SSLCertificateLoader;
+		// import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
+		// import eu.europa.esig.dss.spi.x509.CertificateSource;
+		// import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+		// import eu.europa.esig.dss.validation.CertificateValidator;
+		// import eu.europa.esig.dss.validation.reports.CertificateReports;
+		// import java.util.List;
 
 		// Secondly, we create an instance of SSLCertificateLoader which is responsible
 		// for the SSL certificate(s) downloading.

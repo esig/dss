@@ -57,7 +57,7 @@ public class ReferenceValidation implements Serializable {
 	/** List of used transforms to compute digest of the reference */
 	protected List<String> transforms;
 
-	/** The reference points to more that one element */
+	/** The reference points to more than one element */
 	private boolean isDuplicated;
 
 	/**
@@ -65,6 +65,13 @@ public class ReferenceValidation implements Serializable {
 	 * for manifest entries)
 	 */
 	private List<ReferenceValidation> dependentReferenceValidations;
+
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ReferenceValidation() {
+		// empty
+	}
 
 	/**
 	 * Returns type of the validated reference

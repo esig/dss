@@ -56,6 +56,7 @@ public abstract class AbstractASiCECAdESTestSignature extends AbstractASiCWithCA
 
 		assertNotNull(asicContent.getMimeTypeDocument());
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getRootLevelSignedDocuments()));
 
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
 		for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {

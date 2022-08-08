@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.cades;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * The class used to compare production time of {@code TimeStampToken}s
@@ -41,6 +40,13 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 public class TimeStampTokenProductionComparator implements Comparator<TimeStampToken>, Serializable {
 
 	private static final long serialVersionUID = 4125423970411266861L;
+
+	/**
+	 * Default constructor
+	 */
+	public TimeStampTokenProductionComparator() {
+		// empty
+	}
 
 	@Override
 	public int compare(TimeStampToken timeStampTokenOne, TimeStampToken timeStampTokenTwo) {

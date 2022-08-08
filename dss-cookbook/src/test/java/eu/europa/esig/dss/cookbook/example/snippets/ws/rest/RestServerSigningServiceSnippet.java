@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 
+// tag::demo[]
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -37,7 +38,6 @@ public class RestServerSigningServiceSnippet {
 	
 	@SuppressWarnings("unused")
 	public void demo() {
-		// tag::demo[]
 		
 		// Instantiate a RestSignatureTokenConnection
 		RestSignatureTokenConnection remoteToken = new RestSignatureTokenConnectionImpl();
@@ -67,8 +67,8 @@ public class RestServerSigningServiceSnippet {
 		
 		// Signs the digest
 		SignatureValueDTO signatureValueFromDigest = remoteToken.signDigest(digestDTO, alias);
-		
-		// end::demo[]
+
 	}
 
 }
+// end::demo[]

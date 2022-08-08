@@ -59,6 +59,16 @@ public class SignXmlJadesBTest extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // tag::demo[]
+            // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+            // import eu.europa.esig.dss.enumerations.JWSSerializationType;
+            // import eu.europa.esig.dss.enumerations.SignatureLevel;
+            // import eu.europa.esig.dss.enumerations.SignaturePackaging;
+            // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+            // import eu.europa.esig.dss.jades.signature.JAdESService;
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 
             // Prepare parameters for the JAdES signature
             JAdESSignatureParameters parameters = new JAdESSignatureParameters();

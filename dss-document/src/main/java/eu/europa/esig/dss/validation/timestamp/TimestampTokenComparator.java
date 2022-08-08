@@ -35,6 +35,13 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 
 	private static final long serialVersionUID = 3404578959761631884L;
 
+	/**
+	 * Default constructor
+	 */
+	public TimestampTokenComparator() {
+		// empty
+	}
+
 	@Override
 	public int compare(TimestampToken tst1, TimestampToken tst2) {
 		int result = compareByGenerationTime(tst1, tst2);

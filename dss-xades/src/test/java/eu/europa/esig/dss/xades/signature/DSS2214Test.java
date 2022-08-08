@@ -22,6 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -89,6 +90,7 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		verifySimpleReport(simpleReport);
 
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -105,7 +107,6 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 	@SuppressWarnings("unchecked")
 	private EtsiValidationPolicy getModifiedValidationPolicy() {
 		try {
-
 			Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
 			JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
 					.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/policy/constraint.xml"));
@@ -118,6 +119,7 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 			basicSignatureConstraints.getCACertificate().getAcceptableRevocationDataFound().setLevel(Level.WARN);
 
 			return new EtsiValidationPolicy(constraints);
+
 		} catch (Exception e) {
 			throw new DSSException("Unable to build a custom policy", e);
 		}

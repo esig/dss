@@ -68,6 +68,13 @@ public class BLevelParameters implements Serializable {
 	private SignerLocation signerLocation;
 
 	/**
+	 * Default constructor instantiating object with default values
+	 */
+	public BLevelParameters() {
+		// empty
+	}
+
+	/**
 	 * Check if the trust anchor policy shall be used when creating -B and -LT levels
 	 *
 	 * @return TRUE if the trust anchor policy shall be used when creating -B and -LT levels, FALSE otherwise

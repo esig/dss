@@ -42,6 +42,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
@@ -72,6 +73,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      * Empty constructor
      */
     PDFDocumentValidator() {
+        // empty
     }
 
     /**
@@ -114,8 +116,10 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
-        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps);
+    protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
+            final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
+            final CertificateVerifier certificateVerifier) {
+        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps, certificateVerifier);
         List<PdfDocDssRevision> dssRevisions = getDssRevisions();
         prepareDssDictionaryValidationContext(validationContext, dssRevisions);
         return validationContext;
@@ -148,7 +152,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     /**
-     * Post process the extracted signatures
+     * Post-process the extracted signatures
      *
      * NOTE: the method shall be used only for the document validation
      *
@@ -160,7 +164,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    public List<AdvancedSignature> getSignatures() {
+    protected List<AdvancedSignature> buildSignatures() {
         final List<AdvancedSignature> signatures = new ArrayList<>();
 
         final ListCertificateSource dssCertificateSource = new ListCertificateSource();
@@ -213,7 +217,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
-    public List<TimestampToken> getDetachedTimestamps() {
+    protected List<TimestampToken> buildDetachedTimestamps() {
         final List<TimestampToken> timestamps = new ArrayList<>();
         final List<TimestampedReference> coveredReferences = new ArrayList<>();
 

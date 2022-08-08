@@ -33,6 +33,13 @@ import eu.europa.esig.dss.validation.SignaturePolicy;
  */
 public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyValidator {
 
+	/**
+	 * Default constructor
+	 */
+	public NonASN1SignaturePolicyValidator() {
+		// empty
+	}
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		DSSDocument policyContent = signaturePolicy.getPolicyContent();

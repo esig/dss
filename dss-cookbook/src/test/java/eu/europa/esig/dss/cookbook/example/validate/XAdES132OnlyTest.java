@@ -43,6 +43,12 @@ public class XAdES132OnlyTest {
 		FileDocument xmlDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import eu.europa.esig.dss.xades.definition.XAdESPaths;
+		// import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+		// import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+		// import java.util.List;
+
 		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(xmlDocument);
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 

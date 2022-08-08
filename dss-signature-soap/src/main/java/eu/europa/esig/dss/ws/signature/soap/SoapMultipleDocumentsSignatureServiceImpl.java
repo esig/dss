@@ -39,6 +39,12 @@ public class SoapMultipleDocumentsSignatureServiceImpl implements SoapMultipleDo
 	private RemoteMultipleDocumentsSignatureService service;
 
 	/**
+	 * Default construction instantiating object with null RemoteMultipleDocumentsSignatureService
+	 */
+	public SoapMultipleDocumentsSignatureServiceImpl() {
+	}
+
+	/**
 	 * Sets the remote signature multiple service
 	 *
 	 * @param service {@link RemoteMultipleDocumentsSignatureService}

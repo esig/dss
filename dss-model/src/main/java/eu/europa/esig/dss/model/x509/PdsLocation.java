@@ -34,6 +34,13 @@ public class PdsLocation {
     private String language;
 
     /**
+     * Default constructor instantiating object with null values
+     */
+    public PdsLocation() {
+        // empty
+    }
+
+    /**
      * Returns URL
      *
      * @return {@link String}

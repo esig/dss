@@ -52,6 +52,7 @@ public final class DiagnosticDataXmlDefiner {
 	 * Singleton
 	 */
 	private DiagnosticDataXmlDefiner() {
+		// empty
 	}
 
 	/** ObjectFactory instance */

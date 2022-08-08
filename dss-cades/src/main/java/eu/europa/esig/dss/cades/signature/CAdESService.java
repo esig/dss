@@ -143,7 +143,7 @@ public class CAdESService extends
 		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(toSignDocument, parameters.getReferenceDigestAlgorithm());
 
 		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if ((originalCmsSignedData == null) && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+		if (originalCmsSignedData == null && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
 			parameters.getContext().setDetachedContents(Arrays.asList(toSignDocument));
 		}
 
@@ -170,7 +170,8 @@ public class CAdESService extends
 			CMSSignedData extendedCMSSignature = extension.extendCMSSignatures(cmsSignedData, newSignerInformation, parameters);
 			signature = new CMSSignedDocument(extendedCMSSignature);
 		}
-		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN, parameters.getSignatureLevel()));
+		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN,
+				parameters.getSignatureLevel(), parameters.getSignaturePackaging()));
 		parameters.reinit();
 		return signature;
 	}
@@ -323,13 +324,8 @@ public class CAdESService extends
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 
-		CMSSignedData originalCmsSignedData = DSSUtils.toCMSSignedData(document);
-
 		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
-		CMSSignedData newCmsSignedData = builder.addSignaturePolicyStore(originalCmsSignedData, signaturePolicyStore);
-		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData);
-		
-		CMSSignedDocument documentWithPolicyStore = new CMSSignedDocument(newCmsSignedData);
+		DSSDocument documentWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
 		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
 		return documentWithPolicyStore;
 	}

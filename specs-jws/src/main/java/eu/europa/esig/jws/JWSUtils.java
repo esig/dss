@@ -58,6 +58,7 @@ public final class JWSUtils extends AbstractJWSUtils {
 	private static JWSUtils singleton;
 
 	private JWSUtils() {
+		// empty
 	}
 
 	/**

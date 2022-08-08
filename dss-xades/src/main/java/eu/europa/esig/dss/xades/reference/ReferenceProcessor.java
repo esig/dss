@@ -52,6 +52,7 @@ public class ReferenceProcessor {
      * Empty constructor (to be used for non-signature references, e.g. for a Manifest)
      */
     public ReferenceProcessor() {
+        // empty
     }
 
     /**
@@ -127,7 +128,7 @@ public class ReferenceProcessor {
             dom.appendChild(adopted);
             return dom;
 
-        } else if (!Utils.isStringBlank(uri) && uri.startsWith("#")) {
+        } else if (DomUtils.startsFromHash(uri)) {
             final Document document = DomUtils.buildDOM(contents);
             DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
             final String targetId = DomUtils.getId(uri);

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -37,8 +38,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -63,12 +62,12 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
     }
 
     private static Stream<Arguments> data() {
-        SignatureLevel[] levels = {SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PAdES_BASELINE_T,
-                SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PAdES_BASELINE_LTA};
-        SignaturePackaging[] packagings = {SignaturePackaging.ENVELOPING};
-        String[] signers = {GOOD_USER, RSA_SHA3_USER};
-        DSSDocument[] documents = { new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/doc.pdf")),
-                new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/sample.pdf")) };
+        SignatureLevel[] levels = { SignatureLevel.PAdES_BASELINE_B, SignatureLevel.PAdES_BASELINE_T,
+                SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PAdES_BASELINE_LTA };
+        SignaturePackaging[] packagings = { SignaturePackaging.ENVELOPING };
+        String[] signers = { GOOD_USER, RSA_SHA3_USER };
+        DSSDocument[] documents = { new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/doc.pdf"), "doc.pdf", MimeType.PDF),
+                new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeType.PDF) };
         return random(levels, packagings, signers, documents);
     }
 
@@ -106,14 +105,6 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
         service.setTspSource(getGoodTsa());
 
         super.signAndVerify();
-    }
-
-    @Override
-    protected List<DSSDocument> getDetachedContents() {
-        if (SignaturePackaging.DETACHED.equals(signatureParameters.getSignaturePackaging())) {
-            return Arrays.asList(getDocumentToSign());
-        }
-        return Collections.emptyList();
     }
 
     @Override

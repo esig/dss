@@ -38,6 +38,12 @@ public class XMLSecuritiesConfigTest {
 	public void test() throws Exception {
 
 		// tag::demo[]
+		// import eu.europa.esig.dss.alert.LogOnStatusAlert;
+		// import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
+		// import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+		// import org.slf4j.event.Level;
+		// import javax.xml.XMLConstants;
+		// import javax.xml.transform.TransformerFactory;
 		
 		// Obtain a singleton instance of {@link XmlDefinerUtils}
 		XmlDefinerUtils xmlDefinerUtils = XmlDefinerUtils.getInstance();
@@ -66,7 +72,9 @@ public class XMLSecuritiesConfigTest {
 		assertNotNull(transformerFactory);
 
 		// tag::dbf[]
-		
+		// import eu.europa.esig.dss.jaxb.common.DocumentBuilderFactoryBuilder;
+		// import javax.xml.XMLConstants;
+
 		// returns a configured secure instance of {@link DocumentBuilderFactoryBuilder}
 		DocumentBuilderFactoryBuilder documentBuilderFactoryBuilder = DocumentBuilderFactoryBuilder.getSecureDocumentBuilderFactoryBuilder();
 

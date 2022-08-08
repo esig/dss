@@ -41,6 +41,9 @@ public final class ZipUtils {
 	 */
 	private ZipContainerHandler zipContainerHandler = new SecureContainerHandler();
 
+	/**
+	 * Singleton
+	 */
 	private ZipUtils() {
 	}
 

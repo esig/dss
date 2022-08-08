@@ -43,6 +43,7 @@ public final class Digest implements Serializable {
 	 * Empty constructor
 	 */
 	public Digest() {
+		// empty
 	}
 
 	/**

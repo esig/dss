@@ -38,6 +38,7 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource {
 	 * Default constructor
 	 */
 	public CommonTrustedCertificateSource() {
+		// empty
 	}
 
 	@Override

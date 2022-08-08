@@ -28,6 +28,12 @@ package eu.europa.esig.dss.jaxb.common;
 public abstract class AbstractFactoryBuilder<F extends Object> extends AbstractConfigurator<F> {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractFactoryBuilder() {
+	}
+
+	/**
 	 * This method instantiates the corresponding factory.
 	 *
 	 * NOTE: in order to change the default behavior, the related class and the current method should be overridden

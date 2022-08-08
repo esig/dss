@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
+
 import java.io.Serializable;
 import java.util.List;
 

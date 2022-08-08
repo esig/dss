@@ -154,7 +154,13 @@ public final class PAdESConstants {
 	/** 'Version' */
 	public static final String VERSION_NAME = "Version";
 
-	/* Field values */
+	/* Build properties dictionary */
+
+	/** 'App' (Application software) */
+	public static final String APP = "App";
+
+	/** 'Prop_Build' (Build properties) */
+	public static final String PROP_BUILD = "Prop_Build";
 
 	/** 'V=1.2' */
 	public static final String VERSION_DEFAULT = "1.2";
@@ -163,6 +169,7 @@ public final class PAdESConstants {
 	 * Utils class
 	 */
 	private PAdESConstants() {
+		// empty
 	}
 
 }

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,6 +72,13 @@ public class ASiCContent implements Serializable {
 
 	/** The list of "package.zip" documents (ASiC-S) */
 	private List<DSSDocument> containerDocuments = new ArrayList<>();
+
+	/**
+	 * Default constructor instantiating object with null values and empty list of documents
+	 */
+	public ASiCContent() {
+		// empty
+	}
 
 	/**
 	 * Gets the original ASiC container
@@ -287,6 +295,24 @@ public class ASiCContent implements Serializable {
 	public void setContainerDocuments(List<DSSDocument> containerDocuments) {
 		this.containerDocuments = containerDocuments;
 	}
+
+	/**
+	 * This method returns a list of documents at the root level within the container
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getRootLevelSignedDocuments() {
+		if (Utils.isCollectionEmpty(getSignedDocuments())) {
+			return Collections.emptyList();
+		}
+		List<DSSDocument> rootLevelDocuments = new ArrayList<>();
+		for (DSSDocument document : getSignedDocuments()) {
+			if (document.getName() != null && !document.getName().contains("/") && !document.getName().contains("\\")) {
+				rootLevelDocuments.add(document);
+			}
+		}
+		return rootLevelDocuments;
+	}
 	
 	/**
 	 * Returns a list of all found manifest documents
@@ -307,6 +333,7 @@ public class ASiCContent implements Serializable {
 	 */
 	public List<DSSDocument> getAllDocuments() {
 		List<DSSDocument> allDocuments = new ArrayList<>();
+		// "mimetype" shall be the first file in the ASiC container;
 		if (mimeTypeDocument != null) {
 			allDocuments.add(mimeTypeDocument);
 		}

@@ -27,23 +27,31 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PdfModification;
-import eu.europa.esig.dss.pades.validation.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
+import eu.europa.esig.dss.pdf.modifications.PdfModification;
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
+import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -54,12 +62,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +80,29 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	/** The signature drawer factory to use for a visual signature/timestamp creation */
 	private final SignatureDrawerFactory signatureDrawerFactory;
+
+	/**
+	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 * The resources are used on a document creation
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
+	 */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+
+	/**
+	 * Used to find differences occurred between PDF revisions (e.g. visible changes).
+	 *
+	 * Default : {@code DefaultPdfDifferencesFinder}
+	 */
+	protected PdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+
+	/**
+	 * Used to find differences within internal PDF objects occurred between PDF revisions .
+	 *
+	 * Default : {@code DefaultPdfModificationsFinder}
+	 */
+	protected PdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
 
 	/**
 	 * This variable set the behavior to follow in case of overlapping a new
@@ -100,15 +129,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	private StatusAlert alertOnForbiddenSignatureCreation = new ExceptionOnStatusAlert();
 
 	/**
-	 * This variable sets the maximal amount of pages in a PDF to execute visual
-	 * screenshot comparison for Example: for value 10, the visual comparison will
-	 * be executed for a PDF containing 10 and less pages
-	 * 
-	 * Default : 10 pages
-	 */
-	private int maximalPagesAmountForVisualComparison = 10;
-
-	/**
 	 * Constructor for the PDFSignatureService
 	 * 
 	 * @param serviceMode            current instance is used to generate
@@ -120,6 +140,24 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		Objects.requireNonNull(signatureDrawerFactory, "The SignatureDrawerFactory shall be defined!");
 		this.serviceMode = serviceMode;
 		this.signatureDrawerFactory = signatureDrawerFactory;
+	}
+
+	@Override
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesFactoryBuilder cannot be null!");
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
+	}
+
+	@Override
+	public void setPdfDifferencesFinder(PdfDifferencesFinder pdfDifferencesFinder) {
+		Objects.requireNonNull(pdfDifferencesFinder, "PdfDifferencesFinder cannot be null!");
+		this.pdfDifferencesFinder = pdfDifferencesFinder;
+	}
+
+	@Override
+	public void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder) {
+		Objects.requireNonNull(pdfObjectModificationsFinder, "PdfObjectModificationsFinder cannot be null!");
+		this.pdfObjectModificationsFinder = pdfObjectModificationsFinder;
 	}
 
 	/**
@@ -167,11 +205,25 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * 
 	 * Default : 10 pages
 	 * 
-	 * 
 	 * @param pagesAmount the amount of the pages to execute visual comparison for
+	 * @deprecated since 5.11. Use
+	 * 		{@code
+	*           PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
+	 *          ...
+	 *          IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+	 * 			DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+	 *          pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+	 *          pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+	 *          validator.setPdfObjFactory(pdfObjFactory);
+	 * 		}
 	 */
+	@Deprecated
 	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
-		this.maximalPagesAmountForVisualComparison = pagesAmount;
+		LOG.warn("Use of deprecated setMaximalPagesAmountForVisualComparison(pagesAmount) method! " +
+				"See more details in JavaDoc.");
+		DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+		pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(pagesAmount);
+		setPdfDifferencesFinder(pdfDifferencesFinder);
 	}
 
 	/**
@@ -188,6 +240,74 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 		return signatureDrawer;
 	}
+
+	/**
+	 * This method instantiates a new {@code DSSResourcesFactory}
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 * @throws IOException if an error occurs on DSSResourcesHandler instantiation
+	 */
+	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
+		return resourcesHandlerBuilder.createResourcesHandler();
+	}
+
+	@Override
+	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
+		if (Utils.isArrayEmpty(pdfSignatureCache.getDigest())) {
+			byte[] digest = computeDigest(toSignDocument, parameters);
+			pdfSignatureCache.setDigest(digest);
+		}
+		return pdfSignatureCache.getDigest();
+	}
+
+	/**
+	 * Computes digest on to be signed data computed on the {@code toSignDocument} respectively
+	 * to the given {@code parameters}
+	 *
+	 * @param toSignDocument {@link DSSDocument} to be signed
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return byte array
+	 */
+	protected abstract byte[] computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
+
+	@Override
+	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
+		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
+		DSSDocument signedDocument = null;
+		if (pdfSignatureCache.getToBeSignedDocument() != null) {
+			try {
+				signedDocument = PAdESUtils.replaceSignature(pdfSignatureCache.getToBeSignedDocument(),
+						cmsSignedData, resourcesHandlerBuilder);
+			} catch (Exception e) {
+				String errorMessage = "Unable to sign document using a resources caching! Reason : '{}'. Sign using a complete processing...";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, e.getMessage());
+				}
+			}
+		}
+		parameters.reinit();
+
+		if (signedDocument == null) {
+			signedDocument = signDocument(toSignDocument, cmsSignedData, parameters);
+		}
+		signedDocument.setMimeType(MimeType.PDF);
+		return signedDocument;
+	}
+
+	/**
+	 * This method creates a signed document from the original {@code toSignDocument}, incorporating a new revision,
+	 * enveloping the provided {@code cmsSignedData}
+	 *
+	 * @param toSignDocument {@link DSSDocument} to be signed
+	 * @param cmsSignedData byte array representing the encoded CMS signed data's binaries
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return {@link DSSDocument}
+	 */
+	protected abstract DSSDocument signDocument(DSSDocument toSignDocument, byte[] cmsSignedData,
+												PAdESCommonParameters parameters);
 
 	/**
 	 * Checks if a DocumentTimestamp has to be added in the current mode
@@ -468,7 +588,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
 			}
 		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange : [%s]", byteRange);
+			String message = String.format("Unable to retrieve data from the ByteRange : %s. Reason : %s", byteRange, e.getMessage());
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
 				LOG.error(message, e);
@@ -648,7 +768,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param pdfAnnotations a list of {@link AnnotationBox} to verify against
 	 */
 	protected void checkSignatureFieldBoxOverlap(final AnnotationBox signatureFieldBox, List<PdfAnnotation> pdfAnnotations) {
-		if (PdfModificationDetectionUtils.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
+		if (pdfDifferencesFinder.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
 			alertOnSignatureFieldOverlap();
 		}
 	}
@@ -708,21 +828,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader, DSSDocument originalDocument, String pwd) throws IOException {
+	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader,
+															  DSSDocument originalDocument, String pwd) throws IOException {
 		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
-			PdfModificationDetectionImpl pdfModificationDetection = new PdfModificationDetectionImpl();
-
+			PdfModificationDetection pdfModificationDetection = new PdfModificationDetection();
 			pdfModificationDetection.setAnnotationOverlaps(
-					PdfModificationDetectionUtils.getAnnotationOverlaps(finalRevisionReader));
+					pdfDifferencesFinder.getAnnotationOverlaps(finalRevisionReader));
 			pdfModificationDetection.setPageDifferences(
-					PdfModificationDetectionUtils.getPagesDifferences(signedRevisionReader, finalRevisionReader));
+					pdfDifferencesFinder.getPagesDifferences(signedRevisionReader, finalRevisionReader));
 			pdfModificationDetection.setVisualDifferences(
 					getVisualDifferences(signedRevisionReader, finalRevisionReader));
-
-			Set<ObjectModification> modificationsSet =
-					PdfModificationDetectionUtils.getModificationSet(signedRevisionReader, finalRevisionReader);
-			pdfModificationDetection.setObjectModifications(new PdfObjectModificationsFilter(modificationsSet).filter());
-
+			pdfModificationDetection.setObjectModifications(
+					pdfObjectModificationsFinder.find(signedRevisionReader, finalRevisionReader));
 			return pdfModificationDetection;
 		}
 	}
@@ -736,18 +853,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param finalRevisionReader  {@link PdfDocumentReader} for the input PDF
 	 *                             document
 	 * @return a list of {@link PdfModification}s
-	 * @throws IOException if an exception occurs
 	 */
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
-			final PdfDocumentReader finalRevisionReader) throws IOException {
-		int pagesAmount = finalRevisionReader.getNumberOfPages();
-		if (maximalPagesAmountForVisualComparison >= pagesAmount) {
-			return PdfModificationDetectionUtils.getVisualDifferences(signedRevisionReader, finalRevisionReader);
-		} else {
-			LOG.debug("The provided document contains {} pages, while the limit for a visual comparison is set to {}.",
-					pagesAmount, maximalPagesAmountForVisualComparison);
-		}
-		return Collections.emptyList();
+														 final PdfDocumentReader finalRevisionReader) {
+		return pdfDifferencesFinder.getVisualDifferences(signedRevisionReader, finalRevisionReader);
 	}
 
 	private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {

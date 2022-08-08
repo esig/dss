@@ -28,6 +28,12 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
  */
 public abstract class AbstractDSSFontMetrics implements DSSFontMetrics {
 
+	/**
+	 * Default constructor
+	 */
+	protected AbstractDSSFontMetrics() {
+	}
+
 	@Override
 	public String[] getLines(String text) {
 		return text.split("\\r?\\n");

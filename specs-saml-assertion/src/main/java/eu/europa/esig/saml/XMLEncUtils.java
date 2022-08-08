@@ -44,6 +44,7 @@ public class XMLEncUtils extends XSDAbstractUtils {
 	private JAXBContext jc;
 
 	private XMLEncUtils() {
+		// empty
 	}
 
 	/**

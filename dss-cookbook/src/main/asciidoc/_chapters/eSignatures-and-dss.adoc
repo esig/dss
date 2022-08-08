@@ -53,7 +53,7 @@ Some aspects are specific to QTSPs and follow from the requirements of eIDAS
 * …
 
 === Electronic and digital signatures
-The terms “Electronic Signature” and “Digital Signature” are often used interchangeably however they are very disctinct concetps as "electronic signature" is a legal concept, whereas "digital signature" is a technical concept that is used to provide a concrete instance of electronic signatures.
+The terms “Electronic Signature” and “Digital Signature” are often used interchangeably however they are very distinct concepts as "electronic signature" is a legal concept, whereas "digital signature" is a technical concept that is used to provide a concrete instance of electronic signatures.
 
 In the eIDAS Regulation, and electronic signature is defined (legally) as "data in electronic form which is attached to or logically associated with other data in electronic form and which is used by the signatory to sign".
 
@@ -83,7 +83,7 @@ This section aims to briefly introduce PKI-based digital signature concepts, mor
 
 For the rest of this section, the creation of a digital signature value is assumed to be the encryption of the digest of a data object using a private key for which there exists a corresponding X.509 public key certificate issued by a CA.
 
-For the purpose of introducing those concepts, we will first provide a simplified description of the PKI model in which digital signatures are created. The goal of this model is not to provide an accurate and exhaustive description and definition of a PKI but to provide a basis for introducing the main PKI concepts that are useful to DSS users. Suggestions for improvement are welcomed and can be proposed via PRs in the DSS github.
+For the purpose of introducing those concepts, we will first provide a simplified description of the PKI model in which digital signatures are created. The goal of this model is not to provide an accurate and exhaustive description and definition of a PKI but to provide a basis for introducing the main PKI concepts that are useful to DSS users. Suggestions for improvement are welcomed and can be proposed via PRs in the https://github.com/esig/dss[DSS GitHub].
 
 [[PKI]]
 ==== Simplified PKI model
@@ -149,7 +149,7 @@ Certification Authorities are entities issuing certificates and guaranteeing the
 
 [[TrustAnchors]]
 ===== Trust Anchors and Trust Stores
-Without going into the details and inner workings of the hierarchical trust model (this document does not intend to discuss the soundness of this model, the soundness of transitivity of trust, etc.), when a user is looking to validate a certificate, that is the user needs to decide whether or not it can trust the binding between the public key and the subject of that certificate, it will make use of so called “trust anchors”.
+Without going into the details and inner workings of the hierarchical trust model (this document does not intend to discuss the soundness of this model, the soundness of transitivity of trust, etc.), when a user is looking to validate a certificate, that is the user's need to decide whether they can trust the binding between the public key and the subject of that certificate, they will make use of so called “trust anchors”.
 
 A trust anchor, in the context of certificate validation, is a CA that is trusted by the user in such a way that if there exists a valid chain of certificate from that CA to a certificate, the user trusts the correctness of the information contained in that certificate taking into consideration the (revocation) status of that certificate.
 
@@ -168,7 +168,7 @@ Technically, they take the form of an XML structure formatted as specified in th
 
 Trusted lists can be used in a similar way to trust stores in that one can use, for instance, the public key certificates that are listed as the digital identity of qualified trust services issuing qualified certificates as trust anchors for the purpose of validating certificates, however there are significant differences between the usage of trusted lists and the usage of classic trust stores. Below is a non-exhaustive list of such differences:
 
-* Trusted lists can be used to determine/confirm the legal type of a certificate i.e. verifying that a certificate is a certificate for electronic signature, for electronic seal or for website authentication, whereas trust store typically do not allow such determination.
+* Trusted lists can be used to determine/confirm the legal type of certificate i.e. verifying that a certificate is a certificate for electronic signature, for electronic seal or for website authentication, whereas trust store typically do not allow such determination.
 * Trusted list can be used to determine/confirm the qualified status of a certificate;
 * Trusted lists contain the status history of trust services, meaning that they allow the determination/confirmation of whether a certificate was qualified and of a particular type at a time in the past. Trust service entries are never removed from a trusted list whereas compromise of a trust anchor is usually reflected by the removal of the corresponding trust anchor information from a trust store (in a trusted list, this would be reflected by changing the current status of the corresponding trust service, while keeping the status history);
 * Trusted lists frequently (one might argue ‘mostly’) identify trust services issuing certificates through the certificates of issuing CAs, whereas trust store usually contain mostly root CAs.
@@ -227,9 +227,9 @@ The standard ETSI EN 319 102-1 clause 4 (<<R09>>) provides a complete conceptual
 * Computing the signature value by encrypting the DTBSR using the appropriate algorithm (this is usually done by activating the private key within a “Signature creation device” (SCDev), that will perform the operation);
 * Formatting the result into a “signed data object” (SDO) complying with the desired signature format (e.g. XAdES, PAdES, etc).
 
-As mentionned above, the activation of the private key and the operation of creating the signature value is assumed to be performed by a specific device. It is in general desirable that this device is a secure (e.g. temper proof) device that require authentication for the activation of the key (e.g. using PIN codes).
+As mentioned above, the activation of the private key and the operation of creating the signature value is assumed to be performed by a specific device. It is in general desirable that this device is a secure (e.g. tamper-proof) device that requires authentication for the activation of the key (e.g. using PIN codes).
 
-When the private key contained in that device is controlled by an end-entity, this device is usually called “signature creation device” or *SCDev*. This can be a local SCDev such as a smartcard, but it can also be a remote SCDev managed by a CA or TSP.
+When the private key contained in that device is controlled by an end-entity, this device is usually called a “signature creation device” or *SCDev*. This can be a local SCDev such as a smartcard, but it can also be a remote SCDev managed by a CA or TSP.
 
 When the private key is used by a CA for signing certificates, this device is usually called a “hardware security module” or *HSM*.
 
@@ -257,7 +257,7 @@ Let’s imagine that at T~val~, when we are trying to access the certification s
 
 A more complex example is when, at T~val~, revocation information indicates that the signing certificate is revoked since a time indicated as T~rev~ (which is thus < T~val~).
 
-Then at T~val~, we can only conclude that the signing certificate is revoked and thus the signature cannot be determined as valid at T~val~. However, this does not mean necessarily that the signature was created when the signing certificate was revoked, it may very well be that the signature was created at a time prior to T~rev~ and that, should we have validated the signature at that time, the validation would have been successful. Therefore we cannot conclude that the signature is invalid because we do not know in a definite manner if the signature was created before the revocation of the signing certificate.
+Then at T~val~, we can only conclude that the signing certificate is revoked and thus the signature cannot be determined as valid at T~val~. However, this does not mean necessarily that the signature was created when the signing certificate was revoked, it may very well be that the signature was created at a time prior to T~rev~ and that, should we have validated the signature at that time, the validation would have been successful. Therefore, we cannot conclude that the signature is invalid because we do not know in a definite manner if the signature was created before the revocation of the signing certificate.
 
 For instance, if we had a proof that the signature existed before T~rev~, such as a signature timestamp indicating a time T~poe~ < T~rev~, then using that proof of existence (POE) we can conclude that the signature was created before the signing certificate was revoked and this could allow us to produce a definite conclusion.
 
@@ -275,7 +275,7 @@ The standard ETSI EN 319 102-1 specifies a complete validation model and procedu
 * `INDETERMINATE` indicating that the format and digital signature verifications have not failed but there is insufficient information to determine if the electronic signature is valid.
 * `TOTAL_FAILED` indicating that either the signature format is incorrect or that the digital signature value fails the verification.
 
-For each of the validation checks/constraint (e.g. signature format, signing certificate validity), the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications. This allows the user to determine whether the signature validation has succeeded or not and it helps him find out why.
+For each of the validation checks/constraint (e.g. signature format, signing certificate validity), the validation process must provide information justifying the reasons for the resulting status indication as a result of the check against the applicable constraints. In addition, the ETSI standard defines a consistent and accurate way for justifying statuses under a set of sub-indications. This allows the user to determine whether the signature validation has succeeded and the reason in case of a failure.
 
 The following table presents the indications and sub-indications that can be encountered at completion of a signature validation process. For a detailed description of their meaning, refer to ETSI EN 319 102-1 (<<R09>>).
 
@@ -376,7 +376,7 @@ image::sequential-signatures.jpg[Sequential Signatures, width="80%", height="80%
 
 [[CounterSignatures]]
 ===== Counter signatures
-A counter signature is an additional signature applied on data that has already been signed previously. This type of signature is used to show approval of the data and signature, to confirm the authenticity of the data. The computation of a counter signature is performed on the signed data and it is added to the signature as an unsigned attribute, i.e.  after initial signature creation.
+A counter signature is an additional signature applied on data that has already been signed previously. This type of signature is used to show approval of the data and signature, to confirm the authenticity of the data. The computation of a counter signature is performed on the signed data, and it is added to the signature as an unsigned attribute, i.e. after initial signature creation.
 
 Counter signatures are often created by trustworthy entities such as notaries, doctors or attorneys. Possible use cases are rental and mortgage applications, health documents, passports and visas.
 
@@ -384,10 +384,9 @@ The following schema illustrates the creation of counter signatures:
 
 image::counter-signatures.jpg[Counter Signatures, width="60%", height="60%", align="center"]
 
-
-
 [[SignaturePolicies]]
 ==== Signature Applicability Rules / Signature Policy
+
 The term "signature policy" is often used to refer to "Signature Applicability Rules", that is, a set of *rules* for the creation, validation and long-term management of one (or more) electronic signature(s).
 
 A Signature Policy, in that meaning, *contains* general information such as:
@@ -436,7 +435,7 @@ Having a signature policy and thus all the above-mentioned information, availabl
 
 ETSI ESI has developped several standards to express signature applicability rules or "signature policy" in two *forms*:
 
-* In a human readable form: It can be assessed to meet the requirements of the legal and contractual context in which it is being applied (cf. ETSI TS 119 172-1 <<R17>>).
+* In a human-readable form: It can be assessed to meet the requirements of the legal and contractual context in which it is being applied (cf. ETSI TS 119 172-1 <<R17>>).
 * In a machine processable form (XML or ASN.1): To facilitate its automatic processing using the electronic rules (cf. ETSI TS 119 172-2 <<R18>> and ETSI TS 119 172-3 <<R19>>).
 
 ===== Signature policy at creation and validation
@@ -468,6 +467,7 @@ ETSI has developed standards that can be followed to be compliant with the eIDAS
 
 === Digital signatures in DSS
 ==== Tokens in DSS
+
 The Token class is the base class for the different types of tokens used in the process of signature validation which are certificates, OCSPs, CRLs and timestamps. These tokens can be described as follows:
 
 * *CertificateToken:* Whenever the signature validation process encounters an X509Certificate a certificateToken is created. This class encapsulates some frequently used information: a certificate comes from a certain context (Trusted List, CertStore, Signature), has revocation data, etc. To expedite the processing of such information, they are kept in cache.
@@ -478,6 +478,7 @@ The Token class is the base class for the different types of tokens used in the 
     ** *PdfTimestampToken:* Specific class for a PDF Document TimestampToken.
 
 ==== Compliance to ETSI standards
+
 DSS implements the following ETSI standards for various signature forms:
 
 * XAdES digital signatures are compliant with ETSI EN 319 132 part 1-2 (<<R01>>);
@@ -494,6 +495,7 @@ but also claims:
 * Procedures for using and interpreting EU Member States national trusted lists, such as determining the qualified status of a timestamp or of an SSL certificate, are compliant with ETSI TS 119 615 (<<R14>>).
 
 ==== Out of the EU context
+
 DSS is not limited to EU contexts. It can be used in non-EU contexts with all its basic functions, i.e. signing, augmentation, validation, etc.
 
 An example would be the configuration of trust anchors (see section <<TrustAnchorConfiguration>>). The certificate sources can be configured from a TrustStore (kind of keystore which only contains certificates), a trusted list and/or a list of trusted lists.

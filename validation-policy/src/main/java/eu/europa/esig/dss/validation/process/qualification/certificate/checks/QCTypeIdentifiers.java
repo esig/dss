@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public final class QCTypeIdentifiers {
 	 * @return TRUE if the certificate contains "qc-type-esign" qualifier, FALSE otherwise
 	 */
 	public static boolean isQCTypeEsign(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCType.QCT_ESIGN);
+		return hasQCTypeOID(certificate, QCTypeEnum.QCT_ESIGN);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public final class QCTypeIdentifiers {
 	 * @return TRUE if the certificate contains "qc-type-eseal" qualifier, FALSE otherwise
 	 */
 	public static boolean isQCTypeEseal(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCType.QCT_ESEAL);
+		return hasQCTypeOID(certificate, QCTypeEnum.QCT_ESEAL);
 	}
 
 	/**
@@ -65,11 +66,11 @@ public final class QCTypeIdentifiers {
 	 * @return TRUE if the certificate contains "qc-type-web" qualifier, FALSE otherwise
 	 */
 	public static boolean isQCTypeWeb(CertificateWrapper certificate) {
-		return hasQCTypeOID(certificate, QCType.QCT_WEB);
+		return hasQCTypeOID(certificate, QCTypeEnum.QCT_WEB);
 	}
 
 	private static boolean hasQCTypeOID(CertificateWrapper certificate, QCType qcType) {
-		List<QCType> qcTypes = certificate.getQCTypes();
+		List<QCType> qcTypes = certificate.getQcTypes();
 		if (Utils.isCollectionNotEmpty(qcTypes)) {
 			return qcTypes.contains(qcType);
 		}

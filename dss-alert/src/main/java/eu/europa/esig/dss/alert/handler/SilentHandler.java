@@ -25,6 +25,13 @@ package eu.europa.esig.dss.alert.handler;
  */
 public class SilentHandler<T> implements AlertHandler<T> {
 
+	/**
+	 * Default constructor
+	 */
+	public SilentHandler() {
+		// empty
+	}
+
 	@Override
 	public void process(T object) {
 		// do nothing

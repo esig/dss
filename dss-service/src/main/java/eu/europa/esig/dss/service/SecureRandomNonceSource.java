@@ -33,6 +33,13 @@ public class SecureRandomNonceSource implements NonceSource {
 	/** The secure random instance */
 	private final SecureRandom secureRandom = new SecureRandom();
 
+	/**
+	 * Default constructor instantiating a SecureRandom
+	 */
+	public SecureRandomNonceSource() {
+		// empty
+	}
+
 	@Override
 	public BigInteger getNonce() {
 		return BigInteger.valueOf(secureRandom.nextLong());

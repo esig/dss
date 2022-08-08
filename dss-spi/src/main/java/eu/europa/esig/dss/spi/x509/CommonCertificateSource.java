@@ -73,6 +73,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 * The default constructor
 	 */
 	public CommonCertificateSource() {
+		// empty
 	}
 
 	/**

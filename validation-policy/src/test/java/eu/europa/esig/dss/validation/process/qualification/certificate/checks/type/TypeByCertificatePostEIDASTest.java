@@ -23,10 +23,12 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.OidDescription;
-import eu.europa.esig.dss.enumerations.QCType;
+import eu.europa.esig.dss.enumerations.QCStatement;
+import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -38,23 +40,31 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void esig() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESIGN);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESIGN, strategy.getType());
 	}
 
 	@Test
-	public void esigDefault() {
-		CertificateWrapper cert = getCertificate();
+	public void esigDefaultWithQcCompliance() {
+		CertificateWrapper cert = getCertificate(QCStatement.QC_COMPLIANCE);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESIGN, strategy.getType());
+	}
+
+	@Test
+	public void esigDefaultNoQcCompliance() {
+		CertificateWrapper cert = getCertificate();
+		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
+
+		assertEquals(CertificateType.UNKNOWN, strategy.getType());
 	}
 
 	@Test
 	public void eseal() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESEAL);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.ESEAL, strategy.getType());
@@ -62,7 +72,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	@Test
 	public void wsa() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_WEB);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_WEB);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.WSA, strategy.getType());
@@ -71,7 +81,7 @@ public class TypeByCertificatePostEIDASTest {
 	// MUST be overruled
 	@Test
 	public void multiple() {
-		CertificateWrapper cert = getCertificate(QCType.QCT_ESIGN, QCType.QCT_ESEAL);
+		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN, QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
 		assertEquals(CertificateType.UNKNOWN, strategy.getType());
@@ -79,14 +89,19 @@ public class TypeByCertificatePostEIDASTest {
 	
 	private CertificateWrapper getCertificate(OidDescription... qcTypesOids) {
 		XmlCertificate xmlCertificate = new XmlCertificate();
+		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		List<XmlOID> oids = new ArrayList<>();
 		for (OidDescription qcTypeOid : qcTypesOids) {
 			XmlOID xmlOID = new XmlOID();
 			xmlOID.setValue(qcTypeOid.getOid());
 			xmlOID.setDescription(qcTypeOid.getDescription());
 			oids.add(xmlOID);
+			if (QCStatement.QC_COMPLIANCE.equals(qcTypeOid)) {
+				XmlQcCompliance qcCompliance = new XmlQcCompliance();
+				qcCompliance.setPresent(true);
+				xmlQcStatements.setQcCompliance(qcCompliance);
+			}
 		}
-		XmlQcStatements xmlQcStatements = new XmlQcStatements();
 		xmlQcStatements.setQcTypes(oids);
 		xmlCertificate.setQcStatements(xmlQcStatements);
 		return new CertificateWrapper(xmlCertificate);

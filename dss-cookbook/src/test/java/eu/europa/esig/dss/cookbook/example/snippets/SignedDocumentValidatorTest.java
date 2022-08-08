@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.Arrays;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.transform.Templates;
-import javax.xml.validation.Schema;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
@@ -45,19 +34,44 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.transform.Templates;
+import javax.xml.validation.Schema;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SignedDocumentValidatorTest {
 
 	@Test
 	public void test() throws Exception {
 
-		DSSDocument document = new FileDocument(new File("src/test/resources/signature-pool/signedXmlXadesLT.xml"));
-
 		// tag::demo[]
+		// import java.util.Arrays;
+		// import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.model.FileDocument;
+		// import eu.europa.esig.dss.model.InMemoryDocument;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+		// import eu.europa.esig.dss.spi.x509.CertificateSource;
+		// import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+		// import eu.europa.esig.dss.validation.executor.ValidationLevel;
+		// import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+		// Load document to validate
+		DSSDocument document = new FileDocument("src/test/resources/signature-pool/signedXmlXadesLT.xml");
 		
 		// The method allows instantiation of a related validator for a provided document 
 		// independently on its format (the target dss module must be added as dependency)
@@ -70,13 +84,15 @@ public class SignedDocumentValidatorTest {
 		// Default : NONE)
 		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_TIMESTAMPS);
 
+		// tag::demo-signing-certificate[]
 		// Allows providing signing certificate(s) in the explicit way, in case if the
 		// certificate is not provided in the signature itself (can be used for non-ASiC signatures)
 		CertificateSource signingCertificateSource = new CommonCertificateSource();
 		signingCertificateSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIC9TCCAd2gAwIBAgIBAjANBgkqhkiG9w0BAQUFADArMQswCQYDVQQGEwJBQTEMMAoGA1UEChMDRFNTMQ4wDAYDVQQDEwVJQ0EgQTAeFw0xMzEyMDIxNzMzMTBaFw0xNTEyMDIxNzMzMTBaMDAxCzAJBgNVBAYTAkFBMQwwCgYDVQQKEwNEU1MxEzARBgNVBAMTCnVzZXIgQSBSU0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJUHHAphmSDdQ1t62tppK+dLTANsE2nAj+HCpasS3ohlBsrhteRsvTAbrDyIzCmTYWu/nVI4TGvbzBESwV/QitlkoMLpYFw32MIBf2DLmECzGJ3vm5haw6u8S9quR1h8Vu7QWd+5KMabZuR+j91RiSuoY0xS2ZQxJw1vhvW9hRYjAgMBAAGjgaIwgZ8wCQYDVR0TBAIwADAdBgNVHQ4EFgQU9ESnTWfwg13c3LQZzqqwibY5WVYwUwYDVR0jBEwwSoAUIO1CDsBSUcEoFZxKaWf1PAL1U+uhL6QtMCsxDDAKBgNVBAoTA0RTUzELMAkGA1UEBhMCQUExDjAMBgNVBAMTBVJDQSBBggEBMAsGA1UdDwQEAwIHgDARBgNVHSAECjAIMAYGBFUdIAAwDQYJKoZIhvcNAQEFBQADggEBAGnhhnoyVUhDnr/BSbZ/uWfSuwzFPG+2V9K6WxdIaaXOORFGIdFwGlAwA/Qzpq9snfBxuTkAykxq0uEDhHTj0qXxWRjQ+Dop/DrmccoF/zDvgGusyY1YXaABd/kc3IYt7ns7z3tpiqIz4A7a/UHplBRXfqjyaZurZuJQRaSdxh6CNhdEUiUBxkbb1SdMjuOgjzSDjcDjcegjvDquMKdDetvtu2Qh4ConBBo3fUImwiFRWnbudS5H2HE18ikC7gY/QIuNr7USf1PNyUgcG2g31cMtemj7UTBHZ2V/jPf7ZXqwfnVSaYkNvM3weAI6R3PI0STjdxN6a9qjt9xld40YEdw="));
 		documentValidator.setSigningCertificateSource(signingCertificateSource);
-		
+		// end::demo-signing-certificate[]
+
 		// Sets the detached contents that were used for the detached signature creation
 		documentValidator.setDetachedContents(Arrays.asList(new InMemoryDocument("Hello world!".getBytes())));
 		
@@ -97,10 +113,19 @@ public class SignedDocumentValidatorTest {
 		// Default : true
 		documentValidator.setEnableEtsiValidationReport(true);
 		
+		// tag::demo-identifier-provider[]
+		// Sets provider for token identifiers.
+		// For example, UserFriendlyIdentifierProvider will create identifiers in a human-readable form
+		// Default : OriginalIdentifierProvider (creates identifiers based on SHA-256 digest)
+		documentValidator.setTokenIdentifierProvider(new UserFriendlyIdentifierProvider());
+		// end::demo-identifier-provider[]
+
+		// tag::demo-semantics[]
 		// Sets if the semantics for Indication / SubIndication must be included in the
 		// Simple Report (see table 5 / 6 of the ETSI TS 119 102-1)
 		// Default : false
 		documentValidator.setIncludeSemantics(true);
+		// end::demo-semantics[]
 
 		// Executes the validation process and produces validation reports:
 		// Simple report, Detailed report, Diagnostic data and ETSI Validation Report (if enabled)
@@ -110,10 +135,29 @@ public class SignedDocumentValidatorTest {
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 
 		// end::demo[]
+
+		// tag::demo-extract-certificates[]
+		// Extract base64-encoded certificates on validation (to be incorporated within DiagnosticData)
+		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
+		// end::demo-extract-certificates[]
+
+		// tag::demo-extract-timestamps[]
+		// Extract base64-encoded timestamps on validation (to be incorporated within DiagnosticData)
+		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_TIMESTAMPS_ONLY);
+		// end::demo-extract-timestamps[]
+
+		// tag::demo-extract-revocation[]
+		// Extract base64-encoded revocation data on validation (to be incorporated within DiagnosticData)
+		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_REVOCATION_DATA_ONLY);
+		// end::demo-extract-revocation[]
 		
 		assertNotNull(etsiValidationReport);
 
 		// tag::demo-facade[]
+		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+		// import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+		// import eu.europa.esig.dss.validation.reports.Reports;
+
 		Reports completeReports = documentValidator.validateDocument();
 		
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
@@ -134,6 +178,12 @@ public class SignedDocumentValidatorTest {
 		assertNotNull(htmlDetailedReport);
 
 		// tag::demo-xml-definer[]
+		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+		// import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
+		// import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
+		// import javax.xml.bind.JAXBContext;
+		// import javax.xml.transform.Templates;
+		// import javax.xml.validation.Schema;
 
 		// The JAXB Object Factory
 		ObjectFactory objectFactory = DetailedReportXmlDefiner.OBJECT_FACTORY;

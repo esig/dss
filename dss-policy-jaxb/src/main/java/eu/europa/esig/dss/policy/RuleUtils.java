@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 public final class RuleUtils {
 
 	private RuleUtils() {
+		// empty
 	}
 
 	/**

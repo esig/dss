@@ -97,6 +97,12 @@ public abstract class XAdESBuilder {
 	protected CertificateVerifier certificateVerifier;
 
 	/**
+	 * Empty constructor
+	 */
+	protected XAdESBuilder() {
+	}
+
+	/**
 	 * The default constructor.
 	 *
 	 * @param certificateVerifier

@@ -40,6 +40,12 @@ public class DigitalIdentityListTypeConverter implements Function<DigitalIdentit
 
 	private static final Logger LOG = LoggerFactory.getLogger(DigitalIdentityListTypeConverter.class);
 
+	/**
+	 * Default constructor
+	 */
+	public DigitalIdentityListTypeConverter() {
+	}
+
 	@Override
 	public List<CertificateToken> apply(DigitalIdentityListType digitalIdentityList) {
 		List<CertificateToken> certificates = new ArrayList<>();

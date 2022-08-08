@@ -6,22 +6,33 @@
 
 == eIDAS
 
-
 === Overview of certificates
+
+==== Qualified status of certificate
+
+The qualification status determination is based on ETSI TS 119 615 standard (cf. <<R14>>), that requires extraction of information from a certificate (i.e. QcStatements, see <<R24>>) and from a Trusted List (under TSPService corresponding to the certificate).
+
+For more information about how to verify a certificate qualification status using DSS, please see the section <<CertificateValidation>>.
 
 ==== Type of certificate
 
 A certificate can be for electronic signature, for electronic seal or for website authentication.
 
-// TODO: add information how it is determined
-// TODO: Add a word about how this is usually indicated in a certificate
-// TODO: Clarify our X.509 vs profiled X.509 to support the regulation and its annexes (I,III, IV). Also mention QcStatements (See ETSI EN 319 412-5).
+A qualified certificate shall comply with the eIDAS regulation <<R12>>, for each type:
 
-==== Qualified status of certificate
+ * *Qualified certificate for electronic signature* - shall comply with Annex I "REQUIREMENTS FOR QUALIFIED CERTIFICATES FOR ELECTRONIC SIGNATURES" of eIDAS Regulation;
+* *Qualified certificate for electronic seals* - shall comply with Annex III "REQUIREMENTS FOR QUALIFIED CERTIFICATES FOR ELECTRONIC SEALS" of eIDAS Regulation;
+* *Qualified certificate for web authentication* - shall comply with Annex IV "REQUIREMENTS FOR QUALIFIED CERTIFICATES FOR WEBSITE AUTHENTICATION" of eIDAS Regulation;
 
-// TODO: add info what qualification statuses do we have
-// TODO: Maybe a word about what it entails to validate the qualified status ? i.e. it requires trusted lists, and why so.
-Explanations as well as an example on the determination of the qualified status of a certificate are presented in section <<CertificateValidation>>.
+The certificate type determination is based on ETSI TS 119 615 standard (cf. <<R14>>). The validation process takes into account the following factors but not limited to:
+
+ * The certificate type defined in QcStatements (see <<R24>>). One of the following values is supported:
+    ** `qc-type-esign` (OID "0.4.0.1862.1.6.1") - identifies a certificate for a electronic signature;
+    ** `qc-type-eseal` (OID "0.4.0.1862.1.6.2") - identifies a certificate for a electronic seal;
+    ** `qc-type-web` (OID "0.4.0.1862.1.6.3") - identifies a certificate for a web authentication.
+ * Information extracted from a TSP Service issued the certificate (from a Trusted List). The type of certificate may be 'overruled' based on the defined Qualifiers.
+
+For more information about the validation process please see the ETSI TS 119 615 standard (cf. <<R14>>).
 
 === How certificate type and qualification are represented in DSS
 [[CertificateQualificationDetermination]]
@@ -39,7 +50,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/Certificat
 
 ==== Qualified certificate for WebSite Authentication (QWAC)
 
-With DSS, it is possible to validate SSL certificate against the EUMS TL and the ETSI TS 119 615 (cf. <<R14>>) to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
+With DSS, it is possible to validate a SSL certificate against the EUMS TL and the ETSI TS 119 615 (cf. <<R14>>) to determine if it is a Qualified certificate for WebSite Authentication (QWAC).
 
 DSS provides a special class `SSLCertificateLoader` allowing to extract the SSL certificate chain from the given URL. The qualification verification is similar to the example defined in chapter <<CertificateQualificationDetermination>>.
 
@@ -49,21 +60,24 @@ DSS provides a special class `SSLCertificateLoader` allowing to extract the SSL 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/QWACValidationTest.java[tags=demo]
 ----
 
-
-
 === Overview of AdES signatures
 
 ==== Type of AdES
 
-Under eIDAS, there exist advanced electronic signatures and seals.
-// TODO : more info
-// TODO: add a word about how the type of an AdES digital signature is represented ? i.e. by means of a certificate of a particular type.
+eIDAS Regulation (cf. <<R12>>) defines the following types of an electronic signature:
+
+* (simple) *electronic signature* - data in electronic form which is attached to or logically associated with other data in electronic form and which is used by the signatory to sign;
+* *advanced electronic signature* - an electronic signature which meets the requirements set out in Article 26 of eIDAS Regulation <<R12>>;
+* *qualified electronic signature* - an advanced electronic signature that is created by a qualified electronic signature creation device, and which is based on a qualified certificate for electronic signatures.
 
 ==== Qualified status of AdES signature
 
-Below is an example of the validation and verification of the qualified status of an AdES signature:
-// TODO : more info
-// TODO: add a word about what the qualified status of an AdES signature entails ? i.e. the use of the trusted lists, the qualified status of the signing certificate and the use of a QSCD
+To have a qualified status an electronic signature/seal shall satisfy the following requirements but not limited to:
+
+ * the signing-certificate shall be qualified at the certificate's issuance time;
+ * the signing-certificate shall be qualified at the best-signature-time;
+ * the signing-certificate shall have a type of for eSignature or for eSeal, respectively to the signature type;
+ * the signature shall be created using Qualified Signature Creation Device (QSCD).
 
 === How signature type and qualification are represented in DSS
 [[SignatureQualificationDetermination]]

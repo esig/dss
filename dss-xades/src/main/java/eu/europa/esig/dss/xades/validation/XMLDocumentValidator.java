@@ -66,9 +66,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	/** Defines if the XSW protection shall be disabled (false by default) */
 	private boolean disableXSWProtection = false;
 
-	/** Cached list of found signatures */
-	private List<AdvancedSignature> signatures;
-
 	static {
 		XAdESNamespaces.registerNamespaces();
 
@@ -115,7 +112,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * NOT RECOMMENDED : This parameter allows to disable protection against XML
+	 * NOT RECOMMENDED : This parameter allows disabling protection against XML
 	 * Signature wrapping attacks (XSW). It disables the research by XPath
 	 * expression for defined Type attributes.
 	 * 
@@ -127,12 +124,8 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	@Override
-	public List<AdvancedSignature> getSignatures() {
-		if (signatures != null) {
-			return signatures;
-		}
-
-		signatures = new ArrayList<>();
+	protected List<AdvancedSignature> buildSignatures() {
+		List<AdvancedSignature> signatures = new ArrayList<>();
 		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(rootElement);
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 

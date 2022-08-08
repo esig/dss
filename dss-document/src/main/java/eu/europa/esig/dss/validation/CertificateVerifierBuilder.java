@@ -51,7 +51,10 @@ public class CertificateVerifierBuilder {
 			copy.setAIASource(certificateVerifier.getAIASource());
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
+			copy.setRevocationDataLoadingStrategyFactory(certificateVerifier.getRevocationDataLoadingStrategyFactory());
+			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
+			copy.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			copy.setAlertOnInvalidTimestamp(certificateVerifier.getAlertOnInvalidTimestamp());
@@ -75,6 +78,7 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
+			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
@@ -84,6 +88,17 @@ public class CertificateVerifierBuilder {
 		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
 		return offlineCertificateVerifier;
+	}
+
+	/**
+	 * This method builds a local copy of a {@code CertificateVerifier} used by a signature validation process
+	 *
+	 * @return {@link CertificateVerifier}
+	 */
+	public CertificateVerifier buildCompleteCopyForValidation() {
+		CertificateVerifier copy = buildCompleteCopy();
+		copy.setRevocationFallback(true);
+		return copy;
 	}
 	
 }

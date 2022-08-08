@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.asic.common.signature.GetDataToSignHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.List;
 /**
  * The interface defining a helper to create a {@code ToBeSigned} data for an ASiC with XAdES
  */
-public interface GetDataToSignASiCWithXAdESHelper extends GetDataToSignHelper {
+public interface GetDataToSignASiCWithXAdESHelper {
 
 	/**
 	 * Returns a list of documents to be signed

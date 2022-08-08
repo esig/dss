@@ -126,6 +126,13 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     protected transient JdbcCacheConnector jdbcCacheConnector;
 
     /**
+     * Default constructor with null JdbcCacheConnector
+     */
+    public JdbcCacheAIASource() {
+        // empty
+    }
+
+    /**
      * Sets the SQL connection DataSource
      *
      * @param jdbcCacheConnector {@link JdbcCacheConnector}

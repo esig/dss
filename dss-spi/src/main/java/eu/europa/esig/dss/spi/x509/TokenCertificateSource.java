@@ -81,7 +81,6 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		Objects.requireNonNull(certificate, "The certificate cannot be null");
 		Objects.requireNonNull(origin, "The origin cannot be null");
 		certificateOrigins.computeIfAbsent(certificate, k -> new ArrayList<>()).add(origin);
-		// TODO remove ?
 		addCertificate(certificate);
 	}
 

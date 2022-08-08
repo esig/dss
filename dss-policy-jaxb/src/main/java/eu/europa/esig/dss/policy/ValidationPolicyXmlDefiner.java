@@ -45,6 +45,7 @@ public final class ValidationPolicyXmlDefiner {
 	private static final String VALIDATION_POLICY_SCHEMA_LOCATION = "/xsd/policy.xsd";
 
 	private ValidationPolicyXmlDefiner() {
+		// empty
 	}
 
 	/**

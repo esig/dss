@@ -51,6 +51,7 @@ public final class DetailedReportXmlDefiner {
 	private static final String DETAILED_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/detailed-report.xslt";
 
 	private DetailedReportXmlDefiner() {
+		// empty
 	}
 
 	/** Used to create a JAXB objects */

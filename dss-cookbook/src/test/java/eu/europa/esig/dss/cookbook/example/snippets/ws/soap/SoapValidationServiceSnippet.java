@@ -36,6 +36,8 @@ public class SoapValidationServiceSnippet {
     public void demo() throws Exception {
 
         // tag::demo[]
+        // import eu.europa.esig.dss.ws.validation.soap.SoapDocumentValidationServiceImpl;
+        // import eu.europa.esig.dss.ws.validation.soap.client.SoapDocumentValidationService;
 
         // Initialize the soap client
         SoapDocumentValidationService validationService = new SoapDocumentValidationServiceImpl();

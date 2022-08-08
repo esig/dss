@@ -45,6 +45,7 @@ public final class XAdES122Utils extends XSDAbstractUtils {
 	private JAXBContext jc;
 
 	private XAdES122Utils() {
+		// empty
 	}
 
 	/**

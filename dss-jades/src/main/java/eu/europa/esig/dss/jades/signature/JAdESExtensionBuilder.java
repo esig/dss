@@ -35,6 +35,12 @@ import java.util.List;
 public abstract class JAdESExtensionBuilder {
 
 	/**
+	 * Default constructor
+	 */
+	protected JAdESExtensionBuilder() {
+	}
+
+	/**
 	 * Checks if the type of etsiU components is consistent
 	 *
 	 * @param jws {@link JWS} to check

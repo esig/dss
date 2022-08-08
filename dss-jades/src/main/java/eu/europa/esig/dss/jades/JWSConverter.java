@@ -57,6 +57,7 @@ public final class JWSConverter {
 	}
 
 	private JWSConverter() {
+		// empty
 	}
 
 	/**

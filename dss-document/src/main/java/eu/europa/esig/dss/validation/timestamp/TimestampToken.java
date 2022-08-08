@@ -546,10 +546,12 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * Checks if the data for message-imprint computation has been found
+	 *
 	 * @return true if the message imprint data was found, false otherwise
 	 */
-	public Boolean isMessageImprintDataFound() {
-		return messageImprintData;
+	public boolean isMessageImprintDataFound() {
+		return Utils.isTrue(messageImprintData);
 	}
 
 	/**
@@ -557,11 +559,11 @@ public class TimestampToken extends Token {
 	 *
 	 * @return true if the message imprint data is intact, false otherwise
 	 */
-	public Boolean isMessageImprintDataIntact() {
+	public boolean isMessageImprintDataIntact() {
 		if (!processed) {
 			throw new IllegalStateException("Invoke matchData(byte[] data) method before!");
 		}
-		return messageImprintIntact;
+		return Utils.isTrue(messageImprintIntact);
 	}
 	
 	/**
@@ -605,6 +607,8 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * Gets list of {@code TimestampedReference}s covered by the current timestamp
+	 *
 	 * @return {@code List} of {@code TimestampReference}s
 	 */
 	public List<TimestampedReference> getTimestampedReferences() {
@@ -612,6 +616,8 @@ public class TimestampToken extends Token {
 	}
 
 	/**
+	 * Gets the {@code ArchiveTimestampType}, when applicable
+	 *
 	 * @return {@code ArchiveTimestampType} in the case of an archive timestamp, {@code null} otherwise
 	 */
 	public ArchiveTimestampType getArchiveTimestampType() {

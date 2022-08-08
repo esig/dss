@@ -33,6 +33,13 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
  */
 public class GrantedTrustService implements TrustServicePredicate {
 
+    /**
+     * Default constructor
+     */
+    public GrantedTrustService() {
+        // empty
+    }
+
     @Override
     public boolean test(TSPServiceType trustedService) {
         if (trustedService != null) {

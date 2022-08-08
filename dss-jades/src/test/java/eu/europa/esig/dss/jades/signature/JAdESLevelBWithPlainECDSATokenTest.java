@@ -36,6 +36,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
@@ -54,22 +55,40 @@ public class JAdESLevelBWithPlainECDSATokenTest extends AbstractJAdESTestSignatu
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
-    private static Stream<DigestAlgorithm> data() {
-        List<DigestAlgorithm> args = new ArrayList<>();
+    private String signingAlias;
+
+    private static Stream<Arguments> data() {
+        List<Arguments> args = new ArrayList<>();
 
         for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
             SignatureAlgorithm ecCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, digestAlgo);
             SignatureAlgorithm plainEcCa = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, digestAlgo);
             if (ecCa != null && Utils.isStringNotBlank(ecCa.getJWAId()) && plainEcCa != null && Utils.isStringNotBlank(plainEcCa.getJWAId())) {
-                args.add(digestAlgo);
+                args.add(Arguments.of(digestAlgo, getSigner(digestAlgo)));
             }
         }
         return args.stream();
     }
 
-    @ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
+    private static String getSigner(DigestAlgorithm digestAlgorithm) {
+        switch (digestAlgorithm) {
+            case SHA256:
+                return ECDSA_USER;
+            case SHA384:
+                return ECDSA_384_USER;
+            case SHA512:
+                return ECDSA_521_USER;
+            default:
+                throw new UnsupportedOperationException(String.format(
+                        "DigestAlgorithm '%s' is not supported!", digestAlgorithm));
+        }
+    }
+
+    @ParameterizedTest(name = "Combination {index} of ECDSA with {0} and signer {1}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    public void init(DigestAlgorithm digestAlgo, String signingAlias) {
+        this.signingAlias = signingAlias;
+
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new JAdESSignatureParameters();
@@ -125,7 +144,7 @@ public class JAdESLevelBWithPlainECDSATokenTest extends AbstractJAdESTestSignatu
 
     @Override
     protected String getSigningAlias() {
-        return ECDSA_USER;
+        return signingAlias;
     }
 
 }

@@ -55,10 +55,11 @@ public class SoapSignatureServiceSnippet extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // tag::demo[]
+            // import eu.europa.esig.dss.ws.signature.soap.SoapDocumentSignatureServiceImpl;
+            // import eu.europa.esig.dss.ws.signature.soap.client.SoapDocumentSignatureService;
 
             // Initializes the SOAP client
             SoapDocumentSignatureService soapClient = new SoapDocumentSignatureServiceImpl();
-
             // end::demo[]
 
             // Defines RemoteSignatureParameters

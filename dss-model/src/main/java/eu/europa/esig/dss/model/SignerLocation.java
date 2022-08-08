@@ -81,6 +81,7 @@ public class SignerLocation implements Serializable {
 	 * The default constructor
 	 */
 	public SignerLocation() {
+		// empty
 	}
 
 	/**

@@ -27,6 +27,13 @@ import eu.europa.esig.dss.alert.status.Status;
  */
 public class StatusDetector implements AlertDetector<Status> {
 
+	/**
+	 * Default constructor
+	 */
+	public StatusDetector() {
+		// empty
+	}
+
 	@Override
 	public boolean detect(Status object) {
 		return !object.isEmpty();

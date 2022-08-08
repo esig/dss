@@ -38,6 +38,12 @@ import java.util.Map;
 public abstract class AbstractOtherTSLPointerPredicate implements OtherTSLPointerPredicate {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractOtherTSLPointerPredicate() {
+	}
+
+	/**
 	 * Extracts the additional information map
 	 *
 	 * @param o {@link OtherTSLPointerType}

@@ -35,6 +35,13 @@ import java.util.List;
  */
 public class ASiCWithXAdESASiCContentBuilder extends AbstractASiCContentBuilder {
 
+    /**
+     * Default constructor
+     */
+    public ASiCWithXAdESASiCContentBuilder() {
+        // empty
+    }
+
     @Override
     protected boolean isAcceptableContainerFormat(DSSDocument archiveDocument) {
         List<String> filenames = ZipUtils.getInstance().extractEntryNames(archiveDocument);

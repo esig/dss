@@ -411,7 +411,7 @@ public interface XAdESPaths extends Serializable {
 	String getTimestampValidationDataPath();
 
 	/**
-	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignaturePolicyStore"
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SignaturePolicyStore"
 	 *
 	 * @return {@link String} path
 	 */
@@ -623,6 +623,20 @@ public interface XAdESPaths extends Serializable {
 	String getCurrentObjectIdentifier();
 
 	/**
+	 * Gets path "./xades:ObjectReference"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentCommitmentObjectReferencesPath();
+
+	/**
+	 * Gets path "./xades:AllSignedDataObjects"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentCommitmentAllSignedDataObjectsPath();
+
+	/**
 	 * Gets path "./xades:MimeType"
 	 *
 	 * @return {@link String} path
@@ -800,6 +814,13 @@ public interface XAdESPaths extends Serializable {
 	 * @return {@link String} path
 	 */
 	String getCurrentSignaturePolicyDocument();
+
+	/**
+	 * Gets path "./xades141:SigPolDocLocalURI"
+	 *
+	 * @return {@link String} path
+	 */
+	String getCurrentSigPolDocLocalURI();
 
 	/**
 	 * Gets the XSD Utils

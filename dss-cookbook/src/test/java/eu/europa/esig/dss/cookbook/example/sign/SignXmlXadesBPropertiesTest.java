@@ -28,7 +28,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.CommitmentQualifier;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -65,18 +68,35 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
 			// tag::demo[]
+			// import eu.europa.esig.dss.enumerations.CommitmentType;
+			// import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
+			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+			// import eu.europa.esig.dss.enumerations.SignatureLevel;
+			// import eu.europa.esig.dss.enumerations.SignaturePackaging;
+			// import eu.europa.esig.dss.model.BLevelParameters;
+			// import eu.europa.esig.dss.model.DSSDocument;
+			// import eu.europa.esig.dss.model.SignatureValue;
+			// import eu.europa.esig.dss.model.SignerLocation;
+			// import eu.europa.esig.dss.model.ToBeSigned;
+			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+			// import eu.europa.esig.dss.xades.signature.XAdESService;
+			// import java.util.ArrayList;
+			// import java.util.Arrays;
+			// import java.util.List;
 
-			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
+			XAdESSignatureParameters xadesSignatureParameters = new XAdESSignatureParameters();
 
 			// Basic signature configuration
-			parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-			parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-			parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-			parameters.setSigningCertificate(privateKey.getCertificate());
-			parameters.setCertificateChain(privateKey.getCertificateChain());
+			xadesSignatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+			xadesSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+			xadesSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+			xadesSignatureParameters.setSigningCertificate(privateKey.getCertificate());
+			xadesSignatureParameters.setCertificateChain(privateKey.getCertificateChain());
 
 			// Configuration of several signed attributes like ...
-			BLevelParameters bLevelParameters = parameters.bLevel();
+			BLevelParameters bLevelParameters = xadesSignatureParameters.bLevel();
 
 			// Contains claimed roles assumed by the signer when creating the signature
 			bLevelParameters.setClaimedSignerRoles(Arrays.asList("Manager"));
@@ -95,6 +115,22 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfOrigin);
 			commitmentTypeIndications.add(CommitmentTypeEnum.ProofOfApproval);
+
+			// Alternatively a custom CommitmentType may be defined
+			CommonCommitmentType commitmentType = new CommonCommitmentType();
+			commitmentType.setUri("http://some.server.com/custom-commitment");
+			commitmentType.setDescription("This is a custom test commitment");
+			commitmentType.setDocumentationReferences("http://some.server.com/custom-commitment/documentation");
+
+			// It is also possible to define a custom qualifier, by providing its content (e.g. XML-encoded for XAdES)
+			CommitmentQualifier commitmentQualifier = new CommitmentQualifier();
+			String xmlContent = "<base:ext xmlns:base=\"http://same.server.com/custom-namespace\">Custom qualifier</base:ext>";
+			commitmentQualifier.setContent(new InMemoryDocument(xmlContent.getBytes()));
+			commitmentType.setCommitmentTypeQualifiers(commitmentQualifier);
+
+			// Add custom commitment to the list
+			commitmentTypeIndications.add(commitmentType);
+
 			// NOTE: CommitmentType supports also IDQualifier and documentationReferences.
 			// To use it, you need to have a custom implementation of the interface.
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
@@ -104,13 +140,13 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			service.setTspSource(getOnlineTSPSource());
 
 			// Allows setting of content-timestamp (part of the signed attributes)
-			TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, parameters);
-			parameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+			TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, xadesSignatureParameters);
+			xadesSignatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
 
 			// Signature process with its 3 stateless steps
-			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
-			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
-			DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
+			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, xadesSignatureParameters);
+			SignatureValue signatureValue = signingToken.sign(dataToSign, xadesSignatureParameters.getDigestAlgorithm(), privateKey);
+			DSSDocument signedDocument = service.signDocument(toSignDocument, xadesSignatureParameters, signatureValue);
 
 			// end::demo[]
 
@@ -118,16 +154,16 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 			// This parameter defines whether a signature creation/extension with an expired certificate shall be allowed
 			// Default : false (signature creation with an expired certificate is not allowed)
-			parameters.setSignWithExpiredCertificate(false);
+			xadesSignatureParameters.setSignWithExpiredCertificate(false);
 
 			// This parameter defines whether a signature creation/extension with a not yet valid certificate shall be allowed
 			// Default : false (signature creation with a not yet valid certificate is not allowed)
-			parameters.setSignWithNotYetValidCertificate(false);
+			xadesSignatureParameters.setSignWithNotYetValidCertificate(false);
 
 			// This parameter defines whether a revocation check shall be performed on a signature creation/extension
 			// Default : false (revocation check is not performed)
 			// NOTE: a behavior of the revocation check shall be defined with alerts within the used {@code eu.europa.esig.dss.validation.CertificateVerifier}
-			parameters.setCheckCertificateRevocation(false);
+			xadesSignatureParameters.setCheckCertificateRevocation(false);
 
 			// end::requirements[]
 

@@ -38,6 +38,13 @@ public abstract class SignatureIntegrityValidator {
 
 	/** The list of errors occurred during the signature integrity validation */
 	private List<String> errorMessages = null;
+
+	/**
+	 * Default constructor instantiating object with null list of erros
+	 */
+	protected SignatureIntegrityValidator() {
+		// empty
+	}
 	
 	/**
 	 * Verifies validity of a signature across a provided signing certificate candidates list

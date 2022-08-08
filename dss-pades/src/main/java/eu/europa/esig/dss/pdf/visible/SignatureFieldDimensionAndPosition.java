@@ -85,6 +85,12 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 	private ImageResolution imageResolution;
 
 	/**
+	 * Default constructor instantiating object with null parameters
+	 */
+	public SignatureFieldDimensionAndPosition() {
+	}
+
+	/**
 	 * Gets upper left X coordinate of the signature bounding box
 	 *
 	 * @return upper left X coordinate

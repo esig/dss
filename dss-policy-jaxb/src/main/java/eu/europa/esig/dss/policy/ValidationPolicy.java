@@ -164,6 +164,14 @@ public interface ValidationPolicy {
 	LevelConstraint getMessageDigestOrSignedPropertiesConstraint(Context context);
 
 	/**
+	 * This constraint checks whether a JWA signature has a valid elliptic curve key size
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if EllipticCurveKeySize element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEllipticCurveKeySizeConstraint(Context context);
+
+	/**
 	 * Indicates if the signed property: commitment-type-indication should be checked. If CommitmentTypeIndication
 	 * element is absent within the constraint file
 	 * then null is returned, otherwise the list of identifiers is initialised.
@@ -641,7 +649,7 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificatePS2DQcCompetentAuthorityIdConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Indicates if the end user certificate used in validating the signature is issued to a natural person.
+	 * Indicates if signing-certificate has been identified.
 	 *
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if Recognition for a given context element is present in the constraint file,

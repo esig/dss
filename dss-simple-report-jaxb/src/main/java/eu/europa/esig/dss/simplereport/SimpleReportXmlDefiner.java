@@ -51,6 +51,7 @@ public final class SimpleReportXmlDefiner {
 	private static final String SIMPLE_REPORT_XSLT_PDF_LOCATION = "/xslt/pdf/simple-report.xslt";
 
 	private SimpleReportXmlDefiner() {
+		// empty
 	}
 
 	/** The object factory to use */

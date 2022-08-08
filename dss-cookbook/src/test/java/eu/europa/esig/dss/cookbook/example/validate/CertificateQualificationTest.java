@@ -63,6 +63,20 @@ public class CertificateQualificationTest {
         RevocationSource<CRL> crlSource = new OnlineCRLSource();
 
         // tag::demo[]
+        // import eu.europa.esig.dss.enumerations.CertificateQualification;
+        // import eu.europa.esig.dss.enumerations.CertificateType;
+        // import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+        // import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+        // import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
+        // import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+        // import eu.europa.esig.dss.tsl.job.TLValidationJob;
+        // import eu.europa.esig.dss.tsl.source.TLSource;
+        // import eu.europa.esig.dss.validation.CertificateValidator;
+        // import eu.europa.esig.dss.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.validation.reports.CertificateReports;
+        // import org.apache.hc.client5.http.ssl.TrustAllStrategy;
+
         // Configure the internet access
         CommonsDataLoader dataLoader = new CommonsDataLoader();
 

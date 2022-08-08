@@ -31,6 +31,12 @@ import java.util.List;
  */
 public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilter {
 
+	/**
+	 * Default constructor
+	 */
+	protected AbstractTrustedServiceFilter() {
+	}
+
 	@Override
 	public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> originServices) {
 		List<TrustedServiceWrapper> result = new ArrayList<>();

@@ -30,6 +30,13 @@ import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
  */
 public class CAdESDiagnosticDataBuilder extends SignedDocumentDiagnosticDataBuilder {
 
+	/**
+	 * Default constructor
+	 */
+	public CAdESDiagnosticDataBuilder() {
+		// empty
+	}
+
 	@Override
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = super.buildDetachedXmlSignature(signature);

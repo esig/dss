@@ -52,7 +52,14 @@ import java.util.Objects;
  */
 public class GoogleGuavaUtils implements IUtils {
 
+	/** Defined an empty String */
 	private static final String STRING_EMPTY = "";
+
+	/**
+	 * Default constructor
+	 */
+	public GoogleGuavaUtils() {
+	}
 
 	@Override
 	public boolean isStringEmpty(String text) {
@@ -140,6 +147,14 @@ public class GoogleGuavaUtils implements IUtils {
 			return false;
 		}
 		return lowerCase(text).endsWith(lowerCase(expected));
+	}
+
+	@Override
+	public String getFileNameExtension(String filename) {
+		if (filename != null) {
+			return Files.getFileExtension(filename);
+		}
+		return null;
 	}
 
 	@Override
@@ -288,7 +303,7 @@ public class GoogleGuavaUtils implements IUtils {
 	public void cleanDirectory(File directory) throws IOException {
 		Objects.requireNonNull(directory, "Directory cannot be null");
 		if (!directory.exists() || !directory.isDirectory()) {
-			throw new FileNotFoundException("Directory '" + directory.getAbsolutePath() + "' not found");
+			throw new FileNotFoundException(String.format("Directory with name '%s' not found", directory.getName()));
 		} else if (directory.isDirectory()) {
 			File[] listFiles = directory.listFiles();
 			if (listFiles != null) {
@@ -297,7 +312,7 @@ public class GoogleGuavaUtils implements IUtils {
 						cleanDirectory(file);
 					} else if (file.isFile()) {
 						if (!file.delete()) {
-							throw new IOException("Unable to delete file " + file.getAbsolutePath());
+							throw new IOException(String.format("Unable to delete file with name '%s'", file.getName()));
 						}
 					}
 				}

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,6 +66,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESTestSignature
 		extends AbstractPkiFactoryTestDocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
@@ -132,6 +135,34 @@ public abstract class AbstractJAdESTestSignature
 			for (String critItem : critArray) {
 				assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
 				assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+			}
+		}
+	}
+
+	@Override
+	protected void checkSignatureValue(DiagnosticData diagnosticData) {
+		super.checkSignatureValue(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (signatureWrapper.getEncryptionAlgorithm() != null && signatureWrapper.getDigestAlgorithm() != null &&
+					signatureWrapper.getEncryptionAlgorithm().isEquivalent(EncryptionAlgorithm.ECDSA)) {
+				assertFalse(DSSASN1Utils.isAsn1EncodedSignatureValue(signatureWrapper.getSignatureValue()), "PLAIN-ECDSA is expected!");
+
+				int bitLength = DSSASN1Utils.getSignatureValueBitLength(signatureWrapper.getSignatureValue());
+				switch (signatureWrapper.getDigestAlgorithm()) {
+					case SHA256:
+						assertEquals(256, bitLength);
+						break;
+					case SHA384:
+						assertEquals(384, bitLength);
+						break;
+					case SHA512:
+						assertTrue(bitLength == 520 || bitLength == 528);
+						break;
+					default:
+						fail(String.format("DigestAlgorithm '%s' is not supported for JWS with ECDSA!",
+								signatureWrapper.getDigestAlgorithm()));
+				}
 			}
 		}
 	}

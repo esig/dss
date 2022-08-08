@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
+
+import java.util.List;
 
 /**
  * A Trusted Service can not have QSCD and NoQSCD qualifiers for the same certificate.
@@ -35,10 +35,11 @@ class TrustedServiceQSCDConsistency implements TrustedServiceCondition {
 	public boolean isConsistent(TrustedServiceWrapper trustedService) {
 		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
 
-		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers)
-				|| ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
+		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
+				ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers) || ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers) ||
+				ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
 
-		boolean noQscd = ServiceQualification.isQcNoQSCD(capturedQualifiers);
+		boolean noQscd = ServiceQualification.isQcNoQSCD(capturedQualifiers) || ServiceQualification.isQcNoSSCD(capturedQualifiers);
 
 		if (qscd) {
 			return !noQscd;

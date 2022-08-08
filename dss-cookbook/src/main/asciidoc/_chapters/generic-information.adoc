@@ -49,7 +49,6 @@ This is not an exhaustive list of all the possibilities offered by the framework
 NOTE: The DSS framework is actively maintained and new features will be released in the future.
 
 === Available demonstrations
-// TODO: Info that we (CEF) don’t collect documents.
 
 With the framework, some demonstrations are provided:
 
@@ -57,9 +56,11 @@ With the framework, some demonstrations are provided:
 * <<DSSWebApp, Ready to use demo web application build>>;
 * <<DSSStandaloneApp, JavaFX Standalone Application>>.
 
-WARNING: The demonstrations use a fake timestamp service (Mock) so that is not recommended for a production usage.
+NOTE: European Commission does not intend to provide a service for a qualified signature creation, augmentation or validation through the available demonstrations. Usage of this demonstration should be limited to testing purposes only. European Commission claims no responsibility or liability whatsoever with regard to its usage. Please refer to the https://ec.europa.eu/info/legal-notice_en[legal notice] for further information.
 
 The requirements and build instructions for DSS demonstrations can be found in the section <<DSSDemo>>.
+
+WARNING: The demonstrations use a fake timestamp service (Mock) so that is not recommended for a production usage.
 
 === License
 For the DSS core: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)].
@@ -172,6 +173,8 @@ readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
 |[[R21]]    R21 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280 |
 |[[R22]]    R22 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP |RFC 6960 |
 |[[R23]]    R23 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST |Common PKI v2.0 | v2.0
+|[[R24]]    R24 |Electronic Signatures and Infrastructures (ESI);
+Certificate Profiles; Part 5: QCStatements |ETSI EN 319 412-5 | V2.3.1
 
 
 |=======================

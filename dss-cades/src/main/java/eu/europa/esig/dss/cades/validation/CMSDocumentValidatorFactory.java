@@ -29,6 +29,13 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class CMSDocumentValidatorFactory implements DocumentValidatorFactory {
 
+	/**
+	 * Default constructor
+	 */
+	public CMSDocumentValidatorFactory() {
+		// empty
+	}
+
 	@Override
 	public boolean isSupported(DSSDocument document) {
 		CMSDocumentValidator validator = new CMSDocumentValidator();

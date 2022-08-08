@@ -41,6 +41,13 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractKeyStoreTokenConnection.class);
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractKeyStoreTokenConnection() {
+		// empty
+	}
+
+	/**
 	 * Gets the key store
 	 *
 	 * @return {@link KeyStore}

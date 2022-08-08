@@ -22,15 +22,16 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
-import eu.europa.esig.dss.validation.process.qualification.trust.AdditionalServiceInformation;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Allowed services are :
@@ -68,7 +69,11 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 			boolean qcForEsign = ServiceQualification.isQcForEsig(capturedQualifiers);
 			boolean qcForEseals = ServiceQualification.isQcForEseal(capturedQualifiers);
 			boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
-			boolean onlyOneQcForXXX = qcForEsign ^ qcForEseals ^ qcForWSA;
+
+			// if QcStatement and no types -> for eSig by default (see TS 119 615, Table 1)
+			qcForEsign = qcForEsign || (!qcForEseals && !qcForWSA && certificate.isQcCompliance());
+
+			boolean onlyOneQcForXXX = Stream.of(qcForEsign, qcForEseals, qcForWSA).filter(b -> b).count() == 1;
 
 			TypeStrategy strategy = TypeStrategyFactory.createTypeFromCert(certificate);
 			CertificateType certType = strategy.getType();
@@ -78,17 +83,17 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 			boolean overruleForWSA = asiWsa && qcForWSA && onlyOneQcForXXX;
 
 			switch (certType) {
-			case ESIGN:
-				return asiEsign || overruleForEseals || overruleForWSA;
-			case ESEAL:
-				return asiEseals || overruleForEsign || overruleForWSA;
-			case WSA:
-				return asiWsa || overruleForEseals || overruleForEsign;
-			case UNKNOWN:
-				// multiple cert types + overrule ?
-				return overruleForEsign || overruleForEseals || overruleForWSA;
-			default:
-				return false;
+				case ESIGN:
+					return asiEsign || overruleForEseals || overruleForWSA;
+				case ESEAL:
+					return asiEseals || overruleForEsign || overruleForWSA;
+				case WSA:
+					return asiWsa || overruleForEseals || overruleForEsign;
+				case UNKNOWN:
+					// continue to identify qualification (keeping unknown type)
+					return true;
+				default:
+					throw new UnsupportedOperationException(String.format("Unsupported CertificateType : %s", certType));
 			}
 
 		}

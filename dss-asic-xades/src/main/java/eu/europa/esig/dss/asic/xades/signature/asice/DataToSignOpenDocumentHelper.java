@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 
@@ -33,28 +31,18 @@ import java.util.List;
  */
 public class DataToSignOpenDocumentHelper extends DataToSignASiCEWithXAdESHelper {
 
-	/** The default signature filename */
-	private static final String ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE =
-			ASiCUtils.META_INF_FOLDER + "documentsignatures.xml";
-
 	/**
 	 * The default constructor
 	 *
 	 * @param asicContent    {@link ASiCContent}
-	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignOpenDocumentHelper(final ASiCContent asicContent, final ASiCParameters asicParameters) {
-		super(asicContent, asicParameters);
+	public DataToSignOpenDocumentHelper(final ASiCContent asicContent) {
+		super(asicContent);
 	}
 
 	@Override
 	public List<DSSDocument> getToBeSigned() {
 		return OpenDocumentSupportUtils.getOpenDocumentCoverage(asicContent);
-	}
-
-	@Override
-	public String getSignatureFilename() {
-		return ZIP_OPEN_DOCUMENT_METAINF_XADES_SIGNATURE;
 	}
 
 	@Override

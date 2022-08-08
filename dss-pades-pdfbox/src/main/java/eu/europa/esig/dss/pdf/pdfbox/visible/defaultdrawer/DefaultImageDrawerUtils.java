@@ -53,6 +53,7 @@ public final class DefaultImageDrawerUtils {
      * Default constructor
      */
     private DefaultImageDrawerUtils() {
+        // empty
     }
 
     /**

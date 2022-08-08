@@ -118,7 +118,7 @@ public class ASiCETimestampMultipleSignedFilesTest extends AbstractASiCEWithCAdE
                     signedDataIds.add(signatureScope.getSignerData().getId());
                 }
             }
-            if ("META-INF/ASiCManifest.xml".equals(signatureScope.getName())) {
+            if ("META-INF/ASiCManifest001.xml".equals(signatureScope.getName())) {
                 signedManifestId = signatureScope.getSignerData().getId();
             }
         }
@@ -137,7 +137,7 @@ public class ASiCETimestampMultipleSignedFilesTest extends AbstractASiCEWithCAdE
                     timestampedDataIds.add(signerDataWrapper.getId());
                 }
             }
-            if ("META-INF/ASiCManifest1.xml".equals(signerDataWrapper.getReferencedName())) {
+            if ("META-INF/ASiCManifest002.xml".equals(signerDataWrapper.getReferencedName())) {
                 timestampedManifestId = signerDataWrapper.getId();
             }
         }

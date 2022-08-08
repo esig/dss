@@ -57,6 +57,13 @@ public class ManifestEntry implements Serializable {
 	private boolean rootfile;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ManifestEntry() {
+		// empty
+	}
+
+	/**
 	 * Gets the filename
 	 *
 	 * @return {@link String}

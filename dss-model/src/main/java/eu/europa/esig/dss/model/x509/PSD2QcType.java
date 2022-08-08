@@ -38,6 +38,12 @@ public class PSD2QcType {
 	private String ncaId;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public PSD2QcType() {
+	}
+
+	/**
 	 * Gets a list of {@code RoleOfPSP}s
 	 *
 	 * @return a list of {@link RoleOfPSP}s

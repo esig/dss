@@ -20,39 +20,46 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import java.util.Iterator;
-import java.util.ServiceLoader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.ServiceLoader;
 
 /**
  * Implementation of IPdfObjFactory which looks for in the registered services and uses the first found instance.
  * 
  * This class is not registered as service.
  */
-public class ServiceLoaderPdfObjFactory implements IPdfObjFactory {
+public class ServiceLoaderPdfObjFactory extends AbstractPdfObjFactory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ServiceLoaderPdfObjFactory.class);
 
+	/**
+	 * Default constructor
+	 */
+	public ServiceLoaderPdfObjFactory() {
+		// empty
+	}
+
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return getIPdfObjFactory().newPAdESSignatureService();
+		return configure(getIPdfObjFactory().newPAdESSignatureService());
 	}
 
 	@Override
 	public PDFSignatureService newContentTimestampService() {
-		return getIPdfObjFactory().newContentTimestampService();
+		return configure(getIPdfObjFactory().newContentTimestampService());
 	}
 
 	@Override
 	public PDFSignatureService newSignatureTimestampService() {
-		return getIPdfObjFactory().newSignatureTimestampService();
+		return configure(getIPdfObjFactory().newSignatureTimestampService());
 	}
 
 	@Override
 	public PDFSignatureService newArchiveTimestampService() {
-		return getIPdfObjFactory().newArchiveTimestampService();
+		return configure(getIPdfObjFactory().newArchiveTimestampService());
 	}
 
 	private IPdfObjFactory getIPdfObjFactory() {

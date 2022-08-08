@@ -23,8 +23,9 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.trust.ServiceQualification;
+import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
 import java.util.List;
 
@@ -61,6 +62,7 @@ class QSCDByTL implements QSCDStrategy {
 	public QSCDStatus getQSCDStatus() {
 		if (trustedService == null || !CertificateQualifiedStatus.isQC(qualified)) {
 			return QSCDStatus.NOT_QSCD;
+
 		} else {
 
 			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
@@ -68,12 +70,30 @@ class QSCDByTL implements QSCDStrategy {
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
-				if (ServiceQualification.isQcNoQSCD(capturedQualifiers)) {
-					return QSCDStatus.NOT_QSCD;
-				}
+				if (EIDASUtils.isPostEIDAS(trustedService.getStartDate())) {
 
-				if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
-					return QSCDStatus.QSCD;
+					if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
+						return QSCDStatus.QSCD;
+
+					} else if (ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers)) {
+						return qscdFromCertificate.getQSCDStatus();
+
+					} else if (ServiceQualification.isQcNoQSCD(capturedQualifiers)) {
+						return QSCDStatus.NOT_QSCD;
+					}
+
+				} else { // pre eIDAS
+
+					if (ServiceQualification.isQcWithSSCD(capturedQualifiers)) {
+						return QSCDStatus.QSCD;
+
+					} else if (ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers)) {
+						return qscdFromCertificate.getQSCDStatus();
+
+					} else if (ServiceQualification.isQcNoSSCD(capturedQualifiers)) {
+						return QSCDStatus.NOT_QSCD;
+					}
+
 				}
 
 			}

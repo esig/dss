@@ -21,11 +21,9 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.signature.asics.AbstractGetDataToSignASiCS;
 import eu.europa.esig.dss.asic.xades.signature.GetDataToSignASiCWithXAdESHelper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -35,31 +33,13 @@ import java.util.List;
  */
 public class DataToSignASiCSWithXAdESHelper extends AbstractGetDataToSignASiCS implements GetDataToSignASiCWithXAdESHelper {
 
-	/** Asic parameters */
-	private final ASiCParameters asicParameters;
-
 	/**
 	 * The default constructor
 	 *
 	 * @param asicContent {@link ASiCContent}
-	 * @param asicParameters {@link ASiCParameters}
 	 */
-	public DataToSignASiCSWithXAdESHelper(ASiCContent asicContent, ASiCParameters asicParameters) {
+	public DataToSignASiCSWithXAdESHelper(ASiCContent asicContent) {
 		super(asicContent);
-		this.asicParameters = asicParameters;
-	}
-
-	@Override
-	public String getSignatureFilename() {
-		if (Utils.isStringNotBlank(asicParameters.getSignatureFileName())) {
-			return "META-INF/" + asicParameters.getSignatureFileName();
-		}
-		return "META-INF/signatures.xml";
-	}
-
-	@Override
-	public String getTimestampFilename() {
-		throw new UnsupportedOperationException("Timestamp file cannot be added with ASiC-S + XAdES");
 	}
 
 	@Override

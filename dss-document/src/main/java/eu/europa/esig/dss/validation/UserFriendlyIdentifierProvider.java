@@ -98,6 +98,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /** The prefix to be used for a signature identifier creation */
     private String signaturePrefix = "SIGNATURE";
 
+    /** The prefix to be used for a counter-signature identifier creation */
+    private String counterSignaturePrefix = "COUNTER-SIGNATURE";
+
     /** The prefix to be used for a timestamp identifier creation */
     private String timestampPrefix = "TIMESTAMP";
 
@@ -126,6 +129,13 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private String dateFormat = "yyyyMMdd-HHmm";
 
     /**
+     * Default constructor instantiating empty maps of processed tokens
+     */
+    public UserFriendlyIdentifierProvider() {
+        // empty
+    }
+
+    /**
      * Sets the prefix to be used for signature identifiers
      *
      * Default = "SIGNATURE"
@@ -135,6 +145,18 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     public void setSignaturePrefix(String signaturePrefix) {
         assertNotBlank(signaturePrefix);
         this.signaturePrefix = signaturePrefix;
+    }
+
+    /**
+     * Sets the prefix to be used for counter-signature identifiers
+     *
+     * Default = "COUNTER-SIGNATURE"
+     *
+     * @param counterSignaturePrefix {@link String}
+     */
+    public void setCounterSignaturePrefix(String counterSignaturePrefix) {
+        assertNotBlank(counterSignaturePrefix);
+        this.counterSignaturePrefix = counterSignaturePrefix;
     }
 
     /**
@@ -303,7 +325,8 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     protected String getIdAsStringForSignature(AdvancedSignature signature) {
         X500PrincipalHelper subject = signature.getSigningCertificateToken() != null ?
                 signature.getSigningCertificateToken().getSubject() : null;
-        return createIdString(signaturePrefix, subject, signature.getSigningTime(), signature.getId());
+        final String prefix = signature.isCounterSignature() ? counterSignaturePrefix : signaturePrefix;
+        return createIdString(prefix, subject, signature.getSigningTime(), signature.getId());
     }
 
     /**

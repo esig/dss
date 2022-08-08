@@ -45,6 +45,13 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
     private final Map<Long, Set<CertificateToken>> certMap = new HashMap<>();
 
     /**
+     * Default constructor instantiation an object with empty mpa of certificate token objects
+     */
+    public PdfCompositeDssDictCertificateSource() {
+        // empty
+    }
+
+    /**
      * This method allows adding certificates extracted from a /DSS revision
      *
      * @param dssDictionary {@link PdfDssDict} representing a /DSS revision's content

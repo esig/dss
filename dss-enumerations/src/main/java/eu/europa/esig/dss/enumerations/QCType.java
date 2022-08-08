@@ -20,69 +20,40 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * Defines QC type identifiers based on ETSI EN 319 412-5
+ * Defines QC Type OID identifiers
  */
-public enum QCType implements OidDescription {
+public interface QCType extends OidDescription {
 
-	/**
-	 * id-etsi-qct-esign OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 1 }
-	 * -- Certificate for electronic signatures as defined in Regulation (EU) No 910/2014
-	 */
-	QCT_ESIGN("qc-type-esign", "0.4.0.1862.1.6.1"),
+    /** Logger */
+    Logger LOG = LoggerFactory.getLogger(QCType.class);
 
-	/**
-	 * id-etsi-qct-eseal OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 2 }
-	 * -- Certificate for electronic seals as defined in Regulation (EU) No 910/2014
-	 */
-	QCT_ESEAL("qc-type-eseal", "0.4.0.1862.1.6.2"),
+    /** Defines a description for a type unknown by the current implementation */
+    String UNKNOWN_TYPE = "type-unknown";
 
-	/**
-	 * id-etsi-qct-web OBJECT IDENTIFIER ::= { id-etsi-qcs-QcType 3 }
-	 * -- Certificate for website authentication as defined in Regulation (EU) No 910/2014
-	 */
-	QCT_WEB("qc-type-web", "0.4.0.1862.1.6.3");
+    /**
+     * Returns a {@code QCType} by the given OID, if exists
+     *
+     * @param oid {@link String} to get {@link QCType} for
+     * @return {@link QCType} if exists, NULL otherwise
+     */
+    static QCType fromOid(String oid) {
+        for (QCType type : QCTypeEnum.values()) {
+            if (type.getOid().equals(oid)) {
+                return type;
+            }
+        }
 
-	/** The QCType description */
-	private final String description;
-
-	/** The QCType OID */
-	private final String oid;
-
-	/**
-	 * Default constructor
-	 *
-	 * @param description {@link String}
-	 * @param oid {@link String}
-	 */
-	QCType(String description, String oid) {
-		this.description = description;
-		this.oid = oid;
-	}
-
-	@Override
-	public String getOid() {
-		return oid;
-	}
-
-	@Override
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Returns a {@code QCType} by the given OID, if exists
-	 *
-	 * @param oid {@link String} to get {@link QCType} for
-	 * @return {@link QCType} if exists, NULL otherwise
-	 */
-	public static QCType fromOid(String oid)  {
-		for (QCType type : QCType.values()) {
-			if (type.getOid().equals(oid)) {
-				return type;
-			}
-		}
-		return null;
-	}
+        LOG.debug("Not supported QcType : '{}'", oid);
+        return new QCType() {
+            @Override
+            public String getDescription() { return UNKNOWN_TYPE; }
+            @Override
+            public String getOid() { return oid; }
+        };
+    }
 
 }

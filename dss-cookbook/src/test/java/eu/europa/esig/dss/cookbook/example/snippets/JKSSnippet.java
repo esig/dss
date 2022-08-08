@@ -38,6 +38,16 @@ public class JKSSnippet {
     public static void main(String[] args) throws IOException {
 
         // tag::demo[]
+        // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+        // import eu.europa.esig.dss.model.SignatureValue;
+        // import eu.europa.esig.dss.model.ToBeSigned;
+        // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+        // import eu.europa.esig.dss.token.JKSSignatureToken;
+        // import eu.europa.esig.dss.utils.Utils;
+        // import java.io.FileInputStream;
+        // import java.io.InputStream;
+        // import java.security.KeyStore.PasswordProtection;
+        // import java.util.List;
 
         try (InputStream is = new FileInputStream("src/main/resources/keystore.jks");
              JKSSignatureToken token = new JKSSignatureToken(is, new PasswordProtection("dss-password".toCharArray()))) {

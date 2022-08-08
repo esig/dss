@@ -9,7 +9,7 @@
 
 === AdES specificities
 ==== Existing formats
-The different formats of the digital signature make possible to cover a wide range of real live cases of use of this technique. Thus, we distinguish the following formats:
+The different digital signature formats make it possible to cover a wide range of real life use cases of this technique. Thus, we distinguish the following formats:
 
 * *XAdES* - for XML Advanced Electronic Signatures (cf. <<R01>>);
 * *CAdES* - for CMS Advanced Electronic Signatures (cf. <<R02>>);
@@ -19,7 +19,9 @@ The different formats of the digital signature make possible to cover a wide ran
 
 ==== Signature profiles
 
-To ensure interoperability of electronic signatures in the EU, the eIDAS Regulation has declared through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) that the advanced electronic signatures in the EU shall comply with the baseline standards defined by the following ETSI technical specifications:
+The eIDAS Regulation (910/2014) sets the legal framework for electronic signatures in the European Union. It defines who can use electronic signatures and in what context. To ensure that electronic signatures can be created and validated anywhere in Europe, a number of standards were identified for their implementation.
+
+To ensure cross-border interoperability the eIDAS Regulation through the Commission Implementing Decision (EU) 2015/1506 (cf. <<R16>>) specifies minimum formats of advanced electronic signatures and advanced seals to be recognised by member states. It defines a number of baseline profiles:
 
 * XAdES Baseline Profile: ETSI TS 103171 v.2.1.1;
 * CAdES Baseline Profile: ETSI TS 103173 v.2.2.1;
@@ -192,9 +194,9 @@ DSS allows creation of different kinds of DSSDocument :
 * `DigestDocument` : only contains pre-computed digest values for a given document. That allows a user to avoid sending the full document (detached signatures).
 * `CMSSignedDocument` : an internal implementation of a `DSSDocument`, loading a CMS Signed Data object.
 * `HTTPHeader` : represents an HTTP Header used as a signed object within a JAdES implementation (see <<JAdESDetachedPackaging, JAdES Detached Packaging>>).
-* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another `DSSDocument` (e.g. from binaries, digest document, etc.).
-
-// TODO: 2 examples to be created - CMSSignedDocumentTest.java and HTTPHeaderDigestTest.java
+* `HTTPHeaderDigest` : represents an HTTP body message's digest to be used as a signed HTTP Header within <<JAdESDetachedPackaging, JAdES Detached Packaging>>. The object is built from another `DSSDocument` (e.g. from binaries, digest document, etc.);
+* `ContainerEntryDocument` : represents a container entry, containing metadata about the document;
+* `FileArchiveEntry` : internal implementation, used to increase performance when reading a ZIP archive from file system.
 
 [source,java,indent=0]
 .InMemoryDocument
@@ -215,9 +217,21 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocument
 ----
 
 [source,java,indent=0]
-.HTTPHeader
+.CMSDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=cmsDocument]
+----
+
+[source,java,indent=0]
+.HTTPHeader and HTTPHeaderDigest
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=httpHeader]
+----
+
+[source,java,indent=0]
+.ContainerEntryDocument
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/DSSDocumentTest.java[tags=containerEntryDocument]
 ----
 
 [[SignatureTokens]]
@@ -693,7 +707,6 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/MultipleSignXa
 
 ==== Sequential signatures
 DSS allows creation of sequential signatures according to the PAdES formats (cf. <<SequentialSignatures>>).
-// TODO: code
 
 [source,java,indent=0]
 .Sequential signatures creation

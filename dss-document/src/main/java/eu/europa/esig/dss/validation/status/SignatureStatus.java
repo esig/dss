@@ -38,6 +38,13 @@ public class SignatureStatus extends ObjectStatus {
     private final Map<AdvancedSignature, String> relatedSignatureMap = new HashMap<>();
 
     /**
+     * Default constructor initializing an empty map
+     */
+    public SignatureStatus() {
+        // empty
+    }
+
+    /**
      * Adds concerned signature and information about the occurred event
      *
      * @param signature {@link AdvancedSignature}

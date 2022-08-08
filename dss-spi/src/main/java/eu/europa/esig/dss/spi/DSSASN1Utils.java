@@ -155,9 +155,10 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * This class is an utility class and cannot be instantiated.
+	 * This class is a utility class and cannot be instantiated.
 	 */
 	private DSSASN1Utils() {
+		// empty
 	}
 
 	/**
@@ -1539,11 +1540,27 @@ public final class DSSASN1Utils {
 	/**
 	 * Checks if the binaries are ASN.1 encoded.
 	 *
-	 * @param binaries
-	 *            byte array to check.
-	 * @return if the binaries are ASN.1 encoded.
+	 * @param binaries byte array to check.
+	 * @return if the SignatureValue binaries are ASN.1 encoded.
 	 */
 	public static boolean isAsn1Encoded(byte[] binaries) {
+		if (Utils.isArrayEmpty(binaries)) {
+			return false;
+		}
+		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
+			return is.readObject() != null;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if the SignatureValue binaries are ASN.1 encoded.
+	 *
+	 * @param binaries byte array to check.
+	 * @return if the SignatureValue binaries are ASN.1 encoded.
+	 */
+	public static boolean isAsn1EncodedSignatureValue(byte[] binaries) {
 		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return seq != null && seq.size() == 2;
@@ -1565,7 +1582,7 @@ public final class DSSASN1Utils {
 	 */
 	public static byte[] ensurePlainSignatureValue(final EncryptionAlgorithm algorithm, byte[] signatureValue) {
 		if ((EncryptionAlgorithm.ECDSA == algorithm || EncryptionAlgorithm.PLAIN_ECDSA == algorithm ||
-				EncryptionAlgorithm.DSA == algorithm) && isAsn1Encoded(signatureValue)) {
+				EncryptionAlgorithm.DSA == algorithm) && isAsn1EncodedSignatureValue(signatureValue)) {
 			return toPlainDSASignatureValue(signatureValue);
 		} else {
 			return signatureValue;
@@ -1580,8 +1597,8 @@ public final class DSSASN1Utils {
 	 * @param asn1SignatureValue
 	 *            the ASN1 signature value
 	 * @return the decoded bytes
-	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+	 * @see <a href="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</a>
+	 * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</a>
 	 */
 	public static byte[] toPlainDSASignatureValue(byte[] asn1SignatureValue) {
 		try {
@@ -1600,8 +1617,8 @@ public final class DSSASN1Utils {
 	 * @param signatureValue
 	 *            the plain signature value
 	 * @return the encoded bytes
-	 * @see <A HREF="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</A>
-	 * @see <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</A>
+	 * @see <a href="http://www.w3.org/TR/xmldsig-core/#dsa-sha1">6.4.1 DSA</a>
+	 * @see <a href="ftp://ftp.rfc-editor.org/in-notes/rfc4050.txt">3.3. ECDSA Signatures</a>
 	 */
 	public static byte[] toStandardDSASignatureValue(byte[] signatureValue) {
 		try {
@@ -1619,31 +1636,50 @@ public final class DSSASN1Utils {
 	 *
 	 * @param signatureValue byte array
 	 * @return {@link BigInteger}
-	 * @throws IOException if an exception occurs
 	 */
-	private static BigInteger getOrderFromSignatureValue(byte[] signatureValue) throws IOException {
-		BigInteger rValue;
-		BigInteger sValue;
-		if (DSSASN1Utils.isAsn1Encoded(signatureValue)) {
-			ASN1Sequence seq = (ASN1Sequence) ASN1Primitive.fromByteArray(signatureValue);
-			if (seq.size() != 2) {
-				throw new IllegalArgumentException("ASN1 Sequence size should be 2!");
+	public static BigInteger getOrderFromSignatureValue(byte[] signatureValue) {
+		try {
+			BigInteger rValue;
+			BigInteger sValue;
+			if (DSSASN1Utils.isAsn1EncodedSignatureValue(signatureValue)) {
+				ASN1Sequence seq = (ASN1Sequence) ASN1Primitive.fromByteArray(signatureValue);
+				if (seq.size() != 2) {
+					throw new IllegalArgumentException("ASN1 Sequence size should be 2!");
+				}
+
+				rValue = ((ASN1Integer) seq.getObjectAt(0)).getValue();
+				sValue = ((ASN1Integer) seq.getObjectAt(1)).getValue();
+
+			} else {
+				if (signatureValue.length % 2 != 0) {
+					throw new IllegalArgumentException("signatureValue binaries length shall be dividable by 2!");
+				}
+				int valueLength = signatureValue.length / 2;
+				rValue = BigIntegers.fromUnsignedByteArray(signatureValue, 0, valueLength);
+				sValue = BigIntegers.fromUnsignedByteArray(signatureValue, valueLength, valueLength);
 			}
 
-			rValue = ((ASN1Integer) seq.getObjectAt(0)).getValue();
-			sValue = ((ASN1Integer) seq.getObjectAt(1)).getValue();
+			BigInteger max = rValue.max(sValue);
+			return max.add(BigInteger.ONE);
 
-		} else {
-			if (signatureValue.length % 2 != 0) {
-				throw new IllegalArgumentException("signatureValue binaries length shall be dividable by 2!");
-			}
-			int valueLength = signatureValue.length / 2;
-			rValue = BigIntegers.fromUnsignedByteArray(signatureValue, 0, valueLength);
-			sValue = BigIntegers.fromUnsignedByteArray(signatureValue, valueLength, valueLength);
+		} catch (IOException e) {
+			throw new DSSException("Unable to extract order from a signature value : " + e.getMessage(), e);
 		}
+	}
 
-		BigInteger max = rValue.max(sValue);
-		return max.add(BigInteger.ONE);
+	/**
+	 * This method returns a bit length of the provided signature value
+	 *
+	 * @param signatureValue byte array representing the signature value
+	 * @return bit length of the signature value
+	 */
+	public static int getSignatureValueBitLength(byte[] signatureValue) {
+		try {
+			BigInteger order = DSSASN1Utils.getOrderFromSignatureValue(signatureValue);
+			return BigIntegers.getUnsignedByteLength(order) * 8; // convert to bits
+		} catch (Exception e) {
+			throw new DSSException(String.format("Unable to extract a signature value bit length : %s", e.getMessage()), e);
+		}
 	}
 
 	/**

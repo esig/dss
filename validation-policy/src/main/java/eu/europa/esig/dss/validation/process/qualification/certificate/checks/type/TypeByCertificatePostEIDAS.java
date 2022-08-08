@@ -24,6 +24,8 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QCTypeIdentifiers;
 
+import java.util.stream.Stream;
+
 /**
  * Gets certificate usage type after eIDAS
  *
@@ -51,9 +53,9 @@ class TypeByCertificatePostEIDAS implements TypeStrategy {
 		boolean noneType = !(esign || eseal || web);
 
 		// multiple qcTypes are possible (mistake) but MUST be overruled by the trusted list
-		boolean onlyOne = esign ^ eseal ^ web;
+		boolean onlyOne = Stream.of(esign, eseal, web).filter(b -> b).count() == 1;
 
-		if (noneType || (esign && onlyOne)) {
+		if ((noneType && signingCertificate.isQcCompliance()) || (esign && onlyOne)) {
 			return CertificateType.ESIGN;
 		} else if (eseal && onlyOne) {
 			return CertificateType.ESEAL;

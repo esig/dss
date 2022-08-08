@@ -55,6 +55,7 @@ public abstract class AbstractASiCMultipleDocumentsTestSignature<SP extends Seri
 	protected void checkExtractedContent(ASiCContent asicContent) {
 		assertNotNull(asicContent);
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignedDocuments()));
+		assertTrue(Utils.isCollectionNotEmpty(asicContent.getRootLevelSignedDocuments()));
 		assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));
 		assertNotNull(asicContent.getMimeTypeDocument());
 	}

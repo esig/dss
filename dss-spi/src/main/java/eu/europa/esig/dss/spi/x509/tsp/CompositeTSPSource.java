@@ -47,6 +47,12 @@ public class CompositeTSPSource implements TSPSource {
 	private Map<String, TSPSource> tspSources;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public CompositeTSPSource() {
+	}
+
+	/**
 	 * This setter allows to provide multiple tspSources. Be careful, all given tspSources MUST accept the same digest
 	 * algorithm.
 	 * 

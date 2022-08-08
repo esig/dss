@@ -53,6 +53,7 @@ public final class Utils {
 	}
 
 	private Utils() {
+		// empty
 	}
 
 	/**
@@ -206,6 +207,17 @@ public final class Utils {
 	 */
 	public static boolean endsWithIgnoreCase(String text, String expected) {
 		return impl.endsWithIgnoreCase(text, expected);
+	}
+
+	/**
+	 * This method returns an extension for the given filename
+	 * Ex. "file.xml" = "xml"; "document.pdf" = "pdf"
+	 *
+	 * @param filename {@link String} representing a filename extracted from a file
+	 * @return {@link String} extension
+	 */
+	public static String getFileNameExtension(String filename) {
+		return impl.getFileNameExtension(filename);
 	}
 
 	/**

@@ -75,6 +75,12 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/** Contains options of the visual signature */
 	protected SignatureOptions signatureOptions;
 
+	/**
+	 * Default constructor instantiating object with null values
+	 */
+	protected AbstractPdfBoxSignatureDrawer() {
+	}
+
 	@Override
 	public void init(SignatureImageParameters parameters, PDDocument document, SignatureOptions signatureOptions) throws IOException {
 		assertSignatureParametersAreValid(parameters);

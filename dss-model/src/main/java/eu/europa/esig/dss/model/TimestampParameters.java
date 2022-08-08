@@ -41,6 +41,7 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 	 * Empty constructor
 	 */
 	protected TimestampParameters() {
+		// empty
 	}
 
 	/**

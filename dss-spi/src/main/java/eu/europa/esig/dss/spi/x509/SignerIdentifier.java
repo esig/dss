@@ -54,6 +54,13 @@ public class SignerIdentifier implements Serializable {
 	private boolean current;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public SignerIdentifier() {
+		// empty
+	}
+
+	/**
 	 * Returns the name of the certificate issuer
 	 *
 	 * @return {@link X500Principal}

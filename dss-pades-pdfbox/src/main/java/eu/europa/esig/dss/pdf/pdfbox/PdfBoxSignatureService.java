@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -43,7 +42,9 @@ import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
+import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.NativePdfBoxVisibleSignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -60,11 +61,12 @@ import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuild;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuildDataDict;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
@@ -75,7 +77,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -125,124 +126,57 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+	protected byte[] computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
 			checkDocumentPermissions(documentReader);
 			if (parameters instanceof PAdESSignatureParameters) {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, outputStream, documentReader.getPDDocument());
+			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
+			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
 			}
+
+			// cache the computed document
+			parameters.getPdfSignatureCache().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
+
 			return digest;
+
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
 	@Override
-	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
+							final PAdESCommonParameters parameters) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+
 			checkDocumentPermissions(documentReader);
 			if (parameters instanceof PAdESSignatureParameters) {
 				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
 			}
 
-			signDocumentAndReturnDigest(parameters, signatureValue, outputStream, documentReader.getPDDocument());
+			signDocumentAndReturnDigest(parameters, cmsSignedData, os, documentReader);
 
-			DSSDocument doc = new InMemoryDocument(outputStream.toByteArray());
-			return PdfBoxUtils.generateScreenshot(doc, parameters.getPasswordProtection(), parameters.getImageParameters().getFieldParameters().getPage());
+			DSSDocument signedDocument = resourcesHandler.writeToDSSDocument();
+			signedDocument.setMimeType(MimeType.PDF);
+			return signedDocument;
+
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
 	}
 
-	@Override
-	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
-
-			List<PdfAnnotation> originalAnnotations = documentReader.getPdfAnnotations(parameters.getImageParameters().getFieldParameters().getPage());
-			signDocumentAndReturnDigest(parameters, signatureValue, outputStream, documentReader.getPDDocument());
-			DSSDocument doc = new InMemoryDocument(outputStream.toByteArray());
-			return getNewSignatureFieldScreenshot(doc, parameters, originalAnnotations);
-
-		} catch (Exception e) {
-			throw new DSSException(String.format(
-					"An error occurred while building a signature field preview : %s", e.getMessage()), e);
-		}
-	}
-
-	private DSSDocument getNewSignatureFieldScreenshot(DSSDocument doc, PAdESCommonParameters parameters, List<PdfAnnotation> originalAnnotations) throws IOException {
-		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(doc, parameters.getPasswordProtection())) {
-			List<PdfAnnotation> newAnnotations = reader.getPdfAnnotations(parameters.getImageParameters().getFieldParameters().getPage());
-			AnnotationBox pageBox = reader.getPageBox(parameters.getImageParameters().getFieldParameters().getPage());
-
-			PdfAnnotation newField = null;
-			for (PdfAnnotation newAnnotation : newAnnotations) {
-				boolean found = false;
-				for (PdfAnnotation originalAnnotation : originalAnnotations) {
-					if (Utils.areStringsEqual(originalAnnotation.getName(), newAnnotation.getName())) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					newField = newAnnotation;
-					break;
-				}
-			}
-
-			if (newField != null) {
-				AnnotationBox fieldBox = newField.getAnnotationBox();
-				AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox.getHeight());
-
-				BufferedImage page = reader.generateImageScreenshot(parameters.getImageParameters().getFieldParameters().getPage());
-				BufferedImage annotationRepresentation = page.getSubimage(
-						Math.round((box.getMaxX() - box.getWidth())), Math.round((box.getMaxY() - box.getHeight())),
-						Math.round(box.getWidth()), Math.round(box.getHeight()));
-				return ImageUtils.toDSSDocument(annotationRepresentation);
-
-			} else {
-				throw new DSSException("Internal error : unable to extract a new signature field!");
-			}
-
-		}
-	}
-
-	@Override
-	public DSSDocument sign(final DSSDocument toSignDocument, final byte[] signatureValue,
-			final PAdESCommonParameters parameters) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
-
-			signDocumentAndReturnDigest(parameters, signatureValue, baos, documentReader.getPDDocument());
-
-			DSSDocument signature = new InMemoryDocument(baos.toByteArray());
-			signature.setMimeType(MimeType.PDF);
-			return signature;
-		} catch (IOException e) {
-			throw new DSSException(e);
-		}
-	}
-
-	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] signatureBytes,
-			final OutputStream fileOutputStream, final PDDocument pdDocument) {
+	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] cmsSignedData,
+			final OutputStream outputStream, final PdfBoxDocumentReader documentReader) {
+		PDDocument pdDocument = documentReader.getPDDocument();
 
 		final MessageDigest digest = DSSUtils.getMessageDigest(parameters.getDigestAlgorithm());
 		SignatureInterface signatureInterface = new SignatureInterface() {
@@ -255,8 +189,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				while ((count = content.read(b)) > 0) {
 					digest.update(b, 0, count);
 				}
-				return signatureBytes;
+				return cmsSignedData;
 			}
+
 		};
 		
 		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
@@ -273,10 +208,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (!imageParameters.isEmpty()) {
 				PdfBoxSignatureDrawer signatureDrawer = (PdfBoxSignatureDrawer) loadSignatureDrawer(imageParameters);
 				signatureDrawer.init(imageParameters, pdDocument, options);
+				if (signatureDrawer instanceof NativePdfBoxVisibleSignatureDrawer) {
+					((NativePdfBoxVisibleSignatureDrawer) signatureDrawer).setResourcesHandlerBuilder(resourcesHandlerBuilder);
+				}
 				
 				if (pdSignatureField == null) {
 					// check signature field position only for new annotations
-					getVisibleSignatureFieldBoxPosition(signatureDrawer, new PdfBoxDocumentReader(pdDocument), fieldParameters);
+					getVisibleSignatureFieldBoxPosition(signatureDrawer, documentReader, fieldParameters);
 				}
 				
 				signatureDrawer.draw();
@@ -289,7 +227,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
 			}
-			checkEncryptedAndSaveIncrementally(pdDocument, fileOutputStream, parameters);
+			checkEncryptedAndSaveIncrementally(pdDocument, outputStream, parameters);
 
 			return digest.digest();
 
@@ -327,7 +265,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Creates a new signature dictionary
 	 *
-	 * Note for developers: keep protected! See https://github.com/esig/dss/pull/138
+	 * Note for developers: keep protected! See <a href="https://github.com/esig/dss/pull/138">PR #138</a>
 	 *
 	 * @param pdDocument {@link PDDocument}
 	 * @param parameters {@link PAdESCommonParameters}
@@ -345,6 +283,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		// sub-filter for basic and PAdES Part 2 signatures
 		if (Utils.isStringNotEmpty(parameters.getSubFilter())) {
 			signature.setSubFilter(COSName.getPDFName(parameters.getSubFilter()));
+		}
+
+		if (Utils.isStringNotEmpty(parameters.getAppName())) {
+			PDPropBuild propBuild = new PDPropBuild(new COSDictionary());
+			PDPropBuildDataDict app = new PDPropBuildDataDict();
+			app.setName(parameters.getAppName());
+			propBuild.setPDPropBuildApp(app);
+			signature.setPropBuild(propBuild);
 		}
 
 		if (COSName.SIG.equals(currentType)) {
@@ -485,10 +431,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion, String pwd) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream is = document.openStream();
-				PDDocument pdDocument = PDDocument.load(is, pwd)) {
+	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+										final String pwd) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 InputStream is = document.openStream();
+			 PDDocument pdDocument = PDDocument.load(is, pwd)) {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
@@ -497,11 +445,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 			
 			// encryption is not required (no signature/timestamp is added on the step)
-			saveDocumentIncrementally(pdDocument, baos);
+			saveDocumentIncrementally(pdDocument, os);
 
-			DSSDocument inMemoryDocument = new InMemoryDocument(baos.toByteArray());
-			inMemoryDocument.setMimeType(MimeType.PDF);
-			return inMemoryDocument;
+			DSSDocument extendedDocument = resourcesHandler.writeToDSSDocument();
+			extendedDocument.setMimeType(MimeType.PDF);
+			return extendedDocument;
 
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to add a new dss dictionary revision : %s", e.getMessage()), e);
@@ -692,9 +640,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters, String pwd) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 	PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, pwd)) {
+	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+											final String pwd) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, pwd)) {
 			checkDocumentPermissions(documentReader);
 			checkNewSignatureIsPermitted(documentReader, parameters);
 
@@ -712,12 +662,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (acroForm == null) {
 				acroForm = new PDAcroForm(pdfDoc);
 				catalog.setAcroForm(acroForm);
-
-				// Set default appearance
-				PDResources resources = new PDResources();
-				resources.put(COSName.getPDFName("Helv"), PDType1Font.HELVETICA);
-				acroForm.setDefaultResources(resources);
-				acroForm.setDefaultAppearance("/Helv 0 Tf 0 g");
 			}
 
 			PDSignatureField signatureField = new PDSignatureField(acroForm);
@@ -737,6 +681,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			widget.setPage(page);
 			page.getAnnotations().add(widget);
 
+			// Set normal appearance
+			PDAppearanceDictionary appearance = PdfBoxUtils.createSignatureAppearanceDictionary(pdfDoc, rect);
+			widget.setAppearance(appearance);
+
 			acroForm.getFields().add(signatureField);
 			COSArray fields = acroForm.getCOSObject().getCOSArray(COSName.FIELDS);
 			if (fields != null) {
@@ -747,12 +695,99 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signatureField.getCOSObject().setNeedToBeUpdated(true);
 			page.getCOSObject().setNeedToBeUpdated(true);
 
-			saveDocumentIncrementally(pdfDoc, baos);
+			saveDocumentIncrementally(pdfDoc, os);
 
-			return new InMemoryDocument(baos.toByteArray(), "new-document.pdf", MimeType.PDF);
+			DSSDocument updatedDocument = resourcesHandler.writeToDSSDocument();
+			updatedDocument.setName("new-document.pdf");
+			updatedDocument.setMimeType(MimeType.PDF);
+			return updatedDocument;
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to add a new signature field. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	@Override
+	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
+
+			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
+			signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
+
+			DSSDocument doc = resourcesHandler.writeToDSSDocument();
+			return PdfBoxUtils.generateScreenshot(doc, parameters.getPasswordProtection(),
+					parameters.getImageParameters().getFieldParameters().getPage(), instantiateResourcesHandler());
+
+		} catch (IOException e) {
+			throw new DSSException(e);
+		}
+	}
+
+	@Override
+	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = resourcesHandler.createOutputStream();
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			checkDocumentPermissions(documentReader);
+			if (parameters instanceof PAdESSignatureParameters) {
+				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
+			}
+
+			List<PdfAnnotation> originalAnnotations = documentReader.getPdfAnnotations(
+					parameters.getImageParameters().getFieldParameters().getPage());
+
+			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
+			signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
+
+			DSSDocument doc = resourcesHandler.writeToDSSDocument();
+			return getNewSignatureFieldScreenshot(doc, parameters, originalAnnotations);
+
+		} catch (Exception e) {
+			throw new DSSException(String.format(
+					"An error occurred while building a signature field preview : %s", e.getMessage()), e);
+		}
+	}
+
+	private DSSDocument getNewSignatureFieldScreenshot(DSSDocument doc, PAdESCommonParameters parameters, List<PdfAnnotation> originalAnnotations) throws IOException {
+		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(doc, parameters.getPasswordProtection())) {
+			List<PdfAnnotation> newAnnotations = reader.getPdfAnnotations(parameters.getImageParameters().getFieldParameters().getPage());
+			AnnotationBox pageBox = reader.getPageBox(parameters.getImageParameters().getFieldParameters().getPage());
+
+			PdfAnnotation newField = null;
+			for (PdfAnnotation newAnnotation : newAnnotations) {
+				boolean found = false;
+				for (PdfAnnotation originalAnnotation : originalAnnotations) {
+					if (Utils.areStringsEqual(originalAnnotation.getName(), newAnnotation.getName())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					newField = newAnnotation;
+					break;
+				}
+			}
+
+			if (newField != null) {
+				AnnotationBox fieldBox = newField.getAnnotationBox();
+				AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox.getHeight());
+
+				BufferedImage page = reader.generateImageScreenshot(parameters.getImageParameters().getFieldParameters().getPage());
+				BufferedImage annotationRepresentation = page.getSubimage(
+						Math.round((box.getMaxX() - box.getWidth())), Math.round((box.getMaxY() - box.getHeight())),
+						Math.round(box.getWidth()), Math.round(box.getHeight()));
+				return ImageUtils.toDSSDocument(annotationRepresentation, instantiateResourcesHandler());
+
+			} else {
+				throw new DSSException("Internal error : unable to extract a new signature field!");
+			}
+
 		}
 	}
 

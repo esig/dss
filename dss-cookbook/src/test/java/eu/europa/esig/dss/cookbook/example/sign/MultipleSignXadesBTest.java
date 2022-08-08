@@ -62,6 +62,12 @@ public class MultipleSignXadesBTest extends CookbookTools {
         signingAlias = GOOD_USER;
 
         // tag::demo[]
+        // import eu.europa.esig.dss.enumerations.SignaturePackaging;
+        // import eu.europa.esig.dss.model.SignatureValue;
+        // import eu.europa.esig.dss.model.ToBeSigned;
+        // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+        // import eu.europa.esig.dss.token.SignatureTokenConnection;
+        // import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
         // Load the user token to create the first signature
         try (SignatureTokenConnection goodUserToken = getPkcs12Token()) {

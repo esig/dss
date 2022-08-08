@@ -39,6 +39,12 @@ import java.io.IOException;
  */
 public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureDrawer {
 
+	/**
+	 * Default constructor
+	 */
+	public DefaultPdfBoxVisibleSignatureDrawer() {
+	}
+
 	@Override
 	protected JavaDSSFontMetrics getDSSFontMetrics() {
 		SignatureImageTextParameters textParameters = parameters.getTextParameters();

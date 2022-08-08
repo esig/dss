@@ -276,3 +276,51 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XMLSecurit
 The class `XmlDefinerUtils` is a singleton, therefore all changes performed on the instance will have an impact to all calls of the related methods.
 
 See section <<Alerts>> in chapter Annex for more information on alerts.
+
+[[DSSResourcesHandler]]
+=== DSS Resources Handler
+
+Since version 5.11, DSS provides a possibility to configure a way temporary objects are created within the core code.
+
+`DSSResourcesHandler` is responsible for implementation of created temporary objects during the execution, e.g. in memory or in a temporary file.
+
+NOTE: `DSSResourcesHandler` is only supported in methods within `PAdESService` so far (i.e. signature creation, extension, screenshot generation, etc.).
+
+The `DSSResourcesHandler` interface provides the following methods:
+
+* `createOutputStream()` - creates a new `OutputStream`, to be used as a data buffer; and
+* `writeToDSSDocument()` - writes the created earlier `OutputStream` to a corresponding `DSSDocument` implementation.
+
+The `DSSResourcesHandler` implements `Closable` interface, therefore it is able to remove temporary objects when closing or exiting the try block.
+
+In order to create a `DSSResourcesHandler` an implementation of `DSSResourcesHandlerBuilder` should be used. DSS provides the following implementations of `DSSResourcesHandlerBuilder` interface:
+
+* `InMemoryResourcesHandlerBuilder` - creates a `ByteArrayOutputStream` to be used as a data buffer (e.g. storing a signed PDF) and produces `InMemoryDocument` containing the byte array of a created document.
+* `TempFileResourcesHandlerBuilder` - creates a temporary `File` in the local filesystem, storing in it the temporary data and produces a `FileDocument` as an output, when applicable. The implementation removes the temporary files when the file is not required outside the method or when finishing JVM.
+
+NOTE: `InMemoryResourcesHandlerBuilder` is used by default in DSS, working with data in memory.
+
+To define the resources handler, the corresponding `DSSResourcesHandlerBuilder` has to be provided to an instance of `IPdfObjFactory` used within a `PAdESService`. An example below demonstrates a signature creation using in temporary file processing:
+
+[source,java,indent=0]
+.PAdES signing using temporary files
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfWithTempFileTest.java[tags=demo]
+----
+
+WARNING: Based on the implementation, certain objects are still have to be processed in memory (e.g. with PdfBox or iText document readers).
+
+[[zipUtils]]
+=== ZIP Utils
+
+For parsing and creation of ZIP archives a special class `ZipUtils` is provided. This is a singleton class, and its behavior can be customized using an implementation of `ZipContainerHandler` interface. An implementation of `ZipContainerHandler` can be provided in runtime and the defined class will be used on all calls of `ZipUtils` across DSS's code
+
+By default, an instance of `SecureContainerHandler` is used, allowing to parse ZIP container securely, by reporting a presence of a ZIP-bomb (see https://unforgettable.dk/[42.zip]) and/or malicious documents within a given archive.
+
+Below you can find the configuration available in `SecureContainerHandler`:
+
+[source,java,indent=0]
+.SecureContainerHandler for ZipUtils configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignOneFileWithASiCSBTest.java[tags=zipUtils]
+----

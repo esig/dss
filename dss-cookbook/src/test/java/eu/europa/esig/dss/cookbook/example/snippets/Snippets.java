@@ -56,12 +56,13 @@ public class Snippets {
 	@SuppressWarnings({ "null" })
 	public void demo() {
 
-		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		CertificateToken certificateToken = new CertificateToken(null);
 		List<CertificateToken> certificateChain = new LinkedList<>();
 
 		// tag::demoCertificateChain[]
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		// We set the signing certificate
 		parameters.setSigningCertificate(certificateToken);
 		// We set the certificate chain
@@ -70,28 +71,40 @@ public class Snippets {
 		// end::demoCertificateChain[]
 
 		// tag::demoSigningDate[]
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import java.util.Date;
 
+		parameters = new XAdESSignatureParameters();
 		// Set the date of the signature.
 		parameters.bLevel().setSigningDate(new Date());
 
 		// end::demoSigningDate[]
 
 		// tag::demoSignatureLevel[]
-		
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import eu.europa.esig.dss.enumerations.SignatureLevel;
+
+		parameters = new XAdESSignatureParameters();
 		// Allows to set a final signature level
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
 		// end::demoSignatureLevel[]
 
 		// tag::demoTrustAnchorBPPolicy[]
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+		parameters = new XAdESSignatureParameters();
 		// Enforce inclusion of trust anchors into the signature
 		parameters.bLevel().setTrustAnchorBPPolicy(false);
 
 		// end::demoTrustAnchorBPPolicy[]
 
 		// tag::demoCanonicalization[]
+		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+		// import javax.xml.crypto.dsig.CanonicalizationMethod;
+		// import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
+		parameters = new XAdESSignatureParameters();
 		// Sets canonicalization algorithm to be used for digest computation for the ds:Reference referencing
 		// xades:SingedProperties element
 		parameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
@@ -118,6 +131,8 @@ public class Snippets {
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
 
 		// tag::demoSigningProcessGetDataToSign[]
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
+		// import eu.europa.esig.dss.model.ToBeSigned;
 
 		// Create XAdES service for signature
 		XAdESService service = new XAdESService(commonCertificateVerifier);
@@ -131,6 +146,8 @@ public class Snippets {
 		DSSPrivateKeyEntry privateKey = null;
 
 		// tag::demoSigningProcessSign[]
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.model.SignatureValue;
 
 		DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
 		SignatureValue signatureValue = signingToken.sign(dataToSign, digestAlgorithm, privateKey);
@@ -138,16 +155,26 @@ public class Snippets {
 		// end::demoSigningProcessSign[]
 
 		// tag::demoSigningProcessSignDocument[]
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
+		// import eu.europa.esig.dss.model.DSSDocument;
+
+		service = new XAdESService(commonCertificateVerifier);
 		DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 		// end::demoSigningProcessSignDocument[]
 
 		// tag::i18n[]
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+		// import java.util.Locale;
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		// A target Locale must be defined for the validator
 		validator.setLocale(Locale.FRENCH); // for French language
 		// end::i18n[]
 
 		// tag::validationPolicy[]
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import java.io.File;
+
 		Reports reports = validator.validateDocument(new File("/path/to/validation/policy.xml"));
 		// end::validationPolicy[]
 
@@ -155,13 +182,14 @@ public class Snippets {
 
 	public void demo2() {
 		// tag::select-pdf-signature-field[]
+		// import eu.europa.esig.dss.pades.SignatureFieldParameters;
+
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setFieldId("field-id");
 		// end::select-pdf-signature-field[]
 	}
 
 	public void threeAtomicSteps() {
-		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
@@ -170,6 +198,13 @@ public class Snippets {
 		DSSPrivateKeyEntry privateKey = null;
 
 		// tag::threeStepsSign[]
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.model.ToBeSigned;
+		// import eu.europa.esig.dss.model.SignatureValue;
+		// import eu.europa.esig.dss.model.DSSDocument;
+
+		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 
 		// step 1: generate ToBeSigned data
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
@@ -184,7 +219,6 @@ public class Snippets {
 	}
 
 	public void fourAtomicSteps() {
-		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
@@ -193,6 +227,15 @@ public class Snippets {
 		DSSPrivateKeyEntry privateKey = null;
 
 		// tag::fourStepsSign[]
+		// import eu.europa.esig.dss.xades.signature.XAdESService;
+		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.model.ToBeSigned;
+		// import eu.europa.esig.dss.model.SignatureValue;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.model.Digest;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+
+		XAdESService service = new XAdESService(new CommonCertificateVerifier());
 
 		// step 1: generate ToBeSigned data
 		ToBeSigned dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
@@ -212,6 +255,12 @@ public class Snippets {
 	@Test
 	public void hashComputation() {
 		// tag::hashComputation[]
+		// import eu.europa.esig.dss.model.InMemoryDocument;
+		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.spi.DSSUtils;
+		// import eu.europa.esig.dss.utils.Utils;
+
 		// Compute hash on a DSSDocument
 		DSSDocument document = new InMemoryDocument("Hello World!".getBytes());
 		String base64Sha256HashOfDocument = document.getDigest(DigestAlgorithm.SHA256);

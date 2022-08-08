@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.10.1</version>
+		<version>5.11.RC1</version>
 	</parent>
 	<artifactId>dss-pades-pdfbox</artifactId>
 	<name>DSS PAdES using PDFBox</name>
@@ -21,7 +21,7 @@
 					<dependency>
 						<groupId>org.apache.maven.surefire</groupId>
 						<artifactId>surefire-junit-platform</artifactId>
-						<version>3.0.0-M4</version>
+						<version>3.0.0-M7</version>
 					</dependency>
 				</dependencies>
 			</plugin>

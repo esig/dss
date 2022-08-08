@@ -47,6 +47,13 @@ public class SpDocSpecification implements Serializable {
 	private ObjectIdentifierQualifier qualifier;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public SpDocSpecification() {
+		// empty
+	}
+
+	/**
 	 * Get identifier
 	 * 
 	 * @return {@link String} id

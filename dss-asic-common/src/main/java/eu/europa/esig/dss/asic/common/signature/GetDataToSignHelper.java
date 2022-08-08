@@ -22,7 +22,10 @@ package eu.europa.esig.dss.asic.common.signature;
 
 /**
  * The interface defining a helper to create a {@code ToBeSigned} data
+ *
+ * @deprecated since DSS 5.11
  */
+@Deprecated
 public interface GetDataToSignHelper {
 
 	/**
@@ -30,6 +33,7 @@ public interface GetDataToSignHelper {
 	 *
 	 * @return {@link String} signature filename
 	 */
+	@Deprecated
 	String getSignatureFilename();
 
 	/**
@@ -37,6 +41,7 @@ public interface GetDataToSignHelper {
 	 *
 	 * @return {@link String} timestamp filename
 	 */
+	@Deprecated
 	String getTimestampFilename();
 
 }

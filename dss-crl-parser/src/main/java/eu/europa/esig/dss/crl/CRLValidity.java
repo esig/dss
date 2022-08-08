@@ -26,6 +26,7 @@ import org.bouncycastle.asn1.x509.ReasonFlags;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
@@ -34,7 +35,9 @@ import java.util.Objects;
  * This class encapsulates all information related to the validity of a CRL. It
  * exposes the method {@code isValid} to check the validity.
  */
-public class CRLValidity {
+public class CRLValidity implements Serializable {
+
+	private static final long serialVersionUID = -3382192356286810341L;
 
 	/** Incorporates CRL binaries */
 	private final CRLBinary crlBinary;

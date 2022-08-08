@@ -48,6 +48,13 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CRLUtilsStreamImpl.class);
 
+	/**
+	 * Default constructor
+	 */
+	public CRLUtilsStreamImpl() {
+		// empty
+	}
+
 	@Override
 	public CRLValidity buildCRLValidity(CRLBinary crlBinary, CertificateToken issuerToken) throws IOException {
 		

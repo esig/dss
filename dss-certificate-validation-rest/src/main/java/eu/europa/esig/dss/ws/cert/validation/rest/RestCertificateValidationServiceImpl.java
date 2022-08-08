@@ -37,6 +37,13 @@ public class RestCertificateValidationServiceImpl implements RestCertificateVali
 	private RemoteCertificateValidationService validationService;
 
 	/**
+	 * Default construction instantiating object with null RemoteCertificateValidationService
+	 */
+	public RestCertificateValidationServiceImpl() {
+		// empty
+	}
+
+	/**
 	 * Sets the certificate validation service
 	 *
 	 * @param validationService {@link RemoteCertificateValidationService}

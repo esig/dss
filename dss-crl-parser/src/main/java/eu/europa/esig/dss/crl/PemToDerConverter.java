@@ -38,6 +38,7 @@ import eu.europa.esig.dss.model.DSSException;
 public final class PemToDerConverter {
 
 	private PemToDerConverter() {
+		// empty
 	}
 
 	/**

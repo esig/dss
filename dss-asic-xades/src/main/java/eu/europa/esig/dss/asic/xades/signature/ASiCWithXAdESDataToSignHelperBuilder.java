@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
@@ -34,15 +33,25 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Builds a relevant {@code GetDataToSignASiCWithXAdESHelper} for ASiC with XAdES dataToSign creation
  */
 public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
-	/** The default manifest filename */
-	private static final String ZIP_ENTRY_ASICE_METAINF_MANIFEST = ASiCUtils.META_INF_FOLDER + "manifest.xml";
+	/**
+	 * Defines rules for filename creation for new data package file.
+	 */
+	protected final ASiCWithXAdESFilenameFactory asicFilenameFactory;
+
+	/**
+	 * Default constructor
+	 *
+	 * @param asicFilenameFactory {@link ASiCWithXAdESFilenameFactory}
+	 */
+	public ASiCWithXAdESDataToSignHelperBuilder(final ASiCWithXAdESFilenameFactory asicFilenameFactory) {
+		this.asicFilenameFactory = asicFilenameFactory;
+	}
 
 	/**
 	 * This method is used to create a {@code GetDataToSignASiCWithXAdESHelper} from an {@code ASiCContent}
@@ -56,7 +65,7 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
 
 		if (ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument())) {
-			return new DataToSignOpenDocumentHelper(asicContent, parameters.aSiC());
+			return new DataToSignOpenDocumentHelper(asicContent);
 		}
 
 		// if ASiC with XAdES (no detached timestamps are allowed)
@@ -66,9 +75,9 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 
 			boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
 			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-				return new DataToSignASiCEWithXAdESHelper(asicContent, parameters.aSiC());
+				return new DataToSignASiCEWithXAdESHelper(asicContent);
 			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
-				return new DataToSignASiCSWithXAdESHelper(asicContent, parameters.aSiC());
+				return new DataToSignASiCSWithXAdESHelper(asicContent);
 			} else {
 				throw new UnsupportedOperationException(
 						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
@@ -82,27 +91,32 @@ public class ASiCWithXAdESDataToSignHelperBuilder extends AbstractASiCDataToSign
 
 	private GetDataToSignASiCWithXAdESHelper fromFiles(ASiCContent asicContent, ASiCWithXAdESSignatureParameters parameters) {
 		if (ASiCUtils.isASiCE(parameters.aSiC())) {
-			DSSDocument asicManifest = createASiCManifest(asicContent.getSignedDocuments());
+			DSSDocument asicManifest = createASiCManifest(asicContent);
 			asicContent.getManifestDocuments().add(asicManifest);
-			return new DataToSignASiCEWithXAdESHelper(asicContent, parameters.aSiC());
+			return new DataToSignASiCEWithXAdESHelper(asicContent);
 
 		} else {
-			DSSDocument asicsSignedDocument = getASiCSSignedDocument(asicContent.getSignedDocuments(),
-					parameters.bLevel().getSigningDate(), parameters.aSiC());
+			DSSDocument asicsSignedDocument = getASiCSSignedDocument(
+					asicContent.getSignedDocuments(), parameters.bLevel().getSigningDate());
 			asicContent.setSignedDocuments(Collections.singletonList(asicsSignedDocument));
-			return new DataToSignASiCSWithXAdESHelper(asicContent, parameters.aSiC());
+			return new DataToSignASiCSWithXAdESHelper(asicContent);
 		}
 	}
 
 	/**
 	 * Returns the ASiC Manifest
 	 *
-	 * @param documents a list of {@link DSSDocument}s to cover by the manifest
+	 * @param asicContent {@link ASiCContent} representing the container
 	 * @return {@link DSSDocument} manifest
 	 */
-	private DSSDocument createASiCManifest(List<DSSDocument> documents) {
-		ASiCEWithXAdESManifestBuilder manifestBuilder = new ASiCEWithXAdESManifestBuilder(documents);
-		return DomUtils.createDssDocumentFromDomDocument(manifestBuilder.build(), ZIP_ENTRY_ASICE_METAINF_MANIFEST);
+	private DSSDocument createASiCManifest(ASiCContent asicContent) {
+		return new ASiCEWithXAdESManifestBuilder().setDocuments(asicContent.getSignedDocuments())
+				.setManifestFilename(asicFilenameFactory.getManifestFilename(asicContent)).build();
+	}
+
+	@Override
+	protected String getDataPackageName(ASiCContent asicContent) {
+		return asicFilenameFactory.getDataPackageFilename(asicContent);
 	}
 
 }

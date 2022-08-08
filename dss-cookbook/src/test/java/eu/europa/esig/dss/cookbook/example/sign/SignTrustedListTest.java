@@ -59,6 +59,17 @@ public class SignTrustedListTest extends CookbookTools {
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
             // tag::demo[]
+            // import eu.europa.esig.dss.model.DSSDocument;
+            // import eu.europa.esig.dss.model.FileDocument;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.model.ToBeSigned;
+            // import eu.europa.esig.dss.model.x509.CertificateToken;
+            // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
+            // import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+            // import eu.europa.esig.dss.xades.signature.XAdESService;
+
             DSSDocument trustedList = new FileDocument("src/main/resources/trusted-list.xml");
 
             DSSPrivateKeyEntry privateKeyEntry = signingToken.getKeys().get(0);
@@ -80,6 +91,18 @@ public class SignTrustedListTest extends CookbookTools {
             testFinalDocument(signedTrustedList);
 
             // tag::validate[]
+            // import eu.europa.esig.dss.DomUtils;
+            // import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+            // import eu.europa.esig.dss.validation.CertificateVerifier;
+            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.validation.DocumentValidator;
+            // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+            // import eu.europa.esig.dss.validation.reports.Reports;
+            // import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+            // import eu.europa.esig.trustedlist.TrustedListUtils;
+            // import org.w3c.dom.Document;
+            // import javax.xml.transform.dom.DOMSource;
+            // import java.util.List;
 
             // Create an instance of a trusted certificate source
             // NOTE: signing-certificate of a TL shall be trusted directly

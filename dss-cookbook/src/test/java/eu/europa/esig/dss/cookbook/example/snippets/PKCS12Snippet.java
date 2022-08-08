@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import java.io.IOException;
-import java.security.KeyStore.PasswordProtection;
-import java.util.List;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -31,11 +27,23 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.IOException;
+import java.security.KeyStore.PasswordProtection;
+import java.util.List;
+
 public class PKCS12Snippet {
 
 	public static void main(String[] args) throws IOException {
 
 		// tag::demo[]
+		// import java.security.KeyStore.PasswordProtection;
+		// import java.util.List;
+		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+		// import eu.europa.esig.dss.model.SignatureValue;
+		// import eu.europa.esig.dss.model.ToBeSigned;
+		// import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+		// import eu.europa.esig.dss.token.Pkcs12SignatureToken;
+		// import eu.europa.esig.dss.utils.Utils;
 
 		try (Pkcs12SignatureToken token = new Pkcs12SignatureToken("src/main/resources/user_a_rsa.p12", new PasswordProtection("password".toCharArray()))) {
 

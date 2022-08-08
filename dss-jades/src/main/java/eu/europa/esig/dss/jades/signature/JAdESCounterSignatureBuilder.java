@@ -48,6 +48,13 @@ import java.util.Objects;
  * Creates a JAdES Counter signature
  */
 public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
+
+	/**
+	 * Default constructor
+	 */
+	public JAdESCounterSignatureBuilder() {
+		// empty
+	}
 	
 	/**
 	 * Extract SignatureValue binaries from the provided JAdES signature

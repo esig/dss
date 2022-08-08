@@ -32,6 +32,8 @@ public class SoapTimestampServiceSnippet {
     @SuppressWarnings("unused")
     public void demo() throws Exception {
         // tag::demo[]
+        // import eu.europa.esig.dss.ws.timestamp.remote.soap.SoapTimestampServiceImpl;
+        // import eu.europa.esig.dss.ws.timestamp.remote.soap.client.SoapTimestampService;
 
         // Initialize the soap client
         SoapTimestampService timestampService = new SoapTimestampServiceImpl();

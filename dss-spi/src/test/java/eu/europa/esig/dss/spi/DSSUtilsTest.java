@@ -364,6 +364,8 @@ public class DSSUtilsTest {
 	
 	@Test
 	public void removeControlCharactersTest() {
+		assertNull(DSSUtils.removeControlCharacters(null));
+		assertEquals("", DSSUtils.removeControlCharacters(""));
 		assertEquals(" ", DSSUtils.removeControlCharacters(" "));
 		assertEquals("Nowina Solutions", DSSUtils.removeControlCharacters("Nowina Solutions"));
 		assertEquals("Новина", DSSUtils.removeControlCharacters("Новина"));
@@ -545,19 +547,19 @@ public class DSSUtilsTest {
 
 		SignatureAlgorithm targetAlgorithm;
 		if (EncryptionAlgorithm.ECDSA.equals(currentAlgorithm.getEncryptionAlgorithm())) {
-			assertTrue(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			assertTrue(DSSASN1Utils.isAsn1EncodedSignatureValue(originalBinaries));
 			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, currentAlgorithm.getDigestAlgorithm());
 		} else {
-			assertFalse(DSSASN1Utils.isAsn1Encoded(originalBinaries));
+			assertFalse(DSSASN1Utils.isAsn1EncodedSignatureValue(originalBinaries));
 			targetAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, currentAlgorithm.getDigestAlgorithm());
 		}
 
 		SignatureValue convertedSignatureValue = DSSUtils.convertECSignatureValue(targetAlgorithm, signatureValue);
 
 		if (EncryptionAlgorithm.ECDSA.equals(targetAlgorithm.getEncryptionAlgorithm())) {
-			assertTrue(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+			assertTrue(DSSASN1Utils.isAsn1EncodedSignatureValue(convertedSignatureValue.getValue()));
 		} else {
-			assertFalse(DSSASN1Utils.isAsn1Encoded(convertedSignatureValue.getValue()));
+			assertFalse(DSSASN1Utils.isAsn1EncodedSignatureValue(convertedSignatureValue.getValue()));
 		}
 
 		convertedSignatureValue = DSSUtils.convertECSignatureValue(currentAlgorithm, convertedSignatureValue);

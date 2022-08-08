@@ -31,13 +31,17 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,6 +54,13 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
     public void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setRevocationFallback(true);
+        return certificateVerifier;
     }
 
     @Override
@@ -84,8 +95,24 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
 
         service.setTspSource(getGoodTsa());
 
+        // extend from in memory document
         extendedDocument = super.extendSignature(extendedDocument);
         assertNotNull(extendedDocument);
+
+        File file = new File("target/" + extendedDocument.getName());
+        extendedDocument.save(file.getPath());
+
+        assertTrue(file.exists());
+
+        extendedDocument = new FileDocument(file);
+
+        // extend from file system document
+        extendedDocument = super.extendSignature(extendedDocument);
+        assertNotNull(extendedDocument);
+
+        assertTrue(file.delete());
+        assertFalse(file.exists());
+
         return extendedDocument;
     }
 
@@ -96,7 +123,7 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         if (SignatureLevel.CAdES_BASELINE_LTA.equals(signature.getSignatureFormat())) {
             List<TimestampWrapper> timestampList = signature.getTimestampList();
-            assertEquals(3, timestampList.size());
+            assertEquals(4, timestampList.size());
             int signatureTstCounter = 0;
             int archiveTstCounter = 0;
             for (TimestampWrapper timestampWrapper : timestampList) {
@@ -107,7 +134,7 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
                 }
             }
             assertEquals(1, signatureTstCounter);
-            assertEquals(2, archiveTstCounter);
+            assertEquals(3, archiveTstCounter);
         }
     }
 

@@ -41,12 +41,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -208,7 +206,6 @@ public class OnlineOCSPSourceTest {
 		dataLoader.setTimeoutSocket(10000);
 
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource(dataLoader);
-		ocspSource.setDigestAlgorithmsForExclusion(Collections.emptyList());
 
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
 		assertNotNull(ocspToken);
@@ -229,24 +226,6 @@ public class OnlineOCSPSourceTest {
 		ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA3_512);
 		ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
 		assertEquals(SignatureAlgorithm.RSA_SHA3_512, ocspToken.getSignatureAlgorithm());
-	}
-	
-	@Test
-	public void ocspSkipDigestAlgoTest() {
-		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-		
-		OCSPToken revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-		assertNotNull(revocationToken);
-		
-		ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA256));
-		
-		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-		assertNull(revocationToken);
-
-		ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA1));
-		
-		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-		assertNotNull(revocationToken);
 	}
 
 	@Test

@@ -34,6 +34,13 @@ public class ManifestPaths extends AbstractPaths {
 	public static final String FILE_ENTRY_PATH = fromCurrentPosition(ManifestElement.MANIFEST, ManifestElement.FILE_ENTRY);
 
 	/**
+	 * Default constructor
+	 */
+	public ManifestPaths() {
+		// empty
+	}
+
+	/**
 	 * Returns {@code "manifest:full-path"} with the given {@code manifestNamespace}'s prefix
 	 *
 	 * @param manifestNamespace {@link DSSNamespace}

@@ -23,14 +23,20 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -115,11 +121,21 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setArchiveTimestampParameters(new XAdESTimestampParameters());
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setBLevelParams(new BLevelParameters());
+
+		BLevelParameters bLevelParameters = new BLevelParameters();
+		signatureParameters.setBLevelParams(bLevelParameters);
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setCertificateChain(Collections.emptyList());
+
+		CommonCommitmentType commitmentType = new CommonCommitmentType();
+		bLevelParameters.setCommitmentTypeIndications(Collections.singletonList(commitmentType));
+
+		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+		assertEquals("The URI or OID must be defined for commitmentTypeIndication for XAdES creation!", exception.getMessage());
+
+		commitmentType.setUri("http://nowina.lu/approval");
+		signAndValidate(documentToSign, signatureParameters);
+
+		signatureParameters.setCertificateChain(Collections.emptyList());
         signAndValidate(documentToSign, signatureParameters);
         
         signatureParameters.setCertificateChain((List<CertificateToken>)null);
@@ -167,13 +183,17 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	private DSSDocument signAndValidate(DSSDocument documentToSign, XAdESSignatureParameters signatureParameters) {
-		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
+		DSSDocument signedDocument = sign(documentToSign, signatureParameters);
 		assertNotNull(signedDocument);
 		validate(signedDocument);
 		return signedDocument;
+	}
+
+	private DSSDocument sign(DSSDocument documentToSign, XAdESSignatureParameters signatureParameters) {
+		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 
 	@Test
@@ -218,7 +238,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 
 	private DSSDocument signAndValidate(List<DSSDocument> documentsToSign, XAdESSignatureParameters signatureParameters) {
 		ToBeSigned dataToSign = service.getDataToSign(documentsToSign, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentsToSign, signatureParameters, signatureValue);
         assertNotNull(signedDocument);
         validate(signedDocument);
@@ -236,7 +256,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		XAdESSignatureParameters extensionParameters = new XAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> extendAndValidate(null, extensionParameters));
-        assertEquals("toExtendDocument is not defined!", exception.getMessage());
+        assertEquals("toExtendDocument cannot be null!", exception.getMessage());
 		
         exception = assertThrows(NullPointerException.class, () -> extendAndValidate(signedDocument, null));
         assertEquals("Cannot extend the signature. SignatureParameters are not defined!", exception.getMessage());
@@ -299,6 +319,74 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		DSSDocument extendedDocument = service.extendDocument(documentToExtend, signatureParameters);
         assertNotNull(extendedDocument);
         validate(extendedDocument);
+	}
+
+	@Test
+	public void addSignaturePolicyStoreTest() {
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		DSSDocument signaturePolicy = new InMemoryDocument("Hello world!".getBytes());
+		Policy policy = new Policy();
+		policy.setId("Policy Id");
+		policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+		signatureParameters.bLevel().setSignaturePolicy(policy);
+
+		DSSDocument signedDocument = sign(documentToSign, signatureParameters);
+
+		Exception exception = assertThrows(NullPointerException.class,
+				() -> service.addSignaturePolicyStore(null, null));
+		assertEquals("The document cannot be null", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, null));
+		assertEquals("The signaturePolicyStore cannot be null", exception.getMessage());
+
+		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+
+		exception = assertThrows(NullPointerException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
+		assertEquals("SpDocSpecification must be provided", exception.getMessage());
+
+		SpDocSpecification spDocSpecification = new SpDocSpecification();
+		signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+
+		exception = assertThrows(NullPointerException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
+		assertEquals("ID (OID or URI) for SpDocSpecification must be provided", exception.getMessage());
+
+		spDocSpecification.setId("Policy-Id");
+
+		exception = assertThrows(IllegalArgumentException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
+		assertEquals("SignaturePolicyStore shall contain either SignaturePolicyContent document or sigPolDocLocalURI!", exception.getMessage());
+
+		signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument("Bye world!".getBytes()));
+
+		exception = assertThrows(IllegalInputException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
+		assertEquals("The process did not find a signature to add SignaturePolicyStore!", exception.getMessage());
+
+		signaturePolicyStore.setSignaturePolicyContent(signaturePolicy);
+
+		DSSDocument documentWithPolicy = service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
+		assertNotNull(documentWithPolicy);
+
+		validate(documentWithPolicy);
+
+		signaturePolicyStore.setSigPolDocLocalURI("/local/path/policy.xml");
+
+		exception = assertThrows(IllegalArgumentException.class,
+				() -> service.addSignaturePolicyStore(signedDocument, signaturePolicyStore));
+		assertEquals("SignaturePolicyStore shall contain either SignaturePolicyContent document or sigPolDocLocalURI!", exception.getMessage());
+
+		signaturePolicyStore.setSignaturePolicyContent(null);
+
+		documentWithPolicy = service.addSignaturePolicyStore(signedDocument, signaturePolicyStore);
+		assertNotNull(documentWithPolicy);
 	}
 	
 	private void validate(DSSDocument documentToValidate) {

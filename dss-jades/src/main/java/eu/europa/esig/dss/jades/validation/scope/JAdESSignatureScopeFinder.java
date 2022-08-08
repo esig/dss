@@ -55,6 +55,13 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESSignatureScopeFinder.class);
 
+	/**
+	 * Default constructor
+	 */
+	public JAdESSignatureScopeFinder() {
+		// empty
+	}
+
 	@Override
 	public List<SignatureScope> findSignatureScope(final JAdESSignature jadesSignature) {
 		List<SignatureScope> result = new ArrayList<>();
@@ -74,8 +81,8 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				} else if (originalDocuments.size() == 1) {
 					if (jadesSignature.isCounterSignature()) {
 						// only one document shall be present
-						return Collections.singletonList(new CounterSignatureScope(jadesSignature.getMasterSignature().getId(), 
-								getDigest(originalDocuments.get(0)) ));
+						return Collections.singletonList(new CounterSignatureScope(
+								getTokenIdentifierProvider().getIdAsString(jadesSignature.getMasterSignature()), getDigest(originalDocuments.get(0)) ));
 					} else {
 						return Collections.singletonList(getSignatureScopeFromOriginalDocument(originalDocuments.get(0)));
 					}

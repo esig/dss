@@ -51,6 +51,13 @@ public class ManifestFile implements Serializable {
 	private boolean archiveManifest;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ManifestFile() {
+		// empty
+	}
+
+	/**
 	 * Gets the {@code DSSDocument} representing the manifest
 	 *
 	 * @return {@link DSSDocument}

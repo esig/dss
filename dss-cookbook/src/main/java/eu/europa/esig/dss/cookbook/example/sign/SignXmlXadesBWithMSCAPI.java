@@ -41,6 +41,12 @@ import java.util.List;
 public class SignXmlXadesBWithMSCAPI {
 
 	/**
+	 * Executable application
+	 */
+	private SignXmlXadesBWithMSCAPI() {
+	}
+
+	/**
 	 * Main method
 	 *
 	 * @param args not applicable
@@ -96,4 +102,5 @@ public class SignXmlXadesBWithMSCAPI {
 			signedDocument.save("target/signedXmlXadesMSCapi.xml");
 		}
 	}
+
 }

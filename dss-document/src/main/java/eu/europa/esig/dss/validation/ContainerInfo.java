@@ -46,6 +46,13 @@ public class ContainerInfo {
 	private List<ManifestFile> manifestFiles;
 
 	/**
+	 * Default constructor instantiating object with null values
+	 */
+	public ContainerInfo() {
+		// empty
+	}
+
+	/**
 	 * Gets the {@code ASiCContainerType}
 	 *
 	 * @return {@link ASiCContainerType}

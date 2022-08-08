@@ -50,6 +50,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -284,7 +285,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 					switch (signatureForm) {
 						case XAdES:
 						case JAdES:
-							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals("urn:oid:" + commitmentTypeIndication.getOid());
+							uriMatch = indication.equals(commitmentTypeIndication.getUri()) || indication.equals(DSSUtils.getOidCode(commitmentTypeIndication.getOid()));
 							break;
 						case CAdES:
 						case PAdES:
@@ -301,6 +302,15 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 						}
 						if (SignatureForm.XAdES.equals(signatureForm) && Utils.isArrayNotEmpty(commitmentTypeIndication.getDocumentationReferences())) {
 							assertEquals(Arrays.asList(commitmentTypeIndication.getDocumentationReferences()), xmlCommitmentTypeIndication.getDocumentationReferences());
+						}
+						if (SignatureForm.XAdES.equals(signatureForm) && commitmentTypeIndication instanceof CommonCommitmentType) {
+							CommonCommitmentType commonCommitmentType = (CommonCommitmentType) commitmentTypeIndication;
+							if (Utils.isArrayNotEmpty(commonCommitmentType.getSignedDataObjects())) {
+								assertEquals(Arrays.asList(commonCommitmentType.getSignedDataObjects()), xmlCommitmentTypeIndication.getObjectReferences());
+							} else {
+								assertTrue(xmlCommitmentTypeIndication.isAllDataSignedObjects() != null
+										&& xmlCommitmentTypeIndication.isAllDataSignedObjects());
+							}
 						}
 					}
 				}
@@ -570,7 +580,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void validateETSICommitment(SACommitmentTypeIndicationType commitment, SerializableSignatureParameters parameters) {
 		List<CommitmentType> commitmentTypeIndications = parameters.bLevel().getCommitmentTypeIndications();
 		List<String> uriList = commitmentTypeIndications.stream().map(CommitmentType::getUri).collect(Collectors.toList());
-		List<String> oidList = commitmentTypeIndications.stream().map(CommitmentType::getOid).collect(Collectors.toList());
+		List<String> oidList = commitmentTypeIndications.stream().map(c -> DSSUtils.getOidCode(c.getOid())).collect(Collectors.toList());
 		assertTrue(uriList.contains(commitment.getCommitmentTypeIdentifier()) || oidList.contains(commitment.getCommitmentTypeIdentifier()));
 	}
 
@@ -743,16 +753,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {
-				boolean found = false;
-				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
-				String originalDigest = getDigest(original, toBeCanonicalized);
-				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
-					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
-						found = true;
-						break;
-					}
-				}
+				boolean found = documentPresent(original, retrievedOriginalDocuments);
 
 				if (!MimeType.PDF.equals(original.getMimeType())) {
 					assertTrue(found, "Unable to retrieve the original document " + original.getName());
@@ -772,6 +773,20 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				}
 			}
 		}
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 
 	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {

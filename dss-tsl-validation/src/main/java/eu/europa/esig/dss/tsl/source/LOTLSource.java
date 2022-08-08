@@ -20,10 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.source;
 
-import eu.europa.esig.dss.tsl.function.EULOTLOtherTSLPointer;
-import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.LOTLSigningCertificatesAnnouncementSchemeInformationURI;
-import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 
 import java.util.function.Predicate;
@@ -39,24 +37,35 @@ public class LOTLSource extends TLSource {
 	private boolean pivotSupport = false;
 
 	/**
+	 * Enable/disable MRA (Mutual Recognition Agreement) LOTL support
+	 */
+	private boolean mraSupport = false;
+
+	/**
 	 * Predicate which filters the LOTL
 	 * 
 	 * Default : filter the XML European list of trusted list (LOTL)
 	 */
-	private Predicate<OtherTSLPointerType> lotlPredicate = new EULOTLOtherTSLPointer().and(new XMLOtherTSLPointer());
+	private Predicate<OtherTSLPointerType> lotlPredicate = TLPredicateFactory.createEULOTLPredicate();
 
 	/**
 	 * Predicate which filters the TLs
 	 * 
 	 * Default : filter all XML trusted lists (TL) for European countries
 	 */
-	private Predicate<OtherTSLPointerType> tlPredicate = new EUTLOtherTSLPointer().and(new XMLOtherTSLPointer());
+	private Predicate<OtherTSLPointerType> tlPredicate = TLPredicateFactory.createEUTLPredicate();
 
 	/**
 	 * Optional : Predicate which filters the URL where the provided signing
 	 * certificates are defined
 	 */
 	private LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate;
+
+	/**
+	 * Default constructor instantiating object with minimal EU configuration
+	 */
+	public LOTLSource() {
+	}
 
 	/**
 	 * Gets if the LOTL configuration supports pivots
@@ -74,6 +83,30 @@ public class LOTLSource extends TLSource {
 	 */
 	public void setPivotSupport(boolean pivotSupport) {
 		this.pivotSupport = pivotSupport;
+	}
+
+	/**
+	 * Gets if the LOTL configuration supports MRA (Mutual Recognition Agreement).
+	 *
+	 * @return TRUE if supports MRA, FALSE otherwise
+	 */
+	public boolean isMraSupport() {
+		return mraSupport;
+	}
+
+	/**
+	 * Sets if the LOTL shall support MRA (Mutual Recognition Agreement) scheme defining trust service equivalence
+	 * mapping between the LOTL and a third-country Trusted List
+	 *
+	 * Setting this condition to TRUE will allow to process LOTL containing pointers to a third-country trusted lists,
+	 * including a special scheme for transition the qualification scope rules.
+	 *
+	 * Default : FALSE (LOTL MRA is not supported)
+	 *
+	 * @param mraSupport if LOTL shall support MRA
+	 */
+	public void setMraSupport(boolean mraSupport) {
+		this.mraSupport = mraSupport;
 	}
 
 	/**

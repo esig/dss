@@ -169,6 +169,8 @@ public class XmlPolicyBuilder {
 				xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest));
 			}
 		}
+		xmlSignaturePolicyStore.setSigPolDocLocalURI(signaturePolicyStore.getSigPolDocLocalURI());
+
 		return xmlSignaturePolicyStore;
 	}
 

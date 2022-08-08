@@ -115,15 +115,6 @@ public final class TrustedServicesFilterFactory {
 	}
 
 	/**
-	 * Creates a TrustedService filter by consistency
-	 *
-	 * @return {@link TrustedServiceFilter}
-	 */
-	public static TrustedServiceFilter createConsistentServiceFilter() {
-		return new FullyConsistentServiceFilter();
-	}
-
-	/**
 	 * Creates a TrustedService filter by the type as in the given certificate
 	 *
 	 * @param certificate {@link CertificateWrapper} to filter trusted services by its type
@@ -131,6 +122,61 @@ public final class TrustedServicesFilterFactory {
 	 */
 	public static TrustedServiceFilter createFilterByCertificateType(CertificateWrapper certificate) {
 		return new ServiceByCertificateTypeFilter(certificate);
+	}
+
+	/**
+	 * Creates a TrustedService filter by status consistency
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createConsistentServiceByStatusFilter() {
+		return new ConsistentServiceByStatusFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by QC consistency
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createConsistentServiceByQCFilter() {
+		return new ConsistentServiceByQCFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by QC consistency
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createConsistentServiceByCertificateTypeFilter() {
+		return new ConsistentServiceByCertificateTypeFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by QSCD consistency
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createConsistentServiceByQSCDFilter() {
+		return new ConsistentServiceByQSCDFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by MRA enacted
+	 *
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createMRAEnactedFilter() {
+		return new ServiceByMRAEnactedFilter();
+	}
+
+	/**
+	 * Creates a TrustedService filter by MRA equivalence starting date
+	 *
+	 * @param date {@link Date} to filter trusted services by
+	 * @return {@link TrustedServiceFilter}
+	 */
+	public static TrustedServiceFilter createFilterByMRAEquivalenceStartingDate(Date date) {
+		return new ServiceByMRAEquivalenceStartingDateFilter(date);
 	}
 
 }
