@@ -25,6 +25,8 @@ import eu.europa.esig.dss.pades.extension.suite.DSS1443Test;
 import eu.europa.esig.dss.pades.extension.suite.DSS1469ExtensionTest;
 import eu.europa.esig.dss.pades.extension.suite.DSS2058LTATest;
 import eu.europa.esig.dss.pades.extension.suite.DSS2058QCLTATest;
+import eu.europa.esig.dss.pades.extension.suite.DSS2821ExtensionToLTLevelTest;
+import eu.europa.esig.dss.pades.extension.suite.DSS2821ExtensionToTLevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTASelfSignedTSATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTATest;
@@ -75,7 +77,7 @@ import org.junit.platform.suite.api.Suite;
         PAdESExtensionNonPDFToLTALevelTest.class, PAdESExtensionBToLTWithRevokedCertificateTest.class,
         PAdESExtensionBToLTWithRevokedSkipCheckTest.class, BuildKnownObjectsTest.class, PAdESExtensionBToTWithRevokedCertTest.class,
 		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class,
-		PAdESExtensionInvalidLevelsTest.class })
+		PAdESExtensionInvalidLevelsTest.class, DSS2821ExtensionToTLevelTest.class, DSS2821ExtensionToLTLevelTest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

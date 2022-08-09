@@ -98,12 +98,6 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation<PAdESSignature
 	}
 	
 	@Override
-	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-	}
-	
-	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature.getSignatureValue());

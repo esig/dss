@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -63,9 +64,20 @@ public class DSS2199Test extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-		assertEquals(SignatureLevel.PKCS7_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		// LT level as validation data for the timestamp has been added after the timestamp and there is no TST covering it
+		assertEquals(SignatureLevel.PKCS7_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(1, signature.getDocumentTimestamps().size());
+		assertEquals(1, signature.getTLevelTimestamps().size());
+		assertEquals(0, signature.getALevelTimestamps().size());
+	}
+
 	@Override
 	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateObjects().size());

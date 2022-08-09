@@ -236,14 +236,31 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         allArchiveTimestamps.addAll(getArchiveTimestamps());
         allArchiveTimestamps.addAll(getDocumentTimestamps()); // can be a document timestamp for PAdES
         allArchiveTimestamps.addAll(getDetachedTimestamps()); // can be a detached timestamp for ASiC with CAdES
-        allArchiveTimestamps.sort(new TimestampTokenComparator());
         if (Utils.isCollectionNotEmpty(allArchiveTimestamps)) {
-            for (int ii = 0; ii < allArchiveTimestamps.size() - 1; ii++) {
-                TimestampToken timestampToken = allArchiveTimestamps.get(ii);
-                timestampTokens.add(timestampToken);
+            if (Utils.isCollectionNotEmpty(timestampTokens) || containsTimestampsCoveringOtherTimestamps(allArchiveTimestamps)) {
+                // exclude the last archive timestamp
+                allArchiveTimestamps.sort(new TimestampTokenComparator());
+                for (int ii = 0; ii < allArchiveTimestamps.size() - 1; ii++) {
+                    TimestampToken timestampToken = allArchiveTimestamps.get(ii);
+                    timestampTokens.add(timestampToken);
+                }
+            } else {
+                // add all timestamps for validation
+                timestampTokens.addAll(allArchiveTimestamps);
             }
         }
         return timestampTokens;
+    }
+
+    private boolean containsTimestampsCoveringOtherTimestamps(List<TimestampToken> timestampTokens) {
+        for (TimestampToken timestampToken : timestampTokens) {
+            List<TimestampedReference> timestampedReferences = timestampToken.getTimestampedReferences();
+            if (Utils.isCollectionNotEmpty(timestampedReferences) &&
+                    timestampedReferences.stream().anyMatch(r -> TimestampedObjectType.TIMESTAMP.equals(r.getCategory()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

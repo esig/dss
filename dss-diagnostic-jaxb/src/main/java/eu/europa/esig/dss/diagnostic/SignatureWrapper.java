@@ -45,6 +45,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -696,8 +697,33 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	private boolean coversLTLevel(TimestampWrapper timestampWrapper) {
-		return ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType()) &&
-				coversRevocationDataForCertificateChain(timestampWrapper, getCertificateChain());
+		if (ArchiveTimestampType.PAdES.equals(timestampWrapper.getArchiveTimestampType())) {
+			List<CertificateWrapper> signatureCertificateChain = getCertificateChain();
+			List<RelatedRevocationWrapper> relatedRevocationData = foundRevocations().getRelatedRevocationData();
+			if (relatedRevocationData == null || relatedRevocationData.isEmpty()) {
+				return coversDSSCertificateDataForCertificateChain(timestampWrapper, signatureCertificateChain);
+			} else {
+				return coversRevocationDataForCertificateChain(timestampWrapper, signatureCertificateChain) &&
+						(coversTimestampTokens(timestampWrapper, getTimestampList()) || coversOwnRevocationData(timestampWrapper));
+			}
+		}
+		return false;
+	}
+
+	private boolean coversDSSCertificateDataForCertificateChain(TimestampWrapper timestampWrapper,
+																List<CertificateWrapper> certificateChain) {
+		List<CertificateWrapper> dssCertificates = new ArrayList<>();
+		dssCertificates.addAll(foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.DSS_DICTIONARY));
+		dssCertificates.addAll(foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.VRI_DICTIONARY));
+		if (!dssCertificates.isEmpty()) {
+			List<CertificateWrapper> timestampedCertificates = timestampWrapper.getTimestampedCertificates();
+			for (CertificateWrapper certificateWrapper : certificateChain) {
+				if (dssCertificates.contains(certificateWrapper) && timestampedCertificates.contains(certificateWrapper)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean coversRevocationDataForCertificateChain(TimestampWrapper timestampWrapper,
@@ -706,19 +732,23 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		for (CertificateWrapper certificateWrapper : certificateChain) {
 			List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
 			if (certificateRevocationData != null && !certificateRevocationData.isEmpty()) {
-				boolean revocationDataCovered = false;
-				for (RevocationWrapper revocation : certificateRevocationData) {
-					if (timestampedRevocations.contains(revocation)) {
-						revocationDataCovered = true;
-						break;
-					}
-				}
-				if (!revocationDataCovered) {
-					return false;
-				}
+				return certificateRevocationData.stream().anyMatch(timestampedRevocations::contains);
 			}
 		}
-		return true;
+		return false;
+	}
+
+	private boolean coversTimestampTokens(TimestampWrapper timestamp, List<TimestampWrapper> timestampWrappers) {
+		List<TimestampWrapper> timestampedTimestamps = timestamp.getTimestampedTimestamps();
+		return timestampedTimestamps != null && timestampWrappers.stream().anyMatch(timestampedTimestamps::contains);
+	}
+
+	private boolean coversOwnRevocationData(TimestampWrapper timestampWrapper) {
+		CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
+		if (signingCertificate.isSelfSigned() || signingCertificate.isTrusted()) {
+			return true; // no revocation data required
+		}
+		return coversRevocationDataForCertificateChain(timestampWrapper, timestampWrapper.getCertificateChain());
 	}
 
 	private boolean isAtLeastOneTimestampValid(List<TimestampWrapper> timestampList) {

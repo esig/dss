@@ -49,6 +49,8 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithNoChangesPermitte
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithPlainECDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithPlainECDSATokenTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithSHA256andMGF1Test;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithValidationDataSameTstTrustAnchorTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
@@ -56,6 +58,8 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignDocumentWithXRefsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTATest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAWithSingleDocTstTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAWithSingleSelfSignedDocTstTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTCRLCounterTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
@@ -104,7 +108,9 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
 		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
 		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
-		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class, PAdESLevelLTASignDocumentWithXRefsTest.class })
+		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class, PAdESLevelLTASignDocumentWithXRefsTest.class,
+		PAdESLevelBWithValidationDataTest.class, PAdESLevelBWithValidationDataSameTstTrustAnchorTest.class,
+		PAdESLevelLTAWithSingleDocTstTest.class, PAdESLevelLTAWithSingleSelfSignedDocTstTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }
