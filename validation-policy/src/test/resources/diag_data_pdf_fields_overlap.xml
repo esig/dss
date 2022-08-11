@@ -43,7 +43,7 @@
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
-                    <SignatureByteRange>0 137883 156829 1365</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 137883 156829 1365</SignatureByteRange>
                 </PDFSignatureDictionary>
                 <ModificationDetection>
                     <AnnotationOverlap Page="1"/>
@@ -125,7 +125,7 @@
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
-                    <SignatureByteRange>0 159263 178209 1598</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 159263 178209 1598</SignatureByteRange>
                 </PDFSignatureDictionary>
                 <ModificationDetection>
                     <AnnotationOverlap Page="1"/>

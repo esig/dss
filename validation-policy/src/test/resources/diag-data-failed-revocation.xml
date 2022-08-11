@@ -42,7 +42,7 @@
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
-                    <SignatureByteRange>0 12431 50321 490</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 12431 50321 490</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
@@ -748,7 +748,7 @@
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 63842 82788 792</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 63842 82788 792</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>
@@ -814,7 +814,7 @@
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 88673 107619 493</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 88673 107619 493</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>
@@ -884,7 +884,7 @@
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 113789 132735 494</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 113789 132735 494</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>

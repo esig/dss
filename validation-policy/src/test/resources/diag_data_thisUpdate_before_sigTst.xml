@@ -44,7 +44,7 @@
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
                     <Reason>I am the author of this document.</Reason>
-                    <SignatureByteRange>0 1228995 1266885 546</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 1228995 1266885 546</SignatureByteRange>
                 </PDFSignatureDictionary>
                 <ModificationDetection>
                     <AnnotationOverlap Page="1"/>
@@ -564,7 +564,7 @@
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 1303435 1341325 516</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 1303435 1341325 516</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>

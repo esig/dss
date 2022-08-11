@@ -57,7 +57,7 @@
 	                <SubFilter>PBAD.PAdES</SubFilter>
 	                <ContactInfo></ContactInfo>
 	                <Reason></Reason>
-	                <SignatureByteRange>0 234543 300079 5547</SignatureByteRange>
+	                <SignatureByteRange valid="true">0 234543 300079 5547</SignatureByteRange>
 	            </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>
@@ -127,7 +127,7 @@
 	                <SubFilter>adbe.pkcs7.detached</SubFilter>
 	                <ContactInfo></ContactInfo>
 	                <Reason>Digitally verifiable PDF exported from www.docusign.com</Reason>
-	                <SignatureByteRange>0 305954 371490 5010</SignatureByteRange>
+	                <SignatureByteRange valid="true">0 305954 371490 5010</SignatureByteRange>
 	            </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>

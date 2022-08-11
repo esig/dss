@@ -43,7 +43,7 @@
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>adbe.pkcs7.detached</SubFilter>
-                    <SignatureByteRange>0 48800 55358 62490</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 48800 55358 62490</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>

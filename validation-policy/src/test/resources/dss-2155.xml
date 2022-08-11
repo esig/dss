@@ -44,7 +44,7 @@
                     <SubFilter>adbe.pkcs7.detached</SubFilter>
                     <Location>Mumbai, India</Location>
                     <Reason>Esign Testing</Reason>
-                    <SignatureByteRange>0 186286 205232 4288</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 186286 205232 4288</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>

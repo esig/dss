@@ -48,7 +48,7 @@
 	                <SubFilter>ETSI.CAdES.detached</SubFilter>
 	                <ContactInfo>info@polysys.eu</ContactInfo>
 	                <Reason>Document certification - electronic seal produced by PolySigno product from Polysys Ltd.</Reason>
-	                <SignatureByteRange>0 139747 169749 48336</SignatureByteRange>
+	                <SignatureByteRange valid="true">0 139747 169749 48336</SignatureByteRange>
 	            </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>

@@ -67,7 +67,7 @@
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
                     <Location>Country=SK SLOVAKIA, Locality=Bratislava</Location>
                     <Reason>Proof-Of-Approval</Reason>
-                    <SignatureByteRange>0 229036 261806 601</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 229036 261806 601</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
@@ -662,7 +662,7 @@
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 316098 335044 512</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 316098 335044 512</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates>

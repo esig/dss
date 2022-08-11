@@ -47,7 +47,7 @@
                     <Filter>Adobe.PPKMS</Filter>
                     <SubFilter>adbe.pkcs7.detached</SubFilter>
                     <Reason>Výstup z informačního systému veřejné správy</Reason>
-                    <SignatureByteRange>0 160 20642 139755</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 160 20642 139755</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
