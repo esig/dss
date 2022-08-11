@@ -230,6 +230,35 @@ public final class PAdESUtils {
 	}
 
 	/**
+	 * Gets the SignatureValue from the {@code dssDocument} according to the {@code byteRange}
+	 *
+	 * Example: extracts bytes from 841 to 959. [0, 840, 960, 1200]
+	 *
+	 * @param dssDocument {@link DSSDocument} to process
+	 * @param byteRange {@link ByteRange} specifying the signatureValue
+	 * @return signatureValue binaries
+	 * @throws IOException if an exception occurs
+	 */
+	public static byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
+		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
+		int endSigValueContent = byteRange.getSecondPartStart() - 1;
+
+		int signatureValueArraySize = endSigValueContent - startSigValueContent;
+		if (signatureValueArraySize < 1) {
+			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
+
+		byte[] signatureValueArray = new byte[signatureValueArraySize];
+
+		try (InputStream is = dssDocument.openStream()) {
+			DSSUtils.skipAvailableBytes(is, startSigValueContent);
+			DSSUtils.readAvailableBytes(is, signatureValueArray);
+		}
+
+		return Utils.fromHex(new String(signatureValueArray));
+	}
+
+	/**
 	 * Returns a signed content according to the provided byteRange ([0]-[1] and [2]-[3]) from the extracted revision
 	 *
 	 * @param revisionBinaries a byte array representing an extracted revision content

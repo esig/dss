@@ -75,7 +75,7 @@ public class DSS1538Test extends AbstractPAdESTestValidation {
 		assertNotNull(pdfSignatureDictionary);
 		assertNotNull(pdfSignatureDictionary.getSubFilter());
 		assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
-		assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
+		assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().getValue().size());
 	}
 
 	@Override

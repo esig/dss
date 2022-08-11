@@ -59,7 +59,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -413,19 +412,23 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					LOG.info("Signature fields: {}", fieldNames);
 
 					final ByteRange byteRange = signatureDictionary.getByteRange();
-					byteRange.validate();
-
 					final byte[] cms = signatureDictionary.getContents();
+					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
+					byteRange.setValid(byteRangeValid);
+
 					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
-					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
-						LOG.warn("Signature {} is invalid. SIWA detected !", fieldNames);
-					} else {
+					byte[] signedData = DSSUtils.EMPTY_BYTE_ARRAY;
+					if (byteRangeValid) {
 						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
+						signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
+
+					} else {
+						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
+								"The validation will result to a broken signature.", fieldNames);
 					}
 
-					boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
-					byte[] signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
-					DSSDocument signedContent = new InMemoryDocument(signedData);
+					final DSSDocument signedContent = new InMemoryDocument(signedData);
+					final boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
 
 					// create a DSS revision if updated
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
@@ -456,7 +459,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
 					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
 							lastDSSDictionary, extractBeforeSignatureValue(byteRange, revisionContent), pwd);
-
 
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse signature {} . Reason : {}";
@@ -568,65 +570,54 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * Checks if the of the value incorporated into /Contents matches the range defined in the {@code byteRange}
+	 * This method verifies the validity of /ByteRange field against the extracted from /Contents field {@code cms}
+	 * and the current pdf {@code document}
 	 *
-	 * NOTE: used for SIWA detection
-	 *
-	 * @param document {@link DSSDocument} to be validated
-	 * @param byteRange {@link ByteRange}
-	 * @param cms binaries of the CMSSignedData
-	 * @param signatureFieldNames a list of signature field {@link String} names
-	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
+	 * @param byteRange {@link ByteRange} to be validated
+	 * @param document {@link DSSDocument} current PDF document
+	 * @param cms byte array representing the binaries extracted from /Contents field
+	 * @return TRUE if the /ByteRange is valid, FALSE otherwise
 	 */
-	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, ByteRange byteRange, byte[] cms,
-			List<String> signatureFieldNames) {
-		boolean match = false;
+	protected boolean validateByteRange(ByteRange byteRange, DSSDocument document, byte[] cms) {
 		try {
-			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
-			match = Arrays.equals(cms, cmsWithByteRange);
-			if (!match) {
-				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
+			byteRange.validate();
+			if (!isContentValueEqualsByteRangeExtraction(byteRange, document, cms)) {
+				LOG.warn("Signature with the /ByteRange '{}' is invalid. SIWA detected!", byteRange);
+				return false;
 			}
+			return true;
+
 		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange : %s. Reason : %s", byteRange, e.getMessage());
+			String message = String.format("/ByteRange validation ended with error : %s. Reason : %s", byteRange, e.getMessage());
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
 				LOG.error(message, e);
 			} else {
 				LOG.error(message);
 			}
+			return false;
 		}
-		return match;
 	}
 
 	/**
-	 * Gets the SignatureValue from the {@code dssDocument} according to the {@code byteRange}
+	 * Checks if the of the value incorporated into /Contents matches the range defined in the {@code byteRange}
 	 *
-	 * Example: extracts bytes from 841 to 959. [0, 840, 960, 1200]
+	 * NOTE: used for SIWA detection
 	 *
-	 * @param dssDocument {@link DSSDocument} to process
-	 * @param byteRange {@link ByteRange} specifying the signatureValue
-	 * @return signatureValue binaries
-	 * @throws IOException if an exception occurs
+	 * @param byteRange {@link ByteRange} defined within a signature
+	 * @param document {@link DSSDocument} current PDF document
+	 * @param cms binaries of the CMSSignedData extracted from /Contents field
+	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
+	 * @throws IOException if an exception occurs on a signature value extraction
 	 */
-	protected byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
-		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
-		int endSigValueContent = byteRange.getSecondPartStart() - 1;
-
-		int signatureValueArraySize = endSigValueContent - startSigValueContent;
-		if (signatureValueArraySize < 1) {
-			throw new DSSException("The byte range present in the document is not valid! "
-					+ "SignatureValue size cannot be negative or equal to zero!");
+	private boolean isContentValueEqualsByteRangeExtraction(ByteRange byteRange, DSSDocument document, byte[] cms) throws IOException {
+		byte[] cmsWithByteRange = PAdESUtils.getSignatureValue(document, byteRange);
+		boolean match = Arrays.equals(cms, cmsWithByteRange);
+		if (!match) {
+			LOG.warn("The value extracted according to /ByteRange '{}' " +
+					"does not match the signature present in /Contents field!", byteRange);
 		}
-
-		byte[] signatureValueArray = new byte[signatureValueArraySize];
-
-		try (InputStream is = dssDocument.openStream()) {
-			DSSUtils.skipAvailableBytes(is, startSigValueContent);
-			DSSUtils.readAvailableBytes(is, signatureValueArray);
-		}
-
-		return Utils.fromHex(new String(signatureValueArray));
+		return match;
 	}
 
 	/**
@@ -637,8 +628,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return the first part of the byte range
 	 */
 	protected byte[] extractBeforeSignatureValue(ByteRange byteRange, byte[] signedContent) {
-		final int length = byteRange.getFirstPartEnd();
-		if (signedContent.length < length) {
+		if (!byteRange.isValid() || signedContent.length < byteRange.getFirstPartEnd()) {
 			return new byte[0];
 		}
 		return PAdESUtils.retrievePreviousPDFRevision(new InMemoryDocument(signedContent), byteRange).getBytes();

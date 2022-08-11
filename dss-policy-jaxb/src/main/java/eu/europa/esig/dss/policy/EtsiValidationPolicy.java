@@ -121,6 +121,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 	
 	@Override
+	public LevelConstraint getByteRangeConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getByteRange();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getPdfPageDifferenceConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {

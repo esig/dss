@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
@@ -131,12 +132,19 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 			pdfSignatureDictionary.setContactInfo(emptyToNull(pdfSigDict.getContactInfo()));
 			pdfSignatureDictionary.setLocation(emptyToNull(pdfSigDict.getLocation()));
 			pdfSignatureDictionary.setReason(emptyToNull(pdfSigDict.getReason()));
-			pdfSignatureDictionary.getSignatureByteRange().addAll(pdfSigDict.getByteRange().toBigIntegerList());
+			pdfSignatureDictionary.setSignatureByteRange(getXmlByteRange(pdfSigDict.getByteRange()));
 			pdfSignatureDictionary.setDocMDP(getXmlDocMDP(pdfSigDict.getDocMDP()));
 			pdfSignatureDictionary.setFieldMDP(getXmlPDFLockDictionary(pdfSigDict.getFieldMDP()));
 			return pdfSignatureDictionary;
 		}
 		return null;
+	}
+
+	private XmlByteRange getXmlByteRange(ByteRange byteRange) {
+		XmlByteRange xmlByteRange = new XmlByteRange();
+		xmlByteRange.getValue().addAll(byteRange.toBigIntegerList());
+		xmlByteRange.setValid(byteRange.isValid());
+		return xmlByteRange;
 	}
 
 	private XmlDocMDP getXmlDocMDP(CertificationPermission certificationPermission) {

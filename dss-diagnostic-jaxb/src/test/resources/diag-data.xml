@@ -49,7 +49,7 @@
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
                     <ContactInfo>podatelna@nbu.gov.sk</ContactInfo>
                     <Reason>Potvrdzujem presnosť a neporušenosť tohto dokumentu</Reason>
-                    <SignatureByteRange>0 54328 78060 597951</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 54328 78060 597951</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>

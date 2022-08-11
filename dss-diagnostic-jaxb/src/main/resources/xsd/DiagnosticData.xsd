@@ -306,11 +306,7 @@
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
 			<xs:element name="Location" type="xs:string" minOccurs="0" />
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
-			<xs:element name="SignatureByteRange" minOccurs="0" >
-				<xs:simpleType>
-					<xs:list itemType="xs:integer"/>
-				</xs:simpleType>
-			</xs:element>
+			<xs:element name="SignatureByteRange" type="ByteRange" minOccurs="0" />
 			<xs:element name="DocMDP" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -321,6 +317,18 @@
 			<xs:element name="FieldMDP" type="PDFLockDictionary" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="ByteRange">
+		<xs:simpleContent>
+			<xs:extension base="int-list">
+				<xs:attribute name="valid" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="int-list">
+		<xs:list itemType="xs:integer"/>
+	</xs:simpleType>
 	
 	<xs:complexType name="ModificationDetection">
 		<xs:sequence>

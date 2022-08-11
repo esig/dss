@@ -20,14 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SIWATest extends AbstractPAdESTestValidation {
 
@@ -54,6 +56,13 @@ public class SIWATest extends AbstractPAdESTestValidation {
 		
 		assertEquals(1, simpleReport.getSignaturesCount());
 		assertEquals(0, simpleReport.getValidSignaturesCount());
+	}
+
+	@Override
+	protected void checkByteRange(XmlByteRange byteRange) {
+		assertNotNull(byteRange);
+		assertEquals(4, byteRange.getValue().size());
+		assertFalse(byteRange.isValid());
 	}
 
 }

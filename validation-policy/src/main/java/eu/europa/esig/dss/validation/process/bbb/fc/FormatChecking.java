@@ -37,6 +37,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.DocMDPCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.EllipticCurveKeySizeCheck;
@@ -114,6 +115,8 @@ public class FormatChecking extends Chain<XmlFC> {
 		if (signature.getPDFRevision() != null) {
 			
 			item = item.setNextItem(signerInformationStoreCheck());
+
+			item = item.setNextItem(byteRangeCheck());
 			
 			item = item.setNextItem(pdfPageDifferenceCheck());
 			
@@ -198,6 +201,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> signerInformationStoreCheck() {
 		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
 		return new SignerInformationStoreCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> byteRangeCheck() {
+		LevelConstraint constraint = policy.getByteRangeConstraint(context);
+		return new ByteRangeCheck(i18nProvider, result, signature, constraint);
 	}
 	
 	private ChainItem<XmlFC> pdfPageDifferenceCheck() {

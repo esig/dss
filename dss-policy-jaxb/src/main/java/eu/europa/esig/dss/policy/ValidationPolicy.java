@@ -775,6 +775,16 @@ public interface ValidationPolicy {
 	 *         the constraint file, null otherwise.
 	 */
 	LevelConstraint getSignerInformationStoreConstraint(Context context);
+
+	/**
+	 * This constraint checks if ByteRange dictionary is valid
+	 * NOTE: applicable only for PAdES
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ByteRange element for a given context element is present in
+	 *         the constraint file, null otherwise.
+	 */
+	LevelConstraint getByteRangeConstraint(Context context);
 	
 	/**
 	 * Indicates if a PDF page difference check should be proceeded. If PdfPageDifference element is absent within

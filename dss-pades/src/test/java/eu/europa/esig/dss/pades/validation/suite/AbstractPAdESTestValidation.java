@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -103,12 +104,7 @@ public abstract class AbstractPAdESTestValidation extends AbstractDocumentTestVa
 			XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
 			assertNotNull(pdfRevision);
 			assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
-			XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-			assertNotNull(pdfSignatureDictionary);
-			assertNotNull(pdfSignatureDictionary.getType());
-			assertNotNull(pdfSignatureDictionary.getSubFilter());
-			assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
-			assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
+			checkPdfSignatureDictionary(pdfRevision.getPDFSignatureDictionary());
 
 			assertFalse(signatureWrapper.arePdfModificationsDetected());
 			assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
@@ -119,17 +115,25 @@ public abstract class AbstractPAdESTestValidation extends AbstractDocumentTestVa
 				XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
 				assertNotNull(pdfRevision);
 				assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
-				XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-				assertNotNull(pdfSignatureDictionary);
-				assertNotNull(pdfSignatureDictionary.getType());
-				assertNotNull(pdfSignatureDictionary.getSubFilter());
-				assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
-				assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().size());
+				checkPdfSignatureDictionary(pdfRevision.getPDFSignatureDictionary());
 
 				assertFalse(timestampWrapper.arePdfModificationsDetected());
 				assertTrue(Utils.isCollectionEmpty(timestampWrapper.getPdfUndefinedChanges()));
 			}
 		}
+	}
+
+	protected void checkPdfSignatureDictionary(XmlPDFSignatureDictionary pdfSignatureDictionary) {
+		assertNotNull(pdfSignatureDictionary);
+		assertNotNull(pdfSignatureDictionary.getType());
+		assertNotNull(pdfSignatureDictionary.getSubFilter());
+		checkByteRange(pdfSignatureDictionary.getSignatureByteRange());
+	}
+
+	protected void checkByteRange(XmlByteRange byteRange) {
+		assertNotNull(byteRange);
+		assertEquals(4, byteRange.getValue().size());
+		assertTrue(byteRange.isValid());
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -657,16 +658,37 @@ public class TimestampWrapper extends AbstractTokenProxy {
 	}
 	
 	/**
-	 * Returns /ByteRange parameter value
+	 * Returns the PDF dictionary /ByteRange value
 	 *
-	 * @return {@link String}
+	 * @return byte range
 	 */
 	public List<BigInteger> getSignatureByteRange() {
-		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
+		XmlByteRange byteRange = getXmlByteRange();
+		if (byteRange != null) {
+			return byteRange.getValue();
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns whether the PDF signature dictionary /ByteRange is found and valid
+	 *
+	 * @return TRUE if the /ByteRange is valid, FALSE otherwise
+	 */
+	public boolean isSignatureByteRangeValid() {
+		XmlByteRange byteRange = getXmlByteRange();
+		if (byteRange != null) {
+			return byteRange.isValid();
+		}
+		return false;
+	}
+
+	private XmlByteRange getXmlByteRange() {
+		XmlPDFRevision pdfRevision = timestamp.getPDFRevision();
+		if (pdfRevision != null && pdfRevision.getPDFSignatureDictionary() != null) {
+			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
+		}
+		return null;
 	}
 
 }
