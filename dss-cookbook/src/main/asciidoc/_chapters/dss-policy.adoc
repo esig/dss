@@ -406,6 +406,22 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
+* `ByteRange` - this constraint is used to check the validity of the `/ByteRange` dictionary against the PDF specification and to ensure correct placement of the signature within `/Contents` dictionary (PAdES only). If the `/ByteRange` violates the PDF specification or the signature `/Contents` dictionary is placed outside the `/ByteRange`, then the check fails.
+
+Default: `FAIL`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of ByteRange usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ByteRange Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
 * `PdfPageDifference` - this constraint is used to check whether a signed PDF document revision contains the same number of pages as the final validating PDF document revision. If a signed PDF document revision contains a different number of pages than the final PDF document revision, the check will fail.
 
 Default: `FAIL`
@@ -2038,6 +2054,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ByteRange          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
