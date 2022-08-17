@@ -48,7 +48,11 @@ import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
+import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
+import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
+import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
@@ -96,6 +100,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     private static final DSSNamespace TL_NAMESPACE = new DSSNamespace("http://uri.etsi.org/02231/v2#", "tl");
     private static final DSSNamespace MRA_NAMESPACE = new DSSNamespace("http://ec.europa.eu/tools/lotl/mra/schema/v2#", "mra");
+    private static final DSSNamespace ADDITIONAL_TYPES_NAMESPACE = new DSSNamespace("http://uri.etsi.org/02231/v2/additionaltypes#", "ns3");
     private static final DSSNamespace CONDITION_NAMESPACE = new DSSNamespace("http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#", "ns5");
 
     private static final DSSDocument DOC_TO_SIGN = new InMemoryDocument("Hello World".getBytes());
@@ -570,11 +575,6 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     private void setCondition(Document document, Element element, Condition condition) {
-        if (condition instanceof QCStatementCondition) {
-            Element otherCriteriaListElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:otherCriteriaList");
-            element.appendChild(otherCriteriaListElement);
-            element = otherCriteriaListElement;
-        }
         setConditionRecursively(document, element, condition);
     }
 
@@ -588,65 +588,172 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
             List<Condition> children = compositeCondition.getChildren();
             if (Utils.isCollectionNotEmpty(children)) {
-                Element otherCriteriaListElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:otherCriteriaList");
-                criteriaListElement.appendChild(otherCriteriaListElement);
                 for (Condition child : children) {
-                    setConditionRecursively(document, otherCriteriaListElement, child);
+                    setConditionRecursively(document, criteriaListElement, child);
                 }
             }
 
-        } else if (condition instanceof QCStatementCondition) {
-            QCStatementCondition qcStatementCondition = (QCStatementCondition) condition;
+        } else if (condition instanceof QCStatementCondition || condition instanceof QcStatementSetCondition) {
+            Element otherCriteriaListElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:otherCriteriaList");
+            element.appendChild(otherCriteriaListElement);
+
             Element qcStatementSetElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementSet");
-            element.appendChild(qcStatementSetElement);
+            otherCriteriaListElement.appendChild(qcStatementSetElement);
 
-            if (Utils.isStringNotEmpty(qcStatementCondition.getOid())) {
-                Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
-                qcStatementSetElement.appendChild(qcStatementElement);
-                addUrnOid(document, qcStatementElement, qcStatementCondition.getOid());
-            }
-            
-            if (Utils.isStringNotEmpty(qcStatementCondition.getType())) {
-                Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
-                qcStatementSetElement.appendChild(qcStatementElement);
-                addUrnOid(document, qcStatementElement, "urn:oid:0.4.0.1862.1.6");
+            if (condition instanceof QCStatementCondition) {
+                QCStatementCondition qcStatementCondition = (QCStatementCondition) condition;
+                addQcStatementCondition(qcStatementCondition, document, qcStatementSetElement);
 
-                Element qcStatementInfoElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementInfo");
-                qcStatementElement.appendChild(qcStatementInfoElement);
-                Element qcTypeElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcType");
-                qcStatementInfoElement.appendChild(qcTypeElement);
-
-                Element identifierElement = document.createElementNS(XAdESNamespaces.XADES_132.getUri(), "ns4:Identifier");
-                qcTypeElement.appendChild(identifierElement);
-                identifierElement.setAttribute("Qualifier", "OIDAsURN");
-                setText(identifierElement, qcStatementCondition.getType());
+            } else if (condition instanceof QcStatementSetCondition) {
+                QcStatementSetCondition qcStatementSetCondition = (QcStatementSetCondition) condition;
+                for (QCStatementCondition qcStatementCondition : qcStatementSetCondition.getConditions()) {
+                    addQcStatementCondition(qcStatementCondition, document, qcStatementSetElement);
+                }
             }
 
-            if (Utils.isStringNotEmpty(qcStatementCondition.getLegislation())) {
-                Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
-                qcStatementSetElement.appendChild(qcStatementElement);
-                addUrnOid(document, qcStatementElement, "urn:oid:0.4.0.1862.1.7");
+        } else if (condition instanceof PolicyIdCondition || condition instanceof PolicySetCondition) {
+            Element policySetElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:PolicySet");
+            element.appendChild(policySetElement);
 
-                Element qcStatementInfoElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementInfo");
-                qcStatementElement.appendChild(qcStatementInfoElement);
-                Element qcCClegislationElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcCClegislation");
-                qcStatementInfoElement.appendChild(qcCClegislationElement);
-                setText(qcCClegislationElement, qcStatementCondition.getLegislation());
+            if (condition instanceof PolicyIdCondition) {
+                PolicyIdCondition policyIdCondition = (PolicyIdCondition) condition;
+                addPolicyIdCondition(policyIdCondition, document, policySetElement);
+
+            } else if (condition instanceof PolicySetCondition) {
+                PolicySetCondition policySetCondition = (PolicySetCondition) condition;
+                for (PolicyIdCondition policyIdCondition : policySetCondition.getConditions()) {
+                    addPolicyIdCondition(policyIdCondition, document, policySetElement);
+                }
             }
+
+        } else if (condition instanceof KeyUsageCondition || condition instanceof KeyUsageSetCondition) {
+            Element keyUsageElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:KeyUsage");
+            element.appendChild(keyUsageElement);
+
+            if (condition instanceof KeyUsageCondition) {
+                KeyUsageCondition keyUsageCondition = (KeyUsageCondition) condition;
+                addKeyUsageCondition(keyUsageCondition, document, keyUsageElement);
+
+            } else if (condition instanceof KeyUsageSetCondition) {
+                KeyUsageSetCondition keyUsageSetCondition = (KeyUsageSetCondition) condition;
+                for (KeyUsageCondition keyUsageCondition : keyUsageSetCondition.getConditions()) {
+                    addKeyUsageCondition(keyUsageCondition, document, keyUsageElement);
+                }
+            }
+
+        } else if (condition instanceof ExtendedKeyUsageCondition) {
+            Element otherCriteriaListElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:otherCriteriaList");
+            element.appendChild(otherCriteriaListElement);
+
+            Element extendedKeyUsageElement = document.createElementNS(ADDITIONAL_TYPES_NAMESPACE.getUri(), "ns3:ExtendedKeyUsage");
+            otherCriteriaListElement.appendChild(extendedKeyUsageElement);
+
+            ExtendedKeyUsageCondition extendedKeyUsageCondition = (ExtendedKeyUsageCondition) condition;
+            addExtendedKeyUsageCondition(extendedKeyUsageCondition, document, extendedKeyUsageElement);
+
+        } else if (condition instanceof CertSubjectDNAttributeCondition) {
+            Element otherCriteriaListElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:otherCriteriaList");
+            element.appendChild(otherCriteriaListElement);
+
+            Element certSubjectDNAttributeElement = document.createElementNS(ADDITIONAL_TYPES_NAMESPACE.getUri(), "ns3:CertSubjectDNAttribute");
+            otherCriteriaListElement.appendChild(certSubjectDNAttributeElement);
+
+            CertSubjectDNAttributeCondition certSubjectDNAttributeCondition = (CertSubjectDNAttributeCondition) condition;
+            addCertSubjectDNAttributeCondition(certSubjectDNAttributeCondition, document, certSubjectDNAttributeElement);
 
         } else {
             fail(String.format("Not supported Condition class : %s", condition.getClass()));
         }
     }
 
-    private void addUrnOid(Document document, Element element, String oid) {
-        Element qcStatementIdElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementId");
-        element.appendChild(qcStatementIdElement);
+    private void addQcStatementCondition(QCStatementCondition qcStatementCondition, Document document, Element qcStatementSetElement) {
+        if (Utils.isStringNotEmpty(qcStatementCondition.getOid())) {
+            Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
+            qcStatementSetElement.appendChild(qcStatementElement);
 
+            Element qcStatementIdElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementId");
+            qcStatementElement.appendChild(qcStatementIdElement);
+            addUrnOid(document, qcStatementIdElement, qcStatementCondition.getOid());
+        }
+
+        if (Utils.isStringNotEmpty(qcStatementCondition.getType())) {
+            Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
+            qcStatementSetElement.appendChild(qcStatementElement);
+
+            Element qcStatementIdElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementId");
+            qcStatementElement.appendChild(qcStatementIdElement);
+            addUrnOid(document, qcStatementIdElement, "urn:oid:0.4.0.1862.1.6");
+
+            Element qcStatementInfoElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementInfo");
+            qcStatementElement.appendChild(qcStatementInfoElement);
+            Element qcTypeElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcType");
+            qcStatementInfoElement.appendChild(qcTypeElement);
+
+            Element identifierElement = document.createElementNS(XAdESNamespaces.XADES_132.getUri(), "ns4:Identifier");
+            qcTypeElement.appendChild(identifierElement);
+            identifierElement.setAttribute("Qualifier", "OIDAsURN");
+            setText(identifierElement, qcStatementCondition.getType());
+        }
+
+        if (Utils.isStringNotEmpty(qcStatementCondition.getLegislation())) {
+            Element qcStatementElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatement");
+            qcStatementSetElement.appendChild(qcStatementElement);
+
+            Element qcStatementIdElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementId");
+            qcStatementElement.appendChild(qcStatementIdElement);
+            addUrnOid(document, qcStatementIdElement, "urn:oid:0.4.0.1862.1.7");
+
+            Element qcStatementInfoElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcStatementInfo");
+            qcStatementElement.appendChild(qcStatementInfoElement);
+            Element qcCClegislationElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcCClegislation");
+            qcStatementInfoElement.appendChild(qcCClegislationElement);
+            setText(qcCClegislationElement, qcStatementCondition.getLegislation());
+        }
+    }
+
+    private void addUrnOid(Document document, Element element, String oid) {
         Element identifierElement = document.createElementNS(XAdESNamespaces.XADES_132.getUri(), "ns4:Identifier");
-        qcStatementIdElement.appendChild(identifierElement);
+        element.appendChild(identifierElement);
         identifierElement.setAttribute("Qualifier", "OIDAsURN");
-        setText(identifierElement,oid);
+        setText(identifierElement, oid);
+    }
+
+    private void addPolicyIdCondition(PolicyIdCondition policyIdCondition, Document document, Element policySetElement) {
+        if (Utils.isStringNotEmpty(policyIdCondition.getPolicyOid())) {
+            Element policyIdentifierElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:PolicyIdentifier");
+            policySetElement.appendChild(policyIdentifierElement);
+            addUrnOid(document, policyIdentifierElement, policyIdCondition.getPolicyOid());
+        }
+    }
+
+    private void addKeyUsageCondition(KeyUsageCondition keyUsageCondition, Document document, Element keyUsageElement) {
+        if (keyUsageCondition.getBit() != null) {
+            Element keyUsageBitElement = document.createElementNS(CONDITION_NAMESPACE.getUri(), "ns5:KeyUsageBit");
+            keyUsageElement.appendChild(keyUsageBitElement);
+
+            keyUsageBitElement.setAttribute("name", keyUsageCondition.getBit().getValue());
+            setText(keyUsageBitElement, Boolean.toString(keyUsageCondition.getValue()));
+        }
+    }
+
+    private void addExtendedKeyUsageCondition(ExtendedKeyUsageCondition extendedKeyUsageCondition, Document document, Element extendedKeyUsageElement) {
+        if (Utils.isCollectionNotEmpty(extendedKeyUsageCondition.getKeyPurposeIds())) {
+            for (String oid : extendedKeyUsageCondition.getKeyPurposeIds()) {
+                Element keyPurposeIdElement = document.createElementNS(ADDITIONAL_TYPES_NAMESPACE.getUri(), "ns3:KeyPurposeId");
+                extendedKeyUsageElement.appendChild(keyPurposeIdElement);
+                addUrnOid(document, keyPurposeIdElement, oid);
+            }
+        }
+    }
+
+    private void addCertSubjectDNAttributeCondition(CertSubjectDNAttributeCondition certSubjectDNAttributeCondition, Document document, Element certSubjectDNAttributeElement) {
+        if (Utils.isCollectionNotEmpty(certSubjectDNAttributeCondition.getAttributeOids())) {
+            for (String oid : certSubjectDNAttributeCondition.getAttributeOids()) {
+                Element attributeOidElement = document.createElementNS(ADDITIONAL_TYPES_NAMESPACE.getUri(), "ns3:AttributeOID");
+                certSubjectDNAttributeElement.appendChild(attributeOidElement);
+                addUrnOid(document, attributeOidElement, oid);
+            }
+        }
     }
 
     @Test
@@ -791,6 +898,59 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     protected String getSignerName() {
         return "John Doe";
+    }
+
+    protected abstract class AbstractSetCondition<C extends Condition> implements Condition {
+
+        private List<C> conditions;
+
+        protected AbstractSetCondition(List<C> conditions) {
+            this.conditions = conditions;
+        }
+
+        public List<C> getConditions() {
+            return conditions;
+        }
+
+        @Override
+        public boolean check(CertificateToken certificateToken) {
+            for (C condition : conditions) {
+                if (!condition.check(certificateToken)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String toString(String indent) {
+            return null;
+        }
+
+    }
+
+    protected class QcStatementSetCondition extends AbstractSetCondition<QCStatementCondition> {
+
+        protected QcStatementSetCondition(List<QCStatementCondition> conditions) {
+            super(conditions);
+        }
+
+    }
+
+    protected class PolicySetCondition extends AbstractSetCondition<PolicyIdCondition> {
+
+        protected PolicySetCondition(List<PolicyIdCondition> conditions) {
+            super(conditions);
+        }
+
+    }
+
+    protected class KeyUsageSetCondition extends AbstractSetCondition<KeyUsageCondition> {
+
+        protected KeyUsageSetCondition(List<KeyUsageCondition> conditions) {
+            super(conditions);
+        }
+
     }
 
 }
