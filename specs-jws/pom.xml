@@ -17,18 +17,11 @@
 		<module-name>jpms_dss_specs_jws</module-name>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<!-- https://github.com/everit-org/json-schema -->	
 		<dependency>
-			<groupId>com.github.everit-org.json-schema</groupId>
-			<artifactId>org.everit.json.schema</artifactId>
+			<groupId>com.github.erosb</groupId>
+			<artifactId>everit-json-schema</artifactId>
 			<version>1.14.1</version>
 		</dependency>
         
