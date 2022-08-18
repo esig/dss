@@ -22,6 +22,8 @@ package eu.europa.esig.dss.service.http.commons;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
+import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
@@ -187,6 +189,24 @@ public class CommonsDataLoaderTest {
 		dataLoader.setConnectionKeepAlive(-1);
 		dataLoader.setConnectionTimeToLive(-1);
 
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+	}
+
+	@Test
+	public void excludedHostsTest() {
+		ProxyProperties proxyProperties = new ProxyProperties();
+		proxyProperties.setHost("1.2.4.5.6");
+		proxyProperties.setPort(8080);
+
+		ProxyConfig proxyConfig = new ProxyConfig();
+		proxyConfig.setHttpProperties(proxyProperties);
+
+		dataLoader.setProxyConfig(proxyConfig);
+
+		Exception exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("certs.eid.belgium.be"));
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
 	}
 
