@@ -24,15 +24,18 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificatePolicy;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERUTCTime;
 import org.bouncycastle.asn1.DERUTF8String;
+import org.bouncycastle.asn1.DERUniversalString;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
@@ -50,6 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
@@ -456,6 +460,20 @@ public class DSSASN1UtilsTest {
 		assertFalse(DSSASN1Utils.isAsn1Encoded(new Date().toString().getBytes()));
 		assertFalse(DSSASN1Utils.isAsn1Encoded(DSSUtils.EMPTY_BYTE_ARRAY));
 		assertFalse(DSSASN1Utils.isAsn1Encoded(null));
+	}
+
+	@Test
+	public void getStringTest() {
+		assertNull(DSSASN1Utils.getString(null));
+		assertEquals("", DSSASN1Utils.getString(new DERUTF8String("")));
+		assertEquals("Hello World!", DSSASN1Utils.getString(new DERUTF8String("Hello World!")));
+		assertEquals("Hello World!", DSSASN1Utils.getString(new DERPrintableString("Hello World!")));
+		assertEquals("#1c0c48656c6c6f20576f726c6421", DSSASN1Utils.getString(
+				new DERUniversalString("Hello World!".getBytes(StandardCharsets.UTF_8))));
+		assertEquals("#06042a030405", DSSASN1Utils.getString(new ASN1ObjectIdentifier("1.2.3.4.5")));
+
+		DERSequence derSequence = new DERSequence(new ASN1Encodable[] {new DERUTF8String("Hello World!"), new DERUTF8String("Bye World!")});
+		assertEquals("#301a0c0c48656c6c6f20576f726c64210c0a42796520576f726c6421", DSSASN1Utils.getString(derSequence));
 	}
 
 }

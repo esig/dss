@@ -65,6 +65,7 @@ import org.bouncycastle.asn1.x500.DirectoryString;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
@@ -999,23 +1000,29 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Reads the value
+	 * Converts {@code ASN1Encodable} to a {@code String} value.
+	 * The method preserves the object class and structure and returns hash-encoded String value,
+	 * unless the object is an instance of {@code ASN1String}.
 	 *
 	 * @param attributeValue {@link ASN1Encodable} to read
 	 * @return {@link String} value
 	 */
 	public static String getString(ASN1Encodable attributeValue) {
-		String string;
-		if (attributeValue instanceof ASN1String) {
-			string = ((ASN1String) attributeValue).getString();
-		} else if (attributeValue instanceof ASN1ObjectIdentifier) {
-			string = ((ASN1ObjectIdentifier) attributeValue).getId();
-		} else {
-			LOG.error("!!!*******!!! This encoding is unknown: {}", attributeValue.getClass().getSimpleName());
-			string = attributeValue.toString();
-			LOG.error("!!!*******!!! value: {}", string);
+		if (attributeValue == null) {
+			LOG.warn("Null attribute has been provided!");
+			return null;
 		}
-		return string;
+
+		try {
+			return IETFUtils.valueToString(attributeValue);
+		} catch (Exception e) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to handle attribute of class '{}' : {}", attributeValue.getClass().getName(), e.getMessage());
+			} else {
+				LOG.warn("Unable to handle attribute : {}", e.getMessage());
+			}
+			return null;
+		}
 	}
 
 	/**
