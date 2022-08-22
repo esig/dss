@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
-import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -44,13 +41,11 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +64,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
 	/** Builds the CMSSignedData */
-	private final PadesCMSSignedDataBuilder padesCMSSignedDataBuilder;
+	private final CMSForPAdESGenerationService cmsForPAdESGenerationService;
 
 	/** Loads a relevant implementation for signature creation/extension */
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
@@ -84,7 +79,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 */
 	public PAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
-		padesCMSSignedDataBuilder = new PadesCMSSignedDataBuilder(certificateVerifier);
+		this.cmsForPAdESGenerationService = new CMSForPAdESGenerationService(certificateVerifier);
 		LOG.debug("+ PAdESService created");
 	}
 
@@ -97,6 +92,12 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	public void setPdfObjFactory(IPdfObjFactory pdfObjFactory) {
 		Objects.requireNonNull(pdfObjFactory, "PdfObjFactory is null");
 		this.pdfObjFactory = pdfObjFactory;
+	}
+
+	@Override
+	public void setTspSource(TSPSource tspSource) {
+		super.setTspSource(tspSource);
+		this.cmsForPAdESGenerationService.setTspSource(tspSource);
 	}
 
 	private SignatureExtension<PAdESSignatureParameters> getExtensionProfile(SignatureLevel signatureLevel) {
@@ -171,22 +172,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		assertSignaturePossible(toSignDocument);
 		assertSigningCertificateValid(parameters);
 
-		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
-		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
-
 		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
-
-		SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
-
-		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
-				signerInfoGeneratorBuilder, null);
-
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
-
-		CMSUtils.generateDetachedCMSSignedData(generator, content);
-
-		final byte[] dataToSign = customContentSigner.getOutputStream().toByteArray();
-		return new ToBeSigned(dataToSign);
+		return cmsForPAdESGenerationService.buildToBeSignedData(messageDigest, parameters);
 	}
 
 	/**
@@ -248,24 +235,9 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		
-		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-
 		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
-		final SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = padesCMSSignedDataBuilder.getSignerInfoGeneratorBuilder(parameters, messageDigest);
-
-		final CMSSignedDataGenerator generator = padesCMSSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner,
-				signerInfoGeneratorBuilder, null);
-
-		final CMSProcessableByteArray content = new CMSProcessableByteArray(messageDigest);
-		CMSSignedData data = CMSUtils.generateDetachedCMSSignedData(generator, content);
-
-		if (signatureLevel != SignatureLevel.PAdES_BASELINE_B) {
-			// use an embedded timestamp
-			CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, certificateVerifier);
-			data = cadesLevelBaselineT.extendCMSSignatures(data, parameters);
-		}
-
-		return DSSASN1Utils.getDEREncoded(data);
+		final CMSSignedData cmsSignedData = cmsForPAdESGenerationService.buildCMSSignedData(messageDigest, parameters, signatureValue);
+		return DSSASN1Utils.getDEREncoded(cmsSignedData);
 	}
 
 	@Override

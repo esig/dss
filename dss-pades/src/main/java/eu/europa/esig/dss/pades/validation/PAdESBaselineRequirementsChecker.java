@@ -151,6 +151,12 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
     }
 
     @Override
+    protected boolean cmsBaselineBRequirements() {
+        CMSForPAdESBaselineRequirementsChecker cmsRequirementsChecker = new CMSForPAdESBaselineRequirementsChecker(signature);
+        return cmsRequirementsChecker.isValidForPAdESBaselineBProfile();
+    }
+
+    @Override
     public boolean hasBaselineTProfile() {
         // signature-time-stamp or document-time-stamp (Cardinality >= 1)
         if (Utils.isCollectionEmpty(signature.getSignatureTimestamps()) &&

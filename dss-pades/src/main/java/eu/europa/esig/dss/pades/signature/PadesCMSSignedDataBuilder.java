@@ -60,11 +60,15 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	}
 
 	/**
+	 * Returns the {@code SignerInfoGeneratorBuilder}
+	 *
 	 * @param parameters the parameters of the signature containing values for the attributes
+	 * @param messageDigest the message-digest to be signed
 	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB and
 	 * PAdESLevelBaselineB
 	 */
-	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters, final byte[] messageDigest) {
+	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters,
+																	   final byte[] messageDigest) {
 
 		final CAdESLevelBaselineB cadesLevelBaselineB = new CAdESLevelBaselineB(true);
 		final PAdESLevelBaselineB padesProfileB = new PAdESLevelBaselineB();

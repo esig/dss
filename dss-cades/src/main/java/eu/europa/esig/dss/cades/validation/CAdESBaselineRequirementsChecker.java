@@ -56,6 +56,15 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     private static final Logger LOG = LoggerFactory.getLogger(CAdESBaselineRequirementsChecker.class);
 
     /**
+     * Constructor is used to verify conformance of signature to Baseline-B level
+     *
+     * @param signature {@link CAdESSignature}
+     */
+    protected CAdESBaselineRequirementsChecker(final CAdESSignature signature) {
+        this(signature, null);
+    }
+
+    /**
      * Default constructor
      *
      * @param signature {@link CAdESSignature}
@@ -65,7 +74,6 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                                             final CertificateVerifier offlineCertificateVerifier) {
         super(signature, offlineCertificateVerifier);
     }
-
 
     /**
      * Returns the signature form corresponding to the signature
