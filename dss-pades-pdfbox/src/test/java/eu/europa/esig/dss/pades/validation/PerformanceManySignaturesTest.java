@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
@@ -60,6 +61,7 @@ public class PerformanceManySignaturesTest {
     @Test
     void getSignatures() {
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
+        initClasses(inMemoryDocument);
 
         PDFDocumentValidator validator = new PDFDocumentValidator(inMemoryDocument);
 
@@ -100,6 +102,12 @@ public class PerformanceManySignaturesTest {
         assertEquals(0, pdfDssDict.getCRLs().size());
         assertEquals(1, pdfDssDict.getOCSPs().size());
         assertEquals(51, pdfDssDict.getVRIs().size());
+    }
+
+    // This method is used to initialize all the required classes, to avoid delay during unit test with timeout
+    private void initClasses(DSSDocument documentToValidate) {
+        PDFDocumentValidator validator = new PDFDocumentValidator(documentToValidate);
+        validator.getRevisions();
     }
 
     private <R extends Revocation> void verifyRevocationSource(List<EncapsulatedRevocationTokenIdentifier<?>> binaries,
