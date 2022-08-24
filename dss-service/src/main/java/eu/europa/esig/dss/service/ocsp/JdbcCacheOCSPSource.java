@@ -168,7 +168,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 
 	@Override
 	protected void insertRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
-		jdbcCacheConnector.execute(SQL_FIND_INSERT, revocationKey, token.getEncoded(), token.getSourceURL());
+		getJdbcCacheConnector().execute(SQL_FIND_INSERT, revocationKey, token.getEncoded(), token.getSourceURL());
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	 */
 	@Override
 	protected void updateRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
-		jdbcCacheConnector.execute(SQL_FIND_UPDATE, token.getEncoded(), token.getSourceURL(), revocationKey);
+		getJdbcCacheConnector().execute(SQL_FIND_UPDATE, token.getEncoded(), token.getSourceURL(), revocationKey);
 	}
 
 	@Override

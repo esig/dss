@@ -184,7 +184,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
-		jdbcCacheConnector.execute(SQL_FIND_INSERT, revocationKey, crlValidity.getDerEncoded(),
+		getJdbcCacheConnector().execute(SQL_FIND_INSERT, revocationKey, crlValidity.getDerEncoded(),
 				crlValidity.getIssuerToken().getEncoded());
 	}
 
@@ -193,7 +193,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
-		jdbcCacheConnector.execute(SQL_FIND_UPDATE, crlValidity.getDerEncoded(), crlValidity.getIssuerToken().getEncoded(),
+		getJdbcCacheConnector().execute(SQL_FIND_UPDATE, crlValidity.getDerEncoded(), crlValidity.getIssuerToken().getEncoded(),
 				revocationKey);
 	}
 

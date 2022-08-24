@@ -24,12 +24,17 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Abstract class to retrieve token from a JDBC datasource
@@ -45,7 +50,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	/**
 	 * Connects to SQL database and performs queries
 	 */
-	protected transient JdbcCacheConnector jdbcCacheConnector;
+	private transient JdbcCacheConnector jdbcCacheConnector;
 
 	/**
 	 * Default constructor instantiating object with null values
@@ -96,6 +101,17 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 			CertificateToken certificateToken,CertificateToken issuerCertificateToken) throws DSSExternalResourceException;
 
 	/**
+	 * Gets the SQL connection DataSource
+	 *
+	 * @return {@link JdbcCacheConnector}
+	 */
+	protected JdbcCacheConnector getJdbcCacheConnector() {
+		Objects.requireNonNull(jdbcCacheConnector, "JdbcCacheConnector shall be provided! " +
+				"Use setJdbcCacheConnector(jdbcCacheConnector) method.");
+		return jdbcCacheConnector;
+	}
+
+	/**
 	 * Sets the SQL connection DataSource
 	 *
 	 * @param jdbcCacheConnector {@link JdbcCacheConnector}
@@ -105,15 +121,28 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	}
 	
 	@Override
-	protected RevocationToken<R> findRevocation(final String key, final CertificateToken certificateToken,
-												final CertificateToken issuerCertificateToken) {
-		Collection<JdbcCacheConnector.JdbcResultRecord> records = jdbcCacheConnector.select(
-				getFindRevocationQuery(), getRevocationDataExtractRequests(), key);
+	protected List<RevocationToken<R>> findRevocations(final String key, final CertificateToken certificateToken,
+													   final CertificateToken issuerCertificateToken) {
+		Collection<JdbcCacheConnector.JdbcResultRecord> records = getJdbcCacheConnector()
+				.select(getFindRevocationQuery(), getRevocationDataExtractRequests(), key);
 		LOG.debug("Record obtained : {}", records.size());
-		if (records.size() == 1) {
-			return buildRevocationTokenFromResult(records.iterator().next(), certificateToken, issuerCertificateToken);
+		if (Utils.isCollectionNotEmpty(records)) {
+			return getRevocationDataFromRecords(records, certificateToken, issuerCertificateToken);
 		}
-		return null;
+		return Collections.emptyList();
+	}
+
+	private List<RevocationToken<R>> getRevocationDataFromRecords(
+			Collection<JdbcCacheConnector.JdbcResultRecord> records, CertificateToken certificateToken,
+			CertificateToken issuerCertificateToken) {
+		List<RevocationToken<R>> revocationTokens = new ArrayList<>();
+		for (JdbcCacheConnector.JdbcResultRecord record : records) {
+			RevocationToken<R> revocationToken = buildRevocationTokenFromResult(record, certificateToken, issuerCertificateToken);
+			if (revocationToken != null) {
+				revocationTokens.add(revocationToken);
+			}
+		}
+		return revocationTokens;
 	}
 
 	/**
@@ -125,7 +154,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 
 	@Override
 	protected void removeRevocation(final String revocationTokenKey) {
-		jdbcCacheConnector.execute(getRemoveRevocationTokenEntryQuery(), revocationTokenKey);
+		getJdbcCacheConnector().execute(getRemoveRevocationTokenEntryQuery(), revocationTokenKey);
 	}
 
 	/**
@@ -145,7 +174,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	}
 	
 	private void createTable() throws SQLException {
-		jdbcCacheConnector.executeThrowable(getCreateTableQuery());
+		getJdbcCacheConnector().executeThrowable(getCreateTableQuery());
 	}
 
 	/**
@@ -154,7 +183,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	 * @return TRUE if the table exists, FALSE otherwise
 	 */
 	public boolean isTableExists() {
-		return jdbcCacheConnector.tableQuery(getTableExistenceQuery());
+		return getJdbcCacheConnector().tableQuery(getTableExistenceQuery());
 	}
 
 	/**
@@ -174,7 +203,7 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	}
 	
 	private void dropTable() throws SQLException {
-		jdbcCacheConnector.executeThrowable(getDeleteTableQuery());
+		getJdbcCacheConnector().executeThrowable(getDeleteTableQuery());
 	}
 
 }
