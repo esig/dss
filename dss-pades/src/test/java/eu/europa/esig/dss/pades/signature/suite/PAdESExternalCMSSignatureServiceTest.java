@@ -10,14 +10,14 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.CMSForPAdESGenerationService;
-import eu.europa.esig.dss.pades.signature.PAdESExternalCMSSignatureService;
+import eu.europa.esig.dss.pades.signature.ExternalCMSService;
+import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -38,49 +38,49 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
     @Test
     public void test() {
-        PAdESExternalCMSSignatureService service = new PAdESExternalCMSSignatureService();
+        PAdESWithExternalCMSService service = new PAdESWithExternalCMSService();
 
         Exception exception = assertThrows(NullPointerException.class, () ->
-                service.getDigestToSign(null, null));
+                service.getMessageDigest(null, null));
         assertEquals("toSignDocument cannot be null!", exception.getMessage());
 
         DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, documentToSign.getDigest(DigestAlgorithm.SHA256));
 
         exception = assertThrows(NullPointerException.class, () ->
-                service.getDigestToSign(digestDocument, null));
+                service.getMessageDigest(digestDocument, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 
         exception = assertThrows(IllegalArgumentException.class, () ->
-                service.getDigestToSign(digestDocument, parameters));
+                service.getMessageDigest(digestDocument, parameters));
         assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
 
-        Digest digestToSign = service.getDigestToSign(documentToSign, parameters);
-        assertNotNull(digestToSign);
-        assertEquals(parameters.getDigestAlgorithm(), digestToSign.getAlgorithm());
-        assertTrue(Utils.isArrayNotEmpty(digestToSign.getValue()));
+        DSSMessageDigest messageDigest = service.getMessageDigest(documentToSign, parameters);
+        assertNotNull(messageDigest);
+        assertEquals(parameters.getDigestAlgorithm(), messageDigest.getAlgorithm());
+        assertTrue(Utils.isArrayNotEmpty(messageDigest.getValue()));
 
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.isValidCMSSignedData(null, null));
         assertEquals("messageDigest shall be provided!", exception.getMessage());
         exception = assertThrows(NullPointerException.class, () ->
-                service.isValidCMSSignedData(digestToSign, null));
+                service.isValidCMSSignedData(messageDigest, null));
         assertEquals("CMSSignedDocument shall be provided!", exception.getMessage());
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.isValidPAdESBaselineCMSSignedData(null, null));
         assertEquals("messageDigest shall be provided!", exception.getMessage());
         exception = assertThrows(NullPointerException.class, () ->
-                service.isValidPAdESBaselineCMSSignedData(digestToSign, null));
+                service.isValidPAdESBaselineCMSSignedData(messageDigest, null));
         assertEquals("CMSSignedDocument shall be provided!", exception.getMessage());
 
-        assertFalse(service.isValidCMSSignedData(digestToSign, documentToSign));
-        assertFalse(service.isValidCMSSignedData(digestToSign, digestDocument));
-        assertFalse(service.isValidPAdESBaselineCMSSignedData(digestToSign, documentToSign));
-        assertFalse(service.isValidPAdESBaselineCMSSignedData(digestToSign, digestDocument));
+        assertFalse(service.isValidCMSSignedData(messageDigest, documentToSign));
+        assertFalse(service.isValidCMSSignedData(messageDigest, digestDocument));
+        assertFalse(service.isValidPAdESBaselineCMSSignedData(messageDigest, documentToSign));
+        assertFalse(service.isValidPAdESBaselineCMSSignedData(messageDigest, digestDocument));
 
         CAdESSignatureParameters cadesParameters = new CAdESSignatureParameters();
         cadesParameters.setSigningCertificate(getSigningCert());
@@ -88,16 +88,16 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         cadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 
-        DigestDocument digestDocumentToSign = DSSUtils.toDigestDocument(digestToSign);
+        DigestDocument digestDocumentToSign = DSSUtils.toDigestDocument(messageDigest);
         CAdESService cadesService = new CAdESService(getOfflineCertificateVerifier());
         ToBeSigned dataToSign = cadesService.getDataToSign(digestDocumentToSign, cadesParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, digestToSign.getAlgorithm(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
         DSSDocument cadesDetachedSignature = cadesService.signDocument(digestDocumentToSign, cadesParameters, signatureValue);
 
         assertFalse(service.isValidCMSSignedData(digestDocument.getExistingDigest(), cadesDetachedSignature));
-        assertTrue(service.isValidCMSSignedData(digestToSign, cadesDetachedSignature));
+        assertTrue(service.isValidCMSSignedData(messageDigest, cadesDetachedSignature));
 
-        assertFalse(service.isValidPAdESBaselineCMSSignedData(digestToSign, cadesDetachedSignature));
+        assertFalse(service.isValidPAdESBaselineCMSSignedData(messageDigest, cadesDetachedSignature));
 
 
         PAdESSignatureParameters cmsParameters = new PAdESSignatureParameters();
@@ -105,15 +105,15 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         cmsParameters.setCertificateChain(getCertificateChain());
         cmsParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-        CMSForPAdESGenerationService cmsGeneratorService = new CMSForPAdESGenerationService(getOfflineCertificateVerifier());
-        dataToSign = cmsGeneratorService.getDataToSign(digestToSign, cmsParameters);
-        signatureValue = getToken().sign(dataToSign, digestToSign.getAlgorithm(), getPrivateKeyEntry());
-        CMSSignedDocument cmsSignature = cmsGeneratorService.getCMSSignature(digestToSign, cmsParameters, signatureValue);
+        ExternalCMSService cmsGeneratorService = new ExternalCMSService(getOfflineCertificateVerifier());
+        dataToSign = cmsGeneratorService.getDataToSign(messageDigest, cmsParameters);
+        signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
+        CMSSignedDocument cmsSignature = cmsGeneratorService.signMessageDigest(messageDigest, cmsParameters, signatureValue);
 
         assertFalse(service.isValidCMSSignedData(digestDocument.getExistingDigest(), cmsSignature));
-        assertTrue(service.isValidCMSSignedData(digestToSign, cmsSignature));
+        assertTrue(service.isValidCMSSignedData(messageDigest, cmsSignature));
 
-        assertTrue(service.isValidPAdESBaselineCMSSignedData(digestToSign, cmsSignature));
+        assertTrue(service.isValidPAdESBaselineCMSSignedData(messageDigest, cmsSignature));
 
 
         exception = assertThrows(NullPointerException.class, () ->

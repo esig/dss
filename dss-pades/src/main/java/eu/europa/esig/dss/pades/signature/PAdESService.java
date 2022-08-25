@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -34,6 +33,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
@@ -64,7 +64,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESService.class);
 
 	/** Builds the CMSSignedData */
-	private final CMSForPAdESGenerationService cmsForPAdESGenerationService;
+	private final ExternalCMSService cmsForPAdESGenerationService;
 
 	/** Loads a relevant implementation for signature creation/extension */
 	private IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
@@ -79,7 +79,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 */
 	public PAdESService(CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
-		this.cmsForPAdESGenerationService = new CMSForPAdESGenerationService(certificateVerifier);
+		this.cmsForPAdESGenerationService = new ExternalCMSService(certificateVerifier);
 		LOG.debug("+ PAdESService created");
 	}
 
@@ -122,15 +122,22 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		assertSignaturePossible(toSignDocument);
+		assertContentTimestampParametersValid(parameters);
 
 		final PDFSignatureService pdfSignatureService = getContentTimestampService();
-		final DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest);
+		final DSSMessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(parameters.getDigestAlgorithm(), messageDigest.getValue());
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot obtain the content timestamp", e);
+		}
+	}
+
+	private void assertContentTimestampParametersValid(PAdESSignatureParameters parameters) {
+		if (parameters.getDigestAlgorithm() != parameters.getContentTimestampParameters().getDigestAlgorithm()) {
+			throw new UnsupportedOperationException("DigestAlgorithm for content timestamp creation shall be " +
+					"the same as the one defined in PAdESSignatureParameters!");
 		}
 	}
 	
@@ -172,7 +179,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		assertSignaturePossible(toSignDocument);
 		assertSigningCertificateValid(parameters);
 
-		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
+		final DSSMessageDigest messageDigest = computeDocumentDigest(toSignDocument, parameters);
 		return cmsForPAdESGenerationService.buildToBeSignedData(messageDigest, parameters);
 	}
 
@@ -181,11 +188,11 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 *
 	 * @param toSignDocument {@link DSSDocument} the to be signed PDF
 	 * @param parameters {@link PAdESSignatureParameters}
-	 * @return bytes to be signed
+	 * @return {@link DSSMessageDigest}
 	 */
-	protected byte[] computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
+	protected DSSMessageDigest computeDocumentDigest(final DSSDocument toSignDocument, final PAdESSignatureParameters parameters) {
 		final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
-		return pdfSignatureService.digest(toSignDocument, parameters);
+		return pdfSignatureService.messageDigest(toSignDocument, parameters);
 	}
 
 	@Override
@@ -235,7 +242,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		
-		final byte[] messageDigest = computeDocumentDigest(toSignDocument, parameters);
+		final DSSMessageDigest messageDigest = computeDocumentDigest(toSignDocument, parameters);
 		final CMSSignedData cmsSignedData = cmsForPAdESGenerationService.buildCMSSignedData(messageDigest, parameters, signatureValue);
 		return DSSASN1Utils.getDEREncoded(cmsSignedData);
 	}

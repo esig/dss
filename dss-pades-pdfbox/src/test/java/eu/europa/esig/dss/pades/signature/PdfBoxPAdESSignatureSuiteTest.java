@@ -50,6 +50,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBOnlySigningCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithTempFileHandlerTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithAppNameTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithContentTimestampCustomDigestAlgoTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithContentTimestampTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithDSATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithECDSATest;
@@ -122,7 +123,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelLTAWithSingleDocTstTest.class, PAdESLevelLTAWithSingleSelfSignedDocTstTest.class, PAdESExternalCMSSignatureBLevelTest.class,
 		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class, PAdESExternalCMSSignatureLTALevelTest.class,
 		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
-		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class })
+		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
+		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }

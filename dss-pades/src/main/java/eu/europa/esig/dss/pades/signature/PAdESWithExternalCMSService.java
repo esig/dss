@@ -14,6 +14,7 @@ import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -39,7 +40,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
  * <p>
  * To create a signature with the current class, please follow the algorithm:
  * 1) Create a message-digest computed on PDF ByteRange:
- *    {@code Digest messageDigest = getDigestToSign(DSSDocument toSignDocument, PAdESSignatureParameters parameters)};
+ *    {@code Digest messageDigest = getMessageDigest(DSSDocument toSignDocument, PAdESSignatureParameters parameters)};
  * 2) Create CMS signature signing the message-digest (e.g. using a remote-signing solution):
  *    {@code DSSDocument cmsDocument = *create CMS using message-digest*};
  * 3) OPTIONAL : verify validity of the obtained CMS signature using the methods:
@@ -59,11 +60,11 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
  * - Content timestamp is not supported by this service.
  *
  */
-public class PAdESExternalCMSSignatureService implements Serializable {
+public class PAdESWithExternalCMSService implements Serializable {
 
     private static final long serialVersionUID = -6168823023670905054L;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PAdESExternalCMSSignatureService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PAdESWithExternalCMSService.class);
 
     /** The CertificateVerifier used for a certificate chain validation */
     private CertificateVerifier certificateVerifier;
@@ -77,7 +78,7 @@ public class PAdESExternalCMSSignatureService implements Serializable {
     /**
      * Default constructor to instantiate PAdESExternalCMSSignatureService
      */
-    public PAdESExternalCMSSignatureService() {
+    public PAdESWithExternalCMSService() {
         // empty
     }
 
@@ -121,17 +122,16 @@ public class PAdESExternalCMSSignatureService implements Serializable {
      *                                       represented by a PDF document to be signed
      * @param parameters {@link PAdESSignatureParameters}
      *                                       for signature configuration
-     * @return {@link Digest}
+     * @return {@link DSSMessageDigest}
      *                                       of the PDF signature ByteRange to be signed
      */
-    public Digest getDigestToSign(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
+    public DSSMessageDigest getMessageDigest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
         Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
         assertDocumentValid(toSignDocument);
 
         final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
-        final byte[] messageDigest = pdfSignatureService.digest(toSignDocument, parameters);
-        return new Digest(parameters.getDigestAlgorithm(), messageDigest);
+        return pdfSignatureService.messageDigest(toSignDocument, parameters);
     }
 
     /**

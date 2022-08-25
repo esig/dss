@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSAttributeTableGenerationException;
@@ -68,7 +69,7 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 	 * PAdESLevelBaselineB
 	 */
 	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters,
-																	   final byte[] messageDigest) {
+																	   final DSSMessageDigest messageDigest) {
 
 		final CAdESLevelBaselineB cadesLevelBaselineB = new CAdESLevelBaselineB(true);
 		final PAdESLevelBaselineB padesProfileB = new PAdESLevelBaselineB();
@@ -80,7 +81,7 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 		signerInfoGeneratorBuilder = signerInfoGeneratorBuilder.setSignedAttributeGenerator(new CMSAttributeTableGenerator() {
 			@Override
 			public AttributeTable getAttributes(Map params) throws CMSAttributeTableGenerationException {
-				return padesProfileB.getSignedAttributes(params, cadesLevelBaselineB, parameters, messageDigest);
+				return padesProfileB.getSignedAttributes(params, cadesLevelBaselineB, parameters, messageDigest.getValue());
 			}
 		});
 

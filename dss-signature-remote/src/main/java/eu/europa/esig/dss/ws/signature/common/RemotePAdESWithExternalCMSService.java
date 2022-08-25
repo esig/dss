@@ -7,10 +7,10 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import java.io.Serializable;
 
 /**
- * This service is used for developing a REST/SOAP API for PAdES signing using an external CMS signature provider
+ * This service is used for developing a REST/SOAP API for PAdES signing using an external CMS signature provider.
  *
  */
-public interface RemotePAdESExternalCMSSignatureService extends Serializable {
+public interface RemotePAdESWithExternalCMSService extends Serializable {
 
     /**
      * Creates a signature revision for the given PDF {@code toSignDocument} according
@@ -25,7 +25,7 @@ public interface RemotePAdESExternalCMSSignatureService extends Serializable {
      *            {@link RemoteSignatureParameters} set of the signing parameters for PAdES signature creation
      * @return {@link DigestDTO} representing the message-digest to be used for CMS signature creation
      */
-    DigestDTO getDigestToSign(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters);
+    DigestDTO getMessageDigest(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters);
 
     /**
      * Signs the {@code toSignDocument} by incorporating the provided {@code cmsSignature}
@@ -41,6 +41,5 @@ public interface RemotePAdESExternalCMSSignatureService extends Serializable {
      */
     RemoteDocument signDocument(final RemoteDocument toSignDocument, final RemoteSignatureParameters parameters,
                                 final RemoteDocument cmsSignature);
-
 
 }

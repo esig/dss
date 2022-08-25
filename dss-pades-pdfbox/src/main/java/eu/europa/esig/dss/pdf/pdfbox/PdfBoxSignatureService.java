@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfAnnotation;
@@ -126,7 +128,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected byte[] computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+	protected DSSMessageDigest computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
@@ -136,15 +138,15 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 
 			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
-			final byte[] digest = signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
+			final DSSMessageDigest messageDigest = signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
+				LOG.debug(messageDigest.toString());
 			}
 
 			// cache the computed document
 			parameters.getPdfSignatureCache().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
 
-			return digest;
+			return messageDigest;
 
 		} catch (IOException e) {
 			throw new DSSException(e);
@@ -174,11 +176,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private byte[] signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] cmsSignedData,
+	private DSSMessageDigest signDocumentAndReturnDigest(final PAdESCommonParameters parameters, final byte[] cmsSignedData,
 			final OutputStream outputStream, final PdfBoxDocumentReader documentReader) {
 		PDDocument pdDocument = documentReader.getPDDocument();
 
-		final MessageDigest digest = DSSUtils.getMessageDigest(parameters.getDigestAlgorithm());
+		final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+		final MessageDigest digest = DSSUtils.getMessageDigest(digestAlgorithm);
 		SignatureInterface signatureInterface = new SignatureInterface() {
 
 			@Override
@@ -229,7 +232,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			}
 			checkEncryptedAndSaveIncrementally(pdDocument, outputStream, parameters);
 
-			return digest.digest();
+			return new DSSMessageDigest(digestAlgorithm, digest.digest());
 
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to compute digest for a PDF : %s", e.getMessage()), e);

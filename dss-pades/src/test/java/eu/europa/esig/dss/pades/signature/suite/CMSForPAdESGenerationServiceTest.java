@@ -9,13 +9,13 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.signature.CMSForPAdESGenerationService;
+import eu.europa.esig.dss.pades.signature.ExternalCMSService;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -35,10 +35,10 @@ public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
 
     @Test
     public void test() {
-        CMSForPAdESGenerationService service = new CMSForPAdESGenerationService(getOfflineCertificateVerifier());
+        ExternalCMSService service = new ExternalCMSService(getOfflineCertificateVerifier());
 
         DSSDocument toSignDocument = new InMemoryDocument("Hello World!".getBytes());
-        Digest messageDigest = new Digest(DigestAlgorithm.SHA256, Utils.fromBase64(toSignDocument.getDigest(DigestAlgorithm.SHA256)));
+        DSSMessageDigest messageDigest = new DSSMessageDigest(DigestAlgorithm.SHA256, Utils.fromBase64(toSignDocument.getDigest(DigestAlgorithm.SHA256)));
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
@@ -97,35 +97,35 @@ public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
         exception = assertThrows(NullPointerException.class, () ->
-                service.getCMSSignature(null, null, null));
+                service.signMessageDigest(null, null, null));
         assertEquals("messageDigest cannot be null!", exception.getMessage());
 
         exception = assertThrows(NullPointerException.class, () ->
-                service.getCMSSignature(messageDigest, null, null));
+                service.signMessageDigest(messageDigest, null, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
         exception = assertThrows(NullPointerException.class, () ->
-                service.getCMSSignature(messageDigest, parameters, null));
+                service.signMessageDigest(messageDigest, parameters, null));
         assertEquals("SignatureValue cannot be null!", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class, () ->
-                service.getCMSSignature(messageDigest, parameters, signatureValue));
+                service.signMessageDigest(messageDigest, parameters, signatureValue));
         assertEquals("SignatureLevel 'PAdES-BASELINE-LTA' is not supported within PAdESCMSGeneratorService!",
                 exception.getMessage());
 
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-        CMSSignedDocument cmsSignature = service.getCMSSignature(messageDigest, parameters, signatureValue);
+        CMSSignedDocument cmsSignature = service.signMessageDigest(messageDigest, parameters, signatureValue);
         assertNotNull(cmsSignature);
         validate(cmsSignature, toSignDocument, SignatureLevel.CAdES_BES);
 
         parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
         exception = assertThrows(NullPointerException.class, () ->
-                service.getCMSSignature(messageDigest, parameters, signatureValue));
+                service.signMessageDigest(messageDigest, parameters, signatureValue));
         assertEquals("TSPSource shall be provided for T-level creation!",
                 exception.getMessage());
 
         service.setTspSource(getGoodTsa());
-        cmsSignature = service.getCMSSignature(messageDigest, parameters, signatureValue);
+        cmsSignature = service.signMessageDigest(messageDigest, parameters, signatureValue);
         assertNotNull(cmsSignature);
         validate(cmsSignature, toSignDocument, SignatureLevel.CAdES_T);
     }

@@ -106,7 +106,9 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
 
         PdfSignatureCache pdfSignatureCache = params.getPdfSignatureCache();
         assertNotNull(pdfSignatureCache);
-        assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getDigest()));
+        assertNotNull(pdfSignatureCache.getMessageDigest());
+        assertNotNull(pdfSignatureCache.getMessageDigest().getAlgorithm());
+        assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getMessageDigest().getValue()));
         assertNotNull(pdfSignatureCache.getToBeSignedDocument());
         assertTrue(pdfSignatureCache.getToBeSignedDocument() instanceof FileDocument);
         assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(pdfSignatureCache.getToBeSignedDocument())));

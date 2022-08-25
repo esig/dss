@@ -251,13 +251,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
+	@Deprecated
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		return messageDigest(toSignDocument, parameters).getValue();
+	}
+	@Override
+	public DSSMessageDigest messageDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
-		if (Utils.isArrayEmpty(pdfSignatureCache.getDigest())) {
-			byte[] digest = computeDigest(toSignDocument, parameters);
-			pdfSignatureCache.setDigest(digest);
+		if (pdfSignatureCache.getMessageDigest() == null) {
+			final DSSMessageDigest messageDigest = computeDigest(toSignDocument, parameters);
+			pdfSignatureCache.setMessageDigest(messageDigest);
 		}
-		return pdfSignatureCache.getDigest();
+		return pdfSignatureCache.getMessageDigest();
 	}
 
 	/**
@@ -266,9 +271,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * @param toSignDocument {@link DSSDocument} to be signed
 	 * @param parameters {@link PAdESCommonParameters}
-	 * @return byte array
+	 * @return {@link DSSMessageDigest}
 	 */
-	protected abstract byte[] computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
+	protected abstract DSSMessageDigest computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
 
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {

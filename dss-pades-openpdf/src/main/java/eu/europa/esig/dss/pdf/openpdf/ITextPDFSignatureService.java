@@ -38,6 +38,7 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.MimeType;
@@ -52,6 +53,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -257,7 +259,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected byte[] computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
+	protected DSSMessageDigest computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
@@ -270,9 +272,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
 
-			final byte[] digest = DSSUtils.digest(parameters.getDigestAlgorithm(), sap.getRangeStream());
+			final DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
+			final byte[] digest = DSSUtils.digest(digestAlgorithm, sap.getRangeStream());
+			final DSSMessageDigest messageDigest = new DSSMessageDigest(digestAlgorithm, digest);
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Base64 messageDigest : {}", Utils.toBase64(digest));
+				LOG.debug(messageDigest.toString());
 			}
 
 			// Ensure OutputStream to contain the data with preserved /Contents
@@ -284,7 +288,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			// cache the computed document
 			parameters.getPdfSignatureCache().setToBeSignedDocument(resourcesHandler.writeToDSSDocument());
 
-			return digest;
+			return messageDigest;
+
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to build message-digest : %s", e.getMessage()), e);
 		}
