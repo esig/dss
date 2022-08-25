@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,7 +48,7 @@ public class ASiCEXAdESWithPlusCharTest extends AbstractASiCWithXAdESTestValidat
 
     @Override
     protected void checkTimestamps(DiagnosticData diagnosticData) {
-        Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+        List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
         for (TimestampWrapper timestampWrapper : allTimestamps) {
             assertNotNull(timestampWrapper.getProductionTime());
             assertTrue(timestampWrapper.isMessageImprintDataFound());

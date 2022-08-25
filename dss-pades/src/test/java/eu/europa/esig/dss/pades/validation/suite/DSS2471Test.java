@@ -32,7 +32,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,7 +72,7 @@ public class DSS2471Test extends AbstractPAdESTestValidation {
 
     @Override
     protected void checkTimestamps(DiagnosticData diagnosticData) {
-        Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+        List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
         for (TimestampWrapper timestampWrapper : allTimestamps) {
             assertNotNull(timestampWrapper.getProductionTime());
             assertTrue(timestampWrapper.isMessageImprintDataFound());
