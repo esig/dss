@@ -1,0 +1,23 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Date: Fri, 26 Aug 2022 12:38:01 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self' http://localhost:9795 fonts.googleapis.com fonts.gstatic.com cdnjs.cloudflare.com 'unsafe-inline' data:;
+Server: ESIG-DSS
+Content-Type: application/json
+Transfer-Encoding: chunked
+Keep-Alive: timeout=20
+Connection: keep-alive
+Content-Length: 91
+
+{
+  "algorithm" : "SHA256",
+  "value" : "CrIMW4yl4SLSuGxvUvI/y4bCjxk3w7AGUmc2sJUUgso="
+}
+----
