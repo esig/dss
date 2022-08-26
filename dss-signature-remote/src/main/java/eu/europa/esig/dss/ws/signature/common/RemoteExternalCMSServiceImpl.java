@@ -2,7 +2,6 @@ package eu.europa.esig.dss.ws.signature.common;
 
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -68,7 +67,7 @@ public class RemoteExternalCMSServiceImpl extends AbstractRemoteSignatureService
 
     @Override
     public RemoteDocument signMessageDigest(final DigestDTO messageDigestDTO, final RemoteSignatureParameters parameters,
-                                            SignatureValueDTO signatureValueDTO) throws DSSException {
+                                            SignatureValueDTO signatureValueDTO) {
         Objects.requireNonNull(service, "PAdESExternalCMSSignatureService must be defined!");
         Objects.requireNonNull(messageDigestDTO, "MessageDigest must be defined!");
         Objects.requireNonNull(parameters, "Parameters must be defined!");

@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.ws.signature.common;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
@@ -37,10 +36,8 @@ public interface RemoteExternalCMSService extends Serializable {
      * @param signatureValue
      *            {@link SignatureValueDTO} the signature value to incorporate
      * @return the CMS signature covering the message-digest for inclusion to a PAdES signature
-     * @throws DSSException
-     *             if an error occurred
      */
     RemoteDocument signMessageDigest(final DigestDTO messageDigest, final RemoteSignatureParameters parameters,
-                                     SignatureValueDTO signatureValue) throws DSSException;
+                                     SignatureValueDTO signatureValue);
 
 }
