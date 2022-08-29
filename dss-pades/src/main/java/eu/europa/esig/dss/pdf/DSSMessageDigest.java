@@ -29,6 +29,15 @@ public class DSSMessageDigest extends Digest {
         super(algorithm, value);
     }
 
+    /**
+     * Constructor with provided {@code Digest} object
+     *
+     * @param digest {@link Digest}
+     */
+    public DSSMessageDigest(Digest digest) {
+        this(digest.getAlgorithm(), digest.getValue());
+    }
+
     @Override
     public String toString() {
         return "MessageDigest [" + super.toString() + "]";

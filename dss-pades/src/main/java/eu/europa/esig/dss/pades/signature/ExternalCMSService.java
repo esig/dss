@@ -7,7 +7,6 @@ import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -190,7 +189,7 @@ public class ExternalCMSService {
      *
      * @param parameters {@link PAdESSignatureParameters} to be checked
      */
-    protected void assertConfigurationValid(Digest messageDigest, PAdESSignatureParameters parameters) {
+    protected void assertConfigurationValid(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters) {
         Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel shall be defined!");
 
         final SignatureLevel signatureLevel = parameters.getSignatureLevel();

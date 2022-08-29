@@ -8,13 +8,12 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
-import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -243,11 +242,11 @@ public class PAdESWithExternalCMSService implements Serializable {
     /**
      * This method verifies if the {@code cms} is cryptographically valid
      *
-     * @param messageDigest {@link Digest} computed on PDF's signature ByteRange
+     * @param messageDigest {@link DSSMessageDigest} computed on PDF's signature ByteRange
      * @param cms {@link DSSDocument} representing an external CMSSignedData
      * @return TRUE if the given CMSSignedData is valid, FALSE otherwise
      */
-    public boolean isValidCMSSignedData(Digest messageDigest, DSSDocument cms) {
+    public boolean isValidCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cms) {
         Objects.requireNonNull(messageDigest, "messageDigest shall be provided!");
         Objects.requireNonNull(cms, "CMSSignedDocument shall be provided!");
 
@@ -277,11 +276,11 @@ public class PAdESWithExternalCMSService implements Serializable {
     /**
      * This method verifies if the given {@code cms} signature is compliant for PAdES format
      *
-     * @param messageDigest {@link Digest} computed on PDF's signature ByteRange
+     * @param messageDigest {@link DSSMessageDigest} computed on PDF's signature ByteRange
      * @param cms {@link DSSDocument} to be verified
      * @return TRUE if the CMS is compliant to PAdES specification, FALSE otherwise
      */
-    public boolean isValidPAdESBaselineCMSSignedData(Digest messageDigest, DSSDocument cms) {
+    public boolean isValidPAdESBaselineCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cms) {
         Objects.requireNonNull(messageDigest, "messageDigest shall be provided!");
         Objects.requireNonNull(cms, "CMSSignedDocument shall be provided!");
 
@@ -299,7 +298,7 @@ public class PAdESWithExternalCMSService implements Serializable {
         return cmsRequirementsChecker.isValidForPAdESBaselineBProfile();
     }
 
-    private CAdESSignature toCAdESSignature(CMSSignedData cmsSignedData, Digest messageDigest) {
+    private CAdESSignature toCAdESSignature(CMSSignedData cmsSignedData, DSSMessageDigest messageDigest) {
         CAdESSignature signature = new CAdESSignature(cmsSignedData, cmsSignedData.getSignerInfos().iterator().next());
         signature.setDetachedContents(Collections.singletonList(DSSUtils.toDigestDocument(messageDigest)));
         return signature;

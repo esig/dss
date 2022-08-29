@@ -94,7 +94,7 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         SignatureValue signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
         DSSDocument cadesDetachedSignature = cadesService.signDocument(digestDocumentToSign, cadesParameters, signatureValue);
 
-        assertFalse(service.isValidCMSSignedData(digestDocument.getExistingDigest(), cadesDetachedSignature));
+        assertFalse(service.isValidCMSSignedData(new DSSMessageDigest(digestDocument.getExistingDigest()), cadesDetachedSignature));
         assertTrue(service.isValidCMSSignedData(messageDigest, cadesDetachedSignature));
 
         assertFalse(service.isValidPAdESBaselineCMSSignedData(messageDigest, cadesDetachedSignature));
@@ -110,7 +110,7 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
         CMSSignedDocument cmsSignature = cmsGeneratorService.signMessageDigest(messageDigest, cmsParameters, signatureValue);
 
-        assertFalse(service.isValidCMSSignedData(digestDocument.getExistingDigest(), cmsSignature));
+        assertFalse(service.isValidCMSSignedData(new DSSMessageDigest(digestDocument.getExistingDigest()), cmsSignature));
         assertTrue(service.isValidCMSSignedData(messageDigest, cmsSignature));
 
         assertTrue(service.isValidPAdESBaselineCMSSignedData(messageDigest, cmsSignature));
