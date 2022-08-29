@@ -45,6 +45,7 @@ public class RestDocumentSignatureServiceImpl implements RestDocumentSignatureSe
 	 * Default construction instantiating object with null RemoteDocumentSignatureService
 	 */
 	public RestDocumentSignatureServiceImpl() {
+		// empty
 	}
 
 	/**

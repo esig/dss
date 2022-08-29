@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.UserNotice;
@@ -417,6 +418,27 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Creates a {@code DigestDocument} with the provided {@code Digest}
+	 *
+	 * @param digest {@link Digest} to use to create a {@link DigestDocument}
+	 * @return {@link DigestDocument} containing {@link Digest}
+	 */
+	public static DigestDocument toDigestDocument(Digest digest) {
+		return toDigestDocument(digest.getAlgorithm(), digest.getValue());
+	}
+
+	/**
+	 * Creates a {@code DigestDocument} with the provided {@code DigestAlgorithm} and {@code digestValue}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param digestValue byte array containing digest value
+	 * @return {@link DigestDocument} containing the given digest value with the defined algorithm
+	 */
+	public static DigestDocument toDigestDocument(DigestAlgorithm digestAlgorithm, byte[] digestValue) {
+		return new DigestDocument(digestAlgorithm, Utils.toBase64(digestValue));
+	}
+
+	/**
 	 * This method wraps the digest value in a DigestInfo (combination of digest
 	 * algorithm and value). This encapsulation is required to operate NONEwithRSA
 	 * signatures.
@@ -646,7 +668,21 @@ public final class DSSUtils {
 		} catch (IOException | CMSException e) {
 			throw new DSSException("Not a valid CAdES file", e);
 		}
-	}	
+	}
+
+	/**
+	 * Creates {@code CMSSignedData} from the DER-encoded binaries representing CMS
+	 *
+	 * @param encoded byte array representing CMSSignedData
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData toCMSSignedData(final byte[] encoded) {
+		try {
+			return new CMSSignedData(encoded);
+		} catch (CMSException e) {
+			throw new DSSException("Not a valid CMS", e);
+		}
+	}
 	
 	/**
 	 * Checks if the document contains a TimeStampToken

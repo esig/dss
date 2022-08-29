@@ -414,9 +414,11 @@ public class ETSIValidationReportBuilder {
 		
 		POEExtraction poeExtraction = new POEExtraction();
 		poeExtraction.init(diagnosticData, currentTime);
-		poeExtraction.collectAllPOE(diagnosticData.getTimestampSet());
 
-		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		poeExtraction.collectAllPOE(timestampList);
+
+		for (TimestampWrapper timestamp : timestampList) {
 			ValidationObjectType timestampValidationObject = getTimestampValidationObject(timestamp);
 			validationObjectListType.getValidationObject().add(timestampValidationObject);
 		}

@@ -1,0 +1,70 @@
+[source,options="nowrap"]
+----
+{
+  "parameters" : {
+    "signingCertificate" : {
+      "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
+    },
+    "certificateChain" : [ ],
+    "detachedContents" : null,
+    "asicContainerType" : null,
+    "signatureLevel" : "PAdES_BASELINE_B",
+    "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
+    "signatureAlgorithm" : "RSA_SHA256",
+    "digestAlgorithm" : "SHA256",
+    "encryptionAlgorithm" : "RSA",
+    "referenceDigestAlgorithm" : null,
+    "maskGenerationFunction" : null,
+    "contentTimestamps" : null,
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signatureTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "archiveTimestampParameters" : {
+      "digestAlgorithm" : "SHA256",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
+    "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
+    "blevelParams" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1633219200000,
+      "claimedSignerRoles" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  },
+  "signatureValue" : {
+    "algorithm" : "RSA_SHA256",
+    "value" : "HVnqkx2TdFohxW5TBZ6Z5DOhy7xnka6O2Eu8Ph3LIHgJpz6ItRke5rS3Mxg7TabLzilmeL6Cmz523JcHjduWSFPH52/0Qve1XVvSvs9XCxrB7AqQbDOr9h5B3hrudufhHtht9HfgukBL1UB5z/V5E6faF6KZprgSm40DxryTtKuxxxGx8UqA/6JwT1fWTg198IM8kWMW2SfGbj7ySoDlNUu+iej89fzDjCLm0YOdbb+DZ4GCq6fnaolD1rACxjJoCZWLOnnfNc2z5VnCEMWZbAFHvfWIa1lxMLKK/cSEyhbIMo+193/Y9GQCB+QnLwOu1bo0jGotFNjb2cPi3AQP0A=="
+  },
+  "messageDigest" : {
+    "algorithm" : "SHA256",
+    "value" : "CrIMW4yl4SLSuGxvUvI/y4bCjxk3w7AGUmc2sJUUgso="
+  }
+}
+----

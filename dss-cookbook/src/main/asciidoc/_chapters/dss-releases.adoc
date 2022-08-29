@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[DSSUpgrades]]
 == DSS upgrades and change history
@@ -269,6 +269,18 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
                                                                      a|[source,xml]
 ----
 <SignatureByteRange valid="true">0 * * *</SignatureByteRange>
+----
+
+|PDFSignatureService#digest     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
+----
+                                                                     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
+byte[] digest = messageDigest.getValue();
 ----
 
 |===

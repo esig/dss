@@ -54,6 +54,15 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     private ValidationContext validationContext;
 
     /**
+     * Constructor without {@code CertificateVerifier} (to be used for B-level validation only)
+     *
+     * @param signature {@link DefaultAdvancedSignature} to validate
+     */
+    protected BaselineRequirementsChecker(final AS signature) {
+        this(signature, null);
+    }
+
+    /**
      * Default constructor
      *
      * @param signature {@link DefaultAdvancedSignature} to validate
@@ -140,7 +149,7 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
      * @return TRUE if the signature has an LT-profile, FALSE otherwise
      */
     public boolean minimalLTRequirement() {
-        Objects.requireNonNull(offlineCertificateVerifier, "offlineCertificateVerifier cannot be null!");
+        Objects.requireNonNull(offlineCertificateVerifier, "offlineCertificateVerifier cannot be null for LT-level verification!");
 
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
         boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;

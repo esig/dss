@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.pades.signature.suite.CMSForPAdESGenerationServiceTest;
 import eu.europa.esig.dss.pades.signature.suite.CertificateConflictTest;
 import eu.europa.esig.dss.pades.signature.suite.DigestStabilityTest;
 import eu.europa.esig.dss.pades.signature.suite.GetOriginalDocumentTest;
@@ -30,6 +31,14 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATe
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAndTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureBLevelTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureLTALevelDocTstTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureLTALevelTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureLTLevelDocTstTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureLTLevelTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureServiceTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureTLevelDocTstTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureTLevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCertificationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBDigestDocumentTest;
@@ -110,7 +119,10 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
 		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class, PAdESLevelLTASignDocumentWithXRefsTest.class,
 		PAdESLevelBWithValidationDataTest.class, PAdESLevelBWithValidationDataSameTstTrustAnchorTest.class,
-		PAdESLevelLTAWithSingleDocTstTest.class, PAdESLevelLTAWithSingleSelfSignedDocTstTest.class })
+		PAdESLevelLTAWithSingleDocTstTest.class, PAdESLevelLTAWithSingleSelfSignedDocTstTest.class, PAdESExternalCMSSignatureBLevelTest.class,
+		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class, PAdESExternalCMSSignatureLTALevelTest.class,
+		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
+		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }

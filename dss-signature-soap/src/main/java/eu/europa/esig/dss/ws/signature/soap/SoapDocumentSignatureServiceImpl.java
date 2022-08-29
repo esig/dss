@@ -44,6 +44,7 @@ public class SoapDocumentSignatureServiceImpl implements SoapDocumentSignatureSe
 	 * Default construction instantiating object with null RemoteDocumentSignatureService
 	 */
 	public SoapDocumentSignatureServiceImpl() {
+		// empty
 	}
 
 	/**

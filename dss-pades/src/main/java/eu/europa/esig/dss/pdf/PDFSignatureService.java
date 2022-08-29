@@ -46,8 +46,26 @@ public interface PDFSignatureService {
 	 * @param parameters
 	 *            the signature/timestamp parameters
 	 * @return the digest value
+	 *
+	 * @deprecated since 5.12. Use
+	 * {@code
+	 * 		MessageDigest messageDigest = messageDigest(toSignDocument, parameters);
+	 * 	    byte[] digest = messageDigest.getValue();
+	 * }
 	 */
+	@Deprecated
 	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
+	 * Returns the message-digest computed on PDF signature revision's ByteRange
+	 *
+	 * @param toSignDocument
+	 *            the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return {@link DSSMessageDigest}
+	 */
+	DSSMessageDigest messageDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 	/**
 	 * Signs a PDF document

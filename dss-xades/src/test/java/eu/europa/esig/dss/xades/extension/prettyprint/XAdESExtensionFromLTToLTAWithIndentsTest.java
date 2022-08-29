@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension.prettyprint;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -56,6 +41,19 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	
@@ -156,7 +154,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	}
 	
 	private void checkTimestamps(DiagnosticData diagnosticData) {
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			assertNotNull(timestampWrapper.getProductionTime());
 			assertTrue(timestampWrapper.isMessageImprintDataFound());

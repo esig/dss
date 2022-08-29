@@ -359,7 +359,7 @@ public final class CMSUtils {
 		if (cmsSignedData != null) {
 			signedContent = cmsSignedData.getSignedContent();
 		}
-		if (signedContent != null && !(signedContent instanceof CMSAbsentContent)) {
+		if (signedContent != null && !isDetachedSignature(cmsSignedData)) {
 			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);

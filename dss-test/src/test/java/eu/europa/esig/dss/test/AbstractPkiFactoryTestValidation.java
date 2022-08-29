@@ -777,8 +777,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			if (isBaselineLTA(signatureWrapper.getSignatureFormat())) {
 				assertTrue(foundArchiveTimeStamp || foundDocTimeStamp);
 			}
-	
-			Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+
+			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 			for (TimestampWrapper timestampWrapper : allTimestamps) {
 				assertNotNull(timestampWrapper.getProductionTime());
 				assertTrue(timestampWrapper.isMessageImprintDataFound());
@@ -1092,7 +1092,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(certificateWrapper);
 			assertTrue(certificateWrapper.getBinaries() != null || certificateWrapper.getDigestAlgoAndValue() != null);
 		}
-		for (TimestampWrapper tst : diagnosticData.getTimestampSet()) {
+		for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
 			TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(tst.getId());
 			assertNotNull(timestampWrapper);
 			assertTrue(timestampWrapper.getBinaries() != null || timestampWrapper.getDigestAlgoAndValue() != null);

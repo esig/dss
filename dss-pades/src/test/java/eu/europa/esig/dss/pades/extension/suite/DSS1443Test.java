@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -78,7 +78,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		assertEquals(2, signature.getTLevelTimestamps().size());
 		assertEquals(1, signature.getALevelTimestamps().size());
 
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		assertEquals(2, allTimestamps.size());
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {

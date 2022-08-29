@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pades.timestamp;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pdf.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -73,9 +73,8 @@ public class PAdESTimestampService {
 	 * @return {@link DSSDocument} timestamped
 	 */
 	public DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters params) {
-		final DigestAlgorithm timestampDigestAlgorithm = params.getDigestAlgorithm();
-		final byte[] digest = pdfSignatureService.digest(document, params);
-		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digest);
+		final DSSMessageDigest messageDigest = pdfSignatureService.messageDigest(document, params);
+		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(messageDigest.getAlgorithm(), messageDigest.getValue());
 		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);
 		return pdfSignatureService.sign(document, encoded, params);
 	}

@@ -116,7 +116,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 			assertNotNull(certificateWrapper);
 			assertNotNull(certificateWrapper.getBinaries());
 		}
-		for (TimestampWrapper tst : dd.getTimestampSet()) {
+		for (TimestampWrapper tst : dd.getTimestampList()) {
 			TimestampWrapper timestampWrapper = dd.getTimestampById(tst.getId());
 			assertNotNull(timestampWrapper);
 			assertNotNull(timestampWrapper.getBinaries());

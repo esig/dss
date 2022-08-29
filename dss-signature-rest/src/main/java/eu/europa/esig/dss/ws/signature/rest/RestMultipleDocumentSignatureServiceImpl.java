@@ -42,6 +42,7 @@ public class RestMultipleDocumentSignatureServiceImpl implements RestMultipleDoc
 	 * Default construction instantiating object with null RemoteMultipleDocumentsSignatureService
 	 */
 	public RestMultipleDocumentSignatureServiceImpl() {
+		// empty
 	}
 
 	/**

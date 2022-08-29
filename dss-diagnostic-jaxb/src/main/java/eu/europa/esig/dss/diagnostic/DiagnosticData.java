@@ -665,7 +665,7 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		Set<TimestampWrapper> allTimestamps = getTimestampSet();
+		List<TimestampWrapper> allTimestamps = getTimestampList();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			if (id.equals(timestampWrapper.getId())) {
 				return timestampWrapper;
@@ -990,7 +990,9 @@ public class DiagnosticData {
 	 * This method returns timestamps
 	 * 
 	 * @return a set of TimestampWrapper
+	 * @deprecated since 5.12. Use {@code Set<TimestampWrapper> timestampSet = new LinkedHashSet<>(getTimestampList());}
 	 */
+	@Deprecated
 	public Set<TimestampWrapper> getTimestampSet() {
 		return new LinkedHashSet<>(getTimestampList());
 	}
