@@ -27,6 +27,7 @@ public interface RestPAdESWithExternalCMSService extends Serializable {
      *
      * @param pdfMessageDigest
      *            {@link PDFExternalMessageDigestDTO} containing a PDF document to be singed and signature parameters
+     * @return {@link DigestDTO} representing message-digest computed on the prepared PDF signature byte range
      */
     @POST
     @Path("getMessageDigest")
@@ -39,6 +40,7 @@ public interface RestPAdESWithExternalCMSService extends Serializable {
      * @param pdfSignDocument
      *            {@link PDFExternalSignDocumentDTO} containing a PDF document, set of driven signature creation
      *            parameters and a CMS signature document
+     * @return {@link RemoteDocument} representing a PDF signed document embedding the provided CMS signature
      */
     @POST
     @Path("signDocument")

@@ -24,6 +24,7 @@ public interface SoapPAdESWithExternalCMSService extends Serializable {
      *
      * @param pdfMessageDigest
      *            {@link PDFExternalMessageDigestDTO} containing a PDF document to be singed and signature parameters
+     * @return {@link DigestDTO} representing message-digest computed on the prepared PDF signature byte range
      */
     @WebResult(name = "response")
     DigestDTO getMessageDigest(@WebParam(name = "pdfMessageDigest") PDFExternalMessageDigestDTO pdfMessageDigest);
@@ -35,6 +36,7 @@ public interface SoapPAdESWithExternalCMSService extends Serializable {
      * @param pdfSignDocument
      *            {@link PDFExternalSignDocumentDTO} containing a PDF document, set of driven signature creation
      *            parameters and a CMS signature document
+     * @return {@link RemoteDocument} representing a PDF signed document embedding the provided CMS signature
      */
     @WebResult(name = "response")
     RemoteDocument signDocument(@WebParam(name = "pdfSignDocument") PDFExternalSignDocumentDTO pdfSignDocument);
