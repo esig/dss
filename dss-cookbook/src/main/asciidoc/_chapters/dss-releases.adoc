@@ -271,6 +271,18 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 <SignatureByteRange valid="true">0 * * *</SignatureByteRange>
 ----
 
+|PDFSignatureService#digest     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
+----
+                                                                     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
+byte[] digest = messageDigest.getValue();
+----
+
 |===
 
 [cols="2,5,5"]

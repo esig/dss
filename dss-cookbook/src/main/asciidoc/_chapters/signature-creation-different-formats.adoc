@@ -139,7 +139,6 @@ To familiarize yourself with this type of signature it is advisable to read the 
 
 An example of code to perform a `PAdES-BASELINE-B` type signature can be found in section <<PAdES>> of the Annex.
 
-
 [[PAdESVisibleSignature]]
 ==== PAdES Visible Signature
 
@@ -204,6 +203,61 @@ By default, DSS uses a Google font : 'PT Serif Regular' (its physical implementa
 
 NOTE: The 'Native PDFBox Drawer' implementation supports only one of the following fonts: SERIF, SANS-SERIF, MONOSPACED, DIALOG and DIALOG_INPUT.
 
+[[PAdESWithExternalCMS]]
+==== PAdES using external CMS provider
+
+Instead of computing a signature value, some signature creation providers implement a service returning a CMS or CAdES signature, enveloping the signed attributes and the user provided message-digest. This architecture may benefit the end-user, as only one request to the external server is required and there is no need to additionally request a signing-certificate or a certificate chain prior the signing.
+
+This design is also suitable for a PAdES signature creation, as the obtained CMS signature may be embedded into PDF with a prepared signature revision. Starting from the version 5.12, DSS exposes a few classes providing a possibility for users to benefit from the aforementioned architecture in order to create PAdES signatures.
+
+The scheme below demonstrates the mechanism of PAdES creation using an external CMS provider:
+
+.PAdES signing using external CMS provider workflow
+image::pades-with-external-cms-workflow.png[]
+
+The scheme demonstrates a workflow between the following independent services implemented in DSS:
+
+* `PAdESWithExternalCMSService` is a client-side service, taking a responsibility on PDF processing and preparation of a signature revision. This class should be used when there is direct access to CMS/CAdES signature provider service signing the digest. The class exposes the following methods:
+
+. `getMessageDigest(pdfDocument, padesSignatureParameters)` prepares PDF signature revision and returns message-digest computed on the signature's byte range (see ISO 32000-1 standard <<R06>> for more details);
+. `signDocument(pdfDocument, padesSignatureParameters, cmsSignature)` envelops CMS signature obtained from external provider within prepared PDF signature revision.
+
+NOTE: As the CMS containing signed attributes is obtained externally, the signature parameters provided to the methods of this class should contain only values concerning the creation of a PDF signature revision and do not require a signing-certificate nor certificate chain.
+
+Additionally, the class provides two optional methods allowing verification of a CMS signature received from the external CMS provider, namely:
+
+.. `isValidCMSSignedData(messageDigest, cmsSignature)` verifies a cryptographic validity of a CMS signature received from an external signature provider, using the signing-certificate extracted from CMS signature itself;
+.. `isValidPAdESBaselineCMSSignedData(messageDigest, cmsSignature)` verifies compatibility of a CMS signature received from an external signature provider for a `PAdES-BASELINE` signature format (cf. <<R03>>).
+
+WARNING: Please note that not every CMS or CAdES signature is suitable for a `PAdES-BASELINE` creation. For example a `CAdES-BASELINE` as per ETSI EN 319 122-1 (cf. <<R02>>) *cannot be used* for `PAdES-BASELINE` as per ETSI EN 319 142-1 (cf. <<R03>>).
+
+* `ExternalCMSService` provides a functionality to expose a server-based service generating a CMS signature suitable for `PAdES-BASELINE` creation. It exposes the following methods:
+
+. `getDataToSign(messageDigest, cmsSignatureParameters)` computes signed attributes of a CMS signature to be eventually signed using the provided message-digest and signature parameters;
+. `signMessageDigest(messageDigest, cmsSignatureParameters, signatureValue)` creates a CMS signature suitable for `PAdES-BASELINE` conformant signature creation.
+
+* `SignatureTokenConnection` represents a remote-signing service exposing methods for a private key signing and signature value creation (see <<SignatureTokens>> for more details).
+
+NOTE: All the services may work independently as well as in collaboration with each other.
+
+An example of a PAdES creation using an external CMS provider using DSS is copied below:
+
+[source,java,indent=0]
+.PAdES with external CMS signature provider
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfWithExternalCmsTest.java[tags=demo-pdf-sign]
+----
+
+In case a server-based solution is desired to expose own CMS-creation service for a PAdES-signing, the following approach may be followed accepting a message-digest as the input:
+
+[source,java,indent=0]
+.External CMS creation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfWithExternalCmsTest.java[tags=demo-cms-sign]
+----
+
+The aforementioned classes and methods are also available as REST/SOAP webservices, see <<RestPAdESWithExternalCMS>> and <<ExternalCMSSignature>>.
+
 === ISO 32000-1 PDF signature (PKCS#7)
 The ISO 32000-1 standard gives a specification for the creation of electronic signatures in the PDF format. However, these signatures are not in the AdES format defined by ETSI.
 
@@ -211,8 +265,7 @@ The Public Key Cryptographic Standard Number 7 (PKCS#7) is a common format of a 
 
 DSS only supports AdES formats (e.g. PAdES for PDF) and thus does not support signature creation for PKCS#7. DSS only provides a limited support for the augmentation and validation of PKCS#7 signatures.
 
-There is no specific validation standard for PKCS#7 nor any augmentation formats in the ISO 32000-1 standard. Thus, DSS validates and augments PKCS#7 according to rules defined in ETSI standards. It validates PKCS#7 signatures according to the AdES validation algorithm, and it adds the same components as when augmenting PADES-BASELINE-B to PAdES-BASELINE-T.
-
+There is no specific validation standard for PKCS#7 nor any augmentation formats in the ISO 32000-1 standard. Thus, DSS validates and augments PKCS#7 according to rules defined in ETSI standards. It validates PKCS#7 signatures according to the AdES validation algorithm, and it adds the same components as when augmenting `PADES-BASELINE-B` to `PAdES-BASELINE-T`.
 
 === JAdES signature (JWS)
 
