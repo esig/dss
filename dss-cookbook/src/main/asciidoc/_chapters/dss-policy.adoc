@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 ==== General
 

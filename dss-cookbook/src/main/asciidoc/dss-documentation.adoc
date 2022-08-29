@@ -9,7 +9,7 @@ version : {dssVersion} - {docdate}
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 include::_chapters/generic-information.adoc[]
 
