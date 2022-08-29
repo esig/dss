@@ -106,7 +106,7 @@ public class DocumentBuilderFactoryBuilder extends AbstractFactoryBuilder<Docume
         try {
             factory.setFeature(feature, value);
         } catch (ParserConfigurationException e) {
-            String message = String.format("SECURITY : unable to set feature %s = %s (more details in LOG debug)", feature, value);
+            String message = String.format("SECURITY : unable to set feature '%s' = '%s' (more details in LOG debug)", feature, value);
             if (LOG.isDebugEnabled()) {
                 LOG.warn(message, e);
             } else {
@@ -120,7 +120,7 @@ public class DocumentBuilderFactoryBuilder extends AbstractFactoryBuilder<Docume
         try {
             factory.setAttribute(attribute, value);
         } catch (IllegalArgumentException e) {
-            String message = String.format("SECURITY : unable to set attribute %s = %s (more details in LOG debug)", attribute, value);
+            String message = String.format("SECURITY : unable to set attribute '%s' = '%s' (more details in LOG debug)", attribute, value);
             if (LOG.isDebugEnabled()) {
                 LOG.warn(message, e);
             } else {
