@@ -123,10 +123,9 @@ public abstract class CommonDocument implements DSSDocument {
 
 	@Override
 	public String toString() {
-		final StringWriter stringWriter = new StringWriter();
-		stringWriter.append("Name: ").append(getName()).append(" / MimeType: ")
-				.append(mimeType == null ? "" : mimeType.getMimeTypeString());
-		return stringWriter.toString();
+		final String mimeTypeString = (mimeType == null) ? "" : mimeType.getMimeTypeString();
+		final String name = getName();
+		return "Name: " + name + " / MimeType: " + mimeTypeString;
 	}
 
 }
