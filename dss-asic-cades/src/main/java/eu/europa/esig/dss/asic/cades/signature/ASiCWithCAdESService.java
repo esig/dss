@@ -162,8 +162,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		}
 
 		final DSSDocument signature = getCAdESService().signDocument(toBeSigned, cadesParameters, signatureValue);
-		String newSignatureFilename = getSignatureFilename(asicParameters, asicContent);
-		signature.setName(newSignatureFilename);
+		signature.setName(asicFilenameFactory.getSignatureFilename(asicContent));
 
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signature);
 
@@ -179,21 +178,6 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		asicContainer.setName(getFinalDocumentName(asicContainer, SigningOperation.SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
 		parameters.reinit();
 		return asicContainer;
-	}
-
-	/**
-	 * NOTE: Temporary method to allow migration from parameters.aSiC().setSignatureFilename(filename)
-	 * to ASiCWithXAdESFilenameFactory
-	 *
-	 * @return {@link String} filename
-	 */
-	private String getSignatureFilename(ASiCParameters asicParameters, ASiCContent asicContent) {
-		if (Utils.isStringNotEmpty(asicParameters.getSignatureFileName())) {
-			LOG.warn("The signature filename has been defined within deprecated method parameters.aSiC().setSignatureFilename(filename). " +
-					"Please use asicWithCAdESService.setAsicFilenameFactory(asicFilenameFactory) defining a custom filename factory.");
-			return asicParameters.getSignatureFileName();
-		}
-		return asicFilenameFactory.getSignatureFilename(asicContent);
 	}
 
 	@Override

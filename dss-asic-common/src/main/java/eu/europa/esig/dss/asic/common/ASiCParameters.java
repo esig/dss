@@ -115,32 +115,4 @@ public class ASiCParameters implements Serializable {
 		this.containerType = containerType;
 	}
 
-	/**
-	 * This method returns the name of the signature file to use with ASiC-E container.
-	 *
-	 * @return signature file name
-	 */
-	public String getSignatureFileName() {
-		// TODO : remove with #setSignatureFileName(signatureFileName) method
-		return signatureFileName;
-	}
-
-	/**
-	 * This method allows to set the signature file name to use with ASiC-E container.
-	 *
-	 * @param signatureFileName
-	 *            signature file name
-	 *
-	 * @deprecated since DSS 5.11.
-	 * Use {@code
-	 *         SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
-	 *         asicFilenameFactory.setSignatureFilename(signatureFilename);
-	 *         ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
-	 *     }
-	 */
-	@Deprecated
-	public void setSignatureFileName(final String signatureFileName) {
-		this.signatureFileName = signatureFileName;
-	}
-
 }

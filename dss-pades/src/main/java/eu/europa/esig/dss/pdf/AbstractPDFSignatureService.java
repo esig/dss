@@ -195,37 +195,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * Sets a maximal pages amount in a PDF to process a visual screenshot
-	 * comparison Example: for value 10, the visual comparison will be executed for
-	 * a PDF containing 10 and fewer pages
-	 * 
-	 * NOTE: In order to disable visual comparison check set the pages amount to 0
-	 * (zero)
-	 * 
-	 * Default : 10 pages
-	 * 
-	 * @param pagesAmount the amount of the pages to execute visual comparison for
-	 * @deprecated since 5.11. Use
-	 * 		{@code
-	*           PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
-	 *          ...
-	 *          IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
-	 * 			DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
-	 *          pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
-	 *          pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
-	 *          validator.setPdfObjFactory(pdfObjFactory);
-	 * 		}
-	 */
-	@Deprecated
-	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
-		LOG.warn("Use of deprecated setMaximalPagesAmountForVisualComparison(pagesAmount) method! " +
-				"See more details in JavaDoc.");
-		DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
-		pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(pagesAmount);
-		setPdfDifferencesFinder(pdfDifferencesFinder);
-	}
-
-	/**
 	 * Returns a SignatureDrawer initialized from a provided
 	 * {@code signatureDrawerFactory}
 	 * 
@@ -255,6 +224,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		return messageDigest(toSignDocument, parameters).getValue();
 	}
+
 	@Override
 	public DSSMessageDigest messageDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();

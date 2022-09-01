@@ -69,18 +69,6 @@ public class ASiCEWithXAdESManifestBuilder {
 	}
 
 	/**
-	 * Default constructor
-	 *
-	 * @param documents a list of {@link DSSDocument}s
-	 *
-	 * @deprecated since DSS 5.11. Use {@code ASiCEWithXAdESManifestBuilder()} and {@code setDocuments(documents)}
-	 */
-	@Deprecated
-	public ASiCEWithXAdESManifestBuilder(List<DSSDocument> documents) {
-		this.documents = documents;
-	}
-
-	/**
 	 * Sets documents to be included into the Manifest
 	 *
 	 * WARN: shall not be used together with {@code setEntries(entries)}

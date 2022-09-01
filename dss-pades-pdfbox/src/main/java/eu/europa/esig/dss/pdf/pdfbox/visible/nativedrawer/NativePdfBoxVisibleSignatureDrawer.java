@@ -92,24 +92,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	}
 
 	/**
-	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
-	 *
-	 * When set to TRUE, only the used glyphs will be embedded to a font.
-	 * When set to FALSE, all glyphs from a font will be embedded to a PDF.
-	 *
-	 * DEFAULT : FALSE (the whole font file is embedded to a PDF)
-	 *
-	 * @param embedFontSubset whether only a subset of used glyphs should be embedded to a PDF
-	 *
-	 * @deprecated since DSS 5.11. Use {@code DSSFileFont.setEmbedFontSubset(embedFontSubset)} method
-	 */
-	@Deprecated
-	public void setEmbedFontSubset(boolean embedFontSubset) {
-		LOG.warn("Use of deprecated method! The use of the method will not take effect on processing. " +
-				"Please use DSSFileFont.setEmbedFontSubset(embedFontSubset) method.");
-	}
-
-	/**
 	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation
 	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
