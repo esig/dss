@@ -22,7 +22,7 @@ package eu.europa.esig.dss.ws.converter;
 
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Contains utils to convert {@code Color} to {@code RemoteColor} object and vice versa

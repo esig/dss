@@ -22,7 +22,9 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import eu.europa.esig.dss.pdf.visible.AbstractDSSFontMetrics;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**

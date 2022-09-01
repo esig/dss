@@ -26,7 +26,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 
