@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +57,9 @@ public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
     public void test() {
         // /DocMDP /P=1
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2554/certified-no-change-permitted.pdf"));
-        Exception exception = assertThrows(AlertException.class, () -> sign());
-        assertEquals("The creation of new signatures is not permitted in the current document.", exception.getMessage());
+        Exception exception = assertThrows(ProtectedDocumentException.class, () -> sign());
+        assertEquals("The creation of new signatures is not permitted in the current document. " +
+                "Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 
         // /DocMDP /P=2
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1188/Test.pdf"));
@@ -72,7 +73,9 @@ public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
 
         // /FieldMDP /All
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/AD-RB.pdf"));
-        assertEquals("The creation of new signatures is not permitted in the current document.", exception.getMessage());
+        exception = assertThrows(ProtectedDocumentException.class, () -> sign());
+        assertEquals("The creation of new signatures is not permitted in the current document. " +
+                "Reason : FieldMDP dictionary does not permit a new signature creation!", exception.getMessage());
 
         // /FieldMDP /Include
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2554/fieldmdp-include.pdf"));
@@ -84,8 +87,10 @@ public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
         signedDoc = sign();
         assertNotNull(signedDoc);
 
+        // FieldMDP /Exclude signed (no permission defined)
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2554/fieldmdp-exclude-signed.pdf"));
-        assertEquals("The creation of new signatures is not permitted in the current document.", exception.getMessage());
+        signedDoc = sign();
+        assertNotNull(signedDoc);
 
         List<String> availableSignatureFields = service.getAvailableSignatureFields(documentToSign);
         assertEquals(2, availableSignatureFields.size());

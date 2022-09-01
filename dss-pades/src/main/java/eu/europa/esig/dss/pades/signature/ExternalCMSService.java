@@ -187,6 +187,7 @@ public class ExternalCMSService {
     /**
      * This method verifies whether the provided {@code parameters} are valid for the external CMS creation process
      *
+     * @param messageDigest {@link DSSMessageDigest} representing message-digest computed on PDF signature byte range
      * @param parameters {@link PAdESSignatureParameters} to be checked
      */
     protected void assertConfigurationValid(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters) {

@@ -262,7 +262,7 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 .Code changes from version 5.11 to 5.12
 |===
 |Title                               |v5.11                            |v5.12
-|Diagnostic Data : ByteRange     a|[source,xml]
+|Diagnostic Data: ByteRange     a|[source,xml]
 ----
 <SignatureByteRange>0 * * *</SignatureByteRange>
 ----
@@ -271,7 +271,7 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 <SignatureByteRange valid="true">0 * * *</SignatureByteRange>
 ----
 
-|PDFSignatureService#digest     a|[source,java]
+|PDFSignatureService #digest     a|[source,java]
 ----
 PDFSignatureService pdfSignatureService = ...
 byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
@@ -281,6 +281,55 @@ byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
 PDFSignatureService pdfSignatureService = ...
 MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
 byte[] digest = messageDigest.getValue();
+----
+
+|PDFSignatureService: permission dictionary alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnForbiddenSignatureCreation(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(new ProtectedDocumentExceptionOnStatusAlert());
+pdfObjectFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PDFSignatureService: signature field position alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert);
+pdfSignatureService.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert());
+pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PdfDocumentReader #checkDocumentPermissions     a|[source,java]
+----
+PdfDocumentReader reader = ...
+reader.checkDocumentPermissions();
+----
+                                                                     a|[source,java]
+----
+PdfDocumentReader reader = ...
+SignatureFieldParameters signatureFieldParameters = ...
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.checkDocumentPermissions(reader, signatureFieldParameters);
 ----
 
 |===

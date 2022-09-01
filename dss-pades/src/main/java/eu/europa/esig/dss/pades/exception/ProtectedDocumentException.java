@@ -23,7 +23,8 @@ package eu.europa.esig.dss.pades.exception;
 import eu.europa.esig.dss.model.DSSException;
 
 /**
- * Throwed when the document is protected
+ * Thrown when the document is protected (the requested operation is not permitted)
+ *
  */
 public class ProtectedDocumentException extends DSSException {
 

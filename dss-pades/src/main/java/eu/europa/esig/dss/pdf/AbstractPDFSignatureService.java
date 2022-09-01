@@ -20,10 +20,7 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.status.MessageStatus;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -104,28 +101,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected PdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
 
 	/**
-	 * This variable set the behavior to follow in case of overlapping a new
-	 * signature field with existing annotations.
-	 * 
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Used to verify PDF document permissions regarding a new signature creation
 	 */
-	private StatusAlert alertOnSignatureFieldOverlap = new ExceptionOnStatusAlert();
+	protected PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
 
 	/**
-	 * This variable allows setting a behavior when
-	 * a new signature field is created outside the page dimensions
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Used to verify the signature field position placement validity
 	 */
-	private StatusAlert alertOnSignatureFieldOutsidePageDimensions = new ExceptionOnStatusAlert();
-
-	/**
-	 * This variable indicates a behavior for creation of a new signature
-	 * in a document that does not permit a new signature creation
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 */
-	private StatusAlert alertOnForbiddenSignatureCreation = new ExceptionOnStatusAlert();
+	protected PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -159,6 +142,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		this.pdfObjectModificationsFinder = pdfObjectModificationsFinder;
 	}
 
+	@Override
+	public void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker) {
+		Objects.requireNonNull(pdfPermissionsChecker, "PdfPermissionsChecker cannot be null!");
+		this.pdfPermissionsChecker = pdfPermissionsChecker;
+	}
+
+	@Override
+	public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
+		Objects.requireNonNull(pdfSignatureFieldPositionChecker, "PdfSignatureFieldPositionChecker cannot be null!");
+		this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
+	}
+
 	/**
 	 * Sets alert on a signature field overlap with existing fields or/and
 	 * annotations
@@ -166,10 +161,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 * 
 	 * @param alertOnSignatureFieldOverlap {@link StatusAlert} to execute
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOutsidePageDimensions);
+	 *			    pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 * 			}
 	 */
+	@Deprecated
 	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
-		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
-		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
+		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap)!");
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap);
 	}
 
 	/**
@@ -178,20 +179,35 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 *
 	 * @param alertOnSignatureFieldOutsidePageDimensions {@link StatusAlert} to execute
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
+	 *			    pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 * 			}
 	 */
+	@Deprecated
 	public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-		this.alertOnSignatureFieldOutsidePageDimensions = alertOnSignatureFieldOutsidePageDimensions;
+		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions)!");
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
 	}
 
 	/**
 	 * Sets a behavior to follow when creating a new signature in a document that forbids creation of new signatures
 	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Default : ProtectedDocumentExceptionOnStatusAlert -
+	 *                 throws the {@code eu.europa.esig.dss.pades.exception.ProtectedDocumentException} exception
 	 *
 	 * @param alertOnForbiddenSignatureCreation {@link StatusAlert} to execute
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+	 *				pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
+	 *			    pdfSignatureService.setPdfPermissionsChecker(pdfPermissionsChecker);
+	 * 			}
 	 */
+	@Deprecated
 	public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnForbiddenSignatureCreation) {
-		this.alertOnForbiddenSignatureCreation = alertOnForbiddenSignatureCreation;
+		LOG.warn("Use of deprecated method setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation)!");
+		pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
 	}
 
 	/**
@@ -333,64 +349,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			return PAdESConstants.TIMESTAMP_TYPE;
 		} else {
 			return PAdESConstants.SIGNATURE_TYPE;
-		}
-	}
-
-	/**
-	 * This method checks if the document is not encrypted or with limited edition rights
-	 * 
-	 * @param pdfDocumentReader {@link PdfDocumentReader} to check
-	 */
-	protected void checkDocumentPermissions(final PdfDocumentReader pdfDocumentReader) {
-		pdfDocumentReader.checkDocumentPermissions();
-	}
-
-	/**
-	 * This method verifies whether a new signature is permitted
-	 *
-	 * @param reader {@link PdfDocumentReader}
-	 * @param fieldParameters {@link SignatureFieldParameters}
-	 */
-	protected void checkNewSignatureIsPermitted(final PdfDocumentReader reader,
-												final SignatureFieldParameters fieldParameters) {
-		final CertificationPermission certificationPermission = reader.getCertificationPermission();
-		if (isDocumentChangeForbidden(certificationPermission)) {
-			alertOnForbiddenSignatureCreation();
-		}
-		if (reader.isUsageRightsSignaturePresent()) {
-			/*
-			 * Deprecated. See ISO 32000-2:
-			 *
-			 * When a usage rights signature is present, it is up to the PDF processor or
-			 * to the signature handler to process it or not.
-			 */
-			LOG.info("A usage rights signature is present. The feature is deprecated and the entry is not handled.");
-		}
-
-		try {
-			String signatureFieldId = fieldParameters.getFieldId();
-
-			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
-			sigDictionaries = sortSignatureDictionaries(sigDictionaries);
-			for (PdfSignatureDictionary signatureDictionary : sigDictionaries.keySet()) {
-				SigFieldPermissions fieldMDP = signatureDictionary.getFieldMDP();
-				if (fieldMDP != null && isSignatureFieldCreationForbidden(fieldMDP, signatureFieldId)) {
-					alertOnForbiddenSignatureCreation();
-				}
-			}
-
-			for (List<PdfSignatureField> signatureFieldList : sigDictionaries.values()) {
-				for (PdfSignatureField signatureField : signatureFieldList) {
-					SigFieldPermissions lockDict = signatureField.getLockDictionary();
-					if (lockDict != null && lockDict.getCertificationPermission() != null &&
-							isSignatureFieldCreationForbidden(lockDict, signatureFieldId)) {
-						alertOnForbiddenSignatureCreation();
-					}
-				}
-			}
-
-		} catch (IOException e) {
-			LOG.warn("An error occurred while reading signature dictionary entries : {}", e.getMessage(), e);
 		}
 	}
 
@@ -684,10 +642,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
 			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
-			int pageRotation = documentReader.getPageRotation(fieldParameters.getPage());
-			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox, pageRotation);
+			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox);
 
-			assertSignatureFieldPositionValid(signatureFieldAnnotation, documentReader, fieldParameters);
+			assertSignatureFieldPositionValid(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
 		}
 		return signatureFieldAnnotation;
 	}
@@ -727,11 +684,23 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 																SignatureFieldParameters parameters) throws IOException {
 		AnnotationBox annotationBox = new AnnotationBox(parameters);
 		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		int pageRotation = reader.getPageRotation(parameters.getPage());
-		annotationBox = toPdfPageCoordinates(annotationBox, pageBox, pageRotation);
+		annotationBox = toPdfPageCoordinates(annotationBox, pageBox);
 
-		assertSignatureFieldPositionValid(annotationBox, reader, parameters);
+		assertSignatureFieldPositionValid(reader, annotationBox, parameters.getPage());
 		return annotationBox;
+	}
+
+	/**
+	 * This method verifies validity of the signature field box configuration
+	 * calling the provided {@code pdfSignatureFieldPositionChecker}
+	 *
+	 * @param documentReader {@link PdfDocumentReader} document where the new signature field should be created
+	 * @param annotationBox {@link AnnotationBox} defining position and dimensions of the new signature field
+	 * @param pageNumber the number of a page where the new signature should be created
+	 */
+	protected void assertSignatureFieldPositionValid(PdfDocumentReader documentReader, AnnotationBox annotationBox,
+													 int pageNumber) {
+		pdfSignatureFieldPositionChecker.assertSignatureFieldPositionValid(documentReader, annotationBox, pageNumber);
 	}
 
 	/**
@@ -739,68 +708,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * @param fieldAnnotationBox {@link AnnotationBox} computed field of a signature
 	 * @param pageBox {@link AnnotationBox} page's box
-	 * @param pageRotation defines the page's rotation
 	 * @return {@link AnnotationBox}
 	 */
-	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int pageRotation) {
+	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox) {
 		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
-	}
-
-	private void assertSignatureFieldPositionValid(AnnotationBox annotationBox, final PdfDocumentReader reader,
-												  SignatureFieldParameters parameters) throws IOException {
-		int pageRotation = reader.getPageRotation(parameters.getPage());
-		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		checkSignatureFieldAgainstPageDimensions(annotationBox, pageBox, pageRotation);
-		List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(parameters.getPage());
-		checkSignatureFieldBoxOverlap(annotationBox, pdfAnnotations);
-	}
-
-	/**
-	 * This method verifies whether the {@code signatureFieldBox} overlaps
-	 * with one of the extracted {@code pdfAnnotations}
-	 *
-	 * @param signatureFieldBox {@link AnnotationBox} to verify
-	 * @param pdfAnnotations a list of {@link AnnotationBox} to verify against
-	 */
-	protected void checkSignatureFieldBoxOverlap(final AnnotationBox signatureFieldBox, List<PdfAnnotation> pdfAnnotations) {
-		if (pdfDifferencesFinder.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
-			alertOnSignatureFieldOverlap();
-		}
-	}
-
-	/**
-	 * Executes the alert {@code alertOnSignatureFieldOverlap}
-	 */
-	private void alertOnSignatureFieldOverlap() {
-		MessageStatus status = new MessageStatus();
-		status.setMessage("The new signature field position overlaps with an existing annotation!");
-		alertOnSignatureFieldOverlap.alert(status);
-	}
-
-	/**
-	 * This method verifies whether the {@code signatureFieldBox} is within {@code pageBox}
-	 *
-	 * @param signatureFieldBox {@link AnnotationBox} to check
-	 * @param pageBox {@link AnnotationBox} representing the page's box
-	 * @param pageRotation defines the page's rotation
-	 */
-	protected void checkSignatureFieldAgainstPageDimensions(final AnnotationBox signatureFieldBox, AnnotationBox pageBox,
-															int pageRotation) {
-		if (signatureFieldBox.getMinX() < pageBox.getMinX() || signatureFieldBox.getMaxX() > pageBox.getMaxX() ||
-				signatureFieldBox.getMinY() < pageBox.getMinY() || signatureFieldBox.getMaxY() > pageBox.getMaxY()) {
-			alertOnSignatureFieldOutsidePageDimensions(signatureFieldBox, pageBox);
-		}
-	}
-
-	private void alertOnSignatureFieldOutsidePageDimensions(final AnnotationBox signatureFieldBox,
-															final AnnotationBox pageBox) {
-		MessageStatus status = new MessageStatus();
-		status.setMessage(String.format("The new signature field position is outside the page dimensions! " +
-				"Signature Field : [minX=%s, maxX=%s, minY=%s, maxY=%s], " +
-				"Page : [minX=%s, maxX=%s, minY=%s, maxY=%s]",
-				signatureFieldBox.getMinX(), signatureFieldBox.getMaxX(), signatureFieldBox.getMinY(), signatureFieldBox.getMaxY(),
-				pageBox.getMinX(), pageBox.getMaxX(), pageBox.getMinY(), pageBox.getMaxY()));
-		alertOnSignatureFieldOutsidePageDimensions.alert(status);
 	}
 
 	@Override
@@ -854,42 +765,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return pdfDifferencesFinder.getVisualDifferences(signedRevisionReader, finalRevisionReader);
 	}
 
-	private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {
-		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
-	}
-
-	private void alertOnForbiddenSignatureCreation() {
-		MessageStatus status = new MessageStatus();
-		status.setMessage("The creation of new signatures is not permitted in the current document.");
-		alertOnForbiddenSignatureCreation.alert(status);
-	}
-
-	private boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {
-		switch (sigFieldPermissions.getAction()) {
-			case ALL:
-				return true;
-			case INCLUDE:
-				if (Utils.isStringEmpty(signatureFieldId)) {
-					return false;
-				}
-				if (sigFieldPermissions.getFields().contains(signatureFieldId)) {
-					return true;
-				}
-				break;
-			case EXCLUDE:
-				if (Utils.isStringEmpty(signatureFieldId)) {
-					return true;
-				}
-				if (!sigFieldPermissions.getFields().contains(signatureFieldId)) {
-					return true;
-				}
-				break;
-			default:
-				throw new UnsupportedOperationException(
-						String.format("The action value '%s' is not supported!", sigFieldPermissions.getAction()));
+	/**
+	 * This method verifies the PDF permissions dictionaries
+	 *
+	 * @param documentReader {@link PdfDocumentReader} document to be checked
+	 * @param fieldParameters {@link SignatureFieldParameters} identifying a new signature field configuration
+	 */
+	protected void checkPdfPermissions(PdfDocumentReader documentReader, SignatureFieldParameters fieldParameters) {
+		pdfPermissionsChecker.checkDocumentPermissions(documentReader, fieldParameters);
+		if (!isDocumentTimestampLayer()) {
+			pdfPermissionsChecker.checkSignatureRestrictionDictionaries(documentReader, fieldParameters);
 		}
-		CertificationPermission certificationPermission = sigFieldPermissions.getCertificationPermission();
-		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
 	}
 
 }

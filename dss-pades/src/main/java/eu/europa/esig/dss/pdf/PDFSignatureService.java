@@ -224,4 +224,20 @@ public interface PDFSignatureService {
 	 */
 	void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder);
 
+	/**
+	 * Sets the {@code PdfPermissionsChecker} used to verify the PDF document rules for a new signature creation
+	 *
+	 * @param pdfPermissionsChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker);
+
+	/**
+	 * Sets the {@code PdfSignatureFieldPositionChecker} used to verify the validity of new signature field placement.
+	 * For example to ensure the new signature field lies within PDF page borders and/or
+	 * it does not overlap with existing signature fields.
+	 *
+	 * @param pdfSignatureFieldPositionChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker);
+
 }

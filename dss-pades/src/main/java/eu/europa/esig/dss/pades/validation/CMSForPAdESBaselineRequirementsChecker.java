@@ -23,6 +23,11 @@ public class CMSForPAdESBaselineRequirementsChecker extends CAdESBaselineRequire
         super(signature);
     }
 
+    /**
+     * This method verifies validity of a CMS signature for enveloping within a PDF signature of PAdES-BASELINE format
+     *
+     * @return TRUE if the CMS signature is conformant to PAdES-BASELINE format, FALSE otherwise
+     */
     public boolean isValidForPAdESBaselineBProfile() {
         if (signature.getCmsSignedData().getSignerInfos().size() != 1) {
             LOG.warn("SignedData.signerInfos shall contain one and only one signerInfo for {}-BASELINE-B signature (cardinality == 1)!", getBaselineSignatureForm());

@@ -165,6 +165,8 @@ DSS has three implementations for visible signature drawing:
 DSS provides a set of functions allowing to place the signature field on a specific place in the PDF page.
 For an illustrative example see section <<Positioning>> in the Annex.
 
+DSS also provide a set of functions to ensure the correctness of a signature field positioning. For more information please see <<PdfSignatureFieldPositionChecker>> in the Annex.
+
 ====== Dimensions
 
 DSS framework provides a set of functions to manage the signature field size.
@@ -258,7 +260,29 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfWithExt
 
 The aforementioned classes and methods are also available as REST/SOAP webservices, see <<RestPAdESWithExternalCMS>> and <<ExternalCMSSignature>>.
 
+==== Protected PDF documents
+
+PDF documents may contain certain permission dictionaries defining the allowed scope of actions to be performed on a document, such as signature field creation, filling in existing signature field, etc.
+
+DSS allow configuration of the behaviour on a signature creation, such as restricting changes within PDF documents establishing limitations and allowing them, when required.
+
+The class `PdfPermissionsChecker` is responsible for configuration of the setup. It handles the following cases/dictionaries establishing the restrictions:
+
+* Standard encryption dictionaries `/Encrypt` (as per "7.6.4.2 Standard encryption dictionary" of ISO 32000-1 <<R06>>) - define a set of permitted operations when a document is opened with user access.
+* DocMDP `/DocMDP` (as per "12.8.2.2 DocMDP" of ISO 32000-1 <<R06>>) - defines access and modification permissions granted for a PDF document using a certification signature.
+* FieldMDP `/FieldMDP` (as per "12.8.2.4 FieldMDP" of ISO 32000-1 <<R06>>) - defines permission issued for modifications within form fields (including signature fields).
+* Signature Lock dictionary `/Lock` (as per "12.7.5.5 Signature fields" of ISO 32000-1 <<R06>>) - defines permission for a particular signature field.
+
+A configured instance of the class should be provided to the used `IPdfObjFactory`. The behaviour has to be defined with a `StatusAlert` (see <<Alerts>> for more information):
+
+[source,java,indent=0]
+.Restrict signature creation on permission-protected PDF document
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESWithIPdfObjFactoryConfiguration.java[tags=pdf-permission-checker]
+----
+
 === ISO 32000-1 PDF signature (PKCS#7)
+
 The ISO 32000-1 standard gives a specification for the creation of electronic signatures in the PDF format. However, these signatures are not in the AdES format defined by ETSI.
 
 The Public Key Cryptographic Standard Number 7 (PKCS#7) is a common format of a signature included in a PDF which has been created by Adobe PDF Reader. The PKCS#7 signature format is described in the ISO 32000-1 standard (cf. <<R06>>) and must conform to the RFC 2315 (cf. <<R15>>). To familiarize yourself with this type of signature you can read these documents.

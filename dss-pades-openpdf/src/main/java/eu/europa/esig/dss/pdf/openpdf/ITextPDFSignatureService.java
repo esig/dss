@@ -63,6 +63,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -264,10 +265,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
 					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
@@ -302,10 +302,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
 					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			PdfStamper stp = prepareStamper(documentReader, os, parameters);
 			PdfSignatureAppearance sap = stp.getSignatureAppearance();
@@ -532,8 +531,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
-			checkDocumentPermissions(documentReader);
-			checkNewSignatureIsPermitted(documentReader, parameters);
+			checkPdfPermissions(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
 			if (reader.getNumberOfPages() < parameters.getPage()) {
@@ -559,17 +557,22 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int rotation) {
-		fieldAnnotationBox = super.toPdfPageCoordinates(fieldAnnotationBox, pageBox, rotation);
-		return ImageRotationUtils.rotateRelativelyWrappingBox(fieldAnnotationBox, pageBox, rotation);
+	protected AnnotationBox getVisibleSignatureFieldBoxPosition(SignatureDrawer signatureDrawer, PdfDocumentReader documentReader,
+																SignatureFieldParameters parameters) throws IOException {
+		AnnotationBox annotationBox =  super.getVisibleSignatureFieldBoxPosition(signatureDrawer, documentReader, parameters);
+		return alignRelativelyPageBox(documentReader, parameters, annotationBox);
 	}
 
 	@Override
-	protected void checkSignatureFieldAgainstPageDimensions(AnnotationBox signatureFieldBox, AnnotationBox pageBox, int pageRotation) {
-		if (ImageRotationUtils.isSwapOfDimensionsRequired(pageRotation)) {
-			pageBox = ImageRotationUtils.swapDimensions(pageBox);
-		}
-		super.checkSignatureFieldAgainstPageDimensions(signatureFieldBox, pageBox, pageRotation);
+	protected AnnotationBox getVisibleSignatureFieldBoxPosition(PdfDocumentReader reader, SignatureFieldParameters parameters) throws IOException {
+		AnnotationBox annotationBox = super.getVisibleSignatureFieldBoxPosition(reader, parameters);
+		return alignRelativelyPageBox(reader, parameters, annotationBox);
+	}
+
+	private AnnotationBox alignRelativelyPageBox(PdfDocumentReader reader, SignatureFieldParameters parameters, AnnotationBox annotationBox) {
+		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
+		int pageRotation = reader.getPageRotation(parameters.getPage());
+		return ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageBox, pageRotation);
 	}
 
 	@Override

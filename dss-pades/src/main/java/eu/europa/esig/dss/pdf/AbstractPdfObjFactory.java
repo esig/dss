@@ -46,6 +46,16 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
     private PdfObjectModificationsFinder pdfObjectModificationsFinder;
 
     /**
+     * Used to verify PDF document permissions regarding a new signature creation
+     */
+    private PdfPermissionsChecker pdfPermissionsChecker;
+
+    /**
+     * Used to verify the signature field position placement validity
+     */
+    private PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker;
+
+    /**
      * Default constructor instantiating object with null values
      */
     protected AbstractPdfObjFactory() {
@@ -67,6 +77,16 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
         this.pdfObjectModificationsFinder = pdfObjectModificationsFinder;
     }
 
+    @Override
+    public void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker) {
+        this.pdfPermissionsChecker = pdfPermissionsChecker;
+    }
+
+    @Override
+    public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
+        this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
+    }
+
     /**
      * This method is used to provide configuration to the given {@code pdfSignatureService}
      * (e.g. set the resources handler builder).
@@ -83,6 +103,12 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
         }
         if (pdfObjectModificationsFinder != null) {
             pdfSignatureService.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+        }
+        if (pdfPermissionsChecker != null) {
+            pdfSignatureService.setPdfPermissionsChecker(pdfPermissionsChecker);
+        }
+        if (pdfSignatureFieldPositionChecker != null) {
+            pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
         }
         return pdfSignatureService;
     }

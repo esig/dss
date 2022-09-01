@@ -72,8 +72,56 @@ public class PdfBoxDocumentReaderTest {
 
 			currentAccessPermission.setReadOnly();
 			assertTrue(currentAccessPermission.isReadOnly());
-			
-			pdfBoxDocumentReader.checkDocumentPermissions();
+
+			assertFalse(pdfBoxDocumentReader.isEncrypted());
+			assertTrue(pdfBoxDocumentReader.isOpenWithOwnerAccess());
+			assertTrue(pdfBoxDocumentReader.canFillSignatureForm());
+			assertTrue(pdfBoxDocumentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void permissionsProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void permissionsEditionProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void permissionsEditionNoFieldsProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	// NOTE : Edition 6 is not supported in OpenPdf
+	@Test
+	public void permissionsEditionSixProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/restricted_fields.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument)) {
+			assertTrue(documentReader.isEncrypted());
+			assertFalse(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertFalse(documentReader.canCreateSignatureField());
 		}
 	}
 
