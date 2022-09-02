@@ -22,10 +22,11 @@ package eu.europa.esig.dss.pades.validation.timestamp;
 
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCRLSource;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictCertificateSource;
 import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
-import eu.europa.esig.dss.pades.validation.PdfRevision;
+import eu.europa.esig.dss.pades.validation.dss.PdfVriDictSource;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -104,6 +105,23 @@ public class PdfRevisionTimestampSource extends AbstractTimestampSource {
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns a timestamp token extracted from the VRI dictionary with the given key
+     *
+     * @param vriKey {@link String} sha-1 of the corresponding signature value
+     * @return {@link TimestampToken}
+     */
+    public TimestampToken getVRITimestampToken(String vriKey) {
+        if (pdfRevision instanceof PdfDocDssRevision) {
+            PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
+            final PdfVriDictSource pdfVriDictTimestampSource =
+                    new PdfVriDictSource(pdfDocDssRevision.getDssDictionary(), vriKey);
+            return pdfVriDictTimestampSource.getTimestampToken();
+
+        }
+        return null;
     }
 
 }

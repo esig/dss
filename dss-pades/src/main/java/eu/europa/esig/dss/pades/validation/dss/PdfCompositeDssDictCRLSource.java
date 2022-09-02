@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 
@@ -88,8 +88,8 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      */
     protected void extractVRICRLs(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
-            List<PdfVRIDict> vriDictList = dssDictionary.getVRIs();
-            for (PdfVRIDict vriDict : vriDictList) {
+            List<PdfVriDict> vriDictList = dssDictionary.getVRIs();
+            for (PdfVriDict vriDict : vriDictList) {
                 populateObjectsMap(vriDict.getCRLs());
                 extractVRICRLs(vriDict);
             }
@@ -126,7 +126,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      *
      * @param vriDictionary {@link PdfDssDict}
      */
-    protected void extractVRICRLs(PdfVRIDict vriDictionary) {
+    protected void extractVRICRLs(PdfVriDict vriDictionary) {
         if (vriDictionary != null) {
             for (Map.Entry<Long, CRLBinary> crlEntry : vriDictionary.getCRLs().entrySet()) {
                 addBinary(crlEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);

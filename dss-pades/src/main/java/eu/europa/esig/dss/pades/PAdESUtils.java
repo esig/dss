@@ -36,7 +36,7 @@ import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
@@ -444,17 +444,17 @@ public final class PAdESUtils {
 	 *
 	 * @param pdfDssDict {@link PdfDssDict} to extract /VRI dictionaries from
 	 * @param vriName {@link String} name of the /VRI dictionary to retrieve (optional)
-	 * @return list of {@link PdfVRIDict}s
+	 * @return list of {@link PdfVriDict}s
 	 */
-	public static List<PdfVRIDict> getVRIsWithName(PdfDssDict pdfDssDict, String vriName) {
-		List<PdfVRIDict> vris = pdfDssDict.getVRIs();
+	public static List<PdfVriDict> getVRIsWithName(PdfDssDict pdfDssDict, String vriName) {
+		List<PdfVriDict> vris = pdfDssDict.getVRIs();
 		if (Utils.isCollectionEmpty(vris)) {
 			return Collections.emptyList();
 		}
 		if (vriName == null) {
 			return vris;
 		}
-		for (PdfVRIDict vriDict : vris) {
+		for (PdfVriDict vriDict : vris) {
 			if (vriName.equals(vriDict.getName())) {
 				return Collections.singletonList(vriDict);
 			}

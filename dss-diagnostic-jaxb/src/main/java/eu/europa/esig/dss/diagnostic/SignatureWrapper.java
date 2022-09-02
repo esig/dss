@@ -687,6 +687,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
 	}
 
+	/**
+	 * Returns all corresponding VRI timestamps (PAdES only)
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
+	public List<TimestampWrapper> getVRITimestamps() {
+		return getTimestampListByType(TimestampType.VRI_TIMESTAMP);
+	}
+
 	private List<TimestampWrapper> getDocumentTimestamps(boolean coversLTLevel) {
 		List<TimestampWrapper> timestampWrappers = new ArrayList<>();
 		for (TimestampWrapper timestampWrapper : getDocumentTimestamps()) {
@@ -1371,6 +1380,15 @@ public class SignatureWrapper extends AbstractTokenProxy {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Returns time of /VRI dictionary creation, when 'TU' attribute is present (PAdES only)
+	 *
+	 * @return {@link Date}
+	 */
+	public Date getVRIDictionaryCreationTime() {
+		return signature.getVRIDictionaryCreationTime();
 	}
 
 	/**

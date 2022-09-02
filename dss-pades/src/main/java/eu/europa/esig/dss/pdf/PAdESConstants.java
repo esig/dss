@@ -61,6 +61,11 @@ public final class PAdESConstants {
 	/** 'CRL' */
 	public static final String CRL_ARRAY_NAME_VRI = "CRL";
 
+	/** 'TU' */
+	public static final String TU_DICTIONARY_NAME_VRI = "TU";
+	/** 'TS' */
+	public static final String TS_DICTIONARY_NAME_VRI = "TS";
+
 	/* Field names */
 
 	/** 'AcroForm' */

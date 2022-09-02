@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
@@ -97,8 +97,8 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
             ocspMap = new HashMap<>();
             if (dssDictionary != null) {
                 ocspMap.putAll(dssDictionary.getOCSPs());
-                List<PdfVRIDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
-                for (PdfVRIDict vriDict : vriDicts) {
+                List<PdfVriDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
+                for (PdfVriDict vriDict : vriDicts) {
                     ocspMap.putAll(vriDict.getOCSPs());
                 }
             }
@@ -147,8 +147,8 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     private Set<Long> getKeySetFromVRIDictionaries() {
         if (dssDictionary != null) {
             Set<Long> result = new HashSet<>();
-            List<PdfVRIDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
-            for (PdfVRIDict vriDict : vris) {
+            List<PdfVriDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
+            for (PdfVriDict vriDict : vris) {
                 result.addAll(vriDict.getOCSPs().keySet());
             }
             return result;
@@ -201,7 +201,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenBinaryObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
+        for (PdfVriDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
             if (Utils.containsAny(vriDict.getOCSPs().keySet(), tokenBinaryObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }
@@ -227,7 +227,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
-        for (PdfVRIDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
+        for (PdfVriDict vriDict : PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName)) {
             if (Utils.containsAny(vriDict.getOCSPs().keySet(), tokenObjectIds)) {
                 result.add(RevocationOrigin.VRI_DICTIONARY);
             }

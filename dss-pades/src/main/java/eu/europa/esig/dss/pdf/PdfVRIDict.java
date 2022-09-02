@@ -21,17 +21,24 @@
 package eu.europa.esig.dss.pdf;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Represents a VRI dictionary
  */
-public class PdfVRIDict extends AbstractPdfDssDict {
+public class PdfVriDict extends AbstractPdfDssDict {
 
 	private static final long serialVersionUID = -1545254066906625419L;
 	
 	/** The VRI dictionary key (SHA-1 value of a signature) */
 	private final String name;
+
+	/** Represents a 'TU' time value */
+	private final Date tuTime;
+
+	/** Represents a 'TS' timestamp binary value */
+	private final byte[] tsStream;
 
 	/**
 	 * Default constructor
@@ -39,9 +46,11 @@ public class PdfVRIDict extends AbstractPdfDssDict {
 	 * @param name {@link String} VRI dictionary key
 	 * @param vriDict {@link PdfDict} the dictionary
 	 */
-	public PdfVRIDict(String name, PdfDict vriDict) {
+	public PdfVriDict(String name, PdfDict vriDict) {
 		super(vriDict);
 		this.name = name;
+		this.tuTime = DSSDictionaryExtractionUtils.getDictionaryCreationTime(vriDict);
+		this.tsStream = DSSDictionaryExtractionUtils.getTimestampBinaries(vriDict);
 	}
 	
 	@Override
@@ -74,9 +83,27 @@ public class PdfVRIDict extends AbstractPdfDssDict {
 	}
 
 	@Override
-	public List<PdfVRIDict> getVRIs() {
+	public List<PdfVriDict> getVRIs() {
 		// not applicable for VRI
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns 'TU' time
+	 *
+	 * @return {@link Date} when 'TU' value is present, NULL otherwise
+	 */
+	public Date getTUTime() {
+		return tuTime;
+	}
+
+	/**
+	 * Returns 'TS' stream value
+	 *
+	 * @return byte array representing a timestamp when present, NULL otherwise
+	 */
+	public byte[] getTSStream() {
+		return tsStream;
 	}
 
 	@Override
@@ -95,7 +122,7 @@ public class PdfVRIDict extends AbstractPdfDssDict {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		PdfVRIDict other = (PdfVRIDict) obj;
+		PdfVriDict other = (PdfVriDict) obj;
 		if (!name.equals(other.name)) {
 			return false;
 		}

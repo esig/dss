@@ -65,6 +65,8 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTes
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithUnsupportedSignatureAlgorithmTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeStampTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7SubFilterValidAndInvalidTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
@@ -112,7 +114,8 @@ import org.junit.platform.suite.api.Suite;
 		DSS2451Test.class, PAdESOverwrittenDSSDictTest.class, DSS2471Test.class, PAdESWithCrossCertificateOCSPsTest.class,
 		PAdESEnvelopingOtherPdfTest.class, PdfPkcs7WithSha1SubFilterTest.class, DSS2513Test.class, DSS2513LTTest.class,
 		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
-		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class })
+		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class,
+		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

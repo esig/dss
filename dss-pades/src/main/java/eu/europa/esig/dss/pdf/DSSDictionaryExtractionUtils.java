@@ -30,6 +30,8 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -134,6 +136,34 @@ public class DSSDictionaryExtractionUtils {
 			LOG.debug("No OCSPs found in the '{}' dictionary", dictionaryName);
 		}
 		return ocspMap;
+	}
+
+	/**
+	 * This method returns a value of 'TU' field when present
+	 *
+	 * @param dict {@link PdfDict} to get 'TU' time from
+	 * @return {@link Date}
+	 */
+	public static Date getDictionaryCreationTime(PdfDict dict) {
+		return dict.getDateValue(PAdESConstants.TU_DICTIONARY_NAME_VRI);
+	}
+
+	/**
+	 * This method returns timestamp binaries extracted from 'TS' field, when present
+	 *
+	 * @param dict {@link PdfDict} to get 'TS' timestamp from
+	 * @return byte array representing a timestamp when present
+	 */
+	public static byte[] getTimestampBinaries(PdfDict dict) {
+		PdfDict tsDict = dict.getAsDict(PAdESConstants.TS_DICTIONARY_NAME_VRI);
+		if (tsDict != null) {
+			try {
+				return tsDict.getStreamBytes();
+			} catch (IOException e) {
+				LOG.warn("Unable to extract 'TS' stream : {}", e.getMessage());
+			}
+		}
+		return null;
 	}
 
 }

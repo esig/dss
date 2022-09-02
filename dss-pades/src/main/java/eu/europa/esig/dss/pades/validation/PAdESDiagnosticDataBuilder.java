@@ -70,6 +70,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 		XmlSignature xmlSignature = super.buildDetachedXmlSignature(signature);
 		PAdESSignature padesSignature = (PAdESSignature) signature;
 		xmlSignature.setPDFRevision(getXmlPDFRevision(padesSignature.getPdfRevision()));
+		xmlSignature.setVRIDictionaryCreationTime(padesSignature.getVRICreationTime());
 		return xmlSignature;
 	}
 	

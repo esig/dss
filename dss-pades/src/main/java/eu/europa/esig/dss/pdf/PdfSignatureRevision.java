@@ -38,7 +38,7 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	private final PdfCompositeDssDictionary compositeDssDictionary;
 
 	/** The corresponding DSS dictionary */
-	private final PdfDssDict dssDictionarySource;
+	private final PdfDssDict dssDictionary;
 
 	/**
 	 * Default constructor
@@ -61,7 +61,7 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 								boolean coverCompleteRevision) {
 		super(signatureDictionary, signatureFields, signedContent, coverCompleteRevision);
 		this.compositeDssDictionary = compositeDssDictionary;
-		this.dssDictionarySource = dssDictionary;
+		this.dssDictionary = dssDictionary;
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 * @return {@link PdfDssDict}
 	 */
 	public PdfDssDict getDssDictionary() {
-		return dssDictionarySource;
+		return dssDictionary;
 	}
 
 }

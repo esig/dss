@@ -84,7 +84,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is yet valid at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is yet valid, FALSE otherwise
      */
     private void assertSigningCertificateIsYetValid(final CertificateToken certificateToken) {
         if (signatureParameters.isSignWithNotYetValidCertificate()) {
@@ -111,7 +110,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is not expired at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertSigningCertificateIsNotExpired(final CertificateToken certificateToken) {
         if (signatureParameters.isSignWithExpiredCertificate()) {
@@ -138,7 +136,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is not revoked nor suspended at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertCertificatesAreNotRevoked(final CertificateToken certificateToken) {
         if (!signatureParameters.isCheckCertificateRevocation()) {
@@ -168,7 +165,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code AdvancedSignature} do not contain revoked certificates
      *
      * @param signature {@link AdvancedSignature}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertCertificatesAreNotRevoked(final AdvancedSignature signature) {
         if (!signatureParameters.isCheckCertificateRevocation()) {

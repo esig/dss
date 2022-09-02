@@ -199,7 +199,6 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         timestampTokens.addAll(getTimestampsX1());
         timestampTokens.addAll(getTimestampsX2());
         timestampTokens.addAll(getArchiveTimestamps());
-        timestampTokens.addAll(getDocumentTimestamps());
         timestampTokens.addAll(getDetachedTimestamps());
         return timestampTokens;
     }
@@ -1011,7 +1010,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected void validateTimestamps() {
 
-        TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
+        final TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
 
         /*
          * This validates the content-timestamp tokensToProcess present in the signature.

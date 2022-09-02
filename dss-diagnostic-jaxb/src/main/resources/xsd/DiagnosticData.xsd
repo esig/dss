@@ -151,6 +151,7 @@
 					<xs:element name="SignaturePolicyStore" type="SignaturePolicyStore" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->
+					<xs:element name="VRIDictionaryCreationTime" type="xs:dateTime" minOccurs="0" /> <!-- PDF only -->
 					
 					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
 						<xs:complexType>
@@ -1012,6 +1013,7 @@
 			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="DOCUMENT_TIMESTAMP" /> <!-- PDF Timestamp -->
+			<xs:enumeration value="VRI_TIMESTAMP" /> <!-- PDF Timestamp of a VRI dictionary -->
 		</xs:restriction>
 	</xs:simpleType>
 	

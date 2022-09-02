@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfVRIDict;
+import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 
 import java.util.ArrayList;
@@ -95,8 +95,8 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public Map<Long, CertificateToken> getCertificateMap() {
         if (dssDictionary != null) {
             Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
-            List<PdfVRIDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
-            for (PdfVRIDict vriDict : vriDicts) {
+            List<PdfVriDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
+            for (PdfVriDict vriDict : vriDicts) {
                 dssCerts.putAll(vriDict.getCERTs());
             }
             return dssCerts;
@@ -124,8 +124,8 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
     public List<CertificateToken> getVRIDictionaryCertValues() {
         if (dssDictionary != null) {
             Set<Long> certKeys = new HashSet<>();
-            List<PdfVRIDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
-            for (PdfVRIDict vri : vris) {
+            List<PdfVriDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
+            for (PdfVriDict vri : vris) {
                 certKeys.addAll(vri.getCERTs().keySet());
             }
             return getCertificatesByKeys(certKeys);

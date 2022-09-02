@@ -488,6 +488,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkDTBSR(diagnosticData);
 		checkSignatureInformationStore(diagnosticData);
 		checkPdfRevision(diagnosticData);
+		checkVRIDictionaryCreationTime(diagnosticData);
 		checkStructureValidation(diagnosticData);
 		checkTokens(diagnosticData);
 		checkCounterSignatures(diagnosticData);
@@ -1074,6 +1075,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		// not implemented by default
+	}
+
+	protected void checkVRIDictionaryCreationTime(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
 	

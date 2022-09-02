@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -36,6 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
@@ -62,6 +64,11 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     protected List<TimestampToken> documentTimestamps;
 
     /**
+     * This variable contains the list of embedded /VRI timestamps corresponding to the signature.
+     */
+    protected List<TimestampToken> vriTimestamps;
+
+    /**
      * The default constructor to extract timestamps for a signature
      *
      * @param signature {@link PAdESSignature} to extract timestamps for
@@ -81,12 +88,24 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
         return documentTimestamps;
     }
 
+    /**
+     * Returns a list of incorporated /VRI timestamps for the corresponding signature
+     *
+     * @return a list of {@link TimestampToken}s
+     */
+    public List<TimestampToken> getVriTimestamps() {
+        if (vriTimestamps == null) {
+            createAndValidate();
+        }
+        return vriTimestamps;
+    }
+
     @Override
-    protected PAdESTimestampDataBuilder getTimestampDataBuilder() {
-        PAdESTimestampDataBuilder padesTimestampDataBuilder = new PAdESTimestampDataBuilder(
-                documentRevisions, (PAdESSignature) signature, certificateSource);
-        padesTimestampDataBuilder.setSignatureTimestamps(getSignatureTimestamps());
-        return padesTimestampDataBuilder;
+    public List<TimestampToken> getAllTimestamps() {
+        List<TimestampToken> timestampTokens =  super.getAllTimestamps();
+        timestampTokens.addAll(getDocumentTimestamps());
+        timestampTokens.addAll(getVriTimestamps());
+        return timestampTokens;
     }
 
     @Override
@@ -101,14 +120,17 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
         // Creates signature timestamp tokens only (from CAdESTimestampSource)
         super.makeTimestampTokensFromUnsignedAttributes();
 
+        final PAdESSignature padesSignature = (PAdESSignature) signature;
+
         final List<TimestampToken> cadesSignatureTimestamps = getSignatureTimestamps();
-        final List<TimestampToken> processedDocumentTimestamps = new ArrayList<>();
+        final List<TimestampToken> processedPdfrevisionTimestamps = new ArrayList<>();
 
         // store all found references
         unsignedPropertiesReferences = new ArrayList<>();
 
-        // contains the list of PDF timestamps
+        // instantiate PDF-specific timestamps
         documentTimestamps = new ArrayList<>();
+        vriTimestamps = new ArrayList<>();
 
         boolean signatureRevisionReached = false;
         boolean dssRevisionReached = false;
@@ -134,7 +156,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                     // covers DSS dictionary
                     addReferences(individualTimestampReferences, unsignedPropertiesReferences);
                 }
-                addReferences(individualTimestampReferences, getEncapsulatedReferencesFromTimestamps(processedDocumentTimestamps));
+                addReferences(individualTimestampReferences, getEncapsulatedReferencesFromTimestamps(processedPdfrevisionTimestamps));
 
                 // references embedded to timestamp's content are covered by outer timestamps
                 addReferences(timestampToken.getTimestampedReferences(), individualTimestampReferences);
@@ -144,7 +166,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 }
 
                 populateSources(timestampToken);
-                processedDocumentTimestamps.add(timestampToken);
+                processedPdfrevisionTimestamps.add(timestampToken);
 
             } else if (pdfRevision instanceof PdfDocDssRevision) {
                 PdfDocDssRevision pdfDocDssRevision = (PdfDocDssRevision) pdfRevision;
@@ -156,10 +178,19 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
                 crlSource.add(pdfDocDssRevision.getCRLSource());
                 ocspSource.add(pdfDocDssRevision.getOCSPSource());
 
+                final TimestampToken vriTimestampToken = pdfRevisionTimestampSource.getVRITimestampToken(padesSignature.getVRIKey());
+                if (vriTimestampToken != null && !vriTimestamps.contains(vriTimestampToken)) {
+                    addReferences(vriTimestampToken.getTimestampedReferences(), getSignatureTimestampReferences());
+
+                    if (signatureRevisionReached) {
+                        vriTimestamps.add(vriTimestampToken);
+                    }
+                    populateSources(vriTimestampToken);
+                    processedPdfrevisionTimestamps.add(vriTimestampToken);
+                }
                 dssRevisionReached = true;
 
             } else if (pdfRevision instanceof PdfSignatureRevision) {
-                PAdESSignature padesSignature = (PAdESSignature) signature;
                 if (padesSignature.getPdfRevision() == pdfRevision) {
                     signatureRevisionReached = true;
                 }
@@ -220,6 +251,21 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     protected boolean isArchiveTimestamp(CAdESAttribute unsignedAttribute) {
         // not applicable for PAdES
         return false;
+    }
+
+    @Override
+    protected void validateTimestamps() {
+        super.validateTimestamps();
+
+        final TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
+
+        /*
+         * Validates the VRI timestamps present for the signature.
+         */
+        for (final TimestampToken timestampToken : getVriTimestamps()) {
+            final DSSDocument timestampedData = timestampDataBuilder.getSignatureTimestampData(timestampToken);
+            timestampToken.matchData(timestampedData);
+        }
     }
 
     @Override
