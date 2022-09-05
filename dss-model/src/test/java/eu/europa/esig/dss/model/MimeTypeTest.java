@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -120,6 +121,11 @@ public class MimeTypeTest {
 		MimeType asiceNewLineMimeType = MimeType.fromMimeTypeString("application/vnd.etsi.asic-e+zip\n");
 		assertNotNull(asiceNewLineMimeType);
 		assertNotEquals(MimeType.ASICE, asiceNewLineMimeType);
+	}
+
+	@Test
+	public void newMimeTypeTest() {
+		assertEquals(MimeTypeEnum.TEXT, eu.europa.esig.dss.enumerations.MimeType.fromFileExtension("txt"));
 	}
 
 }
