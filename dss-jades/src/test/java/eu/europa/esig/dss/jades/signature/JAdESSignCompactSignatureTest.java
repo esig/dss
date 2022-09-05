@@ -23,13 +23,14 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import org.junit.jupiter.api.BeforeEach;
@@ -89,9 +90,9 @@ public class JAdESSignCompactSignatureTest extends AbstractJAdESTestSignature {
         boolean joseJsonTypeSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
-            if (MimeType.JOSE.equals(mimeType)) {
+            if (MimeTypeEnum.JOSE.equals(mimeType)) {
                 joseTypeSigFound = true;
-            } else if (MimeType.JOSE_JSON.equals(mimeType)) {
+            } else if (MimeTypeEnum.JOSE_JSON.equals(mimeType)) {
                 joseJsonTypeSigFound = true;
             }
         }
@@ -103,7 +104,7 @@ public class JAdESSignCompactSignatureTest extends AbstractJAdESTestSignature {
     protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
         assertNotNull(dataObjectFormat.getMimeType());
         MimeType mimeType = MimeType.fromMimeTypeString(dataObjectFormat.getMimeType());
-        assertTrue(MimeType.JOSE.equals(mimeType) || MimeType.JOSE_JSON.equals(mimeType));
+        assertTrue(MimeTypeEnum.JOSE.equals(mimeType) || MimeTypeEnum.JOSE_JSON.equals(mimeType));
     }
 
     @Override

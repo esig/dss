@@ -21,11 +21,12 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -198,7 +199,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the given MimeType is ASiC MimeType, FALSE otherwise
 	 */
 	public static boolean isASiCMimeType(final MimeType mimeType) {
-		return MimeType.ASICS.equals(mimeType) || MimeType.ASICE.equals(mimeType);
+		return MimeTypeEnum.ASICS.equals(mimeType) || MimeTypeEnum.ASICE.equals(mimeType);
 	}
 
 	/**
@@ -208,7 +209,7 @@ public final class ASiCUtils {
 	 * @return TRUE if the given MimeType is OpenDocument MimeType, FALSE otherwise
 	 */
 	public static boolean isOpenDocumentMimeType(final MimeType mimeType) {
-		return MimeType.ODT.equals(mimeType) || MimeType.ODS.equals(mimeType) || MimeType.ODG.equals(mimeType) || MimeType.ODP.equals(mimeType);
+		return MimeTypeEnum.ODT.equals(mimeType) || MimeTypeEnum.ODS.equals(mimeType) || MimeTypeEnum.ODG.equals(mimeType) || MimeTypeEnum.ODP.equals(mimeType);
 	}
 
 	/**
@@ -218,9 +219,10 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContainerType}
 	 */
 	public static ASiCContainerType getASiCContainerType(final MimeType asicMimeType) {
-		if (MimeType.ASICS.equals(asicMimeType)) {
+		Objects.requireNonNull(asicMimeType, "MimeType cannot be null!");
+		if (MimeTypeEnum.ASICS.equals(asicMimeType)) {
 			return ASiCContainerType.ASiC_S;
-		} else if (MimeType.ASICE.equals(asicMimeType) || isOpenDocumentMimeType(asicMimeType)) {
+		} else if (MimeTypeEnum.ASICE.equals(asicMimeType) || isOpenDocumentMimeType(asicMimeType)) {
 			return ASiCContainerType.ASiC_E;
 		} else {
 			throw new IllegalArgumentException("Not allowed mimetype '" + asicMimeType.getMimeTypeString() + "'");
@@ -259,7 +261,7 @@ public final class ASiCUtils {
 		if (Utils.isStringNotBlank(asicParameters.getMimeType())) {
 			return MimeType.fromMimeTypeString(asicParameters.getMimeType());
 		}
-		return isASiCE(asicParameters) ? MimeType.ASICE : MimeType.ASICS;
+		return isASiCE(asicParameters) ? MimeTypeEnum.ASICE : MimeTypeEnum.ASICS;
 	}
 	
 	/**

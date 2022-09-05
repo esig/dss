@@ -49,7 +49,7 @@ public enum MimeTypeEnum implements MimeType {
     ASICS("application/vnd.etsi.asic-s+zip", "scs", "asics"),
 
     /** asic-e */
-    ASICE("application/vnd.etsi.asic-e+zip", "sce", "asice"),
+    ASICE("application/vnd.etsi.asic-e+zip", "sce", "asice", "bdoc"),
 
     /** opendocument text */
     ODT("application/vnd.oasis.opendocument.text", "odt"),

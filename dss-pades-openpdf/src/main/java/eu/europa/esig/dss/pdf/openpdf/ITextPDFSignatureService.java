@@ -39,9 +39,9 @@ import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
@@ -326,7 +326,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			sap.close(dic);
 
 			DSSDocument signedDocument = resourcesHandler.writeToDSSDocument();
-			signedDocument.setMimeType(MimeType.PDF);
+			signedDocument.setMimeType(MimeTypeEnum.PDF);
 			return signedDocument;
 
 		} catch (IOException e) {
@@ -357,7 +357,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			stp.close();
 
 			DSSDocument signature = resourcesHandler.writeToDSSDocument();
-			signature.setMimeType(MimeType.PDF);
+			signature.setMimeType(MimeTypeEnum.PDF);
 			return signature;
 		} catch (IOException e) {
 			throw new DSSException("Unable to add DSS dictionary", e);
@@ -551,7 +551,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			stp.close();
 
 			DSSDocument signature = resourcesHandler.writeToDSSDocument();
-			signature.setMimeType(MimeType.PDF);
+			signature.setMimeType(MimeTypeEnum.PDF);
 			return signature;
 		} catch (IOException e) {
 			throw new DSSException("Unable to add a signature field", e);

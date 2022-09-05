@@ -1,10 +1,11 @@
 package eu.europa.esig.dss;
 
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -185,27 +186,27 @@ public class FileNameBuilder {
     }
 
     private boolean isContainerMimeType(MimeType mimeType) {
-        return MimeType.ASICS.equals(mimeType) || MimeType.ASICE.equals(mimeType);
+        return MimeTypeEnum.ASICS.equals(mimeType) || MimeTypeEnum.ASICE.equals(mimeType);
     }
 
     private String getFileExtensionString(SignatureLevel level, SignaturePackaging packaging, MimeType mimeType) {
         if (mimeType != null) {
-            return MimeType.getExtension(mimeType);
+            return mimeType.getExtension();
 
         } else if (level != null) {
             SignatureForm signatureForm = level.getSignatureForm();
             switch (signatureForm) {
                 case XAdES:
-                    return MimeType.getExtension(MimeType.XML);
+                    return MimeTypeEnum.XML.getExtension();
                 case CAdES:
                     if (packaging != null) {
                         return SignaturePackaging.DETACHED.equals(packaging) ? P7S_EXTENSION : P7M_EXTENSION;
                     }
                     break; // return empty
                 case PAdES:
-                    return MimeType.getExtension(MimeType.PDF);
+                    return MimeTypeEnum.PDF.getExtension();
                 case JAdES:
-                    return MimeType.getExtension(MimeType.JSON);
+                    return MimeTypeEnum.JSON.getExtension();
                 default:
                     throw new DSSException(String.format("Unable to generate a full document name! " +
                             "The SignatureForm %s is not supported.", signatureForm));

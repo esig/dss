@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.cades.timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.cades.signature.CAdESService;
+import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UnsupportedOperationTimestampCAdESTest extends PKIFactoryAccess {
 
@@ -40,7 +39,7 @@ public class UnsupportedOperationTimestampCAdESTest extends PKIFactoryAccess {
 		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
 		CAdESTimestampParameters timestampParameters = new CAdESTimestampParameters();
 		assertThrows(UnsupportedOperationException.class, () -> service.timestamp(documentToSign, timestampParameters));

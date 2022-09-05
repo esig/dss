@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.enumerations;
 
+import java.io.File;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
@@ -23,10 +25,31 @@ public interface MimeType {
     String getExtension();
 
     /**
+     * This method returns the first representation of the {@code MimeType}
+     * corresponding to the given mime-type string.
+     *
+     * @param mimeTypeString
+     *            is a string identifier composed of two parts: a "type" and a
+     *            "subtype"
+     * @return the extrapolated mime-type from the {@code String}
+     */
+    static MimeType fromMimeTypeString(final String mimeTypeString) {
+        Objects.requireNonNull(mimeTypeString, "The mimeTypeString cannot be null!");
+
+        for (MimeTypeLoader mimeTypeLoader : mimeTypeLoaders()) {
+            MimeType mimeType = mimeTypeLoader.fromMimeTypeString(mimeTypeString);
+            if (mimeType != null) {
+                return mimeType;
+            }
+        }
+        return MimeTypeEnum.BINARY;
+    }
+
+    /**
      * Returns {@code MimeType} matching to the provided {@code fileExtension} String
      *
      * @param fileExtension {@link String}
-     * @return {@link MimeType} if associated MimeType found, NULL otherwise
+     * @return {@link MimeType} if associated MimeType found, {@code MimeTypeEnum.BINARY} otherwise
      */
     static MimeType fromFileExtension(String fileExtension) {
         for (MimeTypeLoader mimeTypeLoader : mimeTypeLoaders()) {
@@ -35,7 +58,36 @@ public interface MimeType {
                 return mimeType;
             }
         }
-        return null;
+        return MimeTypeEnum.BINARY;
+    }
+
+    /**
+     * This method returns the mime-type extrapolated from the file name.
+     *
+     * @param fileName {@link String} the file name to be analysed
+     * @return {@link String} the extrapolated mime-type of the file name if found,
+     *                        {@code MimeTypeEnum.BINARY} otherwise
+     */
+    static MimeType fromFileName(final String fileName) {
+        final String fileExtension = getFileExtension(fileName);
+        if (fileExtension != null) {
+            final String lowerCaseExtension = fileExtension.toLowerCase();
+            return fromFileExtension(lowerCaseExtension);
+        }
+        return MimeTypeEnum.BINARY;
+    }
+
+    /**
+     * This method returns the mime-type extrapolated from the file.
+     *
+     * @param file {@link File} the file to be analysed
+     * @return the extrapolated mime-type of the file if found, {@code MimeTypeEnum.BINARY} otherwise
+     */
+    static MimeType fromFile(final File file) {
+        Objects.requireNonNull(file, "The file cannot be null!");
+
+        final String fileName = file.getName();
+        return fromFileName(fileName);
     }
 
     /**

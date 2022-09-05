@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
@@ -70,7 +70,7 @@ public class CMSSignedDocument extends CommonDocument {
 		Objects.requireNonNull(data, "The CMSSignedData cannot be null");
 		this.signedData = data;
 		this.name = name;
-		this.mimeType = MimeType.PKCS7;
+		this.mimeType = MimeTypeEnum.PKCS7;
 	}
 
 	@Override

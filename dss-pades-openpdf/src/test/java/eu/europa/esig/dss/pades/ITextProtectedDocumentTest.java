@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
@@ -43,18 +43,18 @@ public class ITextProtectedDocumentTest extends AbstractPAdESTestValidation {
 	private final String correctProtectionPhrase = " ";
 
 	private final DSSDocument openProtected = new InMemoryDocument(
-			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeType.PDF);
+			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedNone = new InMemoryDocument(
-			getClass().getResourceAsStream("/protected/edition_protected_none.pdf"), "sample.pdf", MimeType.PDF);
+			getClass().getResourceAsStream("/protected/edition_protected_none.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedSigningAllowedNoField = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"), "sample.pdf",
-			MimeType.PDF);
+			MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedSigningAllowedWithField = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_with_field.pdf"), "sample.pdf",
-			MimeType.PDF);
+			MimeTypeEnum.PDF);
 	
 	@Test
 	public void signatureOperationsCorrectPassword() {

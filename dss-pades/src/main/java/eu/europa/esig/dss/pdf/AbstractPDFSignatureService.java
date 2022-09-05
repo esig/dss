@@ -24,10 +24,10 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.status.MessageStatus;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -267,7 +267,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (signedDocument == null) {
 			signedDocument = signDocument(toSignDocument, cmsSignedData, parameters);
 		}
-		signedDocument.setMimeType(MimeType.PDF);
+		signedDocument.setMimeType(MimeTypeEnum.PDF);
 		return signedDocument;
 	}
 

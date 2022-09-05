@@ -28,10 +28,11 @@ import eu.europa.esig.dss.asic.common.definition.ASiCPaths;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -160,7 +161,7 @@ public class ASiCWithCAdESManifestParser {
 		Element sigReference = DomUtils.getElement(root, ASiCPaths.SIG_REFERENCE_PATH);
 		if (sigReference != null) {
 			MimeType mimeType = getMimeType(sigReference);
-			return MimeType.TST == mimeType;
+			return MimeTypeEnum.TST == mimeType;
 		}
 		return false;
 	}

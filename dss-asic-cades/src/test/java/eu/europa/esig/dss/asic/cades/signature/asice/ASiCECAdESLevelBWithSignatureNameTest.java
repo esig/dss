@@ -25,10 +25,11 @@ import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ public class ASiCECAdESLevelBWithSignatureNameTest extends AbstractASiCECAdESTes
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -82,7 +83,7 @@ public class ASiCECAdESLevelBWithSignatureNameTest extends AbstractASiCECAdESTes
         DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
 
         byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
-        assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
+        assertEquals(MimeTypeEnum.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
 
         assertTrue(Utils.isStringEmpty(asicContent.getZipComment()));
 

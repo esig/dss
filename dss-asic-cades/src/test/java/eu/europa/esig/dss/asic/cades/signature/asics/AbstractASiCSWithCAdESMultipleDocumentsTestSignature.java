@@ -22,8 +22,9 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -36,7 +37,7 @@ public abstract class AbstractASiCSWithCAdESMultipleDocumentsTestSignature exten
 
     @Override
     protected MimeType getExpectedMime() {
-        return MimeType.ASICS;
+        return MimeTypeEnum.ASICS;
     }
 
     @Override

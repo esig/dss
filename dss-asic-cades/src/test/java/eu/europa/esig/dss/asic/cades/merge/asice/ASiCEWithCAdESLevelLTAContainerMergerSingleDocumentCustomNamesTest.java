@@ -32,10 +32,10 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentCustomNamesTest 
 
     @BeforeEach
     public void init() {
-        documentToSign = new InMemoryDocument("Hello World!".getBytes(), "test.txt", MimeType.TEXT);
+        documentToSign = new InMemoryDocument("Hello World!".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());

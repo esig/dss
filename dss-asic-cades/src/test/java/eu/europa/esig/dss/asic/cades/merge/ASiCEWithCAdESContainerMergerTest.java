@@ -35,11 +35,11 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -85,7 +85,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
     @Test
     public void createAndMergeTest() {
-        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
         ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -124,7 +124,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
     @Test
     public void mergeAsicWithZipTest() {
-        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
         ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -138,7 +138,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeType.TEXT);
+        DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeTypeEnum.TEXT);
         ASiCContent asicContentToAdd = new ASiCContent();
         asicContentToAdd.getUnsupportedDocuments().add(documentToAdd);
 
@@ -247,7 +247,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
     @Test
     public void mergeTimestampedAsicWithZipTest() {
-        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(getGoodTsa());
 
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
@@ -255,7 +255,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
         DSSDocument timestampedContainer = timestampService.timestamp(Arrays.asList(toSignDocument), timestampParameters);
 
-        DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeType.TEXT);
+        DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeTypeEnum.TEXT);
         ASiCContent asicContentToAdd = new ASiCContent();
         asicContentToAdd.getUnsupportedDocuments().add(documentToAdd);
 
@@ -351,13 +351,13 @@ public class ASiCEWithCAdESContainerMergerTest extends
         ASiCContent secondASiCContent = new ASiCContent();
 
         firstASiCContent.setSignatureDocuments(Collections.singletonList(
-                new InMemoryDocument("signature".getBytes(), "META-INF/signature.p7s", MimeType.PKCS7)));
+                new InMemoryDocument("signature".getBytes(), "META-INF/signature.p7s", MimeTypeEnum.PKCS7)));
         firstASiCContent.setSignedDocuments(Collections.singletonList(
-                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeType.TEXT)));
+                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT)));
         secondASiCContent.setSignatureDocuments(Collections.singletonList(
-                new InMemoryDocument("signature".getBytes(), "META-INF/signature.p7s", MimeType.PKCS7)));
+                new InMemoryDocument("signature".getBytes(), "META-INF/signature.p7s", MimeTypeEnum.PKCS7)));
         secondASiCContent.setSignedDocuments(Collections.singletonList(
-                new InMemoryDocument("Hello World!".getBytes(), "bye.txt", MimeType.TEXT)));
+                new InMemoryDocument("Hello World!".getBytes(), "bye.txt", MimeTypeEnum.TEXT)));
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
@@ -367,7 +367,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
     @Test
     public void mergeMultipleContainersTest() {
-        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
         ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -420,7 +420,7 @@ public class ASiCEWithCAdESContainerMergerTest extends
 
     @Test
     public void mergeMultipleContainersWithDifferentSignatureNamesTest() throws IOException {
-        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
         ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -601,8 +601,8 @@ public class ASiCEWithCAdESContainerMergerTest extends
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
-        firstASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ASICE));
-        secondASiCContent.setZipComment(ASiCUtils.getZipComment(MimeType.ZIP));
+        firstASiCContent.setZipComment(ASiCUtils.getZipComment(MimeTypeEnum.ASICE));
+        secondASiCContent.setZipComment(ASiCUtils.getZipComment(MimeTypeEnum.ZIP));
 
         ASiCEWithCAdESContainerMerger merger = new ASiCEWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());

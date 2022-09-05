@@ -34,10 +34,11 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -70,7 +71,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
 
     @BeforeEach
     public void init() throws Exception {
-        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -93,7 +94,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         assertEquals(1, signedDocuments.size());
 
         DSSDocument signerDocument = signedDocuments.get(0);
-        signerDocument.setMimeType(MimeType.HTML);
+        signerDocument.setMimeType(MimeTypeEnum.HTML);
 
         ToBeSigned dataToSign = service.getDataToSign(asicContent, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
@@ -126,9 +127,9 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
 
             MimeType mimeType = manifestEntry.getMimeType();
             assertNotNull(mimeType);
-            if (MimeType.TEXT.equals(mimeType)) {
+            if (MimeTypeEnum.TEXT.equals(mimeType)) {
                 textMimeTypeFound = true;
-            } else if (MimeType.HTML.equals(mimeType)) {
+            } else if (MimeTypeEnum.HTML.equals(mimeType)) {
                 htmlMimeTypeFound = true;
 
             }

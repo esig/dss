@@ -22,6 +22,8 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
@@ -35,7 +37,6 @@ import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -287,11 +288,11 @@ public class JAdESLevelBaselineB {
 			MimeType signatureMimeType;
 			switch (parameters.getJwsSerializationType()) {
 				case COMPACT_SERIALIZATION:
-					signatureMimeType = MimeType.JOSE;
+					signatureMimeType = MimeTypeEnum.JOSE;
 					break;
 				case JSON_SERIALIZATION:
 				case FLATTENED_JSON_SERIALIZATION:
-					signatureMimeType = MimeType.JOSE_JSON;
+					signatureMimeType = MimeTypeEnum.JOSE_JSON;
 					break;
 				default:
 					throw new DSSException(String.format("The given JWS serialization type '%s' is not supported!", 
@@ -539,7 +540,7 @@ public class JAdESLevelBaselineB {
 		 * instructions, interpretation directives, or content markup should be
 		 * necessary for proper display.
 		 */
-		qArrayMap.put(JAdESHeaderParameterNames.MEDIA_TYPE, MimeType.TEXT.getMimeTypeString());
+		qArrayMap.put(JAdESHeaderParameterNames.MEDIA_TYPE, MimeTypeEnum.TEXT.getMimeTypeString());
 
 		/*
 		 * b) The encoding member, which shall contain a string identifying the encoding
@@ -860,7 +861,7 @@ public class JAdESLevelBaselineB {
 		for (DSSDocument document : detachedContents) {
 			MimeType mimeType = document.getMimeType();
 			if (mimeType == null) {
-				mimeType = MimeType.BINARY;
+				mimeType = MimeTypeEnum.BINARY;
 			}
 			String rfc7515MimeType = getRFC7515ConformantMimeTypeString(mimeType);
 			mimeTypes.add(rfc7515MimeType);

@@ -23,7 +23,8 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 
 /**
  * This class is used to create a Manifest file for a timestamp creation
@@ -57,7 +58,7 @@ public class ASiCWithCAdESTimestampManifestBuilder extends ASiCEWithCAdESManifes
 
     @Override
     protected MimeType getSigReferenceMimeType() {
-        return MimeType.TST;
+        return MimeTypeEnum.TST;
     }
 
 }

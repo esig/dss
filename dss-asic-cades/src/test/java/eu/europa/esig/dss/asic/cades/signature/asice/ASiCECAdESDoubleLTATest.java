@@ -30,11 +30,11 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,7 +64,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
 
     @BeforeEach
     public void init() throws Exception {
-        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeType.TEXT);
+        originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
         signingAlias = EE_GOOD_USER;
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -116,15 +116,15 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
             ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(document);
             for (ManifestEntry entry : manifestFile.getEntries()) {
                 if (originalDocument.getName().equals(entry.getFileName())) {
-                    assertEquals(MimeType.TEXT, entry.getMimeType());
+                    assertEquals(MimeTypeEnum.TEXT, entry.getMimeType());
                     signedFileFound = true;
                 }
                 if (entry.getFileName().contains("signature")) {
-                    assertEquals(MimeType.PKCS7, entry.getMimeType());
+                    assertEquals(MimeTypeEnum.PKCS7, entry.getMimeType());
                     timestampedSignatureFound = true;
                 }
                 if (entry.getFileName().contains("timestamp")) {
-                    assertEquals(MimeType.TST, entry.getMimeType());
+                    assertEquals(MimeTypeEnum.TST, entry.getMimeType());
                     secondArchiveTstFound = true;
                 }
             }

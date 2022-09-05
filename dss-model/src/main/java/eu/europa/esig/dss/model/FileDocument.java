@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

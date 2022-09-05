@@ -20,23 +20,24 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCXAdESCounterSignatureTest extends AbstractCounterSignatureTest<ASiCWithXAdESSignatureParameters, 
 					XAdESTimestampParameters, XAdESCounterSignatureParameters> {
@@ -44,9 +45,9 @@ public abstract class AbstractASiCXAdESCounterSignatureTest extends AbstractCoun
 	@Override
 	protected MimeType getExpectedMime() {
 		if (ASiCContainerType.ASiC_S.equals(getSignatureParameters().aSiC().getContainerType())) {
-			return MimeType.ASICS;
+			return MimeTypeEnum.ASICS;
 		}
-		return MimeType.ASICE;
+		return MimeTypeEnum.ASICE;
 	}
 
 	@Override

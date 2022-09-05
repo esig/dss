@@ -24,11 +24,11 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.merge.AbstractWithXAdESTestMerge;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,20 +53,20 @@ public class ASiCEWithXAdESLevelBContainerMergerDifferentMimetypeTest extends Ab
     @BeforeEach
     public void init() {
         documentsToSign = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
-                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeType.TEXT));
+                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 
         firstSignatureParameters = new ASiCWithXAdESSignatureParameters();
         firstSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-        firstSignatureParameters.aSiC().setMimeType(MimeType.ZIP.getMimeTypeString());
+        firstSignatureParameters.aSiC().setMimeType(MimeTypeEnum.ZIP.getMimeTypeString());
         firstSignatureParameters.bLevel().setSigningDate(new Date());
 
         secondSignatureParameters = new ASiCWithXAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         secondSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-        secondSignatureParameters.aSiC().setMimeType(MimeType.ASICE.getMimeTypeString());
+        secondSignatureParameters.aSiC().setMimeType(MimeTypeEnum.ASICE.getMimeTypeString());
         secondSignatureParameters.bLevel().setSigningDate(new Date());
     }
 

@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -90,7 +89,7 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
 
         DSSObject manifestObject = new DSSObject();
         manifestObject.setContent(originalOJManifest);
-        manifestObject.setMimeType(MimeType.fromMimeTypeString("http://www.w3.org/2000/09/xmldsig#Manifest"));
+        manifestObject.setMimeType("http://www.w3.org/2000/09/xmldsig#Manifest");
         manifestReference.setObject(manifestObject);
 
         DSSReference oldSignatureReference = new DSSReference();

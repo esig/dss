@@ -27,8 +27,8 @@ import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
 import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -97,7 +97,7 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
-		addSigReference(documentDom, asicManifestDom, timestampFileUri, MimeType.TST);
+		addSigReference(documentDom, asicManifestDom, timestampFileUri, MimeTypeEnum.TST);
 
 		for (DSSDocument signature : asicContent.getSignatureDocuments()) {
 			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);

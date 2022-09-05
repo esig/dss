@@ -23,10 +23,10 @@ package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
@@ -120,7 +120,7 @@ public final class XAdESSignatureUtils {
 				if (objectById != null && objectById.hasChildNodes()) {
 					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
 					if (bytes != null) {
-						return new InMemoryDocument(bytes, objectId, MimeType.XML);
+						return new InMemoryDocument(bytes, objectId, MimeTypeEnum.XML);
 					}
 				}
 			}
@@ -138,7 +138,7 @@ public final class XAdESSignatureUtils {
 				if (manifestById != null) {
 					byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
 					if (bytes != null) {
-						return new InMemoryDocument(bytes, manifestId, MimeType.XML);
+						return new InMemoryDocument(bytes, manifestId, MimeTypeEnum.XML);
 					}
 				}
 			}

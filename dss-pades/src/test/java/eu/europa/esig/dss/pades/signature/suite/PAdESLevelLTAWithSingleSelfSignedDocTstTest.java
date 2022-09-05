@@ -3,11 +3,11 @@ package eu.europa.esig.dss.pades.signature.suite;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -64,7 +64,7 @@ public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTe
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
         signedDocument.setName("signed.pdf");
-        signedDocument.setMimeType(MimeType.PDF);
+        signedDocument.setMimeType(MimeTypeEnum.PDF);
         return signedDocument;
     }
 

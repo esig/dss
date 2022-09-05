@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
@@ -42,9 +42,9 @@ public class XMLDocumentValidatorTest extends AbstractTestValidator {
 		
 		byte[] wrongBytes = new byte[] { 1, 2 };
 		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes)));
-		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeType.PDF)));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.PDF)));
 		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test")));
-		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeType.XML)));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.XML)));
 		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test.xml")));
 		
 		assertTrue(validator.isSupported(new InMemoryDocument(new byte[] { '<', '?', 'x', 'm', 'l' })));

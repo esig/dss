@@ -7,6 +7,16 @@ package eu.europa.esig.dss.enumerations;
 public class MimeTypeEnumLoader implements MimeTypeLoader {
 
     @Override
+    public MimeType fromMimeTypeString(String mimeTypeString) {
+        for (MimeTypeEnum mimeTypeEnum : MimeTypeEnum.values()) {
+            if (mimeTypeString.equalsIgnoreCase(mimeTypeEnum.mimeTypeString)) {
+                return mimeTypeEnum;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public MimeType fromFileExtension(String fileExtension) {
         for (MimeTypeEnum mimeTypeEnum : MimeTypeEnum.values()) {
             for (String extension : mimeTypeEnum.extensions) {
