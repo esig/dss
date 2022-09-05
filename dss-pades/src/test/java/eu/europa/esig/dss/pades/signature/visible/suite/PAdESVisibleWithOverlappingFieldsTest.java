@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -39,10 +38,8 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfSignatureFieldPositionChecker;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -86,8 +83,10 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 	
 	@Override
 	protected DSSDocument sign() {
-		MockLogAlertPdfObjectFactory pdfObjectFactory = new PAdESVisibleWithOverlappingFieldsTest.MockLogAlertPdfObjectFactory();
-		pdfObjectFactory.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert());
+		IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+		PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert());
+		pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
 		service.setPdfObjFactory(pdfObjectFactory);
 
 		DSSDocument signed = super.sign();
@@ -101,7 +100,7 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 		Exception exception = assertThrows(AlertException.class, () -> super.sign());
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 
-		pdfObjectFactory.setAlertOnSignatureFieldOverlap(new LogOnStatusAlert());
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new LogOnStatusAlert());
 		
 		return super.sign();
 	}
@@ -167,42 +166,6 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
-	}
-	
-	private static class MockLogAlertPdfObjectFactory extends AbstractPdfObjFactory {
-		
-		private static final IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
-
-		private static AbstractPDFSignatureService service;
-
-		static {
-			service = (AbstractPDFSignatureService) pdfObjectFactory.newPAdESSignatureService();
-		}
-
-		public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-			service.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOutsidePageDimensions);
-		}
-		
-		@Override
-		public PDFSignatureService newPAdESSignatureService() {
-			return service;
-		}
-
-		@Override
-		public PDFSignatureService newContentTimestampService() {
-			return service;
-		}
-
-		@Override
-		public PDFSignatureService newSignatureTimestampService() {
-			return service;
-		}
-
-		@Override
-		public PDFSignatureService newArchiveTimestampService() {
-			return service;
-		}
-		
 	}
 
 }

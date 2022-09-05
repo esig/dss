@@ -112,8 +112,41 @@ public interface PdfDocumentReader extends Closeable {
 
 	/**
 	 * This method checks if the document is not encrypted or with limited edition rights
+	 *
+	 * @deprecated since DSS 5.12. Please use {@code eu.europa.esig.dss.pdf.PdfPermissionsChecker} class.
+	 *             See also {code #canFillSignatureForm} and {@code #canCreateSignatureField} for custom handling.
 	 */
+	@Deprecated
 	void checkDocumentPermissions();
+
+	/**
+	 * This method checks whether the document is encrypted
+	 *
+	 * @return TRUE if the document is encrypted, FALSE otherwise
+	 */
+	boolean isEncrypted();
+
+	/**
+	 * This method verifies if the document has been opened with a full owner access (all modifications are permitted)
+	 *
+	 * @return TRUE if the document has been open with a full access, FALSE otherwise
+	 */
+	boolean isOpenWithOwnerAccess();
+
+	/**
+	 * This method verifies whether fill-in of existing signature fields is allowed
+	 * by PDF document permissions dictionary
+	 *
+	 * @return TRUE if fill-in signature forms is permitted, FALSE otherwise
+	 */
+	boolean canFillSignatureForm();
+
+	/**
+	 * This method verifies whether creation of new signature fields is allowed by the PDF permissions dictionary
+	 *
+	 * @return TRUE if the new signature field creation is permitted, FALSE otherwise
+	 */
+	boolean canCreateSignatureField();
 
 	/**
 	 * Returns value of /DocMDP dictionary defining the permitted modification in a PDF, when present

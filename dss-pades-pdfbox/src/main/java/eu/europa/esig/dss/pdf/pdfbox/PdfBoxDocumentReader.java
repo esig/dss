@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
@@ -32,6 +32,7 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
@@ -345,17 +346,37 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
+	@Deprecated
 	public void checkDocumentPermissions() {
-		AccessPermission accessPermission = pdDocument.getCurrentAccessPermission();
-		if (!accessPermission.canModify()) {
-			throw new ProtectedDocumentException("The document cannot be modified! Modification is not allowed.");
-		}
-		if (!accessPermission.canModifyAnnotations()) {
-			throw new ProtectedDocumentException("The document cannot be modified! Annotations modification is not allowed.");
-		}
-		if (!accessPermission.canFillInForm()) {
-			throw new ProtectedDocumentException("The document cannot be modified! Forms fill is forbidden.");
-		}
+		PdfPermissionsChecker permissionsChecker = new PdfPermissionsChecker();
+		permissionsChecker.checkDocumentPermissions(this, new SignatureFieldParameters());
+	}
+
+	@Override
+	public boolean isEncrypted() {
+		return pdDocument.isEncrypted();
+	}
+
+	@Override
+	public boolean isOpenWithOwnerAccess() {
+		final AccessPermission accessPermission = getAccessPermission();
+		return accessPermission.isOwnerPermission();
+	}
+
+	@Override
+	public boolean canFillSignatureForm() {
+		final AccessPermission accessPermission = getAccessPermission();
+		return accessPermission.canModifyAnnotations() || accessPermission.canFillInForm();
+	}
+
+	@Override
+	public boolean canCreateSignatureField() {
+		final AccessPermission accessPermission = getAccessPermission();
+		return accessPermission.canModify() && accessPermission.canModifyAnnotations();
+	}
+
+	private AccessPermission getAccessPermission() {
+		return pdDocument.getCurrentAccessPermission();
 	}
 
 	@Override

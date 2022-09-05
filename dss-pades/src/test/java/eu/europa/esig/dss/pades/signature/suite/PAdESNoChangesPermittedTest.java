@@ -20,20 +20,17 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.alerts.ProtectedDocumentExceptionOnStatusAlert;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -42,7 +39,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESNoChangesPermittedTest extends AbstractPAdESTestSignature {
 
@@ -65,14 +61,17 @@ public class PAdESNoChangesPermittedTest extends AbstractPAdESTestSignature {
 
     @Override
     protected DSSDocument sign() {
-        PAdESNoChangesPermittedTest.MockLogAlertPdfObjectFactory pdfObjectFactory = new PAdESNoChangesPermittedTest.MockLogAlertPdfObjectFactory();
-        pdfObjectFactory.setAlertOnForbiddenSignatureCreation(new ExceptionOnStatusAlert());
+        IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+        PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+        pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(new ProtectedDocumentExceptionOnStatusAlert());
+        pdfObjectFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
         service.setPdfObjFactory(pdfObjectFactory);
 
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
-        assertTrue(exception.getMessage().contains("The creation of new signatures is not permitted in the current document."));
+        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        assertEquals("The creation of new signatures is not permitted in the current document." +
+                " Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 
-        pdfObjectFactory.setAlertOnForbiddenSignatureCreation(new LogOnStatusAlert());
+        pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(new LogOnStatusAlert());
         return super.sign();
     }
 
@@ -102,42 +101,6 @@ public class PAdESNoChangesPermittedTest extends AbstractPAdESTestSignature {
     @Override
     protected String getSigningAlias() {
         return GOOD_USER;
-    }
-
-    private static class MockLogAlertPdfObjectFactory extends AbstractPdfObjFactory {
-
-        private static final IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
-
-        private static AbstractPDFSignatureService service;
-
-        static {
-            service = (AbstractPDFSignatureService) pdfObjectFactory.newPAdESSignatureService();
-        }
-
-        public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-            service.setAlertOnForbiddenSignatureCreation(alertOnSignatureFieldOutsidePageDimensions);
-        }
-
-        @Override
-        public PDFSignatureService newPAdESSignatureService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newContentTimestampService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newSignatureTimestampService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newArchiveTimestampService() {
-            return service;
-        }
-
     }
 
 }

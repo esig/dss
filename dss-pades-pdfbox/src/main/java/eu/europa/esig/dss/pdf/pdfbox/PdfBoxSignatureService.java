@@ -132,10 +132,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 			final DSSMessageDigest messageDigest = signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
@@ -160,10 +159,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
 
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			signDocumentAndReturnDigest(parameters, cmsSignedData, os, documentReader);
 
@@ -648,8 +645,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, pwd)) {
-			checkDocumentPermissions(documentReader);
-			checkNewSignatureIsPermitted(documentReader, parameters);
+			checkPdfPermissions(documentReader, parameters);
 
 			final PDDocument pdfDoc = documentReader.getPDDocument();
 			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
@@ -715,10 +711,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			final byte[] signatureValue = DSSUtils.EMPTY_BYTE_ARRAY;
 			signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
@@ -737,10 +732,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
-			checkDocumentPermissions(documentReader);
-			if (parameters instanceof PAdESSignatureParameters) {
-				checkNewSignatureIsPermitted(documentReader, parameters.getImageParameters().getFieldParameters());
-			}
+
+			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
+			checkPdfPermissions(documentReader, fieldParameters);
 
 			List<PdfAnnotation> originalAnnotations = documentReader.getPdfAnnotations(
 					parameters.getImageParameters().getFieldParameters().getPage());

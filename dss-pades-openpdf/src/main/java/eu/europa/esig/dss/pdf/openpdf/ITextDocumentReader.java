@@ -32,11 +32,12 @@ import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
-import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -44,9 +45,9 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
-import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -229,11 +230,9 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		PdfDictionary pageDictionary = pdfReader.getPageN(page);
 		PdfArray annots = pageDictionary.getAsArray(PdfName.ANNOTS);
 		if (annots != null) {
-			AnnotationBox pageBox = getPageBox(page);
-			int pageRotation = getPageRotation(page);
 			List<PdfAnnotation> pdfAnnotations = new ArrayList<>(); 
 			for (PdfObject pdfObject : annots.getElements()) {
-				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject, pageBox, pageRotation);
+				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject);
 				if (pdfAnnotation != null) {
 					pdfAnnotations.add(pdfAnnotation);
 				}
@@ -244,12 +243,11 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		return Collections.emptyList();
 	}
 	
-	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject, AnnotationBox pageBox, int pageRotation) {
+	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject) {
 		PdfDictionary annotDictionary = getAnnotDictionary(pdfObject);
 		if (annotDictionary != null) {
 			AnnotationBox annotationBox = getAnnotationBox(annotDictionary);
 			if (annotationBox != null) {
-				annotationBox = ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageBox, pageRotation);
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
 				return pdfAnnotation;
@@ -310,13 +308,55 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
+	@Deprecated
 	public void checkDocumentPermissions() {
-		if (!pdfReader.isOpenedWithFullPermissions()) {
-			throw new ProtectedDocumentException("The document cannot be modified! The document is protected.");
+		PdfPermissionsChecker permissionsChecker = new PdfPermissionsChecker();
+		permissionsChecker.checkDocumentPermissions(this, new SignatureFieldParameters());
+	}
+
+	@Override
+	public boolean isEncrypted() {
+		return pdfReader.isEncrypted();
+	}
+
+	@Override
+	public boolean isOpenWithOwnerAccess() {
+		// TODO : Need to check if the document is open with owner-access
+		return !isEncrypted() || pdfReader.computeUserPassword() != null;
+	}
+
+	@Override
+	public boolean canFillSignatureForm() {
+		if (!isOpenWithOwnerAccess()) {
+			int permissions = pdfReader.getPermissions();
+			return isAllowModifyAnnotations(permissions) || isAllowFillIn(permissions);
 		}
-		else if (pdfReader.isEncrypted()) {
-			throw new ProtectedDocumentException("The document cannot be modified! The document is encrypted.");
+		return true;
+	}
+
+	@Override
+	public boolean canCreateSignatureField() {
+		if (!isOpenWithOwnerAccess()) {
+			int permissions = pdfReader.getPermissions();
+			return isAllowModifyContents(permissions) && isAllowModifyAnnotations(permissions);
 		}
+		return true;
+	}
+
+	private boolean isAllowModifyContents(int permissions) {
+		return isPermissionBitPresent(permissions, PdfWriter.ALLOW_MODIFY_CONTENTS);
+	}
+
+	private boolean isAllowModifyAnnotations(int permissions) {
+		return isPermissionBitPresent(permissions, PdfWriter.ALLOW_MODIFY_ANNOTATIONS);
+	}
+
+	private boolean isAllowFillIn(int permissions) {
+		return isPermissionBitPresent(permissions, PdfWriter.ALLOW_FILL_IN);
+	}
+
+	private boolean isPermissionBitPresent(int permissions, int permissionBit) {
+		return (permissionBit & permissions) > 0;
 	}
 
 	@Override
