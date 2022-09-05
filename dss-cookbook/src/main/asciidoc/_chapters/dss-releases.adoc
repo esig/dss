@@ -283,6 +283,28 @@ MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, 
 byte[] digest = messageDigest.getValue();
 ----
 
+|MimeType namespace     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeType;
+----
+
+|MimeType enumerations     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+
+MimeType.PDF;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+
+MimeTypeEnum.PDF;
+----
+
 |===
 
 [cols="2,5,5"]
