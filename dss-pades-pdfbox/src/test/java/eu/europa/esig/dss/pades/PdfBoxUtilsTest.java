@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
@@ -54,7 +54,7 @@ public class PdfBoxUtilsTest {
 	public void init() {
 		sampleDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		protectedDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"),
-				"sample.pdf", MimeType.PDF);
+				"sample.pdf", MimeTypeEnum.PDF);
 		twoPagesDocument = new InMemoryDocument(getClass().getResourceAsStream("/empty-two-pages.pdf"));
 	}
 

@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -116,9 +117,9 @@ public class ImageUtils {
 	 * @throws IOException in case of image reading error
 	 */
 	public static ImageResolution readDisplayMetadata(DSSDocument image) throws IOException {
-		if (isImageWithContentType(image, MimeType.JPEG)) {
+		if (isImageWithContentType(image, MimeTypeEnum.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
-		} else if (isImageWithContentType(image, MimeType.PNG)) {
+		} else if (isImageWithContentType(image, MimeTypeEnum.PNG)) {
 			return readAndDisplayMetadataPNG(image);
 		}
 		throw new IllegalInputException("Unsupported image type");
@@ -270,7 +271,7 @@ public class ImageUtils {
 			ImageIO.write(bufferedImage, "png", os);
 			DSSDocument dssDocument = resourcesHandler.writeToDSSDocument();
 			dssDocument.setName(SCREENSHOT_PNG_NAME);
-			dssDocument.setMimeType(MimeType.PNG);
+			dssDocument.setMimeType(MimeTypeEnum.PNG);
 			return dssDocument;
 
 		} catch (IOException e) {

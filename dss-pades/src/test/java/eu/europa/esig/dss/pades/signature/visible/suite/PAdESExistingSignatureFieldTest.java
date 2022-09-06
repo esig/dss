@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.enumerations.ImageScaling;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TextWrapping;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -44,10 +44,10 @@ import java.util.Date;
 public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature {
 
     private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
-            getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG);
+            getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG);
 
     private final DSSDocument PNG_IMAGE = new InMemoryDocument(
-            getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeType.PNG);
+            getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG);
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

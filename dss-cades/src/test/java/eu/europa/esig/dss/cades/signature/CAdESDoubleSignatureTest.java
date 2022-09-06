@@ -23,11 +23,12 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +59,7 @@ public class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
 
 	@BeforeAll
 	public static void initBeforeAll() {
-		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		date = new Date();
 	}
 
@@ -131,9 +132,9 @@ public class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
 			MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
 			assertNotNull(mimeType);
 
-			if (MimeType.TEXT.equals(mimeType)) {
+			if (MimeTypeEnum.TEXT.equals(mimeType)) {
 				textMimeTypeFound = true;
-			} else if (MimeType.BINARY.equals(mimeType)) {
+			} else if (MimeTypeEnum.BINARY.equals(mimeType)) {
 				binaryMimeTypeFound = true;
 			}
 		}

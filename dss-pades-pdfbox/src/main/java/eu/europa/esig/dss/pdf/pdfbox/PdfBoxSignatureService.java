@@ -22,9 +22,9 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
@@ -165,7 +165,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signDocumentAndReturnDigest(parameters, cmsSignedData, os, documentReader);
 
 			DSSDocument signedDocument = resourcesHandler.writeToDSSDocument();
-			signedDocument.setMimeType(MimeType.PDF);
+			signedDocument.setMimeType(MimeTypeEnum.PDF);
 			return signedDocument;
 
 		} catch (IOException e) {
@@ -448,7 +448,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			saveDocumentIncrementally(pdDocument, os);
 
 			DSSDocument extendedDocument = resourcesHandler.writeToDSSDocument();
-			extendedDocument.setMimeType(MimeType.PDF);
+			extendedDocument.setMimeType(MimeTypeEnum.PDF);
 			return extendedDocument;
 
 		} catch (Exception e) {
@@ -698,7 +698,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			DSSDocument updatedDocument = resourcesHandler.writeToDSSDocument();
 			updatedDocument.setName("new-document.pdf");
-			updatedDocument.setMimeType(MimeType.PDF);
+			updatedDocument.setMimeType(MimeTypeEnum.PDF);
 			return updatedDocument;
 
 		} catch (IOException e) {

@@ -25,8 +25,9 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
 import eu.europa.esig.dss.asic.xades.definition.ManifestElement;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import org.w3c.dom.Document;
@@ -118,7 +119,7 @@ public class ASiCEWithXAdESManifestBuilder {
 
 		final Element rootDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
 		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, "/");
-		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, MimeType.ASICE.getMimeTypeString());
+		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, MimeTypeEnum.ASICE.getMimeTypeString());
 
 		for (ManifestEntry entry : getEntries()) {
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
@@ -51,7 +51,7 @@ public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends Abstract
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeType.PDF);
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

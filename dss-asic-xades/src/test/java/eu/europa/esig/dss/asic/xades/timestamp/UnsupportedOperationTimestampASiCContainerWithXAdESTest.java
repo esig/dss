@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.asic.xades.timestamp;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UnsupportedOperationTimestampASiCContainerWithXAdESTest extends PKIFactoryAccess {
 
@@ -42,8 +41,8 @@ public class UnsupportedOperationTimestampASiCContainerWithXAdESTest extends PKI
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
-		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
-		DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT);
+		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
+		DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
 		List<DSSDocument> docs = Arrays.asList(documentToSign, documentToSign2);
 
 		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public final class JWSConverter {
 
 		DSSDocument signatureDocument = generator.generate();
 		signatureDocument.setName(FLATTENED_SERIALIZATION_DOCUMENT_NAME);
-		signatureDocument.setMimeType(MimeType.JSON);
+		signatureDocument.setMimeType(MimeTypeEnum.JSON);
 		return signatureDocument;
 	}
 
@@ -96,7 +96,7 @@ public final class JWSConverter {
 
 		DSSDocument signatureDocument = generator.generate();
 		signatureDocument.setName(SERIALIZATION_DOCUMENT_NAME);
-		signatureDocument.setMimeType(MimeType.JSON);
+		signatureDocument.setMimeType(MimeTypeEnum.JSON);
 		return signatureDocument;
 	}
 
@@ -132,7 +132,7 @@ public final class JWSConverter {
 
 		DSSDocument signatureDocument = generator.generate();
 		signatureDocument.setName(CLEAR_ETSIU_DOCUMENT_NAME);
-		signatureDocument.setMimeType(MimeType.JSON);
+		signatureDocument.setMimeType(MimeTypeEnum.JSON);
 		return signatureDocument;
 	}
 
@@ -187,7 +187,7 @@ public final class JWSConverter {
 
 		DSSDocument signatureDocument = generator.generate();
 		signatureDocument.setName(BASE64URL_ETSIU_DOCUMENT_NAME);
-		signatureDocument.setMimeType(MimeType.JSON);
+		signatureDocument.setMimeType(MimeTypeEnum.JSON);
 		return signatureDocument;
 	}
 

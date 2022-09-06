@@ -27,10 +27,10 @@ import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ASiCEXAdESLevelBDoubleSignatureTest extends AbstractASiCEXAdESTestSignature {
 
-    private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeType.TEXT);
+    private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -110,7 +110,7 @@ public class ASiCEXAdESLevelBDoubleSignatureTest extends AbstractASiCEXAdESTestS
 
                     NodeList mimeTypeList = DomUtils.getNodeList(element, new XAdES132Paths().getDataObjectFormatMimeType());
                     assertEquals(1, mimeTypeList.getLength());
-                    assertEquals(MimeType.TEXT.getMimeTypeString(), mimeTypeList.item(0).getTextContent());
+                    assertEquals(MimeTypeEnum.TEXT.getMimeTypeString(), mimeTypeList.item(0).getTextContent());
 
                     ++foundSignatures;
                 }

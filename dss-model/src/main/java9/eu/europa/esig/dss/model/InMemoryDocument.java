@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.MimeType;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

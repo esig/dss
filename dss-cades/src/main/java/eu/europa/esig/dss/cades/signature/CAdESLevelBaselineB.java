@@ -26,10 +26,11 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
@@ -595,7 +596,7 @@ public class CAdESLevelBaselineB {
 			return;
 		}
 
-		MimeType mimeType = MimeType.BINARY;
+		MimeType mimeType = MimeTypeEnum.BINARY;
 		if (documentToSign != null && documentToSign.getMimeType() != null) {
 			mimeType = documentToSign.getMimeType();
 		}

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.enumerations.MimeType;
 
 import java.io.IOException;
 import java.io.InputStream;

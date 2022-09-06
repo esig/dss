@@ -24,9 +24,9 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -323,7 +323,7 @@ public abstract class XAdESBuilder {
 			bytes = DSSXMLUtils.serializeNode(documentDom);
 		}
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
-		inMemoryDocument.setMimeType(MimeType.XML);
+		inMemoryDocument.setMimeType(MimeTypeEnum.XML);
 		return inMemoryDocument;
 	}
 

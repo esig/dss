@@ -30,9 +30,9 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -111,7 +111,7 @@ public class ASiCWithCAdESTimestampService {
                 digestAlgorithm, Utils.fromBase64(toBeTimestamped.getDigest(digestAlgorithm)));
 
         DSSDocument timestampToken = new InMemoryDocument(
-                DSSASN1Utils.getDEREncoded(timestampBinary), asicFilenameFactory.getTimestampFilename(asicContent), MimeType.TST);
+                DSSASN1Utils.getDEREncoded(timestampBinary), asicFilenameFactory.getTimestampFilename(asicContent), MimeTypeEnum.TST);
         ASiCUtils.addOrReplaceDocument(asicContent.getTimestampDocuments(), timestampToken);
 
         return asicContent;

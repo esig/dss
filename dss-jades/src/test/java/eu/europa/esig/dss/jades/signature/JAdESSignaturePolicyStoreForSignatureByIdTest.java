@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -33,7 +34,6 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -114,7 +114,7 @@ public class JAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractJAdES
                 doubleSignedDocument, signaturePolicyStore, true, firstSigId);
         assertNotNull(signedDocumentWithSignaturePolicyStore);
         signedDocumentWithSignaturePolicyStore.setName("signature-with-sps.json");
-        signedDocumentWithSignaturePolicyStore.setMimeType(MimeType.JOSE_JSON);
+        signedDocumentWithSignaturePolicyStore.setMimeType(MimeTypeEnum.JOSE_JSON);
 
         documentToSign = ORIGINAL_DOCUMENT;
 

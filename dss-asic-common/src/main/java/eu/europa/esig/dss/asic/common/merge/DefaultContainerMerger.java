@@ -26,9 +26,10 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -202,7 +203,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         ASiCContent mergeResult = mergeToASiCContent();
         DSSDocument containerDocument = ZipUtils.getInstance().createZipArchive(mergeResult, getCreationTime());
         containerDocument.setName(getFinalContainerName(mergeResult.getContainerType()));
-        containerDocument.setMimeType(ASiCContainerType.ASiC_S.equals(mergeResult.getContainerType()) ? MimeType.ASICS : MimeType.ASICE);
+        containerDocument.setMimeType(ASiCContainerType.ASiC_S.equals(mergeResult.getContainerType()) ? MimeTypeEnum.ASICS : MimeTypeEnum.ASICE);
         return containerDocument;
     }
 
@@ -374,8 +375,8 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
         if (Utils.isStringNotEmpty(originalExtension)) {
             return originalExtension;
         } else if (asicContainerType != null) {
-            MimeType mimeType = ASiCContainerType.ASiC_S.equals(asicContainerType) ? MimeType.ASICS : MimeType.ASICE;
-            return MimeType.getExtension(mimeType);
+            MimeType mimeType = ASiCContainerType.ASiC_S.equals(asicContainerType) ? MimeTypeEnum.ASICS : MimeTypeEnum.ASICE;
+            return mimeType.getExtension();
         } else {
             return "zip";
         }

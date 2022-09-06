@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.xades.SantuarioInitializer;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -162,7 +162,7 @@ public class DetachedSignatureResolverTest {
 	public void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
-					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeType.XML)),
+					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeTypeEnum.XML)),
 					DigestAlgorithm.SHA256);
 
 			Attr attr = mock(Attr.class);
@@ -196,7 +196,7 @@ public class DetachedSignatureResolverTest {
 	@Test
 	public void engineCanResolveURIWithDocumentNameInList() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
-				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML)),
+				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeTypeEnum.XML)),
 				DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -211,8 +211,8 @@ public class DetachedSignatureResolverTest {
 	@Test
 	public void engineCanResolveURIWithDocumentNameInListOfMultiples() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
-				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeType.XML),
-				new InMemoryDocument(new byte[] { 2, 3 }, "sample2.xml", MimeType.XML)), DigestAlgorithm.SHA256);
+				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeTypeEnum.XML),
+				new InMemoryDocument(new byte[] { 2, 3 }, "sample2.xml", MimeTypeEnum.XML)), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
 

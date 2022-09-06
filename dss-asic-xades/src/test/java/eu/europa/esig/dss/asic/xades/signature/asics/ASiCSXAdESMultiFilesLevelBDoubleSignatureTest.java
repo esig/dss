@@ -26,11 +26,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -61,7 +61,7 @@ public class ASiCSXAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCS
     public void init() throws Exception {
         service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
-        ORIGINAL_DOCS.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
+        ORIGINAL_DOCS.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
         ORIGINAL_DOCS.add(new FileDocument("src/test/resources/manifest-sample.xml"));
         ORIGINAL_DOCS.add(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));
 

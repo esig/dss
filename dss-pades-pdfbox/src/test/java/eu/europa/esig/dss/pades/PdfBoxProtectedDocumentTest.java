@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -41,7 +41,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 	private final String correctProtectionPhrase = " ";
 
 	private final DSSDocument openProtected = new InMemoryDocument(
-			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeType.PDF);
+			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 	// TODO : OpenPdf does not keep the same identifier on protected documents signing
 	@Test

@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
@@ -66,8 +66,8 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
                 SignatureLevel.PAdES_BASELINE_LT, SignatureLevel.PAdES_BASELINE_LTA };
         SignaturePackaging[] packagings = { SignaturePackaging.ENVELOPING };
         String[] signers = { GOOD_USER, RSA_SHA3_USER };
-        DSSDocument[] documents = { new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/doc.pdf"), "doc.pdf", MimeType.PDF),
-                new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeType.PDF) };
+        DSSDocument[] documents = { new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/doc.pdf"), "doc.pdf", MimeTypeEnum.PDF),
+                new InMemoryDocument(PAdESSignDocumentsConsequentlyTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF) };
         return random(levels, packagings, signers, documents);
     }
 

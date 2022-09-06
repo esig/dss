@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

@@ -24,9 +24,10 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -59,7 +60,7 @@ public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterS
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.XML;
+		return MimeTypeEnum.XML;
 	}
 
 	@Override
@@ -121,7 +122,7 @@ public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterS
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
-				boolean toBeCanonicalized = MimeType.XML.equals(original.getMimeType()) || MimeType.HTML.equals(original.getMimeType());
+				boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
 				String originalDigest = getDigest(original, toBeCanonicalized);
 				for (DSSDocument retrieved : retrievedOriginalDocuments) {
 					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);

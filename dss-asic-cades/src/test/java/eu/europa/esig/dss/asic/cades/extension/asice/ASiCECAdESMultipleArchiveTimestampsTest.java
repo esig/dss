@@ -31,10 +31,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -62,8 +63,8 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<>();
-		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT));
-		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
+		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
@@ -178,7 +179,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
-		assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
+		assertEquals(MimeTypeEnum.ASICE.getMimeTypeString(), new String(mimeTypeContent, StandardCharsets.UTF_8));
 
 	}
 	

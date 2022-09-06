@@ -29,6 +29,8 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -38,7 +40,6 @@ import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -653,8 +654,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// incorporate MimeType attribute
-		if (object.getMimeType() != null) {
-			objectDom.setAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName(), object.getMimeType().getMimeTypeString());
+		if (Utils.isStringNotBlank(object.getMimeType())) {
+			objectDom.setAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName(), object.getMimeType());
 		}
 
 		// incorporate Encoding attribute
@@ -1142,10 +1143,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *
 	 * @param reference
 	 *            the reference to compute
-	 * @return the {@code MimeType} of the reference or the default value {@code MimeType.BINARY}
+	 * @return the {@code MimeType} of the reference or the default value {@code MimeTypeEnum.BINARY}
 	 */
 	private MimeType getReferenceMimeType(final DSSReference reference) {
-		MimeType dataObjectFormatMimeType = MimeType.BINARY;
+		MimeType dataObjectFormatMimeType = MimeTypeEnum.BINARY;
 		DSSDocument content = reference.getContents();
 		if (content != null && content.getMimeType() != null) {
 			dataObjectFormatMimeType = content.getMimeType();

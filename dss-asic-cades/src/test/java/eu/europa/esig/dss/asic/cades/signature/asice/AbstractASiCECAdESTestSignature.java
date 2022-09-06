@@ -25,8 +25,9 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -42,7 +43,7 @@ public abstract class AbstractASiCECAdESTestSignature extends AbstractASiCWithCA
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.ASICE;
+		return MimeTypeEnum.ASICE;
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public abstract class AbstractASiCECAdESTestSignature extends AbstractASiCWithCA
 
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (!signatureWrapper.isCounterSignature() && Utils.isStringEmpty(signatureWrapper.getContentHints())) {
-				assertEquals(MimeType.XML, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+				assertEquals(MimeTypeEnum.XML, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
 			} else {
 				assertNull(signatureWrapper.getMimeType());
 			}

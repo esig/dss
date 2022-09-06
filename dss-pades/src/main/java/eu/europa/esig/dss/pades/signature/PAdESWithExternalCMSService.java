@@ -4,12 +4,12 @@ import eu.europa.esig.dss.FileNameBuilder;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.pdf.DSSMessageDigest;
@@ -214,7 +214,7 @@ public class PAdESWithExternalCMSService implements Serializable {
     protected String getFinalDocumentName(DSSDocument originalFile, SignatureLevel level) {
         return new FileNameBuilder().setOriginalFilename(originalFile.getName())
                 .setSigningOperation(SigningOperation.SIGN).setSignatureLevel(level)
-                .setSignaturePackaging(SignaturePackaging.ENVELOPED).setMimeType(MimeType.PDF).build();
+                .setSignaturePackaging(SignaturePackaging.ENVELOPED).setMimeType(MimeTypeEnum.PDF).build();
     }
 
     private void assertDocumentValid(DSSDocument document) {

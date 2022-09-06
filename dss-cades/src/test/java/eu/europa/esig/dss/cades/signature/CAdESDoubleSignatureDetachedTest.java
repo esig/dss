@@ -26,12 +26,13 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -56,7 +57,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 
 	private String user;
 	
-	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 	
 	@BeforeEach
 	public void init() {
@@ -136,7 +137,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 			assertNotNull(signatureWrapper.getMimeType());
 
 			MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
-			assertEquals(MimeType.TEXT, mimeType);
+			assertEquals(MimeTypeEnum.TEXT, mimeType);
 		}
 	}
 	

@@ -25,10 +25,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -54,7 +54,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 	@Test
 	public final void getOriginalDocument() throws Exception {
-		DSSDocument document = new InMemoryDocument(GetOriginalDocumentTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeType.PDF);
+		DSSDocument document = new InMemoryDocument(GetOriginalDocumentTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());

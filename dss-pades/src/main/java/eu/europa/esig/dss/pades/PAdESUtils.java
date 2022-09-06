@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -187,7 +187,7 @@ public final class PAdESUtils {
 			}
 
 			baos.flush();
-			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeType.PDF);
+			return new InMemoryDocument(baos.toByteArray(), "original.pdf", MimeTypeEnum.PDF);
 
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the last revision", e);
