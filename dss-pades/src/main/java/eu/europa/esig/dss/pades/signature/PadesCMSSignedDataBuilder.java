@@ -25,7 +25,7 @@ import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
 import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSAttributeTableGenerationException;

@@ -1,11 +1,9 @@
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.Digest;
 
 /**
- * This class contains a digest algorithm and a digest value to be incorporated
- * within message-digest field of a CMS signed attributes.
+ * This class contains a digest algorithm and a digest value for message-digest computation.
  *
  */
 public class DSSMessageDigest extends Digest {

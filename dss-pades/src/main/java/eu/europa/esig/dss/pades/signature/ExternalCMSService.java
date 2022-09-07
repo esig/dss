@@ -12,7 +12,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SignatureValueChecker;
 import eu.europa.esig.dss.spi.DSSUtils;

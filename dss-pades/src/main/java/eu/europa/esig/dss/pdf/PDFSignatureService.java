@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 
 import java.io.Serializable;
 

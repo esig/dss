@@ -53,7 +53,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDict;

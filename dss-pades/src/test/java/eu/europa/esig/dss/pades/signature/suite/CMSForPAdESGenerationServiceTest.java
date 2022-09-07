@@ -15,7 +15,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.ExternalCMSService;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;

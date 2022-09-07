@@ -11,7 +11,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.ExternalCMSService;
 import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -34,7 +34,7 @@ public class SignPdfWithExternalCmsTest extends CookbookTools {
         // import eu.europa.esig.dss.model.DSSDocument;
         // import eu.europa.esig.dss.pades.PAdESSignatureParameters;
         // import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
-        // import eu.europa.esig.dss.pdf.DSSMessageDigest;
+        // import eu.europa.esig.dss.model.DSSMessageDigest;
 
         // Instantiate PDF signature service using external CMS
         PAdESWithExternalCMSService service = new PAdESWithExternalCMSService();

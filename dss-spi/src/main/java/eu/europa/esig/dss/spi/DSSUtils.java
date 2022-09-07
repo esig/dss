@@ -501,7 +501,7 @@ public final class DSSUtils {
 	 * Computes the digest on the data concatenation
 	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
-	 * @param data an sequence of byte arrays to compute digest on
+	 * @param data a sequence of byte arrays to compute digest on
 	 * @return digest value
 	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, byte[]... data) {
