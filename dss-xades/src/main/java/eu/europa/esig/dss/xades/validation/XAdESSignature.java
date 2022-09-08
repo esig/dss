@@ -378,7 +378,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public XAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths);
+			signatureTimestampSource = new XAdESTimestampSource(this);
 		}
 		return (XAdESTimestampSource) signatureTimestampSource;
 	}

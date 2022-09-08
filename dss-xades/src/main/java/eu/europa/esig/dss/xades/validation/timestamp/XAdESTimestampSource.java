@@ -23,8 +23,10 @@ package eu.europa.esig.dss.xades.validation.timestamp;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -77,21 +79,15 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	/** XAdES XPaths to use */
 	private final XAdESPaths xadesPaths;
 
-	/** The XAdESTimestampDataBuilder */
-	private transient XAdESTimestampDataBuilder timestampDataBuilder;
-
 	/**
 	 * Default constructor
 	 *
 	 * @param signature {@link XAdESSignature}
-	 * @param signatureElement {@link Element}
-	 * @param xadesPaths {@link XAdESPaths}
 	 */
-	public XAdESTimestampSource(final XAdESSignature signature, final Element signatureElement, 
-			final XAdESPaths xadesPaths) {
+	public XAdESTimestampSource(final XAdESSignature signature) {
 		super(signature);
-		this.signatureElement = signatureElement;
-		this.xadesPaths = xadesPaths;
+		this.signatureElement = signature.getSignatureElement();
+		this.xadesPaths = signature.getXAdESPaths();
 	}
 
 	@Override
@@ -105,57 +101,79 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
-	protected XAdESTimestampDataBuilder getTimestampDataBuilder() {
-		if (timestampDataBuilder == null) {
-			timestampDataBuilder = new XAdESTimestampDataBuilder(signatureElement, signature.getReferences(), xadesPaths);
-		}
-		return timestampDataBuilder;
+	protected XAdESTimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
+		return new XAdESTimestampMessageImprintDigestBuilder(signature, digestAlgorithm);
+	}
+
+	@Override
+	protected XAdESTimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
+		return new XAdESTimestampMessageImprintDigestBuilder(signature, timestampToken);
 	}
 	
 	/**
-	 * Returns concatenated data for a SignatureTimestamp
+	 * Returns message-imprint digest for a SignatureTimestamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @return byte array
+	 * @param digestAlgorithm
+	 *              {@link DigestAlgorithm} to be used for message-digest computation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @return {@link DSSMessageDigest}
 	 */
-	public byte[] getSignatureTimestampData(String canonicalizationMethod) {
-		return timestampDataBuilder.getSignatureTimestampData(canonicalizationMethod);
+	public DSSMessageDigest getSignatureTimestampMessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		return builder.getSignatureTimestampMessageDigest();
 	}
 	
 	/**
-	 * Returns concatenated data for a SigAndRefsTimestamp
+	 * Returns message-imprint digest for a SigAndRefsTimestamp
 	 *
+	 * @param digestAlgorithm
+	 *              {@link DigestAlgorithm} to be used for message-digest computation
 	 * @param canonicalizationMethod
 	 *              {@link String} canonicalization method to use
 	 * @param en319132
 	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (SigAndRefsTimestampV2)
-	 * @return byte array
+	 * @return {@link DSSMessageDigest}
 	 */
-	public byte[] getTimestampX1Data(String canonicalizationMethod, boolean en319132) {
-		return timestampDataBuilder.getTimestampX1Data(canonicalizationMethod, en319132);
+	public DSSMessageDigest getTimestampX1MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
+		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		builder.setEn319132(en319132);
+		return builder.getTimestampX1MessageDigest();
 	}
 
 	/**
-	 * Returns concatenated data for a RefsOnlyTimestamp
+	 * Returns message-imprint digest for a RefsOnlyTimestamp
 	 *
+	 * @param digestAlgorithm
+	 *              {@link DigestAlgorithm} to be used for message-digest computation
 	 * @param canonicalizationMethod
 	 *              {@link String} canonicalization method to use
 	 * @param en319132
 	 *              defines if the timestamp shall be created accordingly to ETSI EN 319 132-1 (RefsOnlyTimestampV2)
-	 * @return byte array
+	 * @return {@link DSSMessageDigest}
 	 */
-	public byte[] getTimestampX2Data(String canonicalizationMethod, boolean en319132) {
-		return timestampDataBuilder.getTimestampX2Data(canonicalizationMethod, en319132);
+	public DSSMessageDigest getTimestampX2MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
+		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		builder.setEn319132(en319132);
+		return builder.getTimestampX2MessageDigest();
 	}
 	
 	/**
-	 * Returns concatenated data for an ArchiveTimestamp
+	 * Returns message-imprint digest for an ArchiveTimeStamp
 	 *
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @return byte array
+	 * @param digestAlgorithm
+	 *              {@link DigestAlgorithm} to be used for message-digest computation
+	 * @param canonicalizationMethod
+	 *              {@link String} canonicalization method to use
+	 * @return {@link DSSMessageDigest}
 	 */
-	public byte[] getArchiveTimestampData(String canonicalizationMethod) {
-		return timestampDataBuilder.getArchiveTimestampData(canonicalizationMethod);
+	public DSSMessageDigest getArchiveTimestampData(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		return builder.getArchiveTimestampMessageDigest();
 	}
 
 	@Override

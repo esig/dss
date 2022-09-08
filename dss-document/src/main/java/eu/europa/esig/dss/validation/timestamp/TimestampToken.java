@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -429,11 +430,6 @@ public class TimestampToken extends Token {
 	/**
 	 * Checks if the {@code TimeStampToken} matches the signed data.
 	 * 
-	 * This method is used when we want to test whether the {@code TimeStampToken} matches the signed data
-	 * calculated according to ETSI TS 101 733 v2.2.1 and depending on the result re-run the message imprint
-	 * calculation according to ETSI TS 101 733 v1.8.3. It is part of solution for the issue DSS-1401 
-	 * (https://ec.europa.eu/cefdigital/tracker/browse/DSS-1401)
-	 * 
 	 * @param timestampedData
 	 * 			  a {@code DSSDocument} representing the timestamped data
 	 * @param suppressMatchWarnings
@@ -457,37 +453,79 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 * Checks if the {@code TimeStampToken} matches the message-imprint digest with warning enabled.
 	 *
-	 * @param expectedMessageImprintValue
-	 *                                    the expected message-imprint value
+	 * @param messageDigest
+	 * 			  {@code DSSMessageDigest} representing the message-imprint digest
 	 * @return true if the data is verified by the TimeStampToken
 	 */
-	public boolean matchData(final byte[] expectedMessageImprintValue) {
-		return matchData(expectedMessageImprintValue, false);
+	public boolean matchData(final DSSMessageDigest messageDigest) {
+		return matchData(messageDigest, false);
+	}
+
+	/**
+	 * Checks if the {@code TimeStampToken} matches the message-imprint digest.
+	 *
+	 * @param messageDigest
+	 * 			  {@code DSSMessageDigest} representing the message-imprint digest
+	 * @param suppressMatchWarnings
+	 * 			  if true the message imprint match warning logs are suppressed.
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final DSSMessageDigest messageDigest, final boolean suppressMatchWarnings) {
+		processed = true;
+
+		if (messageDigest == null || messageDigest.isEmpty()) {
+			messageImprintIntact = false;
+			if (!suppressMatchWarnings) {
+				LOG.warn("Invalid or incomplete message-digest has been provided for timestamp verification!");
+			}
+
+		} else if (getMessageImprintDigestAlgorithm() != messageDigest.getAlgorithm()) {
+			messageImprintIntact = false;
+			if (!suppressMatchWarnings) {
+				LOG.warn("DigestAlgorithm '{}' used in the provided message-digest does not match the one used " +
+						"in the timestamp token '{}'!", messageDigest.getAlgorithm(), getMessageImprintDigestAlgorithm());
+			}
+
+		} else {
+			messageImprintIntact = matchData(messageDigest.getValue(), suppressMatchWarnings);
+		}
+		return messageImprintData;
 	}
 
 	/**
 	 * Checks if the {@code TimeStampToken} matches the signed data.
 	 *
-	 * @param expectedMessageImprintValue
-	 *                                    the expected message-imprint value
+	 * @param expectedMessageImprintDigest
+	 *                                    the expected message-imprint digest value
+	 * @return true if the data is verified by the TimeStampToken
+	 */
+	public boolean matchData(final byte[] expectedMessageImprintDigest) {
+		return matchData(expectedMessageImprintDigest, false);
+	}
+
+	/**
+	 * Checks if the {@code TimeStampToken} matches the signed data.
+	 *
+	 * @param expectedMessageImprintDigest
+	 *                                    the expected message-imprint digest value
 	 * @param suppressMatchWarnings
 	 *                                    if true the message imprint match warning
 	 *                                    logs are suppressed.
 	 * @return true if the data is verified by the TimeStampToken
 	 */
-	public boolean matchData(final byte[] expectedMessageImprintValue, final boolean suppressMatchWarnings) {
+	public boolean matchData(final byte[] expectedMessageImprintDigest, final boolean suppressMatchWarnings) {
 		processed = true;
 
-		messageImprintData = expectedMessageImprintValue != null;
+		messageImprintData = expectedMessageImprintDigest != null;
 		messageImprintIntact = false;
 
 		if (messageImprintData) {
 			Digest currentMessageImprint = getMessageImprint();
-			messageImprintIntact = Arrays.equals(expectedMessageImprintValue, currentMessageImprint.getValue());
+			messageImprintIntact = Arrays.equals(expectedMessageImprintDigest, currentMessageImprint.getValue());
 			if (!messageImprintIntact && !suppressMatchWarnings) {
-				LOG.warn("Provided digest value for TimestampToken matchData : {}", Utils.toBase64(expectedMessageImprintValue));
+				LOG.warn("Provided digest value for TimestampToken matchData : {}", Utils.toBase64(expectedMessageImprintDigest));
 				LOG.warn("Digest ({}) present in TimestampToken : {}", currentMessageImprint.getAlgorithm(), Utils.toBase64(currentMessageImprint.getValue()));
 				LOG.warn("Digest in TimestampToken matches digest of extracted data from document: {}", messageImprintIntact);
 			}
@@ -537,12 +575,21 @@ public class TimestampToken extends Token {
 	 */
 	public Digest getMessageImprint() {
 		if (messageImprint == null) {
-			ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getMessageImprintAlgOID();
-			DigestAlgorithm messageImprintDigestAlgo = DigestAlgorithm.forOID(oid.getId());
+			DigestAlgorithm messageImprintDigestAlgo = getMessageImprintDigestAlgorithm();
 			byte[] messageImprintDigestValue = timeStamp.getTimeStampInfo().getMessageImprintDigest();
 			messageImprint = new Digest(messageImprintDigestAlgo, messageImprintDigestValue);
 		}
 		return messageImprint;
+	}
+
+	/**
+	 * This method returns a {@code DigestAlgorithm} used for message-imprint computation of the timestamp token
+	 *
+	 * @return {@link DigestAlgorithm}
+	 */
+	public DigestAlgorithm getMessageImprintDigestAlgorithm() {
+		ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getMessageImprintAlgOID();
+		return DigestAlgorithm.forOID(oid.getId());
 	}
 
 	/**

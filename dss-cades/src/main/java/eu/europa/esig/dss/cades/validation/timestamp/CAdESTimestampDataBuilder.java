@@ -32,7 +32,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageImprintDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -67,7 +67,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 /**
  * Builds timestamped data binaries for a CAdES signature
  */
-public class CAdESTimestampDataBuilder implements TimestampDataBuilder {
+public class CAdESTimestampDataBuilder implements TimestampMessageImprintDigestBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESTimestampDataBuilder.class);
 

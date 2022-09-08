@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageImprintDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * Builds the message-imprint for JAdES timestamps
  */
-public class JAdESTimestampDataBuilder implements TimestampDataBuilder {
+public class JAdESTimestampDataBuilder implements TimestampMessageImprintDigestBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampDataBuilder.class);
 
