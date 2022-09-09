@@ -1058,22 +1058,22 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     }
 
     /**
-     * Returns a {@link TimestampMessageImprintDigestBuilder} to compute message digest
+     * Returns a {@link TimestampMessageDigestBuilder} to compute message digest
      * with the provided {@code DigestAlgorithm}
      *
      * @param digestAlgorithm {@link DigestAlgorithm} to use for message-digest computation
-     * @return {@link TimestampMessageImprintDigestBuilder}
+     * @return {@link TimestampMessageDigestBuilder}
      */
-    protected abstract TimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(
+    protected abstract TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(
             DigestAlgorithm digestAlgorithm);
 
     /**
-     * Returns a related {@link TimestampMessageImprintDigestBuilder}
+     * Returns a related {@link TimestampMessageDigestBuilder}
      *
      * @param timestampToken {@link TimestampToken} to get message-imprint digest builder for
-     * @return {@link TimestampMessageImprintDigestBuilder}
+     * @return {@link TimestampMessageDigestBuilder}
      */
-    protected abstract TimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken);
+    protected abstract TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken);
 
     private void processExternalTimestamp(TimestampToken externalTimestamp) {
         // add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file

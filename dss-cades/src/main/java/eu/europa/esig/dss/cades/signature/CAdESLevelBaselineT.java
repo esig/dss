@@ -26,7 +26,9 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -129,7 +131,9 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes,
 			CAdESSignatureParameters parameters) {
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getSignatureTimestampParameters().getDigestAlgorithm();
-		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(signerInformation.getSignature(), timestampDigestAlgorithm);
+		final DSSMessageDigest messageDigest = new DSSMessageDigest(
+				timestampDigestAlgorithm, DSSUtils.digest(timestampDigestAlgorithm, signerInformation.getSignature()));
+		ASN1Object signatureTimeStamp = getTimeStampAttributeValue(messageDigest, timestampDigestAlgorithm);
 		return unsignedAttributes.add(PKCSObjectIdentifiers.id_aa_signatureTimeStampToken, signatureTimeStamp);
 	}
 

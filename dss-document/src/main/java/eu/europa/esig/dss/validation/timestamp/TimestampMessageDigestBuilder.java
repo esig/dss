@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
  * Builds message-imprint digest to be timestamped
  *
  */
-public interface TimestampMessageImprintDigestBuilder {
+public interface TimestampMessageDigestBuilder {
 	
 	/**
 	 * Returns the content timestamp message-imprint digest (timestamped or to be).

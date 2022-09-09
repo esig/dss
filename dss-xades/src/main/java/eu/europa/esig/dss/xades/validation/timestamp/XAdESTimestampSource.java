@@ -101,13 +101,13 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
-	protected XAdESTimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
-		return new XAdESTimestampMessageImprintDigestBuilder(signature, digestAlgorithm);
+	protected XAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
+		return new XAdESTimestampMessageDigestBuilder(signature, digestAlgorithm);
 	}
 
 	@Override
-	protected XAdESTimestampMessageImprintDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
-		return new XAdESTimestampMessageImprintDigestBuilder(signature, timestampToken);
+	protected XAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
+		return new XAdESTimestampMessageDigestBuilder(signature, timestampToken);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getSignatureTimestampMessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
 		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
 		return builder.getSignatureTimestampMessageDigest();
 	}
@@ -137,7 +137,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getTimestampX1MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
-		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
 		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
 		builder.setEn319132(en319132);
 		return builder.getTimestampX1MessageDigest();
@@ -155,7 +155,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getTimestampX2MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
-		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
 		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
 		builder.setEn319132(en319132);
 		return builder.getTimestampX2MessageDigest();
@@ -171,7 +171,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getArchiveTimestampData(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		XAdESTimestampMessageImprintDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
 		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
 		return builder.getArchiveTimestampMessageDigest();
 	}

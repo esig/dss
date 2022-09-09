@@ -52,6 +52,7 @@ import eu.europa.esig.dss.validation.CMSOCSPSource;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
@@ -117,8 +118,13 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
-	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
-		return new CAdESTimestampDataBuilder(signature, certificateSource);
+	protected TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
+		return new CAdESTimestampMessageDigestBuilder(signature, certificateSource, digestAlgorithm);
+	}
+
+	@Override
+	protected TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
+		return new CAdESTimestampMessageDigestBuilder(signature, certificateSource, timestampToken);
 	}
 
 	@Override

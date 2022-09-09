@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageImprintDigestBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -59,9 +59,9 @@ import java.util.Set;
 /**
  * Builds a message-imprint for XAdES timestamps
  */
-public class XAdESTimestampMessageImprintDigestBuilder implements TimestampMessageImprintDigestBuilder {
+public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDigestBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampMessageImprintDigestBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampMessageDigestBuilder.class);
 
 	/** The error message to be thrown in case of a message-imprint build error */
 	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
@@ -94,11 +94,10 @@ public class XAdESTimestampMessageImprintDigestBuilder implements TimestampMessa
 	 * @param signature {@link XAdESSignature} containing timestamps to calculate message-imprint digest for
 	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
 	 */
-	public XAdESTimestampMessageImprintDigestBuilder(final XAdESSignature signature, final DigestAlgorithm digestAlgorithm) {
+	public XAdESTimestampMessageDigestBuilder(final XAdESSignature signature, final DigestAlgorithm digestAlgorithm) {
 		this(signature);
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
-		this.timestampToken = null;
 	}
 
 	/**
@@ -107,11 +106,11 @@ public class XAdESTimestampMessageImprintDigestBuilder implements TimestampMessa
 	 * @param signature {@link XAdESSignature} signature associated with the timestamp
 	 * @param timestampToken {@link TimestampToken} to compute message-digest for
 	 */
-	public XAdESTimestampMessageImprintDigestBuilder(final XAdESSignature signature, final TimestampToken timestampToken) {
+	public XAdESTimestampMessageDigestBuilder(final XAdESSignature signature, final TimestampToken timestampToken) {
 		this(signature);
 		Objects.requireNonNull(timestampToken, "TimestampToken cannot be null!");
 		this.timestampToken = timestampToken;
-		this.digestAlgorithm = timestampToken.getMessageImprintDigestAlgorithm();
+		this.digestAlgorithm = timestampToken.getDigestAlgorithm();
 		this.canonicalizationAlgorithm = timestampToken.getCanonicalizationMethod();
 		this.en319132 = isEn319132TimestampToken(timestampToken);
 	}
@@ -121,7 +120,7 @@ public class XAdESTimestampMessageImprintDigestBuilder implements TimestampMessa
 	 *
 	 * @param signature {@link XAdESSignature}
 	 */
-	private XAdESTimestampMessageImprintDigestBuilder(final XAdESSignature signature) {
+	private XAdESTimestampMessageDigestBuilder(final XAdESSignature signature) {
 		Objects.requireNonNull(signature, "Signature cannot be null!");
 		this.signature = signature.getSignatureElement();
 		this.references = signature.getReferences();

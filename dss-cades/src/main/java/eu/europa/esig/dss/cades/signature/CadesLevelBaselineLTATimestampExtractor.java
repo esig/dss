@@ -23,8 +23,11 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -471,30 +474,52 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *
 	 * @param signerInformation {@link SignerInformation}
 	 * @param atsHashIndexAttribute {@link Attribute}
-	 * @param originalDocumentDigest signed document digest
-	 * @return message-imprint
+	 * @param originalDocument {@link DSSDocument} signed document
+	 * @param digestAlgorithm {@link DigestAlgorithm} to compute message-digest with
+	 * @return {@link DSSMessageDigest} message-imprint digest
 	 */
-	public byte[] getArchiveTimestampV3MessageImprint(SignerInformation signerInformation,
-													  Attribute atsHashIndexAttribute, byte[] originalDocumentDigest) {
-		final byte[] encodedContentType = getEncodedContentType(cmsSignedData); // OID
-		final byte[] signedDataDigest = originalDocumentDigest;
-		final byte[] encodedFields = getSignedFields(signerInformation);
-		final byte[] encodedAtsHashIndex = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
-		/**
+	public DSSMessageDigest getArchiveTimestampV3MessageImprint(
+			SignerInformation signerInformation, Attribute atsHashIndexAttribute, DSSDocument originalDocument,
+			DigestAlgorithm digestAlgorithm) {
+		/*
 		 * The input for the archive-time-stamp-v3’s message imprint computation shall be the concatenation (in the
 		 * order shown by the list below) of the signed data hash (see bullet 2 below) and certain fields in their
 		 * binary encoded
 		 * form without any modification and including the tag, length and value octets:
 		 */
-		final byte[] dataToTimestamp = DSSUtils.concatenate(encodedContentType, signedDataDigest, encodedFields, encodedAtsHashIndex);
+		final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+		byte[] bytes = null;
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("eContentType={}", encodedContentType != null ? Utils.toHex(encodedContentType) : encodedContentType);
-			LOG.debug("signedDataDigest={}", signedDataDigest != null ? Utils.toHex(signedDataDigest) : signedDataDigest);
-			LOG.debug("encodedFields=see above");
-			LOG.debug("encodedAtsHashIndex={}", encodedAtsHashIndex != null ? Utils.toHex(encodedAtsHashIndex) : encodedAtsHashIndex);
-			LOG.debug("Archive Timestamp Data v3 is: {}", dataToTimestamp != null ? Utils.toHex(dataToTimestamp) : dataToTimestamp);
+			LOG.debug("Archive Timestamp Data v3 is:");
 		}
-		return dataToTimestamp;
+
+		bytes = getEncodedContentType(cmsSignedData); // OID
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("eContentType={}", bytes != null ? Utils.toHex(bytes) : bytes);
+		}
+
+		bytes = Utils.fromBase64(originalDocument.getDigest(digestAlgorithm));
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("signedDataDigest={}", bytes != null ? Utils.toHex(bytes) : bytes);
+		}
+
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("encodedFields:");
+		}
+		writeSignedFields(signerInformation, digestCalculator);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("encodedFields end");
+		}
+
+		bytes = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("encodedAtsHashIndex={}", bytes != null ? Utils.toHex(bytes) : bytes);
+		}
+
+		return digestCalculator.getMessageDigest();
 	}
 
 	/**
@@ -515,35 +540,53 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * time-stamped, in their order of appearance.
 	 *
 	 * @param signerInformation {@link SignerInformation}
-	 * @return a byte array
+	 * @param digestCalculator {@link DSSMessageDigestCalculator} to populate
 	 */
-	private byte[] getSignedFields(final SignerInformation signerInformation) {
-
+	private void writeSignedFields(final SignerInformation signerInformation, final DSSMessageDigestCalculator digestCalculator) {
+		byte[] bytes = null;
 		final SignerInfo signerInfo = signerInformation.toASN1Structure();
+
 		final ASN1Integer version = signerInfo.getVersion();
-		final SignerIdentifier sid = signerInfo.getSID();
-		final AlgorithmIdentifier digestAlgorithm = signerInfo.getDigestAlgorithm();
-		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
-		final AlgorithmIdentifier digestEncryptionAlgorithm = signerInfo.getDigestEncryptionAlgorithm();
-		final ASN1OctetString encryptedDigest = signerInfo.getEncryptedDigest();
-
-		final byte[] derEncodedVersion = DSSASN1Utils.getDEREncoded(version);
-		final byte[] derEncodedSid = DSSASN1Utils.getDEREncoded(sid);
-		final byte[] derEncodedDigestAlgorithm = DSSASN1Utils.getDEREncoded(digestAlgorithm);
-		final byte[] derEncodedSignedAttributes = DSSASN1Utils.getDEREncoded(signedAttributes);
-		final byte[] derEncodedDigestEncryptionAlgorithm = DSSASN1Utils.getDEREncoded(digestEncryptionAlgorithm);
-		final byte[] derEncodedEncryptedDigest = DSSASN1Utils.getDEREncoded(encryptedDigest);
+		bytes = DSSASN1Utils.getDEREncoded(version);
+		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
-
-			LOG.debug("getSignedFields Version={}", Utils.toBase64(derEncodedVersion));
-			LOG.debug("getSignedFields Sid={}", Utils.toBase64(derEncodedSid));
-			LOG.debug("getSignedFields DigestAlgorithm={}", Utils.toBase64(derEncodedDigestAlgorithm));
-			LOG.debug("getSignedFields SignedAttributes={}", Utils.toBase64(derEncodedSignedAttributes));
-			LOG.debug("getSignedFields DigestEncryptionAlgorithm={}", Utils.toBase64(derEncodedDigestEncryptionAlgorithm));
-			LOG.debug("getSignedFields EncryptedDigest={}", Utils.toBase64(derEncodedEncryptedDigest));
+			LOG.debug("getSignedFields Version={}", Utils.toBase64(bytes));
 		}
-		return DSSUtils.concatenate(derEncodedVersion, derEncodedSid, derEncodedDigestAlgorithm, derEncodedSignedAttributes,
-				derEncodedDigestEncryptionAlgorithm, derEncodedEncryptedDigest);
+
+		final SignerIdentifier sid = signerInfo.getSID();
+		bytes = DSSASN1Utils.getDEREncoded(sid);
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("getSignedFields Sid={}", Utils.toBase64(bytes));
+		}
+
+		final AlgorithmIdentifier digestAlgorithm = signerInfo.getDigestAlgorithm();
+		bytes = DSSASN1Utils.getDEREncoded(digestAlgorithm);
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("getSignedFields DigestAlgorithm={}", Utils.toBase64(bytes));
+		}
+
+		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
+		bytes = DSSASN1Utils.getDEREncoded(signedAttributes);
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("getSignedFields SignedAttributes={}", Utils.toBase64(bytes));
+		}
+
+		final AlgorithmIdentifier digestEncryptionAlgorithm = signerInfo.getDigestEncryptionAlgorithm();
+		bytes = DSSASN1Utils.getDEREncoded(digestEncryptionAlgorithm);
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("getSignedFields DigestEncryptionAlgorithm={}", Utils.toBase64(bytes));
+		}
+
+		final ASN1OctetString encryptedDigest = signerInfo.getEncryptedDigest();
+		bytes = DSSASN1Utils.getDEREncoded(encryptedDigest);
+		digestCalculator.update(bytes);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("getSignedFields EncryptedDigest={}", Utils.toBase64(bytes));
+		}
 	}
 
 }

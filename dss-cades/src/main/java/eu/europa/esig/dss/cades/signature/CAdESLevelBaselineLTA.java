@@ -25,10 +25,11 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
@@ -126,14 +127,15 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 		final CadesLevelBaselineLTATimestampExtractor timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(cadesSignature);
 		final DigestAlgorithm timestampDigestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
-		byte[] originalDocumentDigest = Utils.fromBase64(cadesSignature.getOriginalDocument().getDigest(timestampDigestAlgorithm));
+		final DSSDocument originalDocument = cadesSignature.getOriginalDocument();
 
 		ASN1ObjectIdentifier atsHashIndexTableIdentifier = getAtsHashIndexTableIdentifier(parameters);
 		final Attribute atsHashIndexAttribute = timestampExtractor.getAtsHashIndex(signerInformation, timestampDigestAlgorithm, atsHashIndexTableIdentifier);
 
-		final byte[] encodedToTimestamp = timestampExtractor.getArchiveTimestampV3MessageImprint(signerInformation, atsHashIndexAttribute, originalDocumentDigest);
+		final DSSMessageDigest timestampMessageDigest = timestampExtractor.getArchiveTimestampV3MessageImprint(
+				signerInformation, atsHashIndexAttribute, originalDocument, timestampDigestAlgorithm);
 
-		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(encodedToTimestamp, timestampDigestAlgorithm,
+		final ASN1Object timeStampAttributeValue = getTimeStampAttributeValue(timestampMessageDigest, timestampDigestAlgorithm,
 				atsHashIndexAttribute);
 
 		return unsignedAttributes.add(OID.id_aa_ets_archiveTimestampV3, timeStampAttributeValue);

@@ -481,17 +481,17 @@ public class TimestampToken extends Token {
 				LOG.warn("Invalid or incomplete message-digest has been provided for timestamp verification!");
 			}
 
-		} else if (getMessageImprintDigestAlgorithm() != messageDigest.getAlgorithm()) {
+		} else if (getDigestAlgorithm() != messageDigest.getAlgorithm()) {
 			messageImprintIntact = false;
 			if (!suppressMatchWarnings) {
 				LOG.warn("DigestAlgorithm '{}' used in the provided message-digest does not match the one used " +
-						"in the timestamp token '{}'!", messageDigest.getAlgorithm(), getMessageImprintDigestAlgorithm());
+						"in the timestamp token '{}'!", messageDigest.getAlgorithm(), getDigestAlgorithm());
 			}
 
 		} else {
 			messageImprintIntact = matchData(messageDigest.getValue(), suppressMatchWarnings);
 		}
-		return messageImprintData;
+		return messageImprintIntact;
 	}
 
 	/**
@@ -575,7 +575,7 @@ public class TimestampToken extends Token {
 	 */
 	public Digest getMessageImprint() {
 		if (messageImprint == null) {
-			DigestAlgorithm messageImprintDigestAlgo = getMessageImprintDigestAlgorithm();
+			DigestAlgorithm messageImprintDigestAlgo = getDigestAlgorithm();
 			byte[] messageImprintDigestValue = timeStamp.getTimeStampInfo().getMessageImprintDigest();
 			messageImprint = new Digest(messageImprintDigestAlgo, messageImprintDigestValue);
 		}
@@ -587,7 +587,7 @@ public class TimestampToken extends Token {
 	 *
 	 * @return {@link DigestAlgorithm}
 	 */
-	public DigestAlgorithm getMessageImprintDigestAlgorithm() {
+	public DigestAlgorithm getDigestAlgorithm() {
 		ASN1ObjectIdentifier oid = timeStamp.getTimeStampInfo().getMessageImprintAlgOID();
 		return DigestAlgorithm.forOID(oid.getId());
 	}

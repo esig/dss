@@ -37,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageImprintDigestBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
@@ -257,7 +257,7 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     protected void validateTimestamps() {
         super.validateTimestamps();
 
-        final TimestampMessageImprintDigestBuilder timestampDataBuilder = getTimestampDataBuilder();
+        final TimestampMessageDigestBuilder timestampDataBuilder = getTimestampDataBuilder();
 
         /*
          * Validates the VRI timestamps present for the signature.
