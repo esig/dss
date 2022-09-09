@@ -423,6 +423,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	/**
 	 * Returns the message-imprint digest for a SignatureTimestamp (BASE64URL(JWS Signature Value))
 	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest with
 	 * @return {@link DSSMessageDigest} representing a message-imprint digest
 	 */
 	public DSSMessageDigest getSignatureTimestampData(DigestAlgorithm digestAlgorithm) {
@@ -433,6 +434,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	/**
 	 * Returns message-imprint digest for an ArchiveTimestamp
 	 * 
+	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest with
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
 	 * @return {@link DSSMessageDigest} representing a message-imprint digest
 	 */

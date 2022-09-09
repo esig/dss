@@ -96,7 +96,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	/**
 	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
 	 *
-	 * @param signature {@link JAdESSignature} to create timestamps for
+	 * @param signature {@link CAdESSignature} to create timestamps for
 	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
 	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
 	 */
@@ -197,7 +197,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return null;
 	}
 
-	protected void writeTimestampX2MessageDigest(DSSMessageDigestCalculator digestCalculator) {
+	private void writeTimestampX2MessageDigest(DSSMessageDigestCalculator digestCalculator) {
 		// Those are common to Type 1 and Type 2
 		final Attribute certAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certificateRefs);
 		final Attribute revAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_revocationRefs);
