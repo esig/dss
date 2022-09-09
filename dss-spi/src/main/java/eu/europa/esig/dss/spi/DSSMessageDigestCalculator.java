@@ -39,6 +39,15 @@ public class DSSMessageDigestCalculator {
     }
 
     /**
+     * Updates the digest using the provided byte
+     *
+     * @param byteToAdd byte to be added for digest computation
+     */
+    public void update(byte byteToAdd) {
+        messageDigest.update(byteToAdd);
+    }
+
+    /**
      * Updates the digest using the provided array of bytes
      *
      * @param bytes array of bytes

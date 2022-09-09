@@ -23,6 +23,7 @@ package eu.europa.esig.dss.jades.validation.timestamp;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.PKIEncoding;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -33,6 +34,7 @@ import eu.europa.esig.dss.jades.validation.JAdESCertificateRefExtractionUtils;
 import eu.europa.esig.dss.jades.validation.JAdESRevocationRefExtractionUtils;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JAdESSignedProperties;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -249,7 +251,6 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(JAdESAttribute unsignedAttribute) {
 		List<?> xVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
@@ -398,8 +399,13 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
-	protected JAdESTimestampDataBuilder getTimestampDataBuilder() {
-		return new JAdESTimestampDataBuilder(signature);
+	protected JAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
+		return new JAdESTimestampMessageDigestBuilder(signature, timestampToken);
+	}
+
+	@Override
+	protected JAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
+		return new JAdESTimestampMessageDigestBuilder(signature, digestAlgorithm);
 	}
 	
 	@Override
@@ -415,22 +421,25 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	/**
-	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
+	 * Returns the message-imprint digest for a SignatureTimestamp (BASE64URL(JWS Signature Value))
 	 *
-	 * @return byte array representing a message-imprint
+	 * @return {@link DSSMessageDigest} representing a message-imprint digest
 	 */
-	public byte[] getSignatureTimestampData() {
-		return getTimestampDataBuilder().getSignatureTimestampData();
+	public DSSMessageDigest getSignatureTimestampData(DigestAlgorithm digestAlgorithm) {
+		JAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		return builder.getSignatureTimestampMessageDigest();
 	}
 	
 	/**
-	 * Returns concatenated data for an ArchiveTimestamp
+	 * Returns message-imprint digest for an ArchiveTimestamp
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @return byte array
+	 * @return {@link DSSMessageDigest} representing a message-imprint digest
 	 */
-	public byte[] getArchiveTimestampData(String canonicalizationMethod) {
-		return getTimestampDataBuilder().getArchiveTimestampData(canonicalizationMethod);
+	public DSSMessageDigest getArchiveTimestampData(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
+		JAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
+		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		return builder.getArchiveTimestampMessageDigest();
 	}
 
 	@Override
@@ -497,7 +506,6 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<TimestampToken> extractArchiveTimestampTokens(JAdESAttribute signatureAttribute,
 															   List<TimestampedReference> references) {
 		Map<?, ?> arcTst = DSSJsonUtils.toMap(signatureAttribute.getValue(), JAdESHeaderParameterNames.ARC_TST);

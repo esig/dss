@@ -96,7 +96,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	/**
 	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
 	 *
-	 * @param signature {@link CAdESSignature} containing timestamps
+	 * @param signature {@link JAdESSignature} to create timestamps for
 	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
 	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
 	 */

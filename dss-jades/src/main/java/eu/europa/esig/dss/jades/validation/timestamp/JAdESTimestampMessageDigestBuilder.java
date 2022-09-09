@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation.timestamp;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -30,7 +31,9 @@ import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
@@ -38,17 +41,17 @@ import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Builds the message-imprint for JAdES timestamps
+ * Builds the message-imprint digest for JAdES timestamps
+ *
  */
-public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder {
+public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDigestBuilder {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampDataBuilder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampMessageDigestBuilder.class);
 
 	/** The error message to be thrown in case of a message-imprint build error */
 	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
@@ -56,20 +59,66 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 	/** The signature */
 	private final JAdESSignature signature;
 
+	/** The digest algorithm to be used for message-imprint digest computation */
+	private DigestAlgorithm digestAlgorithm;
+
+	/** Timestamp token to compute message-digest for */
+	private TimestampToken timestampToken;
+
+	/** The canonicalization algorithm to be used for message-imprint computation */
+	private String canonicalizationAlgorithm;
+
+	/**
+	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
+	 *
+	 * @param signature {@link JAdESSignature} to create timestamps for
+	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
+	 */
+	public JAdESTimestampMessageDigestBuilder(final JAdESSignature signature, final DigestAlgorithm digestAlgorithm) {
+		this(signature);
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
+		this.digestAlgorithm = digestAlgorithm;
+	}
+
+	/**
+	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
+	 *
+	 * @param signature {@link JAdESSignature} containing timestamps
+	 * @param timestampToken {@link TimestampToken} to compute message-digest for
+	 */
+	public JAdESTimestampMessageDigestBuilder(final JAdESSignature signature, final TimestampToken timestampToken) {
+		this(signature);
+		Objects.requireNonNull(timestampToken, "TimestampToken cannot be null!");
+		this.timestampToken = timestampToken;
+		this.digestAlgorithm = timestampToken.getDigestAlgorithm();
+		this.canonicalizationAlgorithm = timestampToken.getCanonicalizationMethod();
+	}
+
 	/**
 	 * Default constructor
 	 *
 	 * @param signature {@link JAdESSignature}
 	 */
-	public JAdESTimestampDataBuilder(JAdESSignature signature) {
+	private JAdESTimestampMessageDigestBuilder(final JAdESSignature signature) {
+		Objects.requireNonNull(signature, "Signature cannot be null!");
 		this.signature = signature;
 	}
 
+	/**
+	 * Sets the canonicalization algorithm to be used for message-digest computation
+	 *
+	 * @param canonicalizationAlgorithm {@link String}
+	 */
+	public void setCanonicalizationAlgorithm(String canonicalizationAlgorithm) {
+		this.canonicalizationAlgorithm = canonicalizationAlgorithm;
+	}
+
 	@Override
-	public DSSDocument getContentTimestampData(TimestampToken timestampToken) {
+	public DSSMessageDigest getContentTimestampMessageDigest() {
 		try {
-			byte[] signedDataBinaries = getSignedDataBinaries();
-			return new InMemoryDocument(signedDataBinaries);
+			DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+			writeSignedDataBinaries(digestCalculator);
+			return digestCalculator.getMessageDigest();
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -78,19 +127,19 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
 			}
 		}
-		return null;
+		return DSSMessageDigest.createEmptyDigest();
 	}
 	
-	private byte[] getSignedDataBinaries() {
+	private void writeSignedDataBinaries(DSSMessageDigestCalculator digestCalculator) {
 		SigDMechanism sigDMechanism = signature.getSigDMechanism();
 		if (sigDMechanism != null) {
-			return getSigDReferencedOctets(sigDMechanism);
+			writeSigDReferencedOctets(digestCalculator, sigDMechanism);
 		} else {
-			return getJWSPayloadValue();
+			writeJWSPayloadValue(digestCalculator);
 		}
 	}
 	
-	private byte[] getJWSPayloadValue() {
+	private void writeJWSPayloadValue(DSSMessageDigestCalculator digestCalculator) {
 		byte[] payload;
 		if (signature.getJws().isRfc7797UnencodedPayload()) {
 			payload = signature.getJws().getUnverifiedPayloadBytes();
@@ -100,36 +149,39 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 		if (Utils.isArrayEmpty(payload)) {
 			throw new DSSException("Unable to extract JWS payload!");
 		}
-		return payload;
+		digestCalculator.update(payload);
 	}
 	
-	private byte[] getSigDReferencedOctets(SigDMechanism sigDMechanism) {
-		byte[] sigDOctets = null;
+	private void writeSigDReferencedOctets(DSSMessageDigestCalculator digestCalculator, SigDMechanism sigDMechanism) {
 		List<DSSDocument> documentList;
-
 		switch (sigDMechanism) {
 			case HTTP_HEADERS:
 				documentList = signature.getSignedDocumentsByHTTPHeaderName();
 				HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(documentList, true);
-				sigDOctets = httpHeadersPayloadBuilder.build();
+				byte[] sigDOctets = httpHeadersPayloadBuilder.build();
+				digestCalculator.update(sigDOctets);
 				break;
 			case OBJECT_ID_BY_URI:
 			case OBJECT_ID_BY_URI_HASH:
 				documentList = signature.getSignedDocumentsForObjectIdByUriMechanism();
-				sigDOctets = DSSJsonUtils.concatenateDSSDocuments(documentList, !signature.getJws().isRfc7797UnencodedPayload());
+				DSSJsonUtils.writeDocumentsDigest(documentList, !signature.getJws().isRfc7797UnencodedPayload(), digestCalculator);
 				break;
 			default:
 				LOG.warn("Unsupported SigDMechanism '{}' has been found!", sigDMechanism);
 		}
-
-		return sigDOctets;
 	}
 
 	@Override
-	public DSSDocument getSignatureTimestampData(TimestampToken timestampToken) {
+	public DSSMessageDigest getSignatureTimestampMessageDigest() {
 		try {
-			byte[] signatureTimestampData = getSignatureTimestampData();
-			return new InMemoryDocument(signatureTimestampData);
+			/*
+			 * 5.3.4	The sigTst JSON object
+			 *
+			 * The input of the message imprint computation for the time-stamp tokens encapsulated
+			 * by sigTst JSON object shall be the base64url-encoded JWS Signature Value.
+			 */
+			byte[] signatureTimestampData = getBase64UrlEncodedSignatureValue();
+			return new DSSMessageDigest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, signatureTimestampData));
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -138,80 +190,40 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
 			}
 		}
-		return null;
-	}
-
-	/**
-	 * Returns the message-imprint data for a SignatureTimestamp (BASE64URL(JWS Signature Value))
-	 *
-	 * @return byte array representing a message-imprint
-	 */
-	public byte[] getSignatureTimestampData() {
-		/*
-		 * 5.3.4	The sigTst JSON object
-		 *
-		 * The input of the message imprint computation for the time-stamp tokens encapsulated
-		 * by sigTst JSON object shall be the base64url-encoded JWS Signature Value.
-		 */
-		return getBase64UrlEncodedSignatureValue();
+		return DSSMessageDigest.createEmptyDigest();
 	}
 
 	@Override
-	public DSSDocument getTimestampX1Data(TimestampToken timestampToken) {
+	public DSSMessageDigest getTimestampX1MessageDigest() {
 		try {
-			byte[] timestampX1Data = getTimestampX1Data(timestampToken, null);
-			return new InMemoryDocument(timestampX1Data);
-
-		} catch (Exception e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
-			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.SIG_R_TST);
 			}
-		}
-		return null;
-	}
 
-	/**
-	 * Computes the message-imprint for SigRTst timestamp
-	 *
-	 * @param timestampToken
-	 *              {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod
-	 *              {@link String} canonicalization method to use
-	 * @return message-imprint octets
-	 */
-	protected byte[] getTimestampX1Data(TimestampToken timestampToken, String canonicalizationMethod) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.SIG_R_TST);
-		}
-		canonicalizationMethod = timestampToken != null ?
-				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+			final JWS jws = signature.getJws();
 
-		JWS jws = signature.getJws();
+			/*
+			 * A.1.5.1	The sigRTst JSON object
+			 *
+			 * The message imprint computation input shall be the concatenation of the components,
+			 * in the order they are listed below.
+			 */
+			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 
-		/*
-		 * A.1.5.1	The sigRTst JSON object
-		 *
-		 * The message imprint computation input shall be the concatenation of the components,
-		 * in the order they are listed below.
-		 */
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
 			/*
 			 * 1) The value of the base64url-encoded JWS Signature Value.
 			 */
-			baos.write(getBase64UrlEncodedSignatureValue());
-			
+			digestCalculator.update(getBase64UrlEncodedSignatureValue());
+
 			/*
 			 * 2) The character '.'.
 			 */
-			baos.write('.');
-			
+			digestCalculator.update((byte) '.');
+
 			/*
 			 * 3) Those among the following components that appear before sigRTst, in their
 			 * order of appearance within the etsiU array, base64url-encoded:
-			 * 
+			 *
 			 * NOTE: there is a difference in processing base64url encoded values and clear
 			 * incorporation
 			 */
@@ -236,7 +248,7 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 							JAdESHeaderParameterNames.X_REFS, JAdESHeaderParameterNames.R_REFS,
 							JAdESHeaderParameterNames.AX_REFS, JAdESHeaderParameterNames.AR_REFS)) {
 
-						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
+						digestCalculator.update(getEtsiUComponentValue(etsiUComponent, canonicalizationAlgorithm));
 					}
 
 				}
@@ -246,28 +258,11 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.SIG_R_TST);
 			}
 
-			byte[] messageImprint = baos.toByteArray();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_R_TST, new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_R_TST, messageDigest);
 			}
-			return messageImprint;
-			
-		} catch (IOException e) {
-			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
-					JAdESHeaderParameterNames.SIG_R_TST, e.getMessage()), e);
-		}
-		
-	}
-	
-	private boolean isAllowedTypeEntry(EtsiUComponent etsiUComponent, String... allowedTypes) {
-		return Arrays.stream(allowedTypes).anyMatch(etsiUComponent.getHeaderName()::equals);
-	}
-
-	@Override
-	public DSSDocument getTimestampX2Data(TimestampToken timestampToken) {
-		try {
-			byte[] timestampX2Data = getTimestampX2Data(timestampToken, null);
-			return new InMemoryDocument(timestampX2Data);
+			return messageDigest;
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -276,35 +271,30 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
 			}
 		}
-		return null;
+		return DSSMessageDigest.createEmptyDigest();
+	}
+	
+	private boolean isAllowedTypeEntry(EtsiUComponent etsiUComponent, String... allowedTypes) {
+		return Arrays.stream(allowedTypes).anyMatch(etsiUComponent.getHeaderName()::equals);
 	}
 
-	/**
-	 * Computes the message-imprint for rfsTst timestamp
-	 *
-	 * @param timestampToken
-	 *              {@link TimestampToken} on signature validation
-	 * @param canonicalizationMethod
-	 *              {@link String} canonicalization method to use
-	 * @return message-imprint octets
-	 */
-	protected byte[] getTimestampX2Data(TimestampToken timestampToken, String canonicalizationMethod) {
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.RFS_TST);
-		}
-		canonicalizationMethod = timestampToken != null ?
-				timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
+	@Override
+	public DSSMessageDigest getTimestampX2MessageDigest() {
+		try {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("--->Get '{}' timestamp data", JAdESHeaderParameterNames.RFS_TST);
+			}
 
-		JWS jws = signature.getJws();
-		
-		/*
-		 * A.1.5.2.2 The rfsTst JSON object
-		 *
-		 * The message imprint computation input shall be the concatenation of the components,
-		 * in the order they are listed below.
-		 */
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
+			JWS jws = signature.getJws();
+
+			/*
+			 * A.1.5.2.2 The rfsTst JSON object
+			 *
+			 * The message imprint computation input shall be the concatenation of the components,
+			 * in the order they are listed below.
+			 */
+			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+
 			/*
 			 * The message imprint computation input shall be the concatenation of the
 			 * components listed below, base64url encoded, in their order of appearance within the etsiU array:
@@ -312,7 +302,7 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 			 * - rRefs if it is present.
 			 * - axRefs if it is present. And
 			 * - arRefs if it is present.
-			 * 
+			 *
 			 * NOTE: there is a difference in processing base64url encoded values and clear
 			 * incorporation
 			 */
@@ -325,123 +315,91 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 					if (isAllowedTypeEntry(etsiUComponent, JAdESHeaderParameterNames.X_REFS,
 							JAdESHeaderParameterNames.R_REFS, JAdESHeaderParameterNames.AX_REFS,
 							JAdESHeaderParameterNames.AR_REFS)) {
-
-						baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
+						digestCalculator.update(getEtsiUComponentValue(etsiUComponent, canonicalizationAlgorithm));
 					}
 
 				}
-				
+
 			} else {
 				LOG.warn("Unable to process 'etsiU' entries for an '{}' timestamp. "
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.RFS_TST);
 			}
 
-			byte[] messageImprint = baos.toByteArray();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.RFS_TST, new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.RFS_TST, messageDigest);
 			}
-			
-			return messageImprint;
+			return messageDigest;
 
-		} catch (IOException e) {
-			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
-					JAdESHeaderParameterNames.RFS_TST, e.getMessage()), e);
-		}
-	}
-
-	@Override
-	public DSSDocument getArchiveTimestampData(TimestampToken timestampToken) {
-		try {
-			byte[] archiveTimestampData = getArchiveTimestampData(timestampToken, null);
-			return new InMemoryDocument(archiveTimestampData);
-
-		} catch (DSSException e) {
+		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
 				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
 			} else {
 				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
 			}
 		}
-		return null;
-	}
-	
-	/**
-	 * Returns ArchiveTimestamp Data for a new Timestamp
-	 * 
-	 * @param canonicalizationMethod {@link String} canonicalization method to use
-	 * @return byte array timestamp data
-	 */
-	public byte[] getArchiveTimestampData(final String canonicalizationMethod) {
-		// timestamp creation
-		return getArchiveTimestampData(null, canonicalizationMethod);
+		return DSSMessageDigest.createEmptyDigest();
 	}
 
-	/**
-	 * Returns the message-imprint computed for the archive {@code timestampToken}
-	 *
-	 * @param timestampToken {@link TimestampToken} archive timestamp token
-	 * @param canonicalizationMethod {@link String} if defined
-	 * @return message-imprint byte array
-	 */
-	protected byte[] getArchiveTimestampData(TimestampToken timestampToken, String canonicalizationMethod) {
-		
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("--->Get '{}' timestamp data : {}", JAdESHeaderParameterNames.ARC_TST,
-					(timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
-		}
-		canonicalizationMethod = timestampToken != null ? timestampToken.getCanonicalizationMethod() : canonicalizationMethod;
-				
-		JWS jws = signature.getJws();
-		
-		/*
-		 * 5.3.6.3.1 Processing (5.3.6.3 Computation of message-imprint)
-		 * 
-		 * If the value of timeStamped is equal to "all" or it is absent, and the etsiU
-		 * array contains base64url encoded unsigned JSON values, then the message
-		 * imprint computation input shall be the concatenation of the components in the
-		 * order they are listed below:
-		 */
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			
+	@Override
+	public DSSMessageDigest getArchiveTimestampMessageDigest() {
+		try {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("--->Get '{}' timestamp data : {}", JAdESHeaderParameterNames.ARC_TST,
+						(timestampToken == null ? "--> CREATION" : "--> VALIDATION"));
+			}
+
+			JWS jws = signature.getJws();
+
+			/*
+			 * 5.3.6.3.1 Processing (5.3.6.3 Computation of message-imprint)
+			 *
+			 * If the value of timeStamped is equal to "all" or it is absent, and the etsiU
+			 * array contains base64url encoded unsigned JSON values, then the message
+			 * imprint computation input shall be the concatenation of the components in the
+			 * order they are listed below:
+			 */
+			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+
 			/*
 			 * 1) If the sigD header parameter is absent then:
 			 * a) If the b64 header parameter specified in clause 3 of IETF RFC 7797 [15] is present
 			 * and set to "false" then concatenate the JWS Payload value.
 			 * b) If the b64 header parameter specified in clause 3 of IETF RFC 7797 [15] is present
 			 * and set to "true", OR it is absent, then concatenate the base64url-encoded JWS Payload.
-			 * 
+			 *
 			 * 2) If the sigD header parameter is present: a) If the value of its mId member
 			 * is "http://uri.etsi.org/19182/HttpHeaders" then concatenate the bytes
 			 * resulting from processing the contents of its pars member as specified in
 			 * clause 5.2.8.2 of the present document except the "Digest" string element.
 			 * The processing of the "Digest" string element in the pars array shall consist
 			 * in retrieving the bytes of the body of the HTTP message.
-			 * 
+			 *
 			 */
-			baos.write(getSignedDataBinaries());
-			
+			writeSignedDataBinaries(digestCalculator);
+
 			/*
 			 * 3) The character '.'.
 			 */
-			baos.write('.');
-			
+			digestCalculator.update((byte) '.');
+
 			/*
 			 * 4) The value of the JWS Protected Header, base64url encoded, followed by the
 			 * character '.'.
 			 */
-			baos.write(jws.getEncodedHeader().getBytes());
-			baos.write('.');
-			
+			digestCalculator.update(jws.getEncodedHeader().getBytes());
+			digestCalculator.update((byte) '.');
+
 			/*
 			 * 5) The value of the JAdES Signature Value, base64url encoded.
 			 */
-			baos.write(getBase64UrlEncodedSignatureValue());
+			digestCalculator.update(getBase64UrlEncodedSignatureValue());
 
 			/*
 			 * 6) The character '.'.
 			 */
-			baos.write('.');
-			
+			digestCalculator.update((byte) '.');
+
 			/*
 			 * 7) If the elements of the etsiU array appear as the base64url encodings of
 			 * the unsigned components, then proceed as specified in clause 5.3.6.3.1.1 of
@@ -460,7 +418,7 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 						break;
 					}
 
-					baos.write(getEtsiUComponentValue(etsiUComponent, canonicalizationMethod));
+					digestCalculator.update(getEtsiUComponentValue(etsiUComponent, canonicalizationAlgorithm));
 				}
 
 			} else {
@@ -468,18 +426,20 @@ public class JAdESTimestampDataBuilder implements TimestampMessageDigestBuilder 
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.ARC_TST);
 			}
 
-			byte[] messageImprint = baos.toByteArray();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.ARC_TST, new String(messageImprint));
+				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.ARC_TST, messageDigest);
 			}
-			
-			return messageImprint;
-			
-			
+			return messageDigest;
+
 		} catch (Exception e) {
-			throw new DSSException(String.format("An error occurred while building a message-imprint for '%s'! Reason : %s",
-					JAdESHeaderParameterNames.ARC_TST, e.getMessage()), e);
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+			} else {
+				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+			}
 		}
+		return DSSMessageDigest.createEmptyDigest();
 	}
 
 	private byte[] getBase64UrlEncodedSignatureValue() {
