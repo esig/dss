@@ -20,14 +20,56 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.defaultdrawer;
 
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
+import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.visible.AbstractPDFAVisibleSignatureTest;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 public class DefaultPDFAVisibleSignatureTest extends AbstractPDFAVisibleSignatureTest {
 
 	@Override
 	protected void setCustomFactory() {
 		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
+	}
+
+	@Test
+	public void testGeneratedTextToGrayDocWithoutColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		// an RGB image is created
+		signAndValidate("PDF/A-2U", false);
+	}
+
+	@Test
+	public void testAddCMYKImageToRGBDoc() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/cmyk.jpg"), "cmyk.jpg", MimeType.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		// an RGB image is created
+		signAndValidate("PDF/A-2A", true);
 	}
 
 }

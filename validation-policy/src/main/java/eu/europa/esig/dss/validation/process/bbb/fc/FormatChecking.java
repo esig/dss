@@ -46,6 +46,8 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAComplianceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAProfileCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
@@ -138,6 +140,15 @@ public class FormatChecking extends Chain<XmlFC> {
 			}
 
 			item = item.setNextItem(undefinedChangesCheck());
+
+			// executed only when dss-pdfa module has been loaded
+			if (diagnosticData.isPDFAValidationPerformed()) {
+
+				item = item.setNextItem(pdfaProfileCheck());
+
+				item = item.setNextItem(pdfaCompliantCheck());
+
+			}
 			
 		}
 
@@ -246,6 +257,16 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> ellipticCurveKeySizeCheck() {
 		LevelConstraint constraint = policy.getEllipticCurveKeySizeConstraint(context);
 		return new EllipticCurveKeySizeCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> pdfaProfileCheck() {
+		MultiValuesConstraint constraint = policy.getAcceptablePDFAProfilesConstraint();
+		return new PDFAProfileCheck(i18nProvider, result, diagnosticData.getPDFAProfileId(), constraint);
+	}
+
+	private ChainItem<XmlFC> pdfaCompliantCheck() {
+		LevelConstraint constraint = policy.getPDFACompliantConstraint();
+		return new PDFAComplianceCheck(i18nProvider, result, diagnosticData.isPDFACompliant(), constraint);
 	}
 
 	private ChainItem<XmlFC> containerTypeCheck() {

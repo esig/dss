@@ -28,6 +28,7 @@ import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.PDFAConstraints;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
@@ -1110,6 +1111,22 @@ public interface ValidationPolicy {
 	 */
 	LevelConstraint getFullScopeConstraint();
 
+	/**
+	 * Returns AcceptablePDFAProfiles constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if AcceptablePDFAProfiles element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getAcceptablePDFAProfilesConstraint();
+
+	/**
+	 * Returns PDFACompliant constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if PDFACompliant element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getPDFACompliantConstraint();
+
 	/* Article 32 */
 
 	/**
@@ -1159,12 +1176,6 @@ public interface ValidationPolicy {
 	 */
 	Model getValidationModel();
 
-	/**
-	 * Returns the constraint used for ASiC Container validation
-	 *
-	 * @return {@code ContainerConstraints}
-	 */
-	ContainerConstraints getContainerConstraints();
 
 	/**
 	 * Returns the constraint used for Signature validation
@@ -1193,6 +1204,20 @@ public interface ValidationPolicy {
 	 * @return {@code RevocationConstraints}
 	 */
 	RevocationConstraints getRevocationConstraints();
+
+	/**
+	 * Returns the constraint used for ASiC Container validation
+	 *
+	 * @return {@code ContainerConstraints}
+	 */
+	ContainerConstraints getContainerConstraints();
+
+	/**
+	 * Returns the constraint used for ASiC Container validation
+	 *
+	 * @return {@code ContainerConstraints}
+	 */
+	PDFAConstraints getPDFAConstraints();
 
 	/**
 	 * Returns the constraint used for qualification validation

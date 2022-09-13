@@ -30,12 +30,10 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +51,7 @@ public class PAdESWithFontSubsetTest extends AbstractPAdESTestSignature {
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -93,10 +91,7 @@ public class PAdESWithFontSubsetTest extends AbstractPAdESTestSignature {
         verify(signedDocument);
     }
 
-    private void assertContainsSubset(DSSDocument document, boolean embedSubset) throws IOException {
-        try (InputStream docIs = document.openStream(); InputStream fontIs = font.getInputStream()) {
-            assertNotEquals(Utils.getInputStreamSize(docIs) > Utils.getInputStreamSize(fontIs), embedSubset);
-        }
+    private void assertContainsSubset(DSSDocument document, boolean embedSubset) {
         byte[] docBytes = DSSUtils.toByteArray(document);
         String pdfString = new String(docBytes);
         assertNotEquals(pdfString.contains("/" + FONT_NAME), embedSubset);

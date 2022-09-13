@@ -26,6 +26,11 @@
 					<xsd:documentation>ASiC specific constraints</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="PDFAConstraints" type="PDFAConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PDF/A validation constraints</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="SignatureConstraints" type="SignatureConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Constraints on the signature (signed/unsigned properties, coverage,...)</xsd:documentation>
@@ -112,6 +117,24 @@
 			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PDFAConstraints">
+		<xsd:annotation>
+			<xsd:documentation>A group of constraints used for a PDF document validation against a PDF/A specification. Note : to enforce the constraints, the module dss-pdfa shall be loaded.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="AcceptablePDFAProfiles" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the determined profile of a PDF document corresponds to one of the allowed values.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PDFACompliant" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks whether a PDF is a PDF/A compliant to the determined profile.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

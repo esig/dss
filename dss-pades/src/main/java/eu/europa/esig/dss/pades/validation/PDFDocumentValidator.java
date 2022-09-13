@@ -72,7 +72,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     /**
      * Empty constructor
      */
-    PDFDocumentValidator() {
+    protected PDFDocumentValidator() {
         // empty
     }
 

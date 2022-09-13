@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.simplereport;
 
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -579,6 +580,24 @@ public class SimpleReport {
 			}
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a container type, when applicable (i.e. ASiC validation)
+	 *
+	 * @return {@link ASiCContainerType}
+	 */
+	public ASiCContainerType getContainerType() {
+		return wrapped.getContainerType();
+	}
+
+	/**
+	 * Returns a PDF/A Profile name
+	 *
+	 * @return {@link String}
+	 */
+	public String getPDFAProfile() {
+		return wrapped.getPDFAProfile();
 	}
 
 	/**

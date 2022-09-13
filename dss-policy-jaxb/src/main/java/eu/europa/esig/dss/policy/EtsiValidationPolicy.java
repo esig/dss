@@ -32,6 +32,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.PDFAConstraints;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
@@ -1220,6 +1221,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public MultiValuesConstraint getAcceptablePDFAProfilesConstraint() {
+		PDFAConstraints pdfaConstraints = getPDFAConstraints();
+		if (pdfaConstraints != null) {
+			return pdfaConstraints.getAcceptablePDFAProfiles();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getPDFACompliantConstraint() {
+		PDFAConstraints pdfaConstraints = getPDFAConstraints();
+		if (pdfaConstraints != null) {
+			return pdfaConstraints.getPDFACompliant();
+		}
+		return null;
+	}
+
+	@Override
 	public boolean isEIDASConstraintPresent() {
 		return getEIDASConstraints() != null;
 	}
@@ -1273,6 +1292,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	@Override
 	public ContainerConstraints getContainerConstraints() {
 		return policy.getContainerConstraints();
+	}
+
+	@Override
+	public PDFAConstraints getPDFAConstraints() {
+		return policy.getPDFAConstraints();
 	}
 
 	@Override

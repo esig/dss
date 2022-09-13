@@ -45,6 +45,7 @@
 		<jose4j.version>0.7.12</jose4j.version>
 		<pdfbox.version>2.0.26</pdfbox.version>
 		<openpdf.version>1.3.29</openpdf.version>
+		<verapdf.version>1.18.8</verapdf.version>
 		<httpclient5.version>5.1.3</httpclient5.version>
 		<commons-codec.version>1.15</commons-codec.version> <!-- Synchronized with santuario -->
 
@@ -119,6 +120,7 @@
 		<module>dss-cades</module>
 		<module>dss-jades</module>
 		<module>dss-pades</module>
+		<module>dss-pdfa</module>
 		<module>dss-pades-pdfbox</module>
 		<module>dss-pades-openpdf</module>
 		<module>dss-asic-common</module>
@@ -161,7 +163,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-	</modules>
+    </modules>
 
 	<build>
 		<plugins>
@@ -576,6 +578,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pdfa</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-pdfbox</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -867,14 +874,14 @@
 				<version>${pdfbox.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>preflight</artifactId>
-				<version>${pdfbox.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.github.librepdf</groupId>
 				<artifactId>openpdf</artifactId>
 				<version>${openpdf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.verapdf</groupId>
+				<artifactId>validation-model</artifactId>
+				<version>${verapdf.version}</version>
 			</dependency>
 
 			<dependency>

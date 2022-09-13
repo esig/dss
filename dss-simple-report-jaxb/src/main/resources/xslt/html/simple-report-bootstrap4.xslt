@@ -21,6 +21,7 @@
     <xsl:template match="dss:ValidSignaturesCount"/>
     <xsl:template match="dss:ValidationTime"/>
     <xsl:template match="dss:ContainerType"/>
+	<xsl:template match="dss:PDFAProfile"/>
 
     <xsl:template match="dss:ValidationPolicy">
 		<div>
@@ -510,6 +511,23 @@
 						</dd>
 			        </dl>
 		        </xsl:if>
+
+				<xsl:if test="dss:PDFAProfile">
+					<dl>
+						<xsl:attribute name="class">row mb-0</xsl:attribute>
+						<dt>
+							<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+							PDF/A Profile:
+						</dt>
+						<dd>
+							<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+							<xsl:value-of select="dss:PDFAProfile"/>
+						</dd>
+					</dl>
+				</xsl:if>
+				
 	        	<dl>
 		    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
