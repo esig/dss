@@ -24,7 +24,9 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.client.jdbc.query.SqlQuery;
+import eu.europa.esig.dss.spi.client.jdbc.query.SqlSelectQuery;
+import eu.europa.esig.dss.spi.client.jdbc.record.SqlRecord;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -36,8 +38,8 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -51,59 +53,47 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	/**
 	 * Used in the init method to check if the table exists
 	 */
-	private static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM CACHED_OCSP";
+	private static final SqlQuery SQL_INIT_CHECK_EXISTENCE = SqlQuery.createQuery("SELECT COUNT(*) FROM CACHED_OCSP");
 
 	/**
 	 * Used in the init method to create the table, if not existing:
 	 * ID (char40 = SHA1 length), DATA (blob = OCSP binaries) and LOC (varchar(200) = location url)
  	 */
-	private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE CACHED_OCSP (ID VARCHAR(100), DATA BLOB, LOC VARCHAR(200))";
-
-	/**
-	 * Used in the find method to select the OCSP via the id
-	 */
-	private static final String SQL_FIND_QUERY = "SELECT * FROM CACHED_OCSP WHERE ID = ?";
-
-	/**
-	 * Used in the find method when selecting the OCSP via the id to get the DATA (blob) from the resultSet
-	 */
-	private static final String SQL_FIND_QUERY_DATA = "DATA";
-
-	/**
-	 * Used to store a URL
-	 */
-	private static final String SQL_FIND_QUERY_LOC = "LOC";
+	private static final SqlQuery SQL_INIT_CREATE_TABLE = SqlQuery.createQuery("CREATE TABLE CACHED_OCSP (ID VARCHAR(100), DATA BLOB, LOC VARCHAR(200))");
 
 	/**
 	 * Used via the find method to insert a new record
 	 */
-	private static final String SQL_FIND_INSERT = "INSERT INTO CACHED_OCSP (ID, DATA, LOC) VALUES (?, ?, ?)";
+	private static final SqlQuery SQL_FIND_INSERT = SqlQuery.createQuery("INSERT INTO CACHED_OCSP (ID, DATA, LOC) VALUES (?, ?, ?)");
 
 	/**
 	 * Used via the find method to update an existing record via the id
 	 */
-	private static final String SQL_FIND_UPDATE = "UPDATE CACHED_OCSP SET DATA = ?, LOC = ? WHERE ID = ?";
+	private static final SqlQuery SQL_FIND_UPDATE = SqlQuery.createQuery("UPDATE CACHED_OCSP SET DATA = ?, LOC = ? WHERE ID = ?");
 	
 	/**
 	 * Used via the find method to remove an existing record by the id
 	 */
-	private static final String SQL_FIND_REMOVE = "DELETE FROM CACHED_OCSP WHERE ID = ?";
+	private static final SqlQuery SQL_FIND_REMOVE = SqlQuery.createQuery("DELETE FROM CACHED_OCSP WHERE ID = ?");
 	
 	/**
 	 * Used to drop the OCSP cache table
 	 */
-	private static final String SQL_DROP_TABLE = "DROP TABLE CACHED_OCSP";
+	private static final SqlQuery SQL_DROP_TABLE = SqlQuery.createQuery("DROP TABLE CACHED_OCSP");
 
 	/**
 	 * A list of requests to extract the certificates by
 	 */
-	private static List<JdbcCacheConnector.JdbcResultRequest> findOCSPRequests;
-
-	static {
-		findOCSPRequests = new ArrayList<>();
-		findOCSPRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
-		findOCSPRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_LOC, String.class));
-	}
+	private static final SqlSelectQuery SQL_FIND_QUERY = new SqlSelectQuery("SELECT * FROM CACHED_OCSP WHERE ID = ?") {
+		@Override
+		public SqlOCSPResponse getRecord(ResultSet rs) throws SQLException {
+			SqlOCSPResponse response = new SqlOCSPResponse();
+			response.id = rs.getString("ID");
+			response.ocspBinary = rs.getBytes("DATA");
+			response.ocspUrl = rs.getString("LOC");
+			return response;
+		}
+	};
 
 	/**
 	 * Default constructor
@@ -112,33 +102,28 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	}
 
 	@Override
-	protected String getCreateTableQuery() {
+	protected SqlQuery getCreateTableQuery() {
 		return SQL_INIT_CREATE_TABLE;
 	}
 	
 	@Override
-	protected String getTableExistenceQuery() {
+	protected SqlQuery getTableExistenceQuery() {
 		return SQL_INIT_CHECK_EXISTENCE;
-	}
-	
-	@Override
-	protected String getFindRevocationQuery() {
-		return SQL_FIND_QUERY;
 	}
 
 	@Override
-	protected String getRemoveRevocationTokenEntryQuery() {
+	protected SqlQuery getRemoveRevocationTokenEntryQuery() {
 		return SQL_FIND_REMOVE;
 	}
 
 	@Override
-	protected String getDeleteTableQuery() {
+	protected SqlQuery getDeleteTableQuery() {
 		return SQL_DROP_TABLE;
 	}
 
 	@Override
-	protected Collection<JdbcCacheConnector.JdbcResultRequest> getRevocationDataExtractRequests() {
-		return findOCSPRequests;
+	protected SqlSelectQuery getRevocationDataExtractQuery() {
+		return SQL_FIND_QUERY;
 	}
 
 	@Override
@@ -147,17 +132,15 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	}
 
 	@Override
-	protected RevocationToken<OCSP> buildRevocationTokenFromResult(JdbcCacheConnector.JdbcResultRecord resultRecord,
-				CertificateToken certificateToken, CertificateToken issuerCert) throws DSSExternalResourceException {
+	protected RevocationToken<OCSP> buildRevocationTokenFromResult(SqlRecord response, CertificateToken certificateToken,
+			CertificateToken issuerCert) throws DSSExternalResourceException {
 		try {
-			final byte[] data = (byte[]) resultRecord.get(SQL_FIND_QUERY_DATA);
-			final String url = (String) resultRecord.get(SQL_FIND_QUERY_LOC);
-			
-			final OCSPResp ocspResp = new OCSPResp(data);
+			final SqlOCSPResponse ocspResponse = (SqlOCSPResponse) response;
+			final OCSPResp ocspResp = new OCSPResp(ocspResponse.ocspBinary);
 			BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
 			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerCert);
 			OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCert);
-			ocspToken.setSourceURL(url);
+			ocspToken.setSourceURL(ocspResponse.ocspUrl);
 			ocspToken.setExternalOrigin(RevocationOrigin.CACHED);
 			return ocspToken;
 		} catch (IOException | OCSPException e) {
@@ -196,6 +179,29 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	@Override
 	protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
 		return DSSRevocationUtils.getOcspRevocationKey(certificateToken, urlString);
+	}
+
+	/**
+	 * Represents an OCSP record extracted from the SQL database table
+	 */
+	protected static class SqlOCSPResponse implements SqlRecord {
+
+		/** ID of the record */
+		protected String id;
+
+		/** OCSP binary */
+		protected byte[] ocspBinary;
+
+		/** OCSP URL */
+		protected String ocspUrl;
+
+		/**
+		 * Default constructor
+		 */
+		protected SqlOCSPResponse() {
+			// empty
+		}
+
 	}
 
 }
