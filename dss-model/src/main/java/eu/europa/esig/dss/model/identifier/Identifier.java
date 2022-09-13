@@ -49,7 +49,7 @@ public abstract class Identifier implements Serializable {
 	private String xmlId;
 
 	/**
-	 * The constructor to get an identifier computed from a the binaries with a defined prefix
+	 * The constructor to get an identifier computed from the binaries with a defined prefix
 	 * 
 	 * @param prefix {@link String} to be added in the beginning of a String identifier
 	 * @param data a byte array to compute the identifier from

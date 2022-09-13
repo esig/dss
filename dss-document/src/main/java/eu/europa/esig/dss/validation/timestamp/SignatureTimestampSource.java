@@ -22,9 +22,10 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -1010,38 +1011,38 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected void validateTimestamps() {
 
-        final TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
+        DSSMessageDigest messageDigest = null;
 
         /*
          * This validates the content-timestamp tokensToProcess present in the signature.
          */
         for (final TimestampToken timestampToken : getContentTimestamps()) {
-            final DSSDocument timestampedData = timestampDataBuilder.getContentTimestampData(timestampToken);
-            timestampToken.matchData(timestampedData);
+            messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getContentTimestampMessageDigest();
+            timestampToken.matchData(messageDigest);
         }
 
         /*
          * This validates the signature timestamp tokensToProcess present in the signature.
          */
         for (final TimestampToken timestampToken : getSignatureTimestamps()) {
-            final DSSDocument timestampedData = timestampDataBuilder.getSignatureTimestampData(timestampToken);
-            timestampToken.matchData(timestampedData);
+            messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getSignatureTimestampMessageDigest();
+            timestampToken.matchData(messageDigest);
         }
 
         /*
          * This validates the SigAndRefs timestamp tokensToProcess present in the signature.
          */
         for (final TimestampToken timestampToken : getTimestampsX1()) {
-            final DSSDocument timestampedData = timestampDataBuilder.getTimestampX1Data(timestampToken);
-            timestampToken.matchData(timestampedData);
+            messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getTimestampX1MessageDigest();
+            timestampToken.matchData(messageDigest);
         }
 
         /*
          * This validates the RefsOnly timestamp tokensToProcess present in the signature.
          */
         for (final TimestampToken timestampToken : getTimestampsX2()) {
-            final DSSDocument timestampedData = timestampDataBuilder.getTimestampX2Data(timestampToken);
-            timestampToken.matchData(timestampedData);
+            messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getTimestampX2MessageDigest();
+            timestampToken.matchData(messageDigest);
         }
 
         /*
@@ -1049,19 +1050,30 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
          */
         for (final TimestampToken timestampToken : getArchiveTimestamps()) {
             if (!timestampToken.isProcessed()) {
-                final DSSDocument timestampedData = timestampDataBuilder.getArchiveTimestampData(timestampToken);
-                timestampToken.matchData(timestampedData);
+                messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getArchiveTimestampMessageDigest();
+                timestampToken.matchData(messageDigest);
             }
         }
 
     }
 
     /**
-     * Returns a related {@link TimestampDataBuilder}
+     * Returns a {@link TimestampMessageDigestBuilder} to compute message digest
+     * with the provided {@code DigestAlgorithm}
      *
-     * @return {@link TimestampDataBuilder}
+     * @param digestAlgorithm {@link DigestAlgorithm} to use for message-digest computation
+     * @return {@link TimestampMessageDigestBuilder}
      */
-    protected abstract TimestampDataBuilder getTimestampDataBuilder();
+    protected abstract TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(
+            DigestAlgorithm digestAlgorithm);
+
+    /**
+     * Returns a related {@link TimestampMessageDigestBuilder}
+     *
+     * @param timestampToken {@link TimestampToken} to get message-imprint digest builder for
+     * @return {@link TimestampMessageDigestBuilder}
+     */
+    protected abstract TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken);
 
     private void processExternalTimestamp(TimestampToken externalTimestamp) {
         // add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file

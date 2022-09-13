@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.crl;
 
+import eu.europa.esig.dss.model.DSSException;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-
-import eu.europa.esig.dss.model.DSSException;
 
 /**
  * This class is used to convert PEM encoded binaries (CRL, Cert) to DER encoded representation
@@ -50,13 +49,13 @@ public final class PemToDerConverter {
 	public static byte[] convert(final byte[] pemEncoded) {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(pemEncoded);
 				Reader reader = new InputStreamReader(bais);
-				PemReader pemReader = new PemReader(reader)) {
+				PemReader pemReader = new PemReader(reader);
+				ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			PemObject pemObject = pemReader.readPemObject();
 			if (pemObject == null) {
 				throw new DSSException("Unable to read PEM Object");
 			}
 			byte[] binaries = pemObject.getContent();
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			os.write(binaries, 0, binaries.length);
 			return os.toByteArray();
 		} catch (IOException e) {

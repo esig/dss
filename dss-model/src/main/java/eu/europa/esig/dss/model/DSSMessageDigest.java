@@ -1,11 +1,9 @@
-package eu.europa.esig.dss.pdf;
+package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.Digest;
 
 /**
- * This class contains a digest algorithm and a digest value to be incorporated
- * within message-digest field of a CMS signed attributes.
+ * This class contains a digest algorithm and a digest value for message-digest computation.
  *
  */
 public class DSSMessageDigest extends Digest {
@@ -36,6 +34,24 @@ public class DSSMessageDigest extends Digest {
      */
     public DSSMessageDigest(Digest digest) {
         this(digest.getAlgorithm(), digest.getValue());
+    }
+
+    /**
+     * Creates empty message-digest object
+     *
+     * @return {@link DSSMessageDigest} with empty values
+     */
+    public static DSSMessageDigest createEmptyDigest() {
+        return new DSSMessageDigest();
+    }
+
+    /**
+     * Checks whether the object contains a value
+     *
+     * @return TRUE if the object is empty, FALSE otherwise
+     */
+    public boolean isEmpty() {
+        return getAlgorithm() == null || getValue() == null;
     }
 
     @Override

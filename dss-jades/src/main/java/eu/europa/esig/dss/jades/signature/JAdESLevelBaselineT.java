@@ -35,10 +35,10 @@ import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -153,11 +153,11 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
-			DigestAlgorithm digestAlgorithmForTimestampRequest = signatureTimestampParameters.getDigestAlgorithm();
+			DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 
-			byte[] messageImprint = jadesSignature.getTimestampSource().getSignatureTimestampData();
-			byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
-			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
+			final DSSMessageDigest messageDigest = jadesSignature.getTimestampSource()
+					.getSignatureTimestampData(timestampDigestAlgorithm);
+			TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
 
 			JsonObject tstContainer = DSSJsonUtils.getTstContainer(Collections.singletonList(timeStampResponse), null);
 

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pades.timestamp;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pdf.DSSMessageDigest;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSASN1Utils;

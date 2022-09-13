@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
-import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -37,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.timestamp.TimestampDataBuilder;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 
@@ -257,14 +257,13 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     protected void validateTimestamps() {
         super.validateTimestamps();
 
-        final TimestampDataBuilder timestampDataBuilder = getTimestampDataBuilder();
-
         /*
          * Validates the VRI timestamps present for the signature.
          */
         for (final TimestampToken timestampToken : getVriTimestamps()) {
-            final DSSDocument timestampedData = timestampDataBuilder.getSignatureTimestampData(timestampToken);
-            timestampToken.matchData(timestampedData);
+            final TimestampMessageDigestBuilder messageDigestBuilder = getTimestampMessageImprintDigestBuilder(timestampToken);
+            final DSSMessageDigest messageDigest = messageDigestBuilder.getSignatureTimestampMessageDigest();
+            timestampToken.matchData(messageDigest);
         }
     }
 
