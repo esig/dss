@@ -81,9 +81,23 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	 * @return {@link SqlQuery}
 	 */
 	protected abstract SqlQuery getDeleteTableQuery();
+
+	/**
+	 * Returns an SQL query to insert a new revocation token to a table
+	 *
+	 * @return {@link SqlQuery}
+	 */
+	protected abstract SqlQuery getInsertRevocationTokenEntryQuery();
+
+	/**
+	 * Returns an SQL query to update a revocation token in a table
+	 *
+	 * @return {@link SqlQuery}
+	 */
+	protected abstract SqlQuery getUpdateRevocationTokenEntryQuery();
 	
 	/**
-	 * Returns an sql query to remove a record from DB
+	 * Returns an sql query to remove a revocation token from DB
 	 *
 	 * @return {@link SqlQuery}
 	 */

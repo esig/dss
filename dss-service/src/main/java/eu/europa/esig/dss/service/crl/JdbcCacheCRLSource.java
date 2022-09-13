@@ -60,6 +60,11 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	private static final SqlQuery SQL_INIT_CREATE_TABLE = SqlQuery.createQuery("CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BLOB, ISSUER LONGVARBINARY)");
 
 	/**
+	 * Used to drop the cache table
+	 */
+	private static final SqlQuery SQL_DROP_TABLE = SqlQuery.createQuery("DROP TABLE CACHED_CRL");
+
+	/**
 	 * Used via the find method to insert a new record
 	 */
 	private static final SqlQuery SQL_FIND_INSERT = SqlQuery.createQuery("INSERT INTO CACHED_CRL (ID, DATA, ISSUER) VALUES (?, ?, ?)");
@@ -73,11 +78,6 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	 * Used via the find method to remove an existing record by the id
 	 */
 	private static final SqlQuery SQL_FIND_REMOVE = SqlQuery.createQuery("DELETE FROM CACHED_CRL WHERE ID = ?");
-	
-	/**
-	 * Used to drop the cache table
-	 */
-	private static final SqlQuery SQL_DROP_TABLE = SqlQuery.createQuery("DROP TABLE CACHED_CRL");
 
 	/**
 	 * A list of requests to extract the certificates by
@@ -97,6 +97,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	 * Default constructor
 	 */
 	public JdbcCacheCRLSource() {
+		// empty
 	}
 	
 	@Override
@@ -107,6 +108,16 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 	@Override
 	protected SqlQuery getTableExistenceQuery() {
 		return SQL_INIT_CHECK_EXISTENCE;
+	}
+
+	@Override
+	protected SqlQuery getInsertRevocationTokenEntryQuery() {
+		return SQL_FIND_INSERT;
+	}
+
+	@Override
+	protected SqlQuery getUpdateRevocationTokenEntryQuery() {
+		return SQL_FIND_UPDATE;
 	}
 
 	@Override
@@ -161,7 +172,7 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
-		getJdbcCacheConnector().execute(SQL_FIND_INSERT, revocationKey, crlValidity.getDerEncoded(),
+		getJdbcCacheConnector().execute(getInsertRevocationTokenEntryQuery(), revocationKey, crlValidity.getDerEncoded(),
 				crlValidity.getIssuerToken().getEncoded());
 	}
 
@@ -170,8 +181,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
 		CRLToken crlToken = (CRLToken) token;
 		CRLValidity crlValidity = crlToken.getCrlValidity();
 
-		getJdbcCacheConnector().execute(SQL_FIND_UPDATE, crlValidity.getDerEncoded(), crlValidity.getIssuerToken().getEncoded(),
-				revocationKey);
+		getJdbcCacheConnector().execute(getUpdateRevocationTokenEntryQuery(), crlValidity.getDerEncoded(),
+				crlValidity.getIssuerToken().getEncoded(), revocationKey);
 	}
 
 	@Override

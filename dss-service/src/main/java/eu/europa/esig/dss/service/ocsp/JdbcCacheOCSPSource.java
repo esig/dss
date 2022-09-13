@@ -99,6 +99,7 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	 * Default constructor
 	 */
 	public JdbcCacheOCSPSource() {
+		// empty
 	}
 
 	@Override
@@ -112,13 +113,23 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	}
 
 	@Override
-	protected SqlQuery getRemoveRevocationTokenEntryQuery() {
-		return SQL_FIND_REMOVE;
+	protected SqlQuery getDeleteTableQuery() {
+		return SQL_DROP_TABLE;
 	}
 
 	@Override
-	protected SqlQuery getDeleteTableQuery() {
-		return SQL_DROP_TABLE;
+	protected SqlQuery getInsertRevocationTokenEntryQuery() {
+		return SQL_FIND_INSERT;
+	}
+
+	@Override
+	protected SqlQuery getUpdateRevocationTokenEntryQuery() {
+		return SQL_FIND_UPDATE;
+	}
+
+	@Override
+	protected SqlQuery getRemoveRevocationTokenEntryQuery() {
+		return SQL_FIND_REMOVE;
 	}
 
 	@Override
@@ -151,19 +162,19 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 
 	@Override
 	protected void insertRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
-		getJdbcCacheConnector().execute(SQL_FIND_INSERT, revocationKey, token.getEncoded(), token.getSourceURL());
+		getJdbcCacheConnector().execute(getInsertRevocationTokenEntryQuery(), revocationKey, token.getEncoded(), token.getSourceURL());
 	}
 
 	/**
 	 * Updates the currently stored OCSP token for the given <code>key</code>
 	 * with supplied <code>token</code>.
 	 *
-	 * @param token
-	 *            new OCSP token
+	 * @param revocationKey {@link String} the key of the revocation data to be updated
+	 * @param token new OCSP token
 	 */
 	@Override
 	protected void updateRevocation(final String revocationKey, final RevocationToken<OCSP> token) {
-		getJdbcCacheConnector().execute(SQL_FIND_UPDATE, token.getEncoded(), token.getSourceURL(), revocationKey);
+		getJdbcCacheConnector().execute(getUpdateRevocationTokenEntryQuery(), token.getEncoded(), token.getSourceURL(), revocationKey);
 	}
 
 	@Override
