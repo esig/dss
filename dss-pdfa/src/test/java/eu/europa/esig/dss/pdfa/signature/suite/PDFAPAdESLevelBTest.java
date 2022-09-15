@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pdfa.signature.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -26,19 +26,17 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFAPAdESLevelBTest extends AbstractPAdESTestSignature {
+public class PDFAPAdESLevelBTest extends AbstractPDFATestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -68,10 +66,8 @@ public class PDFAPAdESLevelBTest extends AbstractPAdESTestSignature {
 	protected void checkPDFAInfo(DiagnosticData diagnosticData) {
 		super.checkPDFAInfo(diagnosticData);
 
-		assertTrue(diagnosticData.isPDFAValidationPerformed());
+		assertEquals(1, diagnosticData.getSignatures().size());
 		assertEquals("PDF/A-1B", diagnosticData.getPDFAProfileId());
-		assertTrue(diagnosticData.isPDFACompliant());
-		assertTrue(Utils.isCollectionEmpty(diagnosticData.getPDFAValidationErrors()));
 	}
 
 	@Override

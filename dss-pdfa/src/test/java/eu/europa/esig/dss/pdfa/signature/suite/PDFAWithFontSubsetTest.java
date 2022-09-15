@@ -18,8 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible.suite;
+package eu.europa.esig.dss.pdfa.signature.suite;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -28,8 +29,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class PAdESWithFontSubsetTest extends AbstractPAdESTestSignature {
+public class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
 
     private static final String FONT_NAME = "PTSerif-Regular";
 
@@ -69,6 +70,14 @@ public class PAdESWithFontSubsetTest extends AbstractPAdESTestSignature {
         signatureParameters.setImageParameters(signatureImageParameters);
 
         service = new PAdESService(getOfflineCertificateVerifier());
+    }
+
+    @Override
+    protected void checkPDFAInfo(DiagnosticData diagnosticData) {
+        super.checkPDFAInfo(diagnosticData);
+
+        assertEquals(1, diagnosticData.getSignatures().size());
+        assertEquals("PDF/A-1B", diagnosticData.getPDFAProfileId());
     }
 
     @Test
@@ -120,7 +129,7 @@ public class PAdESWithFontSubsetTest extends AbstractPAdESTestSignature {
 
     @Override
     protected String getSigningAlias() {
-        return GOOD_USER;
+        return PKIFactoryAccess.GOOD_USER;
     }
 
 }

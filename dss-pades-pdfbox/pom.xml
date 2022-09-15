@@ -38,16 +38,22 @@
 			<artifactId>pdfbox</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-pades</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		<!-- Allows to test PDF/A -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-pdfa</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pdfa</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pades</artifactId>
+			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

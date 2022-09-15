@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pdfa.signature.visible.suite;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess {
+public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 
 	protected PAdESService service;
 	protected PAdESSignatureParameters signatureParameters;
@@ -208,7 +208,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeType.PNG));
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeTypeEnum.PNG));
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(100);
@@ -225,7 +225,7 @@ public abstract class AbstractPDFAVisibleSignatureTest extends PKIFactoryAccess 
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeType.PNG));
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeTypeEnum.PNG));
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(100);

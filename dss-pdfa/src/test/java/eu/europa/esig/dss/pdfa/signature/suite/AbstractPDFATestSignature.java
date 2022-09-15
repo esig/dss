@@ -1,16 +1,15 @@
-package eu.europa.esig.dss.pades.signature.visible;
+package eu.europa.esig.dss.pdfa.signature.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pades.signature.visible.suite.PAdESWithFontSubsetTest;
+import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxWithFontSubsetTest extends PAdESWithFontSubsetTest {
+public abstract class AbstractPDFATestSignature extends AbstractPAdESTestSignature {
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
@@ -23,11 +22,8 @@ public class PdfBoxWithFontSubsetTest extends PAdESWithFontSubsetTest {
     protected void checkPDFAInfo(DiagnosticData diagnosticData) {
         super.checkPDFAInfo(diagnosticData);
 
-        assertEquals(1, diagnosticData.getSignatures().size());
-
         assertTrue(diagnosticData.isPDFAValidationPerformed());
-        assertEquals("PDF/A-1B", diagnosticData.getPDFAProfileId());
-        assertTrue(diagnosticData.isPDFACompliant());
+        assertTrue(diagnosticData.isPDFACompliant(), diagnosticData.getPDFAValidationErrors().toString());
         assertTrue(Utils.isCollectionEmpty(diagnosticData.getPDFAValidationErrors()));
     }
 
