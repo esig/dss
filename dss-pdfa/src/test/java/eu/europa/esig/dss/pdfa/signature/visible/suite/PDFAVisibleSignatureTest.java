@@ -38,6 +38,7 @@ import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.test.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -204,6 +205,36 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
+	public void testGeneratedTextToGrayDocWithoutColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setBackgroundColor(null);
+		textParameters.setText("My signature");
+		textParameters.setTextColor(null);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		// an RGB image is created
+		signAndValidate("PDF/A-2U", true);
+	}
+
+	@Test
+	public void testGeneratedTextToGrayDocWithGrayColor() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GRAY);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2U", true);
+	}
+
+	@Test
 	public void testAddGrayscaleImageToRGBDoc() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
@@ -246,6 +277,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 
 		SignedDocumentValidator validator = new PDFADocumentValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		validator.setSignaturePolicyProvider(new SignaturePolicyProvider());
 		Reports reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

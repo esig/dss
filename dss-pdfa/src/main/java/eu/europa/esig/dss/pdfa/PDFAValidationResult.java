@@ -2,6 +2,10 @@ package eu.europa.esig.dss.pdfa;
 
 import java.util.Collection;
 
+/**
+ * This class represents a validation result against PDF/A specification
+ *
+ */
 public class PDFAValidationResult {
 
     /** Assumed PDF/A profile for the document */
@@ -12,6 +16,13 @@ public class PDFAValidationResult {
 
     /** Collection of error messages returned by the validator, when validation failed */
     private Collection<String> errorMessages;
+
+    /**
+     * Default constructor
+     */
+    public PDFAValidationResult() {
+        // empty
+    }
 
     /**
      * Gets PDF/A profile Id
