@@ -40,6 +40,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
+import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
@@ -48,6 +49,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
+import eu.europa.esig.dss.simplereport.jaxb.XmlValidationMessages;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -142,6 +144,8 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			addSemantics(simpleReport);
 		}
 
+		addPDFAProfile(simpleReport);
+
 		return simpleReport;
 	}
 
@@ -166,6 +170,25 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private void addStatistics(XmlSimpleReport simpleReport) {
 		simpleReport.setValidSignaturesCount(validSignatureCount);
 		simpleReport.setSignaturesCount(totalSignatureCount);
+	}
+
+	private void addPDFAProfile(XmlSimpleReport simpleReport) {
+		String pdfaProfileId = diagnosticData.getPDFAProfileId();
+		if (pdfaProfileId != null) {
+			XmlPDFAInfo xmlPDFAInfo = new XmlPDFAInfo();
+			xmlPDFAInfo.setPDFAProfile(pdfaProfileId);
+			xmlPDFAInfo.setValid(diagnosticData.isPDFACompliant());
+			if (Utils.isCollectionNotEmpty(diagnosticData.getPDFAValidationErrors())) {
+				xmlPDFAInfo.setValidationMessages(toXmlValidationMessages(diagnosticData.getPDFAValidationErrors()));
+			}
+			simpleReport.setPDFAInfo(xmlPDFAInfo);
+		}
+	}
+
+	private XmlValidationMessages toXmlValidationMessages(Collection<String> errors) {
+		XmlValidationMessages xmlValidationMessages = new XmlValidationMessages();
+		xmlValidationMessages.getError().addAll(errors);
+		return xmlValidationMessages;
 	}
 
 	/**

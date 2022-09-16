@@ -22,7 +22,7 @@
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
 			<xs:element name="ContainerType" type="ContainerType" minOccurs="0" />
-			<xs:element name="PDFAProfile" type="xs:string" minOccurs="0" />
+			<xs:element name="PDFAInfo" type="PDFAInfo" minOccurs="0" />
 			
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
@@ -40,6 +40,20 @@
 			<xs:enumeration value="ASiC-E" />
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:complexType name="PDFAInfo">
+		<xs:sequence>
+			<xs:element name="PDFAProfile" type="xs:string" minOccurs="0" />
+			<xs:element name="ValidationMessages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Error" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="valid" type="xs:boolean" />
+	</xs:complexType>
 	
 	<xs:complexType name="Token" abstract="true">
 		<xs:sequence>

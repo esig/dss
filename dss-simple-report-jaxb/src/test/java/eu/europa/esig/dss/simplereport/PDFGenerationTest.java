@@ -66,6 +66,11 @@ public class PDFGenerationTest {
 	}
 
 	@Test
+	public void generatePdfaSimpleReport() throws Exception {
+		createAndValidate("sr-pades.xml");
+	}
+
+	@Test
 	public void generateSigAndTstSimpleReport() throws Exception {
 		createAndValidate("sr-sig-and-tst.xml");
 	}

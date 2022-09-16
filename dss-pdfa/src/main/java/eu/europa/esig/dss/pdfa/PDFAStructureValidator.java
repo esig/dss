@@ -33,6 +33,13 @@ public class PDFAStructureValidator {
     }
 
     /**
+     * Default constructor
+     */
+    public PDFAStructureValidator() {
+        // empty
+    }
+
+    /**
      * This method validates a PDF/A structure for the given PDF document
      *
      * @param signedDocument PDF {@link DSSDocument} to be validated
@@ -68,7 +75,12 @@ public class PDFAStructureValidator {
 
     private Collection<String> getErrorMessages(ValidationResult validationResult) {
         return validationResult.getTestAssertions().stream().filter(a -> TestAssertion.Status.FAILED == a.getStatus())
-                .map(a -> a.getMessage()).collect(Collectors.toSet());
+                .map(a -> normalize(a.getMessage())).collect(Collectors.toSet());
+    }
+
+    private String normalize(String str) {
+        return str.trim().replaceAll("\n", " ").replaceAll("\t", " ")
+                .replaceAll(" +", " ");
     }
 
 }

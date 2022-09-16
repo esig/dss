@@ -22,6 +22,15 @@
 		<SignedFilesPresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
+	<PDFAConstraints>
+		<!-- PDF/A only -->
+<!--		<AcceptablePDFAProfiles Level="WARN">-->
+<!--			<Id>PDF/A-2A</Id>-->
+<!--			<Id>PDF/A-2B</Id>-->
+<!--			<Id>PDF/A-2U</Id>-->
+<!--		</AcceptablePDFAProfiles>-->
+<!--		<PDFACompliant Level="WARN" />-->
+	</PDFAConstraints>
 	<SignatureConstraints>
 		<StructuralValidation Level="WARN" />
 		<AcceptablePolicies Level="FAIL">

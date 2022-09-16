@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2019-07-01T06:50:17Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>OJ_L_2013_183_FULL.xml</DocumentName>
+    <ValidSignaturesCount>0</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <PDFAInfo valid="false">
+        <PDFAProfile>PDF/A-1B</PDFAProfile>
+        <ValidationMessages>
+            <Error>If an uncalibrated colour space is used in a file then that file shall contain a PDF/A-1 OutputIntent, as defined in 6.2.2</Error>
+            <Error>A Group object with an S key with a value of Transparency shall not be included in a form XObject.
+                A Group object with an S key with a value of Transparency shall not be included in a page dictionary</Error>
+            <Error>The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.</Error>
+            <Error>For all CIDFont subsets referenced within a conforming file, the font descriptor dictionary shall include a
+                CIDSet stream identifying which CIDs are present in the embedded CIDFont file, as described in PDF Reference Table 5.20</Error>
+            <Error>An XObject dictionary shall not contain the SMask key</Error>
+            <Error>DeviceRGB may be used only if the file has a PDF/A-1 OutputIntent that uses an RGB colour space</Error>
+        </ValidationMessages>
+    </PDFAInfo>
+    <Signature SignatureFormat="PAdES-BASELINE-B" Id="S-32E0E10DEDDA4D71E473BFF7B26966E350C5D3985F2B0DB447A5F90560769627">
+        <CertificateChain>
+            <Certificate>
+                <id>C-3F6B65DE1882F14F463AD4E8D9015E7780CD6E00D6C024E2E9D4FFE9474ED6C8</id>
+                <qualifiedName>Joaquin Romera Ramirez</qualifiedName>
+            </Certificate>
+            <Certificate>
+                <id>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</id>
+                <qualifiedName>LuxTrust Global Qualified CA</qualifiedName>
+            </Certificate>
+            <Certificate>
+                <id>C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950</id>
+                <qualifiedName>LuxTrust Global Root</qualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>INDETERMINATE</Indication>
+        <SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+        <AdESValidationDetails>
+            <Error>The certificate chain for signature is not trusted, it does not contain a trust anchor.</Error>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error>Unable to build a certificate chain up to a trusted list!</Error>
+            <Warning>The signature/seal is an INDETERMINATE AdES digital signature!</Warning>
+        </QualificationDetails>
+        <SigningTime>2013-07-02T06:03:10Z</SigningTime>
+        <BestSignatureTime>2013-07-02T06:03:10Z</BestSignatureTime>
+        <SignedBy>Joaquin Romera Ramirez</SignedBy>
+        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
+        <SignatureScope Id="FULL" name="L_18320130702EN.pdf" scope="FULL">Full PDF (FULL)</SignatureScope>
+    </Signature>
+</SimpleReport>

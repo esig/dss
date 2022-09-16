@@ -21,7 +21,7 @@
     <xsl:template match="dss:ValidSignaturesCount"/>
     <xsl:template match="dss:ValidationTime"/>
     <xsl:template match="dss:ContainerType"/>
-	<xsl:template match="dss:PDFAProfile"/>
+	<xsl:template match="dss:PDFAInfo"/>
 
     <xsl:template match="dss:ValidationPolicy">
 		<div>
@@ -512,7 +512,7 @@
 			        </dl>
 		        </xsl:if>
 
-				<xsl:if test="dss:PDFAProfile">
+				<xsl:if test="dss:PDFAInfo">
 					<dl>
 						<xsl:attribute name="class">row mb-0</xsl:attribute>
 						<dt>
@@ -523,7 +523,30 @@
 						<dd>
 							<xsl:attribute name="class">col-sm-9</xsl:attribute>
 
-							<xsl:value-of select="dss:PDFAProfile"/>
+							<span>
+								<xsl:attribute name="class">mr-2</xsl:attribute>
+								<xsl:value-of select="dss:PDFAInfo/dss:PDFAProfile"/>
+							</span>
+
+							<i>
+								<xsl:choose>
+									<xsl:when test="dss:PDFAInfo/@valid='true'">
+										<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
+										<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+										<xsl:attribute name="data-placement">right</xsl:attribute>
+										<xsl:if test="dss:PDFAInfo/dss:ValidationMessages">
+											<xsl:attribute name="title">
+												<xsl:for-each select="dss:PDFAInfo/dss:ValidationMessages/dss:Error">
+													<xsl:value-of select="concat(text(),';','&#10;')" />
+												</xsl:for-each>
+											</xsl:attribute>
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>
+							</i>
 						</dd>
 					</dl>
 				</xsl:if>

@@ -42,6 +42,10 @@ public class PDFAStructureValidatorTest {
         assertEquals("PDF/A-2U", result.getProfileId());
         assertFalse(result.isCompliant());
         assertFalse(Utils.isCollectionEmpty(result.getErrorMessages()));
+        assertEquals(1, result.getErrorMessages().size());
+        assertFalse(result.getErrorMessages().contains("\n"));
+        assertFalse(result.getErrorMessages().contains("\t"));
+        assertFalse(result.getErrorMessages().contains("  "));
     }
 
 }

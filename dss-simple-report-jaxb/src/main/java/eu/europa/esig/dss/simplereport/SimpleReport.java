@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
+import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
@@ -597,7 +598,25 @@ public class SimpleReport {
 	 * @return {@link String}
 	 */
 	public String getPDFAProfile() {
-		return wrapped.getPDFAProfile();
+		XmlPDFAInfo pdfaInfo = wrapped.getPDFAInfo();
+		if (pdfaInfo != null) {
+			return pdfaInfo.getPDFAProfile();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns whether the PDF document is compliant to PDF/A specification.
+	 * Returns FALSE for all non-PDF documents.
+	 *
+	 * @return if the document is compliant to the determined PDF/A profile
+	 */
+	public boolean isPDFACompliant() {
+		XmlPDFAInfo pdfaInfo = wrapped.getPDFAInfo();
+		if (pdfaInfo != null) {
+			return pdfaInfo.isValid();
+		}
+		return false;
 	}
 
 	/**

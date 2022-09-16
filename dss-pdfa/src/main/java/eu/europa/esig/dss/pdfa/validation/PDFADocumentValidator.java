@@ -71,7 +71,7 @@ public class PDFADocumentValidator extends PDFDocumentValidator {
      *
      * @return {@link PDFAValidationResult}
      */
-    protected PDFAValidationResult getPdfValidationResult() {
+    public PDFAValidationResult getPdfValidationResult() {
         return getPdfaStructureValidator().validate(document);
     }
 

@@ -10229,6 +10229,178 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void pdfaValidTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
+		valuesConstraint.setLevel(Level.FAIL);
+		valuesConstraint.getId().add("PDF/A-2A");
+		valuesConstraint.getId().add("PDF/A-2B");
+		valuesConstraint.getId().add("PDF/A-2U");
+		validationPolicy.getPDFAConstraints().setAcceptablePDFAProfiles(valuesConstraint);
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getPDFAConstraints().setPDFACompliant(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		boolean pdfAFormatCheckFound = false;
+		boolean pdfAComplianceCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_DDAPDFAF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				pdfAFormatCheckFound = true;
+			} else if (MessageTag.BBB_FC_IDPDFAC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				pdfAComplianceCheckFound = true;
+			}
+		}
+		assertTrue(pdfAFormatCheckFound);
+		assertTrue(pdfAComplianceCheckFound);
+	}
+
+	@Test
+	public void pdfaWrongFormatTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
+		valuesConstraint.setLevel(Level.FAIL);
+		valuesConstraint.getId().add("PDF/A-2B");
+		valuesConstraint.getId().add("PDF/A-2U");
+		validationPolicy.getPDFAConstraints().setAcceptablePDFAProfiles(valuesConstraint);
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getPDFAConstraints().setPDFACompliant(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_DDAPDFAF_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.FAILED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+
+		boolean pdfAFormatCheckFound = false;
+		boolean pdfAComplianceCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_DDAPDFAF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_DDAPDFAF_ANS.getId(), constraint.getError().getKey());
+				pdfAFormatCheckFound = true;
+			} else if (MessageTag.BBB_FC_IDPDFAC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				pdfAComplianceCheckFound = true;
+			}
+		}
+		assertTrue(pdfAFormatCheckFound);
+		assertFalse(pdfAComplianceCheckFound);
+	}
+
+	@Test
+	public void pdfaInvalidTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		xmlDiagnosticData.getPDFAInfo().setCompliant(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
+		valuesConstraint.setLevel(Level.FAIL);
+		valuesConstraint.getId().add("PDF/A-2A");
+		valuesConstraint.getId().add("PDF/A-2B");
+		valuesConstraint.getId().add("PDF/A-2U");
+		validationPolicy.getPDFAConstraints().setAcceptablePDFAProfiles(valuesConstraint);
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getPDFAConstraints().setPDFACompliant(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IDPDFAC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.FAILED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+
+		boolean pdfAFormatCheckFound = false;
+		boolean pdfAComplianceCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_DDAPDFAF.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				pdfAFormatCheckFound = true;
+			} else if (MessageTag.BBB_FC_IDPDFAC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_IDPDFAC_ANS.getId(), constraint.getError().getKey());
+				pdfAComplianceCheckFound = true;
+			}
+		}
+		assertTrue(pdfAFormatCheckFound);
+		assertTrue(pdfAComplianceCheckFound);
+	}
+
+	@Test
 	public void diagDataNotNull() throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(null);

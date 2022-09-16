@@ -700,54 +700,9 @@
 							<xsl:attribute name="column-width">75%</xsl:attribute>
 						</fo:table-column>
 						<fo:table-body>
-						
-							<xsl:if test="dss:ContainerType">
-								<fo:table-row>
-									<xsl:attribute name="margin-top">1px</xsl:attribute>
-									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-											<xsl:attribute name="font-weight">bold</xsl:attribute>
-												Container type:
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-											<xsl:value-of select="dss:ContainerType"/>
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-					        </xsl:if>
 
-							<xsl:if test="dss:PDFAProfile">
-								<fo:table-row>
-									<xsl:attribute name="margin-top">1px</xsl:attribute>
-									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-
-											<xsl:attribute name="font-weight">bold</xsl:attribute>
-											PDF/A Profile:
-										</fo:block>
-									</fo:table-cell>
-									<fo:table-cell>
-										<fo:block>
-											<xsl:attribute name="margin-top">1px</xsl:attribute>
-											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-
-											<xsl:value-of select="dss:PDFAProfile"/>
-										</fo:block>
-									</fo:table-cell>
-								</fo:table-row>
-							</xsl:if>
+							<xsl:apply-templates select="dss:ContainerType"/>
+							<xsl:apply-templates select="dss:PDFAInfo"/>
 						
 							<fo:table-row>
 								<xsl:attribute name="margin-top">1px</xsl:attribute>
@@ -798,6 +753,79 @@
 	       	
     	</fo:block-container>
     	
+	</xsl:template>
+
+	<xsl:template match="dss:ContainerType">
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					Container type:
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:value-of select="dss:ContainerType"/>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="dss:PDFAInfo">
+
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					PDF/A Profile:
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:value-of select="dss:PDFAProfile"/>
+
+					<xsl:if test="@valid = 'false'">
+						(failed)
+					</xsl:if>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+
+		<xsl:if test="dss:ValidationMessages">
+			<fo:table-row>
+				<xsl:attribute name="margin-top">1px</xsl:attribute>
+				<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+				<fo:table-cell>
+					<fo:block>
+						<xsl:attribute name="margin-top">1px</xsl:attribute>
+						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+						<xsl:attribute name="font-weight">bold</xsl:attribute>
+						PDF/A Validation Errors:
+					</fo:block>
+				</fo:table-cell>
+				<fo:table-cell>
+					<xsl:apply-templates select="dss:ValidationMessages/dss:Error"/>
+				</fo:table-cell>
+			</fo:table-row>
+		</xsl:if>
+
 	</xsl:template>
 	 
     <xsl:template match="dss:Semantic">
