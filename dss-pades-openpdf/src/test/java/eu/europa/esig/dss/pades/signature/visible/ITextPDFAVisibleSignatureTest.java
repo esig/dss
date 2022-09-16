@@ -6,10 +6,13 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
 import eu.europa.esig.dss.pdfa.signature.visible.suite.PDFAVisibleSignatureTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+// TODO : disabled due to OpenPdf issues (see PR #814, #815)
+@Disabled
 public class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
 
     @Override
