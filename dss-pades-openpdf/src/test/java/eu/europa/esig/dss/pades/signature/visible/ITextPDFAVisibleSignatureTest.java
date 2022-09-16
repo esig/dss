@@ -34,4 +34,25 @@ public class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
         signAndValidate("PDF/A-2A", true);
     }
 
+    @Test
+    public void testAddGrayscalePNGImageToGrayColorSpaceDoc() throws IOException {
+        documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
+
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        // iText does not support PNG-grayscale images
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.png"), "grayscale_image.png", MimeTypeEnum.PNG));
+
+        SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+        fieldParameters.setOriginX(100);
+        fieldParameters.setOriginY(100);
+        fieldParameters.setWidth(100);
+        fieldParameters.setHeight(150);
+        imageParameters.setFieldParameters(fieldParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
+
+        // iText does not support PNG-grayscale
+        signAndValidate("PDF/A-2A", false);
+    }
+
 }

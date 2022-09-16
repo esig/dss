@@ -24,6 +24,7 @@ import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -235,6 +236,22 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
+	public void testGeneratedTextToGrayDocWithGrayColorAutomaticRotation() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My signature");
+		textParameters.setTextColor(Color.GRAY);
+		imageParameters.setTextParameters(textParameters);
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2A", true);
+	}
+
+	@Test
 	public void testAddGrayscaleImageToRGBDoc() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
@@ -268,12 +285,31 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 		signAndValidate("PDF/A-2U", true);
 	}
 
+	@Test
+	public void testAddGrayscaleImageToGrayColorSpaceDoc() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/grayscale_image.jpg"), "grayscale_image.jpg", MimeTypeEnum.JPEG));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(100);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		signAndValidate("PDF/A-2A", true);
+	}
+
 	protected void signAndValidate(String expectedPdfAProfile, boolean expectedValidPDFA) throws IOException {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
-		// signedDocument.save("target/test.pdf");
+		// signedDocument.save("target/test-pdfa.pdf");
 
 		SignedDocumentValidator validator = new PDFADocumentValidator(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
