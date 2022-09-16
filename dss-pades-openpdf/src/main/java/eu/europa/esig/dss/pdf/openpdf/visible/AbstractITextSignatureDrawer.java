@@ -27,21 +27,32 @@ import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.awt.color.ColorSpace;
+import java.awt.color.ICC_Profile;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The abstract implementation of an IText (OpenPDF) signature drawer
  */
 public abstract class AbstractITextSignatureDrawer implements ITextSignatureDrawer, SignatureFieldBoxBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractITextSignatureDrawer.class);
 
 	/** PdfReader */
 	private PdfReader reader;
@@ -63,6 +74,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 		this.parameters = parameters;
 		this.reader = reader;
 		this.appearance = appearance;
+		checkColorSpace(reader);
 	}
 	
 	/**
@@ -140,6 +152,115 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Method to check if the target image's color space is present in the document's catalog
+	 *
+	 * @param reader {@link PdfReader} to check color profiles in
+	 */
+	protected void checkColorSpace(PdfReader reader) {
+		if (!parameters.isEmpty()) {
+			PdfDictionary catalog = reader.getCatalog();
+			List<List<String>> profiles = getOutputIntents(catalog);
+			PdfName colorSpaceName = getExpectedColorSpaceName();
+			if (Utils.isCollectionEmpty(profiles)) {
+				addColorSpace(catalog, colorSpaceName);
+
+			} else if (profiles.size() > 1) {
+				LOG.warn("PDF contains multiple color spaces. Be aware: not compatible with PDF/A.");
+
+			} else {
+				if (PdfName.DEVICECMYK.equals(colorSpaceName) && !isProfilePresent(profiles, ImageUtils.CMYK_PROFILE_NAME)) {
+					LOG.warn("PDF does not contain a CMYK profile! Be aware: not compatible with PDF/A.");
+				} else if (PdfName.DEVICERGB.equals(colorSpaceName) && !isProfilePresent(profiles, ImageUtils.RGB_PROFILE_NAME)) {
+					LOG.warn("PDF does not contain an RGB profile! Be aware: not compatible with PDF/A.");
+				}
+				// GRAY profile is supported by RGB and CMYK
+			}
+
+		}
+	}
+
+	private List<List<String>> getOutputIntents(PdfDictionary catalog) {
+		List<List<String>> profiles = new ArrayList<>();
+		PdfArray outputIntentsArray = catalog.getAsArray(PdfName.OUTPUTINTENTS);
+		if (outputIntentsArray != null) {
+			for (int i = 0; i < outputIntentsArray.size(); i++) {
+				PdfDictionary dict = outputIntentsArray.getAsDict(i);
+				if (dict != null) {
+					List<String> outputIntents = new ArrayList<>();
+					PdfString str = dict.getAsString(PdfName.INFO);
+					if (str != null) {
+						outputIntents.add(str.toString());
+					}
+					str = dict.getAsString(PdfName.OUTPUTCONDITION);
+					if (str != null) {
+						outputIntents.add(str.toString());
+					}
+					str = dict.getAsString(PdfName.OUTPUTCONDITIONIDENTIFIER);
+					if (str != null) {
+						outputIntents.add(str.toString());
+					}
+					profiles.add(outputIntents);
+				}
+			}
+		}
+		return profiles;
+	}
+
+	/**
+	 * Returns color space name for the provided image
+	 *
+	 * @return {@link PdfName} color space name
+	 */
+	protected abstract PdfName getExpectedColorSpaceName();
+
+	/**
+	 * This method is used to add a new required color space to a document
+	 *
+	 * @param catalog {@link PdfDictionary} from a PDF document to add a new color space into
+	 * @param colorSpaceName {@link PdfName} a color space name to add
+	 */
+	protected void addColorSpace(PdfDictionary catalog, PdfName colorSpaceName) {
+		// sRGB supports both RGB and Grayscale color spaces
+		if (PdfName.DEVICERGB.equals(colorSpaceName) || PdfName.DEVICEGRAY.equals(colorSpaceName)) {
+			try {
+				String outputCondition = ImageUtils.OUTPUT_INTENT_SRGB_PROFILE;
+				ICC_Profile iccProfile = ICC_Profile.getInstance(ColorSpace.CS_sRGB);
+
+				PdfWriter writer = appearance.getStamper().getWriter();
+				writer.setOutputIntents(outputCondition, outputCondition, null, null, iccProfile);
+
+				PdfDictionary extraCatalog = writer.getExtraCatalog();
+				PdfArray outputIntents = extraCatalog.getAsArray(PdfName.OUTPUTINTENTS);
+				outputIntents.getAsDict(0).put(PdfName.S, PdfName.GTS_PDFA1); // by default OpenPdf defines PDFX
+
+				catalog.mergeDifferent(extraCatalog);
+
+				LOG.info("No color profile is present in the provided document. " +
+						"A new color profile '{}' has been added.", outputCondition);
+
+			} catch (IOException e) {
+				LOG.warn("Unable to add a new color profile to PDF document : {}", e.getMessage(), e);
+			}
+
+		} else {
+			LOG.warn("Color space '{}' is not supported. Be aware: the produced PDF may be not compatible with PDF/A.",
+					colorSpaceName);
+		}
+	}
+
+	private boolean isProfilePresent(List<List<String>> profiles, String profileName) {
+		for (List<String> profile : profiles) {
+			for (String outputIntent : profile) {
+				if (Utils.isStringNotEmpty(outputIntent) &&
+						outputIntent.toLowerCase().contains(profileName)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

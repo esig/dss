@@ -1283,6 +1283,31 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		drawAndCompareVisually();
 	}
 
+	@Test
+	public void grayscalePdfTest() throws IOException {
+		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
+
+		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+
+		service = new PAdESService(getOfflineCertificateVerifier());
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My Signature");
+		textParameters.setTextColor(Color.GRAY);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+	}
+
 	@Override
 	protected String getTestName() {
 		return testName;

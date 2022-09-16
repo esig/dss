@@ -40,6 +40,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.IOException;
@@ -66,6 +67,31 @@ public class ImageUtils {
 	 * Contains supported transparent color spaces
 	 */
 	private static final int[] IMAGE_TRANSPARENT_TYPES;
+
+	/**
+	 * Defines the default value for a non-transparent alpha layer
+	 * */
+	public static final float OPAQUE_VALUE = 0xff;
+
+	/**
+	 * The CMYK color profile
+	 */
+	public static final String CMYK_PROFILE_NAME = "cmyk";
+
+	/**
+	 * The RGB color profile
+	 */
+	public static final String RGB_PROFILE_NAME = "rgb";
+
+	/**
+	 * The GRAY color profile
+	 */
+	public static final String GRAY_PROFILE_NAME = "gray";
+
+	/**
+	 * Defines the sRGB ICC profile name used in OutputIntent
+	 */
+	public static final String OUTPUT_INTENT_SRGB_PROFILE = "sRGB";
 
 	/**
 	 * Default image DPI
@@ -460,6 +486,36 @@ public class ImageUtils {
 			}
 		}
 		return diffAmount;
+	}
+
+	/**
+	 * This method verifies if the provided color lies in the grayscale color space (e.g. WHITE, GRAY, BLACK)
+	 *
+	 * @param color {@link Color} to check
+	 * @return TRUE if the color is a grayscale, FALSE otherwise
+	 */
+	public static boolean isGrayscale(Color color) {
+		return color != null && color.getAlpha() == OPAQUE_VALUE &&
+				color.getRed() == color.getGreen() && color.getRed() == color.getBlue();
+	}
+
+	/**
+	 * This method verifies whether the {@code parameters} contain at least one RGB color
+	 *
+	 * @param parameters {@link SignatureImageParameters} to check
+	 * @return TRUE if the given parameters contains at least one RGB color, FALSE otherwise
+	 */
+	public static boolean containRGBColor(SignatureImageParameters parameters) {
+		if (parameters.getBackgroundColor() != null && !ImageUtils.isGrayscale(parameters.getBackgroundColor())) {
+			return true;
+		}
+		if (parameters.getTextParameters().getTextColor() != null && !ImageUtils.isGrayscale(parameters.getTextParameters().getTextColor())) {
+			return true;
+		}
+		if (parameters.getTextParameters().getBackgroundColor() != null && !ImageUtils.isGrayscale(parameters.getTextParameters().getBackgroundColor())) {
+			return true;
+		}
+		return false;
 	}
 
 }
