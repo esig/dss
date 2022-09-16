@@ -600,6 +600,21 @@ not present
     ...
 </BasicSignatureConstraints>
 ----
+|PDF/A checks (see <<PdfaConstraints>>)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<PDFAConstraints>
+    <AcceptablePDFAProfiles Level="WARN">
+        <Id>PDF/A-2A</Id>
+        <Id>PDF/A-2B</Id>
+        <Id>PDF/A-2U</Id>
+    </AcceptablePDFAProfiles>
+    <PDFACompliant Level="WARN" />
+</PDFAConstraints>
+----
 
 |===
 

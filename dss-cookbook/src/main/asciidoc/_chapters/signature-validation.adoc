@@ -200,6 +200,7 @@ For a description of available for configuration constraints within the XML vali
 The validation policy allows defining different behavior for various token types or signature formats. The following groups are considered:
 
 * `ContainerConstraints` - defines rules for processing of ASiC containers validation;
+* `PDFAConstraints` - contains checks to verify compliance of a PDF document to PDF/A specification (optional, see <<pdfa>> for more details);
 * `SignatureConstraints` - defines rules for signature basic building blocks processing and the related certificate chain;
 * `CounterSignatureConstraints` - allows defining custom rules for counter signature processing;
 * `Timestamp` - defines rules for timestamp validation;
@@ -602,3 +603,43 @@ To validate a password-protected PDF, a password string shall be provided within
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignProtectedPdfPadesBLevelTest.java[tags=validate]
 ----
+
+[[pdfa]]
+==== PDF/A
+
+Since version `5.12` DSS provides a possibility to validate conformance of a PDF document against the PDF/A specification. The verification process is conducted by a https://verapdf.org/[VeraPDF] library.
+
+NOTE: DSS does not claim compliance with the PDF/A specification for created or extended PDF documents with services provided in DSS. The PDF/A verification feature is provided exclusively for validation purposes.
+
+The PDF/A validation is present in a dedicated `dss-pdfa` module that makes the inclusion of PDF/A validation process optional and does not interfere with the default PAdES validation.
+
+In order to include PDF/A validation to your project, the `dss-pdfa` module shall be defined within `pom.xml` file of the project as a dependency:
+
+[source,xml,indent=0]
+.PDF/A module inclusion
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-pdfa</artifactId>
+</dependency>
+----
+
+NOTE: PDF/A module does not replace `dss-pades-pdfbox` or `dss-pades-openpdf` implementation. If required, `dss-pdfa` has to be included in addition to the chosen implementation.
+
+The module `dss-pdfa` implements its own `DocumentValidator`, as well as `DocumentValidatorFactory`. In order to perform PDF/A validation on a PDF document, the class `PDFADocumentValidator` has to be used:
+
+[source,java,indent=0]
+.PDFADocumentValidator validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=pdfa]
+----
+
+To load the `PDFADocumentValidator` instead of default PDF validator using `SignedDocumentValidator.fromDocument(DSSDocument)` method, the new class shall be defined within `eu.europa.esig.dss.validation.DocumentValidatorFactory` file in the directory `src/main/java/resources/META-INF/services/`, as following:
+
+[source,xml,indent=0]
+.Enforce PDF/A validator in "src/main/java/resources/META-INF/services/eu.europa.esig.dss.validation.DocumentValidatorFactory" file
+----
+eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory
+----
+
+It is also possible to enforce verification of a PDF/A profile and its validity during the signature validation process using the customized XML validation policy (see <<validationPolicy>>). See <<PdfaConstraints>> for more details.

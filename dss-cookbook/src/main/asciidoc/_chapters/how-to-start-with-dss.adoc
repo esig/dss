@@ -288,6 +288,7 @@ dss-jades:: Implementation of the JAdES signature, augmentation and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, augmentation and validation with https://pdfbox.apache.org/[PDFBox].
 dss-pades-openpdf:: Implementation of the PAdES signature, augmentation and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
+dss-pdfa:: Performs PDF validation against PDF/A specification.
 dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
 dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on CAdES signatures.
 dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on XAdES signatures.

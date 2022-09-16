@@ -151,6 +151,61 @@ Default: `WARN`
 </ContainerConstraints>
 ----
 
+[[PdfaConstraints]]
+===== PDF/A constraints
+
+The `<PDFAConstraints>` block defines rules for verification of PDF documents against PDF/A specification. In order to perform PDF/A validation, the module `dss-pdfa` shall be loaded as a dependency within the project. See <<pdfa>> for more details.
+
+The `<PDFAConstraints>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.SignatureConstraints element definition
+----
+<ConstraintsParameters>
+    ...
+    <PDFAConstraints>
+        ...
+    </PDFAConstraints>
+    ...
+</ConstraintsParameters>
+----
+
+* `AcceptablePDFAProfiles` - this constraint is used to define a list of PDF/A formats to be supported by the current validation process (e.g. `PDF/A-2A`, `PDF/A-2U`, etc.). When enforced, validator will accept only those PDF/A profile identifiers which are defined within the constraint. For other types, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only with PDF/A feature enabled
+
+[source,xml,indent=0]
+.Example of AcceptablePDFAProfiles usage (with WARN validation level)
+----
+<PDFAConstraints>
+    ...
+    <AcceptablePDFAProfiles Level="WARN">
+        <Id>PDF/A-2A</Id>
+        <Id>PDF/A-2B</Id>
+        <Id>PDF/A-2U</Id>
+    </AcceptablePDFAProfiles>
+    ...
+</PDFAConstraints>
+----
+
+* `PDFACompliant` - this constraint is used to define whether the performed checks against PDF/A specification succeeded. When enforced, validator will accept only those PDF/A profile identifiers which are defined within the constraint. If the PDF document is not compliant to the PDF/A specification, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only with PDF/A feature enabled
+
+[source,xml,indent=0]
+.Example of PDFACompliant usage (with WARN validation level)
+----
+<PDFAConstraints>
+    ...
+    <PDFACompliant Level="WARN" />
+    ...
+</PDFAConstraints>
+----
+
 ===== Signature constraints
 
 The `<SignatureConstraints>` block defines rules for checking signature validation rules, signed and unsigned attributes. The `<SignatureConstraints>` element shall be a child of `ConstraintsParameters`:
@@ -2037,6 +2092,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |ManifestFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SignedFilesPresent              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |AllFilesSigned                  |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.2+|PDFAConstraints               |AcceptablePDFAProfiles          |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+                                  |PDFACompliant                   |LevelConstraint                   |FAILED                |FORMAT_FAILURE
 .10+|SignatureConstraints         |StructuralValidation            |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |AcceptablePolicies              |MultiValuesConstraint             |INDETERMINATE         |POLICY_PROCESSING_ERROR
                                   |PolicyAvailable                 |LevelConstraint                   |INDETERMINATE         |SIGNATURE_POLICY_NOT_AVAILABLE
