@@ -57,15 +57,6 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPdfBoxSignatureDrawer.class);
 
-	/** The CMYK color profile */
-	private static final String CMYK_PROFILE_NAME = "cmyk";
-
-	/** The RGB color profile */
-	private static final String RGB_PROFILE_NAME = "rgb";
-
-	/** Defines the sRGB ICC profile name used in OutputIntent */
-	private static final String OUTPUT_INTENT_SRGB_PROFILE = "sRGB";
-
 	/** Visual signature parameters */
 	protected SignatureImageParameters parameters;
 
@@ -135,9 +126,9 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 				LOG.warn("PDF contains multiple color spaces. Be aware: not compatible with PDF/A.");
 
 			} else {
-				if (COSName.DEVICECMYK.getName().equals(colorSpaceName) && !isProfilePresent(profiles, CMYK_PROFILE_NAME)) {
+				if (COSName.DEVICECMYK.getName().equals(colorSpaceName) && !isProfilePresent(profiles, ImageUtils.CMYK_PROFILE_NAME)) {
 					LOG.warn("PDF does not contain a CMYK profile! Be aware: not compatible with PDF/A.");
-				} else if (COSName.DEVICERGB.getName().equals(colorSpaceName) && !isProfilePresent(profiles, RGB_PROFILE_NAME)) {
+				} else if (COSName.DEVICERGB.getName().equals(colorSpaceName) && !isProfilePresent(profiles, ImageUtils.RGB_PROFILE_NAME)) {
 					LOG.warn("PDF does not contain an RGB profile! Be aware: not compatible with PDF/A.");
 				}
 				// GRAY profile is supported by RGB and CMYK
@@ -159,13 +150,12 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	 *
 	 * @param catalog {@link PDDocumentCatalog} from a PDF document to add a new color space into
 	 * @param colorSpaceName {@link String} a color space name to add
-	 * @throws IOException if an exception occurs
 	 */
-	protected void addColorSpace(PDDocumentCatalog catalog, String colorSpaceName) throws IOException {
+	protected void addColorSpace(PDDocumentCatalog catalog, String colorSpaceName) {
 		// sRGB supports both RGB and Grayscale color spaces
 		if (COSName.DEVICERGB.getName().equals(colorSpaceName) || COSName.DEVICEGRAY.getName().equals(colorSpaceName)) {
 			int colorSpace = ColorSpace.CS_sRGB;
-			String outputCondition = OUTPUT_INTENT_SRGB_PROFILE;
+			String outputCondition = ImageUtils.OUTPUT_INTENT_SRGB_PROFILE;
 
 			ICC_Profile iccProfile = ICC_Profile.getInstance(colorSpace);
 			try (InputStream is = new ByteArrayInputStream(iccProfile.getData())) {
@@ -173,9 +163,13 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 				outputIntent.setOutputCondition(outputCondition);
 				outputIntent.setOutputConditionIdentifier(outputCondition);
 				catalog.setOutputIntents(Collections.singletonList(outputIntent));
+
+				LOG.info("No color profile is present in the provided document. " +
+						"A new color profile '{}' has been added.", outputCondition);
+
+			} catch (IOException e) {
+				LOG.warn("Unable to add a new color profile to PDF document : {}", e.getMessage(), e);
 			}
-			LOG.info("No color profile is present in the provided document. " +
-					"A new color profile '{}' has been added.", outputCondition);
 
 		} else {
 			LOG.warn("Color space '{}' is not supported. Be aware: the produced PDF may be not compatible with PDF/A.",
