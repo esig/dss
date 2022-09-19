@@ -799,10 +799,10 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 
 					<xsl:value-of select="dss:PDFAProfile"/>
-
-					<xsl:if test="@valid = 'false'">
-						(failed)
-					</xsl:if>
+					<xsl:choose>
+						<xsl:when test="@valid = 'true'"> (valid)</xsl:when>
+						<xsl:otherwise> (failed)</xsl:otherwise>
+					</xsl:choose>
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>

@@ -532,6 +532,9 @@
 								<xsl:choose>
 									<xsl:when test="dss:PDFAInfo/@valid='true'">
 										<xsl:attribute name="class">fa fa-check-circle text-success</xsl:attribute>
+										<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+										<xsl:attribute name="data-placement">right</xsl:attribute>
+										<xsl:attribute name="title">Valid</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
 										<xsl:attribute name="class">fa fa-times-circle text-danger</xsl:attribute>
