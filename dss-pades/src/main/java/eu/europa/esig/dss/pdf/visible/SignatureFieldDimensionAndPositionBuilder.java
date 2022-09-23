@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
+import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.SignerTextHorizontalAlignment;
 import eu.europa.esig.dss.enumerations.SignerTextVerticalAlignment;
 import eu.europa.esig.dss.enumerations.TextWrapping;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -298,16 +300,10 @@ public class SignatureFieldDimensionAndPositionBuilder {
     }
     
     /**
-     * Attempts to fit the signature's text content into as much of the
-     * signature box as possible and returns the corresponding text box. If the
-     * signature contains an image then only half the signature box is used, if
-     * not then the entire signature box is used. Vertical and horizontal signer
-     * text positions are treated accordingly when calculating the half
-     * signature box. The modified text content and font size are returned via
-     * the {@code textParameters}.
+     * Attempts to fit the signature's text content into as much of the available signature box as possible
+     * and returns the corresponding text box.
      *
-     * @param textParameters the signature's text parameters, text content and
-     * font size will be modified
+     * @param textParameters the signature's text parameters, text content and font size will be modified
      * @param width the width of the signature box
      * @param height the height of the signature box
      * @param padding the padding of the text box
@@ -321,14 +317,37 @@ public class SignatureFieldDimensionAndPositionBuilder {
         float boxWidth = width - doublePadding;
         float boxHeight = height - doublePadding;
         if (imageParameters.getImage() != null) {
+            float imageWidth = dimensionAndPosition.getImageWidth();
+            float imageHeight = dimensionAndPosition.getImageHeight();
+            switch (imageParameters.getImageScaling()) {
+                case STRETCH:
+                case CENTER:
+                    // additional logic is not required
+                    break;
+                case ZOOM_AND_CENTER:
+                    float imageRatio = imageWidth / imageHeight;
+                    float boxRatio = width / height;
+                    if (imageRatio < boxRatio) {
+                        imageWidth = height * imageRatio;
+                        imageHeight = height;
+                    } else {
+                        imageWidth = width;
+                        imageHeight = width / imageRatio;
+                    }
+                    break;
+                default:
+                    throw new UnsupportedOperationException(
+                            String.format("ImageScaling '%s' is not implemented!", imageParameters.getImageScaling()));
+            }
+
             switch (textParameters.getSignerTextPosition()) {
                 case LEFT:
                 case RIGHT:
-                    boxWidth = width - dimensionAndPosition.getImageWidth() - doublePadding;
+                    boxWidth = width - imageWidth - doublePadding;
                     break;
                 case TOP:
                 case BOTTOM:
-                    boxHeight = height - dimensionAndPosition.getImageHeight() - doublePadding;
+                    boxHeight = height - imageHeight - doublePadding;
                     break;
                 default:
                     throw new IllegalArgumentException(String.format("The SignerTextPosition '%s' is not supported!",
@@ -515,12 +534,19 @@ public class SignatureFieldDimensionAndPositionBuilder {
     }
 
     private void assertConfigurationValid() {
-        if (imageParameters.getTextParameters() != null &&
-                (TextWrapping.FILL_BOX.equals(imageParameters.getTextParameters().getTextWrapping()) || TextWrapping.FILL_BOX_AND_LINEBREAK.equals(imageParameters.getTextParameters().getTextWrapping())) &&
-                (signatureFieldAnnotationBox == null || signatureFieldAnnotationBox.getWidth() == 0 || signatureFieldAnnotationBox.getHeight() == 0) &&
-                (imageParameters.getFieldParameters() == null || imageParameters.getFieldParameters().getWidth() == 0 || imageParameters.getFieldParameters().getHeight() == 0)) {
-            throw new IllegalArgumentException(String.format("Signature field dimensions are not defined! " +
-                    "Unable to use '%s' option.", imageParameters.getTextParameters().getTextWrapping()));
+        if (Utils.isStringNotEmpty(imageParameters.getTextParameters().getText())) {
+            TextWrapping textWrapping = imageParameters.getTextParameters().getTextWrapping();
+            if (TextWrapping.FILL_BOX.equals(textWrapping) || TextWrapping.FILL_BOX_AND_LINEBREAK.equals(textWrapping)) {
+                if ((signatureFieldAnnotationBox == null || signatureFieldAnnotationBox.getWidth() == 0 || signatureFieldAnnotationBox.getHeight() == 0) &&
+                        (imageParameters.getFieldParameters() == null || imageParameters.getFieldParameters().getWidth() == 0 || imageParameters.getFieldParameters().getHeight() == 0)) {
+                    throw new IllegalArgumentException(String.format("Signature field dimensions are not defined! " +
+                            "Unable to use '%s' option.", imageParameters.getTextParameters().getTextWrapping()));
+                }
+                if (imageParameters.getImage() != null && ImageScaling.STRETCH.equals(imageParameters.getImageScaling())) {
+                    throw new IllegalArgumentException(String.format("ImageScaling '%s' is not applicable with text wrapping '%s' option!",
+                            imageParameters.getImageScaling(), textWrapping));
+                }
+            }
         }
     }
 

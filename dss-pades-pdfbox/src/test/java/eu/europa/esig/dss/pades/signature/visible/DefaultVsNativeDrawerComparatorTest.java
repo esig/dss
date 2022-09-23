@@ -1272,14 +1272,6 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 
 		signatureParameters.setImageParameters(imageParameters);
 
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> drawAndCompareVisually());
-		assertEquals("Unable to create a visual signature. The signature field box is too small!", exception.getMessage());
-
-		// change zoom parameters
-		imageParameters.setZoom(25);
-		fieldParameters.setWidth(600);
-		fieldParameters.setHeight(120);
-
 		drawAndCompareVisually();
 	}
 
@@ -1301,6 +1293,124 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My Signature");
 		textParameters.setTextColor(Color.GRAY);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void dss2850Test() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(350);
+		fieldParameters.setOriginY(750);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(45);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally sealed by Me");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void stretchImageWithTextTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
+		imageParameters.setImageScaling(ImageScaling.STRETCH);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(350);
+		fieldParameters.setOriginY(750);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(45);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally sealed by Me");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("ImageScaling 'STRETCH' is not applicable with text wrapping 'FILL_BOX' option!"));
+
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
+
+		exception = assertThrows(IllegalArgumentException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("ImageScaling 'STRETCH' is not applicable with text wrapping 'FILL_BOX_AND_LINEBREAK' option!"));
+
+		textParameters.setTextWrapping(TextWrapping.FONT_BASED);
+
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void centerImageWithFillTextTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG));
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(250);
+		fieldParameters.setOriginY(750);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(45);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally sealed by Me");
+		textParameters.setTextWrapping(TextWrapping.FILL_BOX);
+		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
+		imageParameters.setTextParameters(textParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+	}
+
+	@Test
+	public void zoomAndCenterImageWithFontBaseTextTest() throws IOException {
+		initPdfATest();
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(350);
+		fieldParameters.setOriginY(750);
+		fieldParameters.setWidth(150);
+		fieldParameters.setHeight(45);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		textParameters.setText("Digitally sealed by Me");
+		textParameters.setTextWrapping(TextWrapping.FONT_BASED);
+		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
