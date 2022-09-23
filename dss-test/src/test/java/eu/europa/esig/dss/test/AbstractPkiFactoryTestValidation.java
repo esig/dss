@@ -66,6 +66,7 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.jaxb.object.Message;
@@ -1221,16 +1222,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		assertNotNull(simpleReport);
 
 		List<String> signatureIdList = simpleReport.getSignatureIdList();
+		assertEquals(simpleReport.getSignaturesCount(), signatureIdList.size());
+
+		int numberOfValidSignatures = 0;
 		for (String sigId : signatureIdList) {
 			Indication indication = simpleReport.getIndication(sigId);
 			assertNotNull(indication);
 			assertTrue(Indication.TOTAL_PASSED.equals(indication) || Indication.INDETERMINATE.equals(indication)
 					|| Indication.TOTAL_FAILED.equals(indication));
-			if (indication != Indication.TOTAL_PASSED) {
-				assertNotNull(simpleReport.getSubIndication(sigId));
-				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(sigId)));
-			} else {
+			if (Indication.TOTAL_PASSED.equals(indication)) {
 				assertTrue(Utils.isCollectionNotEmpty(simpleReport.getSignatureScopes(sigId)));
+
+				assertNull(simpleReport.getSubIndication(sigId));
+				assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(sigId)));
+
+				assertNotNull(simpleReport.getSignatureExtensionPeriodMax(sigId));
+				++numberOfValidSignatures;
+
+			} else {
+				SubIndication subIndication = simpleReport.getSubIndication(sigId);
+				assertNotNull(subIndication);
+				assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(sigId)));
+
+				if (SubIndication.TRY_LATER.equals(subIndication)) {
+					assertNotNull(simpleReport.getSignatureExtensionPeriodMax(sigId));
+				}
 			}
 			assertNotNull(simpleReport.getSignatureQualification(sigId));
 
@@ -1250,6 +1266,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(simpleReport.getTimestampQualification(tstId));
 			}
 		}
+		assertEquals(simpleReport.getValidSignaturesCount(), numberOfValidSignatures);
 
 		List<String> timestampIdList = simpleReport.getTimestampIdList();
 		for (String tstId : timestampIdList) {
