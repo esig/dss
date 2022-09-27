@@ -1204,6 +1204,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setWidth(200);
 		fieldParameters.setHeight(50);
 		imageParameters.setFieldParameters(fieldParameters);
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Digitally signed by JOHN GEORGE ANTHONY WILLIAMS\n" +
@@ -1322,10 +1323,6 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		imageParameters.setTextParameters(textParameters);
 
 		signatureParameters.setImageParameters(imageParameters);
-
-		drawAndCompareVisually();
-
-		textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
 
 		drawAndCompareVisually();
 	}
