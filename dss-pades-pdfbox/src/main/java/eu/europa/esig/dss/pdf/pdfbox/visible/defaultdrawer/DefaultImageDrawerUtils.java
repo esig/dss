@@ -270,6 +270,10 @@ public final class DefaultImageDrawerUtils {
         if ((image1 != null && ImageUtils.isTransparent(image1)) || (image2 != null && ImageUtils.isTransparent(image2))) {
             LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
             imageType = BufferedImage.TYPE_INT_ARGB;
+
+        } else if (BufferedImage.TYPE_CUSTOM == imageType) {
+            LOG.info("Original image type is not recognized! Use RGB as the target color profile.");
+            imageType = BufferedImage.TYPE_INT_RGB;
         }
 
         return imageType;
