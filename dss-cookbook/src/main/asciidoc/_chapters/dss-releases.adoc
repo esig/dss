@@ -330,7 +330,8 @@ PdfDocumentReader reader = ...
 SignatureFieldParameters signatureFieldParameters = ...
 PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
 pdfPermissionsChecker.checkDocumentPermissions(reader, signatureFieldParameters);
-=======
+----
+
 |MimeType namespace     a|[source,java]
 ----
 import eu.europa.esig.dss.model.MimeType;
