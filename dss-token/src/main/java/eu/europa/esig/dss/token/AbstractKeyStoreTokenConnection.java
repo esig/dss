@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.token.predicate.AllKeyEntryPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,8 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * The keyStore token connection
@@ -41,10 +44,28 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractKeyStoreTokenConnection.class);
 
 	/**
+	 * Filters keys obtained from token connection to be returned within {@code #getKeys()} method
+	 * Default : {@code AllPrivateKeyPredicate} - returns all keys extracted from the token connection
+	 */
+	private Predicate<DSSPrivateKeyEntry> keyEntryPredicate = new AllKeyEntryPredicate();
+
+	/**
 	 * Default constructor
 	 */
 	protected AbstractKeyStoreTokenConnection() {
 		// empty
+	}
+
+	/**
+	 * Sets a predicate to filter keys to be returned by {@code #getKeys()} method.
+	 * Default : {@code eu.europa.esig.dss.token.predicate.AllPrivateKeyPredicate} -
+	 * 			returns all keys extracted from the token connection
+	 *
+	 * @param keyEntryPredicate {@link Predicate} of {@link DSSPrivateKeyEntry}, e.g. {@code DSSKeyEntryPredicate}
+	 */
+	public void setKeyEntryPredicate(Predicate<DSSPrivateKeyEntry> keyEntryPredicate) {
+		Objects.requireNonNull(keyEntryPredicate, "Key entry predicate cannot be null!");
+		this.keyEntryPredicate = keyEntryPredicate;
 	}
 
 	/**
@@ -70,7 +91,7 @@ public abstract class AbstractKeyStoreTokenConnection extends AbstractSignatureT
 			while (aliases.hasMoreElements()) {
 				final String alias = aliases.nextElement();
 				DSSPrivateKeyEntry dssPrivateKeyEntry = getDSSPrivateKeyEntry(keyStore, alias, getKeyProtectionParameter());
-				if (dssPrivateKeyEntry != null) {
+				if (dssPrivateKeyEntry != null && keyEntryPredicate.test(dssPrivateKeyEntry)) {
 					list.add(dssPrivateKeyEntry);
 				}
 			}

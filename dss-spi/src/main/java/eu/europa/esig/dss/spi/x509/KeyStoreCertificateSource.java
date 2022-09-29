@@ -43,8 +43,6 @@ import java.util.Locale;
 
 /**
  * Implements a CertificateSource using a KeyStore (PKCS12, JKS,...).
- * 
- * Note: PKCS12 + JDK7 don't allow trust store
  *
  */
 @SuppressWarnings("serial")

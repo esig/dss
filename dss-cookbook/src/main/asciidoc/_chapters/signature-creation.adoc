@@ -241,7 +241,19 @@ The DSS framework is able to create signatures using different keystores: PKCS#1
 
 This design also allows other card providers/adopters to create their own implementations. For example, this can be used for a direct connection to the Smartcard through Java PC/SC.
 
-==== PKCS#11
+==== Available implementations
+
+The following implementations are provided within the framework:
+
+ * `Pkcs11SignatureToken` - for accessing smart cards or HSMs;
+ * `Pkcs12SignatureToken` - for accessing PKCS#12 (.p12) keystore;
+ * `MSCAPISignatureToken` - for accessing Microsoft keystore (e.g. on Windows OS);
+ * `AppleSignatureToken` - for accessing Keychain store in a MacOS environment;
+ * `JKSSignatureToken` - for accessing a Java KeyStore (i.e. .jks).
+
+More information about each available implementations may be found below.
+
+===== PKCS#11
 
 PKCS#11 is widely used to access smart cards and HSMs. Most commercial software uses PKCS#11 to access the signature key of the CA or to enrol user certificates. In the DSS framework, this standard is encapsulated in the class `Pkcs11SignatureToken`. It requires some installed drivers (dll, sso, etc.).
 [source,java,indent=0]
@@ -250,7 +262,7 @@ PKCS#11 is widely used to access smart cards and HSMs. Most commercial software 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS11Snippet.java[tags=demo]
 ----
 
-==== PKCS#12
+===== PKCS#12
 
 This standard defines a file format commonly used to store the private key and corresponding public key certificate protecting them with a password. It allows signing with a PKCS#12 keystore (.p12 file).
 In order to use this format with the DSS framework you have to go through the class `Pkcs12SignatureToken`.
@@ -261,7 +273,7 @@ In order to use this format with the DSS framework you have to go through the cl
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PKCS12Snippet.java[tags=demo]
 ----
 
-==== MS CAPI
+===== MS CAPI
 
 If the middleware for communicating with an SCDev provides a CSP based on MS CAPI (the Microsoft interface to communicate with SmartCards) specification, then you can use the `MSCAPISignatureToken` class to sign the documents.
 [source,java,indent=0]
@@ -270,12 +282,11 @@ If the middleware for communicating with an SCDev provides a CSP based on MS CAP
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/MSCAPISnippet.java[tags=demo]
 ----
 
-==== Apple Keystore
+===== Apple Keystore
 
 Since DSS 5.10 a new class `AppleSignatureToken` is provided within the source code allowing to access a Keychain store in a MacOS environment.
 
 WARNING: The API does not access keys from a smartcard, as opposite to the MS CAPI implementation.
-
 
 [source,java,indent=0]
 .AppleSignatureToken usage
@@ -283,7 +294,7 @@ WARNING: The API does not access keys from a smartcard, as opposite to the MS CA
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AppleKeychainSnippet.java[tags=demo]
 ----
 
-==== Java Key Store
+===== Java Key Store
 The `JKSSignatureToken` class allows signing with a Java Key Store (.jks file).
 
 [source,java,indent=0]
@@ -292,11 +303,46 @@ The `JKSSignatureToken` class allows signing with a Java Key Store (.jks file).
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JKSSnippet.java[tags=demo]
 ----
 
-==== Other Implementations
+===== Other Implementations
 NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
 
 As you can see, it is easy to add another implementation of the `SignatureTokenConnection`, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
 
+==== Key management
+
+Since DSS 5.12, the framework offers a functionality of filtering key entries to be accessed from a `SignatureTokenConnection` interface. The filtering is done within `SignatureTokenConnection#getKeys` method with a help of `DSSKeyEntryPredicate` interface. Unless the predicate is configured, DSS will return all available keys by default.
+
+An example of a basic usage of the `DSSKeyEntryPredicate` implementation is provided below:
+
+[source,java,indent=0]
+.DSSKeyEntryPredicate usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/KeyManagementSnippet.java[tags=demo]
+----
+
+The list of provided default implementations of the `DSSKeyEntryPredicate` interface is provided below for reference:
+
+[source,java,indent=0]
+.Provided DSSKeyEntryPredicate implementations
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/KeyManagementSnippet.java[tags=implementations]
+----
+
+It is also possible to implement a custom predicate filtering key entries. An example below demonstrates an implementation filtering key entries based on a QcQSCD certificate:
+
+[source,java,indent=0]
+.Implementation of DSSKeyEntryPredicate to return keys associated with a QcQSCD based certificate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/QcStatementsKeyManagementTest.java[tags=qcQscdPredicate]
+----
+
+and an example of its usage:
+
+[source,java,indent=0]
+.QcQSCDKeyEntryPredicate usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/QcStatementsKeyManagementTest.java[tags=qcQscdPredicateUsage]
+----
 
 [[SignatureCreationInDSS]]
 === Signature creation in DSS

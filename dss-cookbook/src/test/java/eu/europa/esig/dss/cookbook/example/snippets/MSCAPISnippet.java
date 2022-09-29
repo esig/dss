@@ -42,7 +42,7 @@ public class MSCAPISnippet {
 		// import eu.europa.esig.dss.utils.Utils;
 		// import java.util.List;
 
-		try (MSCAPISignatureToken token = new eu.europa.esig.dss.token.MSCAPISignatureToken()) {
+		try (MSCAPISignatureToken token = new MSCAPISignatureToken()) {
 
 			List<DSSPrivateKeyEntry> keys = token.getKeys();
 			for (DSSPrivateKeyEntry entry : keys) {
