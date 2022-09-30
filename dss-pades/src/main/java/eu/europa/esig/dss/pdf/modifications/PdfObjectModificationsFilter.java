@@ -59,7 +59,7 @@ public class PdfObjectModificationsFilter {
                 pdfObjectModifications.addSecureChange(objectModification);
             } else if (isSignatureOrFormFillChange(objectModification)) {
                 pdfObjectModifications.addFormFillInAndSignatureCreationChange(objectModification);
-            } else if (isAnnotationCreationChange(objectModification)) {
+            } else if (isAnnotationChange(objectModification)) {
                 pdfObjectModifications.addAnnotCreationChange(objectModification);
             } else {
                 pdfObjectModifications.addUndefinedChange(objectModification);
@@ -127,12 +127,20 @@ public class PdfObjectModificationsFilter {
         }
         return false;
     }
+    
+    private static boolean isSignature(PdfDict pdfDict) {
+        return isObjectOfType(pdfDict, PAdESConstants.SIGNATURE_TYPE);
+    }
 
     private static boolean isDocTimeStamp(PdfDict pdfDict) {
+        return isObjectOfType(pdfDict, PAdESConstants.TIMESTAMP_TYPE);
+    }
+
+    private static boolean isObjectOfType(PdfDict pdfDict, String typeValue) {
         final PdfDict vDict = pdfDict.getAsDict(PAdESConstants.VALUE_NAME);
         if (vDict != null) {
             String type = vDict.getNameValue(PAdESConstants.TYPE_NAME);
-            if (PAdESConstants.TIMESTAMP_TYPE.equals(type)) {
+            if (typeValue.equals(type)) {
                 return true;
             }
         }
@@ -310,14 +318,23 @@ public class PdfObjectModificationsFilter {
         return null;
     }
 
-    private static boolean isAnnotationCreationChange(ObjectModification objectModification) {
-        return isAnnotCreation(objectModification);
+    private static boolean isAnnotationChange(ObjectModification objectModification) {
+        return isAnnotChange(objectModification);
     }
 
-    private static boolean isAnnotCreation(ObjectModification objectModification) {
+    private static boolean isAnnotChange(ObjectModification objectModification) {
         String lastKey = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
-        return isAnnotsKey(lastKey) || isAnnotsKey(parentKey);
+        if (isAnnotsKey(lastKey) || isAnnotsKey(parentKey)) {
+            if (PdfObjectModificationType.DELETION.equals(objectModification.getActionType())) {
+                if (objectModification.getOriginalObject() instanceof PdfDict) {
+                    PdfDict pdfDict = (PdfDict) objectModification.getOriginalObject();
+                    return !isSignature(pdfDict) && !isDocTimeStamp(pdfDict);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     private static boolean isOneOf(String key, String... toCompare) {

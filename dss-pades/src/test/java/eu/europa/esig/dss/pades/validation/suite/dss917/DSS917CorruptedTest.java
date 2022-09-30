@@ -73,8 +73,10 @@ public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 
 			XmlByteRange signatureByteRange = pdfSignatureDictionary.getSignatureByteRange();
 			if (signatureByteRange.isValid()) {
+				assertTrue(pdfSignatureDictionary.isConsistent());
 				++validByteRangeSigCounter;
 			} else {
+				assertFalse(pdfSignatureDictionary.isConsistent());
 				++invalidByteRangeSigCounter;
 			}
 
@@ -87,6 +89,10 @@ public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected void checkByteRange(XmlByteRange byteRange) {
+		// skip
+	}
+
+	protected void checkPdfSignatureDictionary(XmlPDFSignatureDictionary pdfSignatureDictionary) {
 		// skip
 	}
 

@@ -219,6 +219,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 			DefaultPdfObjectModificationsFinder modificationsFinder = new DefaultPdfObjectModificationsFinder();
 			PdfObjectModifications pdfObjectModifications = modificationsFinder.find(dictionaryToCompare.dictionary, dictionary);
 			List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
+			removeReferenceData(undefinedChanges);
 			consistent = Utils.isCollectionEmpty(undefinedChanges);
 			if (!consistent) {
 				LOG.warn("The signature dictionary from final PDF revision is not equal to the signed revision version!");
@@ -234,6 +235,16 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		}
 
 		return consistent;
+	}
+
+	private void removeReferenceData(List<ObjectModification> modifications) {
+		// /Reference /Data dictionary contains references to PDF objects covered by the signature.
+		// The changes inside do not impact signature validity directly.
+		if (Utils.isCollectionNotEmpty(modifications)) {
+			modifications.removeIf(objectModification ->
+					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.REFERENCE_NAME) &&
+					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.DATA_NAME));
+		}
 	}
 
 	@Override
