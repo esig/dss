@@ -48,7 +48,7 @@ public class PdfObjectModifications {
     private final List<ObjectModification> annotCreationChanges = new ArrayList<>();
 
     /**
-     * Other changes that should invalidate the signature
+     * Other changes that may invalidate the signature
      */
     private final List<ObjectModification> undefinedChanges = new ArrayList<>();
 

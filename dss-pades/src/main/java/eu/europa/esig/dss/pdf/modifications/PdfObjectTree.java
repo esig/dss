@@ -48,6 +48,15 @@ public class PdfObjectTree {
     private StringBuilder sb;
 
     /**
+     * Constructor without starting key
+     */
+    public PdfObjectTree() {
+        this.keyChain = new ArrayList<>();
+        this.refChain = new ArrayList<>();
+        this.sb = new StringBuilder();
+    }
+
+    /**
      * Default constructor
      *
      * @param key {@link String} root key

@@ -99,6 +99,20 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         return modifications;
     }
 
+    /**
+     * Returns found and categorized object differences between two provided {@code PdfDict} objects
+     *
+     * @param originalRevisionDict {@link PdfDict} representing dictionary extracted from original (e.g. signed) PDF revision
+     * @param finalRevisionDict {@link PdfDict} representing dictionary extracted the final PDF document revision
+     * @return {@link PdfObjectModifications} found between two given PDF dictionaries
+     */
+    public PdfObjectModifications find(PdfDict originalRevisionDict, PdfDict finalRevisionDict) {
+        final Set<ObjectModification> objectModifications = new LinkedHashSet<>();
+        compareDictsRecursively(objectModifications, new HashSet<>(), new PdfObjectTree(),
+                originalRevisionDict, finalRevisionDict);
+        return pdfObjectModificationsFilter.filter(objectModifications);
+    }
+
     private void compareDictsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
                                                 PdfObjectTree objectTree, PdfDict signedDict, PdfDict finalDict) {
         final String[] signedRevKeys = signedDict.list();

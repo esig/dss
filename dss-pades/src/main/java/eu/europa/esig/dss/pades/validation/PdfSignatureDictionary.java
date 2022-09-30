@@ -123,4 +123,23 @@ public interface PdfSignatureDictionary {
 	 */
 	SigFieldPermissions getFieldMDP();
 
+	/**
+	 * Verifies the equality of the current PdfSignatureDictionary with provided {@code signatureDictionary}.
+	 * NOTE: this method is similar to {@code equals(PdfSignatureDictionary)} method,
+	 * but also modifies the state of the object accessible from {@code isConsistent()} method.
+	 * If none signature dictionary found in the signed revision, NULL may be provided.
+	 *
+	 * @return TRUE if the {@code PdfSignatureDictionary} is equal to the provided {@code signatureDictionary}, FALSE otherwise
+	 * @param signatureDictionary {@link PdfSignatureDictionary} to compare with
+	 */
+	boolean checkConsistency(PdfSignatureDictionary signatureDictionary);
+
+	/**
+	 * Checks if the signature dictionary is consistent.
+	 * NOTE: method {@code checkConsistency(PdfSignatureDictionary)} shall be executed before!
+	 *
+	 * @return TRUE if the {@code PdfSignatureDictionary} is consistent, FALSE otherwise
+	 */
+	boolean isConsistent();
+
 }

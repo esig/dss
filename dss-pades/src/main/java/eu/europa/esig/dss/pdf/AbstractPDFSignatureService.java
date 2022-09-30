@@ -340,7 +340,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
 				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
 				List<PdfSignatureField> fields = sigDictEntry.getValue();
-				List<String> fieldNames = fields.stream().map(PdfSignatureField::getFieldName).collect(Collectors.toList());
+				List<String> fieldNames = toStringNames(fields);
 
 				try {
 					LOG.info("Signature fields: {}", fieldNames);
@@ -350,12 +350,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
 					byteRange.setValid(byteRangeValid);
 
-					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
+					byte[] revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					byte[] signedData = DSSUtils.EMPTY_BYTE_ARRAY;
 					if (byteRangeValid) {
-						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 						signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
-
 					} else {
 						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
 								"The validation will result to a broken signature.", fieldNames);
@@ -364,9 +362,21 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final DSSDocument signedContent = new InMemoryDocument(signedData);
 					final boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
 
-					// create a DSS revision if updated
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
-							lastDSSDictionary, revisionContent, pwd);
+					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(revisionContent, pwd)) {
+
+						// Method is used to detect modification within the signature dictionary itself (spoofing attack)
+						verifyPdfSignatureDictionary(signatureDictionary, fieldNames, revisionReader);
+
+						// create a DSS revision if updated
+						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+								lastDSSDictionary, revisionReader.getDSSDictionary());
+
+					} catch (Exception e) {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("Cannot read signature revision '{}' : {}", fieldNames, e.getMessage());
+						}
+					}
+
 
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
@@ -390,9 +400,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						revisions.add(newRevision);
 					}
 
-					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
-							lastDSSDictionary, extractBeforeSignatureValue(byteRange, revisionContent), pwd);
+
+					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(
+							extractBeforeSignatureValue(byteRange, revisionContent), pwd)) {
+
+						// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
+						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+								lastDSSDictionary, revisionReader.getDSSDictionary());
+
+					} catch (Exception e) {
+						// do nothing
+					}
+
 
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse signature {} . Reason : {}";
@@ -476,11 +495,35 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
+	private void verifyPdfSignatureDictionary(PdfSignatureDictionary signatureDictionary, List<String> fieldNames,
+											  PdfDocumentReader revisionReader) throws IOException {
+		PdfSignatureDictionary signatureDictionaryToCompare = getSignatureDictionaryForFieldNames(fieldNames, revisionReader);
+		if (!signatureDictionary.checkConsistency(signatureDictionaryToCompare)) {
+			LOG.warn("The signature dictionary for signature {} is not consistent!", fieldNames);
+		}
+	}
+
+	private PdfSignatureDictionary getSignatureDictionaryForFieldNames(List<String> fieldNames,
+																	   PdfDocumentReader revisionReader) throws IOException{
+		Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = revisionReader.extractSigDictionaries();
+		for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> entry : pdfSignatureDictionaryListMap.entrySet()) {
+			PdfSignatureDictionary signatureDictionary = entry.getKey();
+			List<PdfSignatureField> signatureFields = entry.getValue();
+			if (fieldNames.equals(toStringNames(signatureFields))) {
+				return signatureDictionary;
+			}
+		}
+		return null;
+	}
+
+	private List<String> toStringNames(List<PdfSignatureField> signatureFields) {
+		return signatureFields.stream().map(PdfSignatureField::getFieldName).collect(Collectors.toList());
+	}
+
 	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions,
 														   PdfCompositeDssDictionary compositeDssDictionary,
 														   PdfDssDict lastDSSDictionary,
-														   byte[] dssDictionaryRevision, String pwd) {
-		PdfDssDict currentDssDict = getDSSDictionaryPresentInRevision(dssDictionaryRevision, pwd);
+														   PdfDssDict currentDssDict) {
 		if (lastDSSDictionary != null && !lastDSSDictionary.equals(currentDssDict)) {
 			compositeDssDictionary.populateFromDssDictionary(lastDSSDictionary);
 			revisions.add(new PdfDocDssRevision(compositeDssDictionary, lastDSSDictionary));

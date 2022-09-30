@@ -128,6 +128,7 @@ public abstract class AbstractPAdESTestValidation extends AbstractDocumentTestVa
 		assertNotNull(pdfSignatureDictionary.getType());
 		assertNotNull(pdfSignatureDictionary.getSubFilter());
 		checkByteRange(pdfSignatureDictionary.getSignatureByteRange());
+		assertTrue(pdfSignatureDictionary.isConsistent());
 	}
 
 	protected void checkByteRange(XmlByteRange byteRange) {
