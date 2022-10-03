@@ -477,6 +477,22 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
+* `PdfSignatureDictionary` - this constraint is used to verify consistency of the current signature dictionary across PDF revisions. If the signature dictionary has been replaced or modified between the signed and final PDF document revisions then the check will fail.
+
+Default: `FAIL`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of PdfSignatureDictionary usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <PdfSignatureDictionary Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
 * `PdfPageDifference` - this constraint is used to check whether a signed PDF document revision contains the same number of pages as the final validating PDF document revision. If a signed PDF document revision contains a different number of pages than the final PDF document revision, the check will fail.
 
 Default: `FAIL`
@@ -2111,7 +2127,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |ByteRange          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ByteRange                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfSignatureDictionary          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE

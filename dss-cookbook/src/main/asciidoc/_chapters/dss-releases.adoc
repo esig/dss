@@ -271,6 +271,19 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 <SignatureByteRange valid="true">0 * * *</SignatureByteRange>
 ----
 
+|Diagnostic Data: PDFSignatureDictionary     a|[source,xml]
+----
+<PDFSignatureDictionary>
+...
+</PDFSignatureDictionary>
+----
+                                                                     a|[source,xml]
+----
+<PDFSignatureDictionary consistent="true">
+...
+</PDFSignatureDictionary>
+----
+
 |PDFSignatureService #digest     a|[source,java]
 ----
 PDFSignatureService pdfSignatureService = ...
@@ -599,6 +612,18 @@ not present
     ...
     <ByteRange Level="FAIL" />
     ...
+</BasicSignatureConstraints>
+----
+|PdfSignatureDictionary consistency check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+...
+<PdfSignatureDictionary Level="FAIL" />
+...
 </BasicSignatureConstraints>
 ----
 |PDF/A checks (see <<PdfaConstraints>>)          |
