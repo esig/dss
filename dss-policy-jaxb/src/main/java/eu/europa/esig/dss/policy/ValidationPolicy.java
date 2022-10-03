@@ -786,6 +786,16 @@ public interface ValidationPolicy {
 	 *         the constraint file, null otherwise.
 	 */
 	LevelConstraint getByteRangeConstraint(Context context);
+
+	/**
+	 * This constraint checks if signature dictionary is consistent across PDF revisions.
+	 * NOTE: applicable only for PAdES
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if PdfSignatureDictionary element for a given context element is present in
+	 *         the constraint file, null otherwise.
+	 */
+	LevelConstraint getPdfSignatureDictionaryConstraint(Context context);
 	
 	/**
 	 * Indicates if a PDF page difference check should be proceeded. If PdfPageDifference element is absent within

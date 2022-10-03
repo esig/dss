@@ -39,7 +39,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1"/>
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
@@ -560,7 +560,7 @@
             <TSAGeneralName contentMatch="true" orderMatch="true">C=EE,O=SK ID Solutions AS,OU=TSA,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING AUTHORITY 2021</TSAGeneralName>
             <PDFRevision>
                 <SignatureField name="Signature2"/>
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>

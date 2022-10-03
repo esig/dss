@@ -40,7 +40,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1"/>
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>

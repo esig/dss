@@ -38,7 +38,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Cryptolog-846272363" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
@@ -729,7 +729,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Cryptolog-1895426501" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
@@ -792,7 +792,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>

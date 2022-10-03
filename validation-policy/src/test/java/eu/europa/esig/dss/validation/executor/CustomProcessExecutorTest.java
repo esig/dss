@@ -10121,7 +10121,10 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		xmlSignature.getBasicSignature().setSignatureIntact(false);
 		xmlSignature.getBasicSignature().setSignatureValid(false);
 
-		XmlByteRange signatureByteRange = xmlSignature.getPDFRevision().getPDFSignatureDictionary().getSignatureByteRange();
+		XmlPDFSignatureDictionary pdfSignatureDictionary = xmlSignature.getPDFRevision().getPDFSignatureDictionary();
+		pdfSignatureDictionary.setConsistent(false);
+
+		XmlByteRange signatureByteRange = pdfSignatureDictionary.getSignatureByteRange();
 		signatureByteRange.setValid(false);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -10398,6 +10401,158 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		assertTrue(pdfAFormatCheckFound);
 		assertTrue(pdfAComplianceCheckFound);
+	}
+
+	@Test
+	public void pdfSignatureDictionaryTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getPDFRevision().getPDFSignatureDictionary().setConsistent(true);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setPdfSignatureDictionary(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISDC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		boolean signDictCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISDC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				signDictCheckFound = true;
+			}
+		}
+		assertTrue(signDictCheckFound);
+	}
+
+	@Test
+	public void pdfSignatureDictionaryInvalidTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getPDFRevision().getPDFSignatureDictionary().setConsistent(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setPdfSignatureDictionary(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISDC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.FAILED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, signatureBBB.getConclusion().getSubIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+
+		boolean signDictCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISDC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_ISDC_ANS.getId(), constraint.getError().getKey());
+				signDictCheckFound = true;
+			}
+		}
+		assertTrue(signDictCheckFound);
+	}
+
+	@Test
+	public void pdfSignatureDictionaryWarningTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_pdfa.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+		xmlSignature.getPDFRevision().getPDFSignatureDictionary().setConsistent(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setPdfSignatureDictionary(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISDC_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISDC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(signatureBBB);
+		assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+		XmlFC fc = signatureBBB.getFC();
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		boolean signDictCheckFound = false;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISDC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_ISDC_ANS.getId(), constraint.getWarning().getKey());
+				signDictCheckFound = true;
+			}
+		}
+		assertTrue(signDictCheckFound);
 	}
 
 	@Test

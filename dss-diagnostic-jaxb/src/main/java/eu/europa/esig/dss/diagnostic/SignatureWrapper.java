@@ -1335,6 +1335,19 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * This method returns whether the PDF signature dictionary is consistent across PDF revisions.
+	 *
+	 * @return TRUE if the signature dictionary is consistent, FALSE otherwise
+	 */
+	public boolean isPdfSignatureDictionaryConsistent() {
+		XmlPDFRevision pdfRevision = signature.getPDFRevision();
+		if (pdfRevision != null && pdfRevision.getPDFSignatureDictionary() != null) {
+			return pdfRevision.getPDFSignatureDictionary().isConsistent();
+		}
+		return false;
+	}
+
+	/**
 	 * Returns a {@code CertificationPermission} value of a /DocMDP dictionary, when present
 	 *
 	 * @return {@link CertificationPermission}

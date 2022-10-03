@@ -50,6 +50,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAComplianceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAProfileCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfSignatureDictionaryCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfVisualDifferenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SigFieldLockCheck;
@@ -119,6 +120,8 @@ public class FormatChecking extends Chain<XmlFC> {
 			item = item.setNextItem(signerInformationStoreCheck());
 
 			item = item.setNextItem(byteRangeCheck());
+
+			item = item.setNextItem(pdfSignatureDictionaryCheck());
 			
 			item = item.setNextItem(pdfPageDifferenceCheck());
 			
@@ -217,6 +220,11 @@ public class FormatChecking extends Chain<XmlFC> {
 	private ChainItem<XmlFC> byteRangeCheck() {
 		LevelConstraint constraint = policy.getByteRangeConstraint(context);
 		return new ByteRangeCheck(i18nProvider, result, signature, constraint);
+	}
+
+	private ChainItem<XmlFC> pdfSignatureDictionaryCheck() {
+		LevelConstraint constraint = policy.getPdfSignatureDictionaryConstraint(context);
+		return new PdfSignatureDictionaryCheck(i18nProvider, result, signature, constraint);
 	}
 	
 	private ChainItem<XmlFC> pdfPageDifferenceCheck() {
