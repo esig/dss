@@ -15,11 +15,11 @@ public class MimeTypeTest {
     public void test() {
         assertEquals(CustomMimeTypeLoader.CustomMimeType.CSS, MimeType.fromFileName("style.css"));
         assertEquals(CustomMimeTypeLoader.CustomMimeType.WEBM, MimeType.fromFileName("audio.webm"));
-        assertEquals(CustomMimeTypeLoader.CustomMimeType.ASiCS, MimeType.fromFileName("container.asics"));
+        assertEquals(CustomMimeTypeLoader.CustomMimeType.JPEG, MimeType.fromFileName("image.jpeg"));
 
         assertEquals(CustomMimeTypeLoader.CustomMimeType.CSS, MimeType.fromMimeTypeString("text/css"));
         assertEquals(CustomMimeTypeLoader.CustomMimeType.WEBM, MimeType.fromMimeTypeString("audio/webm"));
-        assertEquals(CustomMimeTypeLoader.CustomMimeType.ASiCS, MimeType.fromMimeTypeString("application/vnd.etsi.asic-s+zip"));
+        assertEquals(CustomMimeTypeLoader.CustomMimeType.JPEG, MimeType.fromMimeTypeString("image/jpeg"));
     }
 
     @Test

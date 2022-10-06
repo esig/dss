@@ -30,9 +30,9 @@ public class CustomMimeTypeLoader implements MimeTypeLoader {
 
     public enum CustomMimeType implements MimeType {
 
-        ASiCS("application/vnd.etsi.asic-s+zip", "asics"),
         CER("application/pkix-cert", "cer", "crt", "p7c"),
         CSS("text/css", "css"),
+        JPEG("image/jpeg", "jpeg"),
         WEBM("audio/webm", "webm");
 
         private final String mimeTypeString;
