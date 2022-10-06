@@ -38,7 +38,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature2" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <SignerName>Lukas Baranski</SignerName>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>

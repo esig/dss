@@ -42,6 +42,7 @@
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
 			<ByteRange Level="FAIL" />
+			<PdfSignatureDictionary Level="FAIL" />
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />
 			<PdfVisualDifference Level="WARN" />

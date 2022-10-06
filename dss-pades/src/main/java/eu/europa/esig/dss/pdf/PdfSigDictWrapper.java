@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
+import eu.europa.esig.dss.pdf.modifications.ObjectModification;
+import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
@@ -32,6 +36,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The default implementation of {@code PdfSignatureDictionary}
@@ -48,6 +54,9 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	/** The signed ByteRange */
 	private final ByteRange byteRange;
+
+	/** Identifies whether the signature dictionary is consistent between revisions */
+	private boolean consistent;
 
 	/**
 	 * Default constructor
@@ -197,6 +206,50 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public boolean checkConsistency(PdfSignatureDictionary signatureDictionary) {
+		if (signatureDictionary == null) {
+			LOG.warn("PdfSignatureDictionary from signed revision is null!");
+			consistent = false;
+
+		} else if (signatureDictionary instanceof PdfSigDictWrapper) {
+			PdfSigDictWrapper dictionaryToCompare = (PdfSigDictWrapper) signatureDictionary;
+			DefaultPdfObjectModificationsFinder modificationsFinder = new DefaultPdfObjectModificationsFinder();
+			PdfObjectModifications pdfObjectModifications = modificationsFinder.find(dictionaryToCompare.dictionary, dictionary);
+			List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
+			removeReferenceData(undefinedChanges);
+			consistent = Utils.isCollectionEmpty(undefinedChanges);
+			if (!consistent) {
+				LOG.warn("The signature dictionary from final PDF revision is not equal to the signed revision version!");
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Undefined modifications are : {}", undefinedChanges.stream()
+							.map(ObjectModification::getObjectTree).collect(Collectors.toList()));
+				}
+			}
+
+		} else {
+			LOG.warn("Provided PdfSignatureDictionary shall be instance of PdfSigDictWrapper!");
+			consistent = false;
+		}
+
+		return consistent;
+	}
+
+	private void removeReferenceData(List<ObjectModification> modifications) {
+		// /Reference /Data dictionary contains references to PDF objects covered by the signature.
+		// The changes inside do not impact signature validity directly.
+		if (Utils.isCollectionNotEmpty(modifications)) {
+			modifications.removeIf(objectModification ->
+					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.REFERENCE_NAME) &&
+					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.DATA_NAME));
+		}
+	}
+
+	@Override
+	public boolean isConsistent() {
+		return consistent;
 	}
 
 }

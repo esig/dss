@@ -52,7 +52,7 @@
            	</SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-	            <PDFSignatureDictionary>
+	            <PDFSignatureDictionary consistent="true">
 	                <Filter>PBAD_PAdES</Filter>
 	                <SubFilter>PBAD.PAdES</SubFilter>
 	                <ContactInfo></ContactInfo>
@@ -122,7 +122,7 @@
            	</SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature2" />
-	            <PDFSignatureDictionary>
+	            <PDFSignatureDictionary consistent="true">
 	                <Filter>Adobe.PPKMS</Filter>
 	                <SubFilter>adbe.pkcs7.detached</SubFilter>
 	                <ContactInfo></ContactInfo>

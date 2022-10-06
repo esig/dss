@@ -37,7 +37,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <SignerName>Devendra T. Rane</SignerName>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>

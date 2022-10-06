@@ -42,7 +42,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature-20191101-150121" />
-	            <PDFSignatureDictionary>
+	            <PDFSignatureDictionary consistent="true">
 	                <SignerName>POLYSYS kft.</SignerName>
 	                <Filter>Adobe.PPKLite</Filter>
 	                <SubFilter>ETSI.CAdES.detached</SubFilter>

@@ -42,7 +42,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <SignerName>R - eský úad zemmický a katastrální</SignerName>
                     <Filter>Adobe.PPKMS</Filter>
                     <SubFilter>adbe.pkcs7.detached</SubFilter>

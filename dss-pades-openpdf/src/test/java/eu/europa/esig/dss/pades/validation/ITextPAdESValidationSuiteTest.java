@@ -54,6 +54,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESOverwrittenDSSDictTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSameBorderAnnotationsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESSpoofingAttackReplacementTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithAddedPageTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithCrossCertificateOCSPsTest;
@@ -64,6 +65,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithEofCRTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithSpoofingAttackTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithUnsupportedSignatureAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeStampTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeTest;
@@ -115,7 +117,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESEnvelopingOtherPdfTest.class, PdfPkcs7WithSha1SubFilterTest.class, DSS2513Test.class, DSS2513LTTest.class,
 		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
 		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class,
-		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class })
+		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

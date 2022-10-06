@@ -332,6 +332,7 @@
 			</xs:element>
 			<xs:element name="FieldMDP" type="PDFLockDictionary" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="consistent" type="xs:boolean" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="ByteRange">

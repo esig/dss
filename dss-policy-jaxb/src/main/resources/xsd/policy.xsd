@@ -469,39 +469,44 @@
 					<xsd:documentation>Checks if /ByteRange dictionary is consistent with PDF specification as well as with the /Contents dictionary placement</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="PdfSignatureDictionary" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if signature dictionary is consistent across the PDF document revisions.</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PdfPageDifference" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signed revision has more or less pages comparing to the final provided document</xsd:documentation>
+					<xsd:documentation>Checks if the signed revision has more or less pages comparing to the final provided document</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PdfAnnotationOverlap" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation>
+					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PdfVisualDifference" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation>
+					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="DocMDP" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the permission dictionary /DocMDP, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /DocMDP, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="FieldMDP" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the permission dictionary /FieldMDP, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /FieldMDP, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SigFieldLock" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="UndefinedChanges" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation>
+					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">

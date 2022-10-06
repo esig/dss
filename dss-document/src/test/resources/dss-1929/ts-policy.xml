@@ -35,6 +35,7 @@
 			<ProspectiveCertificateChain Level="FAIL"/>
 			<SignerInformationStore Level="FAIL"/>
 			<ByteRange Level="FAIL" />
+			<PdfSignatureDictionary Level="FAIL" />
 			<SigningCertificate>
 				<Recognition Level="FAIL"/>
 				<Signature Level="FAIL"/>

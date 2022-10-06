@@ -60,7 +60,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature5" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <SignerName>Petr Anonymus</SignerName>
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
@@ -658,7 +658,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature6" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>

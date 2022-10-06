@@ -38,7 +38,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>Sig</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.CAdES.detached</SubFilter>
@@ -744,7 +744,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature2" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
@@ -810,7 +810,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature3" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
@@ -880,7 +880,7 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature4" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>

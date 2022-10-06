@@ -136,6 +136,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 			pdfSignatureDictionary.setSignatureByteRange(getXmlByteRange(pdfSigDict.getByteRange()));
 			pdfSignatureDictionary.setDocMDP(getXmlDocMDP(pdfSigDict.getDocMDP()));
 			pdfSignatureDictionary.setFieldMDP(getXmlPDFLockDictionary(pdfSigDict.getFieldMDP()));
+			pdfSignatureDictionary.setConsistent(pdfSigDict.isConsistent());
 			return pdfSignatureDictionary;
 		}
 		return null;
