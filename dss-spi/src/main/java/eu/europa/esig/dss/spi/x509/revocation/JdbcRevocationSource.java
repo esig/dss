@@ -149,8 +149,8 @@ public abstract class JdbcRevocationSource<R extends Revocation> extends Reposit
 	private List<RevocationToken<R>> getRevocationDataFromRecords(
 			Collection<SqlRecord> records, CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
 		List<RevocationToken<R>> revocationTokens = new ArrayList<>();
-		for (SqlRecord record : records) {
-			RevocationToken<R> revocationToken = buildRevocationTokenFromResult(record, certificateToken, issuerCertificateToken);
+		for (SqlRecord sqlRecord : records) {
+			RevocationToken<R> revocationToken = buildRevocationTokenFromResult(sqlRecord, certificateToken, issuerCertificateToken);
 			if (revocationToken != null) {
 				revocationTokens.add(revocationToken);
 			}

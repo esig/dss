@@ -326,11 +326,10 @@ public class PdfObjectModificationsFilter {
         String lastKey = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         if (isAnnotsKey(lastKey) || isAnnotsKey(parentKey)) {
-            if (PdfObjectModificationType.DELETION.equals(objectModification.getActionType())) {
-                if (objectModification.getOriginalObject() instanceof PdfDict) {
-                    PdfDict pdfDict = (PdfDict) objectModification.getOriginalObject();
-                    return !isSignature(pdfDict) && !isDocTimeStamp(pdfDict);
-                }
+            if (PdfObjectModificationType.DELETION.equals(objectModification.getActionType()) &&
+                    objectModification.getOriginalObject() instanceof PdfDict) {
+                PdfDict pdfDict = (PdfDict) objectModification.getOriginalObject();
+                return !isSignature(pdfDict) && !isDocTimeStamp(pdfDict);
             }
             return true;
         }

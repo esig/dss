@@ -79,8 +79,8 @@ public class PDFAStructureValidator {
     }
 
     private String normalize(String str) {
-        return str.trim().replaceAll("\n", " ").replaceAll("\t", " ")
-                .replaceAll(" +", " ");
+        return str.trim().replace("\n", " ").replace("\t", " ")
+                .replace(" +", " ");
     }
 
 }

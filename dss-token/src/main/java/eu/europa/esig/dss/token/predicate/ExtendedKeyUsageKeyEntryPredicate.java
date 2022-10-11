@@ -49,7 +49,7 @@ public class ExtendedKeyUsageKeyEntryPredicate implements DSSKeyEntryPredicate {
         CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
         if (certificate != null) {
             List<String> extendedKeyUsages = getExtendedKeyUsages(certificate);
-            if (extendedKeyUsages != null && extendedKeyUsages.size() > 0) {
+            if (extendedKeyUsages != null && !extendedKeyUsages.isEmpty()) {
                 for (String extendedKeyUsage : extendedKeyUsages) {
                     if (extendedKeyUsageOIDs.contains(extendedKeyUsage)) {
                         return true;

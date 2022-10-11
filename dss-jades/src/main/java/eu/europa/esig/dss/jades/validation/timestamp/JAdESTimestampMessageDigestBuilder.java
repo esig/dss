@@ -54,7 +54,13 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampMessageDigestBuilder.class);
 
 	/** The error message to be thrown in case of a message-imprint build error */
-	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
+	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken. Reason : %s";
+
+	/** The error message to be thrown in case of a message-imprint build error for a timestamp */
+	private static final String MESSAGE_IMPRINT_ERROR_WITH_ID = "Unable to compute message-imprint for TimestampToken with Id '%s'. Reason : %s";
+
+	/** String used to print the computed message-imprint */
+	private static final String MESSAGE_IMPRINT_MESSAGE = "The '{}' timestamp message-imprint : {}";
 
 	/** The signature */
 	private final JAdESSignature signature;
@@ -121,10 +127,12 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return digestCalculator.getMessageDigest();
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -184,10 +192,12 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return new DSSMessageDigest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, signatureTimestampData));
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -260,22 +270,24 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_R_TST, messageDigest);
+				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.SIG_R_TST, messageDigest);
 			}
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
 	}
 	
 	private boolean isAllowedTypeEntry(EtsiUComponent etsiUComponent, String... allowedTypes) {
-		return Arrays.stream(allowedTypes).anyMatch(etsiUComponent.getHeaderName()::equals);
+		return Arrays.asList(allowedTypes).contains(etsiUComponent.getHeaderName());
 	}
 
 	@Override
@@ -327,15 +339,17 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.RFS_TST, messageDigest);
+				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.RFS_TST, messageDigest);
 			}
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -428,15 +442,17 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.ARC_TST, messageDigest);
+				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.ARC_TST, messageDigest);
 			}
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -445,7 +461,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private byte[] getBase64UrlEncodedSignatureValue() {
 		String messageImprint = signature.getJws().getEncodedSignature();
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("The '{}' timestamp message-imprint : {}", JAdESHeaderParameterNames.SIG_TST, messageImprint);
+			LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.SIG_TST, messageImprint);
 		}
 		return messageImprint.getBytes();
 	}

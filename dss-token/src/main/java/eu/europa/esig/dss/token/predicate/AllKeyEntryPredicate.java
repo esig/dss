@@ -8,6 +8,13 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
  */
 public class AllKeyEntryPredicate implements DSSKeyEntryPredicate {
 
+    /**
+     * Default constructor
+     */
+    public AllKeyEntryPredicate() {
+        // empty
+    }
+
     @Override
     public boolean test(DSSPrivateKeyEntry dssPrivateKeyEntry) {
         // accept every key

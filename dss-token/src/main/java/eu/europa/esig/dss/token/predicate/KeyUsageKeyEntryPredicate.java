@@ -33,7 +33,7 @@ public class KeyUsageKeyEntryPredicate implements DSSKeyEntryPredicate {
         CertificateToken certificate = dssPrivateKeyEntry.getCertificate();
         if (certificate != null) {
             List<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
-            if (keyUsageBits != null && keyUsageBits.size() > 0) {
+            if (keyUsageBits != null && !keyUsageBits.isEmpty()) {
                 for (KeyUsageBit keyUsageBit : keyUsageBits) {
                     if (keyUsages.contains(keyUsageBit)) {
                         return true;

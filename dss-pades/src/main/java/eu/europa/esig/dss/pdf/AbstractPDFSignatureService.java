@@ -51,7 +51,6 @@ import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -377,7 +376,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						}
 					}
 
-
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fields, signedContent,
@@ -529,21 +527,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			revisions.add(new PdfDocDssRevision(compositeDssDictionary, lastDSSDictionary));
 		}
 		return currentDssDict;
-	}
-
-	private PdfDssDict getDSSDictionaryPresentInRevision(final byte[] originalBytes, final String pwd) {
-		if (Utils.isArrayEmpty(originalBytes)) {
-			return null;
-		}
-
-		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, pwd)) {
-			return reader.getDSSDictionary();
-		} catch (Exception e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Cannot extract DSS dictionary from the previous revision : {}", e.getMessage());
-			}
-			return null;
-		}
 	}
 
 	/**

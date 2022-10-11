@@ -52,7 +52,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
 	@Override
 	public void draw() {
-		Image image = getImage();
+		Image currentImage = getImage();
 
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
 		String signatureFieldId = fieldParameters.getFieldId();
@@ -77,16 +77,16 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			x = dimensionAndPosition.getImageY();
 			y = dimensionAndPosition.getImageX();
 		}
-		image.setAbsolutePosition(x, y);
-		image.scaleAbsolute(width, height);
+		currentImage.setAbsolutePosition(x, y);
+		currentImage.scaleAbsolute(width, height);
 
-		image.setRotationDegrees((float) ImageRotationUtils.ANGLE_360 - finalRotation); // opposite rotation
+		currentImage.setRotationDegrees((float) ImageRotationUtils.ANGLE_360 - finalRotation); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
 		Rectangle boundingBox = layer.getBoundingBox();
 		boundingBox.setBackgroundColor(parameters.getBackgroundColor());
 		layer.rectangle(boundingBox);
-		layer.addImage(image);
+		layer.addImage(currentImage);
 	}
 
 	private Image getImage() {

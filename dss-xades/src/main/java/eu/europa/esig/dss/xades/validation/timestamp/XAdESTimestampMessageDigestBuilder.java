@@ -64,7 +64,10 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESTimestampMessageDigestBuilder.class);
 
 	/** The error message to be thrown in case of a message-imprint build error */
-	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
+	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken. Reason : %s";
+
+	/** The error message to be thrown in case of a message-imprint build error for a timestamp */
+	private static final String MESSAGE_IMPRINT_ERROR_WITH_ID = "Unable to compute message-imprint for TimestampToken with Id '%s'. Reason : %s";
 
 	/** List of XAdES signature references */
 	private final List<Reference> references;
@@ -296,10 +299,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -385,10 +390,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return DSSMessageDigest.createEmptyDigest();
@@ -470,10 +477,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return null;
@@ -558,10 +567,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return messageDigest;
 
 		} catch (Exception e) {
+			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
+					String.format(MESSAGE_IMPRINT_ERROR_WITH_ID, timestampToken.getDSSIdAsString(), e.getMessage());
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage(), e);
+				LOG.warn(errorMessage, e);
 			} else {
-				LOG.warn(MESSAGE_IMPRINT_ERROR, timestampToken.getDSSIdAsString(), e.getMessage());
+				LOG.warn(errorMessage);
 			}
 		}
 		return null;
