@@ -8,9 +8,14 @@
 	</parent>
 
 	<artifactId>dss-jacoco-coverage</artifactId>
+	<name>DSS Jacoco coverage</name>
 	<description>Module used to collect coverage on all dss modules</description>
 
 	<!--  More details : https://community.sonarsource.com/t/coverage-test-data-importing-jacoco-coverage-report-in-xml-format/12151 -->
+
+	<properties>
+		<module-name>jpms_dss_jacoco_coverage</module-name>
+	</properties>
 
 	<build>
 		<plugins>
