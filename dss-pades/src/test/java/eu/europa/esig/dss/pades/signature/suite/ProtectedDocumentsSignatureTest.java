@@ -399,6 +399,44 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		assertEquals(secondFieldName, signatureFields.get(0));
 	}
 
+	// TODO : OpenPdf does not keep the same identifier on protected documents signing
+	@Test
+	public void recreateParamsTest() throws Exception {
+		Date date = new Date();
+		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
+		padesService.setTspSource(getGoodTsa());
+
+		PAdESSignatureParameters parametersDataToBeSigned = getParameters();
+		parametersDataToBeSigned.bLevel().setSigningDate(date);
+		parametersDataToBeSigned.setPasswordProtection(correctProtectionPhrase);
+		parametersDataToBeSigned.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		ToBeSigned dataToSign = padesService.getDataToSign(openProtected, parametersDataToBeSigned);
+
+		PAdESSignatureParameters parametersSignatureValue = getParameters();
+		parametersSignatureValue.bLevel().setSigningDate(date);
+		parametersSignatureValue.setPasswordProtection(correctProtectionPhrase);
+		parametersSignatureValue.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getDigestAlgorithm(), getPrivateKeyEntry());
+
+		PAdESSignatureParameters parametersSign = getParameters();
+		parametersSign.bLevel().setSigningDate(date);
+		parametersSign.setPasswordProtection(correctProtectionPhrase);
+		parametersSign.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		DSSDocument signedDocument = padesService.signDocument(openProtected, parametersSign, signatureValue);
+
+		PDFDocumentValidator validator = (PDFDocumentValidator) getValidator(signedDocument);
+		validator.setPasswordProtection(correctProtectionPhrase);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		checkBLevelValid(diagnosticData);
+		checkTimestamps(diagnosticData);
+	}
+
 	private DSSDocument sign(PAdESService service, DSSDocument doc, PAdESSignatureParameters signatureParameters) {
 		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),

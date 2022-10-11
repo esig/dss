@@ -1,12 +1,11 @@
-package eu.europa.esig.dss.pades.signature;
+package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
-import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
+import eu.europa.esig.dss.pades.signature.PAdESService;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // NOTE: encryption type is not supported in OpenPdf. See: {@link https://github.com/LibrePDF/OpenPDF/issues/375}
-public class PdfBoxLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
+public class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;
@@ -44,6 +43,7 @@ public class PdfBoxLevelBEncryptedDocumentTest extends AbstractPAdESTestSignatur
         List<String> availableSignatureFields = service.getAvailableSignatureFields(documentToSign);
         assertEquals(4, availableSignatureFields.size());
 
+        signatureParameters.getImageParameters().getTextParameters().setText("Hello World!");
         signatureParameters.getImageParameters().getFieldParameters().setFieldId(availableSignatureFields.get(0));
         return super.sign();
     }

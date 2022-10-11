@@ -321,8 +321,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public boolean isOpenWithOwnerAccess() {
-		// TODO : Need to check if the document is open with owner-access
-		return !isEncrypted() || pdfReader.computeUserPassword() != null;
+		return !isEncrypted() || pdfReader.isOwnerPasswordUsed();
 	}
 
 	@Override

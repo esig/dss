@@ -42,6 +42,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureService
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCertificationTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBCustomTimeZoneTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBDigestDocumentTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBEncryptedDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBHugeTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
@@ -124,7 +125,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class, PAdESExternalCMSSignatureLTALevelTest.class,
 		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
 		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
-		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class })
+		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }
