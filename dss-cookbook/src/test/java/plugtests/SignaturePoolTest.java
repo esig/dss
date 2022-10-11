@@ -133,7 +133,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
 		fileCacheDataLoader.setFileCacheDirectory(new File("src/test/resources/signature-pool/cache"));
-		fileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+		fileCacheDataLoader.setCacheExpirationTime(-1);
 		
 		Map<String, byte[]> tlMap = new HashMap<>();
 		tlMap.put("https://www.agentschaptelecom.nl/binaries/agentschap-telecom/documenten/publicaties/2018/januari/01/digitale-statuslijst-van-vertrouwensdiensten/current-tsl.xml", 
