@@ -97,6 +97,7 @@ public abstract class RepositoryAIASource implements AIASource {
         } else {
             Set<CertificateToken> aiaCertificates = extractAIAFromCacheSource(aiaKeys);
             if (Utils.isCollectionNotEmpty(aiaCertificates)) {
+                LOG.info("Certificate tokens with AIA '{}' have been loaded from the cache", urls);
                 return aiaCertificates;
             }
         }
