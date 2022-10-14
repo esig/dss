@@ -211,11 +211,15 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 
 		Indication indication = detailedReport.getFinalIndication(signatureId);
 		SubIndication subIndication = detailedReport.getFinalSubIndication(signatureId);
-		if (Indication.TOTAL_PASSED.equals(indication) ||
-				(Indication.INDETERMINATE.equals(indication) && SubIndication.TRY_LATER.equals(subIndication))) {
-			validSignatureCount++;
+		if (Indication.TOTAL_PASSED.equals(indication)) {
+			determineExtensionPeriod(xmlSignature);
+			++validSignatureCount;
+
+		} else if (Indication.INDETERMINATE.equals(indication) && SubIndication.TRY_LATER.equals(subIndication)) {
+			// indication is temporary, execute when applicable
 			determineExtensionPeriod(xmlSignature);
 		}
+
 		xmlSignature.setIndication(indication);
 		finalIndications.add(indication);
 

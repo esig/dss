@@ -27,13 +27,18 @@ import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.trustedlist.enums.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MRAWithCustomCertificateContentDeclarationPointingPartyQcComplianceTest extends AbstractMRALOTLTest {
 
     @Override
     protected Condition getCertificateContentDeclarationPointingPartyQcCompliance() {
         CompositeCondition compositeCondition = new CompositeCondition(Assert.NONE);
-        compositeCondition.addChild(new QCStatementCondition("urn:oid:0.4.0.1862.1.1", null, null));
-        compositeCondition.addChild(new QCStatementCondition("urn:oid:0.4.0.1862.1.7", null, null));
+        List<QCStatementCondition> conditions = new ArrayList<>();
+        conditions.add(new QCStatementCondition("urn:oid:0.4.0.1862.1.1", null, null));
+        conditions.add(new QCStatementCondition("urn:oid:0.4.0.1862.1.7", null, null));
+        compositeCondition.addChild(new QcStatementSetCondition(conditions));
         return compositeCondition;
     }
 
