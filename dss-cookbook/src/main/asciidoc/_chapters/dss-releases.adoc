@@ -13,7 +13,7 @@
 |===
 |Version           |Release date             |Features
 
-|v5.11.RC1         |July 2022              a|Main new features / improvements :
+|v5.11             |October 2022              a|Main new features / improvements :
 
                                             * PAdES : improved PDF-signing performance (add caching of the temporary revision);
                                             * PAdES : introduce temporary document processing factory (e.g. in-file or in-memory);
@@ -31,7 +31,7 @@
                                             * Standalone app : add XMLManifest signing function;
                                             * Java 18 support.
 
-|v5.11.RC1             |July 2022              a|Bug fixes :
+|v5.11             |October 2022              a|Bug fixes :
 
                                             * Qualification determination : Improved algorithm to comply with TS 119 615 + fixed issues;
                                             * JAdES : signature can be created with ECDSA algorithm using a wrong elliptic curve;
@@ -39,7 +39,9 @@
                                             * Exception when a not supported encryption algorithm is provided;
                                             * Validation for ASiC without mimetype returns FORMAT_FAILURE;
                                             * Skipped AcceptableRevocationDataFound constraint may lead to false positive validation result;
-                                            * ASiC : unable to proceed validation of CEN-header invalid files.
+                                            * ASiC : unable to proceed validation of CEN-header invalid files;
+                                            * SimpleReport : fix valid signatures counter;
+                                            * Demo : fix proxy configuration conversion.
 
 |v5.10.1           |April 2022              a|Bug fixes :
 
