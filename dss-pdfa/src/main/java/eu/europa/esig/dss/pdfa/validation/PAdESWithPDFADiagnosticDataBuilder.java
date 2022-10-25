@@ -19,6 +19,13 @@ public class PAdESWithPDFADiagnosticDataBuilder extends PAdESDiagnosticDataBuild
     private PDFAValidationResult pdfaValidationResult;
 
     /**
+     * Default constructor
+     */
+    public PAdESWithPDFADiagnosticDataBuilder() {
+        // empty
+    }
+
+    /**
      * Sets {@code PDFAValidationResult} and returns this builder
      *
      * @param pdfaValidationResult {@link PDFAValidationResult}
