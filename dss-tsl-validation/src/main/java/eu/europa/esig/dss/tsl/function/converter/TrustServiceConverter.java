@@ -22,6 +22,7 @@ package eu.europa.esig.dss.tsl.function.converter;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.spi.tsl.TrustService;
@@ -276,7 +277,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		List<String> oids = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oits)) {
 			for (ObjectIdentifierType objectIdentifierType : oits) {
-				oids.add(objectIdentifierType.getIdentifier().getValue());
+				oids.add(getOID(objectIdentifierType.getIdentifier()));
 			}
 		}
 		return oids;
@@ -288,19 +289,22 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 				CompositeCondition condition = new CompositeCondition();
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
-					String id = identifier.getValue();
-
-					// ES TSL : <ns4:Identifier
-					// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
-					if (id.indexOf(':') >= 0) {
-						id = id.substring(id.lastIndexOf(':') + 1);
-					}
-
+					String id = getOID(identifier);
 					condition.addChild(new PolicyIdCondition(id));
 				}
 				criteriaCondition.addChild(condition);
 			}
 		}
+	}
+
+	private String getOID(IdentifierType identifier) {
+		String id = identifier.getValue();
+		// ES TSL : <ns4:Identifier
+		// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
+		if (DSSUtils.isUrnOid(id)) {
+			id = DSSUtils.getOidCode(id);
+		}
+		return id;
 	}
 
 	private void addKeyUsageConditionsIfPresent(List<KeyUsageType> keyUsages, CompositeCondition criteriaCondition) {
