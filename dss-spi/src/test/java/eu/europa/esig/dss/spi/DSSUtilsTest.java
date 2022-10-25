@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -577,6 +578,33 @@ public class DSSUtilsTest {
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x20));
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x6E));
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x72));
+	}
+
+	@Test
+	public void getObjectIdentifierValue() {
+		// Silent processing
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com"));
+		assertEquals("https://nowina.lu/policy", DSSUtils.getObjectIdentifierValue("https://nowina.lu/policy"));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3"));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("1.2.3.4.5"));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3"));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3.4.5"));
+	}
+
+	@Test
+	public void getObjectIdentifierValueWithQualifier() {
+		// See DEBUG logs
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", null));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", null));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3", null));
+
+		assertEquals("https://nowina.lu/policy", DSSUtils.getObjectIdentifierValue("https://nowina.lu/policy", ObjectIdentifierQualifier.OID_AS_URN));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", ObjectIdentifierQualifier.OID_AS_URN));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3.4.5", ObjectIdentifierQualifier.OID_AS_URN));
+
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", ObjectIdentifierQualifier.OID_AS_URI));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
 	}
 
 }

@@ -278,10 +278,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					Map<?, ?> commIdMap = DSSJsonUtils.getAsMap(signedCommitmentMap, JAdESHeaderParameterNames.COMM_ID);
 					if (Utils.isMapNotEmpty(commIdMap)) {
 						String uri = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.ID);
+						uri = DSSUtils.getObjectIdentifierValue(uri);
 						if (Utils.isStringNotBlank(uri)) {
-							if (DSSUtils.isUrnOid(uri)) {
-								uri = DSSUtils.getOidCode(uri);
-							}
 							CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
 							String desc = DSSJsonUtils.getAsString(commIdMap, JAdESHeaderParameterNames.DESC);
 							commitmentTypeIndication.setDescription(desc);
@@ -436,7 +434,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			Map<?, ?> policyId = DSSJsonUtils.getAsMap(sigPolicy, JAdESHeaderParameterNames.ID);
 			if (Utils.isMapNotEmpty(policyId)) {
 				String id = DSSJsonUtils.getAsString(policyId, JAdESHeaderParameterNames.ID);
-				signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifier(id));
+				signaturePolicy = new SignaturePolicy(DSSUtils.getObjectIdentifierValue(id));
 				String desc = DSSJsonUtils.getAsString(policyId, JAdESHeaderParameterNames.DESC);
 				signaturePolicy.setDescription(desc);
 				List<?> docRefs = DSSJsonUtils.getAsList(policyId, JAdESHeaderParameterNames.DOC_REFS);

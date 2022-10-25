@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -1157,13 +1158,12 @@ public final class DSSUtils {
 	 * Checks if the given id is a URN representation of OID according to IETF RFC 3061
 	 * 
 	 * @param id {@link String} to check
-	 * @return TRUE if the provided id is aURN representation of OID, FALSE otherwise
+	 * @return TRUE if the provided id is a URN representation of OID, FALSE otherwise
 	 */
 	public static boolean isUrnOid(String id) {
 		return id != null && id.matches("^(?i)urn:oid:.*$");
 	}
 
-	
 	/**
 	 * Checks if the given {@code oid} is a valid OID
 	 * Ex.: 1.3.6.1.4.1.343 = valid
@@ -1191,29 +1191,6 @@ public final class DSSUtils {
 		}
 		return urnOid.substring(urnOid.lastIndexOf(':') + 1);
 	}
-	
-	/**
-	 * Normalizes and retrieves a {@code String} identifier
-	 * Examples:
-	 *      "http://website.com" = "http://website.com"
-	 *      "urn:oid:1.2.3" = "1.2.3"
-	 *      "1.2.3" = "1.2.3"
-	 * 
-	 * @param oidOrUriString {@link String} identifier
-	 * @return {@link String}
-	 */
-	public static String getObjectIdentifier(String oidOrUriString) {
-		String policyIdString = oidOrUriString;
-		if (Utils.isStringNotEmpty(oidOrUriString)) {
-			policyIdString = policyIdString.replace("\n", "");
-			policyIdString = Utils.trim(policyIdString);
-			if (isUrnOid(policyIdString)) {
-				// urn:oid:1.2.3 --> 1.2.3
-				policyIdString = getOidCode(policyIdString);
-			}
-		}
-		return policyIdString;
-	}
 
 	/**
 	 * Returns a URN URI generated from the given OID:
@@ -1227,6 +1204,62 @@ public final class DSSUtils {
 	 */
 	public static String toUrnOid(String oid) {
 		return OID_NAMESPACE_PREFIX + oid;
+	}
+	
+	/**
+	 * Normalizes and retrieves a {@code String} identifier (to be used for non-XAdES processing).
+	 * Examples:
+	 *      "http://website.com" = "http://website.com"
+	 *      "urn:oid:1.2.3" = "1.2.3"
+	 *      "1.2.3" = "1.2.3"
+	 * 
+	 * @param oidOrUriString {@link String} identifier
+	 * @return {@link String}
+	 */
+	public static String getObjectIdentifierValue(String oidOrUriString) {
+		return getObjectIdentifierValue(oidOrUriString, null, false);
+	}
+
+	/**
+	 * This method returns a URI value of the {@code oidOrUriString} taking into account
+	 * the defined {@code ObjectIdentifierQualifier} (to be used for XAdES processing).
+	 * Examples:
+	 *     "http://nowina.lu/policy" -> "http://nowina.lu/policy"
+	 *     "1.2.3.4.5" -> "1.2.3.4.5"
+	 *     "urn:oid:1.2.3.4.5" -> "1.2.3.4.5"
+	 *
+	 * @param oidOrUriString {@link String} identifier value
+	 * @param qualifier {@link ObjectIdentifierQualifier} when present
+	 * @return {@link String} URI
+	 */
+	public static String getObjectIdentifierValue(String oidOrUriString, ObjectIdentifierQualifier qualifier) {
+		return getObjectIdentifierValue(oidOrUriString, qualifier, true);
+	}
+
+	private static String getObjectIdentifierValue(String oidOrUriString, ObjectIdentifierQualifier qualifier, boolean xades) {
+		String value = oidOrUriString;
+		if (Utils.isStringNotEmpty(oidOrUriString)) {
+			value = value.replace("\n", "");
+			value = Utils.trim(value);
+			if (DSSUtils.isUrnOid(value)) {
+				if (xades && !ObjectIdentifierQualifier.OID_AS_URN.equals(qualifier)) {
+					LOG.debug("When OID is encoded as URN, a Qualifier=\"OIDAsURN\" shall be used!");
+				}
+				value = DSSUtils.getOidCode(value);
+
+			} else if (DSSUtils.isOidCode(value)) {
+				if (xades && ObjectIdentifierQualifier.OID_AS_URN.equals(qualifier)) {
+					LOG.debug("When OID is encoded as URI, a Qualifier=\"OIDAsURN\" shall not be used!");
+				}
+
+			} else {
+				// OIDAsURN or OIDAsURI
+				if (xades && qualifier != null) {
+					LOG.debug("When URI is used, a Qualifier attribute shall not be present!");
+				}
+			}
+		}
+		return value;
 	}
 	
 	/**

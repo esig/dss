@@ -52,12 +52,12 @@ import java.util.function.Function;
  * This class is used to convert a list of {@code CriteriaListType} to {@code Condition}
  *
  */
-public class CriteriaListTypeConverter implements Function<CriteriaListType, Condition> {
+public class CriteriaListConverter implements Function<CriteriaListType, Condition> {
 
 	/**
 	 * Default constructor
 	 */
-	public CriteriaListTypeConverter() {
+	public CriteriaListConverter() {
 	}
 
 	@Override
@@ -92,15 +92,12 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 				CompositeCondition condition = new CompositeCondition();
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
-					String id = identifier.getValue();
-
-					// ES TSL : <ns4:Identifier
-					// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
-					if (id.indexOf(':') >= 0) {
-						id = id.substring(id.lastIndexOf(':') + 1);
+					if (identifier != null) {
+						String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), identifier.getQualifier());
+						if (Utils.isStringNotEmpty(id)) {
+							condition.addChild(new PolicyIdCondition(id));
+						}
 					}
-
-					condition.addChild(new PolicyIdCondition(id));
 				}
 				criteriaCondition.addChild(condition);
 			}
@@ -135,7 +132,8 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 						CompositeCondition composite = new CompositeCondition(Assert.ALL);
 						List<QcStatementType> qcStatement = qcStatementList.getQcStatement();
 						for (QcStatementType qcStatementType : qcStatement) {
-							String oid = qcStatementType.getQcStatementId().getIdentifier().getValue();
+							IdentifierType qcStatementIdentifier = qcStatementType.getQcStatementId().getIdentifier();
+							String oid = DSSUtils.getObjectIdentifierValue(qcStatementIdentifier.getValue(), qcStatementIdentifier.getQualifier());
 							String legislation = null;
 							String type = null;
 
@@ -144,12 +142,15 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 								legislation = qcStatementInfo.getQcCClegislation();
 								ObjectIdentifierType qcType = qcStatementInfo.getQcType();
 								if (qcType != null) {
-									type = qcType.getIdentifier().getValue();
+									IdentifierType qcTypeIdentifier = qcType.getIdentifier();
+									String id = DSSUtils.getObjectIdentifierValue(qcTypeIdentifier.getValue(), qcTypeIdentifier.getQualifier());
+									if (Utils.isStringNotEmpty(id)) {
+										type = id;
+									}
 								}
 							}
 
-							composite.addChild(new QCStatementCondition(
-									DSSUtils.getOidCode(oid), DSSUtils.getOidCode(type), legislation));
+							composite.addChild(new QCStatementCondition(oid, type, legislation));
 						}
 
 						condition.addChild(composite);
@@ -166,7 +167,13 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 		List<String> oids = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oits)) {
 			for (ObjectIdentifierType objectIdentifierType : oits) {
-				oids.add(objectIdentifierType.getIdentifier().getValue());
+				IdentifierType identifier = objectIdentifierType.getIdentifier();
+				if (identifier != null) {
+					String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), identifier.getQualifier());
+					if (Utils.isStringNotEmpty(id)) {
+						oids.add(id);
+					}
+				}
 			}
 		}
 		return oids;

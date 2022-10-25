@@ -873,7 +873,7 @@ public class DSSJsonUtils {
 
 			String id = getAsString(spDSpec, JAdESHeaderParameterNames.ID);
 			if (Utils.isStringNotEmpty(id)) {
-				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+				spDocSpecification.setId(DSSUtils.getObjectIdentifierValue(id));
 			}
 
 			String desc = getAsString(spDSpec, JAdESHeaderParameterNames.DESC);

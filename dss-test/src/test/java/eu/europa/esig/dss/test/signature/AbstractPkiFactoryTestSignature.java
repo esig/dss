@@ -469,7 +469,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 			if (spDocSpecification != null) {
 				assertNotNull(signature.getPolicyDocSpecification());
 				if (Utils.isStringNotEmpty(spDocSpecification.getId())) {
-					assertEquals(DSSUtils.getObjectIdentifier(spDocSpecification.getId()), signature.getPolicyDocSpecification().getId());
+					assertEquals(DSSUtils.getObjectIdentifierValue(spDocSpecification.getId()), signature.getPolicyDocSpecification().getId());
 				}
 			}
 		}
