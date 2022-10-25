@@ -197,6 +197,12 @@ public class CriteriaListConverterTest {
         oidNoQualifierObjectIdentifier.setIdentifier(oidNoQualifierIdentifier);
         extendedKeyUsageType.getKeyPurposeId().add(oidNoQualifierObjectIdentifier);
 
+        ObjectIdentifierType notOIDQualifierObjectIdentifier = new ObjectIdentifierType();
+        IdentifierType notOIDQualifierIdentifier = new IdentifierType();
+        notOIDQualifierIdentifier.setValue("hello-world");
+        notOIDQualifierObjectIdentifier.setIdentifier(notOIDQualifierIdentifier);
+        extendedKeyUsageType.getKeyPurposeId().add(notOIDQualifierObjectIdentifier);
+
         AnyType anyType = new AnyType();
         anyType.getContent().add(new JAXBElement<>(new QName("ExtendedKeyUsage"), ExtendedKeyUsageType.class, extendedKeyUsageType));
         criteriaListType.setOtherCriteriaList(anyType);

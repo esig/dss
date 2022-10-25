@@ -42,6 +42,8 @@ import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBElement;
 import java.util.ArrayList;
@@ -53,6 +55,8 @@ import java.util.function.Function;
  *
  */
 public class CriteriaListConverter implements Function<CriteriaListType, Condition> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(CriteriaListConverter.class);
 
 	/**
 	 * Default constructor
@@ -171,7 +175,11 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 				if (identifier != null) {
 					String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), identifier.getQualifier());
 					if (Utils.isStringNotEmpty(id)) {
-						oids.add(id);
+						if (DSSUtils.isOidCode(id)) {
+							oids.add(id);
+						} else {
+							LOG.warn("The obtained value is not OID : '{}'!", id);
+						}
 					}
 				}
 			}

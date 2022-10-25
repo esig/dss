@@ -63,7 +63,7 @@ public class ExtendedKeyUsageCondition implements Condition {
 	}
 
     /**
-     * Returns the list key purpose IDs to be be checked against the
+     * Returns the list key purpose IDs to be checked against the
      * certificate’s extended key usage extension.
      * 
      * @return an unmodifiable list, possibly empty; never {@code null}
