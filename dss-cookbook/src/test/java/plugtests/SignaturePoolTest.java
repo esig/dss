@@ -42,8 +42,7 @@ import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -89,10 +88,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -134,11 +131,8 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
 		fileCacheDataLoader.setFileCacheDirectory(new File("src/test/resources/signature-pool/cache"));
 		fileCacheDataLoader.setCacheExpirationTime(-1);
-		
-		Map<String, byte[]> tlMap = new HashMap<>();
-		tlMap.put("https://www.agentschaptelecom.nl/binaries/agentschap-telecom/documenten/publicaties/2018/januari/01/digitale-statuslijst-van-vertrouwensdiensten/current-tsl.xml", 
-				DSSUtils.toByteArray(new FileDocument("src/test/resources/signature-pool/cache/NL_TL_xml")));
-		fileCacheDataLoader.setDataLoader(new MemoryDataLoader(tlMap));
+
+		fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
 		tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 		
 		tlValidationJob.offlineRefresh();
