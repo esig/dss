@@ -190,7 +190,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * Keystore's password.
 	 */
-	private String sslKeystorePassword = Utils.EMPTY_STRING;
+	private char[] sslKeystorePassword = new char[]{};
 
 	/**
 	 * Defines if the keyStore shall be loaded as a trusted material
@@ -210,7 +210,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * Truststore's password.
 	 */
-	private String sslTruststorePassword = Utils.EMPTY_STRING;
+	private char[] sslTruststorePassword = new char[]{};
 
 	/**
 	 * The trust strategy
@@ -547,8 +547,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * Sets the KeyStore password
 	 *
 	 * @param sslKeystorePassword {@link String}
+	 * @deprecated since DSS 5.12. Use {@code #setSslKeystorePassword(char[] sslKeystorePassword)}
 	 */
+	@Deprecated
 	public void setSslKeystorePassword(String sslKeystorePassword) {
+		this.sslKeystorePassword = sslKeystorePassword != null ? sslKeystorePassword.toCharArray() : null;
+	}
+
+	/**
+	 * Sets the KeyStore password
+	 *
+	 * @param sslKeystorePassword char array representing the password
+	 */
+	public void setSslKeystorePassword(char[] sslKeystorePassword) {
 		this.sslKeystorePassword = sslKeystorePassword;
 	}
 
@@ -567,8 +578,19 @@ public class CommonsDataLoader implements DataLoader {
 	 * Sets the password for SSL truststore
 	 *
 	 * @param sslTruststorePassword {@link String}
+	 * @deprecated since DSS 5.12. Use {@code #setSslTruststorePassword(char[] sslTruststorePassword)}
 	 */
-	public void setSslTruststorePassword(final String sslTruststorePassword) {
+	@Deprecated
+	public void setSslTruststorePassword(String sslTruststorePassword) {
+		this.sslTruststorePassword = sslTruststorePassword != null ? sslTruststorePassword.toCharArray() : null;
+	}
+
+	/**
+	 * Sets the password for SSL truststore
+	 *
+	 * @param sslTruststorePassword char array representing a password string
+	 */
+	public void setSslTruststorePassword(char[] sslTruststorePassword) {
 		this.sslTruststorePassword = sslTruststorePassword;
 	}
 
@@ -611,7 +633,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *            host connection details
 	 * @param userCredentials
 	 *            user login credentials
-	 * @return this for fluent addAuthentication
+	 * @return this (for fluent addAuthentication)
 	 */
 	public CommonsDataLoader addAuthentication(HostConnection hostConnection, UserCredentials userCredentials) {
 		Map<HostConnection, UserCredentials> authenticationMap = getAuthenticationMap();
@@ -632,10 +654,34 @@ public class CommonsDataLoader implements DataLoader {
 	 *            login
 	 * @param password
 	 *            password
-	 * @return this for fluent addAuthentication
+	 * @return this (for fluent addAuthentication)
+	 * @deprecated since DSS 5.12. Use {@code #addAuthentication(
+	 * 												final String host, final int port, final String scheme,
+	 * 												final String login, final char[] password)}
 	 */
+	@Deprecated
 	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme,
 											   final String login, final String password) {
+		return addAuthentication(host, port, scheme, login, password != null ? password.toCharArray() : null);
+	}
+
+	/**
+	 * Adds authentication credentials to the existing {@code authenticationMap}
+	 *
+	 * @param host
+	 *            host
+	 * @param port
+	 *            port
+	 * @param scheme
+	 *            scheme
+	 * @param login
+	 *            login
+	 * @param password
+	 *            password
+	 * @return this (for fluent addAuthentication)
+	 */
+	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme,
+											   final String login, final char[] password) {
 		final HostConnection hostConnection = new HostConnection(host, port, scheme);
 		final UserCredentials userCredentials = new UserCredentials(login, password);
 		return addAuthentication(hostConnection, userCredentials);
@@ -1065,7 +1111,7 @@ public class CommonsDataLoader implements DataLoader {
 			final KeyStore sslKeystore = getSSLKeyStore();
 			if (sslKeystore != null) {
 				LOG.debug("Set the SSL keystore as key materials");
-				sslContextBuilder.loadKeyMaterial(sslKeystore, toCharArray(sslKeystorePassword));
+				sslContextBuilder.loadKeyMaterial(sslKeystore, sslKeystorePassword);
 				if (loadKeyStoreAsTrustMaterial) {
 					LOG.debug("Set the SSL keystore as trust materials");
 					sslContextBuilder.loadTrustMaterial(sslKeystore, trustStrategy);
@@ -1104,11 +1150,11 @@ public class CommonsDataLoader implements DataLoader {
 		return loadKeyStore(sslTruststore, sslTruststoreType, sslTruststorePassword);
 	}
 
-	private KeyStore loadKeyStore(DSSDocument store, String type, String passwordStr) throws IOException, GeneralSecurityException {
+	private KeyStore loadKeyStore(DSSDocument store, String type, char[] password) throws IOException, GeneralSecurityException {
 		if (store != null) {
 			try (InputStream is = store.openStream()) {
 				KeyStore ks = KeyStore.getInstance(type);
-				ks.load(is, toCharArray(passwordStr));
+				ks.load(is, password);
 				return ks;
 			}
 		} else {
@@ -1188,7 +1234,7 @@ public class CommonsDataLoader implements DataLoader {
 					hostConnection.getRealm(), hostConnection.getScheme());
 
 			final UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(
-					userCredentials.getUsername(), toCharArray(userCredentials.getPassword()));
+					userCredentials.getUsername(), userCredentials.getPassword());
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
 		httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
@@ -1229,13 +1275,13 @@ public class CommonsDataLoader implements DataLoader {
 		String proxyHost = proxyProps.getHost();
 		int proxyPort = proxyProps.getPort();
 		String proxyUser = proxyProps.getUser();
-		String proxyPassword = proxyProps.getPassword();
+		char[] proxyPassword = proxyProps.getPassword();
 		Collection<String> excludedHosts = proxyProps.getExcludedHosts();
 
-		if (Utils.isStringNotEmpty(proxyUser) && Utils.isStringNotEmpty(proxyPassword)) {
+		if (Utils.isStringNotEmpty(proxyUser) && Utils.isArrayNotEmpty(proxyPassword)) {
 			AuthScope proxyAuth = new AuthScope(proxyHost, proxyPort);
 			UsernamePasswordCredentials proxyCredentials = new UsernamePasswordCredentials(
-					proxyUser, toCharArray(proxyPassword));
+					proxyUser, proxyPassword);
 			credentialsProvider.setCredentials(proxyAuth, proxyCredentials);
 		}
 
@@ -1278,10 +1324,6 @@ public class CommonsDataLoader implements DataLoader {
 
 	private static TimeValue toTimeValueMilliseconds(int millis) {
 		return TimeValue.ofMilliseconds(millis);
-	}
-
-	private static char[] toCharArray(String str) {
-		return str != null ? str.toCharArray() : null;
 	}
 
 	private static ContentType toContentType(String contentTypeString) {

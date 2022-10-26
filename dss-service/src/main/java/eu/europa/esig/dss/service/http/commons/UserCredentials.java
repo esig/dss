@@ -33,8 +33,8 @@ public class UserCredentials implements Serializable {
     /** Identifies user's login name or username */
     private String username;
 
-    /** The password authentication string */
-    private String password;
+    /** The authentication password */
+    private char[] password;
 
     /**
      * Empty constructor
@@ -48,8 +48,21 @@ public class UserCredentials implements Serializable {
      *
      * @param username {@link String}
      * @param password {@link String}
+     * @deprecated since DSS 5.12. Use {@code new UserCredentials(String username, char[] password)}
      */
+    @Deprecated
     public UserCredentials(String username, String password) {
+        this.username = username;
+        this.password = password != null ? password.toCharArray() : null;
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param username {@link String}
+     * @param password a char array representing the password string
+     */
+    public UserCredentials(String username, char[] password) {
         this.username = username;
         this.password = password;
     }
@@ -77,7 +90,7 @@ public class UserCredentials implements Serializable {
      *
      * @return {@link String}
      */
-    public String getPassword() {
+    public char[] getPassword() {
         return password;
     }
 
@@ -85,8 +98,19 @@ public class UserCredentials implements Serializable {
      * Sets the password
      *
      * @param password {@link String}
+     * @deprecated since DSS 5.12. Use {@code #setPassword(char[] password)}
      */
+    @Deprecated
     public void setPassword(String password) {
+        this.password = password != null ? password.toCharArray() : null;
+    }
+
+    /**
+     * Sets the password
+     *
+     * @param password {@link String}
+     */
+    public void setPassword(char[] password) {
         this.password = password;
     }
 

@@ -194,6 +194,16 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isArrayEmpty(char[] array) {
+		return array == null || array.length == 0;
+	}
+
+	@Override
+	public boolean isArrayNotEmpty(char[] array) {
+		return !isArrayEmpty(array);
+	}
+
+	@Override
 	public byte[] subarray(byte[] array, int start, int length) {
 		if (array == null) {
 			return null;
