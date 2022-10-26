@@ -13,6 +13,14 @@
 |===
 |Version           |Release date             |Features
 
+|v5.11.1           |November 2022            a|Main new features / improvements :
+
+* Maven Central integration.
+
+Bug fixes :
+
+* Fixed URN OID extraction from an XML Trusted List.
+
 |v5.11             |October 2022              a|Main new features / improvements :
 
                                             * PAdES : improved PDF-signing performance (add caching of the temporary revision);
@@ -42,6 +50,16 @@
                                             * ASiC : unable to proceed validation of CEN-header invalid files;
                                             * SimpleReport : fix valid signatures counter;
                                             * Demo : fix proxy configuration conversion.
+
+|v5.10.2           |October 2022            a|Main new features / improvements :
+
+* Maven Central integration;
+* Update vulnerable dependencies.
+
+Bug fixes :
+
+* Fixed validation of signatures with invalid cryptographic algorithm OID;
+* Fixed URN OID extraction from an XML Trusted List.
 
 |v5.10.1           |April 2022              a|Bug fixes :
 
@@ -228,19 +246,19 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.10 using <<BomModule>>.
+The following example shows how to switch to DSS version 5.11.1 using <<BomModule>>.
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.10</dss.version>
+    <dss.version>5.11.1</dss.version>
     ...
 </properties>
 
 ...
 
- <dependencyManagement>
+<dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -261,7 +279,7 @@ This chapter covers the most significant changes in DSS code occurred between di
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
-.Code changes from version 5.10/5.10.1 to 5.11
+.Code changes from version 5.10/5.10.1/5.10.2 to 5.11
 |===
 |Title                               |v5.10                            |v5.11
 |ASiC container: set signature name     a|[source,java]
