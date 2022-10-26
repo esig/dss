@@ -43,7 +43,7 @@ import java.security.SecureRandom;
 
 public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends AbstractPAdESTestSignature {
 	
-	private static final String PASSWORD = " ";
+	private static final byte[] PASSWORD = new byte[]{ ' ' };
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;

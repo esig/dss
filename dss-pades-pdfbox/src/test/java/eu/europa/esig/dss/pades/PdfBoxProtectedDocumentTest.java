@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
-	private final String correctProtectionPhrase = " ";
+	private final byte[] correctProtectionPhrase = new byte[]{ ' ' };
 
 	private final DSSDocument openProtected = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);

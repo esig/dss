@@ -79,7 +79,7 @@ public interface PAdESCommonParameters extends Serializable {
 	 * 
 	 * @return {@link String} password
 	 */
-	String getPasswordProtection();
+	byte[] getPasswordProtection();
 
 	/**
 	 * Returns name of an application used to create a signature/timestamp

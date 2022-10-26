@@ -99,7 +99,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	/**
 	 * Password used to encrypt a PDF
 	 */
-	private String passwordProtection;
+	private byte[] passwordProtection;
 
 	/**
 	 * The time-zone used for signature creation
@@ -298,17 +298,28 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.permission = permission;
 	}
 
-	@Override
-	public String getPasswordProtection() {
-		return passwordProtection;
-	}
-
 	/**
 	 * Sets a password string
 	 * 
 	 * @param passwordProtection {@link String} password to set
+	 * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(passwordProtection.getBytes())}
 	 */
+	@Deprecated
 	public void setPasswordProtection(String passwordProtection) {
+		this.passwordProtection = passwordProtection != null ? passwordProtection.getBytes() : null;
+	}
+
+	@Override
+	public byte[] getPasswordProtection() {
+		return passwordProtection;
+	}
+
+	/**
+	 * Sets password binaries
+	 *
+	 * @param passwordProtection byte array representing a password of the document
+	 */
+	public void setPasswordProtection(byte[] passwordProtection) {
 		this.passwordProtection = passwordProtection;
 	}
 

@@ -264,7 +264,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
+					 toSignDocument, parameters.getPasswordProtection()) ) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -301,7 +301,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBinary(parameters.getPasswordProtection())) ) {
+					 toSignDocument, parameters.getPasswordProtection()) ) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -335,11 +335,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document,
-										final PdfValidationDataContainer validationDataForInclusion, final String pwd) {
+										final PdfValidationDataContainer validationDataForInclusion, final byte[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+			 PdfReader reader = new PdfReader(is, pwd)) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -513,9 +513,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final byte[] pwd) {
 		try (InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, getPasswordBinary(pwd))) {
+				PdfReader reader = new PdfReader(is, pwd)) {
 			AcroFields acroFields = reader.getAcroFields();
 			return acroFields.getFieldNamesWithBlankSignatures();
 		} catch (BadPasswordException e) {
@@ -527,10 +527,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
-											final String pwd) {
+											final byte[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBinary(pwd))) {
+			 ITextDocumentReader documentReader = new ITextDocumentReader(document, pwd)) {
 			checkPdfPermissions(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
@@ -585,22 +585,14 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		throw new UnsupportedOperationException("Screenshot feature is not supported by Open PDF");
 	}
 
-	private byte[] getPasswordBinary(String currentPassword) {
-        byte[] password = null;
-        if (currentPassword != null) {
-            password = currentPassword.getBytes();
-        }
-        return password;
-    }
-
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException {
-		return new ITextDocumentReader(dssDocument, getPasswordBinary(passwordProtection));
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, byte[] passwordProtection) throws IOException {
+		return new ITextDocumentReader(dssDocument, passwordProtection);
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException {
-		return new ITextDocumentReader(binaries, getPasswordBinary(passwordProtection));
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException {
+		return new ITextDocumentReader(binaries, passwordProtection);
 	}
 
 	@Override
