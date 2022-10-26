@@ -17,16 +17,36 @@ The latest version of DSS framework has the following minimal requirements:
 
 # Maven repository
 
-The release is published on CEF Digital repository : 
+The release is published on Maven Central : 
 
-https://ec.europa.eu/digital-building-blocks/artifact/#browse/welcome
+https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss
 
 <pre>
-&lt;repository&gt;
-  &lt;id&gt;cefdigital&lt;/id&gt;
-  &lt;name&gt;cefdigital&lt;/name&gt;
-  &lt;url&gt;https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss/&lt;/url&gt;
-&lt;/repository&gt;
+&lt;!-- Add dss-bom for easy integration --&gt;
+&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;eu.europa.ec.joinup.sd-dss&lt;/groupId&gt;
+            &lt;artifactId&gt;dss-bom&lt;/artifactId&gt;
+            &lt;version&gt;5.10.2&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+
+&lt;!-- Add required modules (example) --&gt;
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;eu.europa.ec.joinup.sd-dss&lt;/groupId&gt;
+        &lt;artifactId&gt;dss-utils-apache-commons&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;eu.europa.ec.joinup.sd-dss&lt;/groupId&gt;
+        &lt;artifactId&gt;dss-xades&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    ...
+&lt;/dependencies&gt;
 </pre>
 
 # Build and usage

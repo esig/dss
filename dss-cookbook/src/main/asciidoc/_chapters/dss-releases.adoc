@@ -13,6 +13,15 @@
 |===
 |Version           |Release date             |Features
 
+|v5.10.2           |October 2022            a|Main new features / improvements :
+
+* Maven Central integration;
+* Update vulnerable dependencies.
+
+Bug fixes :
+
+* Fixed URN OID extraction from an XML Trusted List.
+
 |v5.10.1           |April 2022              a|Bug fixes :
 
                                               * ASiC-E with XAdES parallel signature creation regression;
@@ -198,19 +207,19 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.10 using <<BomModule>>.
+The following example shows how to switch to DSS version 5.10.2 using <<BomModule>>.
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.10</dss.version>
+    <dss.version>5.10.2</dss.version>
     ...
 </properties>
 
 ...
 
- <dependencyManagement>
+<dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
