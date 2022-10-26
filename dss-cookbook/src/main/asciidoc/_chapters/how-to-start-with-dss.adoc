@@ -30,13 +30,38 @@ WARNING: Before processing the integration steps, please ensure you have success
 
 ===== Adding as Maven dependency
 
-The simplest way to include DSS to your Maven project is to add a repository into the pom.xml file in the root directory of your project as following:
+====== Using Maven Central (starting from version 5.11.1)
+
+The simplest way to include DSS to your project is to use https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss[Maven Central repository]. To do this you need to define the required modules within a list of dependencies in `pom.xml` file of your Maven project, for example:
+
+[source,xml]
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+        <version>5.11.1</version>
+    </dependency>
+    ...
+</dependencies>
+----
+
+NOTE: The integration with Maven Central repository is available only for the versions DSS 5.10.2 and 5.11.1.
+
+See <<MavenModules>> to get familiar with the available modules in DSS.
+
+Refresh your project in order to download the dependency and you will be able to use all modules of the DSS framework. Your project needs to be refreshed every time you add a new dependency.
+
+For integration with `dss-bom` module, please see <<BomModule>>.
+
+====== Using Nexus repository (version 5.11 and before)
+
+To include DSS artifacts published to Nexus Repository (versions up to and including DSS 5.11), the following configuration is required within `pom.xml` file of your Maven project:
 
 [source,xml]
 ----
 <repositories>
-	...
-
 	<repository>
 	  <id>cefdigital</id>
 	  <name>cefdigital</name>
@@ -45,9 +70,7 @@ The simplest way to include DSS to your Maven project is to add a repository int
 </repositories>
 ----
 
-After that specify a list of dependencies required for your project. See <<MavenModules>> to get familiar with the available modules in DSS.
-
-Refresh your project in order to download the dependency, and then you will be able to use all modules of the DSS framework. Your project needs to be refreshed every time you add new dependencies.
+After that you will need to specify a list of DSS modules required for your project (see <<BomModule>> as an example).
 
 [[BomModule]]
 ====== Integration with Bill of Materials (BOM) module
@@ -58,12 +81,12 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
 
 [source,xml]
 ----
- <dependencyManagement>
+<dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.10</version>
+            <version>5.11.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -83,6 +106,8 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
     <!-- add other required modules -->
 </dependencies>
 ----
+
+See <<MavenModules>> to get familiar with the available modules in DSS.
 
 [[MavenBuildProfiles]]
 ===== Maven build and profiles
