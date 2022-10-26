@@ -67,8 +67,8 @@
 		<awaitility.version>4.1.1</awaitility.version>
 		<mockito.version>3.12.4</mockito.version>
 		<h2database.version>2.1.210</h2database.version>
-		<jackson.version>2.13.2</jackson.version>
-		<jackson-databind.version>2.13.2.2</jackson-databind.version> <!-- To be used while jackson is not updated -->
+		<jackson.version>2.13.4</jackson.version>
+		<jackson-databind.version>2.13.4.2</jackson-databind.version> <!-- To be used while jackson is not updated -->
 		<fop-core.version>2.7</fop-core.version>
 		<xml-apis.version>1.4.01</xml-apis.version> <!-- Synchronized with fop-core -->
 
