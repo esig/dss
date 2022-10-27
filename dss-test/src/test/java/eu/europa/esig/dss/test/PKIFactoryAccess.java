@@ -214,7 +214,7 @@ public abstract class PKIFactoryAccess {
 		cacheOCSPSource.setProxySource(onlineOcspSource());
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
-		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60L); // 3 minutes
+		cacheOCSPSource.setDefaultNextUpdateDelay(3 * 60 * 60L); // 3 hours
 		try {
 			cacheOCSPSource.initTable();
 		} catch (SQLException e) {
