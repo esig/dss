@@ -52,7 +52,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -283,8 +285,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		XAdESService xadesService = getXAdESService();
 
-		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
-		for (DSSDocument signature : signatureDocuments) {
+		final List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		// Ensure iteration not over original list
+		Iterator<DSSDocument> iterator = new ArrayList<>(signatureDocuments).iterator();
+		while (iterator.hasNext()) {
+			DSSDocument signature = iterator.next();
 			DSSDocument signatureWithPolicyStore = xadesService.addSignaturePolicyStore(signature, signaturePolicyStore);
 			signatureWithPolicyStore.setName(signature.getName());
 			ASiCUtils.addOrReplaceDocument(signatureDocuments, signatureWithPolicyStore);

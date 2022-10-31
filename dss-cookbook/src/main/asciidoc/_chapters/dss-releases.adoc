@@ -20,6 +20,7 @@
 
 Bug fixes :
 
+* Fixed validation of signatures with invalid cryptographic algorithm OID;
 * Fixed URN OID extraction from an XML Trusted List.
 
 |v5.10.1           |April 2022              a|Bug fixes :

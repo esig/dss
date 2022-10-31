@@ -56,6 +56,8 @@ import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -326,8 +328,11 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		CAdESService cadesService = getCAdESService();
 
-		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
-		for (DSSDocument signature : signatureDocuments) {
+		final List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		// Ensure iteration not over original list
+		Iterator<DSSDocument> iterator = new ArrayList<>(signatureDocuments).iterator();
+		while (iterator.hasNext()) {
+			DSSDocument signature = iterator.next();
 			DSSDocument signatureWithPolicyStore = cadesService.addSignaturePolicyStore(signature, signaturePolicyStore);
 			signatureWithPolicyStore.setName(signature.getName());
 			ASiCUtils.addOrReplaceDocument(signatureDocuments, signatureWithPolicyStore);
