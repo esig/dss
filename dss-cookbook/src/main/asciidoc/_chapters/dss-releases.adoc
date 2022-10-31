@@ -15,7 +15,8 @@
 
 |v5.11.1           |November 2022            a|Main new features / improvements :
 
-* Maven Central integration.
+* Maven Central integration;
+* Update vulnerable dependencies.
 
 Bug fixes :
 
