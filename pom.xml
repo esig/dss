@@ -68,9 +68,10 @@
 		<mockito.version>3.12.4</mockito.version>
 		<h2database.version>2.1.214</h2database.version>
 		<jackson.version>2.13.4</jackson.version>
+		<jackson-databind.version>2.13.4.2</jackson-databind.version> <!-- To be used while jackson is not updated -->
 		<fop-core.version>2.7</fop-core.version>
 		<xml-apis.version>1.4.01</xml-apis.version> <!-- Synchronized with fop-core -->
-		<batik.version>1.15</batik.version> <!-- To be used while fop-core is not updated -->
+		<batik.version>1.16</batik.version> <!-- To be used while fop-core is not updated -->
 
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -1037,6 +1038,11 @@
 				<groupId>com.fasterxml.jackson.module</groupId>
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson-databind.version}</version>
 			</dependency>
 
 		</dependencies>
