@@ -58,6 +58,7 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 	 * Default constructor
 	 */
 	public CriteriaListTypeConverter() {
+		// empty
 	}
 
 	@Override
