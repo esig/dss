@@ -131,6 +131,7 @@
 			<id>quick-init</id>
 			<properties>
 				<maven.test.skip>false</maven.test.skip>
+				<maven.test.skip.exec>true</maven.test.skip.exec>
 			</properties>
 		</profile>
 	</profiles>
