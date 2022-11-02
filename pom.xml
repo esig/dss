@@ -5,9 +5,15 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.11</version>
+	<version>5.11.1</version>
 	<packaging>pom</packaging>
+
 	<name>Digital Signature Services</name>
+	<description>
+		DSS (Digital Signature Services) is an open-source software library for electronic signature creation
+		and validation in line with European legislation.
+	</description>
+	<url>https://github.com/esig/dss</url>
 
 	<developers>
 		<developer>
@@ -62,9 +68,10 @@
 		<mockito.version>3.12.4</mockito.version>
 		<h2database.version>2.1.214</h2database.version>
 		<jackson.version>2.13.4</jackson.version>
+		<jackson-databind.version>2.13.4.2</jackson-databind.version> <!-- To be used while jackson is not updated -->
 		<fop-core.version>2.7</fop-core.version>
 		<xml-apis.version>1.4.01</xml-apis.version> <!-- Synchronized with fop-core -->
-		<batik.version>1.15</batik.version> <!-- To be used while fop-core is not updated -->
+		<batik.version>1.16</batik.version> <!-- To be used while fop-core is not updated -->
 
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -351,6 +358,17 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.13</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.8</version>
@@ -399,11 +417,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>3.0.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.2.0</version>
 					<configuration>
@@ -421,6 +434,7 @@
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
+						<releaseProfiles>release-sign-artifacts</releaseProfiles>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -456,7 +470,7 @@
 		<url>https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</developerConnection>
-		<tag>5.11</tag>
+		<tag>5.11.1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -1030,18 +1044,23 @@
 				<artifactId>jackson-module-jaxb-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson-databind.version}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
 	<distributionManagement>
 		<repository>
-			<id>cefdigital-nexus</id>
-			<url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
-			<id>cefdigital-nexus</id>
-			<url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/esignaturedss-snapshots</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -1145,6 +1164,33 @@
 								<phase>compile</phase>
 								<goals>
 									<goal>apply</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>prepareRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
 								</goals>
 							</execution>
 						</executions>

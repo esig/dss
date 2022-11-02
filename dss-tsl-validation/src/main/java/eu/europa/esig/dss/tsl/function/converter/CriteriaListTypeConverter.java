@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
+import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
@@ -39,7 +40,6 @@ import eu.europa.esig.trustedlist.jaxb.mra.QcStatementListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QcStatementType;
 import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
@@ -58,6 +58,7 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 	 * Default constructor
 	 */
 	public CriteriaListTypeConverter() {
+		// empty
 	}
 
 	@Override
@@ -92,19 +93,22 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 				CompositeCondition condition = new CompositeCondition();
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
-					String id = identifier.getValue();
-
-					// ES TSL : <ns4:Identifier
-					// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
-					if (id.indexOf(':') >= 0) {
-						id = id.substring(id.lastIndexOf(':') + 1);
-					}
-
+					String id = getOID(identifier);
 					condition.addChild(new PolicyIdCondition(id));
 				}
 				criteriaCondition.addChild(condition);
 			}
 		}
+	}
+
+	private String getOID(IdentifierType identifier) {
+		String id = identifier.getValue();
+		// ES TSL : <ns4:Identifier
+		// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
+		if (DSSUtils.isUrnOid(id)) {
+			id = DSSUtils.getOidCode(id);
+		}
+		return id;
 	}
 
 	/**
@@ -135,7 +139,7 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 						CompositeCondition composite = new CompositeCondition(Assert.ALL);
 						List<QcStatementType> qcStatement = qcStatementList.getQcStatement();
 						for (QcStatementType qcStatementType : qcStatement) {
-							String oid = qcStatementType.getQcStatementId().getIdentifier().getValue();
+							String oid = getOID(qcStatementType.getQcStatementId().getIdentifier());
 							String legislation = null;
 							String type = null;
 
@@ -144,12 +148,11 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 								legislation = qcStatementInfo.getQcCClegislation();
 								ObjectIdentifierType qcType = qcStatementInfo.getQcType();
 								if (qcType != null) {
-									type = qcType.getIdentifier().getValue();
+									type = getOID(qcType.getIdentifier());
 								}
 							}
 
-							composite.addChild(new QCStatementCondition(
-									DSSUtils.getOidCode(oid), DSSUtils.getOidCode(type), legislation));
+							composite.addChild(new QCStatementCondition(oid, type, legislation));
 						}
 
 						condition.addChild(composite);
@@ -166,7 +169,7 @@ public class CriteriaListTypeConverter implements Function<CriteriaListType, Con
 		List<String> oids = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(oits)) {
 			for (ObjectIdentifierType objectIdentifierType : oits) {
-				oids.add(objectIdentifierType.getIdentifier().getValue());
+				oids.add(getOID(objectIdentifierType.getIdentifier()));
 			}
 		}
 		return oids;
