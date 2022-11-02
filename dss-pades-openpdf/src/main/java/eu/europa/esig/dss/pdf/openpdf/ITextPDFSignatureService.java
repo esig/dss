@@ -42,6 +42,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
@@ -53,7 +54,6 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -78,6 +78,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -264,7 +266,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, parameters.getPasswordProtection()) ) {
+					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -301,7 +303,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, parameters.getPasswordProtection()) ) {
+					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -335,11 +337,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document,
-										final PdfValidationDataContainer validationDataForInclusion, final byte[] pwd) {
+										final PdfValidationDataContainer validationDataForInclusion, final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, pwd)) {
+			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd))) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -513,9 +515,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(final DSSDocument document, final byte[] pwd) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd) {
 		try (InputStream is = document.openStream();
-				PdfReader reader = new PdfReader(is, pwd)) {
+				PdfReader reader = new PdfReader(is, getPasswordBytes(pwd))) {
 			AcroFields acroFields = reader.getAcroFields();
 			return acroFields.getFieldNamesWithBlankSignatures();
 		} catch (BadPasswordException e) {
@@ -527,10 +529,10 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
-											final byte[] pwd) {
+											final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(document, pwd)) {
+			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd))) {
 			checkPdfPermissions(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
@@ -586,13 +588,13 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, byte[] passwordProtection) throws IOException {
-		return new ITextDocumentReader(dssDocument, passwordProtection);
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection) throws IOException {
+		return new ITextDocumentReader(dssDocument, getPasswordBytes(passwordProtection));
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException {
-		return new ITextDocumentReader(binaries, passwordProtection);
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection) throws IOException {
+		return new ITextDocumentReader(binaries, getPasswordBytes(passwordProtection));
 	}
 
 	@Override
@@ -600,6 +602,18 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 														 final PdfDocumentReader finalRevisionReader) {
 		// not supported
 		return Collections.emptyList();
+	}
+
+	private byte[] getPasswordBytes(char[] passwordProtection) {
+		if (Utils.isArrayNotEmpty(passwordProtection)) {
+			// OpenPdf uses byte[] implementation of a password.
+			// The conversion translates the password without String usage.
+			final java.nio.ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(CharBuffer.wrap(passwordProtection));
+			final byte[] bytes = new byte[byteBuffer.limit()];
+			byteBuffer.get(bytes);
+			return bytes;
+		}
+		return null;
 	}
 
 }

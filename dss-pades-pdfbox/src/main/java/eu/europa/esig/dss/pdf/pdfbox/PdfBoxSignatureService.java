@@ -434,7 +434,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
-										final byte[] pwd) {
+										final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
@@ -623,7 +623,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(final DSSDocument document, final byte[] pwd) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd) {
 		List<String> result = new ArrayList<>();
 		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, getPasswordString(pwd))) {
 			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
@@ -643,7 +643,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
-											final byte[] pwd) {
+											final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd))) {
@@ -794,13 +794,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, byte[] passwordProtection)
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		return new PdfBoxDocumentReader(dssDocument, getPasswordString(passwordProtection));
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, byte[] passwordProtection)
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		return new PdfBoxDocumentReader(binaries, getPasswordString(passwordProtection));
 	}
@@ -808,10 +808,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	/**
 	 * Returns a String implementation of a password binaries
 	 *
-	 * @param passwordProtection byte array
+	 * @param passwordProtection char array
 	 * @return {@link String}
 	 */
-	private String getPasswordString(byte[] passwordProtection) {
+	private String getPasswordString(char[] passwordProtection) {
 		// PdfBox accepts only String implementation of password
 		String password = null;
 		if (passwordProtection != null) {

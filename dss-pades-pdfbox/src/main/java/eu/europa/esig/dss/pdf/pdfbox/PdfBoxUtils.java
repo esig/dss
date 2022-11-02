@@ -56,7 +56,7 @@ public class PdfBoxUtils {
 	 * @return {@link DSSDocument} PNG screenshot
 	 */
 	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, int page) {
-		return generateScreenshot(pdfDocument, (byte[]) null, page);
+		return generateScreenshot(pdfDocument, (char[]) null, page);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class PdfBoxUtils {
 	 * @param page               a page number
 	 * @return {@link DSSDocument} PNG screenshot
 	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, byte[] passwordProtection, int page) {
+	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, char[] passwordProtection, int page) {
 		return generateScreenshot(pdfDocument, passwordProtection, page, PAdESUtils.initializeDSSResourcesHandler());
 	}
 
@@ -104,12 +104,12 @@ public class PdfBoxUtils {
 	 * {@code eu.europa.esig.dss.signature.resources.DSSResourcesHandler}
 	 *
 	 * @param pdfDocument         {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection  {@link String} a PDF password protection phrase
+	 * @param passwordProtection  a PDF password protection phrase
 	 * @param page                a page number
 	 * @param dssResourcesHandler {@link DSSResourcesHandler}
 	 * @return {@link DSSDocument} PNG screenshot
 	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, byte[] passwordProtection, int page,
+	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, char[] passwordProtection, int page,
 												 DSSResourcesHandler dssResourcesHandler) {
 		BufferedImage bufferedImage = generateBufferedImageScreenshot(pdfDocument, passwordProtection, page);
 		return ImageUtils.toDSSDocument(bufferedImage, dssResourcesHandler);
@@ -126,7 +126,7 @@ public class PdfBoxUtils {
 	public static BufferedImage generateBufferedImageScreenshot(DSSDocument pdfDocument, String passwordProtection,
 			int page) {
 		return generateBufferedImageScreenshot(pdfDocument, passwordProtection != null ?
-				passwordProtection.getBytes() : null, page);
+				passwordProtection.toCharArray() : null, page);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class PdfBoxUtils {
 	 * @param page               a page number to be generates (starts from 1)
 	 * @return {@link BufferedImage}
 	 */
-	public static BufferedImage generateBufferedImageScreenshot(DSSDocument pdfDocument, byte[] passwordProtection,
+	public static BufferedImage generateBufferedImageScreenshot(DSSDocument pdfDocument, char[] passwordProtection,
 																int page) {
 		Objects.requireNonNull(pdfDocument, "pdfDocument shall be defined!");
 		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(
@@ -159,7 +159,7 @@ public class PdfBoxUtils {
 	 * @return {@link DSSDocument} subtraction result
 	 */
 	public static DSSDocument generateSubtractionImage(DSSDocument document1, DSSDocument document2, int page) {
-		return generateSubtractionImage(document1, (byte[]) null, page, document2, (byte[]) null, page);
+		return generateSubtractionImage(document1, (char[]) null, page, document2, (char[]) null, page);
 	}
 
 	/**
@@ -200,8 +200,8 @@ public class PdfBoxUtils {
 	 *                          {@code document2} to be proceeded
 	 * @return {@link DSSDocument} subtraction result
 	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, byte[] passwordDocument1, int pageDocument1,
-													   DSSDocument document2, byte[] passwordDocument2, int pageDocument2) {
+	public static DSSDocument generateSubtractionImage(DSSDocument document1, char[] passwordDocument1, int pageDocument1,
+													   DSSDocument document2, char[] passwordDocument2, int pageDocument2) {
 		return generateSubtractionImage(document1, passwordDocument1, pageDocument1,
 				document2, passwordDocument2, pageDocument2, PAdESUtils.initializeDSSResourcesHandler());
 	}
@@ -227,8 +227,8 @@ public class PdfBoxUtils {
 	public static DSSDocument generateSubtractionImage(DSSDocument document1, String passwordDocument1, int pageDocument1,
 													   DSSDocument document2, String passwordDocument2, int pageDocument2,
 													   DSSResourcesHandler dssResourcesHandler) {
-		return generateSubtractionImage(document1, passwordDocument1 != null ? passwordDocument1.getBytes() : null, pageDocument1,
-				document2, passwordDocument2 != null ? passwordDocument2.getBytes() : null, pageDocument2, dssResourcesHandler);
+		return generateSubtractionImage(document1, passwordDocument1 != null ? passwordDocument1.toCharArray() : null, pageDocument1,
+				document2, passwordDocument2 != null ? passwordDocument2.toCharArray() : null, pageDocument2, dssResourcesHandler);
 	}
 
 	/**
@@ -249,8 +249,8 @@ public class PdfBoxUtils {
 	 * @param dssResourcesHandler {@link DSSResourcesHandler} to be used
 	 * @return {@link DSSDocument} subtraction result
 	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, byte[] passwordDocument1, int pageDocument1,
-													   DSSDocument document2, byte[] passwordDocument2, int pageDocument2,
+	public static DSSDocument generateSubtractionImage(DSSDocument document1, char[] passwordDocument1, int pageDocument1,
+													   DSSDocument document2, char[] passwordDocument2, int pageDocument2,
 													   DSSResourcesHandler dssResourcesHandler) {
 		BufferedImage screenshotDoc1 = generateBufferedImageScreenshot(document1, passwordDocument1, pageDocument1);
 		BufferedImage screenshotDoc2 = generateBufferedImageScreenshot(document2, passwordDocument2, pageDocument2);

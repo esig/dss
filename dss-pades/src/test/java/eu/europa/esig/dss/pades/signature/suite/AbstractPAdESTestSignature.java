@@ -125,7 +125,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		checkSignedAttributesOrder(padesSig);
 	}
 	
-	protected byte[] getPasswordProtection() {
+	protected char[] getPasswordProtection() {
 		return getSignatureParameters().getPasswordProtection();
 	}
 

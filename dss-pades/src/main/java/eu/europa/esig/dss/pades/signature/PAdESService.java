@@ -273,7 +273,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document) {
-		return getAvailableSignatureFields(document, (byte[]) null);
+		return getAvailableSignatureFields(document, (char[]) null);
 	}
 
 	/**
@@ -284,11 +284,11 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @param passwordProtection
 	 *            the password protection used to create the encrypted document
 	 * @return the list of empty signature fields
-	 * @deprecated since DSS 5.12. Use {@code #getAvailableSignatureFields(document, passwordProtection.getBytes())}
+	 * @deprecated since DSS 5.12. Use {@code #getAvailableSignatureFields(document, passwordProtection.toCharArray())}
 	 */
 	@Deprecated
 	public List<String> getAvailableSignatureFields(DSSDocument document, String passwordProtection) {
-		return getAvailableSignatureFields(document, passwordProtection != null ? passwordProtection.getBytes() : null);
+		return getAvailableSignatureFields(document, passwordProtection != null ? passwordProtection.toCharArray() : null);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 *            the password protection used to create the encrypted document
 	 * @return the list of empty signature fields
 	 */
-	public List<String> getAvailableSignatureFields(DSSDocument document, byte[] passwordProtection) {
+	public List<String> getAvailableSignatureFields(DSSDocument document, char[] passwordProtection) {
 		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.getAvailableSignatureFields(document, passwordProtection);
 	}
@@ -315,7 +315,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		return addNewSignatureField(document, parameters, (byte[]) null);
+		return addNewSignatureField(document, parameters, (char[]) null);
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	@Deprecated
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters,
 											String passwordProtection) {
-		return addNewSignatureField(document, parameters, passwordProtection != null ? passwordProtection.getBytes() : null);
+		return addNewSignatureField(document, parameters, passwordProtection != null ? passwordProtection.toCharArray() : null);
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters,
-											byte[] passwordProtection) {
+											char[] passwordProtection) {
 		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
 		return pdfSignatureService.addNewSignatureField(document, parameters, passwordProtection);
 	}

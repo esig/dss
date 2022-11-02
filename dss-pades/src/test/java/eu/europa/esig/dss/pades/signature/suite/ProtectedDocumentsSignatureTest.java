@@ -51,8 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation {
 
-	private final byte[] correctProtectionPhrase = new byte[]{ ' ' };
-	private final byte[] wrongProtectionPhrase = new byte[]{ 'A', 'A', 'A', 'A'};
+	private final char[] correctProtectionPhrase = new char[]{ ' ' };
+	private final char[] wrongProtectionPhrase = new char[]{ 'A', 'A', 'A', 'A'};
 
 	private final DSSDocument openProtected = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
@@ -110,7 +110,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedSigningAllowedWithField, null));
 	}
 
-	private Reports validateEmptyDocWithPassword(DSSDocument doc, byte[] passProtection) {
+	private Reports validateEmptyDocWithPassword(DSSDocument doc, char[] passProtection) {
 		PDFDocumentValidator validator = (PDFDocumentValidator) SignedDocumentValidator.fromDocument(doc);
 		validator.setPasswordProtection(passProtection);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -456,7 +456,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		return new PAdESTimestampParameters();
 	}
 
-	private DSSDocument sign(DSSDocument doc, byte[] pwd) {
+	private DSSDocument sign(DSSDocument doc, char[] pwd) {
 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(
 				getOfflineCertificateVerifier());
@@ -474,7 +474,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 	
-	private DSSDocument extend(DSSDocument doc, byte[] pwd) {
+	private DSSDocument extend(DSSDocument doc, char[] pwd) {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
