@@ -771,9 +771,12 @@ public class CommonsDataLoader implements DataLoader {
 	 *            to access
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
+	 * @deprecated since 5.12. To be removed in DSS 5.13. Use {@code #get(url)} for no cache,
+	 *            or an alternative DataLoader providing caching functionality.
 	 * @return {@code byte} array of obtained data
 	 */
 	@Override
+	@Deprecated
 	public byte[] get(final String url, final boolean refresh) {
 		return get(url);
 	}

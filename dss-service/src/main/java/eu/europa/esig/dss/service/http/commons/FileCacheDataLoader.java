@@ -191,8 +191,17 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 		}
 	}
 
+	/**
+	 * Executes a GET request to the provided URL, with a forced cache {@code refresh} when defined
+	 *
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the cached data should be refreshed
+	 * @return binaries of the extracted data object
+	 */
 	@Override
-	public byte[] get(final String url, final boolean refresh) throws DSSException {
+	public byte[] get(final String url, final boolean refresh) {
 		DSSDocument document = getDocument(url, refresh);
 		return DSSUtils.toByteArray(document);
 	}

@@ -76,7 +76,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 * @return response binaries
 	 */
 	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
-		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
+		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, !refresh, maxInputSize);
 
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		try {
@@ -113,14 +113,23 @@ public class NativeHTTPDataLoader implements DataLoader {
 		return get(url, false);
 	}
 
+	/**
+	 * Executes a GET request to the provided URL, with a forced cache {@code refresh} when defined
+	 *
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the data should be refreshed
+	 * @return binaries of the extracted data object
+	 */
 	@Override
 	public byte[] get(String url, boolean refresh) {
-		return request(url, HttpMethod.GET, null, !refresh);
+		return request(url, HttpMethod.GET, null, refresh);
 	}
 
 	@Override
 	public byte[] post(String url, byte[] content) {
-		return request(url, HttpMethod.POST, content, false);
+		return request(url, HttpMethod.POST, content, true);
 	}
 
 	@Override
