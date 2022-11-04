@@ -84,7 +84,7 @@ public class PAdESExtensionService {
      * @return {@link DSSDocument} extended document
      */
     public DSSDocument incorporateValidationData(DSSDocument document) {
-        return incorporateValidationData(document, null);
+        return incorporateValidationData(document, (char[]) null);
     }
 
     /**
@@ -96,8 +96,24 @@ public class PAdESExtensionService {
      * @param document {@link DSSDocument} to extend
      * @param passwordProtection {@link String} a password protection for the PDF document, when present
      * @return {@link DSSDocument} extended document
+     * @deprecated since DSS 5.12. Use {@code #incorporateValidationData(document, passwordProtection.toCharArray())}
      */
+    @Deprecated
     public DSSDocument incorporateValidationData(DSSDocument document, String passwordProtection) {
+        return incorporateValidationData(document, passwordProtection != null ? passwordProtection.toCharArray() : null);
+    }
+
+    /**
+     * This method adds a DSS dictionary revision to the given {@code document} protected by a {@code passwordProtection}
+     * with the required validation data if needed.
+     *
+     * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)
+     *
+     * @param document {@link DSSDocument} to extend
+     * @param passwordProtection a password protection for the PDF document, when required
+     * @return {@link DSSDocument} extended document
+     */
+    public DSSDocument incorporateValidationData(DSSDocument document, char[] passwordProtection) {
         Objects.requireNonNull(document, "The document to be extended shall be provided!");
 
         final PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, passwordProtection);
@@ -142,7 +158,7 @@ public class PAdESExtensionService {
         return signatureTimestamps;
     }
 
-    private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, String passwordProtection) {
+    private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, char[] passwordProtection) {
         PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
         pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
         pdfDocumentValidator.setPasswordProtection(passwordProtection);

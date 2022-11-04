@@ -131,7 +131,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	protected DSSMessageDigest computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument,
+					 getPasswordString(parameters.getPasswordProtection()))) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -157,7 +158,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 							final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument,
+					 getPasswordString(parameters.getPasswordProtection()))) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -432,11 +434,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
-										final String pwd) {
+										final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PDDocument pdDocument = PDDocument.load(is, pwd)) {
+			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd))) {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
@@ -621,9 +623,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd) {
 		List<String> result = new ArrayList<>();
-		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, pwd)) {
+		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, getPasswordString(pwd))) {
 			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
@@ -641,10 +643,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
-											final String pwd) {
+											final char[] pwd) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, pwd)) {
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd))) {
 			checkPdfPermissions(documentReader, parameters);
 
 			final PDDocument pdfDoc = documentReader.getPDDocument();
@@ -710,7 +712,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public DSSDocument previewPageWithVisualSignature(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument,
+					 getPasswordString(parameters.getPasswordProtection()))) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -731,7 +734,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	public DSSDocument previewSignatureField(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument, parameters.getPasswordProtection())) {
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument,
+					 getPasswordString(parameters.getPasswordProtection()))) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -752,7 +756,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private DSSDocument getNewSignatureFieldScreenshot(DSSDocument doc, PAdESCommonParameters parameters, List<PdfAnnotation> originalAnnotations) throws IOException {
-		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(doc, parameters.getPasswordProtection())) {
+		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(doc,
+				getPasswordString(parameters.getPasswordProtection()))) {
 			List<PdfAnnotation> newAnnotations = reader.getPdfAnnotations(parameters.getImageParameters().getFieldParameters().getPage());
 			AnnotationBox pageBox = reader.getPageBox(parameters.getImageParameters().getFieldParameters().getPage());
 
@@ -789,13 +794,30 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		return new PdfBoxDocumentReader(dssDocument, passwordProtection);
+	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+		return new PdfBoxDocumentReader(dssDocument, getPasswordString(passwordProtection));
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection) throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		return new PdfBoxDocumentReader(binaries, passwordProtection);
+	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+		return new PdfBoxDocumentReader(binaries, getPasswordString(passwordProtection));
+	}
+
+	/**
+	 * Returns a String implementation of a password binaries
+	 *
+	 * @param passwordProtection char array
+	 * @return {@link String}
+	 */
+	private String getPasswordString(char[] passwordProtection) {
+		// PdfBox accepts only String implementation of password
+		String password = null;
+		if (passwordProtection != null) {
+			password = new String(passwordProtection);
+		}
+		return password;
 	}
 
 }

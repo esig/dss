@@ -1224,9 +1224,9 @@ public final class DSSUtils {
 	 * This method returns a URI value of the {@code oidOrUriString} taking into account
 	 * the defined {@code ObjectIdentifierQualifier} (to be used for XAdES processing).
 	 * Examples:
-	 *     "http://nowina.lu/policy" -> "http://nowina.lu/policy"
-	 *     "1.2.3.4.5" -> "1.2.3.4.5"
-	 *     "urn:oid:1.2.3.4.5" -> "1.2.3.4.5"
+	 *     "http://nowina.lu/policy" = "http://nowina.lu/policy"
+	 *     "1.2.3.4.5" = "1.2.3.4.5"
+	 *     "urn:oid:1.2.3.4.5" = "1.2.3.4.5"
 	 *
 	 * @param oidOrUriString {@link String} identifier value
 	 * @param qualifier {@link ObjectIdentifierQualifier} when present

@@ -43,8 +43,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PdfBoxUtilsTest {
 
-	private final String correctProtectionPhrase = " ";
-	private final String wrongProtectionPhrase = "AAAA";
+	private final char[] correctProtectionPhrase = new char[] { ' ' };
+	private final char[] wrongProtectionPhrase = new char[] { 'A', 'A', 'A', 'A' };
 
 	private DSSDocument sampleDocument;
 	private DSSDocument protectedDocument;
@@ -90,11 +90,12 @@ public class PdfBoxUtilsTest {
 
 	@Test
 	public void generateSubtractionImageTest() {
-		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1, protectedDocument,
-				correctProtectionPhrase, 1);
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1,
+				protectedDocument, correctProtectionPhrase, 1);
 		assertNotNull(subtractionImage);
 
-		subtractionImage = PdfBoxUtils.generateSubtractionImage(twoPagesDocument, null, 1, twoPagesDocument, null, 2);
+		subtractionImage = PdfBoxUtils.generateSubtractionImage(twoPagesDocument, (char[]) null, 1,
+				twoPagesDocument, (char[]) null, 2);
 		assertNotNull(subtractionImage);
 
 		subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, twoPagesDocument, 1);
@@ -110,7 +111,7 @@ public class PdfBoxUtilsTest {
 		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
-		DSSDocument fileScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, null, 1,
+		DSSDocument fileScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, (char[]) null, 1,
 				tempFileResourcesHandlerBuilder.createResourcesHandler());
 		assertNotNull(fileScreenshot);
 		assertTrue(fileScreenshot instanceof FileDocument);
@@ -121,8 +122,8 @@ public class PdfBoxUtilsTest {
 
 		assertVisuallyEqual(fileScreenshot, inMemoryScreenshot);
 
-		DSSDocument fileSubtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1,
-				twoPagesDocument, null, 1, tempFileResourcesHandlerBuilder.createResourcesHandler());
+		DSSDocument fileSubtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, (char[]) null, 1,
+				twoPagesDocument, (char[]) null, 1, tempFileResourcesHandlerBuilder.createResourcesHandler());
 		assertNotNull(fileSubtractionImage);
 		assertTrue(fileSubtractionImage instanceof FileDocument);
 

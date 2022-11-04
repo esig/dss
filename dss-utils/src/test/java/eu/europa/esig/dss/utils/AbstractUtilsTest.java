@@ -230,6 +230,7 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void isArrayEmptyObj() {
+		assertTrue(Utils.isArrayEmpty((Object[]) null));
 		assertTrue(Utils.isArrayEmpty(new Object[] {}));
 		assertFalse(Utils.isArrayEmpty(new Object[] { null }));
 		assertFalse(Utils.isArrayEmpty(new Object[] { "1", 1 }));
@@ -237,21 +238,44 @@ public abstract class AbstractUtilsTest {
 
 	@Test
 	public void isArrayNotEmptyObj() {
+		assertFalse(Utils.isArrayNotEmpty((Object[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new Object[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new Object[] { null }));
 		assertTrue(Utils.isArrayNotEmpty(new Object[] { "1", 1 }));
 	}
 
 	@Test
+	public void isArrayEmpty() {
+		assertTrue(Utils.isArrayEmpty((byte[]) null));
+		assertTrue(Utils.isArrayEmpty(new byte[] {}));
+		assertFalse(Utils.isArrayEmpty(new byte[] { 1 }));
+	}
+
+	@Test
 	public void isArrayNotEmpty() {
+		assertFalse(Utils.isArrayNotEmpty((byte[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new byte[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1 }));
 	}
 
 	@Test
-	public void isArrayEmpty() {
-		assertTrue(Utils.isArrayEmpty(new byte[] {}));
-		assertFalse(Utils.isArrayEmpty(new byte[] { 1 }));
+	public void isArrayEmptyChar() {
+		assertTrue(Utils.isArrayEmpty((char[]) null));
+		assertTrue(Utils.isArrayEmpty(new char[] {}));
+		assertFalse(Utils.isArrayEmpty(new char[] { ' ' }));
+		assertFalse(Utils.isArrayEmpty(new char[] { 'A' }));
+		assertFalse(Utils.isArrayEmpty(new char[] { 'A', 'A', 'A', 'A' }));
+		assertFalse(Utils.isArrayEmpty(new char[] { 'A', 'B', 'C', 'D' }));
+	}
+
+	@Test
+	public void isArrayNotEmptyChar() {
+		assertFalse(Utils.isArrayNotEmpty((char[]) null));
+		assertFalse(Utils.isArrayNotEmpty(new char[] {}));
+		assertTrue(Utils.isArrayNotEmpty(new char[] { ' ' }));
+		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A' }));
+		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A', 'A', 'A', 'A' }));
+		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A', 'B', 'C', 'D' }));
 	}
 
 	@Test

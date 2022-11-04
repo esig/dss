@@ -137,12 +137,12 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 *
 	 * @param document {@link DSSDocument} to timestamp
 	 * @param timestampParameters {@link PAdESTimestampParameters}
-	 * @param pwd {@link String} password if required
+	 * @param pwd password if required
 	 * @param pdfSignatureService {@link PDFSignatureService} to be used
 	 * @return {@link DSSDocument} timestamped
 	 */
 	protected DSSDocument timestampDocument(final DSSDocument document,
-											final PAdESTimestampParameters timestampParameters, final String pwd,
+											final PAdESTimestampParameters timestampParameters, final char[] pwd,
 											final PDFSignatureService pdfSignatureService) {
 		PAdESTimestampService padesTimestampService = new PAdESTimestampService(tspSource, pdfSignatureService);
 		timestampParameters.setPasswordProtection(pwd);

@@ -283,6 +283,26 @@ public final class Utils {
 	}
 
 	/**
+	 * Checks if the char array is null or empty
+	 *
+	 * @param array char array to check
+	 * @return TRUE if the char array is null or empty, FALSE otherwise
+	 */
+	public static boolean isArrayEmpty(char[] array) {
+		return impl.isArrayEmpty(array);
+	}
+
+	/**
+	 * Checks if the char array is not null nor empty
+	 *
+	 * @param array char array to check
+	 * @return TRUE if the char array is not null nor empty, FALSE otherwise
+	 */
+	public static boolean isArrayNotEmpty(char[] array) {
+		return impl.isArrayNotEmpty(array);
+	}
+
+	/**
 	 * Returns a subArray, starting from position {@code start} with the defined length {@code length}
 	 *
 	 * @param array byte array to get subArray from

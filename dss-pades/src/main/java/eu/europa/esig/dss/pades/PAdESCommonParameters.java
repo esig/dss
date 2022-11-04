@@ -75,11 +75,11 @@ public interface PAdESCommonParameters extends Serializable {
 	DigestAlgorithm getDigestAlgorithm();
 	
 	/**
-	 * Returns a password string used to encrypt a document
+	 * Returns a password used to encrypt a document
 	 * 
-	 * @return {@link String} password
+	 * @return char array representing a password string
 	 */
-	String getPasswordProtection();
+	char[] getPasswordProtection();
 
 	/**
 	 * Returns name of an application used to create a signature/timestamp

@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
-	private final String correctProtectionPhrase = " ";
+	private final char[] correctProtectionPhrase = new char[]{ ' ' };
 
 	private final DSSDocument openProtected = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
@@ -91,7 +91,8 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-		PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+		PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		validator.setPasswordProtection(correctProtectionPhrase);
 		return validator;
 	}

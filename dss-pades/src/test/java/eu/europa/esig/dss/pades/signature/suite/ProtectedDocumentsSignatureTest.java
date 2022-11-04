@@ -51,8 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation {
 
-	private final String correctProtectionPhrase = " ";
-	private final String wrongProtectionPhrase = "AAAA";
+	private final char[] correctProtectionPhrase = new char[]{ ' ' };
+	private final char[] wrongProtectionPhrase = new char[]{ 'A', 'A', 'A', 'A'};
 
 	private final DSSDocument openProtected = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
@@ -110,7 +110,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedSigningAllowedWithField, null));
 	}
 
-	private Reports validateEmptyDocWithPassword(DSSDocument doc, String passProtection) {
+	private Reports validateEmptyDocWithPassword(DSSDocument doc, char[] passProtection) {
 		PDFDocumentValidator validator = (PDFDocumentValidator) SignedDocumentValidator.fromDocument(doc);
 		validator.setPasswordProtection(passProtection);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
@@ -282,7 +282,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void extendOperationsCorrectPasswordTest() throws Exception {
+	public void extendOperationsCorrectPasswordTest() {
 		DSSDocument signedDoc = sign(openProtected, correctProtectionPhrase);
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
@@ -453,11 +453,10 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	private PAdESTimestampParameters getTimestampParameters() {
-		PAdESTimestampParameters params = new PAdESTimestampParameters();
-		return params;
+		return new PAdESTimestampParameters();
 	}
 
-	private DSSDocument sign(DSSDocument doc, String pwd) throws Exception {
+	private DSSDocument sign(DSSDocument doc, char[] pwd) {
 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(
 				getOfflineCertificateVerifier());
@@ -475,7 +474,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 	
-	private DSSDocument extend(DSSDocument doc, String pwd) throws Exception {
+	private DSSDocument extend(DSSDocument doc, char[] pwd) {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

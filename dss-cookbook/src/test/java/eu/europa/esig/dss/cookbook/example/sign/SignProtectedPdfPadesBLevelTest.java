@@ -56,7 +56,7 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
             // Preparing parameters for the PAdES signature
             PAdESSignatureParameters parameters = new PAdESSignatureParameters();
             // Provide a password for the protected document
-            parameters.setPasswordProtection(" ");
+            parameters.setPasswordProtection(new char[]{' '});
             // end::sign[]
 
             parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
@@ -81,7 +81,7 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
             PDFDocumentValidator documentValidator = new PDFDocumentValidator(signedDocument);
             documentValidator.setCertificateVerifier(new CommonCertificateVerifier());
             // Provide a password for the protected document
-            documentValidator.setPasswordProtection(" ");
+            documentValidator.setPasswordProtection(new char[] { ' ' });
             // Validate
             Reports reports = documentValidator.validateDocument();
             // end::validate[]

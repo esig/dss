@@ -136,10 +136,6 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 				if (imageParameters != null) {
 					baos.write(imageParameters.toString().getBytes());
 				}
-				String passwordProtection = parameters.getPasswordProtection();
-				if (passwordProtection != null) {
-					baos.write(passwordProtection.getBytes());
-				}
 				Date signingDate = parameters.getSigningDate();
 				if (signingDate != null) {
 					baos.write((int)signingDate.getTime());

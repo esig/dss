@@ -323,7 +323,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	public List<PdfRevision> getRevisions(final DSSDocument document, final String pwd) {
+	@Deprecated
+	public List<PdfRevision> getRevisions(DSSDocument document, String pwd) {
+		return getRevisions(document, pwd != null ? pwd.toCharArray() : null);
+	}
+
+	@Override
+	public List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd) {
 		final List<PdfRevision> revisions = new ArrayList<>();
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
@@ -436,45 +442,64 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion) {
-		return addDssDictionary(document, validationDataForInclusion, null);
+		return addDssDictionary(document, validationDataForInclusion, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+										final String pwd) {
+		return addDssDictionary(document, validationDataForInclusion, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document) {
-		return getAvailableSignatureFields(document, null);
+		return getAvailableSignatureFields(document, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
+		return getAvailableSignatureFields(document, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		return addNewSignatureField(document, parameters, null);
+		return addNewSignatureField(document, parameters, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+											final String pwd) {
+		return addNewSignatureField(document, parameters, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	/**
 	 * Loads {@code PdfDocumentReader} instance
 	 * 
 	 * @param dssDocument        {@link DSSDocument} to read
-	 * @param passwordProtection {@link String} the password used to protect the
-	 *                           document
+	 * @param passwordProtection the password used to protect the document
 	 * @return {@link PdfDocumentReader}
 	 * @throws IOException              in case of loading error
 	 * @throws InvalidPasswordException if the password is not provided or invalid
 	 *                                  for a protected document
 	 */
-	protected abstract PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection)
+	protected abstract PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection)
 			throws IOException, InvalidPasswordException;
 
 	/**
 	 * Loads {@code PdfDocumentReader} instance
 	 * 
 	 * @param binaries           a byte array
-	 * @param passwordProtection {@link String} the password used to protect the
+	 * @param passwordProtection the password used to protect the
 	 *                           document
 	 * @return {@link PdfDocumentReader}
 	 * @throws IOException              in case of loading error
 	 * @throws InvalidPasswordException if the password is not provided or invalid
 	 *                                  for a protected document
 	 */
-	protected abstract PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection)
+	protected abstract PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection)
 			throws IOException, InvalidPasswordException;
 
 	/**
@@ -712,7 +737,13 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
+	@Deprecated
 	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
+		analyzePdfModifications(document, signatures, pwd != null ? pwd.toCharArray() : null);
+	}
+
+	@Override
+	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, char[] pwd) {
 		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
 			for (AdvancedSignature signature : signatures) {
 				PAdESSignature padesSignature = (PAdESSignature) signature;
@@ -732,7 +763,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader,
-															  DSSDocument originalDocument, String pwd) throws IOException {
+															  DSSDocument originalDocument, char[] pwd) throws IOException {
 		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
 			PdfModificationDetection pdfModificationDetection = new PdfModificationDetection();
 			pdfModificationDetection.setAnnotationOverlaps(
