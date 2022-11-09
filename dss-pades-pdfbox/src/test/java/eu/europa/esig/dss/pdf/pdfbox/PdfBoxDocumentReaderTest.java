@@ -24,7 +24,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.spi.DSSUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public class PdfBoxDocumentReaderTest {
 	
 	@Test
 	public void testPdfBoxUtilsEmptyDocument() throws Exception {
-		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "empty_doc")));
+		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(InMemoryDocument.createEmptyDocument()));
 	}
 	
 	@Test

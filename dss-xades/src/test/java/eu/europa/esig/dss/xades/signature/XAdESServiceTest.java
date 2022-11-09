@@ -278,16 +278,16 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	@Test
 	public void contentTstTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
-		InMemoryDocument emptyBinaryDoc = new InMemoryDocument(new byte[]{});
+		InMemoryDocument emptyBinaryDoc = InMemoryDocument.createEmptyDocument();
 		Exception exception = assertThrows(NullPointerException.class, () -> 
 				service.getContentTimestamp(emptyBinaryDoc, signatureParameters));
 		assertEquals("SignaturePackaging must be defined!", exception.getMessage());
 		
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
+		assertNotNull(service.getContentTimestamp(InMemoryDocument.createEmptyDocument(), signatureParameters));
 		
 		signatureParameters.setContentTimestampParameters(null);
-		assertNotNull(service.getContentTimestamp(new InMemoryDocument(new byte[] {}), signatureParameters));
+		assertNotNull(service.getContentTimestamp(InMemoryDocument.createEmptyDocument(), signatureParameters));
 		
 		XAdESTimestampParameters timestampParameters = new XAdESTimestampParameters();
 		exception = assertThrows(IllegalArgumentException.class, () -> timestampParameters.setCanonicalizationMethod(null));

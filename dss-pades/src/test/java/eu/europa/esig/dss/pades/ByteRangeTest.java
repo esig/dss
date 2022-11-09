@@ -44,7 +44,7 @@ public class ByteRangeTest {
 
 	@Test
 	public void emptyFirstPart() {
-		ByteRange byteRange = new ByteRange(new int[] { 0, 0, 240, 480 });
+		ByteRange byteRange = new ByteRange(new int[] { 0, -1, 240, 480 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The first hash part doesn't cover anything", exception.getMessage());
 	}
@@ -58,7 +58,7 @@ public class ByteRangeTest {
 
 	@Test
 	public void emptySecondPart() {
-		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 2400, 0 });
+		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 2400, -1 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The second hash part doesn't cover anything", exception.getMessage());
 	}

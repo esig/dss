@@ -155,7 +155,7 @@ public abstract class PAdESUtilsTest {
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder()));
         assertEquals("Byte array is not defined!", exception.getMessage());
 
-        exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY),
+        exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(InMemoryDocument.createEmptyDocument(),
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder()));
         assertEquals("Reserved space to insert a signature was not found!", exception.getMessage());
 
