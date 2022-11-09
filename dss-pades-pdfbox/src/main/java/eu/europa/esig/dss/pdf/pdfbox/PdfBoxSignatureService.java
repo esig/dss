@@ -799,12 +799,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return new PdfBoxDocumentReader(dssDocument, getPasswordString(passwordProtection));
 	}
 
-	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection)
-			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		return new PdfBoxDocumentReader(binaries, getPasswordString(passwordProtection));
-	}
-
 	/**
 	 * Returns a String implementation of a password binaries
 	 *

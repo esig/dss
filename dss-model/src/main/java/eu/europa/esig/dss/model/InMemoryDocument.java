@@ -134,6 +134,15 @@ public class InMemoryDocument extends CommonDocument {
 		}
 	}
 
+	/**
+	 * Creates an empty in memory document
+	 *
+	 * @return {@link InMemoryDocument}
+	 */
+	public static InMemoryDocument createEmptyDocument() {
+		return new InMemoryDocument(new byte[0]);
+	}
+
 	@Override
 	public InputStream openStream() {
 		Objects.requireNonNull(bytes, "Byte array is not defined!");

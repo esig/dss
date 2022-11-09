@@ -593,11 +593,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	protected PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection) throws IOException {
-		return new ITextDocumentReader(binaries, getPasswordBytes(passwordProtection));
-	}
-
-	@Override
 	protected List<PdfModification> getVisualDifferences(final PdfDocumentReader signedRevisionReader,
 														 final PdfDocumentReader finalRevisionReader) {
 		// not supported

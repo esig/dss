@@ -87,6 +87,14 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
+	public void createEmptyDocTest() {
+		InMemoryDocument emptyDocument = InMemoryDocument.createEmptyDocument();
+		assertNotNull(emptyDocument);
+		assertNotNull(emptyDocument.getBytes());
+		assertEquals(0, emptyDocument.getBytes().length);
+	}
+
+	@Test
 	public void testFileNotFound() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/AdobeCAAA.p7c")) {
 			NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument(is));

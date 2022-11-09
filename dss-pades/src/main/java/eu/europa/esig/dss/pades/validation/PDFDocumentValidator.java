@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -361,8 +360,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
         List<DSSDocument> result = new ArrayList<>();
-        InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
-        if (originalPDF != null && originalPDF.getBytes().length != 0) {
+        DSSDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
+        if (originalPDF != null && !DSSUtils.isEmpty(originalPDF)) {
             result.add(originalPDF);
         }
         return result;

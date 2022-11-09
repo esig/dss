@@ -50,7 +50,7 @@ public class ByteRange {
 	}
 	
 	/**
-	 * Returns a complete revision length
+	 * Returns a total revision length
 	 * 
 	 * @return length
 	 */
@@ -147,13 +147,13 @@ public class ByteRange {
 		if (a != 0) {
 			throw new IllegalInputException("The ByteRange must cover start of file");
 		}
-		if (b <= 0) {
+		if (b < 0) {
 			throw new IllegalInputException("The first hash part doesn't cover anything");
 		}
-		if (c <= b) {
+		if (c < a + b) {
 			throw new IllegalInputException("The second hash part must start after the first hash part");
 		}
-		if (d <= 0) {
+		if (d < 0) {
 			throw new IllegalInputException("The second hash part doesn't cover anything");
 		}
 	}

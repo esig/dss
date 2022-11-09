@@ -684,6 +684,23 @@ public final class DSSUtils {
 			throw new DSSException("Not a valid CMS", e);
 		}
 	}
+
+	/**
+	 * This method verifies if the document is empty (does not have body)
+	 *
+	 * @param document {@link DSSDocument} to check
+	 * @return TRUE if the document is empty, FALSE otherwise
+	 */
+	public static boolean isEmpty(DSSDocument document) {
+		if (document instanceof DigestDocument) {
+			return true;
+		}
+		try (InputStream is = document.openStream()) {
+			return is.read() == -1;
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to check if document has a content: %s", e.getMessage()), e);
+		}
+	}
 	
 	/**
 	 * Checks if the document contains a TimeStampToken

@@ -26,6 +26,9 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -605,6 +608,18 @@ public class DSSUtilsTest {
 		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", ObjectIdentifierQualifier.OID_AS_URI));
 		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
 		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
+	}
+
+	@Test
+	public void isDocumentEmptyTest() {
+		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(new byte[] {})));
+		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY)));
+		assertTrue(DSSUtils.isEmpty(InMemoryDocument.createEmptyDocument()));
+		assertTrue(DSSUtils.isEmpty(new DigestDocument()));
+		assertTrue(DSSUtils.isEmpty(new DigestDocument(DigestAlgorithm.SHA1, DSSUtils.getSHA1Digest("Hello World!"))));
+		assertFalse(DSSUtils.isEmpty(new InMemoryDocument(new byte[] { 'a' })));
+		assertFalse(DSSUtils.isEmpty(new InMemoryDocument(getClass().getResourceAsStream("/good-user.crt"))));
+		assertFalse(DSSUtils.isEmpty(new FileDocument("src/test/resources/good-user.crt")));
 	}
 
 }

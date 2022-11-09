@@ -33,6 +33,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
@@ -50,7 +51,6 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -331,6 +331,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	@Override
 	public List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd) {
 		final List<PdfRevision> revisions = new ArrayList<>();
+		final List<PdfByteRangeDocument> revisionDocuments = PAdESUtils.extractRevisions(document);
+
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
 			final PdfCompositeDssDictionary compositeDssDictionary = new PdfCompositeDssDictionary();
@@ -355,18 +357,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
 					byteRange.setValid(byteRangeValid);
 
-					byte[] revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
-					byte[] signedData = DSSUtils.EMPTY_BYTE_ARRAY;
+					final DSSDocument signedContent;
 					if (byteRangeValid) {
-						signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
+						signedContent = new PdfByteRangeDocument(document, byteRange);
 					} else {
+						signedContent = InMemoryDocument.createEmptyDocument();
 						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
 								"The validation will result to a broken signature.", fieldNames);
 					}
 
-					final DSSDocument signedContent = new InMemoryDocument(signedData);
 					final boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
 
+					final DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(revisionContent, pwd)) {
 
 						// Method is used to detect modification within the signature dictionary itself (spoofing attack)
@@ -382,15 +384,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						}
 					}
 
+					final DSSDocument previousRevision = PAdESUtils.getPreviousRevision(byteRange, revisionDocuments);
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fields, signedContent,
-								signatureCoversWholeDocument);
+								previousRevision, signatureCoversWholeDocument);
 
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
 						newRevision = new PdfSignatureRevision(signatureDictionary, compositeDssDictionary,
-								dssDictionary, fields, signedContent, signatureCoversWholeDocument);
+								dssDictionary, fields, signedContent, previousRevision, signatureCoversWholeDocument);
 
 					} else {
 						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' " +
@@ -404,9 +407,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						revisions.add(newRevision);
 					}
 
-
-					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(
-							extractBeforeSignatureValue(byteRange, revisionContent), pwd)) {
+					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(previousRevision, pwd)) {
 
 						// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
 						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
@@ -486,20 +487,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *                                  for a protected document
 	 */
 	protected abstract PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection)
-			throws IOException, InvalidPasswordException;
-
-	/**
-	 * Loads {@code PdfDocumentReader} instance
-	 * 
-	 * @param binaries           a byte array
-	 * @param passwordProtection the password used to protect the
-	 *                           document
-	 * @return {@link PdfDocumentReader}
-	 * @throws IOException              in case of loading error
-	 * @throws InvalidPasswordException if the password is not provided or invalid
-	 *                                  for a protected document
-	 */
-	protected abstract PdfDocumentReader loadPdfDocumentReader(byte[] binaries, char[] passwordProtection)
 			throws IOException, InvalidPasswordException;
 
 	/**
@@ -603,20 +590,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					"does not match the signature present in /Contents field!", byteRange);
 		}
 		return match;
-	}
-
-	/**
-	 * Extract the content before the signature value
-	 *
-	 * @param byteRange {@link ByteRange}
-	 * @param signedContent byte array representing the signed content
-	 * @return the first part of the byte range
-	 */
-	protected byte[] extractBeforeSignatureValue(ByteRange byteRange, byte[] signedContent) {
-		if (!byteRange.isValid() || signedContent.length < byteRange.getFirstPartEnd()) {
-			return new byte[0];
-		}
-		return PAdESUtils.retrievePreviousPDFRevision(new InMemoryDocument(signedContent), byteRange).getBytes();
 	}
 
 	/**
@@ -748,8 +721,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			for (AdvancedSignature signature : signatures) {
 				PAdESSignature padesSignature = (PAdESSignature) signature;
 				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
-				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
-				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pwd));
+				DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, revisionContent, pwd));
 			}
 
 		} catch (Exception e) {

@@ -53,12 +53,14 @@ public class PdfDocTimestampRevision extends PdfCMSRevision {
 	 *            					   list of {@link PdfSignatureField}s
 	 * @param signedContent
 	 *                                 {@link DSSDocument} the signed data
+	 * @param previousRevision
+	 *                                 {@link DSSDocument} the originally signed PDF revision (before signature)
 	 * @param coverCompleteRevision
 	 *                                 true if the signature covers all bytes
 	 */
 	public PdfDocTimestampRevision(PdfSignatureDictionary signatureDictionary, List<PdfSignatureField> timestampFields,
-								   DSSDocument signedContent, boolean coverCompleteRevision) {
-		super(signatureDictionary, timestampFields, signedContent, coverCompleteRevision);
+								   DSSDocument signedContent, DSSDocument previousRevision, boolean coverCompleteRevision) {
+		super(signatureDictionary, timestampFields, signedContent, previousRevision, coverCompleteRevision);
 		try {
 			timestampToken = new PdfTimestampToken(this);
 			timestampToken.matchData(getSignedData());

@@ -29,7 +29,6 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
@@ -68,18 +67,16 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
-				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
 				List<DSSDocument> detachedContents = new ArrayList<>();
-				InMemoryDocument complete = new InMemoryDocument(signedContent);
+				DSSDocument signedContent = new PdfByteRangeDocument(dssDocument, pdSignature.getByteRange());
 
 				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
-						complete.getDigest(DigestAlgorithm.SHA1));
+						signedContent.getDigest(DigestAlgorithm.SHA1));
 				detachedContents.add(digestDoc);
 
 				validator.setDetachedContents(detachedContents);
@@ -89,7 +86,6 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 				validator.setCertificateVerifier(certificateVerifier);
 
 				Reports reports = validator.validateDocument();
-//				reports.print();
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -122,18 +118,16 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
-				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
 				List<DSSDocument> detachedContents = new ArrayList<>();
-				InMemoryDocument complete = new InMemoryDocument(signedContent);
+				DSSDocument signedContent = new PdfByteRangeDocument(dssDocument, pdSignature.getByteRange());
 
 				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
-						complete.getDigest(DigestAlgorithm.SHA256));
+						signedContent.getDigest(DigestAlgorithm.SHA256));
 				detachedContents.add(digestDoc);
 
 				validator.setDetachedContents(detachedContents);
@@ -143,7 +137,6 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 				validator.setCertificateVerifier(certificateVerifier);
 
 				Reports reports = validator.validateDocument();
-//				reports.print();
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -174,16 +167,14 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
 				byte[] cmsContent = pdSignature.getContents();
-				byte[] revisionContent = PAdESUtils.getRevisionContent(dssDocument, pdSignature.getByteRange());
-				byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdSignature.getByteRange());
 
 				DSSDocument cmsDocument = new InMemoryDocument(cmsContent);
 
 				CMSDocumentValidator validator = new CMSDocumentValidator(cmsDocument);
 
 				List<DSSDocument> detachedContents = new ArrayList<>();
-				InMemoryDocument complete = new InMemoryDocument(signedContent);
-				detachedContents.add(complete);
+				DSSDocument signedContent = new PdfByteRangeDocument(dssDocument, pdSignature.getByteRange());
+				detachedContents.add(signedContent);
 
 				validator.setDetachedContents(detachedContents);
 
@@ -192,7 +183,6 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 				validator.setCertificateVerifier(certificateVerifier);
 
 				Reports reports = validator.validateDocument();
-//				reports.print();
 				DiagnosticData diagnosticData = reports.getDiagnosticData();
 
 				SignatureWrapper signatureById = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
