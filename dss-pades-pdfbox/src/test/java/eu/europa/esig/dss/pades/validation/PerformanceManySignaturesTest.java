@@ -63,7 +63,7 @@ public class PerformanceManySignaturesTest {
 
         PDFDocumentValidator validator = new PDFDocumentValidator(inMemoryDocument);
 
-        assertTimeout(Duration.ofSeconds(2), () -> validator.getRevisions());
+        assertTimeout(Duration.ofSeconds(3), () -> validator.getRevisions());
 
         List<PdfRevision> revisions = assertTimeout(Duration.ofSeconds(1), () -> validator.getRevisions()); // cached
         assertNotNull(revisions);

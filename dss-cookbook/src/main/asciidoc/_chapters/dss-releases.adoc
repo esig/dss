@@ -369,6 +369,15 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 MimeTypeEnum.PDF;
 ----
 
+|Password protection variable (replaced to `char[]` across modules)     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", "password");
+----
+                                                                     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
+----
+
 |===
 
 [cols="2,5,5"]

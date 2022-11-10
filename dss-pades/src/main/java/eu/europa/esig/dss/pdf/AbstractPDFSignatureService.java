@@ -164,7 +164,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @deprecated since DSS 5.12. Use {@code
 	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
 	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOutsidePageDimensions);
-	 *			    pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
 	 * 			}
 	 */
 	@Deprecated
@@ -182,7 +182,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @deprecated since DSS 5.12. Use {@code
 	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
 	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
-	 *			    pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
 	 * 			}
 	 */
 	@Deprecated
@@ -201,7 +201,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @deprecated since DSS 5.12. Use {@code
 	 * 				PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
 	 *				pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
-	 *			    pdfSignatureService.setPdfPermissionsChecker(pdfPermissionsChecker);
+	 *			    pdfObjFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
 	 * 			}
 	 */
 	@Deprecated
