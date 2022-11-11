@@ -378,6 +378,18 @@ UserCredentials userCredentials = new UserCredentials("username", "password");
 UserCredentials userCredentials = new UserCredentials("username", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
 ----
 
+|NativeHTTPDataLoader configuration     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setTimeout(1000);
+----
+                                                                     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setConnectTimeout(1000);
+dataLoader.setReadTimeout(1000);
+----
+
 |===
 
 [cols="2,5,5"]

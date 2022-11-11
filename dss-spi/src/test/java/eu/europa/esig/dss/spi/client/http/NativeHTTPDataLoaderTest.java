@@ -77,10 +77,18 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testGetTimeout() {
+	public void testConnectTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
-		dataLoader.setTimeout(1);
-		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD));
+		dataLoader.setConnectTimeout(1);
+		// change URL, as a connection may be already established with the other one
+		assertThrows(DSSException.class, () -> dataLoader.get("http://dss.nowina.lu/", true));
+	}
+
+	@Test
+	public void testReadTimeout() {
+		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+		dataLoader.setReadTimeout(1);
+		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD, true));
 	}
 
 	@Test
@@ -89,7 +97,7 @@ public class NativeHTTPDataLoaderTest {
 		try (ServerSocket serverSocket = new ServerSocket(9090, 0, InetAddress.getLoopbackAddress())) {
 			MockNativeHTTPDataLoader dataLoader = new MockNativeHTTPDataLoader();
 
-			dataLoader.setTimeout(100); // 0.1s is set is a compromise between too long and too small timeout (URLConnection may be not yet instantiated)
+			dataLoader.setReadTimeout(100); // 0.1s is set as a compromise between too long and too small timeout (URLConnection may be not yet instantiated)
 			assertThrows(DSSException.class, () -> dataLoader.get("http://localhost:9090"));
 
 			MockNativeDataLoaderCall nativeDataLoaderCall = dataLoader.nativeDataLoaderCall;
@@ -113,7 +121,8 @@ public class NativeHTTPDataLoaderTest {
 		@Override
 		protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
 			if (nativeDataLoaderCall == null) {
-				nativeDataLoaderCall = new MockNativeDataLoaderCall(url, content, refresh, getMaxInputSize(), getTimeout());
+				nativeDataLoaderCall = new MockNativeDataLoaderCall(
+						url, content, refresh, getMaxInputSize(), getConnectTimeout(), getReadTimeout());
 			}
 			return nativeDataLoaderCall;
 		}
@@ -124,8 +133,9 @@ public class NativeHTTPDataLoaderTest {
 
 		private URLConnection connection;
 
-		public MockNativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize, int timeout) {
-			super(url, content, useCaches, maxInputSize, timeout);
+		public MockNativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize,
+										int connectTimeout, int readTimeout) {
+			super(url, content, useCaches, maxInputSize, connectTimeout, readTimeout);
 		}
 
 		@Override

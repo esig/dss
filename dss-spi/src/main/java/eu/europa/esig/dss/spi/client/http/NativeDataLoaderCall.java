@@ -51,23 +51,42 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 	/** Max input size */
 	private final int maxInputSize;
 
-	private final int timeout;
+	/** Timeout on opening a connection with remote resource */
+	private final int connectTimeout;
+
+	/** Timeout on reading a response from remote resource */
+	private final int readTimeout;
 
 	/**
-	 * Default constructor
+	 * Constructor with unconfigured timeout
 	 *
 	 * @param url {@link String}
 	 * @param content byte array
 	 * @param useCaches if the caches shall be used
 	 * @param maxInputSize maximum InputStream size
-	 * @param timeout to the connection if required (0 for no timeout)
 	 */
-	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize, int timeout) {
+	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize) {
+		this(url, content, useCaches, maxInputSize, 0, 0);
+	}
+
+	/**
+	 * Constructor with configured timeouts
+	 *
+	 * @param url {@link String}
+	 * @param content byte array
+	 * @param useCaches if the caches shall be used
+	 * @param maxInputSize maximum InputStream size
+	 * @param connectTimeout timeout on opening a connection (in milliseconds)
+	 * @param readTimeout timeout on reading a response from a remote resource (in milliseconds)
+	 */
+	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize,
+								int connectTimeout, int readTimeout) {
 		this.url = url;
 		this.content = content;
 		this.useCaches = useCaches;
 		this.maxInputSize = maxInputSize;
-		this.timeout = timeout;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
 	
 	@Override
@@ -79,9 +98,11 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 			URLConnection connection = createConnection();
 			connection.setUseCaches(useCaches);
 			connection.setDoInput(true);
-			if (timeout > 0) {
-				connection.setConnectTimeout(timeout);
-				connection.setReadTimeout(timeout);
+			if (connectTimeout > 0) {
+				connection.setConnectTimeout(connectTimeout);
+			}
+			if (readTimeout > 0) {
+				connection.setReadTimeout(readTimeout);
 			}
 			if (content != null) {
 				connection.setDoOutput(true);
@@ -111,42 +132,6 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 	 */
 	protected URLConnection createConnection() throws IOException {
 		return new URL(url).openConnection();
-	}
-
-	/**
-	 * Gets URL
-	 *
-	 * @return {@link String}
-	 */
-	public String getUrl() {
-		return url;
-	}
-
-	/**
-	 * Gets content
-	 *
-	 * @return byte array
-	 */
-	public byte[] getContent() {
-		return content;
-	}
-
-	/**
-	 * Gets the maximum InputStream size
-	 *
-	 * @return maximum InputStream size
-	 */
-	public long getMaxInputSize() {
-		return maxInputSize;
-	}
-
-	/**
-	 * Gets if the caches are used
-	 *
-	 * @return TRUE if to use caches, FALSE otherwise
-	 */
-	public boolean isUseCaches() {
-		return useCaches;
 	}
 
 }

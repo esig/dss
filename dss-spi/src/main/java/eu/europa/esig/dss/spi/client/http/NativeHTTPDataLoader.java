@@ -26,12 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * Implementation of native java DataLoader using the java.net.URL class.
@@ -47,15 +41,95 @@ public class NativeHTTPDataLoader implements DataLoader {
 	private int maxInputSize;
 
 	/**
-	 * Timeout of the full request processing time (send and retrieve data).
+	 * Timeout on the connection establishment with a remote resource.
 	 */
-	private int timeout = 0;
+	private int connectTimeout = 0;
+
+	/**
+	 * Timeout on the response reading from a remote resource.
+	 */
+	private int readTimeout = 0;
 
 	/**
 	 * Default constructor instantiating object with null values
 	 */
 	public NativeHTTPDataLoader() {
 		// empty
+	}
+
+	@Override
+	public void setContentType(String contentType) {
+		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
+	}
+
+	/**
+	 * Gets the maximum InputStream size
+	 *
+	 * @return maximum InputStream size
+	 */
+	public int getMaxInputSize() {
+		return maxInputSize;
+	}
+
+	/**
+	 * Sets the maximum InputStream size
+	 *
+	 * @param maxInputSize maximum InputStream size
+	 */
+	public void setMaxInputSize(int maxInputSize) {
+		this.maxInputSize = maxInputSize;
+	}
+
+	/**
+	 * Sets timeout value
+	 *
+	 * @param timeout timeout value
+	 * @deprecated since DSS 5.12. See {@code #setConnectTimeout} and {@code #setReadTimeout}
+	 */
+	@Deprecated
+	public void setTimeout(int timeout) {
+		this.connectTimeout = timeout;
+		this.readTimeout = timeout;
+	}
+
+	/**
+	 * Gets the timeout value on connection establishment with a remote resource
+	 *
+	 * @return connection timeout value
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	/**
+	 * Sets the timeout to establish a connection with a remote resource (in milliseconds).
+	 * Zero (0) value is used for no timeout.
+	 * Default: 0 (no timeout)
+	 *
+	 * @param connectTimeout connection timeout value (in milliseconds)
+	 */
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+
+	/**
+	 * Gets the timeout value on response reading from a remote resource
+	 *
+	 * @return read timeout value
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+
+	/**
+	 * Sets the timeout to read a response from a remote resource (in milliseconds).
+	 * Zero (0) value is used for no timeout.
+	 * Default: 0 (no timeout)
+	 *
+	 * @param readTimeout read timeout value (in milliseconds)
+	 */
+	public void setReadTimeout(int readTimeout) {
+		this.readTimeout = readTimeout;
 	}
 
 	/**
@@ -68,18 +142,13 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 * @return response binaries
 	 */
 	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		try {
 			Callable<byte[]> task = createNativeDataLoaderCall(url, method, content, refresh);
-			Future<byte[]> result = executorService.submit(task);
-			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
+			return task.call();
+		} catch (DSSExternalResourceException e) {
+			throw e;
+		} catch (Exception e) {
 			throw new DSSExternalResourceException(e);
-		} catch (ExecutionException | TimeoutException e) {
-			throw new DSSExternalResourceException(e);
-		} finally {
-			executorService.shutdown();
 		}
 	}
 
@@ -93,7 +162,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 * @return {@link Callable} task
 	 */
 	protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
-		return new NativeDataLoaderCall(url, content, !refresh, maxInputSize, timeout);
+		return new NativeDataLoaderCall(url, content, !refresh, maxInputSize, connectTimeout, readTimeout);
 	}
 
 	@Override
@@ -133,47 +202,6 @@ public class NativeHTTPDataLoader implements DataLoader {
 	@Override
 	public byte[] post(String url, byte[] content) {
 		return request(url, HttpMethod.POST, content, true);
-	}
-
-	@Override
-	public void setContentType(String contentType) {
-		throw new UnsupportedOperationException("Content type change is not supported by this implementation!");
-	}
-
-	/**
-	 * Gets the maximum InputStream size
-	 *
-	 * @return maximum InputStream size
-	 */
-	public int getMaxInputSize() {
-		return maxInputSize;
-	}
-
-	/**
-	 * Sets the maximum InputStream size
-	 *
-	 * @param maxInputSize maximum InputStream size
-	 */
-	public void setMaxInputSize(int maxInputSize) {
-		this.maxInputSize = maxInputSize;
-	}
-
-	/**
-	 * Gets timeout value
-	 *
-	 * @return timeout value
-	 */
-	public int getTimeout() {
-		return timeout;
-	}
-
-	/**
-	 * Sets timeout value
-	 *
-	 * @param timeout timeout value
-	 */
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
 	}
 
 	/**
