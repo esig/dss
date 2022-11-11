@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,30 +41,21 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = 4075489539157157286L;
 
-	/**
-	 * Available HTTPMethods
-	 */
-	protected enum HttpMethod {
-		/** GET method */
-		GET,
-		/** POST method */
-		POST
-	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
 
 	/** Max inputStream size */
-	private long maxInputSize;
+	private int maxInputSize;
 
 	/**
 	 * Timeout of the full request processing time (send and retrieve data).
 	 */
-	private long timeout = 0;
+	private int timeout = 0;
 
 	/**
 	 * Default constructor instantiating object with null values
 	 */
 	public NativeHTTPDataLoader() {
+		// empty
 	}
 
 	/**
@@ -76,10 +68,9 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 * @return response binaries
 	 */
 	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
-		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, !refresh, maxInputSize);
-
 		ExecutorService executorService = Executors.newSingleThreadExecutor();
 		try {
+			Callable<byte[]> task = createNativeDataLoaderCall(url, method, content, refresh);
 			Future<byte[]> result = executorService.submit(task);
 			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
 		} catch (InterruptedException e) {
@@ -90,7 +81,19 @@ public class NativeHTTPDataLoader implements DataLoader {
 		} finally {
 			executorService.shutdown();
 		}
+	}
 
+	/**
+	 * This method creates a task call to be executed by NativeHTTPDataLoader
+	 *
+	 * @param url {@link String} URL to call
+	 * @param method {@link HttpMethod} of the request
+	 * @param content byte array containing a body of the request, when required
+	 * @param refresh defined if the cache should be used
+	 * @return {@link Callable} task
+	 */
+	protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
+		return new NativeDataLoaderCall(url, content, !refresh, maxInputSize, timeout);
 	}
 
 	@Override
@@ -102,7 +105,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 					return new DataAndUrl(urlString, bytes);
 				}
 			} catch (Exception e) {
-				LOGGER.warn("Impossible to obtain data using {}", urlString, e);
+				LOG.warn("Impossible to obtain data using {}", urlString, e);
 			}
 		}
 		throw new DSSExternalResourceException(String.format("No data have been obtained from urls : %s", urlStrings));
@@ -142,7 +145,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @return maximum InputStream size
 	 */
-	public long getMaxInputSize() {
+	public int getMaxInputSize() {
 		return maxInputSize;
 	}
 
@@ -151,7 +154,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @param maxInputSize maximum InputStream size
 	 */
-	public void setMaxInputSize(long maxInputSize) {
+	public void setMaxInputSize(int maxInputSize) {
 		this.maxInputSize = maxInputSize;
 	}
 
@@ -160,7 +163,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @return timeout value
 	 */
-	public long getTimeout() {
+	public int getTimeout() {
 		return timeout;
 	}
 
@@ -169,8 +172,18 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @param timeout timeout value
 	 */
-	public void setTimeout(long timeout) {
+	public void setTimeout(int timeout) {
 		this.timeout = timeout;
+	}
+
+	/**
+	 * Available HTTPMethods
+	 */
+	protected enum HttpMethod {
+		/** GET method */
+		GET,
+		/** POST method */
+		POST
 	}
 
 }
