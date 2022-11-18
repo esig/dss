@@ -381,6 +381,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
+	@Override
+	public Reports validateDocument(DSSDocument policyDocument) {
+		try (InputStream is = policyDocument.openStream()) {
+			return validateDocument(is);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to read policy file: %s", e.getMessage()), e);
+		}
+	}
+
 	/**
 	 * Validates the document and all its signatures. The policyDataStream contains
 	 * the constraint file. If null or empty the default file is used.
