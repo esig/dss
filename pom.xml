@@ -63,7 +63,7 @@
 		<mockito.version>4.8.0</mockito.version>
 		<h2database.version>2.1.214</h2database.version>
 		<jackson.version>2.13.4</jackson.version>
-		<fop-core.version>2.7</fop-core.version>
+		<fop-core.version>2.8</fop-core.version>
 		<xml-apis.version>1.4.01</xml-apis.version> <!-- Synchronized with fop-core -->
 		<batik.version>1.15</batik.version> <!-- To be used while fop-core is not updated -->
 
