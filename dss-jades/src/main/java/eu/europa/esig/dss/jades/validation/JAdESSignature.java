@@ -671,7 +671,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					}
 
 				} catch (Exception e) {
-					String errorMessage = "Enable to determine a JWS payload. Reason : {}";
+					String errorMessage = "Unable to determine a JWS payload. Reason : {}";
 					if (LOG.isDebugEnabled()) {
 						LOG.warn(errorMessage, e.getMessage(), e);
 					} else {
