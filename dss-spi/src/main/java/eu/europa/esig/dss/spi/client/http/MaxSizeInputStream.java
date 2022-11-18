@@ -20,25 +20,26 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
- * Used to limit the size of fetched data.
+ * Used to limit the size of fetched data. Throws {@code IOException} if the data limit has been reached.
+ * Inspired by {@code org.apache.commons.fileupload.util.LimitedInputStream}
+ *
  */
-public class MaxSizeInputStream extends InputStream {
+public class MaxSizeInputStream extends FilterInputStream {
 
 	/** The maximum InputStream size */
-	private long maxSize;
-
-	/** The wrapped InputStream */
-	private InputStream wrappedStream;
+	private final int maxSize;
 
 	/** The requested URL */
-	private String url;
+	private final String url;
 
 	/** The counter */
-	private long count = 0;
+	private int count = 0;
 
 	/**
 	 * The default constructor for NativeHTTPDataLoader.MaxSizeInputStream.
@@ -50,21 +51,39 @@ public class MaxSizeInputStream extends InputStream {
 	 * @param url
 	 *            the url source
 	 */
-	public MaxSizeInputStream(InputStream wrappedStream, long maxSize, String url) {
-		this.maxSize = maxSize;
-		this.wrappedStream = wrappedStream;
+	public MaxSizeInputStream(InputStream wrappedStream, int maxSize, String url) {
+		super(wrappedStream);
+		Objects.requireNonNull(wrappedStream, "InputStream shall be provided!");
 		this.url = url;
+		this.maxSize = maxSize;
 	}
 
 	@Override
 	public int read() throws IOException {
+		int b = super.read();
+		if (b != -1) {
+			++count;
+			checkSize();
+		}
+		return b;
+	}
+
+	@Override
+	public int read(byte[] b, int off, int len) throws IOException {
+		int read = super.read(b, off, len);
+		if (read > 0) {
+			count += read;
+			checkSize();
+		}
+		return read;
+	}
+
+	private void checkSize() throws IOException {
 		if (maxSize != 0) {
-			count++;
 			if (count > maxSize) {
-				throw new IOException("Cannot fetch data limit=" + maxSize + ", url =" + url);
+				throw new IOException("Cannot fetch data limit=" + maxSize + ", url=" + url);
 			}
 		}
-		return wrappedStream.read();
 	}
 
 }

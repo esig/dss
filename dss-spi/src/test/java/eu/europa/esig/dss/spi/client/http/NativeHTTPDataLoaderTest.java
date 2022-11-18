@@ -20,14 +20,21 @@
  */
 package eu.europa.esig.dss.spi.client.http;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.URLConnection;
+import java.time.Duration;
+import java.util.concurrent.Callable;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 public class NativeHTTPDataLoaderTest {
 
@@ -53,6 +60,16 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
+	public void testGetSmallerThanMaxSize() {
+		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+		dataLoader.setMaxInputSize(1000000);
+		byte[] bytesArray = dataLoader.get(FILE_URL_TO_LOAD);
+
+		CertificateToken certificate = DSSUtils.loadCertificate(bytesArray);
+		assertNotNull(certificate);
+	}
+
+	@Test
 	public void testGetBiggerThanMaxSize() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setMaxInputSize(1);
@@ -60,9 +77,75 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testGetTimeout() {
+	public void testConnectTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
-		dataLoader.setTimeout(1);
-		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD));
+		dataLoader.setConnectTimeout(1);
+		// change URL, as a connection may be already established with the other one
+		assertThrows(DSSException.class, () -> dataLoader.get("http://dss.nowina.lu/", true));
 	}
+
+	@Test
+	public void testReadTimeout() {
+		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+		dataLoader.setReadTimeout(1);
+		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD, true));
+	}
+
+	@Test
+	public void unresponsiveServiceTest() throws Exception {
+		// Creates a localhost:9090 to simulate an unresponsive service
+		try (ServerSocket serverSocket = new ServerSocket(9090, 0, InetAddress.getLoopbackAddress())) {
+			MockNativeHTTPDataLoader dataLoader = new MockNativeHTTPDataLoader();
+
+			dataLoader.setReadTimeout(100); // 0.1s is set as a compromise between too long and too small timeout (URLConnection may be not yet instantiated)
+			assertThrows(DSSException.class, () -> dataLoader.get("http://localhost:9090"));
+
+			MockNativeDataLoaderCall nativeDataLoaderCall = dataLoader.nativeDataLoaderCall;
+			assertNotNull(nativeDataLoaderCall);
+
+			URLConnection connection = nativeDataLoaderCall.connection;
+			assertNotNull(connection);
+
+			assertTimeoutPreemptively(Duration.ofMillis(500),
+					() -> assertThrows(Exception.class, connection::getInputStream)); // throws an exception when closed
+			// NOTE: assert timeout is set to avoid test running indefinitely
+		}
+	}
+
+	private static class MockNativeHTTPDataLoader extends NativeHTTPDataLoader {
+
+		private static final long serialVersionUID = 8366723398612401709L;
+
+		private MockNativeDataLoaderCall nativeDataLoaderCall;
+
+		@Override
+		protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
+			if (nativeDataLoaderCall == null) {
+				nativeDataLoaderCall = new MockNativeDataLoaderCall(
+						url, content, refresh, getMaxInputSize(), getConnectTimeout(), getReadTimeout());
+			}
+			return nativeDataLoaderCall;
+		}
+
+	}
+
+	private static class MockNativeDataLoaderCall extends NativeDataLoaderCall {
+
+		private URLConnection connection;
+
+		public MockNativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize,
+										int connectTimeout, int readTimeout) {
+			super(url, content, useCaches, maxInputSize, connectTimeout, readTimeout);
+		}
+
+		@Override
+		protected URLConnection createConnection() throws IOException {
+			if (connection == null) {
+				connection = super.createConnection();
+			}
+			return connection;
+		}
+
+	}
+
 }
