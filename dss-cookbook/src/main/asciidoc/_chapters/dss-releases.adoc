@@ -813,7 +813,16 @@ This chapter covers the most frequently asked questions and issues occurring in 
 .Possible problems and solutions
 |===
 |Version                    |Description                                   |Solution
-|v5.9                       |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
+|v5.12                      |Performance downgrade on TLValidationJob/certificates loading       a|Starting from version 1.71 cryptographic library BouncyCastle enforces a secure validation of imported RSA keys. In order to get back to the original behavior (secure validation skipped), the following system property should be added before executing methods requiring certificate creation (such as TLValidationJob):
+
+[source,java]
+----
+System.setProperty("org.bouncycastle.rsa.max_mr_tests", "0");
+----
+
+The property is available since BouncyCastle 1.73.
+
+|v5.9 and higher            |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
                                                                             *Since DSS 5.10 a support of AdES extended signature profiles* for (XAdES and CAdES) has been added as per ETSI standards.
 
 |v5.8 and higher            |PAdES : performance downgrade                a|[source,java]
