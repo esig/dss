@@ -108,6 +108,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 
 See section <<Alerts>> in the Annex for more information on related alerts.
 
+[[LotlTlPredicates]]
 ==== LOTL/TL filter predicates
 
 TSL predicates provide an option to filter the extracted TSL Pointers from LOTL or TL sources, allowing a customization of a trusted certificates and trusted services loading.
@@ -184,6 +185,7 @@ An Executor Service allows you to customize a way of the program execution on yo
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=executor-service]
 ----
 
+[[CompleteConfigurationOfEuLOTL]]
 ==== Complete configuration for the European LOTL
 
 Below, you can find a complete configuration for the European List Of Trusted Lists. The URLs need to be externalized.

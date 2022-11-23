@@ -4,6 +4,7 @@
 :samplesdir: ../_samples
 :imagesdir: ../images/
 
+[[HowToStart]]
 == How to start with DSS
 
 === Integration instructions
@@ -83,6 +84,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
 </dependencies>
 ----
 
+[[MavenBuildProfiles]]
 ===== Maven build and profiles
 
 In order to use a customized bundle of DSS, you may want to build the DSS Core framework modules.
@@ -271,6 +273,7 @@ dss-utils-google-guava:: Implementation of dss-utils with Google Guava.
 
 dss-i18n:: a module allowing internationalization of generated reports.
 
+[[CoreModules]]
 ===== Core modules
 
 dss-model:: Data model used in almost every module.

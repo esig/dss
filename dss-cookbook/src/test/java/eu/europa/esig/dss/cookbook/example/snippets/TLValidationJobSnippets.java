@@ -346,9 +346,9 @@ public class TLValidationJobSnippets {
 		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
 		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
-		// tag::predicate-country[]
 		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
+		// tag::predicate-country[]
 		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
 		// end::predicate-country[]
 		// end::predicates[]

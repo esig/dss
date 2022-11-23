@@ -30,7 +30,7 @@ import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class PAdESDisableVisualComparison {
+public class PAdESModificationDetection {
 
     public void demo() {
 
@@ -52,8 +52,9 @@ public class PAdESDisableVisualComparison {
         // import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
 
         DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+        // The variable defines number of pages in a document to run the validation for
         // NOTE: setting '0' as MaximalPagesAmountForVisualComparison will skip the visual changes detection
-        pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+        pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(1);
         // Provide a customized PdfDifferencesFinder within IPdfObjFactory
         pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
         // end::visual-change-finder[]
@@ -63,6 +64,7 @@ public class PAdESDisableVisualComparison {
 
         DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
         // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
+        // NOTE: setting '0' as MaximumObjectVerificationDeepness will skip the object modification detection
         pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);
         // Provide a customized PdfObjectModificationsFinder within IPdfObjFactory
         pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);

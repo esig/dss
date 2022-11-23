@@ -181,7 +181,7 @@ A List of Trusted Lists (LOTL) is a list that contains:
 * links towards all the published EU MS Trusted Lists;
 * the certificates used to verify the signatures of these trusted lists.
 
-In the EU/EEA context, a LOTL is published by the European Commission at a secure location that is made publicly available on the Official Journal of the European Commission (OJEU). It is available in an XML format which is suitable for automated processing. This format of the LOTL is digitally signed/sealed, which allows to assure authenticity and integrity of the LOTL. The signing certificates of the LOTL are also made publicly available in the OJEU.
+In the EU/EEA context, a LOTL is published by the European Commission at a secure location that is made publicly available on the https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[Official Journal of the European Commission (OJEU)]. It is available in an XML format which is suitable for automated processing. This format of the LOTL is digitally signed/sealed, which allows to assure authenticity and integrity of the LOTL. The signing certificates of the LOTL are also made publicly available in the OJEU.
 
 The LOTL is used to authenticate EU MS Trusted Lists and to provide an easy and trustworthy way to access these TLs.
 

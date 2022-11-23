@@ -539,6 +539,7 @@ The interface `SignaturePolicyValidator` is used to validate a signature policy 
 
 ==== PAdES
 
+[[ShadowAttackDetection]]
 ===== Shadow attack detection
 
 "Shadow attack" is a class of attacks on a signed PDF document that constitutes a change of a visual content of a document after the signature has been made. Due to a structure of PDF document, the signature stays cryptographically valid even after the content's modification has been taken place. There is no known algorithm to detect the malicious change with 100% guarantee. For more information, please refer to https://pdf-insecurity.org/[the website].
@@ -554,9 +555,10 @@ The verification of points introduced above may be configured within an instance
 [source,java,indent=0]
 .PdfDifferencesFinder customization
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[tags=visual-change-finder]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESModificationDetection.java[tags=visual-change-finder]
 ----
 
+[[ObjectModificationDetection]]
 ===== Object modification detection
 
 As an additional tool to detect malicious changes within a PDF document, an object modification detection has been introduced in DSS 5.10. The util detects all changes occurred within a PDF document after a concerned signature's or a timestamp's revision.
@@ -581,7 +583,18 @@ An example of a `PdfObjectModificationsFinder` customization is provided below:
 [source,java,indent=0]
 .PdfObjectModificationsFinder customization
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[tags=object-modifications]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESModificationDetection.java[tags=object-modifications]
+----
+
+[[DisablingPdfComparison]]
+===== Disabling PDF comparison security checks
+
+The aforementioned security checks may be disabled in favor of performance on signature validation. For this you will need to define the following configuration within `IPdfObjFactory` provided to the used `PDFDocumentValidator`:
+
+[source,java,indent=0]
+.Disabling PDF comparison checks
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESSkipModificationDetection.java[tags=demo]
 ----
 
 ===== Password-protected documents

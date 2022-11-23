@@ -813,6 +813,7 @@ This chapter covers the most frequently asked questions and issues occurring in 
 .Possible problems and solutions
 |===
 |Version                    |Description                                   |Solution
+
 |v5.12                      |Performance downgrade on TLValidationJob/certificates loading       a|Starting from version 1.71 cryptographic library BouncyCastle enforces a secure validation of imported RSA keys. In order to get back to the original behavior (secure validation skipped), the following system property should be added before executing methods requiring certificate creation (such as TLValidationJob):
 
 [source,java]
@@ -825,17 +826,15 @@ The property is available since BouncyCastle 1.73.
 |v5.9 and higher            |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
                                                                             *Since DSS 5.10 a support of AdES extended signature profiles* for (XAdES and CAdES) has been added as per ETSI standards.
 
-|v5.8 and higher            |PAdES : performance downgrade                a|[source,java]
-----
-pdfSignatureService.setMaximalPagesAmountForVisualComparison(0); // skip validation
-----
-Please note that some changes have been made within verson 5.11 (see <<MigrationGuide>>).
+|v5.8 and higher            |PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
 
-|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use predicates. For example, to filter TLs from Germany and Romania:
+|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>. For example, to filter TLs from Germany and Romania:
+
 [source,java]
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country]
 ----
+
 |v5.2 and higher            |XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +
                                                                             We do not recommend to use Xalan in production.
                                                                             To use Xalan, you will need to remove security attributes:
@@ -847,6 +846,10 @@ TransformerFactoryBuilder.getSecureTransformerBuilder()
 .removeAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET));
 ----
 
+|v5.2 and higher            |Error: "SECURITY : unable to set attribute ..."             a|The error is more likely caused by a use of deprecated Xalan or Xerces dependency. Please see the previous answer for resolution.
+
+|all versions              a|Maven build fails       a| Please verify whether you need to build DSS. See <<HowToStart>> for more details about DSS integration. If you need to build DSS, please use one of the quick profiles (see <<MavenBuildProfiles>> for more information).
+
 |all versions              a|Build fails when using `quick` profile       a| * DSS 5.9 and lower: +
                                                                              Build the following modules using `mvn clean install` (without any profile):
                                                                              ** `dss-utils`;
@@ -854,23 +857,73 @@ TransformerFactoryBuilder.getSecureTransformerBuilder()
                                                                              ** `dss-test`;
                                                                              ** `dss-pades`;
                                                                              ** `dss-asic-common` _(since DSS 5.8)._
-                                                                             * DSS 5.10:
+                                                                             * DSS 5.10 and after:
                                                                              Use `quick-init` profile for the first build of DSS.
 
+|all versions              a|Unable to access DSS Maven repository       a|If the error occurs, more likely DSS-team is already aware about the issue. +
+                                                                           You need to try to connect again in a few hours.
+
+|all versions              a|DSS produces invalid signature       a|Please verify that you provide *the same signature parameter values* within methods _#getDataToSign_ and _#signDocument_. Specifically please pay attention to the `Date` provided within `parameters.bLevel().setSigningDate(date)` method (shall be the same). For more information please see <<SignatureCreationInDSS>>.
+
+|all versions              a|When validating a signature I receive `INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND` indication       a|The result means the validator was not able to reach a trust anchor when validating the certificate chain of the signature. More likely the issue is caused by the fact you have *not configured a trusted certificate source* within the used `CertificateVerifier`. To do it, you need to add trust anchors to the instance of CertificateVerifier you use within DocumentValidator:
+
+[source,java,indent=0]
+.Trusted certificate source configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132OnlyTest.java[tags=trustAnchors]
+----
+
+It is also possible to configure trusted certificate source automatically using EU LOTL. See <<tlValidationJob>> for more details.
+
 |all versions              a|Revocation data is missing on LT-level extension       a|Verify whether the trust anchors and CRL/OCSP sources are configured appropriately. You need to provide them to the used CertificateVerifier:
+
 [source,java,indent=0]
 .CertificateVerifier configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLTTest.java[tags=certificate-verifier]
 ----
 
-|all versions              a|Unable to access DSS Maven repository       a|If the error occurs, more likely DSS-team is already aware about the issue. +
-                                                                           You need to try to connect again in a few hours.
+|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R21>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
+
+|all versions              a|I receive error _"Unable to build a certificate chain until a trusted list"_ while signature is validated as `TOTAL_PASSED`     a|During the validation DSS performs two processes: AdES validation as per ETSI EN 319 102-1 (cf. <<R09>>) and qualification determination as per ETSI TS 119 615 (cf. <<R14>>). While `TOTAL_PASSED` indication is a final result of AdES validation process, the aforementioned error message is returned by a signature qualification determination process, meaning the corresponding Trusted List has not reached the trust anchor for the certificate chain. Please note, that the qualification can be determined only for signatures with trusted certificates coming from a Trusted List. To configure a trusted certificate source using a EU LOTL or an alternative Trusted List, please see <<tlValidationJob>> chapter for more details.
+
+|all versions              a|Error "Document format not recognized/handled"     a|DSS loads the relevant `DocumentValidator` using a `ServiceLoader` searching accross all available implementations. Please ensure the corresponding module supporting validation of particular signature module has been added to a list of dependencies within `pom.xml` file of your project (e.g. `dss-xades` for XML/XAdES signatures). For more information about available modules please see <<CoreModules>> section.
+
+|all versions              a|`NO_CERTIFICATE_CHAIN_FOUND` is returned on LOTL validation     a|Please ensure a trusted keystore provided to the validation has been configured with end-entity certificates defined in the https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[Official Journal of the European Commission (OJEU)]. A pre-configured EU OJ keystore you may find within dss-demonstrations https://github.com/esig/dss-demonstrations/blob/master/dss-demo-webapp/src/main/resources/keystore.p12[repository] with a password defined in https://github.com/esig/dss-demonstrations/blob/master/dss-demo-webapp/src/main/resources/dss.properties[properties] file. For more information please see <<CompleteConfigurationOfEuLOTL>>.
+
+|all versions              a|DSS successfully validates an expired timestamp created with a trusted certificate     a|DSS performs validation according to ETSI EN 319 102-1 standard (cf. <<R13>>). According to the algorithm, the validation of certificate chain stops when reaching a trust anchor provided as an input to the validation process. Thus, the AdES validation process automatically results to a valid "X.509 certificate" building block for signatures or timestamps created with a trusted end-entity certificate. If you extract a trusted certificate source from a LOTL/TL, then you may try to filter extracted certificates using <<LotlTlPredicates>>.
+
+|all versions              a|I have a problem when signing using Nexu. Can you help me?     a|While the community version of Nexu is used within _dss-demonstrations_ web-application, Nexu is not part of DSS package, therefore DSS support does not extend to the Nexu project. We do  our best to help users in case of any issues, but DSS does not have liability whatsoever over open-source version of Nexu.
+
+|all versions              a|Does DSS provide a qualified signature validation service?       a|No, DSS is not a qualified signature validation service. However, DSS provides a possibility to create one based on its core code by configuring <<validationPolicy>> and other corresponding constraints. Please also note that https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/home[DSS Demonstration Webapp] merely provides a live demonstration of available functionalities within DSS framework, but not an end-to-end signature creation or validation tool.
+
+|all versions              a|Parallel signature breaks existing enveloped XAdES signature     a|If the existing XAdES signature contains _"http://www.w3.org/2000/09/xmldsig#enveloped-signature"_ transform, then the parallel signing is not allowed. To be able to create parallel enveloped signatures, you should use another transform such as XPath or XPath Filter 2.0 transform. By default, DSS already uses XPath Transform 2.0 for enveloped signatures, thus allowing parallel signing.
+
+|all versions              a|When I move enveloped XAdES signature to another XML (e.g. to a SOAP envelope), it becomes invalid       a|Enveloped XAdES signature covers the whole content of a parent XML document. Therefore, a change of the signature's envelope may result to a signature invalidity. To avoid it, create signature within the target XML document or use another signature packaging (e.g. enveloping).
+
+|all versions              a|XAdES signature became invalid after pretty-printing while I use canonicalization       a|Canonicalization does not normalize whitespace and new line characters occurring between XML nodes. Therefore pretty-printing should be avoided after signature creation. To create a pretty-printed signature with DSS, you may use the following signature parameter:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=prettyPrint]
+----
 
 |all versions              a|PAdES validation without sending the document       a|PAdES format *requires a complete document* to perform a signature validation. You cannot validate a PDF signature as a DETACHED XAdES or CAdES. +
-                                                                                   The only possible way to perform the *cryptographic signature validation* is to extract the embedded CMS signature and the covered range as a detached document. But the validation result will not be able to conclude it as a valid PAdES nor CAdES.
+                                                                                   The only possible way to perform the *cryptographic signature validation* is to extract the embedded CMS signature and the covered range as a detached document. However the validation result will not be able to conclude it as a valid PAdES nor CAdES Baseline.
 
-|all versions              a|When validating a PDF with embedded CAdES-BASELINE signature the returned format is PDF_NOT_ETSI       a|PAdES-BASELINE format establishes some limitations on the embedded CMS signature, which are not compliant with CAdES-BASELINE signatures. Therefore, *it is not possible* to have a valid PAdES-BASELINE profile with embedded CAdES-BASELINE signature. For more information about supported CMS please see <<R03>>.
+|all versions              a|When validating a PDF with embedded `CAdES-BASELINE` signature the returned format is `PDF_NOT_ETSI`       a|`PAdES-BASELINE` format establishes some limitations on the embedded CMS signature, which are not compliant with `CAdES-BASELINE` signatures. Therefore, *it is not possible* to have a valid `PAdES-BASELINE` profile with embedded `CAdES-BASELINE` signature. For more information about supported CMS please see <<R03>>.
+
+|all versions              a|How to add multiple visual signature fields on PDF signing?       a|This functionality is not supported by DSS. Adding multiple signature fields associated with a signle signature value contradicts ISO 32000-1 and therefore not recomended for interoperability reasons. The only valid choice is to sign a document multiple times.
+
+|all versions              a|DSS returns `SIG_CRYPTO_FAILURE` for a PDF signature while Adobe validates the signature succesfully       a|DSS performs a PDF signature validation according to ETSI EN 319 142-1 (cf. <<R03>>) and ISO 32000-1 (cf. <<R06>>), enforcing the defined rules, while other PDF-readers may ease some requirements concerning the structure of a PDF document or a CMS signature. Please verify our https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[Jira] for similar issues or create a new one to request a document verification unless you do not find a similar case.
+
+|all versions              a|DSS successfully validates a PDF signature, while another PDF reader complains that the document's content has been modified.       a|Validation of document modifications is not standardized, therefore the produced results may differ between different validation tools. DSS does it best to detect malisious modifications occurred after signature revision (see <<ShadowAttackDetection>> and <<ObjectModificationDetection>> for more detail). Regardless of the obtained result, an error or a warning received after visual document content comparison should only be considered as a hint, and it is always recommended to manually verify the differencies between signed and final document revisions in order to decide whether the change is acceptable or not.
+
+|all versions              a|DSS breaks PDF/A conformance on a signature creation       a|DSS does not claim compliance of produced documents to a PDF/A format. The goal of DSS is to ensure conformance to AdES signature format for created signatures. We do our best to keep conformity of PDF/A documents after signing, but we do not take any liability on this matter.
+
+|all versions              a|A signature-time-stamp embedded within CMS of the second PDF signature does not provide a POE for the first PDF signature      a|DSS recognizes timestamps as per ETSI EN 319 142-1 (cf. <<R03>>). The standard defines the following timestamps to be related to a signature: a signature-time-stamp embedded within signature's CMS Signed Data and a document timestamp covering the signature in its ByteRange explicitly. All other POE or timestamps covering a signature in indirect way are not considered as a POE during the AdES signature validation process.
+
+|all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===
 

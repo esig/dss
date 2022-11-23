@@ -94,6 +94,9 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			xadesSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 			xadesSignatureParameters.setSigningCertificate(privateKey.getCertificate());
 			xadesSignatureParameters.setCertificateChain(privateKey.getCertificateChain());
+			// tag::prettyPrint[]
+			xadesSignatureParameters.setPrettyPrint(true);
+			// end::prettyPrint[]
 
 			// Configuration of several signed attributes like ...
 			BLevelParameters bLevelParameters = xadesSignatureParameters.bLevel();
