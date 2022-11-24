@@ -23,6 +23,8 @@ package eu.europa.esig.dss.tsl.runnable;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingTask;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
 import java.util.concurrent.CountDownLatch;
@@ -32,9 +34,6 @@ import java.util.concurrent.CountDownLatch;
  *
  */
 public class LOTLAnalysis extends AbstractRunnableAnalysis {
-
-	/** The LOTL source */
-	private final LOTLSource source;
 
 	/**
 	 * Default constructor
@@ -46,19 +45,12 @@ public class LOTLAnalysis extends AbstractRunnableAnalysis {
 	 */
 	public LOTLAnalysis(LOTLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
 						CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader, latch);
-		this.source = source;
+		super(source, cacheAccess, dssFileLoader, latch);
 	}
 
 	@Override
-	protected void doAnalyze() {
-		DSSDocument document = download(source.getUrl());
-
-		if (document != null) {
-			lotlParsing(document, source);
-
-			validation(document, source.getCertificateSource());
-		}
+	protected AbstractParsingTask<?> getParsingTask(DSSDocument document) {
+		return new LOTLParsingTask(document, (LOTLSource) getSource());
 	}
 
 }

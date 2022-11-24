@@ -1116,6 +1116,72 @@ public class TLValidationJobTest {
 			assertNotNull(pivotInfo.getValidationCacheInfo().getSigningCertificate());
 		}
 	}
+
+	@Test
+	public void dss2911Test() {
+		Map<String, DSSDocument> map = new HashMap<>();
+		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
+
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_226_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
+
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(pivotSigningCertificate);
+		lotlSource.setCertificateSource(trustedCertificateSource);
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+
+		map.remove(LOTL_URL);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+
+		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
+		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
+		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml");
+		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml");
+		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml");
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		assertFalse(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_226_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+	}
 	
 	@Test
 	public void lotlCorruptedKeystoreTest() throws IOException {

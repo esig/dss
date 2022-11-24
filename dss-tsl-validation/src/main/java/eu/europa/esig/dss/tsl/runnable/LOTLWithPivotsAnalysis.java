@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -51,15 +50,12 @@ import java.util.concurrent.TimeUnit;
  * Runs the job for a LOTL with pivots analysis
  *
  */
-public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements Runnable {
+public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLWithPivotsAnalysis.class);
 
 	/** Loads a relevant cache access object */
 	private final CacheAccessFactory cacheAccessFactory;
-
-	/** The LOTL source */
-	private final LOTLSource lotlSource;
 
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
@@ -75,25 +71,14 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 	 */
 	public LOTLWithPivotsAnalysis(final LOTLSource source, final CacheAccessByKey cacheAccess,
 								  final DSSFileLoader dssFileLoader, final CacheAccessFactory cacheAccessFactory, final CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader, latch);
+		super(source, cacheAccess, dssFileLoader, latch);
 		this.cacheAccessFactory = cacheAccessFactory;
-		this.lotlSource = source;
 		this.dssFileLoader = dssFileLoader;
 	}
 
 	@Override
-	protected void doAnalyze() {
-		DSSDocument document = download(lotlSource.getUrl());
-
-		if (document != null) {
-			lotlParsing(document, lotlSource);
-
-			validation(document, getCurrentCertificateSource());
-		}
-	}
-
-	private CertificateSource getCurrentCertificateSource() {
-		final CertificateSource initialCertificateSource = lotlSource.getCertificateSource();
+	protected CertificateSource getCurrentCertificateSource() {
+		final CertificateSource initialCertificateSource = super.getCurrentCertificateSource();
 
 		CertificateSource currentCertificateSource;
 
@@ -174,6 +159,7 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 	private Map<String, PivotProcessingResult> downloadAndParseAllPivots(List<String> pivotURLs) {
 		ExecutorService executorService = Executors.newFixedThreadPool(pivotURLs.size());
 
+		LOTLSource lotlSource = (LOTLSource) getSource();
 		Map<String, Future<PivotProcessingResult>> futures = new HashMap<>();
 		for (String pivotUrl : pivotURLs) {
 			CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
@@ -182,7 +168,7 @@ public class LOTLWithPivotsAnalysis extends AbstractRunnableAnalysis implements 
 			pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
 			pivotSource.setTlPredicate(lotlSource.getTlPredicate());
 			pivotSource.setPivotSupport(lotlSource.isPivotSupport());
-			futures.put(pivotUrl, executorService.submit((Callable<PivotProcessingResult>)new PivotProcessing(pivotSource, pivotCacheAccess, dssFileLoader)));
+			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, getCacheAccessByKey(), dssFileLoader)));
 		}
 
 		Map<String, PivotProcessingResult> processingResults = new HashMap<>();

@@ -35,13 +35,12 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * Parses a TL and returns {@code TLParsingResult}
  */
-public class TLParsingTask extends AbstractParsingTask implements Supplier<TLParsingResult> {
+public class TLParsingTask extends AbstractParsingTask<TLParsingResult> {
 
 	/** The TLSource to parse */
 	private final TLSource tlSource;
@@ -60,13 +59,10 @@ public class TLParsingTask extends AbstractParsingTask implements Supplier<TLPar
 
 	@Override
 	public TLParsingResult get() {
-
 		TLParsingResult result = new TLParsingResult();
-
 		TrustStatusListType jaxbObject = getJAXBObject();
 
 		parseSchemeInformation(result, jaxbObject.getSchemeInformation());
-
 		parseTrustServiceProviderList(result, jaxbObject.getTrustServiceProviderList());
 
 		return result;

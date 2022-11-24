@@ -20,8 +20,11 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.source.TLSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,19 +46,36 @@ public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implemen
 	/**
 	 * Default constructor
 	 *
+	 * @param source {@link TLSource} representing a TL or LOTL
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 * @param latch {@link CountDownLatch}
 	 */
-	protected AbstractRunnableAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader, CountDownLatch latch) {
-		super(cacheAccess,dssFileLoader);
+	protected AbstractRunnableAnalysis(final TLSource source, final CacheAccessByKey cacheAccess,
+									   final DSSFileLoader dssFileLoader, CountDownLatch latch) {
+		super(source, cacheAccess,dssFileLoader);
 		this.latch = latch;
 	}
 
 	/**
 	 * Performs analysis
 	 */
-	protected abstract void doAnalyze();
+	protected void doAnalyze() {
+		DSSDocument document = download(getSource().getUrl());
+		if (document != null) {
+			parsing(document);
+			validation(document, getCurrentCertificateSource());
+		}
+	}
+
+	/**
+	 * Returns the certificate source to be used to validate TL/LOTL
+	 *
+	 * @return {@link CertificateSource}
+	 */
+	protected CertificateSource getCurrentCertificateSource() {
+		return getSource().getCertificateSource();
+	}
 
 	@Override
 	public void run() {

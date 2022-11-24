@@ -39,13 +39,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * Parses a LOTL and returns {@code LOTLParsingResult}
  */
-public class LOTLParsingTask extends AbstractParsingTask implements Supplier<LOTLParsingResult> {
+public class LOTLParsingTask extends AbstractParsingTask<LOTLParsingResult> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LOTLParsingTask.class);
 

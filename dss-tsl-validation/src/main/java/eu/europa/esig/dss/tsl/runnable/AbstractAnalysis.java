@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.tsl.runnable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.download.XmlDownloadTask;
-import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
-import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingTask;
+import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processes the LOTL/TL validation job (download - parse - validate)
@@ -40,6 +39,9 @@ import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 public abstract class AbstractAnalysis  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractAnalysis.class);
+
+	/** The TL/LOTL source */
+	private final TLSource source;
 
 	/** The cache access of the record */
 	private final CacheAccessByKey cacheAccess;
@@ -50,12 +52,32 @@ public abstract class AbstractAnalysis  {
 	/**
 	 * Default constructor
 	 *
+	 * @param source {@link TLSource} representing a TL or LOTL
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 */
-	protected AbstractAnalysis(final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
+	protected AbstractAnalysis(final TLSource source, final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
+		this.source = source;
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
+	}
+
+	/**
+	 * Returns the current {@code TLSource}
+	 *
+	 * @return {@link TLSource}
+	 */
+	protected final TLSource getSource() {
+		return source;
+	}
+
+	/**
+	 * Gets the {@code CacheAccessByKey}
+	 *
+	 * @return {@link CacheAccessByKey}
+	 */
+	protected final CacheAccessByKey getCacheAccessByKey() {
+		return cacheAccess;
 	}
 
 	/**
@@ -72,8 +94,7 @@ public abstract class AbstractAnalysis  {
 			XmlDownloadResult downloadResult = downloadTask.get();
 			if (!cacheAccess.isUpToDate(downloadResult)) {
 				cacheAccess.update(downloadResult);
-				cacheAccess.expireParsing();
-				cacheAccess.expireValidation();
+				expireCache();
 			}
 			document = downloadResult.getDSSDocument();
 		} catch (Exception e) {
@@ -85,33 +106,39 @@ public abstract class AbstractAnalysis  {
 	}
 
 	/**
-	 * Gets the {@code CacheAccessByKey}
-	 *
-	 * @return {@link CacheAccessByKey}
+	 * This method expires the cache in order to trigger the corresponding tasks on refresh
 	 */
-	protected final CacheAccessByKey getCacheAccessByKey() {
-		return cacheAccess;
+	protected void expireCache() {
+		cacheAccess.expireParsing();
+		cacheAccess.expireValidation();
 	}
 
 	/**
 	 * Parses the document
 	 *
 	 * @param document {@link DSSDocument} to parse
-	 * @param source {@link LOTLSource}
 	 */
-	protected void lotlParsing(DSSDocument document, LOTLSource source) {
+	protected void parsing(DSSDocument document) {
 		// True if EMPTY / EXPIRED by TL/LOTL
 		if (cacheAccess.isParsingRefreshNeeded()) {
 			try {
-				LOG.debug("Parsing LOTL with cache key '{}'...", source.getCacheKey().getKey());
-				LOTLParsingTask parsingTask = new LOTLParsingTask(document, source);
+				LOG.debug("Parsing the TL/LOTL with cache key '{}'...", cacheAccess.getCacheKey().getKey());
+				AbstractParsingTask<?> parsingTask = getParsingTask(document);
 				cacheAccess.update(parsingTask.get());
 			} catch (Exception e) {
-				LOG.error("Cannot parse the LOTL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage(), e);
+				LOG.error("Cannot parse the TL/LOTL with the cache key '{}' : {}", cacheAccess.getCacheKey().getKey(), e.getMessage(), e);
 				cacheAccess.parsingError(e);
 			}
 		}
 	}
+
+	/**
+	 * Returns the corresponding parsing task for the source on the given document
+	 *
+	 * @param document {@link DSSDocument} to parse
+	 * @return {@link AbstractParsingTask} to be executed
+	 */
+	protected abstract AbstractParsingTask<?> getParsingTask(DSSDocument document);
 	
 	/**
 	 * Validates the document
@@ -124,13 +151,24 @@ public abstract class AbstractAnalysis  {
 		if (cacheAccess.isValidationRefreshNeeded()) {
 			try {
 				LOG.debug("Validating the TL/LOTL with cache key '{}'...", cacheAccess.getCacheKey().getKey());
-				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
+				TLValidatorTask validationTask = getValidationTask(document, certificateSource);
 				cacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				LOG.error("Cannot validate the TL/LOTL with the cache key '{}' : {}", cacheAccess.getCacheKey().getKey(), e.getMessage());
 				cacheAccess.validationError(e);
 			}
 		}
+	}
+
+	/**
+	 * Returns the corresponding validation task for the source on the given document using the provided certificate source
+	 *
+	 * @param document {@link DSSDocument} to parse
+	 * @param  certificateSource {@link CertificateSource} to use for validation
+	 * @return {@link TLValidatorTask} to be executed
+	 */
+	protected TLValidatorTask getValidationTask(DSSDocument document, CertificateSource certificateSource) {
+		return new TLValidatorTask(document, certificateSource);
 	}
 
 }

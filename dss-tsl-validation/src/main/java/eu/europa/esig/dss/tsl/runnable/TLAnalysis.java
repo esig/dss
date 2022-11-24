@@ -23,10 +23,9 @@ package eu.europa.esig.dss.tsl.runnable;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingTask;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -35,14 +34,6 @@ import java.util.concurrent.CountDownLatch;
  *
  */
 public class TLAnalysis extends AbstractRunnableAnalysis {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TLAnalysis.class);
-
-	/** The TL source */
-	private final TLSource source;
-
-	/** The cache access by the key */
-	private final CacheAccessByKey cacheAccess;
 
 	/**
 	 * Default constructor
@@ -54,34 +45,12 @@ public class TLAnalysis extends AbstractRunnableAnalysis {
 	 */
 	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
 					  CountDownLatch latch) {
-		super(cacheAccess, dssFileLoader, latch);
-		this.source = source;
-		this.cacheAccess = cacheAccess;
+		super(source, cacheAccess, dssFileLoader, latch);
 	}
 
 	@Override
-	protected void doAnalyze() {
-		DSSDocument document = download(source.getUrl());
-
-		if (document != null) {
-			trustedListParsing(document);
-
-			validation(document, source.getCertificateSource());
-		}
-	}
-
-	private void trustedListParsing(DSSDocument document) {
-		// True if EMPTY/EXPIRED by TL/LOTL
-		if (cacheAccess.isParsingRefreshNeeded()) {
-			try {
-				LOG.debug("Parsing TL with cache key '{}'...", source.getCacheKey().getKey());
-				TLParsingTask parsingTask = new TLParsingTask(document, source);
-				cacheAccess.update(parsingTask.get());
-			} catch (Exception e) {
-				LOG.error("Cannot parse the TL with the cache key '{}' : {}", source.getCacheKey().getKey(), e.getMessage());
-				cacheAccess.parsingError(e);
-			}
-		}
+	protected AbstractParsingTask<?> getParsingTask(DSSDocument document) {
+		return new TLParsingTask(document, getSource());
 	}
 
 }
