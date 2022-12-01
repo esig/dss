@@ -21,10 +21,9 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -68,14 +67,13 @@ public class DSS1538Test extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+		PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
 		assertNotNull(pdfRevision);
-		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
-		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-		assertNotNull(pdfSignatureDictionary);
-		assertNotNull(pdfSignatureDictionary.getSubFilter());
-		assertNotNull(pdfSignatureDictionary.getSignatureByteRange());
-		assertEquals(4, pdfSignatureDictionary.getSignatureByteRange().getValue().size());
+		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
+		assertNotNull(pdfRevision.getSubFilter());
+		assertNotNull(pdfRevision.getSignatureByteRange());
+		assertEquals(4, pdfRevision.getSignatureByteRange().size());
+		assertTrue(pdfRevision.isSignatureByteRangeValid());
 	}
 
 	@Override

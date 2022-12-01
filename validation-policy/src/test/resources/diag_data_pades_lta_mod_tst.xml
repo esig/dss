@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>document-signed-pades-baseline-lta.pdf</DocumentName>
+    <ValidationDate>2022-11-28T14:07:24Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-45A9E1C7E6971E59114AF846581E11361D7BDA67779BCDDEE952CB07E75FDA2F">
+            <SignatureFilename>document-signed-pades-baseline-lta.pdf</SignatureFilename>
+            <ClaimedSigningTime>2022-11-28T14:06:59Z</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cEYOJ8/sIyGSwO7M0YSDNkRp4Z3F4phFCgXBovFkI20=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C"/>
+                <ChainItem Certificate="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81"/>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=good-ca</IssuerName>
+                    <SerialNumber>10</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="Signature1"/>
+                <PDFSignatureDictionary consistent="true">
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <SignatureByteRange valid="true">0 137337 156283 568</SignatureByteRange>
+                </PDFSignatureDictionary>
+                <ModificationDetection>
+                    <ObjectModifications>
+                        <ExtensionChange action="CREATION" fieldName="Signature2" type="DocTimeStamp">/Catalog /AcroForm /Fields 54 0 R</ExtensionChange>
+                        <ExtensionChange action="CREATION">/Catalog /DSS 45 0 R</ExtensionChange>
+                    </ObjectModifications>
+                </ModificationDetection>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81">
+                    <Origin>SIGNED_DATA</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C">
+                    <Origin>SIGNED_DATA</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>eBGYvVJA+sgPcAEeNJI2o3Q8P3rObqEydVHH36JJXkw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78">
+                    <Origin>DSS_DICTIONARY</Origin>
+                    <Origin>VRI_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800">
+                    <Type>CRL</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-61F1015AA4EF6CA3E96D97BC82DB1801B2C3CC11EE640845FB33277170728EFE">
+                    <Type>OCSP</Type>
+                    <Origin>VRI_DICTIONARY</Origin>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-1CFB8AA0E51641183D18145FCD8D6321E42ED40BEBF1A8B88FAAB82138602E23"/>
+                <FoundTimestamp Timestamp="T-DFE282877B8D1282EF8CB377B4C357A7E9560C9D8A87C632728B42BDD5F0AA59"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-8C3E330A8549990363683A644A9D77809894AC02CFBA5825B9AD8D19B0BA11D0">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 137337, 156283, 568]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SydzlqcSjhku1z+w2SpOeiDBcCpA4ujXri3+A7JdMAU=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>G2JKTbsg4ukIN+yPOBzsN8Cc4ZfR6Poh6y4r+HoJ3M4=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>Jzgn8UKdCI3lF1TE0LRe2YrBgbg3R897BbCNVAo5WTK3bnrjyJiTSl+P85S5HB2QbUTSiACq4aKEjDm9/T6p+5i9m4mYOOTWDibl1zd2u2OOcMuKeoz1ZfiANkC8O63Y25gNcP2Cu3JR6Vh221McyZYNEhUSKXLhEY6qU/z5uZ0h0SkntNyvfUZi3fMB8N75iHKbf4wT/K48R9iVBs7A/CshUzBkgRqFvLayOMkXp+cfTXs11Rkmc/ki9sS358/3i+wjFC6sA4dvf5E2b8+7H+sbF3Oo9k5ojNPGDE7SNKz8Bh5x3syUDWpSyw6Nfwk+vMRvmrGfjVSu6LjKVucJmQ==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-tsa</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-tsa</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>500</SerialNumber>
+            <CommonName>good-tsa</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2023-06-13T09:03:20Z</NotAfter>
+            <NotBefore>2021-08-13T09:03:20Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4DC846EB13CF9A60BF84DB6941A87C793159BDF72888C3797CDD515665BCF0D6</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Mdl5V1S1vL4AKIxy3Er2PrlHfwxOkdAiNuMRplC0Qvw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>2</SerialNumber>
+            <CommonName>ocsp-responder</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2023-07-13T09:03:15Z</NotAfter>
+            <NotBefore>2021-07-13T09:03:15Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C422B55A3A20F4B7A5B6349E772912DD55F1D4DCEA4C0B2367669682F55A61FA</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ORyV+fwaaFjg+ZCH4k2G1ny1BbK7GZxrjIhZPinYzL8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TRUSTED_STORE</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2023-07-13T09:03:15Z</NotAfter>
+            <NotBefore>2021-07-13T09:03:15Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A43E0A5BB2C496A43187DD3F33009706F24E9191C6D0192D55CD3F9BC602B8ED</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YEqPsid3fEC4xytU1DWoHz99YdHGYStUMxive1mjnHg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-user</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-user</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</IssuerDistinguishedName>
+            <SerialNumber>10</SerialNumber>
+            <CommonName>good-user</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2023-06-13T09:03:16Z</NotAfter>
+            <NotBefore>2021-08-13T09:03:16Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-409B09DAEFA48CE0C514FB627E5203951C37CA36FEFC1D78FDA7E506C05C1FD4</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81"/>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-61F1015AA4EF6CA3E96D97BC82DB1801B2C3CC11EE640845FB33277170728EFE">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>eBGYvVJA+sgPcAEeNJI2o3Q8P3rObqEydVHH36JJXkw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>4</SerialNumber>
+            <CommonName>good-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2023-06-13T09:03:15Z</NotAfter>
+            <NotBefore>2021-08-13T09:03:15Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7F12762FE9FCC75DD4F4499BB97E1E8013B0198409BFA91C086F2A18C8809B36</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5+xWV6b1qcS2e8U67WVHs1Gzbs6VR2YE44A7IY7ta4E=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2022-11-28T14:07:17Z</ProductionDate>
+            <ThisUpdate>2022-11-28T14:07:17Z</ThisUpdate>
+            <NextUpdate>2023-05-28T14:07:17Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GbpHosVyWsdcIMg88Y5k1qxBwkIvwTbqjZjq1dq/iAA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-61F1015AA4EF6CA3E96D97BC82DB1801B2C3CC11EE640845FB33277170728EFE">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2022-11-28T14:07:16Z</ProductionDate>
+            <ThisUpdate>2022-11-28T14:07:16Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF"/>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>9cBd9mhc+flYqqsO37Eu+peQtxU=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YfEBWqTvbKPpbZe8gtsYAbLDzBHuZAhF+zMncXByjv4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-1CFB8AA0E51641183D18145FCD8D6321E42ED40BEBF1A8B88FAAB82138602E23">
+            <ProductionTime>2022-11-28T14:07:05Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>TJHg3os9XVfFrNQjPTdZDNBhvMZAHa3mfYWjC2/Xb9Y=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC"/>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=root-ca</IssuerName>
+                    <SerialNumber>500</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>Mdl5V1S1vL4AKIxy3Er2PrlHfwxOkdAiNuMRplC0Qvw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-8C3E330A8549990363683A644A9D77809894AC02CFBA5825B9AD8D19B0BA11D0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-45A9E1C7E6971E59114AF846581E11361D7BDA67779BCDDEE952CB07E75FDA2F" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HPuKoOUWQRg9GBRfzY1jIeQu1Avr8ai4j6q4IThgLiM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-DFE282877B8D1282EF8CB377B4C357A7E9560C9D8A87C632728B42BDD5F0AA59">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2022-11-28T14:07:17Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QWKqQLolhKzxsG8JGZoob7tvJxfl8USyDX+fRj+DkwI=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC"/>
+                <ChainItem Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=root-ca</IssuerName>
+                    <SerialNumber>500</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="Signature2"/>
+                <PDFSignatureDictionary consistent="true">
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange valid="true">0 165983 184929 568</SignatureByteRange>
+                </PDFSignatureDictionary>
+                <ModificationDetection>
+                    <ObjectModifications>
+                        <Undefined action="MODIFICATION">/Catalog /Pages 1 0 R /Kids 3 0 R /Resources 2 0 R /XObject /I1 8 0 R /Filter</Undefined>
+                        <Undefined action="DELETION">/Catalog /Pages 1 0 R /Kids 3 0 R /Resources 2 0 R /XObject /I1 8 0 R /DecodeParms</Undefined>
+                        <Undefined action="MODIFICATION" type="XObject">/Catalog /Pages 1 0 R /Kids 3 0 R /Resources 2 0 R /XObject /I1 8 0 R stream</Undefined>
+                    </ObjectModifications>
+                </ModificationDetection>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>Mdl5V1S1vL4AKIxy3Er2PrlHfwxOkdAiNuMRplC0Qvw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-8C3E330A8549990363683A644A9D77809894AC02CFBA5825B9AD8D19B0BA11D0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-45A9E1C7E6971E59114AF846581E11361D7BDA67779BCDDEE952CB07E75FDA2F" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-781198BD5240FAC80F70011E349236A3743C3F7ACE6EA1327551C7DFA2495E4C" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-E7EC5657A6F5A9C4B67BC53AED6547B351B36ECE95476604E3803B218EED6B81" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-1CFB8AA0E51641183D18145FCD8D6321E42ED40BEBF1A8B88FAAB82138602E23" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-604A8FB227777C40B8C72B54D435A81F3F7D61D1C6612B543318AF7B59A39C78" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-31D9795754B5BCBE00288C72DC4AF63EB9477F0C4E91D02236E311A650B442FC" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-391C95F9FC1A6858E0F99087E24D86D67CB505B2BB199C6B8C88593E29D8CCBF" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800" Category="REVOCATION"/>
+                <TimestampedObject Token="R-61F1015AA4EF6CA3E96D97BC82DB1801B2C3CC11EE640845FB33277170728EFE" Category="REVOCATION"/>
+                <TimestampedObject Token="D-37D3C003A625E99C7E4CFAD916D5FCD9BB693585A0EAB0FBA8CF4B17B33AE428" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-37D3C003A625E99C7E4CFAD916D5FCD9BB693585A0EAB0FBA8CF4B17B33AE428">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>The document ByteRange : [0, 165983, 184929, 568]</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3+KCh3uNEoLvjLN3tMNXp+lWDJ2Kh8YycotCvdXwqlk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-8C3E330A8549990363683A644A9D77809894AC02CFBA5825B9AD8D19B0BA11D0">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vyNZXfjBmNr6J5bT6PCxv0oTxNgu7rHGOm8ZNMnpahE=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-37D3C003A625E99C7E4CFAD916D5FCD9BB693585A0EAB0FBA8CF4B17B33AE428">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wjx9A/BwAuS82RPdcx5xafMei0i1ByTcRVdm5p0exNg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

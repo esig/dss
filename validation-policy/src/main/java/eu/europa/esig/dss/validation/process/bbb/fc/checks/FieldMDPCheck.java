@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -39,11 +39,11 @@ public class FieldMDPCheck extends AbstractPdfLockDictionaryCheck {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param signature {@link SignatureWrapper}
+     * @param pdfRevision {@link PDFRevisionWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public FieldMDPCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
-        super(i18nProvider, result, signature, signature.getFieldMDP(), constraint);
+    public FieldMDPCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelConstraint constraint) {
+        super(i18nProvider, result, pdfRevision, pdfRevision.getFieldMDP(), constraint);
     }
 
     @Override

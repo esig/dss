@@ -24,8 +24,8 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -131,7 +131,7 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+			PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
 			assertNotNull(pdfRevision);
 			
 			assertTrue(signatureWrapper.arePdfModificationsDetected());

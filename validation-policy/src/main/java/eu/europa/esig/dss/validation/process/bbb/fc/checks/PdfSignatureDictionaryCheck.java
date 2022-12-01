@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -15,25 +16,25 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class PdfSignatureDictionaryCheck extends ChainItem<XmlFC> {
 
-    /** The signature */
-    private final SignatureWrapper signature;
+    /** The PDF revision */
+    private final PDFRevisionWrapper pdfRevision;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param signature {@link SignatureWrapper}
+     * @param pdfRevision {@link SignatureWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public PdfSignatureDictionaryCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
+    public PdfSignatureDictionaryCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
-        this.signature = signature;
+        this.pdfRevision = pdfRevision;
     }
 
     @Override
     protected boolean process() {
-        return signature.isPdfSignatureDictionaryConsistent();
+        return pdfRevision.isPdfSignatureDictionaryConsistent();
     }
 
     @Override

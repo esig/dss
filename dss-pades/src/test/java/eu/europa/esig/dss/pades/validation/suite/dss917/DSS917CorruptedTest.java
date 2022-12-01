@@ -21,9 +21,8 @@
 package eu.europa.esig.dss.pades.validation.suite.dss917;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -64,19 +63,15 @@ public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 		int validByteRangeSigCounter = 0;
 		int invalidByteRangeSigCounter = 0;
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-			XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+			PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
 			assertNotNull(pdfRevision);
-			assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
+			assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
 
-			XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-			checkPdfSignatureDictionary(pdfSignatureDictionary);
-
-			XmlByteRange signatureByteRange = pdfSignatureDictionary.getSignatureByteRange();
-			if (signatureByteRange.isValid()) {
-				assertTrue(pdfSignatureDictionary.isConsistent());
+			if (pdfRevision.isSignatureByteRangeValid()) {
+				assertTrue(pdfRevision.isPdfSignatureDictionaryConsistent());
 				++validByteRangeSigCounter;
 			} else {
-				assertFalse(pdfSignatureDictionary.isConsistent());
+				assertFalse(pdfRevision.isPdfSignatureDictionaryConsistent());
 				++invalidByteRangeSigCounter;
 			}
 
@@ -88,7 +83,7 @@ public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 	}
 
 	@Override
-	protected void checkByteRange(XmlByteRange byteRange) {
+	protected void checkByteRange(PDFRevisionWrapper pdfRevision) {
 		// skip
 	}
 

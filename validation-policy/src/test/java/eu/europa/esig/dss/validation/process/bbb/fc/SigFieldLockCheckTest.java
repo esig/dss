@@ -23,14 +23,13 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -46,11 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SigFieldLockCheckTest extends AbstractTestCheck {
 
     @Test
-    public void allFieldsLockedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void allFieldsLockedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -72,7 +68,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -81,11 +77,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allFieldsLockedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void allFieldsLockedFail() {;
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -108,7 +101,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -117,11 +110,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void exclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -146,7 +136,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -155,11 +145,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void exclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -188,7 +175,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -197,11 +184,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void inclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -226,7 +210,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -235,11 +219,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void inclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -268,7 +249,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -277,11 +258,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noChangesAllowedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noChangesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -304,7 +282,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -313,11 +291,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noChangesAllowedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noChangesAllowedFail(){
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -340,7 +315,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -349,11 +324,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesAllowedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void minimalChangesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -377,7 +349,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -386,11 +358,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesAllowedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void minimalChangesAllowedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -415,7 +384,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -424,11 +393,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesAllowedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void changesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -453,7 +419,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -462,11 +428,8 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesAllowedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void changesAllowedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
         pdfRevision.getFields().add(signatureField);
@@ -492,7 +455,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

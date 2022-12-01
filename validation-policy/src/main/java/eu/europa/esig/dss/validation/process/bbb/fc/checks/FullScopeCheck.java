@@ -29,42 +29,42 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Checks if the signature covers FULL scope documents
  */
 public class FullScopeCheck extends ChainItem<XmlFC> {
 
-	/** The signature to check */
-	private final SignatureWrapper signature;
+	/** The signature scopes to check */
+	private final Collection<XmlSignatureScope> signatureScopes;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlFC}
-	 * @param signature {@link SignatureWrapper}
+	 * @param signatureScopes a collection of {@link SignatureWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public FullScopeCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
+	public FullScopeCheck(I18nProvider i18nProvider, XmlFC result, Collection<XmlSignatureScope> signatureScopes, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
-		this.signature = signature;
+		this.signatureScopes = signatureScopes;
 	}
 
 	@Override
 	protected boolean process() {
-		boolean result = true;
-		
-		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-		for (XmlSignatureScope sigScope : signatureScopes) {
-			result &= (SignatureScopeType.FULL == sigScope.getScope());
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (XmlSignatureScope sigScope : signatureScopes) {
+				if (SignatureScopeType.FULL != sigScope.getScope()) {
+					return false;
+				}
+			}
 		}
-
-		return result;
+		return true;
 	}
 
 	@Override

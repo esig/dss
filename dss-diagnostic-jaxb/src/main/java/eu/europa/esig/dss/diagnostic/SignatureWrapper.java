@@ -21,17 +21,11 @@
 package eu.europa.esig.dss.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSPDocSpecification;
@@ -48,13 +42,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -65,7 +57,7 @@ import java.util.Objects;
  * Contains user-friendly methods to extract information from an {@code XmlSignature}
  *
  */
-public class SignatureWrapper extends AbstractTokenProxy {
+public class SignatureWrapper extends AbstractSignatureWrapper {
 
 	/** Wrapped {@code XmlSignature} */
 	private final XmlSignature signature;
@@ -1062,142 +1054,13 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 * Returns a PAdES-specific PDF Revision info
 	 * NOTE: applicable only for PAdES
 	 * 
-	 * @return {@link XmlPDFRevision}
+	 * @return {@link PDFRevisionWrapper}
 	 */
-	public XmlPDFRevision getPDFRevision() {
-		return signature.getPDFRevision();
-	}
-	
-	/**
-	 * Checks if any visual modifications detected in the PDF
-	 * 
-	 * @return TRUE if modifications detected in a PDF, FALSE otherwise
-	 */
-	public boolean arePdfModificationsDetected() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		return arePdfModificationsDetected(pdfRevision);
-	}
-	
-	/**
-	 * Returns a list of PDF annotation overlap concerned pages
-	 * 
-	 * @return a list of page numbers
-	 */
-	public List<BigInteger> getPdfAnnotationsOverlapConcernedPages() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		return getPdfAnnotationsOverlapConcernedPages(pdfRevision);
-	}
-
-	/**
-	 * Returns a list of PDF visual difference concerned pages
-	 * 
-	 * @return a list of page numbers
-	 */
-	public List<BigInteger> getPdfVisualDifferenceConcernedPages() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		return getPdfVisualDifferenceConcernedPages(pdfRevision);
-	}
-
-	/**
-	 * Returns a list of pages missing/added to the final revision in a comparison with a signed one
-	 * 
-	 * @return a list of page numbers
-	 */
-	public List<BigInteger> getPdfPageDifferenceConcernedPages() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		return getPdfPageDifferenceConcernedPages(pdfRevision);
-	}
-
-	/**
-	 * This method checks whether object modifications are present after the current PDF revisions
-	 *
-	 * @return TRUE if PDF has been modified, FALSE otherwise
-	 */
-	public boolean arePdfObjectModificationsDetected() {
-		return getPdfObjectModifications(signature.getPDFRevision()) != null;
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
-	 * with a signature/document extension
-	 *
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	public List<XmlObjectModification> getPdfExtensionChanges() {
-		return getPdfExtensionChanges(signature.getPDFRevision());
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
-	 * with a signature creation, form filling
-	 *
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	public List<XmlObjectModification> getPdfSignatureOrFormFillChanges() {
-		return getPdfSignatureOrFormFillChanges(signature.getPDFRevision());
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF after the current signature's revision associated
-	 * with annotation(s) modification
-	 *
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	public List<XmlObjectModification> getPdfAnnotationChanges() {
-		return getPdfAnnotationChanges(signature.getPDFRevision());
-	}
-
-	/**
-	 * Returns a list of undefined changes occurred in a PDF after the current signature's revision
-	 *
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	public List<XmlObjectModification> getPdfUndefinedChanges() {
-		return getPdfUndefinedChanges(signature.getPDFRevision());
-	}
-
-	/**
-	 * This method returns a list of field names modified after the current signature's revision
-	 *
-	 * @return a list of {@link String}s
-	 */
-	public List<String> getModifiedFieldNames() {
-		return getModifiedFieldNames(signature.getPDFRevision());
-	}
-	
-	/**
-	 * Returns the first signature field name
-	 * 
-	 * @return {@link String} field name
-	 */
-	public String getFirstFieldName() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && !fields.isEmpty()) {
-				return fields.iterator().next().getName();
-			}
+	public PDFRevisionWrapper getPDFRevision() {
+		if (signature.getPDFRevision() != null) {
+			return new PDFRevisionWrapper(signature.getPDFRevision());
 		}
 		return null;
-	}
-	
-	/**
-	 * Returns a list of signature field names, where the signature is referenced from
-	 * 
-	 * @return a list of {@link String} signature field names
-	 */
-	public List<String> getSignatureFieldNames() {
-		List<String> names = new ArrayList<>();
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			if (fields != null && !fields.isEmpty()) {
-				for (XmlPDFSignatureField signatureField : fields) {
-					names.add(signatureField.getName());
-				}
-			}
-		}
-		return names;
 	}
 	
 	/**
@@ -1207,192 +1070,6 @@ public class SignatureWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlSignerInfo> getSignatureInformationStore() {
 		return signature.getSignerInformationStore();
-	}
-
-	/**
-	 * Returns the signer's name
-	 *
-	 * @return {@link String}
-	 */
-	public String getSignerName() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getSignerName();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /Type value
-	 *
-	 * @return {@link String}
-	 */
-	public String getSignatureDictionaryType() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getType();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /Filter value
-	 *
-	 * @return {@link String}
-	 */
-	public String getFilter() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getFilter();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /SubFilter value
-	 *
-	 * @return {@link String}
-	 */
-	public String getSubFilter() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getSubFilter();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /ContactInfo value
-	 *
-	 * @return {@link String}
-	 */
-	public String getContactInfo() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getContactInfo();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /Location value
-	 *
-	 * @return {@link String}
-	 */
-	public String getLocation() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getLocation();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /Reason value
-	 *
-	 * @return {@link String}
-	 */
-	public String getReason() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getReason();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the PDF signature dictionary /ByteRange value
-	 *
-	 * @return byte range
-	 */
-	public List<BigInteger> getSignatureByteRange() {
-		XmlByteRange byteRange = getXmlByteRange();
-		if (byteRange != null) {
-			return byteRange.getValue();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * This method returns whether the PDF signature dictionary /ByteRange is found and valid
-	 *
-	 * @return TRUE if the /ByteRange is valid, FALSE otherwise
-	 */
-	public boolean isSignatureByteRangeValid() {
-		XmlByteRange byteRange = getXmlByteRange();
-		if (byteRange != null) {
-			return byteRange.isValid();
-		}
-		return false;
-	}
-
-	private XmlByteRange getXmlByteRange() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null && pdfRevision.getPDFSignatureDictionary() != null) {
-			return pdfRevision.getPDFSignatureDictionary().getSignatureByteRange();
-		}
-		return null;
-	}
-
-	/**
-	 * This method returns whether the PDF signature dictionary is consistent across PDF revisions.
-	 *
-	 * @return TRUE if the signature dictionary is consistent, FALSE otherwise
-	 */
-	public boolean isPdfSignatureDictionaryConsistent() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null && pdfRevision.getPDFSignatureDictionary() != null) {
-			return pdfRevision.getPDFSignatureDictionary().isConsistent();
-		}
-		return false;
-	}
-
-	/**
-	 * Returns a {@code CertificationPermission} value of a /DocMDP dictionary, when present
-	 *
-	 * @return {@link CertificationPermission}
-	 */
-	public CertificationPermission getDocMDPPermissions() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			XmlDocMDP docMDP = pdfRevision.getPDFSignatureDictionary().getDocMDP();
-			if (docMDP != null) {
-				return docMDP.getPermissions();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns a /FieldMDP dictionary content, when present
-	 *
-	 * @return {@link XmlPDFLockDictionary}
-	 */
-	public XmlPDFLockDictionary getFieldMDP() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			return pdfRevision.getPDFSignatureDictionary().getFieldMDP();
-		}
-		return null;
-	}
-
-	/**
-	 * Returns a /SigFieldLock dictionary, when present
-	 *
-	 * @return {@link XmlPDFLockDictionary}
-	 */
-	public XmlPDFLockDictionary getSigFieldLock() {
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		if (pdfRevision != null) {
-			List<XmlPDFSignatureField> fields = pdfRevision.getFields();
-			for (XmlPDFSignatureField field : fields) {
-				XmlPDFLockDictionary sigFieldLock = field.getSigFieldLock();
-				if (sigFieldLock != null) {
-					return sigFieldLock;
-				}
-			}
-		}
-		return null;
 	}
 
 	/**

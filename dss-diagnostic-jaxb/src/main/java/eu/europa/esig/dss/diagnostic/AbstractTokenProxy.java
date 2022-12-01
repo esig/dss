@@ -23,11 +23,6 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -36,7 +31,6 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -270,184 +264,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	 * @return a byte array
 	 */
 	public abstract byte[] getBinaries();
-	
-	/**
-	 * Checks if PDF modification detection process has found any modifications
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return TRUE if the modification has been detected, FALSE otherwise
-	 */
-	protected boolean arePdfModificationsDetected(XmlPDFRevision pdfRevision) {
-		if (pdfRevision != null) {
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			if (modificationDetection != null) {
-				return !modificationDetection.getAnnotationOverlap().isEmpty() ||
-						!modificationDetection.getVisualDifference().isEmpty() ||
-						!modificationDetection.getPageDifference().isEmpty();
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Returns a list of page numbers concerned by an annotation overlap
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision} to check
-	 * @return a list of page numbers
-	 */
-	protected List<BigInteger> getPdfAnnotationsOverlapConcernedPages(XmlPDFRevision pdfRevision) {
-		if (pdfRevision != null) {
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			if (modificationDetection != null) {
-				List<XmlModification> annotationOverlap = modificationDetection.getAnnotationOverlap();
-				return getConcernedPages(annotationOverlap);
-			}
-		}
-		return Collections.emptyList();
-	}
-	
-	/**
-	 * Returns a list of page numbers concerned by positive visual difference check result
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision} to check
-	 * @return a list of page numbers
-	 */
-	protected List<BigInteger> getPdfVisualDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
-		if (pdfRevision != null) {
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			if (modificationDetection != null) {
-				List<XmlModification> visualDifference = modificationDetection.getVisualDifference();
-				return getConcernedPages(visualDifference);
-			}
-		}
-		return Collections.emptyList();
-	}
-	
-	/**
-	 * Returns a list of page numbers removed/added within the revision
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision} to check
-	 * @return a list of page numbers
-	 */
-	protected List<BigInteger> getPdfPageDifferenceConcernedPages(XmlPDFRevision pdfRevision) {
-		if (pdfRevision != null) {
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			if (modificationDetection != null) {
-				List<XmlModification> pageDifference = modificationDetection.getPageDifference();
-				return getConcernedPages(pageDifference);
-			}
-		}
-		return Collections.emptyList();
-	}
-	
-	private List<BigInteger> getConcernedPages(List<XmlModification> xmlModifications) {
-		List<BigInteger> pages = new ArrayList<>();
-		for (XmlModification modification : xmlModifications) {
-			pages.add(modification.getPage());
-		}
-		return pages;
-	}
-
-	/**
-	 * Returns {@code XmlObjectModifications} for the given revision, when present
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return {@link XmlObjectModifications}
-	 */
-	protected XmlObjectModifications getPdfObjectModifications(XmlPDFRevision pdfRevision) {
-		if (pdfRevision != null) {
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			if (modificationDetection != null) {
-				return modificationDetection.getObjectModifications();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF associated with a signature/document extension
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	protected List<XmlObjectModification> getPdfExtensionChanges(XmlPDFRevision pdfRevision) {
-		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
-		if (pdfObjectModifications != null) {
-			return pdfObjectModifications.getExtensionChanges();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF associated with a signature creation, form filling
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	protected List<XmlObjectModification> getPdfSignatureOrFormFillChanges(XmlPDFRevision pdfRevision) {
-		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
-		if (pdfObjectModifications != null) {
-			return pdfObjectModifications.getSignatureOrFormFill();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Returns a list of changes occurred in a PDF associated with annotation(s) modification
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	protected List<XmlObjectModification> getPdfAnnotationChanges(XmlPDFRevision pdfRevision) {
-		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
-		if (pdfObjectModifications != null) {
-			return pdfObjectModifications.getAnnotationChanges();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Returns a list of undefined changes occurred in a PDF
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return a list of {@link XmlObjectModification}s
-	 */
-	protected List<XmlObjectModification> getPdfUndefinedChanges(XmlPDFRevision pdfRevision) {
-		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
-		if (pdfObjectModifications != null) {
-			return pdfObjectModifications.getUndefined();
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * This method returns a list of field names modified after the given revision
-	 *
-	 * @param pdfRevision {@link XmlPDFRevision}
-	 * @return a list of {@link String}s
-	 */
-	protected List<String> getModifiedFieldNames(XmlPDFRevision pdfRevision) {
-		List<String> names = new ArrayList<>();
-		XmlObjectModifications pdfObjectModifications = getPdfObjectModifications(pdfRevision);
-		if (pdfObjectModifications != null) {
-			names.addAll(getModifiedFieldNames(pdfObjectModifications.getExtensionChanges()));
-			names.addAll(getModifiedFieldNames(pdfObjectModifications.getSignatureOrFormFill()));
-			names.addAll(getModifiedFieldNames(pdfObjectModifications.getAnnotationChanges()));
-			names.addAll(getModifiedFieldNames(pdfObjectModifications.getUndefined()));
-		}
-		return names;
-	}
-
-	private List<String> getModifiedFieldNames(List<XmlObjectModification> objectModifications) {
-		List<String> names = new ArrayList<>();
-		for (XmlObjectModification objectModification : objectModifications) {
-			String fieldName = objectModification.getFieldName();
-			if (fieldName != null) {
-				names.add(fieldName);
-			}
-		}
-		return names;
-	}
 	
 	@Override
 	public String toString() {

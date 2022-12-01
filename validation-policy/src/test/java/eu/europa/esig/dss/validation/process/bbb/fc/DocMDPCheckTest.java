@@ -23,14 +23,13 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -45,11 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DocMDPCheckTest extends AbstractTestCheck {
 
     @Test
-    public void noChangesPermittedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noChangesPermittedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -71,7 +67,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -80,11 +76,8 @@ public class DocMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noChangesPermittedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noChangesPermittedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -107,7 +100,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -116,11 +109,8 @@ public class DocMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesPermittedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void minimalChangesPermittedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -143,7 +133,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -152,11 +142,8 @@ public class DocMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesPermittedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void minimalChangesPermittedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -180,7 +167,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -189,11 +176,8 @@ public class DocMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesPermittedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void changesPermittedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -217,7 +201,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -226,11 +210,8 @@ public class DocMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesPermittedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void changesPermittedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -255,7 +236,7 @@ public class DocMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        DocMDPCheck dmdpc = new DocMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         dmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PDFAProfileCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validFormat() throws Exception {
+    public void validFormat() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("PDF/A-2U");
@@ -31,7 +31,7 @@ public class PDFAProfileCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void unknownFormat() throws Exception {
+    public void unknownFormat() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("PDF/A-2U");

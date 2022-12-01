@@ -3,11 +3,10 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -21,11 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ByteRangeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void valid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -38,7 +34,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -47,11 +43,8 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void invalid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -64,7 +57,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -73,11 +66,8 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validityNotDefinedTest() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void validityNotDefinedTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -89,7 +79,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -98,12 +88,8 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noByteRangeTest() throws Exception {
-
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noByteRangeTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -112,7 +98,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

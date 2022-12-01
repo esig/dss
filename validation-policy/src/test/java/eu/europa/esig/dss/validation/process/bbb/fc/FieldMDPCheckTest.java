@@ -23,14 +23,13 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -45,11 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class FieldMDPCheckTest extends AbstractTestCheck {
 
     @Test
-    public void allFieldsLockedValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void allFieldsLockedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -71,7 +67,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -80,11 +76,8 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allFieldsLockedFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void allFieldsLockedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -107,7 +100,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -116,11 +109,8 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void exclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -145,7 +135,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -154,11 +144,8 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void exclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -187,7 +174,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -196,11 +183,8 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockValid() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void inclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -225,7 +209,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -234,11 +218,8 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockFail() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void inclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
         pdfRevision.setPDFSignatureDictionary(pdfSignatureDictionary);
@@ -267,7 +248,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

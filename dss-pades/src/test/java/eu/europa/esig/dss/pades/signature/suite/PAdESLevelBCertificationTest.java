@@ -21,10 +21,8 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -106,15 +104,10 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 		assertEquals(1, signatures.size());
 
 		SignatureWrapper signatureWrapper = signatures.get(0);
-		XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+		PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
 		assertNotNull(pdfRevision);
 
-		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-		assertNotNull(pdfSignatureDictionary);
-
-		XmlDocMDP docMDP = pdfSignatureDictionary.getDocMDP();
-		assertNotNull(docMDP);
-		assertEquals(CertificationPermission.MINIMAL_CHANGES_PERMITTED, docMDP.getPermissions());
+		assertEquals(CertificationPermission.MINIMAL_CHANGES_PERMITTED, pdfRevision.getDocMDPPermissions());
 	}
 
 	@Override

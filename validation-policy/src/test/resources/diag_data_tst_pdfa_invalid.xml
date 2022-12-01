@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>sample-timestamped (1).pdf</DocumentName>
+    <ValidationDate>2022-11-28T14:49:19Z</ValidationDate>
+    <PDFAInfo compliant="false">
+        <ProfileId>PDF/A-1B</ProfileId>
+        <ValidationMessages>
+            <Error>A Group object with an S key with a value of Transparency shall not be included in a form XObject.     A Group object with an S key with a value of Transparency shall not be included in a page dictionary</Error>
+            <Error>If a document information dictionary does appear at a document, then all of its entries that have analogous properties in predefined XMP schemas, shall also be embedded in the file in XMP form with equivalent values.</Error>
+            <Error>The document catalog dictionary of a conforming file shall contain the Metadata key.</Error>
+            <Error>DeviceRGB may be used only if the file has a PDF/A-1 OutputIntent that uses an RGB colour space</Error>
+        </ValidationMessages>
+    </PDFAInfo>
+    <Signatures/>
+    <UsedCertificates>
+        <Certificate Id="CERTIFICATE_self-signed-tsa_20201216-0703">
+            <SubjectDistinguishedName Format="CANONICAL">cn=self-signed-tsa,ou=test pki,o=dss test pki,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=self-signed-tsa,OU=TEST PKI,O=DSS TEST PKI,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=self-signed-tsa,ou=test pki,o=dss test pki,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=self-signed-tsa,OU=TEST PKI,O=DSS TEST PKI,C=BE</IssuerDistinguishedName>
+            <SerialNumber>143954336546707891453596703528087303323516137098</SerialNumber>
+            <CommonName>self-signed-tsa</CommonName>
+            <CountryName>BE</CountryName>
+            <OrganizationName>DSS TEST PKI</OrganizationName>
+            <OrganizationalUnit>TEST PKI</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2030-12-14T07:03:36Z</NotAfter>
+            <NotBefore>2020-12-16T07:03:36Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F128CFF57ED721299FDE055D92101FF8E171D105880126609ADAD247D44B8067</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>No0vr1GvaxUE3nlndGuE0vOUQVb7+e6rypvbJYFogF4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <UsedTimestamps>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="TIMESTAMP_self-signed-tsa_20221128-1449">
+            <TimestampFilename>sample-timestamped (1).pdf</TimestampFilename>
+            <ProductionTime>2022-11-28T14:49:05Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0uPJ3yOV0yzx4Nuv9Om/OZIyMH950BMtyeSnXuT36g0=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_self-signed-tsa_20201216-0703"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_self-signed-tsa_20201216-0703"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=self-signed-tsa, OU=TEST PKI, O=DSS TEST PKI, C=BE</IssuerName>
+                    <SerialNumber>143954336546707891453596703528087303323516137098</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="Signature1"/>
+                <PDFSignatureDictionary consistent="true">
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange valid="true">0 137310 156256 568</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="CERTIFICATE_self-signed-tsa_20201216-0703">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>No0vr1GvaxUE3nlndGuE0vOUQVb7+e6rypvbJYFogF4=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="DOCUMENT_Full-PDF" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="DOCUMENT_Full-PDF">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>The document ByteRange : [0, 137310, 156256, 568]</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BS0S29/T/kBU3ZfQhNXsuuI1+U6u4JINeYJKrQltPFk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="DOCUMENT_Full-PDF">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vyNZXfjBmNr6J5bT6PCxv0oTxNgu7rHGOm8ZNMnpahE=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

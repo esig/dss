@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -59,10 +59,10 @@ public class SIWATest extends AbstractPAdESTestValidation {
 	}
 
 	@Override
-	protected void checkByteRange(XmlByteRange byteRange) {
-		assertNotNull(byteRange);
-		assertEquals(4, byteRange.getValue().size());
-		assertFalse(byteRange.isValid());
+	protected void checkByteRange(PDFRevisionWrapper pdfRevision) {
+		assertNotNull(pdfRevision.getSignatureByteRange());
+		assertEquals(4, pdfRevision.getSignatureByteRange().size());
+		assertFalse(pdfRevision.isSignatureByteRangeValid());
 	}
 
 }

@@ -20,40 +20,35 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.math.BigInteger;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfAnnotationOverlapCheck;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PdfAnnotationOverlapCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void valid() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
-		sig.setPDFRevision(xmlPDFRevision);
+	public void valid() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		paoc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -62,21 +57,17 @@ public class PdfAnnotationOverlapCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void fail() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void fail() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		paoc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -85,21 +76,17 @@ public class PdfAnnotationOverlapCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void visualDifference() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void visualDifference() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getVisualDifference().add(getXmlModification(1));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		paoc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -108,23 +95,19 @@ public class PdfAnnotationOverlapCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void multipleFailure() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void multipleFailure() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(2));
 		xmlModificationDetection.getVisualDifference().add(getXmlModification(1));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfAnnotationOverlapCheck paoc = new PdfAnnotationOverlapCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		paoc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -21,11 +21,8 @@
 package eu.europa.esig.dss.pades.validation.dss2236;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
@@ -37,11 +34,8 @@ import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2236HideTest extends AbstractPAdESTestValidation {
@@ -72,18 +66,14 @@ public class DSS2236HideTest extends AbstractPAdESTestValidation {
 	@Override
 	protected void checkPdfRevision(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		XmlPDFRevision pdfRevision = signature.getPDFRevision();
-		
-		XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-		assertNotNull(modificationDetection);
-		
-		List<XmlModification> visualDifferences = modificationDetection.getVisualDifference();
-		assertEquals(1, visualDifferences.size());
-		assertEquals(1, visualDifferences.get(0).getPage().intValue());
+		PDFRevisionWrapper pdfRevision = signature.getPDFRevision();
+		assertTrue(pdfRevision.arePdfModificationsDetected());
+		assertTrue(pdfRevision.arePdfObjectModificationsDetected());
 
-		XmlObjectModifications objectModifications = modificationDetection.getObjectModifications();
-		assertNotNull(objectModifications);
-		assertTrue(Utils.isCollectionNotEmpty(objectModifications.getUndefined()));
+		assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().size());
+		assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().get(0).intValue());
+
+		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges()));
 	}
 	
 	@Override

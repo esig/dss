@@ -21,17 +21,12 @@
 package eu.europa.esig.dss.pades.validation.dss2236;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,23 +49,18 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			assertTrue(signature.arePdfModificationsDetected());
 			
-			XmlPDFRevision pdfRevision = signature.getPDFRevision();
+			PDFRevisionWrapper pdfRevision = signature.getPDFRevision();
 			assertNotNull(pdfRevision);
-			
-			XmlModificationDetection modificationDetection = pdfRevision.getModificationDetection();
-			assertNotNull(modificationDetection);
-			
-			List<XmlModification> annotationOverlap = modificationDetection.getAnnotationOverlap();
-			assertEquals(2, annotationOverlap.size());
-			assertEquals(1, annotationOverlap.get(0).getPage().intValue());
-			assertEquals(2, annotationOverlap.get(1).getPage().intValue());
-			
-			List<XmlModification> visualDifferences = modificationDetection.getVisualDifference();
-			XmlObjectModifications objectModifications = modificationDetection.getObjectModifications();
+			assertTrue(pdfRevision.arePdfModificationsDetected());
 
-			if (Utils.isCollectionNotEmpty(visualDifferences)) {
-				assertEquals(1, visualDifferences.size());
-				assertEquals(2, visualDifferences.get(0).getPage().intValue());
+			assertEquals(2, pdfRevision.getPdfAnnotationsOverlapConcernedPages().size());
+			assertEquals(1, pdfRevision.getPdfAnnotationsOverlapConcernedPages().get(0).intValue());
+			assertEquals(2, pdfRevision.getPdfAnnotationsOverlapConcernedPages().get(1).intValue());
+
+
+			if (Utils.isCollectionNotEmpty(pdfRevision.getPdfVisualDifferenceConcernedPages())) {
+				assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().size());
+				assertEquals(2, pdfRevision.getPdfVisualDifferenceConcernedPages().get(0).intValue());
 
 				assertTrue(signature.arePdfObjectModificationsDetected());
 
@@ -81,7 +71,7 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 
 				firstSignatureFound = true;
 
-			} else if (objectModifications != null) {
+			} else if (pdfRevision.arePdfObjectModificationsDetected()) {
 				assertTrue(signature.arePdfObjectModificationsDetected());
 
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));

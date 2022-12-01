@@ -38,7 +38,7 @@ import java.util.List;
  * All sub-classes need to implement the method initChain() which will define the {@code ChainItem} (constraints) to
  * execute.
  * 
- * The chain is builded as follow with the method {@link eu.europa.esig.dss.validation.process.ChainItem#setNextItem}.
+ * The chain is built as follows with the method {@link eu.europa.esig.dss.validation.process.ChainItem#setNextItem}.
  * 
  * @param <T>
  *            the class used as result. The selected class must extend {@code XmlConstraintsConclusion} which contains
@@ -119,7 +119,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	}
 
 	/**
-	 * Adds an additional info to the chain
+	 * Adds additional info to the chain
 	 */
 	protected void addAdditionalInfo() {
 		// default is empty
@@ -243,6 +243,7 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	 * @param conclusion {@link XmlConclusion} to fill up
 	 */
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		// empty by default
 	}
 
 }

@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -82,10 +82,10 @@ public class PAdESExtensionBToTDocWithVRITest extends AbstractPAdESTestValidatio
     @Override
     protected void checkPdfRevision(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+        PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
         assertNotNull(pdfRevision);
-        assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getFields()));
-        checkPdfSignatureDictionary(pdfRevision.getPDFSignatureDictionary());
+        assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
+        checkPdfSignatureDictionary(pdfRevision);
     }
 
     @Override

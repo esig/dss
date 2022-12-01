@@ -1,0 +1,63 @@
+package eu.europa.esig.dss.validation.process.bbb.fc;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ChainItem;
+
+/**
+ * This class performs "5.2.2 Format Checking" building block execution for a document or container timestamp
+ *
+ */
+public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWrapper> {
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param diagnosticData {@link DiagnosticData}
+     * @param timestamp {@link TimestampWrapper}
+     * @param context {@link Context}
+     * @param policy {@link ValidationPolicy}
+     */
+    public TimestampFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
+                          TimestampWrapper timestamp, Context context, ValidationPolicy policy) {
+        super(i18nProvider, diagnosticData, timestamp, context, policy);
+    }
+
+    @Override
+    protected void initChain() {
+
+        ChainItem<XmlFC> item = firstItem;
+
+        // PAdES
+        if (token.getPDFRevision() != null) {
+
+            item = getPDFRevisionValidationChain(item);
+
+        }
+
+        // PDF/A (only for a detached document timestamp)
+        if (diagnosticData.isPDFAValidationPerformed() && token.getType().isDocumentTimestamp()
+                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+
+            item = getPdfaValidationChain(item);
+
+        }
+
+        // ASiC (only for a detached container timestamp)
+        // TODO: to be implemented container timestamp check
+//        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()
+//                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+//
+//            item = getASiCContainerValidationChain(item);
+//
+//        }
+
+    }
+
+}
