@@ -61,6 +61,9 @@
 				<RevocationDataAvailable Level="FAIL"/>
 				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationFreshness Unit="DAYS" Value="0" Level="IGNORE"/>
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
 				<Cryptographic/>
@@ -109,6 +112,9 @@
 				<RevocationDataAvailable Level="FAIL"/>
 				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationFreshness Unit="DAYS" Value="0" Level="IGNORE"/>
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
 				<Cryptographic/>
@@ -155,6 +161,9 @@
 				<RevocationDataAvailable Level="WARN"/>
 				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationFreshness Unit="DAYS" Value="0" Level="IGNORE"/>
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
 				<Cryptographic/>
@@ -234,6 +243,9 @@
 				<RevocationDataAvailable Level="WARN"/>
 				<CRLNextUpdatePresent Level="WARN"/>
 				<RevocationFreshness Unit="DAYS" Value="0" Level="IGNORE"/>
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
 				<NotRevoked Level="FAIL"/>
 				<NotOnHold Level="FAIL"/>
 				<Cryptographic/>
