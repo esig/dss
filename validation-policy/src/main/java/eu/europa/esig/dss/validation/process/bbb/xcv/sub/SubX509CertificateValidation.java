@@ -304,12 +304,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateKeyUsageConstraint(context, subContext);
-		return new KeyUsageCheck(i18nProvider, result, certificate, constraint);
+		return new KeyUsageCheck(i18nProvider, result, certificate, context, subContext, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> extendedKeyUsage(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateExtendedKeyUsageConstraint(context, subContext);
-		return new ExtendedKeyUsageCheck(i18nProvider, result, certificate, constraint);
+		return new ExtendedKeyUsageCheck(i18nProvider, result, certificate, context, subContext, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> aiaPresent(CertificateWrapper certificate, SubContext subContext) {

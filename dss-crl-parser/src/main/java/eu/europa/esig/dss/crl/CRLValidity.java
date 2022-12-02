@@ -394,8 +394,8 @@ public class CRLValidity implements Serializable {
 	}
 
 	/**
-	 * This method indicates if the CRL is valid. To be valid the CRL must full
-	 * fill the following requirements:
+	 * This method indicates if the CRL is valid. To be valid the CRL must fulfill
+	 * the following requirements:
 	 *
 	 * - its signature must be valid, - the issuer of the certificate for which
 	 * the CRL is used must match the CRL signing certificate and - the

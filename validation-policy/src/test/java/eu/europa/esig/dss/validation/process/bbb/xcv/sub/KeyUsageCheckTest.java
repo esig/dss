@@ -25,7 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -40,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void keyUsageCheck() throws Exception {
+	public void keyUsageCheck() {
 		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
@@ -52,7 +54,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -61,7 +63,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedKeyUsageCheck() throws Exception {
+	public void failedKeyUsageCheck() {
 		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
 
@@ -73,7 +75,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -82,7 +84,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void multiValuesCheck() throws Exception {
+	public void multiValuesCheck() {
 		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
 		keyUsageBits.add(KeyUsageBit.DIGITAL_SIGNATURE);
 		keyUsageBits.add(KeyUsageBit.NON_REPUDIATION);
@@ -95,7 +97,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 		xc.setKeyUsageBits(keyUsageBits);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.SIGNATURE, SubContext.SIGNING_CERT, constraint);
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -37,6 +37,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -428,6 +429,44 @@ public class ValidationProcessUtils {
 		}
 	}
 
+	/**
+	 * Returns the message tag for the given context
+	 *
+	 * @param context {@link Context}
+	 * @return {@link MessageTag}
+	 */
+	public static MessageTag getContextPosition(Context context) {
+		switch (context) {
+			case SIGNATURE:
+			case COUNTER_SIGNATURE:
+			case CERTIFICATE:
+				return MessageTag.SIGNATURE;
+			case TIMESTAMP:
+				return MessageTag.TIMESTAMP;
+			case REVOCATION:
+				return MessageTag.ACCM_POS_CERT_CHAIN_REVOC;
+			default:
+				throw new IllegalArgumentException("Unsupported context " + context);
+		}
+	}
+
+
+	/**
+	 * Returns the message tag for the given subContext
+	 *
+	 * @param subContext {@link SubContext}
+	 * @return {@link MessageTag}
+	 */
+	public static MessageTag getSubContextPosition(SubContext subContext) {
+		switch (subContext) {
+			case SIGNING_CERT:
+				return MessageTag.SIGNING_CERTIFICATE;
+			case CA_CERTIFICATE:
+				return MessageTag.CA_CERTIFICATE;
+			default:
+				throw new IllegalArgumentException("Unsupported subContext " + subContext);
+		}
+	}
 	/**
 	 * Transforms the given OID to a URN format as per RFC 3061
 	 * e.g. "1.2.3" to "urn:oid:1.2.3"

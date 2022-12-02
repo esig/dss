@@ -20,14 +20,18 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 import java.util.ArrayList;
@@ -42,18 +46,28 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	/** Certificate to check */
 	private final CertificateWrapper certificate;
 
+	/** The execution context (e.g. signature, timestamp, etc.) */
+	private final Context context;
+
+	/** The execution subContext (e.g. signing-certificate, CA certificate) */
+	private final SubContext subContext;
+
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
 	 * @param certificate {@link CertificateWrapper}
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
 	 * @param constraint {@link MultiValuesConstraint}
 	 */
 	public ExtendedKeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-								 MultiValuesConstraint constraint) {
+								 Context context, SubContext subContext, MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
+		this.context = context;
+		this.subContext = subContext;
 	}
 
 	@Override
@@ -80,8 +94,14 @@ public class ExtendedKeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXC
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.BBB_XCV_ISCGEKU_ANS;
+	protected XmlMessage buildErrorMessage() {
+		if (Context.CERTIFICATE.equals(context)) {
+			return buildXmlMessage(MessageTag.BBB_XCV_ISCGEKU_ANS_CERT);
+		} else {
+			return buildXmlMessage(MessageTag.BBB_XCV_ISCGEKU_ANS,
+					ValidationProcessUtils.getSubContextPosition(subContext),
+					ValidationProcessUtils.getContextPosition(context));
+		}
 	}
 
 	@Override

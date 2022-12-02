@@ -38,7 +38,9 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
@@ -571,6 +573,126 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		
 		exception = assertThrows(IllegalArgumentException.class, () -> executor.execute());
 		assertEquals("The certificate with the given Id 'certId' has not been found in DiagnosticData", exception.getMessage());
+	}
+
+	@Test
+	public void keyUsageCertTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/cert_with_qcCClegislation.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+		multiValuesConstraint.getId().add(KeyUsageBit.KEY_CERT_SIGN.getValue());
+		multiValuesConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setKeyUsage(multiValuesConstraint);
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getCertificateSubIndication(certId));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		XmlBasicBuildingBlocks certBBB = detailedReport.getBasicBuildingBlockById(certId);
+		assertEquals(Indication.INDETERMINATE, certBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, certBBB.getConclusion().getSubIndication());
+
+		XmlXCV xcv = certBBB.getXCV();
+		assertNotNull(xcv);
+		assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
+
+		assertEquals(2, xcv.getSubXCV().size());
+		XmlSubXCV subXCV = xcv.getSubXCV().get(0);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, subXCV.getConclusion().getSubIndication());
+
+		boolean keyCertCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_ISCGKU.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_ISCGKU_ANS_CERT.getId(), constraint.getError().getKey());
+				keyCertCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(keyCertCheckFound);
+	}
+
+	@Test
+	public void extendedKeyUsageCertTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/cert_with_qcCClegislation.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+		multiValuesConstraint.getId().add(KeyUsageBit.DIGITAL_SIGNATURE.getValue());
+		multiValuesConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setKeyUsage(multiValuesConstraint);
+
+		multiValuesConstraint = new MultiValuesConstraint();
+		multiValuesConstraint.getId().add(ExtendedKeyUsage.TSL_SIGNING.getDescription());
+		multiValuesConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setExtendedKeyUsage(multiValuesConstraint);
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+
+		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, simpleReport.getCertificateSubIndication(certId));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		XmlBasicBuildingBlocks certBBB = detailedReport.getBasicBuildingBlockById(certId);
+		assertEquals(Indication.INDETERMINATE, certBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, certBBB.getConclusion().getSubIndication());
+
+		XmlXCV xcv = certBBB.getXCV();
+		assertNotNull(xcv);
+		assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, xcv.getConclusion().getSubIndication());
+
+		assertEquals(2, xcv.getSubXCV().size());
+		XmlSubXCV subXCV = xcv.getSubXCV().get(0);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, subXCV.getConclusion().getSubIndication());
+
+		boolean extendedKeyCertCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_ISCGEKU.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_ISCGEKU_ANS_CERT.getId(), constraint.getError().getKey());
+				extendedKeyCertCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(extendedKeyCertCheckFound);
 	}
 
 	@Test
