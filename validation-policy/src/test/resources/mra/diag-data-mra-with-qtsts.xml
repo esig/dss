@@ -380,6 +380,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E705D7BA08B6667BF06CF41A2A996263C12604E7D6FBDA38CD6B6C3D8012C1D7</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
@@ -548,6 +549,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5F260FFBD972B85C8F9D0162D9871E04D8AFB4B9A8BE99E9417DA0AEB9FBE0A5</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>

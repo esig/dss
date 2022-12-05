@@ -99,6 +99,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
@@ -243,6 +245,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
@@ -367,6 +371,8 @@
 				<RevocationDataAvailable Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
@@ -469,6 +475,8 @@
 				<RevocationDataAvailable Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>

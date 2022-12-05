@@ -311,6 +311,7 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-919530E99CFCDCA84AA273A4165D77D28926F07F054D5B3E0EC15FCF0773FCAC</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
                 <KeyUsage>keyCertSign</KeyUsage>
@@ -492,6 +493,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4E034103F8233FC1CE11A580D2B3CBACBF7A9B11E08F6B8A2BD6C36C0F98AE99</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
                 <KeyUsage>keyCertSign</KeyUsage>
@@ -553,6 +555,7 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8B0BF667167C21C78269D86E0990102F8D4296345925C0616C8660F103ED3FE1</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
                 <KeyUsage>keyCertSign</KeyUsage>
@@ -605,6 +608,7 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8F92FA3FA791B7A69DB21BCB8FE11DC6FF9B0B2354ED3D0F6E00AAC31CEC8CCB</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>digitalSignature</KeyUsage>
                 <KeyUsage>keyCertSign</KeyUsage>

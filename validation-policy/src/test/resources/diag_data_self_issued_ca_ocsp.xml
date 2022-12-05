@@ -309,6 +309,7 @@
             <PublicKeySize>521</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2971695C1F8194FDCF19A7BF6C80278A89DE685A250723B74A8F2262478351FC</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
@@ -356,6 +357,7 @@
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0C1E8E7BC95C19B220A14C909E1104C4277B77C4EC9E41D377F325A2BED8E637</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
@@ -464,6 +466,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DB177620ABBA8A3A832C90FFB94918047C87762EF732A5780F93532A34D55EE5</EntityKey>
+            <BasicConstraints CA="true" />
             <KeyUsageBits>
                 <KeyUsage>keyCertSign</KeyUsage>
                 <KeyUsage>crlSign</KeyUsage>
