@@ -816,6 +816,34 @@ Default: not executed
 </SigningCertificate>
 ----
 
+* `CA` - this constraint is used to check whether the certificate in question is a CA certificate. If the certificate does not have `BasicConstraints.cA` extension with a value set to true, the check will fail.
+
+Default: `FAIL` (for CA certificates)
+
+[source,xml,indent=0]
+.Example of CA usage (with FAIL validation level)
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    ...
+</CACertificate>
+----
+
+* `MaxPathLength` - this constraint is used to check whether the certificate path's depth of the current certificate does not exceed the `BasicConstraints.pathLenConstraint` extension value defined in the intermediate CA certificates. If the certificate's certification path depth exceeds the maximum allowed path length, the check will fail.
+
+Default: `FAIL` (for CA certificates)
+
+[source,xml,indent=0]
+.Example of CA usage (with FAIL validation level)
+----
+<CACertificate>
+    ...
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
+----
+
 * `KeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable key usages. If the certificate does not have one of the key usages defined within the list, the check will fail.
 
 Default: `WARN` (`nonRepudiation`)
@@ -2120,7 +2148,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
                                   |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
                                   |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
-.19+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+.21+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
                                   |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
@@ -2143,7 +2171,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
 .12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                               .2+|NotExpired                      .2+|LevelConstraint                |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
+                               .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
                                                                                                       |FAILED                |EXPIRED
                                   |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2154,7 +2182,10 @@ This table defines the correspondence between the enforced validation policy con
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |MaxPathLength                   |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
+                                                                                                                              CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2164,10 +2195,10 @@ This table defines the correspondence between the enforced validation policy con
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
+.12+|CertificateConstraints    .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
-.12+|CertificateConstraints       |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationIssuerNotExpired      |LevelConstraint                   |INDETERMINATE         |REVOCATION_OUT_OF_BOUNDS_NO_POE
                                   |SelfSigned                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2177,9 +2208,9 @@ This table defines the correspondence between the enforced validation policy con
                                   |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.13+|CertificateConstraints       |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.11+|CertificateConstraints       |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcLegislationCountryCodes       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
