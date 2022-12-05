@@ -106,6 +106,27 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns whether the certificate defines BasicConstraints.cA extension set to TRUE
+	 *
+	 * @return TRUE if the BasicConstraints.cA extension is defined and set to true, FALSE otherwise
+	 */
+	public boolean isCA() {
+		return certificate.getBasicConstraints() != null && certificate.getBasicConstraints().isCA();
+	}
+
+	/**
+	 * Returns value of BasicConstraints.PathLenConstraint if present and BasicConstraints.cA is set to true
+	 *
+	 * @return integer value of BasicConstraints.PathLenConstraint if applicable, -1 otherwise
+	 */
+	public int getPathLenConstraint() {
+		if (isCA() && certificate.getBasicConstraints().getPathLenConstraint() != null) {
+			return certificate.getBasicConstraints().getPathLenConstraint();
+		}
+		return -1;
+	}
+
+	/**
 	 * Returns the defined key-usages for the certificate
 	 *
 	 * @return a list of {@link KeyUsageBit}s

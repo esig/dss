@@ -273,6 +273,26 @@ public interface ValidationPolicy {
 	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate CA constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if CA for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate MaxPathLength constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if MaxPathLength for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate key usage constraint
 	 *
 	 * @param context {@link Context}

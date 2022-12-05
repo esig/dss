@@ -597,6 +597,16 @@
 					<xsd:documentation>Defines whether the revocation freshness shall be checked against the difference between thisUpdate and nextUpdate times, in case when the RevocationFreshness constraint is not defined.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="CA" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's basicConstraints extension is present and that cA is set to TRUE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaxPathLength" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the depth of the subject certificate within certificate chain is allowed by pathLenConstraint within intermediate CA certificates</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's key usages are in the acceptable values list</xsd:documentation>

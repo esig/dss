@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -1430,6 +1431,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
 		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
 
+		xmlCert.setBasicConstraints(getXmlBasicConstraints(certToken));
 		xmlCert.setKeyUsageBits(certToken.getKeyUsageBits());
 		xmlCert.setExtendedKeyUsages(getXmlOids(DSSASN1Utils.getExtendedKeyUsage(certToken)));
 
@@ -1498,6 +1500,18 @@ public abstract class DiagnosticDataBuilder {
 			result.add(xmlCP);
 		}
 		return result;
+	}
+
+	private XmlBasicConstraints getXmlBasicConstraints(CertificateToken certificateToken) {
+		if (certificateToken.isCA()) {
+			XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
+			basicConstraints.setCA(certificateToken.isCA());
+			if (certificateToken.getPathLenConstraint() != -1) {
+				basicConstraints.setPathLenConstraint(certificateToken.getPathLenConstraint());
+			}
+			return basicConstraints;
+		}
+		return null;
 	}
 
 	private List<XmlOID> getXmlOids(List<String> oidList) {

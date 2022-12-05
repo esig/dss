@@ -451,6 +451,7 @@
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
 					<xs:element name="EntityKey" type="xs:string" />
+					<xs:element name="BasicConstraints" type="BasicConstraints" minOccurs="0" />
 		
 					<xs:element name="KeyUsageBits" minOccurs="0">
 						<xs:complexType>
@@ -1077,6 +1078,11 @@
 			<xs:enumeration value="aACompromise" />
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:complexType name="BasicConstraints">
+		<xs:attribute name="CA" type="xs:boolean" use="required" />
+		<xs:attribute name="pathLenConstraint" type="xs:int" use="optional" />
+	</xs:complexType>
 	
 	<xs:simpleType name="KeyUsage" final="restriction">
 		<xs:restriction base="xs:string">

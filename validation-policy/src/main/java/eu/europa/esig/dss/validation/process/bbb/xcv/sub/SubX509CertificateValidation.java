@@ -46,6 +46,8 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSe
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsCACheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsMaxPathLengthCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcEuRetentionPeriodCheck;
@@ -204,6 +206,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(certificateSignatureValid(currentCertificate, subContext));
 
+		item = item.setNextItem(ca(currentCertificate, subContext));
+
+		item = item.setNextItem(maxPathLength(currentCertificate, subContext));
+
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(extendedKeyUsage(currentCertificate, subContext));
@@ -300,6 +306,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 															   SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getRevocationIssuerNotExpiredConstraint(context, subContext);
 		return new RevocationIssuerValidityRangeCheck<>(i18nProvider, result, usedCertificateRevocation, currentTime, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> ca(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateCAConstraint(context, subContext);
+		return new BasicConstraintsCACheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> maxPathLength(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateMaxPathLengthConstraint(context, subContext);
+		return new BasicConstraintsMaxPathLengthCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {
