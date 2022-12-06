@@ -477,6 +477,38 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
+* `ByteRangeCollision` - this constraint verifies if the signature's `/ByteRange` does not overlap with other signature byte ranges, forming an invalid document structure (PAdES only). If the signature `/ByteRange` is crossing byte ranges of other signature or timestamp within the document, then the check fails.
+
+Default: `WARN`
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of ByteRangeCollision usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ByteRangeCollision Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ByteRangeAllDocument` - this constraint verifies if the document does not contain a signature or a document timestamp with invalid `/ByteRange` (PAdES only). If the PDF document contains a signature or a document timestamp with inconsistent /ByteRange`, then the check fails.
+
+Default: not executed
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of ByteRangeAllDocument usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ByteRangeAllDocument Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
 * `PdfSignatureDictionary` - this constraint is used to verify consistency of the current signature dictionary across PDF revisions. If the signature dictionary has been replaced or modified between the signed and final PDF document revisions then the check will fail.
 
 Default: `FAIL`
@@ -2120,7 +2152,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
                                   |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
                                   |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
-.19+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+.12+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
                                   |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
@@ -2128,9 +2160,11 @@ This table defines the correspondence between the enforced validation policy con
                                   |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ByteRange                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ByteRangeCollision              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ByteRangeAllDocument            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfSignatureDictionary          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.11+|BasicSignatureConstraints    |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE

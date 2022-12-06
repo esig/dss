@@ -15,7 +15,9 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeAllDocumentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCollisionCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.DocMDPCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FieldMDPCheck;
@@ -91,6 +93,10 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
             } else {
                 item = item.setNextItem(byteRangeCheck());
             }
+
+            item = item.setNextItem(byteRangeCollisionCheck());
+
+            item = item.setNextItem(byteRangeAllDocumentCheck());
 
             item = item.setNextItem(pdfSignatureDictionaryCheck());
 
@@ -191,6 +197,16 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
     private ChainItem<XmlFC> byteRangeCheck() {
         LevelConstraint constraint = policy.getByteRangeConstraint(context);
         return new ByteRangeCheck(i18nProvider, result, token.getPDFRevision(), constraint);
+    }
+
+    private ChainItem<XmlFC> byteRangeCollisionCheck() {
+        LevelConstraint constraint = policy.getByteRangeCollisionConstraint(context);
+        return new ByteRangeCollisionCheck(i18nProvider, result, token, diagnosticData, constraint);
+    }
+
+    private ChainItem<XmlFC> byteRangeAllDocumentCheck() {
+        LevelConstraint constraint = policy.getByteRangeAllDocumentConstraint(context);
+        return new ByteRangeAllDocumentCheck(i18nProvider, result, diagnosticData, constraint);
     }
 
     private ChainItem<XmlFC> pdfSignatureDictionaryCheck() {

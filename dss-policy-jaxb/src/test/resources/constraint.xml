@@ -175,6 +175,7 @@
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="WARN" />
 			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
 			<PdfSignatureDictionary Level="FAIL" />
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />

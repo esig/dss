@@ -644,7 +644,7 @@ This chapter covers the changes occurred between different versions of DSS withi
 .Policy changes from version 5.11 to 5.12
 |===
 |Title                                |v5.11                           |v5.12
-|ByteRange consistency check          |
+|ByteRange consistency checks         |
 ----
 not present
 ----
@@ -653,6 +653,8 @@ not present
 <BasicSignatureConstraints>
     ...
     <ByteRange Level="FAIL" />
+    <ByteRangeCollision Level="WARN" />
+    <!-- ByteRangeAllDocument Level="WARN" -->
     ...
 </BasicSignatureConstraints>
 ----

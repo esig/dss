@@ -788,6 +788,26 @@ public interface ValidationPolicy {
 	LevelConstraint getByteRangeConstraint(Context context);
 
 	/**
+	 * This constraint checks if ByteRange does not collide with other signature byte ranges
+	 * NOTE: applicable only for PAdES
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ByteRangeCollision element for a given context element is present in
+	 *         the constraint file, null otherwise.
+	 */
+	LevelConstraint getByteRangeCollisionConstraint(Context context);
+
+	/**
+	 * This constraint checks if ByteRange is valid for all signatures and document timestamps within PDF
+	 * NOTE: applicable only for PAdES
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ByteRangeAllDocument element for a given context element is present in
+	 *         the constraint file, null otherwise.
+	 */
+	LevelConstraint getByteRangeAllDocumentConstraint(Context context);
+
+	/**
 	 * This constraint checks if signature dictionary is consistent across PDF revisions.
 	 * NOTE: applicable only for PAdES
 	 *

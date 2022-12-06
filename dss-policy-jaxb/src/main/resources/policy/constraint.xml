@@ -51,6 +51,7 @@
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
 			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
 			<PdfSignatureDictionary Level="FAIL" />
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />
@@ -230,6 +231,7 @@
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
 			<PdfSignatureDictionary Level="FAIL" />
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />

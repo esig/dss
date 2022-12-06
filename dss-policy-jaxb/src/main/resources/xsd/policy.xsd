@@ -469,6 +469,16 @@
 					<xsd:documentation>Checks if /ByteRange dictionary is consistent with PDF specification as well as with the /Contents dictionary placement</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ByteRangeCollision" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if /ByteRange of the signature does not intersect with other signature byte ranges</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ByteRangeAllDocument" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if /ByteRange dictionary is consistent across all signatures and timestamps within the document</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PdfSignatureDictionary" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if signature dictionary is consistent across the PDF document revisions.</xsd:documentation> <!-- PAdES only -->
