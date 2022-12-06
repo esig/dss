@@ -70,6 +70,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
@@ -197,6 +199,8 @@
 				<RevocationDataAvailable Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
@@ -293,6 +297,8 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

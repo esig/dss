@@ -277,6 +277,8 @@ public class DSSUtilsTest {
 		assertFalse(signed.isSelfSigned());
 
 		assertFalse(tsa.isCA());
+		assertEquals(-1, tsa.getPathLenConstraint());
+
 		assertTrue(tsa.isSignedBy(signed));
 		assertTrue(tsa.isSignedBy(selfSign));
 	}

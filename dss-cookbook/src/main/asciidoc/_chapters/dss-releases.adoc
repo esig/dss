@@ -305,6 +305,19 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 </PDFSignatureDictionary>
 ----
 
+|Diagnostic Data: BasicConstraints     |
+----
+not present
+----
+                                                                     a|[source,xml]
+----
+<Certificate>
+    ...
+    <BasicConstraints CA="true" pathLenConstraint="0"/>
+    ...
+</Certificate>
+----
+
 |PDFSignatureService #digest     a|[source,java]
 ----
 PDFSignatureService pdfSignatureService = ...
@@ -684,6 +697,19 @@ not present
     </AcceptablePDFAProfiles>
     <PDFACompliant Level="WARN" />
 </PDFAConstraints>
+----
+|CA certificate BasicConstraints check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
 ----
 
 |===

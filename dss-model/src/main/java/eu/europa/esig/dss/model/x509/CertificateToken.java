@@ -333,6 +333,16 @@ public class CertificateToken extends Token {
 	}
 
 	/**
+	 * This method returns a PathLenConstraint value when BasicConstraint and the attribute itself are present,
+	 * and cA parameters is set to true.
+	 *
+	 * @return PathLenConstraint integer value, when present. -1 otherwise
+	 */
+	public int getPathLenConstraint() {
+		return x509Certificate.getBasicConstraints();
+	}
+
+	/**
 	 * The signature value of the certificate
 	 * 
 	 * @return the signature value
