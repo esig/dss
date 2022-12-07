@@ -40,6 +40,7 @@ import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -129,6 +130,33 @@ public class PAdESTimestampSignedPdfTest extends AbstractPAdESTestSignature {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals(1, signature.getSignatureScopes().size());
         assertEquals(SignatureScopeType.PARTIAL, signature.getSignatureScopes().get(0).getScope());
+    }
+
+    @Override
+    protected void checkTimestamps(DiagnosticData diagnosticData) {
+        super.checkTimestamps(diagnosticData);
+
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        assertEquals(3, timestampList.size());
+
+        int docTstCounter = 0;
+        int sigTstChanges = 0;
+        int sigTstNoChanges = 0;
+        for (TimestampWrapper timestampWrapper : timestampList) {
+            if (Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedSignatures())) {
+                if (timestampWrapper.arePdfObjectModificationsDetected()) {
+                    ++sigTstChanges;
+                } else {
+                    ++sigTstNoChanges;
+                }
+            } else {
+                assertTrue(timestampWrapper.arePdfObjectModificationsDetected());
+                ++docTstCounter;
+            }
+        }
+        assertEquals(1, docTstCounter);
+        assertEquals(1, sigTstChanges);
+        assertEquals(1, sigTstNoChanges);
     }
 
     @Override

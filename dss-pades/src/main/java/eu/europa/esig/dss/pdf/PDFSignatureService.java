@@ -30,6 +30,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.List;
 
@@ -235,13 +236,22 @@ public interface PDFSignatureService {
 	void analyzePdfModifications(final DSSDocument document, final List<AdvancedSignature> signatures, final String pwd);
 
 	/**
-	 * Analyze the PDF revision and try to detect any modification (shadow attacks)
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks) for signatures
 	 *
 	 * @param document    {@link DSSDocument} the document
 	 * @param signatures  the different signatures to be analysed
 	 * @param pwd         {@link String} password protection
 	 */
 	void analyzePdfModifications(final DSSDocument document, final List<AdvancedSignature> signatures, final char[] pwd);
+
+	/**
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks) for PDf document timestamps
+	 *
+	 * @param document    {@link DSSDocument} the document
+	 * @param timestamps  the detached document timestamps to be analysed
+	 * @param pwd         {@link String} password protection
+	 */
+	void analyzeTimestampPdfModifications(final DSSDocument document, final List<TimestampToken> timestamps, final char[] pwd);
 
 	/**
 	 * Returns a page preview with the visual signature

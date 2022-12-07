@@ -174,6 +174,24 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     }
 
     @Override
+    public List<TimestampToken> getDetachedTimestamps() {
+        List<TimestampToken> detachedTimestamps = super.getDetachedTimestamps();
+        timestampPostProcessing(detachedTimestamps);
+        return detachedTimestamps;
+    }
+
+    /**
+     * Post-process the extracted detached timestamps
+     * NOTE: the method shall be used only for the document validation
+     *
+     * @param timestampTokens a list of {@link TimestampToken}s
+     */
+    protected void timestampPostProcessing(List<TimestampToken> timestampTokens) {
+        PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+        pdfSignatureService.analyzeTimestampPdfModifications(document, timestampTokens, passwordProtection);
+    }
+
+    @Override
     protected List<AdvancedSignature> buildSignatures() {
         final List<AdvancedSignature> signatures = new ArrayList<>();
 

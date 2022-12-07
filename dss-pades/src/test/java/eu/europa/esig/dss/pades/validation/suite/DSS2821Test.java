@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2821Test extends AbstractPAdESTestValidation {
 
@@ -47,6 +48,25 @@ public class DSS2821Test extends AbstractPAdESTestValidation {
         assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedRevocations()));
         assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedTimestamps()));
         assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
+    }
+
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signature.arePdfObjectModificationsDetected());
+        assertTrue(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
+
+        TimestampWrapper detachedTst = diagnosticData.getTimestampList().get(0);
+        assertFalse(Utils.isCollectionNotEmpty(detachedTst.getTimestampedSignatures()));
+
+        assertTrue(detachedTst.arePdfObjectModificationsDetected());
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfExtensionChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfSignatureOrFormFillChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfUndefinedChanges()));
     }
 
 }
