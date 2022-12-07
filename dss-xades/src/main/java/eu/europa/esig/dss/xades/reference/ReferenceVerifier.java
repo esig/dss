@@ -57,12 +57,20 @@ public class ReferenceVerifier {
      */
     public void checkReferencesValidity() {
         if (signatureParameters != null) {
-            String referenceWrongMessage = "Reference setting is not correct! ";
+            final String referenceWrongMessage = "Reference setting is not correct! ";
+
+            final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+            referenceIdProvider.setSignatureParameters(signatureParameters);
             for (DSSReference reference : signatureParameters.getReferences()) {
+                if (Utils.isStringEmpty(reference.getId())) {
+                    LOG.debug("No Id defined for a reference. Generate a deterministic identifier...");
+                    reference.setId(referenceIdProvider.getReferenceId());
+                }
                 if (reference.getObject() != null) {
                     LOG.debug("ds:Object is defined for reference with Id '{}'. Use the provided value.", reference.getId());
                     continue;
                 }
+
                 List<DSSTransform> transforms = reference.getTransforms();
                 if (Utils.isCollectionNotEmpty(transforms)) {
                     for (DSSTransform transform : transforms) {

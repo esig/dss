@@ -553,15 +553,11 @@ public final class DSSXMLUtils {
 	 * @param element {@link Element}
 	 */
 	public static void recursiveIdBrowse(final Element element) {
-
+		setIDIdentifier(element);
 		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
-
 			final Node node = element.getChildNodes().item(ii);
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-				final Element childElement = (Element) node;
-				setIDIdentifier(childElement);
-				recursiveIdBrowse(childElement);
+				recursiveIdBrowse((Element) node);
 			}
 		}
 	}

@@ -44,7 +44,7 @@ public class DSSReference implements Serializable {
 	private String type;
 
 	/** The DigestAlgorithm of the reference to compute digest value */
-	private DigestAlgorithm digestMethod;
+	private DigestAlgorithm digestMethod = DigestAlgorithm.SHA256;
 
 	/** The referenced data */
 	private DSSDocument contents;
@@ -126,6 +126,7 @@ public class DSSReference implements Serializable {
 
 	/**
 	 * Sets DigestAlgorithm to use for digest value computation
+	 * Default : DigestAlgorithm.SHA256
 	 *
 	 * @param digestMethod {@link DigestAlgorithm}
 	 */

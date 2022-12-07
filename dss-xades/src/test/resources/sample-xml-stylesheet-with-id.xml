@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml-stylesheet type='text/xsl' href="cloudEbankDocs.xslt" ?>
+<Element_0 id="Element_0_ID">
+    <Element_1_0>element 1 0</Element_1_0>
+    <Element_1_1 id="Element_1_1_ID">
+        <Element_1_1_0>element 1 1 0</Element_1_1_0>
+    </Element_1_1>
+    <Element_1_2>element 1 2</Element_1_2>
+</Element_0>

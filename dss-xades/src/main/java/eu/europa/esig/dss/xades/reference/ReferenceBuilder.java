@@ -47,6 +47,11 @@ import java.util.Objects;
 public class ReferenceBuilder {
 
 	/**
+	 * id-prefix for ds:Object element
+	 */
+	private static final String OBJECT_ID_PREFIX = "o-";
+
+	/**
 	 * List of documents to create references for
 	 */
 	private final List<DSSDocument> documents;
@@ -55,34 +60,32 @@ public class ReferenceBuilder {
 	 * The DigestAlgorithm to use
 	 */
 	private final DigestAlgorithm digestAlgorithm;
+
+	/**
+	 * Creates an identifier for a signature reference
+	 */
+	private final ReferenceIdProvider referenceIdProvider;
 	
 	/**
 	 * The used XAdESSignatureParameters
 	 */
 	private XAdESSignatureParameters signatureParameters;
 
-	/** id-prefix for ds:Object element */
-	private static final String OBJECT_ID_PREFIX = "o-";
-
-	/**
-	 * id-prefix for ds:Reference element
-	 *
-	 * Default : "r-"
-	 */
-	private String referenceIdPrefix = "r-";
-
 	/**
 	 * The default constructor for a signature references creation
 	 *
 	 * @param documents a list of {@link DSSDocument}s to create references for
 	 * @param xadesSignatureParameters {@link XAdESSignatureParameters}
+	 * @param referenceIdProvider {@link ReferenceIdProvider}
 	 */
-	public ReferenceBuilder(final List<DSSDocument> documents, XAdESSignatureParameters xadesSignatureParameters) {
+	public ReferenceBuilder(final List<DSSDocument> documents, XAdESSignatureParameters xadesSignatureParameters,
+							final ReferenceIdProvider referenceIdProvider) {
 		Objects.requireNonNull(documents, "List of documents shall be provided!");
 		Objects.requireNonNull(xadesSignatureParameters, "Signature parameters shall be provided!");
 		this.documents = documents;
 		this.signatureParameters = xadesSignatureParameters;
 		this.digestAlgorithm = getReferenceDigestAlgorithmOrDefault(xadesSignatureParameters);
+		this.referenceIdProvider = referenceIdProvider;
 	}
 
 	/**
@@ -90,26 +93,17 @@ public class ReferenceBuilder {
 	 *
 	 * @param documents a list of detached {@link DSSDocument}s
 	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param referenceIdProvider {@link ReferenceIdProvider}
 	 */
-	public ReferenceBuilder(final List<DSSDocument> documents, final DigestAlgorithm digestAlgorithm) {
+	public ReferenceBuilder(final List<DSSDocument> documents, final DigestAlgorithm digestAlgorithm,
+							final ReferenceIdProvider referenceIdProvider) {
 		Objects.requireNonNull(documents, "List of documents shall be provided!");
 		Objects.requireNonNull(digestAlgorithm, "Digest Algorithm shall be provided!");
 		this.documents = documents;
 		this.digestAlgorithm = digestAlgorithm;
+		this.referenceIdProvider = referenceIdProvider;
 	}
 
-	/**
-	 * Sets the reference id prefix to be used on reference creation
-	 *
-	 * @param referenceIdPrefix {@link String} id prefix to use for references
-	 */
-	public void setReferenceIdPrefix(String referenceIdPrefix) {
-		if (Utils.isStringBlank(referenceIdPrefix)) {
-			throw new IllegalArgumentException("The reference id prefix cannot be blank!");
-		}
-		this.referenceIdPrefix = referenceIdPrefix;
-	}
-	
 	/**
 	 * Builds a list of references based on the configuration
 	 *
@@ -117,41 +111,39 @@ public class ReferenceBuilder {
 	 */
 	public List<DSSReference> build() {
 		List<DSSReference> references = new ArrayList<>();
-		int referenceIndex = 1;
 		for (DSSDocument dssDocument : documents) {
-			references.add(createDSSReferenceForDocument(dssDocument, referenceIndex));
-			referenceIndex++;
+			references.add(createDSSReferenceForDocument(dssDocument));
 		}
 		return references;
 	}
 	
-	private DSSReference createDSSReferenceForDocument(final DSSDocument document, final int index) {
+	private DSSReference createDSSReferenceForDocument(final DSSDocument document) {
 		if (signatureParameters != null) {
 			Objects.requireNonNull(signatureParameters.getSignaturePackaging(), "SignaturePackaging must be defined!");
 			switch (signatureParameters.getSignaturePackaging()) {
 				case ENVELOPED:
-					return envelopedDSSReference(document, index);
+					return envelopedDSSReference(document);
 				case ENVELOPING:
-					return envelopingDSSReference(document, index);
+					return envelopingDSSReference(document);
 				case DETACHED:
-					return detachedDSSReference(document, index);
+					return detachedDSSReference(document);
 				case INTERNALLY_DETACHED:
-					return internallyDetachedDSSReference(document, index);
+					return internallyDetachedDSSReference(document);
 				default:
 					throw new DSSException(String.format("The given signature packaging %s is not supported!",
 							signatureParameters.getSignaturePackaging()));
 			}
 		} else {
 			// detached reference creation
-			return detachedDSSReference(document, index);
+			return detachedDSSReference(document);
 		}
 	}
 
-	private DSSReference envelopedDSSReference(DSSDocument document, int index) {
+	private DSSReference envelopedDSSReference(DSSDocument document) {
 		assertEnvelopedSignaturePossible(document);
 
 		DSSReference dssReference = new DSSReference();
-		dssReference.setId(referenceIdPrefix + getReferenceId(index));
+		dssReference.setId(referenceIdProvider.getReferenceId());
 		// XMLDSIG : 4.4.3.2
 		// URI=""
 		// Identifies the node-set (minus any comment nodes) of the XML resource
@@ -195,12 +187,12 @@ public class ReferenceBuilder {
 		}
 	}
 
-	private DSSReference envelopingDSSReference(DSSDocument document, int index) {
+	private DSSReference envelopingDSSReference(DSSDocument document) {
 		// <ds:Reference Id="signed-data-ref" Type="http://www.w3.org/2000/09/xmldsig#Object"
 		// URI="#signed-data-idfc5ff27ee49763d9ba88ba5bbc49f732">
-		final String refId = getReferenceId(index);
+		final String refId = referenceIdProvider.getReferenceId();
 		final DSSReference reference = new DSSReference();
-		reference.setId(referenceIdPrefix + refId);
+		reference.setId(refId);
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
 
@@ -243,9 +235,9 @@ public class ReferenceBuilder {
 		}
 	}
 
-	private DSSReference detachedDSSReference(DSSDocument document, int index) {
+	private DSSReference detachedDSSReference(DSSDocument document) {
 		final DSSReference reference = new DSSReference();
-		reference.setId(referenceIdPrefix + getReferenceId(index));
+		reference.setId(referenceIdProvider.getReferenceId());
 		if (Utils.isStringNotEmpty(document.getName())) {
 			reference.setUri(DSSUtils.encodeURI(document.getName()));
 		}
@@ -254,9 +246,9 @@ public class ReferenceBuilder {
 		return reference;
 	}
 	
-	private DSSReference internallyDetachedDSSReference(DSSDocument document, int index) {
+	private DSSReference internallyDetachedDSSReference(DSSDocument document) {
 		final DSSReference reference = new DSSReference();
-		reference.setId(referenceIdPrefix + getReferenceId(index));
+		reference.setId(referenceIdProvider.getReferenceId());
 
 		Document dom = DomUtils.buildDOM(document);
 		String identifier = DSSXMLUtils.getIDIdentifier(dom.getDocumentElement());
@@ -272,16 +264,6 @@ public class ReferenceBuilder {
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;
-	}
-	
-	private String getReferenceId(int index) {
-		StringBuilder referenceId = new StringBuilder();
-		if (signatureParameters != null) {
-			referenceId.append(signatureParameters.getDeterministicId());
-			referenceId.append("-");
-		}
-		referenceId.append(index);
-		return referenceId.toString();
 	}
 
 	private DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {

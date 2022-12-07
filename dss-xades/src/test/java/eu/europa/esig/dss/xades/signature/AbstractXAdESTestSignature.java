@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -45,7 +47,12 @@ import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +60,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestDocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
@@ -65,8 +74,31 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
+
+		assertTrue(DomUtils.isDOM(byteArray));
 		// Check for duplicate ids
 		assertFalse(DSSXMLUtils.isDuplicateIdsDetected(new InMemoryDocument(byteArray)));
+
+		Document documentDOM = DomUtils.buildDOM(byteArray);
+		assertNotNull(documentDOM);
+		checkDataObjectFormat(documentDOM);
+	}
+
+	protected void checkDataObjectFormat(Document documentDOM) {
+		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
+		for (int i = 0; i < signatureNodeList.getLength(); i++) {
+			Element signatureElement = (Element) signatureNodeList.item(i);
+			NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Paths().getDataObjectFormat());
+			for (int j = 0; j < dataObjectFormatList.getLength(); j++) {
+				Element dataObjectFormat = (Element) dataObjectFormatList.item(j);
+				String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
+				assertNotNull(objectReference);
+
+				Element elementById = DomUtils.getElementById(documentDOM, DomUtils.getId(objectReference));
+				assertNotNull(elementById);
+				assertTrue(XMLDSigElement.REFERENCE.isSameTagName(elementById.getLocalName()));
+			}
+		}
 	}
 
 	@Override

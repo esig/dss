@@ -59,6 +59,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import org.apache.xml.security.transforms.Transforms;
@@ -299,7 +300,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private ReferenceBuilder initReferenceBuilder() {
 		List<DSSDocument> detachedContent = Utils.isCollectionNotEmpty(params.getDetachedContents()) ?
 				params.getDetachedContents() : Arrays.asList(document);
-		return new ReferenceBuilder(detachedContent, params);
+		final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+		referenceIdProvider.setSignatureParameters(params);
+		return new ReferenceBuilder(detachedContent, params, referenceIdProvider);
 	}
 	
 	private void checkSignaturePackagingValidity() {
@@ -1075,7 +1078,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSignedDataObjectProperties() {
-		
 		incorporateDataObjectFormat();
 		incorporateCommitmentTypeIndications();
 		incorporateContentTimestamps();
@@ -1125,6 +1127,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				continue;
 			}
 
+			if (Utils.isStringEmpty(reference.getId())) {
+				throw new IllegalArgumentException("A reference shall have a defined Id attribute!");
+			}
 			final String dataObjectFormatObjectReference = DomUtils.toElementReference(reference.getId());
 
 			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
