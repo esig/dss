@@ -39,6 +39,7 @@ import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
@@ -51,7 +52,9 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -717,12 +720,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, char[] pwd) {
+		if (Utils.isCollectionEmpty(signatures)) {
+			return;
+		}
+
 		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
 			for (AdvancedSignature signature : signatures) {
 				PAdESSignature padesSignature = (PAdESSignature) signature;
-				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
-				DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
-				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, revisionContent, pwd));
+				analyzePdfModifications(document, padesSignature.getPdfRevision(), finalRevisionReader, pwd);
+			}
+			for (TimestampToken timestampToken : getUniqueTimestamps(signatures)) {
+				PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+				analyzePdfModifications(document, pdfTimestampToken.getPdfRevision(), finalRevisionReader, pwd);
 			}
 
 		} catch (Exception e) {
@@ -733,6 +742,53 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				LOG.error(errorMessage, e.getMessage());
 			}
 		}
+	}
+
+	private List<TimestampToken> getUniqueTimestamps(List<AdvancedSignature> signatures) {
+		List<TimestampToken> timestampTokens = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			timestampTokens.addAll(signature.getDocumentTimestamps());
+		}
+		return timestampTokens;
+	}
+
+	@Override
+	public void analyzeTimestampPdfModifications(DSSDocument document, List<TimestampToken> timestamps, char[] pwd) {
+		if (Utils.isCollectionEmpty(timestamps)) {
+			return;
+		}
+
+		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
+			for (TimestampToken timestampToken : timestamps) {
+				if (timestampToken instanceof PdfTimestampToken) {
+					PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+					analyzePdfModifications(document, pdfTimestampToken.getPdfRevision(), finalRevisionReader, pwd);
+				}
+			}
+
+		} catch (Exception e) {
+			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.error(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.error(errorMessage, e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * This method performs a modification analysis for a single given {@code pdfRevision}
+	 *
+	 * @param document {@link DSSDocument} the validating document
+	 * @param pdfRevision {@link PdfCMSRevision} signature revision to be validated
+	 * @param finalRevisionReader {@link PdfDocumentReader} final document revision
+	 * @param pwd char array representing the password string
+	 * @throws IOException if an exception occurs while reading the PDF document
+	 */
+	protected void analyzePdfModifications(DSSDocument document, PdfCMSRevision pdfRevision,
+										   PdfDocumentReader finalRevisionReader, char[] pwd) throws IOException {
+		DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+		pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, revisionContent, pwd));
 	}
 
 	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader,

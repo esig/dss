@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -17,6 +19,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2821ExtensionToLTLevelTest extends AbstractPAdESTestValidation {
 
@@ -53,6 +57,34 @@ public class DSS2821ExtensionToLTLevelTest extends AbstractPAdESTestValidation {
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
         assertEquals(SignatureLevel.PAdES_BASELINE_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signature.arePdfObjectModificationsDetected());
+        assertTrue(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
+
+        TimestampWrapper detachedTst = diagnosticData.getTimestampList().get(0);
+        assertFalse(Utils.isCollectionNotEmpty(detachedTst.getTimestampedSignatures()));
+
+        assertTrue(detachedTst.arePdfObjectModificationsDetected());
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfExtensionChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfSignatureOrFormFillChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
+        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfUndefinedChanges()));
+
+        TimestampWrapper docTst = diagnosticData.getTimestampList().get(1);
+        assertTrue(Utils.isCollectionNotEmpty(docTst.getTimestampedSignatures()));
+
+        assertTrue(docTst.arePdfObjectModificationsDetected());
+        assertTrue(Utils.isCollectionNotEmpty(docTst.getPdfExtensionChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(docTst.getPdfSignatureOrFormFillChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(docTst.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(docTst.getPdfUndefinedChanges()));
     }
 
 }
