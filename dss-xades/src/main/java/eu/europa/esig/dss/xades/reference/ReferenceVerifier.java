@@ -23,10 +23,12 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import java.util.List;
 
@@ -69,6 +71,13 @@ public class ReferenceVerifier {
                 if (reference.getObject() != null) {
                     LOG.debug("ds:Object is defined for reference with Id '{}'. Use the provided value.", reference.getId());
                     continue;
+                }
+                if (DomUtils.isElementReference(reference.getUri()) && !DSSXMLUtils.isObjectReferenceType(reference.getType()) && DomUtils.isDOM(reference.getContents())) {
+                    Document document = DomUtils.buildDOM(reference.getContents());
+                    String id = DomUtils.getId(reference.getUri());
+                    if (DomUtils.getElementById(document, id) == null) {
+                        throw new IllegalArgumentException(String.format("An element with Id '%s' has not been found in the provided content!", id));
+                    }
                 }
 
                 List<DSSTransform> transforms = reference.getTransforms();
