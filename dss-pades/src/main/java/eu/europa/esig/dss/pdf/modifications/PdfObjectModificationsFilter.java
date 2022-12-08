@@ -102,6 +102,8 @@ public class PdfObjectModificationsFilter {
             return true;
         } else if (isExtensionsChange(objectModification)) {
             return true;
+        } else if (isMetaDataChange(objectModification)) {
+            return true;
         }
         return false;
     }
@@ -160,8 +162,6 @@ public class PdfObjectModificationsFilter {
         } else if (isAnnotsFill(objectModification)) {
             return true;
         } else if (isFieldAppearanceCreationChange(objectModification)) {
-            return true;
-        } else if (isMetaDataChange(objectModification)) {
             return true;
         } else if (isCatalogPieceInfoChange(objectModification)) {
             return true;

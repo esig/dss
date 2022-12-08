@@ -55,7 +55,7 @@ public class DSS2821Test extends AbstractPAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertTrue(signature.arePdfObjectModificationsDetected());
         assertTrue(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
-        assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
         assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
         assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
 
