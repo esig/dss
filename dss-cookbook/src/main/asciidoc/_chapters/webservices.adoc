@@ -288,14 +288,69 @@ Samples:
 
 ===== Sign
 
+This method allows signing of given data with a server side certificate.
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/2/curl-request.adoc[Request]
+
+===== Sign with Mask function
+
+This method allows signing of given data with a server side certificate by providing a mask function (i.e. _MGF1_).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/2/curl-request.adoc[Request]
+
+===== Sign with Signature Algorithm
+
+This method allows signing of given data with a server side certificate by enforcing the target Signature Algorithm.
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/2/curl-request.adoc[Request]
+
+===== Sign Digest
+
 This method allows signing of given digests with a server side certificate.
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/sign-digest-document-remotely/3/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign/3/curl-request.adoc[Request]
+
+===== Sign Digest with Mask function
+
+This method allows signing of given digests with a server side certificate by providing a mask function (i.e. _MGF1_).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-mask-function/3/curl-request.adoc[Request]
+
+===== Sign Digest with Signature Algorithm
+
+This method allows signing of given data with a server side certificate by enforcing the target Signature Algorithm.
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/server-sign-with-signature-algo/3/curl-request.adoc[Request]
 
 [[RestValidationService]]
 ==== REST validation service

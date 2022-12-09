@@ -1,0 +1,6 @@
+[source,options="nowrap"]
+----
+{
+  "bytes" : "SGVsbG8gV29ybGQh"
+}
+----
