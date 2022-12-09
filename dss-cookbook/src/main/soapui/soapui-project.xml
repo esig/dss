@@ -3247,7 +3247,89 @@
          </timestampDocumentDTO>\r
       </sig:timestampDocument>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="91435f45-5807-48a6-b1f9-73f69cd7027d" wsaVersion="NONE" name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="wsdl" bindingName="{http://token.dss.esig.europa.eu/}SoapSignatureTokenConnectionImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/server-signing?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/server-signing?wsdl"><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnectionImplService" targetNamespace="http://token.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://token.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapMultipleDocumentsSignatureService/timestampDocument"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="91435f45-5807-48a6-b1f9-73f69cd7027d" wsaVersion="NONE" name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signing.server.ws.dss.esig.europa.eu/}SoapSignatureTokenConnectionImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/server-signing?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/server-signing?wsdl"><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnectionImplService" targetNamespace="http://soap.signing.server.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signing.server.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://server-signing.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/server-signing?wsdl=SoapSignatureTokenConnection.wsdl" namespace="http://server-signing.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="ns1:SoapSignatureTokenConnection">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="signDigestWithMask">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDigestWithMask">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDigestWithMaskResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signWithMask">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signWithMask">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signWithMaskResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getKeys">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getKeys">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getKeysResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="sign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDigestWithSignatureAlgo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDigestWithSignatureAlgo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDigestWithSignatureAlgoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDigest">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signDigest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signDigestResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getKey">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getKey">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getKeyResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signWithSignatureAlgo">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="signWithSignatureAlgo">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="signWithSignatureAlgoResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SoapSignatureTokenConnectionImplService">
+    <wsdl:port binding="tns:SoapSignatureTokenConnectionImplServiceSoapBinding" name="SoapSignatureTokenConnectionImplPort">
+      <soap:address location="http://localhost:8080/services/soap/server-signing"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/server-signing?wsdl=SoapSignatureTokenConnection.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapSignatureTokenConnection" targetNamespace="http://server-signing.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://server-signing.dss.esig.europa.eu/">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://server-signing.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server-signing.dss.esig.europa.eu/">
       <xs:element name="getKey" type="tns:getKey"/>
@@ -3259,9 +3341,13 @@
       <xs:element name="signDigestResponse" type="tns:signDigestResponse"/>
       <xs:element name="signDigestWithMask" type="tns:signDigestWithMask"/>
       <xs:element name="signDigestWithMaskResponse" type="tns:signDigestWithMaskResponse"/>
+      <xs:element name="signDigestWithSignatureAlgo" type="tns:signDigestWithSignatureAlgo"/>
+      <xs:element name="signDigestWithSignatureAlgoResponse" type="tns:signDigestWithSignatureAlgoResponse"/>
       <xs:element name="signResponse" type="tns:signResponse"/>
       <xs:element name="signWithMask" type="tns:signWithMask"/>
       <xs:element name="signWithMaskResponse" type="tns:signWithMaskResponse"/>
+      <xs:element name="signWithSignatureAlgo" type="tns:signWithSignatureAlgo"/>
+      <xs:element name="signWithSignatureAlgoResponse" type="tns:signWithSignatureAlgoResponse"/>
       <xs:complexType name="signDigestWithMask">
         <xs:sequence>
           <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
@@ -3337,6 +3423,18 @@
           <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
+      <xs:complexType name="signDigestWithSignatureAlgo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
+          <xs:element minOccurs="0" name="signatureAlgorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="alias" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signDigestWithSignatureAlgoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
+        </xs:sequence>
+      </xs:complexType>
       <xs:complexType name="signDigest">
         <xs:sequence>
           <xs:element minOccurs="0" name="digest" type="tns:digestDTO"/>
@@ -3356,6 +3454,18 @@
       <xs:complexType name="getKeyResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteKeyEntry"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signWithSignatureAlgo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="toBeSigned" type="tns:toBeSignedDTO"/>
+          <xs:element minOccurs="0" name="signatureAlgorithm" type="tns:signatureAlgorithm"/>
+          <xs:element minOccurs="0" name="alias" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signWithSignatureAlgoResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="response" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
       <xs:simpleType name="digestAlgorithm">
@@ -3453,97 +3563,103 @@
           <xs:enumeration value="ED448"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:element name="DSSException" type="tns:DSSException"/>
-      <xs:complexType name="DSSException">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="message" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
+      <xs:simpleType name="encryptionAlgorithm">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="RSA"/>
+          <xs:enumeration value="DSA"/>
+          <xs:enumeration value="ECDSA"/>
+          <xs:enumeration value="PLAIN_ECDSA"/>
+          <xs:enumeration value="X25519"/>
+          <xs:enumeration value="X448"/>
+          <xs:enumeration value="EDDSA"/>
+          <xs:enumeration value="HMAC"/>
+        </xs:restriction>
+      </xs:simpleType>
     </xs:schema>
   </wsdl:types>
-  <wsdl:message name="sign">
-    <wsdl:part element="tns:sign" name="parameters"></wsdl:part>
+  <wsdl:message name="signDigestWithMask">
+    <wsdl:part element="ns1:signDigestWithMask" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getKeysResponse">
-    <wsdl:part element="tns:getKeysResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getKeys">
-    <wsdl:part element="tns:getKeys" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getKeyResponse">
-    <wsdl:part element="tns:getKeyResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="DSSException">
-    <wsdl:part element="tns:DSSException" name="DSSException"></wsdl:part>
+  <wsdl:message name="signWithMaskResponse">
+    <wsdl:part element="ns1:signWithMaskResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="signResponse">
-    <wsdl:part element="tns:signResponse" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:signResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signWithMask">
+    <wsdl:part element="ns1:signWithMask" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDigestWithSignatureAlgoResponse">
+    <wsdl:part element="ns1:signDigestWithSignatureAlgoResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDigestResponse">
+    <wsdl:part element="ns1:signDigestResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getKeyResponse">
+    <wsdl:part element="ns1:getKeyResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getKeysResponse">
+    <wsdl:part element="ns1:getKeysResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDigestWithSignatureAlgo">
+    <wsdl:part element="ns1:signDigestWithSignatureAlgo" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDigest">
+    <wsdl:part element="ns1:signDigest" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signWithSignatureAlgo">
+    <wsdl:part element="ns1:signWithSignatureAlgo" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signDigestWithMaskResponse">
+    <wsdl:part element="ns1:signDigestWithMaskResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getKeys">
+    <wsdl:part element="ns1:getKeys" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="signWithSignatureAlgoResponse">
+    <wsdl:part element="ns1:signWithSignatureAlgoResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="sign">
+    <wsdl:part element="ns1:sign" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="getKey">
-    <wsdl:part element="tns:getKey" name="parameters"></wsdl:part>
+    <wsdl:part element="ns1:getKey" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:portType name="SoapSignatureTokenConnection">
-    <wsdl:operation name="getKey">
-      <wsdl:input message="tns:getKey" name="getKey"></wsdl:input>
-      <wsdl:output message="tns:getKeyResponse" name="getKeyResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+    <wsdl:operation name="signDigestWithMask">
+      <wsdl:input message="ns1:signDigestWithMask" name="signDigestWithMask"></wsdl:input>
+      <wsdl:output message="ns1:signDigestWithMaskResponse" name="signDigestWithMaskResponse"></wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="sign">
-      <wsdl:input message="tns:sign" name="sign"></wsdl:input>
-      <wsdl:output message="tns:signResponse" name="signResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+    <wsdl:operation name="signWithMask">
+      <wsdl:input message="ns1:signWithMask" name="signWithMask"></wsdl:input>
+      <wsdl:output message="ns1:signWithMaskResponse" name="signWithMaskResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getKeys">
-      <wsdl:input message="tns:getKeys" name="getKeys"></wsdl:input>
-      <wsdl:output message="tns:getKeysResponse" name="getKeysResponse"></wsdl:output>
-      <wsdl:fault message="tns:DSSException" name="DSSException"></wsdl:fault>
+      <wsdl:input message="ns1:getKeys" name="getKeys"></wsdl:input>
+      <wsdl:output message="ns1:getKeysResponse" name="getKeysResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="sign">
+      <wsdl:input message="ns1:sign" name="sign"></wsdl:input>
+      <wsdl:output message="ns1:signResponse" name="signResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDigestWithSignatureAlgo">
+      <wsdl:input message="ns1:signDigestWithSignatureAlgo" name="signDigestWithSignatureAlgo"></wsdl:input>
+      <wsdl:output message="ns1:signDigestWithSignatureAlgoResponse" name="signDigestWithSignatureAlgoResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signDigest">
+      <wsdl:input message="ns1:signDigest" name="signDigest"></wsdl:input>
+      <wsdl:output message="ns1:signDigestResponse" name="signDigestResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getKey">
+      <wsdl:input message="ns1:getKey" name="getKey"></wsdl:input>
+      <wsdl:output message="ns1:getKeyResponse" name="getKeyResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="signWithSignatureAlgo">
+      <wsdl:input message="ns1:signWithSignatureAlgo" name="signWithSignatureAlgo"></wsdl:input>
+      <wsdl:output message="ns1:signWithSignatureAlgoResponse" name="signWithSignatureAlgoResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="SoapSignatureTokenConnectionImplServiceSoapBinding" type="tns:SoapSignatureTokenConnection">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="getKey">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getKey">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getKeyResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="sign">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="sign">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="signResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-    <wsdl:operation name="getKeys">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getKeys">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getKeysResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-      <wsdl:fault name="DSSException">
-        <soap:fault name="DSSException" use="literal"/>
-      </wsdl:fault>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="SoapSignatureTokenConnectionImplService">
-    <wsdl:port binding="tns:SoapSignatureTokenConnectionImplServiceSoapBinding" name="SoapSignatureTokenConnectionImplPort">
-      <soap:address location="http://localhost:8080/services/soap/ServerSigningService"/>
-    </wsdl:port>
-  </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/ServerSigningService</con:endpoint></con:endpoints><con:operation id="c8f77b0b-49d2-4f0e-ad2b-516102b957c9" isOneWay="false" action="" name="getKey" bindingOperationName="getKey" type="Request-Response" outputName="getKeyResponse" inputName="getKey" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="965a2983-160f-48c3-a012-d9d298f012c2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/ServerSigningService</con:endpoint><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint></con:endpoints><con:operation id="c8f77b0b-49d2-4f0e-ad2b-516102b957c9" isOneWay="false" action="" name="getKey" bindingOperationName="getKey" type="Request-Response" outputName="getKeyResponse" inputName="getKey" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="965a2983-160f-48c3-a012-d9d298f012c2" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tok="http://server-signing.dss.esig.europa.eu/">
    <soapenv:Header/>
    <soapenv:Body>
       <tok:getKeys/>
@@ -3567,7 +3683,53 @@
          <alias>certificate</alias>\r
       </tok:sign>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/sign"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="f3fac3aa-7944-4f10-a0f6-fec74062f66d" wadlVersion="http://wadl.dev.java.net/2009/02" name="DSS-SOAP-REST" type="rest" definitionUrl="absol" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT"/><con:endpoints/></con:interface><con:interface xsi:type="con:WsdlInterface" id="a28e7896-fea1-471d-bbab-c43c9bb9e867" wsaVersion="NONE" name="SoapCertificateValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.validation.cert.ws.dss.esig.europa.eu/}SoapCertificateValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapCertificateValidationServiceImplService" targetNamespace="http://soap.validation.cert.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.validation.cert.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://certificate-validation.dss.esig.europa.eu/">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/sign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="592a2c82-4b55-4b51-a845-c7a143841a03" isOneWay="false" action="" name="signDigestWithMask" bindingOperationName="signDigestWithMask" type="Request-Response" outputName="signDigestWithMaskResponse" inputName="signDigestWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation><con:operation id="ffe1c912-7fe1-4acb-b7d7-ddfb4befdb0f" isOneWay="false" action="" name="signWithMask" bindingOperationName="signWithMask" type="Request-Response" outputName="signWithMaskResponse" inputName="signWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation><con:operation id="6339e13b-f188-4b98-94e5-d45fba0e0a83" isOneWay="false" action="" name="signDigestWithSignatureAlgo" bindingOperationName="signDigestWithSignatureAlgo" type="Request-Response" outputName="signDigestWithSignatureAlgoResponse" inputName="signDigestWithSignatureAlgo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7ee4d562-87b8-4c65-9c95-3247f756b3fd" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <ser:signDigestWithSignatureAlgo>\r
+         <!--Optional:-->\r
+         <digest>\r
+            <!--Optional:-->\r
+            <algorithm>SHA256</algorithm>\r
+            <!--Optional:-->\r
+            <value>MDEwDQYJYIZIAWUDBAIBBQAEIHT4H+Fn2ZtMtB1tDM2oInjK7p8+LyXV5aOTb/Pc7GDQ</value>\r
+         </digest>\r
+         <!--Optional:-->\r
+         <signatureAlgorithm>RSA_SHA256</signatureAlgorithm>\r
+         <!--Optional:-->\r
+         <alias>certificate</alias>\r
+      </ser:signDigestWithSignatureAlgo>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signing.server.ws.dss.esig.europa.eu/SoapSignatureTokenConnection/signDigestWithSignatureAlgo"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="c10a3cbd-900b-4db5-8c9c-02fd3859c256" isOneWay="false" action="" name="signDigest" bindingOperationName="signDigest" type="Request-Response" outputName="signDigestResponse" inputName="signDigest" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="46eb5e07-8a5b-43c8-8c73-69917b104de3" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <ser:signDigest>\r
+         <!--Optional:-->\r
+         <digest>
+            <!--Optional:-->
+            <algorithm>SHA256</algorithm>
+            <!--Optional:-->
+            <value>MDEwDQYJYIZIAWUDBAIBBQAEIHT4H+Fn2ZtMtB1tDM2oInjK7p8+LyXV5aOTb/Pc7GDQ</value>
+         </digest>
+         <!--Optional:-->\r
+         <alias>certificate</alias>
+      </ser:signDigest>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signing.server.ws.dss.esig.europa.eu/SoapSignatureTokenConnection/signDigest"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="7b1dc225-6ad1-4323-837b-db48549ff3aa" isOneWay="false" action="" name="signWithSignatureAlgo" bindingOperationName="signWithSignatureAlgo" type="Request-Response" outputName="signWithSignatureAlgoResponse" inputName="signWithSignatureAlgo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="fdd1c430-ce0d-41da-9262-f49b230d0cae" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <ser:signWithSignatureAlgo>\r
+         <!--Optional:-->
+         <toBeSigned>
+            <bytes>wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro=</bytes>
+         </toBeSigned>
+         <!--Optional:-->\r
+         <signatureAlgorithm>RSA_SHA256</signatureAlgorithm>\r
+         <!--Optional:-->
+         <alias>certificate</alias>
+      </ser:signWithSignatureAlgo>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signing.server.ws.dss.esig.europa.eu/SoapSignatureTokenConnection/signWithSignatureAlgo"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="f3fac3aa-7944-4f10-a0f6-fec74062f66d" wadlVersion="http://wadl.dev.java.net/2009/02" name="DSS-SOAP-REST" type="rest" definitionUrl="absol" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT"/><con:endpoints/></con:interface><con:interface xsi:type="con:WsdlInterface" id="a28e7896-fea1-471d-bbab-c43c9bb9e867" wsaVersion="NONE" name="SoapCertificateValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.validation.cert.ws.dss.esig.europa.eu/}SoapCertificateValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapCertificateValidationServiceImplService" targetNamespace="http://soap.validation.cert.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.validation.cert.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://certificate-validation.dss.esig.europa.eu/">
   <wsdl:import location="http://localhost:8080/dss-demo-webapp/services/soap/certificate-validation?wsdl=SoapCertificateValidationService.wsdl" namespace="http://certificate-validation.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapCertificateValidationServiceImplServiceSoapBinding" type="ns1:SoapCertificateValidationService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>

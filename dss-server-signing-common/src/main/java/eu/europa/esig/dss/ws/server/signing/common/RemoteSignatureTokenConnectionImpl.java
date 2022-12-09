@@ -22,7 +22,9 @@ package eu.europa.esig.dss.ws.server.signing.common;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
@@ -85,18 +87,35 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	@Override
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return DTOConverter.toSignatureValueDTO(token.sign(DTOConverter.toToBeSigned(toBeSigned), digestAlgorithm, mgf, key));
+		SignatureValue signatureValue = token.sign(DTOConverter.toToBeSigned(toBeSigned), digestAlgorithm, mgf, key);
+		return DTOConverter.toSignatureValueDTO(signatureValue);
+	}
+
+	@Override
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, SignatureAlgorithm signatureAlgorithm, String alias) throws DSSException {
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		SignatureValue signatureValue = token.sign(DTOConverter.toToBeSigned(toBeSigned), signatureAlgorithm, key);
+		return DTOConverter.toSignatureValueDTO(signatureValue);
+
 	}
 
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, String alias) throws DSSException {
-		return signDigest(digest, null, alias);
+		return signDigest(digest, (MaskGenerationFunction) null, alias);
 	}
 
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		return DTOConverter.toSignatureValueDTO(token.signDigest(DTOConverter.toDigest(digest), mgf, key));
+		SignatureValue signatureValue = token.signDigest(DTOConverter.toDigest(digest), mgf, key);
+		return DTOConverter.toSignatureValueDTO(signatureValue);
+	}
+
+	@Override
+	public SignatureValueDTO signDigest(DigestDTO digest, SignatureAlgorithm signatureAlgorithm, String alias) throws DSSException {
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		SignatureValue signatureValue = token.signDigest(DTOConverter.toDigest(digest), signatureAlgorithm, key);
+		return DTOConverter.toSignatureValueDTO(signatureValue);
 	}
 
 	private RemoteKeyEntry convert(KSPrivateKeyEntry key) {
