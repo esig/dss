@@ -35,6 +35,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
@@ -113,6 +114,11 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		initializeSignatureBuilder(xadesSignature);
 		
 		DSSReference reference = new DSSReference();
+
+		ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+		referenceIdProvider.setSignatureParameters(parameters);
+		reference.setId(referenceIdProvider.getReferenceId());
+
 		byte[] signatureElementBinaries = DSSXMLUtils.serializeNode(xadesSignature.getSignatureElement());
 		reference.setContents(new InMemoryDocument(signatureElementBinaries));
 		reference.setDigestMethodAlgorithm(getReferenceDigestAlgorithmOrDefault(parameters));

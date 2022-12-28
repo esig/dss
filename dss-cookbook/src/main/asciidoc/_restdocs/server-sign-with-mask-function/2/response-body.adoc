@@ -1,0 +1,7 @@
+[source,options="nowrap"]
+----
+{
+  "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
+  "value" : "knYsZBXQUrPDOm8oSVkBybufvPgTCi+n20kVkrwVRGRHtHBoKUwJ8pQxoH2adQ51iO4qd6GAhXS6rrzySUB6LjYS5yZDEW8B57TYqM8KuC5JDsq3hhoJ4ZMCr1TvGkA26rY2PIWm5OcaVPGVgBkqcXpNak7OjWchcFspOTeHBigCleNnIGTlfZG/fp0g45ERcZMB84N/YfxOd0oa9BIAFy7BsRWyENBtLm/vYLEvbVlcY3o4iEpP0o49UUYlePNEKvNb+DAYwvdE5hzUShpcVqEIeDmLbEEE1bU70kcLnnVnhEVmXGWig7jmSJkkMHgumh0lNKRIW5sCBytwGGJcug=="
+}
+----

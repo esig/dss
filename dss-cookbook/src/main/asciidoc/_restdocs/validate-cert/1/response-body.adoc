@@ -3,8 +3,9 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2022-07-29T13:53:01Z",
+    "ValidationDate" : "2022-12-09T10:27:15Z",
     "ContainerInfo" : null,
+    "PDFAInfo" : null,
     "Signature" : null,
     "Certificate" : [ {
       "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
@@ -116,7 +117,7 @@
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2022-07-29T13:53:01Z"
+    "ValidationTime" : "2022-12-09T10:27:15Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

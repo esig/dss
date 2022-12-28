@@ -38,6 +38,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
@@ -97,7 +98,9 @@ public class AllDataObjectsTimeStampBuilder {
 		// Prepare references
 		List<DSSReference> references = signatureParameters.getReferences();
 		if (Utils.isCollectionEmpty(references)) {
-			final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
+			final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+			referenceIdProvider.setSignatureParameters(signatureParameters);
+			final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters, referenceIdProvider);
 			references = referenceBuilder.build();
 			signatureParameters.getContext().setReferences(references);
 		} else {

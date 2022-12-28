@@ -22,6 +22,7 @@ package eu.europa.esig.dss.ws.server.signing.common;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
@@ -90,6 +91,22 @@ public interface RemoteSignatureTokenConnection {
 	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException;
 
 	/**
+	 * This method signs the {@code toBeSigned} data with the digest
+	 * {@code signatureAlgorithm} and the given {@code alias}.
+	 *
+	 * @param toBeSigned
+	 *                        The data that need to be signed
+	 * @param signatureAlgorithm
+	 *                        The signature algorithm to be used for signing
+	 * @param alias
+	 *                        The key alias to be used
+	 * @return The array of bytes representing the signature value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, SignatureAlgorithm signatureAlgorithm, String alias) throws DSSException;
+
+	/**
 	 * 
 	 * This method signs the {@code digest} data with the given {@code alias}.
 	 * 
@@ -105,7 +122,6 @@ public interface RemoteSignatureTokenConnection {
 	SignatureValueDTO signDigest(DigestDTO digest, String alias) throws DSSException;
 
 	/**
-	 * 
 	 * This method signs the {@code digest} data with a mask {@code mgf} and the
 	 * given {@code alias}.
 	 * 
@@ -121,5 +137,22 @@ public interface RemoteSignatureTokenConnection {
 	 *                      If there is any problem during the signature process
 	 */
 	SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException;
+
+	/**
+	 * This method signs the {@code digest} data with a {@code signatureAlgorithm} and the
+	 * given {@code alias}.
+	 *
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param signatureAlgorithm
+	 *                        The signature algorithm to be used for signing
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 * @throws DSSException
+	 *                      If there is any problem during the signature process
+	 */
+	SignatureValueDTO signDigest(DigestDTO digest, SignatureAlgorithm signatureAlgorithm, String alias) throws DSSException;
 
 }

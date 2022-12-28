@@ -1,0 +1,12 @@
+[source,http,options="nowrap"]
+----
+POST /services/rest/server-signing/sign/certificate/SHA256/MGF1 HTTP/1.1
+Accept: application/json, application/javascript, text/javascript, text/json
+Content-Type: application/json; charset=UTF-8
+Host: localhost:8080
+Content-Length: 36
+
+{
+  "bytes" : "SGVsbG8gV29ybGQh"
+}
+----

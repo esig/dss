@@ -1,14 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 29 Jul 2022 13:52:59 GMT
+Date: Fri, 09 Dec 2022 10:27:11 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Security-Policy: default-src 'self' http://localhost:9795 fonts.googleapis.com fonts.gstatic.com cdnjs.cloudflare.com 'unsafe-inline' data:;
+Content-Security-Policy: default-src 'self' http://localhost:9795 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -18,6 +18,6 @@ Content-Length: 395
 
 {
   "algorithm" : "RSA_SHA256",
-  "value" : "L4pUix0qPa7Mv4VdBKti1ul+xuW7YkjaLmVpS3Xgu8UpEQTR/U3jjHayL7YBsIXqJTVRMtD7AycGGGPALCc5i33JHrc+XN7CzR6nAOy9duDpfeGV4PX+slkg2/HyZBW2PzrRffyoP5Exa7bqsnHTTYz5co22Zgga4WTEtedLv1LMsYvJ/MAuIVxU9uu+5YWNkGlxQG0cuTWBDyI3WjIsPW69I/VpPI2zJSYUJCFeS6nJf1IbEiRMtZ7pnJt90hvaOAjPgkF+3Kt1NRIt6VH4kzmm1LWE/110hTTX/DOGbknJ4+YlYsqea1MjUhKoYWo1a+x8eqkvpNdGCMPpaxdBzg=="
+  "value" : "rWxq0KrD6eDtXwbp+tT9gvcaBbcnZVMaATIins1cw01krEVmlXOD5ZqUxsPijcaZb/H/8cdy/XYnYFVNq+SkkQJPpCRwp1zAbgorSBbJzBVWSoZdVwdUCjqGcezJO0LlzMjnqWxYtHHuYs8ql+Rr7xnVQcV+vjxn8exEqV4QV83CpTFRWbDelGW/dMhYxqjrbxcklH9e2MnS6tw/GeWVD5PwUBPNBDhp5tI7N6tOBXSm4mKVDCtYtWKAz2ISJPJarmwITv4FF5/Y3D8S33Sd0d0uNn2P4ffiJayY4fFSbGkZU7lowK4B8Gp9r9ltWkwfhybS2b8t/4ng2XFomT32+Q=="
 }
 ----
