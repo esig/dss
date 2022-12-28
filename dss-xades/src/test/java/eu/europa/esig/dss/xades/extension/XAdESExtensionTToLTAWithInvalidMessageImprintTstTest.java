@@ -153,7 +153,7 @@ public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends Abstra
 
         private TSPSource getTspSource() {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
+            calendar.setTime(getSigningCert().getNotAfter());
             calendar.add(Calendar.MONTH, -6);
             Date tstTime = calendar.getTime();
             return getGoodTsaByTime(tstTime);

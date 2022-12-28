@@ -57,7 +57,7 @@ public class XAdESExtensionTToLTAWithExpiredCertificateTest extends AbstractXAdE
     @Override
     protected TSPSource getUsedTSPSourceAtSignatureTime() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(getSigningCert().getNotAfter());
         calendar.add(Calendar.MONTH, -6);
         Date tstTime = calendar.getTime();
         return getGoodTsaByTime(tstTime);
