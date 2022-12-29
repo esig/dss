@@ -39,6 +39,8 @@ import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -49,6 +51,8 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.JAdES_BASELINE_LT;
  * Creates an LT-level of a JAdES signature
  */
 public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
+
+	private static final Logger LOG = LoggerFactory.getLogger(JAdESLevelBaselineLT.class);
 
 	/**
 	 * The default constructor
@@ -75,7 +79,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 			/**
 			 * In all cases the -LT level need to be regenerated.
 			 */
-			checkSignatureIntegrity(jadesSignature);
+			assertSignatureValid(jadesSignature, params);
 
 			// Data sources can already be loaded in memory (force reload)
 			jadesSignature.resetCertificateSource();
@@ -228,7 +232,12 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	 * @param jadesSignature {@link JAdESSignature} to verify
 	 * @throws DSSException in case of the cryptographic signature verification fails
 	 */
-	protected void checkSignatureIntegrity(JAdESSignature jadesSignature) throws DSSException {
+	protected void assertSignatureValid(JAdESSignature jadesSignature, JAdESSignatureParameters params) throws DSSException {
+		if (params.isGenerateTBSWithoutCertificate() && jadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
+			return;
+		}
+
 		final SignatureCryptographicVerification signatureCryptographicVerification = jadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
@@ -248,6 +257,8 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		if (JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
 			throw new IllegalInputException(String.format(
 					"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
+		} else if (jadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
 		} else if (jadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}

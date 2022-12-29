@@ -70,7 +70,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertExtendSignatureToLTAPossible(jadesSignature, params);
-			checkSignatureIntegrity(jadesSignature);
+			assertSignatureValid(jadesSignature, params);
 
 			if (jadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;

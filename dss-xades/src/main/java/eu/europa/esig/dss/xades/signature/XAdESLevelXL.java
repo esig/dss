@@ -73,7 +73,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 				continue;
 			}
 			
-			checkSignatureIntegrity();
+			assertSignatureValid(signature);
 
 			// NOTE: do not force sources reload for certificate and revocation sources
 			// in order to ensure the same validation data as on -C level

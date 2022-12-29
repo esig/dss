@@ -568,10 +568,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		validationContext.checkAllTimestampsValid();
 		validationContext.checkAllRequiredRevocationDataPresent();
 		validationContext.checkAllPOECoveredByRevocationData();
-		validationContext.checkAllCertificatesValid();
 
 		for (final AdvancedSignature signature : signatures) {
 			validationContext.checkSignatureNotExpired(signature);
+			validationContext.checkCertificatesNotRevoked(signature);
 			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
 		}
 	}

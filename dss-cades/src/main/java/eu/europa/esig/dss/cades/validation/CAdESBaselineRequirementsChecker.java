@@ -329,7 +329,8 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         // complete-revocation-references
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
-        boolean allSelfSigned = certificateSources.isAllSelfSigned();
+        boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+        boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
         if (!allSelfSigned &&
                 CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs) == null) {
             LOG.debug("complete-revocation-references attribute shall be present for CAdES-C signature (cardinality == 1)!");

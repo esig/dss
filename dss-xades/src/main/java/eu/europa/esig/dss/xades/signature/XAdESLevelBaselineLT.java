@@ -76,7 +76,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			/**
 			 * In all cases the -LT level need to be regenerated.
 			 */
-			checkSignatureIntegrity();
+			assertSignatureValid(signature);
 
 			// Data sources can already be loaded in memory (force reload)
 			xadesSignature.resetCertificateSource();
@@ -133,6 +133,8 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		if (XAdES_BASELINE_LT.equals(signatureLevel) && xadesSignature.hasLTAProfile()) {
 			throw new IllegalInputException(String.format(
 					"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
+		} else if (xadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
 		} else if (xadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend signature. The signature contains only self-signed certificate chains.");
 		}

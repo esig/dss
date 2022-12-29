@@ -92,8 +92,11 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESTwoSignersLTALevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPSSTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPemEncodedCrlTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
+import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelLTAWithoutCertificatesTest;
+import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelLTWithoutCertificatesTest;
+import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelTWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFSignWithPermissionsTest;
-import eu.europa.esig.dss.pades.signature.suite.PDFSignatureWithoutCertificatesTest;
+import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelBWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
@@ -114,7 +117,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
         PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
 		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class,
-		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFSignatureWithoutCertificatesTest.class,
+		PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFNotAdESLevelBWithoutCertificatesTest.class,
+		PDFNotAdESLevelTWithoutCertificatesTest.class, PDFNotAdESLevelLTWithoutCertificatesTest.class, PDFNotAdESLevelLTAWithoutCertificatesTest.class,
 		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
 		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
 		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,

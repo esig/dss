@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlNonAdESExtensionToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
+public class XmlNonAdESExtensionTToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
     private final DSSNamespace xmldsigNamespace = XAdESNamespaces.XMLDSIG;
 

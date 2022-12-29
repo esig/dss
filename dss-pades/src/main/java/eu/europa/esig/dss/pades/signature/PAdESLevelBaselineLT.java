@@ -91,6 +91,8 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 			if (!tLevelAdded && PAdES_BASELINE_LT.equals(signatureLevel) && padesSignature.hasLTAProfile()) {
 				throw new IllegalInputException(String.format(
 						"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
+			} else if (padesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+				throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
 			} else if (padesSignature.areAllSelfSignedCertificates()) {
 				throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 			}
