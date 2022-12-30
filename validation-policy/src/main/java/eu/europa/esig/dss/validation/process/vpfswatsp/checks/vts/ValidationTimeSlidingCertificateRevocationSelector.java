@@ -26,11 +26,14 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.LongTermValidationCertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.POEExistsAtOrBeforeControlTimeCheck;
@@ -115,6 +118,28 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
 
     private ChainItem<XmlCRS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType objectType, Date controlTime) {
         return new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelConstraint());
+    }
+
+    @Override
+    protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
+        /*
+         * If at least one revocation status information is selected, the building block shall go to the next step.
+         * If there is no such information, the building block shall return the indication INDETERMINATE with the
+         * sub-indication NO_POE.
+         */
+        return new AcceptableRevocationDataAvailableCheck<XmlCRS>(i18nProvider, result, getLatestAcceptableCertificateRevocation(), getFailLevelConstraint()) {
+
+            @Override
+            protected Indication getFailedIndicationForConclusion() {
+                return Indication.INDETERMINATE;
+            }
+
+            @Override
+            protected SubIndication getFailedSubIndicationForConclusion() {
+                return SubIndication.NO_POE;
+            }
+
+        };
     }
 
 }

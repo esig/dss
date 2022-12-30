@@ -73,7 +73,7 @@ public class RevocationDataKnownCheck extends ChainItem<XmlRAC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
 	}
 
 }

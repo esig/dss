@@ -230,6 +230,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
 	 *
 	 * @param jadesSignature {@link JAdESSignature} to verify
+	 * @param params {@link JAdESSignatureParameters} the used signature parameters
 	 * @throws DSSException in case of the cryptographic signature verification fails
 	 */
 	protected void assertSignatureValid(JAdESSignature jadesSignature, JAdESSignatureParameters params) throws DSSException {

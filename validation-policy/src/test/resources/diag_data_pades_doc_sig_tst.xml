@@ -130,7 +130,11 @@
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
-            <Revocations/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-16466B98FF29731097CF59BA87C44F41776DAE800951DF0EE13B809F8F5829D8">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>IRKQAVhshdrHr5UZFZeYIgwTDXmGb58v/kDkU3rf9iU=</DigestValue>
@@ -268,7 +272,11 @@
             <SelfSigned>false</SelfSigned>
             <CertificatePolicies/>
             <TrustedServiceProviders/>
-            <Revocations/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-BB5E1A38313936574960C8074008F687CC0EC25759102F2512758F3CEB4C73B7">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>u1UOpQo83E39Ozrbzpq93ugRpWiq+C4nWYaPBKVh+HM=</DigestValue>
@@ -327,8 +335,120 @@
                 <DigestValue>9NjK7h7sRIM5b6x0bL4XZ0HtV68rMNxteOeAkDmlkBA=</DigestValue>
             </DigestAlgoAndValue>
         </Certificate>
+        <Certificate Id="C-135540892349649E7A0AD2727E17FEDC193EB67E4CE2674D2C5A09677893A0EF">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>2</SerialNumber>
+            <CommonName>ocsp-responder</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-10-14T05:38:44Z</NotAfter>
+            <NotBefore>2019-10-14T05:38:44Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E70C13F35C36899888CD23BF0C76788D4E50757B0E41FD5B3C6B7F269BC3B762</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies/>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>E1VAiSNJZJ56CtJyfhf+3Bk+tn5M4mdNLFoJZ3iToO8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
     </UsedCertificates>
-    <UsedRevocations/>
+    <UsedRevocations>
+        <Revocation Id="R-16466B98FF29731097CF59BA87C44F41776DAE800951DF0EE13B809F8F5829D8">
+            <Origin>CACHED</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-12-01T07:57:36Z</ProductionDate>
+            <ThisUpdate>2020-12-01T07:57:36Z</ThisUpdate>
+            <NextUpdate>2020-12-08T07:57:36Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>FkZrmP8pcxCXz1m6h8RPQXdtroAJUd8O4TuAn49YKdg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-BB5E1A38313936574960C8074008F687CC0EC25759102F2512758F3CEB4C73B7">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://dss.nowina.lu/pki-factory/ocsp/good-ca</SourceAddress>
+            <ProductionDate>2020-12-01T07:57:36Z</ProductionDate>
+            <ThisUpdate>2020-12-01T07:57:36Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-135540892349649E7A0AD2727E17FEDC193EB67E4CE2674D2C5A09677893A0EF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-135540892349649E7A0AD2727E17FEDC193EB67E4CE2674D2C5A09677893A0EF"/>
+                <ChainItem Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-AA26499665C23E68A821027DE13AABAC56454728027F75145F91FDE2B11D4CCA">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-135540892349649E7A0AD2727E17FEDC193EB67E4CE2674D2C5A09677893A0EF">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>fYzYDQ5eja2EEazitbDdxZQvyrE=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>u14aODE5NldJYMgHQAj2h8wOwldZEC8lEnWPPOtMc7c=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
     <UsedTimestamps>
         <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-88891AC24DF9FFA02527F3066498D4A034BC7A21BC678EDA3E58D588C737C11B">
             <ProductionTime>2020-12-01T08:27:35Z</ProductionTime>

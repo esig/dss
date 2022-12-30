@@ -74,7 +74,7 @@ public class AcceptableRevocationDataAvailableCheck<T extends XmlConstraintsConc
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
 	}
 
 	@Override

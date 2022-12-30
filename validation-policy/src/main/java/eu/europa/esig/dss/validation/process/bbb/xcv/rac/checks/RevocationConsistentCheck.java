@@ -231,7 +231,7 @@ public class RevocationConsistentCheck<T extends XmlConstraintsConclusion> exten
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
 	}
 
 	@Override

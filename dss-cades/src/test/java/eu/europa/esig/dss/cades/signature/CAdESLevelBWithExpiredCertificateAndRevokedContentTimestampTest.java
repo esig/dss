@@ -80,7 +80,6 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 		List<TimestampToken> contentTimestamps = Arrays.asList(contentTimestamp);
 		signatureParameters.setContentTimestamps(contentTimestamps);
-
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		Indication indication = simpleReport.getIndication(simpleReport.getFirstSignatureId());
 		assertEquals(Indication.INDETERMINATE, indication);
 		SubIndication subIndication = simpleReport.getSubIndication(simpleReport.getFirstSignatureId());
-		assertEquals(SubIndication.TRY_LATER, subIndication);
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, subIndication);
 	}
 	
 	@Override
