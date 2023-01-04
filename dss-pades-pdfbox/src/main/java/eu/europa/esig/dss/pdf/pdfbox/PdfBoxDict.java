@@ -191,7 +191,7 @@ class PdfBoxDict implements PdfDict {
 	@Override
 	public byte[] getStreamBytes() throws IOException {
 		if (wrapped instanceof COSStream) {
-			try (InputStream is = ((COSStream) wrapped).createInputStream()) {
+			try (InputStream is = ((COSStream) wrapped).createRawInputStream()) {
 				return Utils.toByteArray(is);
 			}
 		}
