@@ -93,7 +93,7 @@ class PdfBoxArray implements PdfArray {
 		if (cosStream == null) {
 			throw new DSSException("Cannot find value for " + val + " of class " + val.getClass());
 		}
-		try (InputStream is = cosStream.createInputStream()) {
+		try (InputStream is = cosStream.createRawInputStream()) {
 			return DSSUtils.toByteArray(is);
 		}
 	}
