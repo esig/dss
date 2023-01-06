@@ -589,7 +589,7 @@ public class SimpleCertificateReport {
 	private XmlChainItem getTrustAnchorCertificate() {
 		List<XmlChainItem> chain = simpleReport.getChain();
 		for (XmlChainItem xmlChainItem : chain) {
-			if (xmlChainItem.getTrustAnchors() != null) {
+			if (!xmlChainItem.getTrustAnchors().isEmpty()) {
 				return xmlChainItem;
 			}
 		}

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;

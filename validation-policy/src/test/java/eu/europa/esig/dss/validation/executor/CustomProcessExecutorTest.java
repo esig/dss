@@ -170,7 +170,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;

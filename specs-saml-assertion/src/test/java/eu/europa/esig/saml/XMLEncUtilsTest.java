@@ -22,8 +22,8 @@ package eu.europa.esig.saml;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.validation.Schema;
 
 import org.junit.jupiter.api.BeforeAll;

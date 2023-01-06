@@ -25,7 +25,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.AnyType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import org.w3c.dom.Element;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;

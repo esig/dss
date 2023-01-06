@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.util.Date;
 
 /**

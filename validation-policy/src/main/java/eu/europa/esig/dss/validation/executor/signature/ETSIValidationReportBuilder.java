@@ -136,7 +136,7 @@ import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import eu.europa.esig.xmldsig.jaxb.SignatureValueType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;

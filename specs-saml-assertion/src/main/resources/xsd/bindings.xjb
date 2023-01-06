@@ -1,13 +1,6 @@
-<?xml version="1.0"?>
-<jaxb:bindings version="1.0"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
-
-	<jaxb:globalBindings>
-		<jaxb:serializable uid="1" />
-	</jaxb:globalBindings>
+<jaxb:bindings version="3.0"
+	xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
 	<jaxb:bindings schemaLocation="saml-schema-metadata-2.0.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
@@ -29,6 +22,11 @@
 			schemaLocation="http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/xenc-schema.xsd"	node="/xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.xmlenc.jaxb" />
+			</jaxb:schemaBindings>
+		</jaxb:bindings>
+		<jaxb:bindings schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" node="//xs:schema">
+			<jaxb:schemaBindings>
+				<jaxb:package name="eu.europa.esig.xmldsig.jaxb"/>
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
 	</jaxb:bindings>

@@ -54,19 +54,18 @@
 		<verapdf.version>1.22.2</verapdf.version>
 		<httpclient5.version>5.2.1</httpclient5.version>
 
-		<jakarta.bind-api.version>2.3.3</jakarta.bind-api.version> <!-- Synchronized with santuario -->
-		<jakarta.activation-api.version>1.2.2</jakarta.activation-api.version> <!-- Synchronized with santuario -->
-		<woodstox-core.version>6.5.0</woodstox-core.version> <!-- To be used while santuario is not updated -->
-		<jaxb-runtime.version>2.3.8</jaxb-runtime.version>
+		<jakarta.bind-api.version>4.0.0</jakarta.bind-api.version> <!-- Synchronized with santuario -->
+		<jakarta.activation-api.version>2.1.0</jakarta.activation-api.version> <!-- Synchronized with santuario -->
+		<jaxb-runtime.version>4.0.1</jaxb-runtime.version>
 
 		<!-- REST/SOAP API -->
-		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
-		<jakarta.ws-api.version>2.3.3</jakarta.ws-api.version>
+		<jakarta.rs-api.version>3.1.0</jakarta.rs-api.version>
+		<jakarta.ws-api.version>4.0.0</jakarta.ws-api.version>
 
 		<junit.version>5.9.3</junit.version>
 
 		<awaitility.version>4.2.0</awaitility.version>
-		<mockito.version>4.11.0</mockito.version> <!-- Version 5 requires JDK 11+ -->
+		<mockito.version>4.11.0</mockito.version>
 		<h2database.version>2.2.220</h2database.version>
 		<jackson.version>2.15.1</jackson.version>
 		<fop-core.version>2.8</fop-core.version>
@@ -168,6 +167,8 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
+
+		<module>jaxb-xew-plugin</module>
     </modules>
 
 	<build>
@@ -856,6 +857,11 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.github.jaxb-xew-plugin</groupId>
+				<artifactId>jaxb-xew-plugin</artifactId>
+				<version>1.12-SNAPSHOT</version>
+			</dependency>
 
 			<!-- Public Dependencies -->
 
@@ -994,7 +1000,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.module</groupId>
-				<artifactId>jackson-module-jaxb-annotations</artifactId>
+				<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 

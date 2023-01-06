@@ -1,0 +1,11 @@
+<jaxb:bindings version="3.0"
+	xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<jaxb:bindings schemaLocation="xmldsig-core-schema.xsd" node="//xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.xmldsig.jaxb" />
+		</jaxb:schemaBindings>
+	</jaxb:bindings>
+
+</jaxb:bindings>

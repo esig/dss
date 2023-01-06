@@ -45,40 +45,37 @@
 				<artifactId>jaxb-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>generate-classes</id>
+						<id>xjc</id>
 						<phase>generate-sources</phase>
 						<goals>
-							<goal>generate</goal>
+							<goal>xjc</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
-					<schemaIncludes>
-						<schemaInclude>en_31916201v010101.xsd</schemaInclude>
-					</schemaIncludes>
-					<catalog>src/main/resources/xsd/catalog.cat</catalog>
-					<bindingIncludes>
-						<include>bindings.xml</include>
-					</bindingIncludes>
-
-					<extension>true</extension>
-					<useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
-
-					<strict>false</strict>
-					<specVersion>2.1</specVersion>
-					<episode>true</episode>
+					<sources>
+						<source>src/main/resources/xsd/en_31916201v010101.xsd</source>
+					</sources>
+					<xjbSources>
+						<xjbSource>src/main/resources/xsd/bindings.xjb</xjbSource>
+					</xjbSources>
+					<catalog>src/main/resources/xsd/catalog.xml</catalog>
 					<locale>en</locale>
-										
-					<disableXmlSecurity>false</disableXmlSecurity>
-					<accessExternalSchema>file</accessExternalSchema>
-					<accessExternalDTD>file</accessExternalDTD>
+					<arguments>
+						<argument>-Xxew</argument>
+						<argument>-Xxew:instantiate lazy</argument>
+					</arguments>
 				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.8</version>
+						<version>4.0.1</version>
+					</dependency>
+					<dependency>
+						<groupId>com.github.jaxb-xew-plugin</groupId>
+						<artifactId>jaxb-xew-plugin</artifactId>
+						<version>1.12-SNAPSHOT</version>
 					</dependency>
 				</dependencies>
 			</plugin>

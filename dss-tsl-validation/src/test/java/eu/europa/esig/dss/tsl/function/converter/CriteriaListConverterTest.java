@@ -43,11 +43,12 @@ import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
 import eu.europa.esig.xades.jaxb.xades132.AnyType;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
+import eu.europa.esig.xades.jaxb.xades132.QualifierType;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.List;
 
@@ -112,7 +113,7 @@ public class CriteriaListConverterTest {
         ObjectIdentifierType oidObjectIdentifier = new ObjectIdentifierType();
         IdentifierType oidIdentifier = new IdentifierType();
         oidIdentifier.setValue("urn:oid:1.2.5.6");
-        oidIdentifier.setQualifier(ObjectIdentifierQualifier.OID_AS_URN);
+        oidIdentifier.setQualifier(QualifierType.OID_AS_URN);
         oidObjectIdentifier.setIdentifier(oidIdentifier);
         policiesListType.getPolicyIdentifier().add(oidObjectIdentifier);
 
@@ -162,7 +163,7 @@ public class CriteriaListConverterTest {
         ObjectIdentifierType oidObjectIdentifier = new ObjectIdentifierType();
         IdentifierType oidIdentifier = new IdentifierType();
         oidIdentifier.setValue("urn:oid:" + BCStyle.ORGANIZATION_IDENTIFIER.getId());
-        oidIdentifier.setQualifier(ObjectIdentifierQualifier.OID_AS_URN);
+        oidIdentifier.setQualifier(QualifierType.OID_AS_URN);
         oidObjectIdentifier.setIdentifier(oidIdentifier);
         certSubjectDNAttributeType.getAttributeOID().add(oidObjectIdentifier);
 
@@ -207,7 +208,7 @@ public class CriteriaListConverterTest {
         ObjectIdentifierType oidObjectIdentifier = new ObjectIdentifierType();
         IdentifierType oidIdentifier = new IdentifierType();
         oidIdentifier.setValue("urn:oid:" + ExtendedKeyUsage.TIMESTAMPING.getOid());
-        oidIdentifier.setQualifier(ObjectIdentifierQualifier.OID_AS_URN);
+        oidIdentifier.setQualifier(QualifierType.OID_AS_URN);
         oidObjectIdentifier.setIdentifier(oidIdentifier);
         extendedKeyUsageType.getKeyPurposeId().add(oidObjectIdentifier);
 

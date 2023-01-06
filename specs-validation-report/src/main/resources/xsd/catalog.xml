@@ -1,0 +1,6 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <system systemId="http://uri.etsi.org/19612/v2.2.1/ts_119612v020201_201601xsd.xsd" uri="./../../../../../specs-trusted-list/src/main/resources/xsd/ts_119612v020201_201601xsd.xsd"/>
+    <system systemId="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" uri="./../../../../../specs-xmldsig/src/main/resources/xsd/xmldsig-core-schema.xsd"/>
+    <system systemId="http://www.w3.org/2001/xml.xsd" uri="./../../../../../specs-xmldsig/src/main/resources/xsd/xml.xsd"/>
+    <system systemId="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd" uri="./../../../../../specs-xades/src/main/resources/xsd/XAdES.xsd"/>
+</catalog>
