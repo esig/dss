@@ -52,6 +52,8 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithFailTimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithSelfSignedTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithVRITest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTWithVRIToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTALevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToLTLevelTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionNonPDFToTLevelTest;
@@ -83,7 +85,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class,
 		PAdESExtensionInvalidLevelsTest.class, DSS2821ExtensionToTLevelTest.class, DSS2821ExtensionToLTLevelTest.class,
 		PAdESExtensionBToTDocWithVRITstTest.class, PAdESExtensionBToLTADocWithVRITstTest.class, PAdESExtensionBToTDocWithVRITest.class,
-		PAdESExtensionBToLTADocWithVRITest.class })
+		PAdESExtensionBToLTADocWithVRITest.class, PAdESExtensionLTWithVRIToLTATest.class, PAdESExtensionLTToLTAWithVRITest.class })
 public class ITextPAdESExtensionSuiteTest {
 
 }

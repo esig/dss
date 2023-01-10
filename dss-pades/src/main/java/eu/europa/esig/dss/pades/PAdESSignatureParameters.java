@@ -109,6 +109,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	private TimeZone signingTimeZone = TimeZone.getDefault();
 
 	/**
+	 * Defines whether the VRI dictionary should be included to a PAdES signature on extension within
+	 * its LT-level revision (DSS-revision)
+	 *
+	 * Default: FALSE (VRI dictionary is not included)
+	 */
+	private boolean includeVRIDictionary;
+
+	/**
 	 * Default constructor instantiating object with default parameters
 	 */
 	public PAdESSignatureParameters() {
@@ -347,6 +355,27 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 */
 	public TimeZone getSigningTimeZone() {
 		return signingTimeZone;
+	}
+
+	/**
+	 * Returns whether the VRI dictionary should be included to the PAdES Signature on extension within
+	 * LT-level revision (DSS revision)
+	 *
+	 * @return whether the corresponding VRI dictionary should be included on signature extension
+	 */
+	public boolean isIncludeVRIDictionary() {
+		return includeVRIDictionary;
+	}
+
+	/**
+	 * Sets whether corresponding VRI dictionary should be included to the PAdES signature on extension to LT-level
+	 *
+	 * Default: FALSE (VRI dictionary is not included to PAdES signature)
+	 *
+	 * @param includeVRIDictionary whether corresponding VRI dictionary should be included to the PAdES signature on extension
+	 */
+	public void setIncludeVRIDictionary(boolean includeVRIDictionary) {
+		this.includeVRIDictionary = includeVRIDictionary;
 	}
 
 	@Override
