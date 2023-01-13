@@ -29,7 +29,9 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -278,38 +280,52 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         final PdfObjectTree currentObjectTree = objectTree.copy();
         currentObjectTree.setStream();
 
-        byte[] signedStream = getStreamBytesSecurely(signedDict);
-        byte[] finalBytes = getStreamBytesSecurely(finalDict);
-        if (Utils.isArrayEmpty(signedStream) && Utils.isArrayNotEmpty(finalBytes)) {
+        long signedStreamSize = getRawStreamSizeSecurely(signedDict);
+        long finalStreamSize = getRawStreamSizeSecurely(finalDict);
+
+        if (signedStreamSize == -1 && finalStreamSize > -1) {
             modifications.add(ObjectModification.create(currentObjectTree, finalDict));
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("A stream has been added '{}'.", currentObjectTree);
-            }
-
-        } else if (Utils.isArrayNotEmpty(signedStream) && Utils.isArrayEmpty(finalBytes)) {
-            modifications.add(ObjectModification.delete(currentObjectTree, signedDict));
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("A stream has been removed '{}'.", currentObjectTree);
-            }
-
-        } else if (Utils.isArrayNotEmpty(signedStream) && Utils.isArrayNotEmpty(finalBytes)) {
-            if (!Arrays.equals(signedStream, finalBytes)) {
-                modifications.add(ObjectModification.modify(currentObjectTree, signedDict, finalDict));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("A stream has been modified '{}'.", currentObjectTree);
+                    LOG.debug("A stream has been added '{}'.", currentObjectTree);
                 }
+
+        } else if (signedStreamSize > -1 && finalStreamSize == -1) {
+            modifications.add(ObjectModification.delete(currentObjectTree, signedDict));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("A stream has been removed '{}'.", currentObjectTree);
+                }
+
+        } else if (signedStreamSize > -1 && finalStreamSize > -1) {
+            try (InputStream signedStream = getRawInputStreamSecurely(signedDict);
+                 InputStream finalStream = getRawInputStreamSecurely(finalDict)) {
+                if (!Utils.compareInputStreams(signedStream, finalStream)) {
+                    modifications.add(ObjectModification.modify(currentObjectTree, signedDict, finalDict));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("A stream has been modified '{}'.", currentObjectTree);
+                    }
+                }
+            } catch (IOException e) {
+                LOG.warn("Unable to compare underlying stream binaries. Reason : {}", e.getMessage());
             }
+        }
+
+    }
+
+    private long getRawStreamSizeSecurely(PdfDict pdfDict) {
+        try {
+            return pdfDict.getRawStreamSize();
+        } catch (IOException e) {
+            LOG.warn("Unable to read the underlying stream binaries. Reason : {}", e.getMessage());
+            return -1;
         }
     }
 
-    private byte[] getStreamBytesSecurely(PdfDict pdfDict) {
-        try {
-            return pdfDict.getStreamBytes();
-
-        } catch (IOException e) {
-            LOG.debug("Unable to compare underlying stream binaries. Reason : {}", e.getMessage());
-            return DSSUtils.EMPTY_BYTE_ARRAY;
+    private InputStream getRawInputStreamSecurely(PdfDict pdfDict) throws IOException {
+        InputStream stream = pdfDict.createRawInputStream();
+        if (stream != null) {
+            return stream;
         }
+        return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
     }
 
 }

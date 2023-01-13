@@ -493,6 +493,18 @@ public final class Utils {
 	}
 
 	/**
+	 * Compares content of two {@code InputStream}s
+	 *
+	 * @param stream1 {@link InputStream}
+	 * @param stream2 {@link InputStream}
+	 * @return TRUE if the content of two {@link InputStream} is equal, FALSE otherwise
+	 * @throws IOException if an exception on InputStream read occurs
+	 */
+	public static boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException {
+		return impl.compareInputStreams(stream1, stream2);
+	}
+
+	/**
 	 * Cleans the directory
 	 *
 	 * @param directory {@link File}
