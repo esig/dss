@@ -29,7 +29,9 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESAllSelfSignedCertsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleLTAValidationDataTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignBAndExtendToLTATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAAndLTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAndLTWithVRITest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTAndTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureLTWithVRIAndLTTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESDoubleSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureBLevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESExternalCMSSignatureLTALevelDocTstTest;
@@ -73,6 +75,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAWithSingleDocTstTes
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAWithSingleSelfSignedDocTstTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTCRLCounterTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWithVRIDictTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTWrongAIATest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTNotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelTTest;
@@ -129,7 +132,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class, PAdESExternalCMSSignatureLTALevelTest.class,
 		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
 		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
-		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class })
+		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class, PAdESLevelLTWithVRIDictTest.class,
+		PAdESDoubleSignatureLTWithVRIAndLTTest.class, PAdESDoubleSignatureLTAndLTWithVRITest.class })
 public class ITextPAdESSignatureSuiteTest {
 
 }

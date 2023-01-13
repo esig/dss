@@ -336,8 +336,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(final DSSDocument document,
-										final PdfValidationDataContainer validationDataForInclusion, final char[] pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion,
+										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
@@ -348,7 +348,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				PdfDictionary catalog = reader.getCatalog();
-				PdfDictionary dss = buildDSSDictionary(reader, writer, validationDataForInclusion);
+				PdfDictionary dss = buildDSSDictionary(reader, writer, validationDataForInclusion, includeVRIDict);
 				catalog.put(new PdfName(PAdESConstants.DSS_DICTIONARY_NAME),
 						writer.addToBody(dss, false).getIndirectReference());
 
@@ -366,7 +366,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private PdfDictionary buildDSSDictionary(PdfReader reader, PdfWriter writer,
-											 PdfValidationDataContainer validationDataForInclusion) throws IOException {
+											 PdfValidationDataContainer validationDataForInclusion,
+											 boolean includeVRIDict) throws IOException {
 		final PdfDictionary dss = new PdfDictionary();
 		final PdfArray ocsps = new PdfArray();
 		final PdfArray crls = new PdfArray();
@@ -439,8 +440,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 					vrim.put(new PdfName(vriKey), vri);
 				}
 			}
-			dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
-					writer.addToBody(vrim, false).getIndirectReference());
+
+			// optional
+			if (includeVRIDict) {
+				dss.put(new PdfName(PAdESConstants.VRI_DICTIONARY_NAME),
+						writer.addToBody(vrim, false).getIndirectReference());
+			}
 
 		}
 

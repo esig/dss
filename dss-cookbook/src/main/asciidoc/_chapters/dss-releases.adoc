@@ -353,6 +353,17 @@ pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionCh
 service.setPdfObjFactory(pdfObjectFactory);
 ----
 
+|PAdESSignatureParameters #setIncludeVRIDictionary     a|
+
+VRI dictionary is created by default
+
+                                                                     a|[source,java]
+----
+PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+...
+signatureParameters.setIncludeVRIDictionary(true);
+----
+
 |PdfDocumentReader #checkDocumentPermissions     a|[source,java]
 ----
 PdfDocumentReader reader = ...

@@ -433,8 +433,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	@Override
-	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
-										final char[] pwd) {
+	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion,
+										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
@@ -442,7 +442,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
-				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME, buildDSSDictionary(pdDocument, validationDataForInclusion));
+				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME,
+						buildDSSDictionary(pdDocument, validationDataForInclusion, includeVRIDict));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 			
@@ -458,7 +459,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private COSDictionary buildDSSDictionary(PDDocument pdDocument, PdfValidationDataContainer validationDataForInclusion)
+	private COSDictionary buildDSSDictionary(PDDocument pdDocument, PdfValidationDataContainer validationDataForInclusion,
+											 boolean includeVRIDict)
 			throws IOException {
 		final COSDictionary dss = new COSDictionary();
 		final COSArray certs = new COSArray();
@@ -535,7 +537,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					vriDictionary.setItem(vriKey, sigVriDictionary);
 				}
 			}
-			dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
+
+			// optional
+			if (includeVRIDict) {
+				dss.setItem(PAdESConstants.VRI_DICTIONARY_NAME, vriDictionary);
+			}
 
 		}
 
