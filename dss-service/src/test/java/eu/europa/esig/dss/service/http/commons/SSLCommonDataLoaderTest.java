@@ -114,7 +114,7 @@ public class SSLCommonDataLoaderTest {
 		dataLoader.setSslTruststoreType(KS_TYPE);
 		dataLoader.setSslTruststorePassword(KS_PASSWORD);
 
-		dataLoader.setSslTruststore(wrongKeyStore);
+		dataLoader.setSslKeystore(wrongKeyStore);
 		dataLoader.setSslKeystoreType(KS_TYPE);
 		dataLoader.setSslKeystorePassword(KS_PASSWORD);
 
