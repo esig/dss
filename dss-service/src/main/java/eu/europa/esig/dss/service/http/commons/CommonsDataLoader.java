@@ -124,9 +124,6 @@ public class CommonsDataLoader implements DataLoader {
 	/** The content-type string */
 	private static final String CONTENT_TYPE = "Content-Type";
 
-	/** The default SSL protocol */
-	private static final String DEFAULT_SSL_PROTOCOL = "TLSv1.3";
-
 	/** The list of accepted statuses for a successful connection */
 	private static final List<Integer> ACCEPTED_HTTP_STATUS = Collections.singletonList(HttpStatus.SC_OK);
 
@@ -175,7 +172,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * Used SSL protocol
 	 */
-	private String sslProtocol = DEFAULT_SSL_PROTOCOL;
+	private String sslProtocol;
 
 	/**
 	 * Keystore for SSL.
