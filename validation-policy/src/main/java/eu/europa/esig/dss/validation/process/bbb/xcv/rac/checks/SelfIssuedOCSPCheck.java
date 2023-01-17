@@ -84,7 +84,7 @@ public class SelfIssuedOCSPCheck extends ChainItem<XmlRAC> {
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
 	}
 
 }

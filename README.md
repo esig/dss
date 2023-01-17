@@ -17,9 +17,9 @@ The latest version of DSS framework has the following minimal requirements:
 
 # Maven repository
 
-The release is published on Maven Central : 
+The release is published on Maven Central repository : 
 
-https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss
+https://central.sonatype.dev/namespace/eu.europa.ec.joinup.sd-dss
 
 <pre>
 &lt;!-- Add dss-bom for easy integration --&gt;
@@ -28,7 +28,7 @@ https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss
         &lt;dependency&gt;
             &lt;groupId&gt;eu.europa.ec.joinup.sd-dss&lt;/groupId&gt;
             &lt;artifactId&gt;dss-bom&lt;/artifactId&gt;
-            &lt;version&gt;5.10.2&lt;/version&gt;
+            &lt;version&gt;5.11.1&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
         &lt;/dependency&gt;

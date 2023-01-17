@@ -37,6 +37,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedCertificateTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToLTWithRevokedSkipCheckTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTToLTAWithVRITest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTDocWithVRITest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTDocWithVRITstTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTTest;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithCompositeT
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithError500TimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithFailTimestampTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionBToTWithRevokedCertTest;
+import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTWithVRIToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionInvalidLevelsTest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTATest;
 import eu.europa.esig.dss.pades.extension.suite.PAdESExtensionLTAToLTAWithDifferentTSATest;
@@ -83,7 +85,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExtensionBToLTWithRevokedCertTest.class, PAdESExtensionBToLTAWithExpiredUserTest.class, PAdESExtensionTToLTANoChangesPermittedTest.class,
 		PAdESExtensionInvalidLevelsTest.class, DSS2821ExtensionToTLevelTest.class, DSS2821ExtensionToLTLevelTest.class,
 		PAdESExtensionBToTDocWithVRITstTest.class, PAdESExtensionBToLTADocWithVRITstTest.class, PAdESExtensionBToTDocWithVRITest.class,
-		PAdESExtensionBToLTADocWithVRITest.class })
+		PAdESExtensionBToLTADocWithVRITest.class, PAdESExtensionLTWithVRIToLTATest.class, PAdESExtensionLTToLTAWithVRITest.class })
 public class PdfBoxPAdESExtensionSuiteTest {
 
 }

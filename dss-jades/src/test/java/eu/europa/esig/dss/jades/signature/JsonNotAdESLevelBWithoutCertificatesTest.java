@@ -18,12 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -31,8 +33,6 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -40,23 +40,23 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XmlSignatureWithoutCertificatesTest extends AbstractXAdESTestSignature {
+public class JsonNotAdESLevelBWithoutCertificatesTest extends AbstractJAdESTestSignature {
 
-    private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-    private XAdESSignatureParameters signatureParameters;
+    private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
+    private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+        documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
-        signatureParameters = new XAdESSignatureParameters();
+        signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
 
-        service = new XAdESService(getOfflineCertificateVerifier());
+        service = new JAdESService(getOfflineCertificateVerifier());
     }
 
     @Override
@@ -84,16 +84,21 @@ public class XmlSignatureWithoutCertificatesTest extends AbstractXAdESTestSignat
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+        assertEquals(SignatureLevel.JSON_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
     @Override
-    protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getService() {
         return service;
     }
 
     @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
+    protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
     }
 

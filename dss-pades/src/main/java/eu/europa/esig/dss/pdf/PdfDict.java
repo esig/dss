@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -116,5 +117,22 @@ public interface PdfDict {
 	 * @throws IOException if a stream reading exception occurs
 	 */
 	byte[] getStreamBytes() throws IOException;
+
+	/**
+	 * Creates a new raw input stream.
+	 * NOTE: contains raw and not encoded data.
+	 *
+	 * @return {@link InputStream}
+	 * @throws IOException if a stream reading exception occurs
+	 */
+	InputStream createRawInputStream() throws IOException;
+
+	/**
+	 * Returns a size of the raw stream, if present
+	 *
+	 * @return size of the raw stream, -1 if not applicable
+	 * @throws IOException if a stream reading exception occurs
+	 */
+	long getRawStreamSize() throws IOException;
 
 }

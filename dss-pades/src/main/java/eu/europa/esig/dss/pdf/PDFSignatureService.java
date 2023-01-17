@@ -110,7 +110,7 @@ public interface PDFSignatureService {
 	List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd);
 
 	/**
-	 * This method adds the DSS dictionary (Baseline-LT)
+	 * This method adds the DSS dictionary (Baseline-LT) to a document without password-protection and without VRI dictionary.
 	 * 
 	 * @param document
 	 *            the document to be extended
@@ -137,7 +137,7 @@ public interface PDFSignatureService {
 								 final String pwd);
 
 	/**
-	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document
+	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document without inclusion of VRI dictionary.
 	 *
 	 * @param document
 	 *            the document to be extended
@@ -149,6 +149,22 @@ public interface PDFSignatureService {
 	 */
 	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
 								 final char[] pwd);
+
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document with a VRI dictionary if defined.
+	 *
+	 * @param document
+	 *            the document to be extended
+	 * @param validationDataForInclusion
+	 *            {@link PdfValidationDataContainer}
+	 * @param pwd
+	 *            the password protection used to create the encrypted document (optional)
+	 * @param includeVRIDict
+	 *            defines whether VRI dictionary should be included to the created DSS dictionary
+	 * @return the pdf document with the added dss dictionary
+	 */
+	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+								 final char[] pwd, final boolean includeVRIDict);
 
 	/**
 	 * This method returns not signed signature-fields

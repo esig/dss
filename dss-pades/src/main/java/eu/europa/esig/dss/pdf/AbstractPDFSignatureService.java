@@ -457,6 +457,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
+	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+										final char[] pwd) {
+		return addDssDictionary(document, validationDataForInclusion, pwd, false);
+	}
+
+	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document) {
 		return getAvailableSignatureFields(document, (char[]) null);
 	}

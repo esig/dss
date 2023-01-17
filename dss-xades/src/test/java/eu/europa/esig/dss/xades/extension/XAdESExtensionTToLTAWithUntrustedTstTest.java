@@ -37,8 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestExtension {
 
-    private static final String SELF_SIGNED_TSA = "self-signed-tsa";
-
     private CertificateVerifier certificateVerifier;
     private XAdESService service;
 

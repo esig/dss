@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class DSS2236HideDisableValidationsTest extends AbstractPAdESTestValidation {
+public abstract class DSS2236HideDisableValidationsTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -50,7 +50,7 @@ public class DSS2236HideDisableValidationsTest extends AbstractPAdESTestValidati
         pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
 
         DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
-        pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(5);
+        pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(3);
         pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
 
         PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);

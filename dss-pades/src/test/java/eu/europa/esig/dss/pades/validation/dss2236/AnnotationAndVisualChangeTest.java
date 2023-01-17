@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
+public abstract class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -57,14 +57,10 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 			assertEquals(1, pdfRevision.getPdfAnnotationsOverlapConcernedPages().get(0).intValue());
 			assertEquals(2, pdfRevision.getPdfAnnotationsOverlapConcernedPages().get(1).intValue());
 
-
-			if (Utils.isCollectionNotEmpty(pdfRevision.getPdfVisualDifferenceConcernedPages())) {
-				assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().size());
-				assertEquals(2, pdfRevision.getPdfVisualDifferenceConcernedPages().get(0).intValue());
+			if (Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges())) {
 
 				assertTrue(signature.arePdfObjectModificationsDetected());
 
-				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));
@@ -74,7 +70,6 @@ public class AnnotationAndVisualChangeTest extends AbstractPAdESTestValidation {
 			} else if (pdfRevision.arePdfObjectModificationsDetected()) {
 				assertTrue(signature.arePdfObjectModificationsDetected());
 
-				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfExtensionChanges()));
 				assertTrue(Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()));
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()));
 				assertFalse(Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges()));

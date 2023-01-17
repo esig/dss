@@ -90,7 +90,7 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return SubIndication.TRY_LATER;
+		return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
 	}
 
 }

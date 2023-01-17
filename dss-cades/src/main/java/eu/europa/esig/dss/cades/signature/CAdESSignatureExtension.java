@@ -267,13 +267,18 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			for (SignerInformation signerInformation : signerInformationCollection) {
 				if (signerInformationsToExtend.contains(signerInformation)) {
 					CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-					assertSignatureValid(cadesSignature);
+					assertSignatureValid(cadesSignature, parameters);
 				}
 			}
 		}
 	}
 
-	private void assertSignatureValid(final CAdESSignature cadesSignature) {
+	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
+		if (parameters.isGenerateTBSWithoutCertificate() && cadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
+			return;
+		}
+
 		final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();

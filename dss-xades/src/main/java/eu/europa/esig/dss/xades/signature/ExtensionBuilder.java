@@ -24,6 +24,7 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -169,10 +170,15 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	/**
 	 * Verifies if the signature is valid. Throws an exception if the signature is invalid.
 	 *
-	 * @param xadesSignature {@link XAdESSignature} to check
+	 * @param signature {@link AdvancedSignature} to check
 	 */
-	protected void assertSignatureValid(final XAdESSignature xadesSignature) {
-		SignatureCryptographicVerification signatureCryptographicVerification = xadesSignature.getSignatureCryptographicVerification();
+	protected void assertSignatureValid(final AdvancedSignature signature) {
+		if (params.isGenerateTBSWithoutCertificate() && signature.getCertificateSource().getNumberOfCertificates() == 0) {
+			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
+			return;
+		}
+
+		final SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
 			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));

@@ -62,7 +62,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			checkSignatureIntegrity();
+			assertSignatureValid(signature);
 
 			if (xadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;

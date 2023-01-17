@@ -366,6 +366,17 @@ pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionCh
 service.setPdfObjFactory(pdfObjectFactory);
 ----
 
+|PAdESSignatureParameters #setIncludeVRIDictionary     a|
+
+VRI dictionary is created by default
+
+                                                                     a|[source,java]
+----
+PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+...
+signatureParameters.setIncludeVRIDictionary(true);
+----
+
 |PdfDocumentReader #checkDocumentPermissions     a|[source,java]
 ----
 PdfDocumentReader reader = ...
@@ -711,6 +722,44 @@ not present
     ...
 </CACertificate>
 ----
+|KeyUsage for CA certificates                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <KeyUsage Level="FAIL">
+        <Id>keyCertSign</Id>
+    </KeyUsage>
+    ...
+</CACertificate>
+----
+|Extended key usage for timestamp certificates              a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="WARN">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+                                                            a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="FAIL">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
 
 |===
 
@@ -930,7 +979,7 @@ It is also possible to configure trusted certificate source automatically using 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLTTest.java[tags=certificate-verifier]
 ----
 
-|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R21>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
+|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R22>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
 
 |all versions              a|I receive error _"Unable to build a certificate chain until a trusted list"_ while signature is validated as `TOTAL_PASSED`     a|During the validation DSS performs two processes: AdES validation as per ETSI EN 319 102-1 (cf. <<R09>>) and qualification determination as per ETSI TS 119 615 (cf. <<R14>>). While `TOTAL_PASSED` indication is a final result of AdES validation process, the aforementioned error message is returned by a signature qualification determination process, meaning the corresponding Trusted List has not reached the trust anchor for the certificate chain. Please note, that the qualification can be determined only for signatures with trusted certificates coming from a Trusted List. To configure a trusted certificate source using a EU LOTL or an alternative Trusted List, please see <<tlValidationJob>> chapter for more details.
 
@@ -969,6 +1018,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBP
 |all versions              a|DSS breaks PDF/A conformance on a signature creation       a|DSS does not claim compliance of produced documents to a PDF/A format. The goal of DSS is to ensure conformance to AdES signature format for created signatures. We do our best to keep conformity of PDF/A documents after signing, but we do not take any liability on this matter.
 
 |all versions              a|A signature-time-stamp embedded within CMS of the second PDF signature does not provide a POE for the first PDF signature      a|DSS recognizes timestamps as per ETSI EN 319 142-1 (cf. <<R03>>). The standard defines the following timestamps to be related to a signature: a signature-time-stamp embedded within signature's CMS Signed Data and a document timestamp covering the signature in its ByteRange explicitly. All other POE or timestamps covering a signature in indirect way are not considered as a POE during the AdES signature validation process.
+
+|all versions              a|DSS produces an error "The algorithm *** is no longer considered reliable" and/or returns `INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE` indication.        a|DSS aligns its validation policy according to the latest available edition of the ETSI TS 119 312 (cf. <<R20>>). The standard provides a prospective validity of the cryptographic suites that may change based on evolution of the modern cryptography. Therefore, it is always advisable to use the up-to-date version of DSS aligned with the latest edition of the specification, as well as be aware of changes in the standard. Should you need to update the cryptographic constraints within your own validation policy, please refer to the section <<defaultXmlPolicy>> providing an up-to-date validation constraints (see `<Cryptographic>` element for cryptographic algorithms policy) and instructions how to use a modified <<validationPolicy>>. When using a default validation policy, the DSS version upgrade is sufficient.
 
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 

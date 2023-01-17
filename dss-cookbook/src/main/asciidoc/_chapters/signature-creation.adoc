@@ -574,16 +574,18 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 **#addSignaturePolicyStore**                            |SignaturePolicyStore                 |signature-policy-store                   |/                                                          |sigPSt
                                                                |_class JAdESSignatureParameters_ +
                                                                 *#setBase64UrlEncodedEtsiUComponents*                   |/                                    |/                                        |/                                                          |etsiU (items encoding)
-|T-Level           |Unsigned attributes                        |_class *AdESSignatureParameters_ +
+|T-Level            |Unsigned attributes                       |_class *AdESSignatureParameters_ +
                                                                 **#setSignatureLevel(*AdES_BASELINE_T)** +
-                                                                **#setSignatureTimestampParameters**                      |SignatureTimeStamp                 |signature-time-stamp                     |signature-time-stamp                                       |sigTst
-|LT-Level          |Unsigned attributes                        |_class *AdESSignatureParameters_ +
+                                                                **#setSignatureTimestampParameters**                    |SignatureTimeStamp                   |signature-time-stamp                     |signature-time-stamp                                       |sigTst
+.2+|LT-Level     .2+|Unsigned attributes                       |_class *AdESSignatureParameters_ +
                                                                 **#setSignatureLevel(*AdES_BASELINE_LT)** +
-                                                                **#setSignatureLevel(XAdES_XL)**                          |CertificateValues +
+                                                                **#setSignatureLevel(XAdES_XL)**                        |CertificateValues +
                                                                                                                          RevocationValues                     |SignedData.certificates +
                                                                                                                                                                SignedData.crls                          |/DSS +
-                                                                                                                                                                                                         /VRI                                                       |xVals +
+                                                                                                                                                                                                         /VRI _(conditional)_                                       |xVals +
                                                                                                                                                                                                                                                                      rVals
+                                                               |_class PAdESSignatureParameters_ +
+                                                                **#setIncludeVRIDictionary**                            |/                                    |/                                        |/VRI                                                       |/
 |LTA-Level         |Unsigned attributes                        |_class *AdESSignatureParameters_ +
                                                                 **#setSignatureLevel(*AdES_BASELINE_LTA)** +
                                                                 **#setSignatureLevel(XAdES_A)** +

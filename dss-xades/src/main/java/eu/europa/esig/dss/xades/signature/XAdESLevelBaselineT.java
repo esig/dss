@@ -45,7 +45,6 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -205,10 +204,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			assertExtendSignatureToTPossible();
 			assertSignatureValid(xadesSignature);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
-
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			final DigestAlgorithm digestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
@@ -615,21 +613,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	private void incorporateXAdES122Include(Element timeStampDom) {
 		Element includeDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), XAdES122Element.INCLUDE);
 		includeDom.setAttribute(XAdES122Attribute.URI.getAttributeName(), '#' + xadesSignature.getSignatureValueId());
-	}
-
-	/**
-	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
-	 *
-	 * @throws DSSException in case of the cryptographic signature verification fails
-	 */
-	protected void checkSignatureIntegrity() throws DSSException {
-		final SignatureCryptographicVerification signatureCryptographicVerification =
-				xadesSignature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" +
-					(errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
-		}
 	}
 
 	/**

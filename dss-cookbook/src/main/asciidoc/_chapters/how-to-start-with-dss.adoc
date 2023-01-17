@@ -32,7 +32,7 @@ WARNING: Before processing the integration steps, please ensure you have success
 
 ====== Using Maven Central (starting from version 5.11.1)
 
-The simplest way to include DSS to your project is to use https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss[Maven Central repository]. To do this you need to define the required modules within a list of dependencies in `pom.xml` file of your Maven project, for example:
+The simplest way to include DSS to your project is to use https://central.sonatype.dev/namespace/eu.europa.ec.joinup.sd-dss[Maven Central repository]. To do this you need to define the required modules within a list of dependencies in `pom.xml` file of your Maven project, for example:
 
 [source,xml]
 ----
@@ -285,8 +285,8 @@ dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certifi
 
 ===== JSON validation modules
 
-specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R05>>).
-specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R20>>).
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R21>>).
+specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R05>>).
 
 ===== Utils modules
 

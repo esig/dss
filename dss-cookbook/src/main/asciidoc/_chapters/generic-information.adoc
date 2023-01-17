@@ -161,21 +161,17 @@ For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-unio
 |[[R12]]	R12	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
 |[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.3.1
 |[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |1.1.1
-|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax |RFC 2315 |Version 1.5
-|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015 |CID 2015/1506 |
-|[[R17]]	R17	|ESI - Building blocks and table of contents for human
-readable signature policy documents    |ETSI TS 119 172-1			|1.1.1
-|[[R18]]	R18	|ESI - XML format for signature policies
-|ETSI TS 119 172-2			|1.1.1
-|[[R19]]	R19	|ESI - ASN.1 format for signature policies
-|ETSI TS 119 172-3			|1.1.1
-|[[R20]]    R20 |Internet RFC 7515: JSON Web Signature (JWS) |RFC 7515 |
-|[[R21]]    R21 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280 |
-|[[R22]]    R22 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP |RFC 6960 |
-|[[R23]]    R23 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST |Common PKI v2.0 | v2.0
-|[[R24]]    R24 |Electronic Signatures and Infrastructures (ESI);
-Certificate Profiles; Part 5: QCStatements |ETSI EN 319 412-5 | V2.3.1
-
+|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax                        |RFC 2315                   |Version 1.5
+|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015            |CID 2015/1506              |
+|[[R17]]	R17	|ESI - Building blocks and table of contents for human readable signature policy documents                  |ETSI TS 119 172-1			|1.1.1
+|[[R18]]	R18	|ESI - XML format for signature policies                                        |ETSI TS 119 172-2			|1.1.1
+|[[R19]]	R19	|ESI - ASN.1 format for signature policies                                      |ETSI TS 119 172-3			|1.1.1
+|[[R20]]	R20	|ESI - Cryptographic Suites                                                     |ETSI TS 119 312			|1.4.2
+|[[R21]]    R21 |Internet RFC 7515: JSON Web Signature (JWS)                                    |RFC 7515                   |
+|[[R22]]    R22 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280        |
+|[[R23]]    R23 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP      |RFC 6960                   |
+|[[R24]]    R24 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST   |Common PKI v2.0            | v2.0
+|[[R25]]    R25 |Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 5: QCStatements                |ETSI EN 319 412-5          | V2.3.1
 
 |=======================
 

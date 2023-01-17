@@ -249,6 +249,7 @@ Cryptographic constraints define a list of acceptable cryptographic algorithms a
 * `AcceptableDigestAlgo` - defines a list of acceptable digest algorithms. All tokens and signatures using other algorithms will be rejected.
 * `AlgoExpirationDate` - defines expiration dates for the algorithms. The algorithm is rejected when it is used after the defined date. If the algorithm expiration date is not defined, or set to null, the algorithm is treated as reliable for an unlimited time.
 
+[[defaultXmlPolicy]]
 ==== The default XML policy
 
 The default XML validation policy is present below.

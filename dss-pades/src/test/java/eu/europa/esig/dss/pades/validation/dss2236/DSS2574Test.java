@@ -21,41 +21,27 @@
 package eu.europa.esig.dss.pades.validation.dss2236;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
-import eu.europa.esig.dss.utils.Utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2236ReplaceTest extends AbstractPAdESTestValidation {
+public abstract class DSS2574Test extends AbstractPAdESTestValidation {
 
-	@Override
-	protected DSSDocument getSignedDocument() {
-		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2236/replace.pdf"));
-	}
-	
-	@Override
-	protected void checkPdfRevision(DiagnosticData diagnosticData) {
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		PDFRevisionWrapper pdfRevision = signature.getPDFRevision();
-		assertTrue(pdfRevision.arePdfModificationsDetected());
-		assertTrue(pdfRevision.arePdfObjectModificationsDetected());
+    @Override
+    protected DSSDocument getSignedDocument() {
+        return new InMemoryDocument(getClass().getResourceAsStream("/validation/muestra-firmado-firmado.pdf"));
+    }
 
-		assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().size());
-		assertEquals(1, pdfRevision.getPdfVisualDifferenceConcernedPages().get(0).intValue());
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        super.checkPdfRevision(diagnosticData);
 
-		assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges()));
-	}
-	
-	@Override
-	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertFalse(signature.isSigningCertificateIdentified());
-	}
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            assertFalse(signatureWrapper.arePdfModificationsDetected());
+        }
+    }
 
 }
