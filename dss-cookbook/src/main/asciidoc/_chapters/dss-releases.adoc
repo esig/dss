@@ -696,6 +696,44 @@ not present
     <PDFACompliant Level="WARN" />
 </PDFAConstraints>
 ----
+|KeyUsage for CA certificates                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <KeyUsage Level="FAIL">
+        <Id>keyCertSign</Id>
+    </KeyUsage>
+    ...
+</CACertificate>
+----
+|Extended key usage for timestamp certificates              a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="WARN">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+                                                            a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="FAIL">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
 
 |===
 

@@ -850,7 +850,7 @@ Default: not executed
 
 * `KeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable key usages. If the certificate does not have one of the key usages defined within the list, the check will fail.
 
-Default: `WARN` (`nonRepudiation`)
+Default: `WARN` (`nonRepudiation`) for signature's signing-certificate, `FAIL` (`keyCertSign`) for all CA certificates
 
 [source,xml,indent=0]
 .Example of KeyUsage usage (with WARN validation level)
@@ -866,14 +866,14 @@ Default: `WARN` (`nonRepudiation`)
 
 * `ExtendedKeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable extended key usages. If the certificate does not have one of the extended key usages defined within the list, the check will fail.
 
-Default: not executed
+Default: `FAIL` (`timeStamping`) for timestamp's signing-certificate
 
 [source,xml,indent=0]
-.Example of ExtendedKeyUsage usage (with WARN validation level)
+.Example of ExtendedKeyUsage usage (with FAIL validation level)
 ----
 <SigningCertificate>
     ...
-    <ExtendedKeyUsage Level="WARN">
+    <ExtendedKeyUsage Level="FAIL">
         <Id>timeStamping</Id>
     </ExtendedKeyUsage>
     ...
