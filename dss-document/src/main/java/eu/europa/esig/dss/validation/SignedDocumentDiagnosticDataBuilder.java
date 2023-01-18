@@ -51,7 +51,6 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -999,23 +998,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			}
 		}
 		return digestMatchers;
-	}
-
-	private XmlBasicSignature getXmlBasicSignature(final TimestampToken timestampToken) {
-		final XmlBasicSignature xmlBasicSignatureType = new XmlBasicSignature();
-
-		SignatureAlgorithm signatureAlgorithm = timestampToken.getSignatureAlgorithm();
-		if (signatureAlgorithm != null) {
-			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm());
-			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm());
-			xmlBasicSignatureType
-					.setMaskGenerationFunctionUsedToSignThisToken(signatureAlgorithm.getMaskGenerationFunction());
-		}
-		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getStringPublicKeySize(timestampToken));
-
-		xmlBasicSignatureType.setSignatureIntact(timestampToken.isSignatureIntact());
-		xmlBasicSignatureType.setSignatureValid(timestampToken.isSignatureValid());
-		return xmlBasicSignatureType;
 	}
 
 	/**

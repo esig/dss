@@ -1362,16 +1362,14 @@ public abstract class DiagnosticDataBuilder {
 		if (signatureAlgorithm != null) {
 			xmlBasicSignatureType.setEncryptionAlgoUsedToSignThisToken(signatureAlgorithm.getEncryptionAlgorithm());
 			xmlBasicSignatureType.setDigestAlgoUsedToSignThisToken(signatureAlgorithm.getDigestAlgorithm());
-			xmlBasicSignatureType
-					.setMaskGenerationFunctionUsedToSignThisToken(signatureAlgorithm.getMaskGenerationFunction());
+			xmlBasicSignatureType.setMaskGenerationFunctionUsedToSignThisToken(signatureAlgorithm.getMaskGenerationFunction());
 		}
 		xmlBasicSignatureType.setKeyLengthUsedToSignThisToken(DSSPKUtils.getStringPublicKeySize(token));
 
 		SignatureValidity signatureValidity = token.getSignatureValidity();
 		if (SignatureValidity.NOT_EVALUATED != signatureValidity) {
-			final boolean signatureValid = SignatureValidity.VALID == token.getSignatureValidity();
-			xmlBasicSignatureType.setSignatureIntact(signatureValid);
-			xmlBasicSignatureType.setSignatureValid(signatureValid);
+			xmlBasicSignatureType.setSignatureIntact(token.isSignatureIntact());
+			xmlBasicSignatureType.setSignatureValid(token.isValid());
 		}
 		return xmlBasicSignatureType;
 	}

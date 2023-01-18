@@ -1305,7 +1305,7 @@ public class SignatureValidationContext implements ValidationContext {
 			// check if the timestamp is valid at validation time
 			CertificateToken issuerCertificateToken = getIssuer(timestampToken);
 			List<POE> timestampPOEs = poeTimes.get(timestampToken.getDSSIdAsString());
-			return issuerCertificateToken != null && timestampToken.isSignatureValid()
+			return issuerCertificateToken != null && timestampToken.isValid()
 					&& verifyCertificateTokenHasPOERecursively(issuerCertificateToken, timestampPOEs)
 					&& checkCertificateIsNotRevokedRecursively(issuerCertificateToken, timestampPOEs);
 		}

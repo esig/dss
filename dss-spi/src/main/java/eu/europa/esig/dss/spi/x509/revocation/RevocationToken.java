@@ -299,14 +299,6 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 		return externalOrigin == null;
 	}
 
-	/**
-	 * Indicates if the token signature is intact and the signing certificate matches with the signature and if the
-	 * extended key usage is present.
-	 *
-	 * @return {@code true} if the conditions are meet
-	 */
-	public abstract boolean isValid();
-
 	@Override
 	protected TokenIdentifier buildTokenIdentifier() {
 		return new RevocationTokenIdentifier(this);

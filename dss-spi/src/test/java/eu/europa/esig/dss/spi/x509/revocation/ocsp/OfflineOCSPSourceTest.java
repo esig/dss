@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -164,7 +166,9 @@ public class OfflineOCSPSourceTest {
 
 		assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, ocspToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
+		assertTrue(ocspToken.isSignatureIntact());
 		assertTrue(ocspToken.isValid());
+		assertEquals(1, ocspToken.getOCSPTokenVersion());
 		assertTrue(ocspToken.isCertHashPresent());
 		assertTrue(ocspToken.isCertHashMatch());
 		assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
@@ -195,6 +199,7 @@ public class OfflineOCSPSourceTest {
 		OCSPToken ocspUser1 = (OCSPToken) ocspTokens.get(0);
 
 		assertNotNull(ocspUser1);
+		assertTrue(ocspUser1.isSignatureIntact());
 		assertTrue(ocspUser1.isValid());
 		assertFalse(ocspUser1.isSignedBy(ca1));
 
@@ -208,6 +213,7 @@ public class OfflineOCSPSourceTest {
 		OCSPToken ocspUser2 = (OCSPToken) ocspTokens.get(0);
 
 		assertNotNull(ocspUser2);
+		assertTrue(ocspUser2.isSignatureIntact());
 		assertTrue(ocspUser2.isValid());
 		assertFalse(ocspUser2.isSignedBy(ca2));
 		assertTrue(ocspUser2.isSignedBy(ocspResponderCert));
@@ -218,9 +224,11 @@ public class OfflineOCSPSourceTest {
 		assertEquals(1, ocspSource.getAllRevocationBinaries().size());
 		Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
 		assertEquals(2, allRevocationTokens.size());
-//		TODO
-//		Set<String> ids = allRevocationTokens.stream().map(r -> r.getDSSIdAsString()).collect(Collectors.toSet());
-//		assertEquals(2, ids.size());
+
+		List<String> ids = allRevocationTokens.stream().map(Token::getDSSIdAsString).collect(Collectors.toList());
+		assertEquals(2, ids.size());
+		assertEquals(ids.get(0), ids.get(1));
+
 		assertEquals(0, ocspSource.getAllRevocationReferences().size());
 	}
 
@@ -282,6 +290,28 @@ public class OfflineOCSPSourceTest {
 
 		lastRevocationToken = ocspSource.getRevocationToken(certToken, caToken);
 		assertArrayEquals(Utils.fromBase64(ocspTwoBinaries), lastRevocationToken.getEncoded());
+	}
+
+	@Test
+	public void invalidOCSPVersionTest() {
+		CertificateToken certToken = DSSUtils.loadCertificateFromBase64EncodedString("MIID1jCCAr6gAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjIwMjE3MTQ0OTMwWhcNMjMxMjE3MTQ0OTMwWjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN+R+tNSL7FBS2P1nfXbqpgEufk2BAjJQHBOUTmT0UB5rnYF1Vmk6CtL3pQWbg6KcZ4yPAyn0mGcjYPSJaZinpgH3CYf6Gug75lz7VGWAqxkeUZZFMaEjw/stUrqKjFp1+wtEt8Oml4vtra6cZXX0Hxn0G4M7+gEIGjd/pATguetnlxh1iL7FAs6Wd6qaAlJ30N5fLlgGXPON3ea8QtayGhygIBHw8x2nm9pNiIzGT7Nnauy9m7ui60NUXNeJTludFUE0mveIvpGG7VtAcBu1JnaBi8a+TIokh/Uas3GU5MewKzFQNLIWAgK/itRowRhE7j82eiSVkSfpsSsJ5jv9L0CAwEAAaOBvjCBuzAOBgNVHQ8BAf8EBAMCBkAwgYkGCCsGAQUFBwEBBH0wezA6BggrBgEFBQcwAYYuaHR0cDovL2xvY2FsaG9zdDo5OTk5L3BraS1mYWN0b3J5L29jc3AvZ29vZC1jYTA9BggrBgEFBQcwAoYxaHR0cDovL2xvY2FsaG9zdDo5OTk5L3BraS1mYWN0b3J5L2NydC9nb29kLWNhLmNydDAdBgNVHQ4EFgQUPlAIV+kh0KlMx6mE+4bMohxkbDYwDQYJKoZIhvcNAQELBQADggEBADGSvZnOZiYIbApHbL0EIpJo2tCqx7g2Fcko/hdPWQIEt9v3+Y3xKeaMh7Wq40lBK69c6kGpC+SzE9H2HBA6NSGaseELq7u1eR6Ue9DeQ+PfPhJNsEXoyZnf6CmGb36hZy259nWXG3M5eMHI7X5l8hqjDWitGSuUboxcyDEsue/JZPgIk5xUX4iX0j4plqfy2edfe8Ligg9AhUO9V88mBhqwej0hVbNn/u6BN6dFEdRFBgydgzR+JdVaDmuv45ZIbj5XqIu6N9XQNNCX3jn3KRUU9fpwFVszImBb3fR9iMH2GrMPh91xNfQt57XIsEXkm+2RoaoFek251hwtcearDKQ=");
+		CertificateToken caToken = DSSUtils.loadCertificateFromBase64EncodedString("MIID7DCCAtSgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjIwMjE3MTQ0OTMwWhcNMjMxMjE3MTQ0OTMwWjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCH4RAJ31B/gWM2xATbgVgC+EPxx/bWLuo75jy3IHLboYGrXnn/+Jy8+t3kgmjLK7De5vYBYWd6fICpJJ9JVGGzqvuFV7/N1LnUYL2dQLLXCnWSvUiSp+hxjolRbZLtST13FrLOzB3iM8FNFcK9T3qEkr5ZACg5Bk3Zr14E2zTKPdt+JlcCyJq+bxDJR6eZ1hIW5bnWGFX8c89mIkBfYcj75CjdtlXBAmC+hAxLRz1HFtSJ5JvxqFRLDS1q3g4FIjpZjBq93fqjPrrzxGsQZekZ3ey+CegxvPXVbmuFPBJh2Yu2Lpv1pOhtqIsJ+XXBpzjzOAsOisfttqlYEn0rVh41AgMBAAGjgdYwgdMwDgYDVR0PAQH/BAQDAgEGMEIGA1UdHwQ7MDkwN6A1oDOGMWh0dHA6Ly9sb2NhbGhvc3Q6OTk5OS9wa2ktZmFjdG9yeS9jcmwvcm9vdC1jYS5jcmwwTQYIKwYBBQUHAQEEQTA/MD0GCCsGAQUFBzAChjFodHRwOi8vbG9jYWxob3N0Ojk5OTkvcGtpLWZhY3RvcnkvY3J0L3Jvb3QtY2EuY3J0MB0GA1UdDgQWBBQZEFtAkIJAlX3XLEDvh33My0dfnzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBaSgQiLZltCs64ISc7dI+4pmGpyEZ3AXU80R1vETqkcVshIECu7yRcKXjXuZQWh0xQOAINylDOVhSBL3fH/qkYcca7oYpDMNQLk95FjCJW0m3YJzHQO5YhmCx68SY3c5X8ktfNkcgZGyei1kwy4NMN0cVyEFkdz+uJ/r80GLADPNGW3dKb17OGtYxHfCEBl8gA3t5YBouXbnjx/gSlItRINorWrzZElg6lo5w0Pzbmp6ZR0bU6hEGZ+74eOALI9gj4chncU+rq/IXJeqyFxsQOsePLRpaXf05UHa8AJCWoy4gsmMtOLEYtwjngXrwxKn6hySkuWJrL4i8VkzPgAVDb");
+
+		String ocspBinaries = "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";
+
+		ExternalResourcesOCSPSource ocspSource = new ExternalResourcesOCSPSource(new ByteArrayInputStream(Utils.fromBase64(ocspBinaries)));
+
+		List<RevocationToken<OCSP>> revocationTokens = ocspSource.getRevocationTokens(certToken, caToken);
+		assertEquals(1, revocationTokens.size());
+
+		OCSPToken ocspToken = (OCSPToken) revocationTokens.get(0);
+
+		assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
+		assertTrue(ocspToken.isSignatureIntact());
+		assertFalse(ocspToken.isValid());
+
+		assertEquals(2, ocspToken.getOCSPTokenVersion());
+		assertEquals("Basic OCSP Response version is invalid (shall be v1)!", ocspToken.getInvalidityReason());
 	}
 
 }

@@ -121,6 +121,7 @@ public class JdbcCacheCrlSourceTest {
 		assertEquals(originalCRL.getNextUpdate(), cachedCRL.getNextUpdate());
 		assertEquals(originalCRL.getExpiredCertsOnCRL(), cachedCRL.getExpiredCertsOnCRL());
 		assertEquals(originalCRL.getIssuerCertificateToken(), cachedCRL.getIssuerCertificateToken());
+		assertEquals(originalCRL.isSignatureIntact(), cachedCRL.isSignatureIntact());
 		assertEquals(originalCRL.isValid(), cachedCRL.isValid());
 		assertEquals(originalCRL.isCertHashPresent(), cachedCRL.isCertHashPresent());
 		assertEquals(originalCRL.isCertHashMatch(), cachedCRL.isCertHashMatch());

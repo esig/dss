@@ -433,6 +433,17 @@ dataLoader.setConnectTimeout(1000);
 dataLoader.setReadTimeout(1000);
 ----
 
+|TimestampToken #isSignatureValid     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isSignatureValid();
+----
+                                                                     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isValid();
+----
+
 |===
 
 [cols="2,5,5"]
