@@ -183,12 +183,12 @@
 					</dt>
 					<dd>
 			           	<xsl:attribute name="class">col-sm-9 text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+
+						<xsl:variable name="dssIndication" select="dss:Indication" />
+						<xsl:variable name="semanticText" select="//dss:Semantic[contains(@Key,$dssIndication)]"/>
 			
 						<div>
 			           		<xsl:attribute name="class">badge mr-2 badge-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
-
-							<xsl:variable name="dssIndication" select="dss:Indication" />
-							<xsl:variable name="semanticText" select="//dss:Semantic[contains(@Key,$dssIndication)]"/>
 			           		
 			           		<xsl:if test="string-length($semanticText) &gt; 0">
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
@@ -198,34 +198,31 @@
 			           		
 							<xsl:value-of select="$indicationText" />
 						</div>
-					
-						<xsl:choose>
-							<xsl:when test="$indicationText='TOTAL_PASSED'">
-								<i>
-									<xsl:attribute name="class">fa fa-check-circle align-middle</xsl:attribute>
-								</i>
-							</xsl:when>
-							<xsl:when test="$indicationText='PASSED'">
-								<i>
-									<xsl:attribute name="class">fa fa-check-circle align-middle</xsl:attribute>
-								</i>
-							</xsl:when>
-							<xsl:when test="$indicationText='INDETERMINATE'">
-								<i>
-									<xsl:attribute name="class">fa fa-exclamation-circle align-middle</xsl:attribute>
-								</i>
-							</xsl:when>
-							<xsl:when test="$indicationText='FAILED'">
-								<i>
-									<xsl:attribute name="class">fa fa-times-circle align-middle</xsl:attribute>
-								</i>
-							</xsl:when>
-							<xsl:when test="$indicationText='TOTAL_FAILED'">
-								<i>
-									<xsl:attribute name="class">fa fa-times-circle align-middle</xsl:attribute>
-								</i>
-							</xsl:when>
-						</xsl:choose>
+
+						<xsl:variable name="indication-icon-class">
+							<xsl:choose>
+								<xsl:when test="$indicationText='TOTAL_PASSED'">fa-check-circle</xsl:when>
+								<xsl:when test="$indicationText='PASSED'">fa-check-circle</xsl:when>
+								<xsl:when test="$indicationText='INDETERMINATE'">fa-exclamation-circle</xsl:when>
+								<xsl:when test="$indicationText='FAILED'">fa-times-circle</xsl:when>
+								<xsl:when test="$indicationText='TOTAL_FAILED'">fa-times-circle</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+
+						<i>
+							<xsl:attribute name="class">fa <xsl:value-of select="$indication-icon-class" /> align-middle</xsl:attribute>
+							<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+							<xsl:attribute name="data-placement">right</xsl:attribute>
+							<xsl:choose>
+								<xsl:when test="string-length($semanticText) &gt; 0">
+									<xsl:attribute name="title"><xsl:value-of select="$semanticText" /></xsl:attribute>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:attribute name="title"><xsl:value-of select="$indicationText" /></xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+
+						</i>
 					</dd>
 				</dl>   
 		        
@@ -333,9 +330,7 @@
 				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">right</xsl:attribute>
-								<xsl:attribute name="title">
-									Lowest time at which there exists a proof of existence for the signature 
-								</xsl:attribute>
+								<xsl:attribute name="title">Lowest time at which there exists a proof of existence for the signature</xsl:attribute>
 				    		</i>		
 			            </dd>
 			        </dl>
