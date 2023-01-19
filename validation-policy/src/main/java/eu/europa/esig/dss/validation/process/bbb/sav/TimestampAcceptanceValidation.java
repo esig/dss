@@ -85,7 +85,9 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 
 		}
 
-		item = item.setNextItem(cryptographic());
+		item = cryptographic(item);
+
+		item = cryptographicSignedAttributes(item);
 	}
 
 	private ChainItem<XmlSAV> tsaGeneralNamePresent() {

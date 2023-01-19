@@ -55,7 +55,7 @@ public class RevocationAcceptanceValidation extends AbstractAcceptanceValidation
 
 	@Override
 	protected void initChain() {
-		firstItem = cryptographic();
+		firstItem = cryptographic(firstItem);
 	}
 
 }
