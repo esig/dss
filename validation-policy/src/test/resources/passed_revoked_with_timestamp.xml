@@ -373,6 +373,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>yl8eaHFKyymDFYT4pXjt7wjTeahmqyQd+n4Vv1J6fsw=</DigestValue>
@@ -397,6 +409,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>vJiJmppf/Vj83i+217pf8M/fFNZKYMGM14F+FwwrdDw=</DigestValue>
@@ -421,6 +445,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>ncfUfryvFn3rgFo6T/YEdaUYAgZw1CJdTK/B9Qg+wcU=</DigestValue>
@@ -445,10 +481,22 @@
                 <ChainItem Certificate="C-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0"/>
                 <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7"/>
             </CertificateChain>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>3oTBCg11NLrPCxx2YaQSertjfeHPlWiN8tb5oPesR9Y=</DigestValue>
-             </DigestAlgoAndValue>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>x9Vw4ckY4dpqpciixrnU5Pw4L3kLFJuQHoCxV/HPOqA=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <UsedTimestamps>

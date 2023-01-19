@@ -394,6 +394,11 @@
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="OCSPResponderIdMatch" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if an OCSP response's ResponderId matches the certificate used to sign the response</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="OCSPCertHashPresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if an OCSP response has certHash attribute</xsd:documentation>

@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>DigiSignECC-256.pdf</DocumentName>
+    <ValidationDate>2021-09-09T07:59:20Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-2CED50EB3E82BC0EBF1C704DB95FB666EE67ADE9024D599B8497C892B7A20252">
+            <SignatureFilename>DigiSignECC-256.pdf</SignatureFilename>
+            <ClaimedSigningTime>2021-09-09T07:59:17Z</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>CZfFO4CBsQidWkOgjNsROuo8s4TXb52xlWO5OVeqzxg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FE41FE1675B6A266E9B8D9D3A14CAB92CA81FEE2D53806374CB50DAEECC6BD92"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FE41FE1675B6A266E9B8D9D3A14CAB92CA81FEE2D53806374CB50DAEECC6BD92"/>
+                <ChainItem Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+                <ChainItem Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=VRK Gov. CA for Citizen Certificates - G3, OU=Valtion kansalaisvarmenteet, O=Vaestorekisterikeskus CA, C=FI</IssuerName>
+                    <SerialNumber>1007479194</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="Signature-1: PIRINEN JARI 14355134U"/>
+                <PDFSignatureDictionary consistent="true">
+                    <SignerName>PIRINEN JARI 14355134U</SignerName>
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <SignatureByteRange valid="true">0 47290 67770 336</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9E6EE2B1023AD52EBBA82E0640809F809C64AEC801BAAADD433C1A07A969FE8C">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-FE41FE1675B6A266E9B8D9D3A14CAB92CA81FEE2D53806374CB50DAEECC6BD92">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGZMIGQpIGNMIGKMQswCQYDVQQGEwJGSTEhMB8GA1UECgwYVmFlc3RvcmVraXN0ZXJpa2Vza3VzIENBMSQwIgYDVQQLDBtWYWx0aW9uIGthbnNhbGFpc3Zhcm1lbnRlZXQxMjAwBgNVBAMMKVZSSyBHb3YuIENBIGZvciBDaXRpemVuIENlcnRpZmljYXRlcyAtIEczAgQ8DOma</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>/kH+FnW2ombpuNnToUyrksqB/uLVOAY3TLUNruzGvZI=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-569DC60146B40A60BF490AC627EB471605D701AE0FF8B7B4B9762DC33684A786">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>The document ByteRange : [0, 47290, 67770, 336]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EPtcEa7jx6kqGsAShk9n3qQHDKHNUmMiiNIqDo4m4yI=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GTo9KxqIogwZPtUbFzsyT6nRs/T+G9do9+x4TkockGk=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>MEYCIQCD1Ryi5s5AZGF6urON038wi+98JaLwGM0IRZ2OLRzbVgIhAO4FYIsWtseWU/vacbEHxrtKfCh80C3mN1YE6CyzER2s</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1">
+            <SubjectDistinguishedName Format="CANONICAL">cn=vrk gov. root ca - g2,ou=varmennepalvelut,ou=certification authority services,o=vaestorekisterikeskus ca,c=fi</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=VRK Gov. Root CA - G2,OU=Varmennepalvelut,OU=Certification Authority Services,O=Vaestorekisterikeskus CA,C=FI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=vrk gov. root ca - g2,ou=varmennepalvelut,ou=certification authority services,o=vaestorekisterikeskus ca,c=fi</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=VRK Gov. Root CA - G2,OU=Varmennepalvelut,OU=Certification Authority Services,O=Vaestorekisterikeskus CA,C=FI</IssuerDistinguishedName>
+            <SerialNumber>200000</SerialNumber>
+            <CommonName>VRK Gov. Root CA - G2</CommonName>
+            <CountryName>FI</CountryName>
+            <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
+            <OrganizationalUnit>Certification Authority Services</OrganizationalUnit>
+            <AuthorityInformationAccessUrls/>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2038-12-13T08:50:31Z</NotAfter>
+            <NotBefore>2017-12-14T08:50:31Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-122312C081949106B7049F3FEBF199C010ADA13E3281CD358A41E7BD09C829D7</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificatePolicies/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>NP8qRAncE4Pp+JZuit/lcZ66Nz/QrV4vSfkO4Hz11ME=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=vrk gov. ca for citizen certificates - g3,ou=valtion kansalaisvarmenteet,o=vaestorekisterikeskus ca,c=fi</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=VRK Gov. CA for Citizen Certificates - G3,OU=Valtion kansalaisvarmenteet,O=Vaestorekisterikeskus CA,C=FI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=vrk gov. root ca - g2,ou=varmennepalvelut,ou=certification authority services,o=vaestorekisterikeskus ca,c=fi</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=VRK Gov. Root CA - G2,OU=Varmennepalvelut,OU=Certification Authority Services,O=Vaestorekisterikeskus CA,C=FI</IssuerDistinguishedName>
+            <SerialNumber>200003</SerialNumber>
+            <CommonName>VRK Gov. CA for Citizen Certificates - G3</CommonName>
+            <CountryName>FI</CountryName>
+            <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
+            <OrganizationalUnit>Valtion kansalaisvarmenteet</OrganizationalUnit>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://proxy.fineid.fi/ca/vrkroot2c.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://proxy.fineid.fi/arl/vrkroot2a.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.fineid.fi/vrkroot2c</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2038-05-02T09:28:59Z</NotAfter>
+            <NotBefore>2018-05-03T09:28:59Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F1114D5F02E5AB98ECBEC5704678E0F12F40AF4615B11F9B824B2F04FA3B10B1</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>keyCertSign</KeyUsage>
+                <KeyUsage>crlSign</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.201.1</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Oag1sUtrYxP3eDccectDTdUYyP0yW3Sdm+Zp3/IDhOg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9E6EE2B1023AD52EBBA82E0640809F809C64AEC801BAAADD433C1A07A969FE8C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder 3b,2.5.4.5=#1309303234353433372d32,ou=valtion kansalaisvarmenteet,o=vaestorekisterikeskus ca,c=fi</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder 3B,2.5.4.5=#1309303234353433372d32,OU=Valtion kansalaisvarmenteet,O=Vaestorekisterikeskus CA,C=FI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=vrk gov. ca for citizen certificates - g3,ou=valtion kansalaisvarmenteet,o=vaestorekisterikeskus ca,c=fi</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=VRK Gov. CA for Citizen Certificates - G3,OU=Valtion kansalaisvarmenteet,O=Vaestorekisterikeskus CA,C=FI</IssuerDistinguishedName>
+            <SerialNumber>1005006722</SerialNumber>
+            <SubjectSerialNumber>0245437-2</SubjectSerialNumber>
+            <CommonName>OCSP Responder 3B</CommonName>
+            <CountryName>FI</CountryName>
+            <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
+            <OrganizationalUnit>Valtion kansalaisvarmenteet</OrganizationalUnit>
+            <SubjectAlternativeNames>
+                <subjectAlternativeName>vaestorekisterikeskus@vrk.fi</subjectAlternativeName>
+            </SubjectAlternativeNames>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints/>
+            <OCSPAccessUrls/>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-05-15T11:24:07Z</NotAfter>
+            <NotBefore>2018-05-16T11:24:07Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-35093140C5C1F37A2EBD36E3C424097DADD0BA669F58C2CABBA7508B677ABDB3</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>digitalSignature</KeyUsage>
+                <KeyUsage>keyEncipherment</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages>
+                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+                <ChainItem Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202</certificatePolicy>
+            </CertificatePolicies>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nm7isQI61S67qC4GQICfgJxkrsgBuqrdQzwaB6lp/ow=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-FE41FE1675B6A266E9B8D9D3A14CAB92CA81FEE2D53806374CB50DAEECC6BD92">
+            <SubjectDistinguishedName Format="CANONICAL">cn=pierre jean 55131434u,2.5.4.4=#4904950c07524e454e,2.5.4.42=#a4150c044249,2.5.4.5=#1343130933353531333455,c=fi</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PIRINEN JARI 55131434u,2.5.4.4=#4904950c07524e454e,2.5.4.42=#a4150c044249,2.5.4.5=#1343130933353531333455,C=FI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca for citizen certificates</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA for Citizen Certificates </IssuerDistinguishedName>
+            <SerialNumber>4791910074</SerialNumber>
+            <SubjectSerialNumber>13414355U</SubjectSerialNumber>
+            <CommonName>PIERRE JEAN 14355134U</CommonName>
+            <CountryName>FI</CountryName>
+            <GivenName>JEAN</GivenName>
+            <Surname>PIERRE</Surname>
+            <AuthorityInformationAccessUrls>
+                <aiaUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</aiaUrl>
+            </AuthorityInformationAccessUrls>
+            <CRLDistributionPoints>
+                <crlUrl>http://proxy.fineid.fi/crl/vrkcqc3c.crl</crlUrl>
+            </CRLDistributionPoints>
+            <OCSPAccessUrls>
+                <ocspServerUrl>http://ocsp.fineid.fi/vrkcqc3</ocspServerUrl>
+            </OCSPAccessUrls>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2026-01-08T21:59:59Z</NotAfter>
+            <NotBefore>2021-01-17T06:00:16Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0184C1F5E3BB4DB31950CA2A0BF05968F125851B7D4E752A8A4D9041C78809E3</EntityKey>
+            <KeyUsageBits>
+                <KeyUsage>nonRepudiation</KeyUsage>
+            </KeyUsageBits>
+            <ExtendedKeyUsages/>
+            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+                <ChainItem Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificatePolicies>
+                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202.1</certificatePolicy>
+            </CertificatePolicies>
+            <QcStatements>
+                <QcCompliance present="true"/>
+                <QcSSCD present="true"/>
+                <QcTypes>
+                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                </QcTypes>
+                <QcCClegislation/>
+            </QcStatements>
+            <TrustedServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/kH+FnW2ombpuNnToUyrksqB/uLVOAY3TLUNruzGvZI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2021-09-09T07:59:17Z</ProductionDate>
+            <ThisUpdate>2021-09-09T07:20:29Z</ThisUpdate>
+            <NextUpdate>2021-09-09T15:20:29Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-39A835B14B6B6313F778371C79CB434DD518C8FD325B749D9BE669DFF20384E8"/>
+                <ChainItem Certificate="C-34FF2A4409DC1383E9F8966E8ADFE5719EBA373FD0AD5E2F49F90EE07CF5D4C1"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-9E6EE2B1023AD52EBBA82E0640809F809C64AEC801BAAADD433C1A07A969FE8C">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP Responder 3B, SERIALNUMBER=0245437-2, OU=Valtion kansalaisvarmenteet, O=Vaestorekisterikeskus CA, C=FI</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gWz+pM//Dwgy3oh5KWMwbMjnTIxYIka2lhvKUXl72nQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-569DC60146B40A60BF490AC627EB471605D701AE0FF8B7B4B9762DC33684A786">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0ASISEtK0nb7vKehe3R885qcsbmrObB2lH2UnAw2fNg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

@@ -237,6 +237,7 @@
     </Timestamp>
     <Revocation>
         <UnknownStatus Level="FAIL" />
+        <OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
         <BasicSignatureConstraints>
             <ReferenceDataExistence Level="FAIL" />

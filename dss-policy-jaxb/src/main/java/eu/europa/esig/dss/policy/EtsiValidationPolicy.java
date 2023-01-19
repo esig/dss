@@ -598,6 +598,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 	
 	@Override
+	public LevelConstraint getOCSPResponseResponderIdMatchConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getOCSPResponderIdMatch();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getOCSPResponseCertHashPresentConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();
 		if (revocationConstraints != null) {

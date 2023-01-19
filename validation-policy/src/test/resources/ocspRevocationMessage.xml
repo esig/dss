@@ -282,11 +282,40 @@
                 <SignatureValid>false</SignatureValid>
             </BasicSignature>
             <CertificateChain/>
+            <FoundCertificates>
+                <OrphanCertificate Token="C-304441833C6BD01A70A7E9B7A2D94C1C1F9C670C79BF277AF7E7B34A6AA4FA26">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </OrphanCertificate>
+            </FoundCertificates>
             <Base64Encoded>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</Base64Encoded>
         </Revocation>
     </UsedRevocations>
     <UsedTimestamps/>
-    <OrphanTokens/>
+    <OrphanTokens>
+        <OrphanCertificate EncapsulationType="BINARIES" Id="C-304441833C6BD01A70A7E9B7A2D94C1C1F9C670C79BF277AF7E7B34A6AA4FA26">
+            <SubjectDistinguishedName Format="CANONICAL">ou=certsign ocsp ca g2,o=certsign sa,c=ro</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">OU=certSIGN OCSP CA G2,O=CERTSIGN SA,C=RO</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">ou=certsign ocsp ca g2,o=certsign sa,c=ro</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">OU=certSIGN OCSP CA G2,O=CERTSIGN SA,C=RO</IssuerDistinguishedName>
+            <SerialNumber>7</SerialNumber>
+            <NotAfter>2011-11-24T08:29:05Z</NotAfter>
+            <NotBefore>2010-11-24T08:29:05Z</NotBefore>
+            <EntityKey>PK-9B42C1F83997619126B4A8FE75F204E7F81A4373879189E3FFF7E479A50389C4</EntityKey>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>w40eSVqz4SCT/CUMbWy6Pcq0ufOWcPXM1xnLxVQN1MY=</DigestValue>
+            </DigestAlgoAndValue>
+        </OrphanCertificate>
+    </OrphanTokens>
     <OriginalDocuments>
         <SignerData Id="D-E7C48620F704A3FF0A2C43C521A43191604B50BF4125B08F2D538CCA19DCD600">
             <ReferencedName>Full document</ReferencedName>

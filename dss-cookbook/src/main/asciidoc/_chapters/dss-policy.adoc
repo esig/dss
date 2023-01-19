@@ -1901,6 +1901,20 @@ Default: `FAIL`
 </Revocation>
 ----
 
+* `OCSPResponderIdMatch` - this constraint checks whether the ResponderId field of OCSP response matches the certificate used to sign this OCSP response. If the ResponderId does not match the certificate, the check will fail.
+
+Default: `FAIL` (executed for OCSP only)
+
+[source,xml,indent=0]
+.Example of OCSPResponderIdMatch usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
+----
+
 * `OCSPCertHashPresent` - this constraint checks whether the OCSP response contains "certHash" field. If the OCSP response does not contain "certHash" field, the check will fail.
 
 Default: not executed
@@ -2210,8 +2224,8 @@ This table defines the correspondence between the enforced validation policy con
                                                                                                       |FAILED                |EXPIRED
                                   |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
@@ -2287,10 +2301,11 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.5+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+.6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPResponderIdMatch             |LevelConstraint                   |INDETERMINATE        |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
 .4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE

@@ -46,6 +46,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHa
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationConsistentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationResponderIdMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
@@ -116,6 +117,8 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		 */
 		if (RevocationType.OCSP.equals(revocationData.getRevocationType())) {
 
+			item = item.setNextItem(revocationResponderIdMatch());
+
 			item = item.setNextItem(revocationCertHashPresent());
 			
 			if (revocationData.isCertHashExtensionPresent()) {
@@ -178,6 +181,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 	private ChainItem<XmlRAC> revocationDataKnown() {
 		return new RevocationDataKnownCheck(i18nProvider, result, revocationData, policy.getUnknownStatusConstraint());
+	}
+
+	private ChainItem<XmlRAC> revocationResponderIdMatch() {
+		LevelConstraint constraint = policy.getOCSPResponseResponderIdMatchConstraint();
+		return new RevocationResponderIdMatchCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationCertHashPresent() {

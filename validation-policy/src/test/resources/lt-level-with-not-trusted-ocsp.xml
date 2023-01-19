@@ -431,6 +431,18 @@
             <CertificateChain>
                 <ChainItem Certificate="C-5B8AD007143EC6255EF26A94CBAB8BC9C2EAE667E6D68331C9DE7DF01605F2A7"/>
             </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-5B8AD007143EC6255EF26A94CBAB8BC9C2EAE667E6D68331C9DE7DF01605F2A7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>W4rQBxQ+xiVe8mqUy6uLycLq5mfm1oMxyd598BYF8qc=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ujiIr2SKmEeeCN4P8htKUx5xLSZcgsREfnbIHEK7JrI=</DigestValue>

@@ -771,6 +771,18 @@ not enforced
     </SigningCertificate>
 </Timestamp>
 ----
+|ResponderId for OCSP response                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
+----
 
 |===
 

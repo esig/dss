@@ -349,6 +349,13 @@ public interface ValidationPolicy {
 	LevelConstraint getUnknownStatusConstraint();
 
 	/**
+	 * The method returns OCSPResponderIdMatch constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getOCSPResponseResponderIdMatchConstraint();
+
+	/**
 	 * The method returns OCSPCertHashPresent constraint
 	 * 
 	 * @return {@link LevelConstraint}
