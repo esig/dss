@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.spi.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -83,8 +83,7 @@ public abstract class RepositoryAIASource implements AIASource {
      */
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken, boolean forceRefresh) {
         Objects.requireNonNull(certificateToken, "CertificateToken shall be provided!");
-
-        List<String> urls = DSSASN1Utils.getCAAccessLocations(certificateToken);
+        List<String> urls = CertificateExtensionsUtils.getCAIssuersAccessUrls(certificateToken);
         if (Utils.isCollectionEmpty(urls)) {
             LOG.info("There is no AIA extension for certificate download.");
             return Collections.emptySet();

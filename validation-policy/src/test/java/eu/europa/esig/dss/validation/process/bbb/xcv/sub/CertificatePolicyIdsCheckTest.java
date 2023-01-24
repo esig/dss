@@ -20,39 +20,38 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
+		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
-		policyIds.add(oid);
+		certificatePolicies.getCertificatePolicy().add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("1.3.76.38.1.1.1");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicies(policyIds);
+		xc.getCertificateExtensions().add(certificatePolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
@@ -65,17 +64,17 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
-		List<XmlCertificatePolicy> policyIds = new ArrayList<>();
+		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
-		policyIds.add(oid);
+		certificatePolicies.getCertificatePolicy().add(oid);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("1.3.76.38.1.1.2");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setCertificatePolicies(policyIds);
+		xc.getCertificateExtensions().add(certificatePolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyIdsCheck cpic = new CertificatePolicyIdsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);

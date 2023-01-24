@@ -54,7 +54,7 @@ public class AuthorityInfoAccessPresentCheck extends ChainItem<XmlSubXCV> {
 
 	@Override
 	protected boolean process() {
-		return Utils.isCollectionNotEmpty(certificate.getAuthorityInformationAccessUrls());
+		return Utils.isCollectionNotEmpty(certificate.getCAIssuersAccessUrls());
 	}
 
 	@Override

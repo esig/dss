@@ -47,7 +47,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -68,7 +68,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("CR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -90,7 +90,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("CR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -112,7 +112,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -134,7 +134,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -156,7 +156,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -178,7 +178,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR", "FR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(
@@ -200,7 +200,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR", "FR"));
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcCCLegislationCheck cqcclc = new CertificateQcCCLegislationCheck(

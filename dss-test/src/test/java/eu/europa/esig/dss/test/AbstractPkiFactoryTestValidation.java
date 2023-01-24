@@ -45,15 +45,18 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -1201,12 +1204,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
-
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			assertTrue(xmlCertificate.getBase64Encoded() != null || xmlCertificate.getDigestAlgoAndValue() != null);
 			
-			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
+			if (!xmlCertificate.isTrusted() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
 				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();
@@ -1228,6 +1230,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (XmlTimestamp xmlTimestamp : timestamps) {
 			assertTrue(xmlTimestamp.getBase64Encoded() != null || xmlTimestamp.getDigestAlgoAndValue() != null);
 		}
+	}
+
+	private boolean hasOcspNoCheck(XmlCertificate xmlCertificate) {
+		for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
+			if (CertificateExtensionEnum.OCSP_NOCHECK.getOid().equals(certificateExtension.getOID())) {
+				return ((XmlIdPkixOcspNoCheck) certificateExtension).isPresent();
+			}
+		}
+		return false;
 	}
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {

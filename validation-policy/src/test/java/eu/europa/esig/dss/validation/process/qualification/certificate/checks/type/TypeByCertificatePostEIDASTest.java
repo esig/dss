@@ -103,7 +103,7 @@ public class TypeByCertificatePostEIDASTest {
 			}
 		}
 		xmlQcStatements.setQcTypes(oids);
-		xmlCertificate.setQcStatements(xmlQcStatements);
+		xmlCertificate.getCertificateExtensions().add(xmlQcStatements);
 		return new CertificateWrapper(xmlCertificate);
 	}
 

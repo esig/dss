@@ -18,62 +18,81 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.model.x509;
+package eu.europa.esig.dss.model.x509.extension;
 
 /**
- * PdsLocation::= SEQUENCE {
- *  url IA5String,
- *  language PrintableString (SIZE(2))} --ISO 639-1 language code
+ * Defines limits of transactions for a given certificate (QcStatement)
  */
-public class PdsLocation {
+public class QCLimitValue {
 
-    /** The URL */
-    private String url;
+    /** The used currency */
+    private String currency;
 
-    /** The language */
-    private String language;
+    /** The transaction amount */
+    private int amount;
+
+    /** The exponent */
+    private int exponent;
 
     /**
      * Default constructor instantiating object with null values
      */
-    public PdsLocation() {
+    public QCLimitValue() {
         // empty
     }
 
     /**
-     * Returns URL
+     * Gets the currency
      *
      * @return {@link String}
      */
-    public String getUrl() {
-        return url;
+    public String getCurrency() {
+        return currency;
     }
 
     /**
-     * Sets URL
+     * Sets the currency
      *
-     * @param url {@link String}
+     * @param currency {@link String}
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     /**
-     * Returns the language
+     * Gets the amount
      *
-     * @return {@link String}
+     * @return integer
      */
-    public String getLanguage() {
-        return language;
+    public int getAmount() {
+        return amount;
     }
 
     /**
-     * Sets language
+     * Sets the amount
      *
-     * @param language {@link String}
+     * @param amount integer
      */
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    /**
+     * Gets the exponent
+     *
+     * @return integer
+     */
+    public int getExponent() {
+        return exponent;
+    }
+
+    /**
+     * Sets the exponent
+     *
+     * @param exponent integer
+     */
+    public void setExponent(int exponent) {
+        this.exponent = exponent;
     }
 
 }

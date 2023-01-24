@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -164,7 +165,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         Element x509SKI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "X509SKI");
         digitalId.appendChild(x509SKI);
 
-        valueNode = tlDocument.createTextNode(Utils.toBase64(DSSASN1Utils.getSki(rootCA)));
+        valueNode = tlDocument.createTextNode(Utils.toBase64(CertificateExtensionsUtils.getSubjectKeyIdentifier(rootCA).getSki()));
         x509SKI.appendChild(valueNode);
 
 

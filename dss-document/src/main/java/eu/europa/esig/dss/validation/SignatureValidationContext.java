@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -1119,7 +1119,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 	
 	private boolean isOCSPNoCheckExtension(CertificateToken certToken) {
-		return DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certToken);
+		return CertificateExtensionsUtils.hasOcspNoCheckExtension(certToken);
 	}
 
 	private List<RevocationToken<?>> getRelatedRevocationTokens(CertificateToken certificateToken) {

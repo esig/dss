@@ -54,7 +54,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -81,7 +81,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-eseal");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -107,7 +107,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("0.4.0.1862.1.6.1");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -133,7 +133,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -154,7 +154,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,

@@ -112,7 +112,7 @@ public class SimpleReportForCertificateBuilder {
 		item.setNotAfter(certificate.getNotAfter());
 		item.setKeyUsages(certificate.getKeyUsages());
 		item.setExtendedKeyUsages(getReadable(certificate.getExtendedKeyUsages()));
-		item.setAiaUrls(emptyToNull(certificate.getAuthorityInformationAccessUrls()));
+		item.setAiaUrls(emptyToNull(certificate.getCAIssuersAccessUrls()));
 		item.setOcspUrls(emptyToNull(certificate.getOCSPAccessUrls()));
 		item.setCrlUrls(emptyToNull(certificate.getCRLDistributionPoints()));
 		item.setCpsUrls(emptyToNull(certificate.getCpsUrls()));

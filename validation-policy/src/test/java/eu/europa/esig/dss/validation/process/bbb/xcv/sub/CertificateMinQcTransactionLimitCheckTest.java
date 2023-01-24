@@ -53,7 +53,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
         constraint.setValue(500000);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
@@ -79,7 +79,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
         constraint.setValue(1000000);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
@@ -105,7 +105,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
         constraint.setValue(5000000);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
@@ -126,7 +126,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
         constraint.setValue(500000);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,

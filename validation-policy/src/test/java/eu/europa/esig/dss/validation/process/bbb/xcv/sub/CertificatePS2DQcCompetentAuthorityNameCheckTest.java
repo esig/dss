@@ -52,7 +52,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -78,7 +78,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -103,7 +103,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -124,7 +124,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(

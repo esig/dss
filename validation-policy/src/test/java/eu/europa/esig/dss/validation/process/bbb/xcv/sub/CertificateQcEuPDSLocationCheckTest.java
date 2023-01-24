@@ -57,7 +57,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
         constraint.getId().add("https://repository.eid.belgium.be");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuPDSLocationCheck cqcpdslc = new CertificateQcEuPDSLocationCheck(i18nProvider, result,
@@ -86,7 +86,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
         constraint.getId().add("https://repository.eid.belgium.be");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuPDSLocationCheck cqcpdslc = new CertificateQcEuPDSLocationCheck(i18nProvider, result,
@@ -107,7 +107,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
         constraint.getId().add("https://repository.eid.belgium.be");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuPDSLocationCheck cqcpdslc = new CertificateQcEuPDSLocationCheck(i18nProvider, result,

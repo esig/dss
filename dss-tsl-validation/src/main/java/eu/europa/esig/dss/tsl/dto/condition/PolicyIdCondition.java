@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.tsl.dto.condition;
 
-import java.util.List;
-import java.util.Objects;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
+import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
-import eu.europa.esig.dss.spi.x509.CertificatePolicy;
+
+import java.util.Objects;
 
 /**
  * Checks if a certificate has a specific policy OID.<br>
@@ -69,10 +69,12 @@ public class PolicyIdCondition implements Condition {
 		 * Certificate policies identifier: 2.5.29.32 (IETF RFC 3280)<br>
 		 * Gets all certificate's policies
 		 */
-		List<CertificatePolicy> contextPolicyIdentifiers = DSSASN1Utils.getCertificatePolicies(certificateToken);
-		for (CertificatePolicy certificatePolicy : contextPolicyIdentifiers) {
-			if (policyOid.equals(certificatePolicy.getOid())) {
-				return true;
+		CertificatePolicies certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(certificateToken);
+		if (certificatePolicies != null) {
+			for (CertificatePolicy certificatePolicy : certificatePolicies.getPolicyList()) {
+				if (policyOid.equals(certificatePolicy.getOid())) {
+					return true;
+				}
 			}
 		}
 		return false;

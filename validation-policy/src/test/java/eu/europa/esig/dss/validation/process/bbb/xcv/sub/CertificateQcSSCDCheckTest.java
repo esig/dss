@@ -25,6 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
@@ -52,7 +53,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -76,7 +77,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -94,9 +95,11 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
+        XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
         XmlCertificatePolicy oid = new XmlCertificatePolicy();
         oid.setValue("0.4.0.1456.1.1");
-        xc.getCertificatePolicies().add(oid);
+        certificatePolicies.getCertificatePolicy().add(oid);
+        xc.getCertificateExtensions().add(certificatePolicies);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -116,7 +119,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,

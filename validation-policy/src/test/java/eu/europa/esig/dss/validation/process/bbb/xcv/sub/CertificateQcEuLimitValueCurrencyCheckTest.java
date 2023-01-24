@@ -52,7 +52,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
         constraint.setValue("EUR");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
@@ -77,7 +77,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
         constraint.setValue("AUD");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
@@ -98,7 +98,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
         constraint.setValue("EUR");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(

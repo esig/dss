@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRACertificateMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
@@ -33,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.QCType;
@@ -582,10 +584,15 @@ public class XmlTrustedServiceProviderBuilder {
         }
 
         // Overwrite with information from MRA
-        XmlQcStatements qcStatements = xmlCertificate.getQcStatements();
+        XmlQcStatements qcStatements = null;
+        for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
+            if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(certificateExtension.getOID())) {
+                qcStatements = (XmlQcStatements) certificateExtension;
+            }
+        }
         if (qcStatements == null) {
             qcStatements = new XmlQcStatements();
-            xmlCertificate.setQcStatements(qcStatements);
+            xmlCertificate.getCertificateExtensions().add(qcStatements);
         }
 
         for (Map.Entry<MRAEquivalenceContext, CertificateContentEquivalence> equivalence : certificateContentEquivalences.entrySet()) {

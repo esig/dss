@@ -27,7 +27,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setBasicConstraints(basicConstraints);
+        xc.getCertificateExtensions().add(basicConstraints);
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsCACheck bccac = new BasicConstraintsCACheck(i18nProvider, result,
@@ -48,7 +48,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setBasicConstraints(basicConstraints);
+        xc.getCertificateExtensions().add(basicConstraints);
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsCACheck bccac = new BasicConstraintsCACheck(i18nProvider, result,

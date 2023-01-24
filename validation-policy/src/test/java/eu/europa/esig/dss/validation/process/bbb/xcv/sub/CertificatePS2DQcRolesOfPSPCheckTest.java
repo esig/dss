@@ -61,7 +61,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -93,7 +93,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -125,7 +125,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("0.4.0.19495.1.2");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -157,7 +157,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -178,7 +178,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(

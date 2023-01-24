@@ -54,7 +54,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.1");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -82,7 +82,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.3");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -109,7 +109,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("qcs-SemanticsId-Legal");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -136,7 +136,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.3");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -157,7 +157,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.4");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(

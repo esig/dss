@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.NonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
@@ -147,7 +147,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			LOG.info("OCSP alternative urls : {}", alternativeUrls);
 		}
 
-		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		final List<String> ocspAccessLocations = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
 		if (Utils.isCollectionEmpty(ocspAccessLocations) && Utils.isCollectionEmpty(alternativeUrls)) {
 			LOG.warn("No OCSP location found for {}", dssIdAsString);
 			return null;
@@ -167,7 +167,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	@Override
 	public RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
 																CertificateToken issuerToken) {
-		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		final List<String> ocspAccessLocations = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
 		if (Utils.isCollectionEmpty(ocspAccessLocations)) {
 			LOG.warn("No OCSP location found for {}", certificateToken.getDSSIdAsString());
 			return null;

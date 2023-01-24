@@ -53,7 +53,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
         constraint.getId().add("LU-CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
@@ -79,7 +79,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
         constraint.getId().add("LU-CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
@@ -104,7 +104,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
         constraint.getId().add("LU-CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
@@ -125,7 +125,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
         constraint.getId().add("LU-CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(

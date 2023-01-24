@@ -18,83 +18,61 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.model.x509;
-
-import java.util.List;
+package eu.europa.esig.dss.model.x509.extension;
 
 /**
- * Represents a PSD-2-QC type
+ * The class represents a certificate policy
  *
  */
-public class PSD2QcType {
+public class CertificatePolicy {
 
-	/** A list of {@code RoleOfPSP}s */
-	private List<RoleOfPSP> rolesOfPSP;
+	/** Certificate policy OID */
+	private String oid;
 
-	/** NCA name */
-	private String ncaName;
-
-	/** NCA Id */
-	private String ncaId;
+	/** Certificate policy URL */
+	private String cpsUrl;
 
 	/**
 	 * Default constructor instantiating object with null values
 	 */
-	public PSD2QcType() {
+	public CertificatePolicy() {
+		// empty
 	}
 
 	/**
-	 * Gets a list of {@code RoleOfPSP}s
-	 *
-	 * @return a list of {@link RoleOfPSP}s
-	 */
-	public List<RoleOfPSP> getRolesOfPSP() {
-		return rolesOfPSP;
-	}
-
-	/**
-	 * Sets a list of {@code RoleOfPSP}s
-	 *
-	 * @param rolesOfPSP a list of {@link RoleOfPSP}s
-	 */
-	public void setRolesOfPSP(List<RoleOfPSP> rolesOfPSP) {
-		this.rolesOfPSP = rolesOfPSP;
-	}
-
-	/**
-	 * Gets an NCA name
+	 * Gets OID of the certificate policy
 	 *
 	 * @return {@link String}
 	 */
-	public String getNcaName() {
-		return ncaName;
+	public String getOid() {
+		return oid;
 	}
 
 	/**
-	 * Sets an NCA name
+	 * Sets OID of the certificate policy
 	 *
-	 * @param ncaName {@link String}
+	 * @param oid {@link String}
 	 */
-	public void setNcaName(String ncaName) {
-		this.ncaName = ncaName;
+	public void setOid(String oid) {
+		this.oid = oid;
 	}
 
 	/**
-	 * Gets an NCA Id
+	 * Gets URL of the certificate policy
 	 *
 	 * @return {@link String}
 	 */
-	public String getNcaId() {
-		return ncaId;
+	public String getCpsUrl() {
+		return cpsUrl;
 	}
 
 	/**
-	 * Sets an NCA Id
+	 * Sets URL of the certificate policy
 	 *
-	 * @param ncaId {@link String}
+	 * @param cpsUrl {@link String}
 	 */
-	public void setNcaId(String ncaId) {
-		this.ncaId = ncaId;
+	public void setCpsUrl(String cpsUrl) {
+		this.cpsUrl = cpsUrl;
 	}
 
 }

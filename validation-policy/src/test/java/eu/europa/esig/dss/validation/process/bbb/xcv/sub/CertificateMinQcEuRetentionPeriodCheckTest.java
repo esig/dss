@@ -48,7 +48,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
         constraint.setValue(3);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
@@ -70,7 +70,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
         constraint.setValue(3);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
@@ -92,7 +92,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
         constraint.setValue(3);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
@@ -113,7 +113,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
         constraint.setValue(3);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
