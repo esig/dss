@@ -121,14 +121,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -139,13 +131,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CBDF1A3694D6352C17481B7623A5654BD66F5FB25DA9A9E9D0D1EA92D8D26B0B</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -156,9 +141,23 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -199,9 +198,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -211,13 +207,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7DB4D9B6563626B94F611C8F4F71E964099B9B0812D4391691D03A92F360A464</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -231,7 +220,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -248,12 +245,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -263,13 +254,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D5085FA10E84D47538CEA83B563A522C963E9816340C20D705C1CA454D5A97CF</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -283,9 +267,22 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -326,13 +323,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -341,11 +331,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-218BC180C95208DF357A59E32173C8547C98A2398DC8DDBB1EBCD40775E5A763</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -360,7 +345,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</caIssuersUrl>
+                    <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-35EEDE23A4037BEE57D7877078BCA2F962F9A855F0C89B7A7B322E7AD6B4A6FE">
@@ -385,14 +378,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -402,13 +387,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E5CC872C367B54AB147DDA5C56C4FC42795CC22A0C04D2060BA7FF6A602A2595</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -422,9 +400,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -475,9 +468,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -488,13 +478,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-80770A60366E500F828CFA3AD2B2B1F7CCCA4917E07DE3E6799EFD3459E197CC</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -505,7 +488,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -522,13 +511,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -537,13 +519,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BA1454BAA06C0BD4EC28F7D97C78AB94BE08FDD1B1873C90D46225AB2272CFDE</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -557,7 +532,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-80F9E9633B6342A66B072E8F163CE4293BB9D4D0209B8772956CD1AA12F7C730">

@@ -127,18 +127,6 @@
             <CountryName>ES</CountryName>
             <OrganizationName>IZENPE S.A.</OrganizationName>
             <OrganizationalUnit>NZZ Ziurtagiri publikoa - Certificado publico SCI</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
-                <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
-                <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.izenpe.com:8094</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
@@ -150,13 +138,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A6CC591DEDF7B811375F608BBABD9FACC255FCE28B55C8F23D555286903EF8DE</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -167,9 +148,27 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
+                    <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
+                    <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsp.izenpe.com:8094</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -188,13 +187,6 @@
             <OrganizationalUnit>Ziurtagiri onartua - Certificado reconocido</OrganizationalUnit>
             <GivenName>CIUDADANO</GivenName>
             <Surname>FICTICIO</Surname>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.izenpe.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
@@ -204,16 +196,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A8BBF270BB4D797A7A6C0DE670791D7F6050E5DE2FD200699B828AA8151A4202</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -227,22 +209,39 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.izenpe.com/rpaciudadano">1.3.6.1.4.1.14777.2.6</certificatePolicy>
-                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>15</QcEuRetentionPeriod>
-                <QcSSCD present="true"/>
-                <QcEuPDS>
-                    <PdsLocation lang="EN">https://www.izenpe.com/pds/en/</PdsLocation>
-                    <PdsLocation lang="EU">https://www.izenpe.com/pds/eu/</PdsLocation>
-                    <PdsLocation lang="ES">https://www.izenpe.com/pds/es/</PdsLocation>
-                </QcEuPDS>
-                <QcTypes/>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsp.izenpe.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.izenpe.com/rpaciudadano">1.3.6.1.4.1.14777.2.6</certificatePolicy>
+                    <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>15</QcEuRetentionPeriod>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="EN">https://www.izenpe.com/pds/en/</PdsLocation>
+                        <PdsLocation lang="EU">https://www.izenpe.com/pds/eu/</PdsLocation>
+                        <PdsLocation lang="ES">https://www.izenpe.com/pds/es/</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes/>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97">
@@ -266,11 +265,6 @@
             <CommonName>ocsp.izenpe.com</CommonName>
             <CountryName>ES</CountryName>
             <OrganizationName>IZENPE S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
@@ -281,14 +275,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BF770D36042BFD7D7001F550B2414BDF94895849BBE31FF29E932B815648BF62</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -302,7 +288,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -320,18 +318,6 @@
             <CountryName>ES</CountryName>
             <OrganizationName>IZENPE S.A.</OrganizationName>
             <OrganizationalUnit>NZZ Ziurtagiri publikoa - Certificado publico SCI</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
-                <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
-                <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.izenpe.com:8094</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
@@ -343,13 +329,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A6CC591DEDF7B811375F608BBABD9FACC255FCE28B55C8F23D555286903EF8DE</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -358,9 +337,27 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.izenpe.com/cps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>http://www.izenpe.com</subjectAlternativeName>
+                    <subjectAlternativeName>info@izenpe.com</subjectAlternativeName>
+                    <subjectAlternativeName>street=Avda del Mediterraneo Etorbidea 14 - 01010 Vitoria-Gasteiz,o=IZENPE S.A. - CIF A01337260-RMerc.Vitoria-Gasteiz T1055 F62 S8</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsp.izenpe.com:8094</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -377,15 +374,6 @@
             <Locality>Vilnius</Locality>
             <CountryName>LT</CountryName>
             <OrganizationName>BalTstamp UAB</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp-3nqc.ssc.lt/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -397,13 +385,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-6B8F751FB030568FCEC7D43BBCD238B3876AD05E7ADEA61C2F1A493A306ACB2A</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -418,9 +399,24 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp-3nqc.ssc.lt/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -437,15 +433,6 @@
             <CountryName>LT</CountryName>
             <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
             <OrganizationalUnit>Certification Authority</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp2.ssc.lt</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -457,14 +444,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-19EC2E86A9C59098407E816C29554E0CB566EDA0F53E92CC600FA01D36A42C8A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -478,9 +457,24 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp2.ssc.lt</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -497,11 +491,6 @@
             <CountryName>ES</CountryName>
             <OrganizationIdentifier>VATES-A01337260</OrganizationIdentifier>
             <OrganizationName>IZENPE S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -513,13 +502,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4FB1CDF6ABDF578449E115030672BE3A4054B71D3120554287879687D17C01D7</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -530,9 +512,20 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -549,11 +542,6 @@
             <CountryName>LT</CountryName>
             <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
             <OrganizationalUnit>Certification Authority</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OTHER</Source>
@@ -563,13 +551,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D1ECACCA44012C3E1E6D1B39DD2968FC7FD3127AAA57AB5182A3BEABCCD7A3A9</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -580,9 +561,19 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

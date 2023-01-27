@@ -127,11 +127,13 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			LOG.info("CRL alternative urls : {}", alternativeUrls);
 		}
 
-		final List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
-		if (Utils.isCollectionEmpty(crlUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
+		final List<String> crlAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+		if (Utils.isCollectionEmpty(crlAccessUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
 			LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
 			return null;
 		}
+		final List<String> crlUrls = new ArrayList<>();
+		crlUrls.addAll(crlAccessUrls);
 		crlUrls.addAll(alternativeUrls);
 
 		RevocationTokenAndUrl<CRL> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerToken, crlUrls);

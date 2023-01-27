@@ -6,6 +6,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -21,6 +22,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
     @Test
     public void valid() {
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
+        basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
         basicConstraints.setCA(true);
 
         LevelConstraint constraint = new LevelConstraint();
@@ -42,6 +44,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
     @Test
     public void invalid() {
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
+        basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
         basicConstraints.setCA(false);
 
         LevelConstraint constraint = new LevelConstraint();
@@ -62,7 +65,6 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
 
     @Test
     public void notPresentTest() {
-
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

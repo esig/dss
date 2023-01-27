@@ -87,21 +87,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>NATIONAL SECURITY AUTHORITY</OrganizationName>
             <OrganizationalUnit>CIS Operation division</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>podatelna@nbusr.sk</subjectAlternativeName>
-                <subjectAlternativeName>http://www.nbusr.sk/en/electronic-signature/signature-policies.1.html</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</aiaUrl>
-                <aiaUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
-                <aiaUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
-                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TRUSTED_STORE</Source>
                 <Source>SIGNATURE</Source>
@@ -111,13 +96,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9ABEDC446B4659236AEE9A198224FF5BA1993ECEEBAD9008AF1EEBF1F48A0E29</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="tslSigning">0.4.0.2231.3.0</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -126,10 +104,32 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-                <certificatePolicy>1.3.158.36061701.0.0.1.10.5.0.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>podatelna@nbusr.sk</subjectAlternativeName>
+                    <subjectAlternativeName>http://www.nbusr.sk/en/electronic-signature/signature-policies.1.html</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy>1.3.158.36061701.0.0.1.10.5.0.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="tslSigning">0.4.0.2231.3.0</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</caIssuersUrl>
+                    <caIssuersUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                    <caIssuersUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                    <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                    <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

@@ -73,9 +73,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -84,12 +81,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9CF3C96697B720589B10CC13B8A2BD35FFBC417B7050A3820AF599A439DE75E5</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -100,9 +91,16 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-			<CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -160,11 +158,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
@@ -173,13 +166,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1CA2D3F1E3B9FAC4113C156C9AA65C1DDCCB5087502CD2E89324DD838CCDA45D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -193,9 +179,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-			<CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -236,11 +233,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
@@ -249,13 +241,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F4E7DF969A590AF41E38E5854542EBF9DF6A5BE9B16FD31494FA689509057494</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -269,9 +254,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -312,11 +308,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
@@ -325,13 +316,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CFF2E3B95D7EBF7D89B1D586102D09632CE5E39BFA31115C3C9577461DD856AD</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -345,9 +329,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -409,11 +404,6 @@
             <CommonName>Certipost E-Trust Secondary Qualified CA for Physical Persons</CommonName>
             <CountryName>BE</CountryName>
             <OrganizationName>Certipost s.a./n.v.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.e-trust.be/QCA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -422,12 +412,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1A07376222BF46318884EA94953003ECF8E35635C373305C973C1B39169202F0</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -441,9 +425,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>0.3.2062.7.1.0.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>0.3.2062.7.1.0.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.e-trust.be/QCA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -504,13 +498,6 @@
             <CountryName>BE</CountryName>
             <OrganizationName>Organization nv / sa</OrganizationName>
             <OrganizationalUnit>Date of birth : 01/04/1965</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ca.e-trust.be/QCA_PhP.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.e-trust.be/QCA_PhP.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -519,11 +506,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E07F11472BC72BB04A6E3C012DFC838CD323D130BDB3F0E5B1E9558DE1B723D0</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -538,13 +520,25 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>0.3.2062.7.1.1.101.1</certificatePolicy>
-                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.e-trust.be/QCA_PhP.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.e-trust.be/QCA_PhP.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>0.3.2062.7.1.1.101.1</certificatePolicy>
+                    <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>
@@ -607,11 +601,6 @@
             <CommonName>Certipost E-Trust Primary Qualified CA</CommonName>
             <CountryName>BE</CountryName>
             <OrganizationName>Certipost s.a./n.v.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.public-trust.com/cgi-bin/CRL/2018/cdp.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -620,12 +609,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3D62E6557C1DB8C28114420B85F9632206A12586E9EEC4F91280E4D5B6171E1A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -635,9 +618,19 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.6334.1.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.6334.1.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.public-trust.com/cgi-bin/CRL/2018/cdp.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -655,9 +648,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -666,12 +656,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4F6007666E1C29A201B145DE7F9BBE160E10B3C60743773A2E838EAC0FC4D79A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -682,9 +666,16 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Cryptolog International</TSPName></TSPNames>
@@ -742,9 +733,6 @@
             <CountryName>US</CountryName>
             <OrganizationName>GTE Corporation</OrganizationName>
             <OrganizationalUnit>GTE CyberTrust Solutions, Inc.</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -753,8 +741,6 @@
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A53125188D2110AA964B02C7B7C6DA3203170894E5FB71FFFB6667D5E6810A36</EntityKey>
-            <KeyUsageBits/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
@@ -764,7 +750,6 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies />
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -781,9 +766,6 @@
             <CommonName>Certipost E-Trust Primary Qualified CA</CommonName>
             <CountryName>BE</CountryName>
             <OrganizationName>Certipost s.a./n.v.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -792,12 +774,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-058A40323EC8C46262C3052A5D357B91AC24D3DA26351B3FF4407E99F7A4E9B4</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -808,9 +784,16 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-			<CertificatePolicies>
-                <certificatePolicy>0.3.2062.7.1.0.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>0.3.2062.7.1.0.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Certipost n.v./s.a.</TSPName></TSPNames>

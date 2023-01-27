@@ -19,6 +19,9 @@ public class CertificateExtension implements OidDescription {
     /** Defines whether the certificate extension is critical or not */
     private boolean critical;
 
+    /** DER-encoded octets of the certificate extension */
+    private byte[] octets;
+
     /**
      * Constructor with a certificate extension OID
      *
@@ -64,6 +67,24 @@ public class CertificateExtension implements OidDescription {
      */
     public void checkCritical(CertificateToken certificateToken) {
         this.critical = certificateToken.getCertificate().getCriticalExtensionOIDs().contains(oid);
+    }
+
+    /**
+     * Returns DER-encoded octets of the certificate extension
+     *
+     * @return byte array containing DER-encoded octets of the certificate extension
+     */
+    public byte[] getOctets() {
+        return octets;
+    }
+
+    /**
+     * Sets DER-encoded octets of the certificate extension
+     *
+     * @param octets byte array containing DER-encoded octets of the certificate extension
+     */
+    public void setOctets(byte[] octets) {
+        this.octets = octets;
     }
 
 }

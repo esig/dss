@@ -66,17 +66,6 @@
             <CommonName>p c</CommonName>
             <CountryName>CZ</CountryName>
             <OrganizationalUnit>P232050</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
-                <aiaUrl>http://www2.postsignum.cz/crt/psqualifiedca2.crt</aiaUrl>
-                <aiaUrl>http://postsignum.ttc.cz/crt/psqualifiedca2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
-                <crlUrl>http://www2.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
-                <crlUrl>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -85,12 +74,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-452027DB8ABA14CDD1F484A86227B8FD19B576181D01B47B892EF76A2C44881B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -104,12 +87,29 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.23.134.1.4.1.7.300</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.23.134.1.4.1.7.300</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.postsignum.cz/crt/psqualifiedca2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www2.postsignum.cz/crt/psqualifiedca2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://postsignum.ttc.cz/crt/psqualifiedca2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                    <crlUrl>http://www2.postsignum.cz/crl/psqualifiedca2.crl</crlUrl>
+                    <crlUrl>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
@@ -160,17 +160,6 @@
             <CommonName>PostSignum Qualified CA 2</CommonName>
             <CountryName>CZ</CountryName>
             <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
-                <aiaUrl>http://www2.postsignum.cz/crt/psrootqca2.crt</aiaUrl>
-                <aiaUrl>http://postsignum.ttc.cz/crt/psrootqca2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
-                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
-                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -179,12 +168,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -195,9 +178,26 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.postsignum.cz/crt/psrootqca2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www2.postsignum.cz/crt/psrootqca2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://postsignum.ttc.cz/crt/psrootqca2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                    <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                    <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
@@ -237,13 +237,6 @@
             <CommonName>PostSignum Root QCA 2</CommonName>
             <CountryName>CZ</CountryName>
             <OrganizationName>Česká pošta, s.p. [IČ 47114983]</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
-                <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
-                <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -252,12 +245,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -267,9 +254,21 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                    <crlUrl>http://www2.postsignum.cz/crl/psrootqca2.crl</crlUrl>
+                    <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

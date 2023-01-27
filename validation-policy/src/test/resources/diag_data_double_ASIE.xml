@@ -78,15 +78,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>TL5 Organization</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://localhost:8080/qes-validation-web/crt/SDI-5.1.5.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://localhost:8080/qes-validation-web/crl/SDI-5.1.5.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -95,11 +86,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -113,13 +99,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:8080/qes-validation-web/crt/SDI-5.1.5.crt</caIssuersUrl>
+                    <ocspUrl>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:8080/qes-validation-web/crl/SDI-5.1.5.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
@@ -156,9 +153,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>TSP-5.1 Name</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -167,11 +161,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</EntityKey>
-            <KeyUsageBits/>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -182,7 +171,11 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>

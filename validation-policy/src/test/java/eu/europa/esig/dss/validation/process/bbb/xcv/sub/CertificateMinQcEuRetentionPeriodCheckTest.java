@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -41,6 +42,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcEuRetentionPeriod(10);
 
         IntValueConstraint constraint = new IntValueConstraint();
@@ -63,6 +65,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
     @Test
     public void sameNumberTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcEuRetentionPeriod(3);
 
         IntValueConstraint constraint = new IntValueConstraint();
@@ -85,6 +88,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcEuRetentionPeriod(1);
 
         IntValueConstraint constraint = new IntValueConstraint();
@@ -107,6 +111,7 @@ public class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestChec
     @Test
     public void qcRetentionPeriodNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         IntValueConstraint constraint = new IntValueConstraint();
         constraint.setLevel(Level.FAIL);

@@ -14,21 +14,30 @@ public enum CertificateExtensionEnum implements OidDescription {
      *    authorityCertIssuer       [1] GeneralNames            OPTIONAL,
      *    authorityCertSerialNumber [2] CertificateSerialNumber OPTIONAL  }
      */
-    AUTHORITY_KEY_IDENTIFIER("AuthorityKeyID", "2.5.29.35"),
+    AUTHORITY_KEY_IDENTIFIER("authorityKeyIdentifier", "2.5.29.35"),
 
     /**
      * 4.2.1.2. Subject Key Identifier
      * id-ce-subjectKeyIdentifier OBJECT IDENTIFIER ::=  { id-ce 14 }
      * SubjectKeyIdentifier ::= KeyIdentifier
      */
-    SUBJECT_KEY_IDENTIFIER("SubjectKeyID", "2.5.29.14"),
+    SUBJECT_KEY_IDENTIFIER("subjectKeyIdentifier", "2.5.29.14"),
 
     /**
      * 4.2.1.3. Key Usage
      * id-ce-keyUsage OBJECT IDENTIFIER ::=  { id-ce 15 }
      * KeyUsage ::= BIT STRING
      */
-    KEY_USAGE("KeyUsage", "2.5.29.15"),
+    KEY_USAGE("keyUsage", "2.5.29.15"),
+
+    /**
+     * RFC 3280. 4.2.1.4 Private Key Usage Period (deprecated)
+     * id-ce-privateKeyUsagePeriod OBJECT IDENTIFIER ::=  { id-ce 16 }
+     * PrivateKeyUsagePeriod ::= SEQUENCE {
+     *      notBefore       [0]     GeneralizedTime OPTIONAL,
+     *      notAfter        [1]     GeneralizedTime OPTIONAL }
+     */
+    PRIVATE_KEY_USAGE_PERIOD("privateKeyUsagePeriod", "2.5.29.16"),
 
     /**
      * 4.2.1.4. Certificate Policies

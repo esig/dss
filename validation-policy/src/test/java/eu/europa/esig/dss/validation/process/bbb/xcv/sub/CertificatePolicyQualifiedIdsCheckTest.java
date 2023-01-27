@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -49,6 +50,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xc = new XmlCertificate();
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -71,6 +73,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xc = new XmlCertificate();
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid());
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -93,6 +96,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xc = new XmlCertificate();
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.DVCP.getOid());
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -116,6 +120,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 		XmlCertificate xc = new XmlCertificate();
 
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
 		xmlQcCompliance.setPresent(true);
 		xmlQcStatements.setQcCompliance(xmlQcCompliance);

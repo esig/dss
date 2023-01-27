@@ -88,13 +88,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
@@ -103,13 +96,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-713B1C45CACB1B91329CBBF9AA433CDE3252DE3030BD657CD39C9500544EE9C4</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -123,7 +109,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8E42949CD529E0073D65C677CCA7D31FD85BFBABD46A77A273C14D6F163D3031">
@@ -145,9 +144,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -156,13 +152,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A27F976E646D30318D2C734CC87947EA165F6B064DFE5EB9485B56E70B81076F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -176,7 +165,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -193,13 +190,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -208,13 +198,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C5C8DEB2319136826690A66365499B90F721C171709DEA50D77E4234F3B17A17</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -228,7 +211,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8E42949CD529E0073D65C677CCA7D31FD85BFBABD46A77A273C14D6F163D3031">
@@ -250,11 +245,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -263,11 +253,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CBDD6856166968339689BB43774CCA6D55A51DBD6838801EE1883219EAC83607</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -282,7 +267,14 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -300,9 +292,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -313,13 +302,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F4380C158895458073303D9C612EA12CBAEDFA79F3EC607DBAEDF8D3935A720A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -330,7 +312,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

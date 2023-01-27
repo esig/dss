@@ -234,8 +234,9 @@ public class CertificateExtensionsUtils {
     public static SubjectAlternativeNames getSubjectAlternativeNames(CertificateToken certificateToken) {
         try {
             final SubjectAlternativeNames subjectAlternateNames = new SubjectAlternativeNames();
-            final List<String> result = new ArrayList<>();
+            subjectAlternateNames.setOctets(certificateToken.getCertificate().getExtensionValue(subjectAlternateNames.getOid()));
 
+            final List<String> result = new ArrayList<>();
             Collection<List<?>> subjectAlternativeNames = certificateToken.getCertificate().getSubjectAlternativeNames();
             if (Utils.isCollectionNotEmpty(subjectAlternativeNames)) {
                 for (List<?> list : subjectAlternativeNames) {
@@ -281,6 +282,8 @@ public class CertificateExtensionsUtils {
             }
 
             final AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess();
+            authorityInformationAccess.setOctets(authInfoAccessExtensionValue);
+
             org.bouncycastle.asn1.x509.AuthorityInformationAccess aia = org.bouncycastle.asn1.x509.AuthorityInformationAccess.getInstance(asn1Sequence);
             AccessDescription[] accessDescriptions = aia.getAccessDescriptions();
             authorityInformationAccess.setCaIssuers(getAccessUrls(accessDescriptions, X509ObjectIdentifiers.id_ad_caIssuers));
@@ -344,6 +347,8 @@ public class CertificateExtensionsUtils {
 
         try {
             final AuthorityKeyIdentifier authorityKeyIdentifier = new AuthorityKeyIdentifier();
+            authorityKeyIdentifier.setOctets(extensionValue);
+
             ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(extensionValue);
             org.bouncycastle.asn1.x509.AuthorityKeyIdentifier aki = org.bouncycastle.asn1.x509.AuthorityKeyIdentifier.getInstance(extension);
             authorityKeyIdentifier.setKeyIdentifier(aki.getKeyIdentifier());
@@ -374,6 +379,8 @@ public class CertificateExtensionsUtils {
 
         try {
             final SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier();
+            subjectKeyIdentifier.setOctets(extensionValue);
+
             ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(extensionValue);
             org.bouncycastle.asn1.x509.SubjectKeyIdentifier skiBC = org.bouncycastle.asn1.x509.SubjectKeyIdentifier.getInstance(extension);
             subjectKeyIdentifier.setSki(skiBC.getKeyIdentifier());
@@ -397,8 +404,9 @@ public class CertificateExtensionsUtils {
         if (crlDistributionPointsBytes != null) {
             try {
                 final CRLDistributionPoints crlDistributionPoints = new CRLDistributionPoints();
-                final List<String> urls = new ArrayList<>();
+                crlDistributionPoints.setOctets(crlDistributionPointsBytes);
 
+                final List<String> urls = new ArrayList<>();
                 final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
                 final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
                 final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
@@ -461,6 +469,8 @@ public class CertificateExtensionsUtils {
      */
     public static BasicConstraints getBasicConstraints(CertificateToken certificateToken) {
         final BasicConstraints basicConstraints = new BasicConstraints();
+        basicConstraints.setOctets(certificateToken.getCertificate().getExtensionValue(basicConstraints.getOid()));
+
         final int value = certificateToken.getCertificate().getBasicConstraints();
         basicConstraints.setCa(value != -1);
         basicConstraints.setPathLenConstraint(value);
@@ -478,6 +488,8 @@ public class CertificateExtensionsUtils {
         final boolean[] keyUsageArray = certificateToken.getCertificate().getKeyUsage();
         if (keyUsageArray != null) {
             final KeyUsage keyUsage = new KeyUsage();
+            keyUsage.setOctets(certificateToken.getCertificate().getExtensionValue(keyUsage.getOid()));
+
             final List<KeyUsageBit> keyUsageBits = new ArrayList<>();
             for (KeyUsageBit keyUsageBit : KeyUsageBit.values()) {
                 if (keyUsageArray[keyUsageBit.getIndex()]) {
@@ -500,6 +512,7 @@ public class CertificateExtensionsUtils {
     public static ExtendedKeyUsages getExtendedKeyUsage(CertificateToken certificateToken) {
         try {
             final ExtendedKeyUsages extendedKeyUsage = new ExtendedKeyUsages();
+            extendedKeyUsage.setOctets(certificateToken.getCertificate().getExtensionValue(extendedKeyUsage.getOid()));
             extendedKeyUsage.setOids(certificateToken.getCertificate().getExtendedKeyUsage());
             extendedKeyUsage.checkCritical(certificateToken);
             return extendedKeyUsage;
@@ -521,6 +534,8 @@ public class CertificateExtensionsUtils {
                 .getExtensionValue(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
         if (Utils.isArrayNotEmpty(certificatePoliciesBinaries)) {
             final CertificatePolicies certificatePolicies = new CertificatePolicies();
+            certificatePolicies.setOctets(certificatePoliciesBinaries);
+
             final List<CertificatePolicy> policiesList = new ArrayList<>();
             try {
                 ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(certificatePoliciesBinaries);
@@ -560,6 +575,7 @@ public class CertificateExtensionsUtils {
         final byte[] extensionValue = certificateToken.getCertificate().getExtensionValue(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
         if (extensionValue != null) {
             final OCSPNoCheck ocspNoCheck = new OCSPNoCheck();
+            ocspNoCheck.setOctets(extensionValue);
             ocspNoCheck.setOcspNoCheck(isNullIdentifiedValuePresent(extensionValue));
             ocspNoCheck.checkCritical(certificateToken);
             return ocspNoCheck;
@@ -591,6 +607,7 @@ public class CertificateExtensionsUtils {
         final byte[] extensionValue = certificateToken.getCertificate().getExtensionValue(OID.id_etsi_ext_valassured_ST_certs.getId());
         if (extensionValue != null) {
             final ValidityAssuredShortTerm validityAssuredShortTerm = new ValidityAssuredShortTerm();
+            validityAssuredShortTerm.setOctets(extensionValue);
             validityAssuredShortTerm.setValAssuredSTCerts(isNullIdentifiedValuePresent(extensionValue));
             validityAssuredShortTerm.checkCritical(certificateToken);
             return validityAssuredShortTerm;
@@ -653,6 +670,7 @@ public class CertificateExtensionsUtils {
             LOG.warn("Not supported CertificateExtension with OID : '{}'", oid);
             certificateExtension = new CertificateExtension(oid);
         }
+        certificateExtension.setOctets(certificateToken.getCertificate().getExtensionValue(oid));
         certificateExtension.checkCritical(certificateToken);
         return certificateExtension;
     }

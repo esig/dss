@@ -88,9 +88,6 @@
             <CountryName>ZZ</CountryName>
             <OrganizationName>Test Qualified Trust Service Provider 1 from ZZ</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -100,13 +97,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A2BA6345A610701372B874E9BB7FCFDCBEEE702B0440983BAEBF9A0FECFCAD85</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -121,13 +111,21 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements enactedMRA="true">
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
@@ -169,13 +167,6 @@
             <CountryName>ZZ</CountryName>
             <OrganizationName>Test Qualified Trust Service Provider 1 from ZZ</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://localhost:9999/pki-factory/crt/Test-QTSP-1-RootCA-from-ZZ.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://localhost:9999/pki-factory/crl/Test-QTSP-1-RootCA-from-ZZ.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TRUSTED_STORE</Source>
             </Sources>
@@ -184,13 +175,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EA8EF4BA0AB4EA86CB75DFCDF1A12EF72AC8157691BB78592B0212A968C80139</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -205,13 +189,25 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements enactedMRA="true">
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:9999/pki-factory/crt/Test-QTSP-1-RootCA-from-ZZ.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:9999/pki-factory/crl/Test-QTSP-1-RootCA-from-ZZ.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
@@ -253,15 +249,6 @@
             <CountryName>ZZ</CountryName>
             <OrganizationName>Test Qualified Trust Service Provider 1 from ZZ</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://localhost:9999/pki-factory/crt/Test-Qualified-CA1-from-ZZ.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://localhost:9999/pki-factory/crl/Test-Qualified-CA1-from-ZZ.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://localhost:9999/pki-factory/ocsp/Test-Qualified-CA1-from-ZZ</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -270,11 +257,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C4BA0A6F2FD5424D7441F7A8ED55235D40805DD2E8736D23B5A8C5BC3AB2D56B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -290,30 +272,42 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.314159.1.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements enactedMRA="true">
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-                <MRACertificateMapping>
-                    <EnactedTrustServiceLegalIdentifier>QCForESig</EnactedTrustServiceLegalIdentifier>
-                    <OriginalThirdCountryMapping>
-                        <QcCompliance present="true"/>
-                        <QcSSCD present="true"/>
-                        <QcTypes>
-                            <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                        </QcTypes>
-                        <QcCClegislation>
-                            <CountryName>ZZ</CountryName>
-                        </QcCClegislation>
-                    </OriginalThirdCountryMapping>
-                </MRACertificateMapping>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:9999/pki-factory/crt/Test-Qualified-CA1-from-ZZ.crt</caIssuersUrl>
+                    <ocspUrl>http://localhost:9999/pki-factory/ocsp/Test-Qualified-CA1-from-ZZ</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:9999/pki-factory/crl/Test-Qualified-CA1-from-ZZ.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.314159.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                    <MRACertificateMapping>
+                        <EnactedTrustServiceLegalIdentifier>QCForESig</EnactedTrustServiceLegalIdentifier>
+                        <OriginalThirdCountryMapping>
+                            <QcCompliance present="true"/>
+                            <QcSSCD present="true"/>
+                            <QcTypes>
+                                <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                            </QcTypes>
+                            <QcCClegislation>
+                                <CountryName>ZZ</CountryName>
+                            </QcCClegislation>
+                        </OriginalThirdCountryMapping>
+                    </MRACertificateMapping>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
@@ -363,13 +357,6 @@
             <CountryName>ZZ</CountryName>
             <OrganizationName>Test Qualified Trust Service Provider 1 from ZZ</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://localhost:9999/pki-factory/crt/Test-National-RootCA-from-ZZ.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://localhost:9999/pki-factory/crl/Test-National-RootCA-from-ZZ.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -380,13 +367,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BBDD309E5352FA40135594AA8FF19FC83E5FB03B26770CACD91DE9FCD821370A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -400,13 +380,25 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements enactedMRA="true">
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:9999/pki-factory/crt/Test-National-RootCA-from-ZZ.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:9999/pki-factory/crl/Test-National-RootCA-from-ZZ.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
@@ -448,9 +440,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>Nowina Solutions</OrganizationName>
             <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>AIA</Source>
@@ -460,13 +449,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1F6FE2729863FB2F3ABCD2AAA533D05D5CAC61EC6DE0F5D35FA93D49AE26CA6A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -476,8 +458,14 @@
             </BasicSignature>
             <CertificateChain/>
             <Trusted>false</Trusted>
-            <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>3Oi5vsJ/Fdpypwc0xjanBP39BjFXuU5Cm/TDMi6MATA=</DigestValue>

@@ -105,13 +105,6 @@
             <CountryName>ES</CountryName>
             <GivenName>JUAN</GivenName>
             <Surname>GARCÍA LÓPEZ</Surname>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.firmaprofesional.com/cualificados.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.firmaprofesional.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -120,15 +113,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-260744774621184C1203555B5EFFF5A91005911DF38EE4865DDF2C0C42E2121A</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -143,13 +127,29 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.40.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsp.firmaprofesional.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.firmaprofesional.com/cualificados.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.40.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -241,15 +241,6 @@
             <CountryName>ES</CountryName>
             <OrganizationName>Firmaprofesional S.A.</OrganizationName>
             <OrganizationalUnit>Certificados Cualificados</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://crl.firmaprofesional.com/caroot.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.firmaprofesional.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -259,13 +250,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -279,9 +263,23 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crl.firmaprofesional.com/caroot.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.firmaprofesional.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -361,15 +359,6 @@
             <CountryName>ES</CountryName>
             <OrganizationName>Firmaprofesional S.A.</OrganizationName>
             <OrganizationalUnit>Certificados Cualificados</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://crl.firmaprofesional.com/caroot.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.firmaprofesional.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -379,13 +368,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -399,9 +381,23 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crl.firmaprofesional.com/caroot.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.firmaprofesional.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -457,13 +453,6 @@
             <CommonName>OCSP CUALIFICADOS</CommonName>
             <CountryName>ES</CountryName>
             <OrganizationName>FIRMAPROFESIONAL</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://crl.firmaprofesional.com/signe.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.firmaprofesional.com/cualificados.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -473,14 +462,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-57A59B9F37CD92F3E941DE8C263C28E6A89191C14AEEC83CFF733F09472F6AD9</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -495,9 +476,25 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.4.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">1.3.6.1.4.1.13177.10.1.4.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crl.firmaprofesional.com/signe.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.firmaprofesional.com/cualificados.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -552,9 +549,6 @@
             <SerialNumber>1977337328857672817</SerialNumber>
             <CommonName>Autoridad de Certificacion Firmaprofesional CIF A62634068</CommonName>
             <CountryName>ES</CountryName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -563,13 +557,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-57A59B9F37CD92F3E941DE8C263C28E6A89191C14AEEC83CFF733F09472F6AD9</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -579,9 +566,16 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -598,11 +592,6 @@
             <CommonName>tsa.izenpe.com</CommonName>
             <CountryName>ES</CountryName>
             <OrganizationName>IZENPE S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -613,13 +602,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -630,9 +612,20 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.izenpe.com/cps">1.3.6.1.4.1.14777.3.3</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCStatement;
@@ -90,6 +91,7 @@ public class TypeByCertificatePostEIDASTest {
 	private CertificateWrapper getCertificate(OidDescription... qcTypesOids) {
 		XmlCertificate xmlCertificate = new XmlCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		List<XmlOID> oids = new ArrayList<>();
 		for (OidDescription qcTypeOid : qcTypesOids) {
 			XmlOID xmlOID = new XmlOID();

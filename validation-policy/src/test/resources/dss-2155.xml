@@ -89,9 +89,6 @@
             <OrganizationName>NSDL Pvt Ltd</OrganizationName>
             <OrganizationalUnit>DSC Sign</OrganizationalUnit>
             <Email>test@nsdl.com</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -101,9 +98,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-67A47F50CD907C4BC6C87E49F15F88399824A59A2BCA2F21EDB6956C6BE8C113</EntityKey>
-            <KeyUsageBits/>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -114,7 +108,6 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -134,9 +127,6 @@
             <OrganizationName>NSDL</OrganizationName>
             <OrganizationalUnit>NSDL</OrganizationalUnit>
             <Email>nsdl@nsdl.co.in</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -146,11 +136,6 @@
             <PublicKeySize>1024</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-99D740BF6735D0602EC70888A2CC2709176935F73C6F44DD523FBC59EEA130</EntityKey>
-            <KeyUsageBits/>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>1024</KeyLengthUsedToSignThisToken>
@@ -161,7 +146,11 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

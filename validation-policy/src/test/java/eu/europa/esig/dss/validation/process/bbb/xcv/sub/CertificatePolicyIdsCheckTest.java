@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,6 +43,7 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 	@Test
 	public void certificatePolicyIdsCheck() throws Exception {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -65,6 +67,7 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 	@Test
 	public void failedCertificatePolicyIdsCheck() throws Exception {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.1");
 		certificatePolicies.getCertificatePolicy().add(oid);

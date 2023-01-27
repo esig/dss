@@ -409,8 +409,6 @@
 					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
 					<xs:element name="Email" type="xs:string" minOccurs="0"/>
 
-					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
-
 					<xs:element name="Sources">
 						<xs:complexType>
 							<xs:sequence>
@@ -431,6 +429,8 @@
 
 					<xs:element name="Trusted" type="xs:boolean" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
+
+					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
 
 					<xs:element name="TrustedServiceProviders" minOccurs="0">
 						<xs:complexType>
@@ -459,7 +459,7 @@
 
 	<xs:complexType name="CertificateExtensions">
 		<xs:sequence>
-			<xs:choice maxOccurs="unbounded">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="KeyUsages" type="KeyUsages" />
 				<xs:element name="ExtendedKeyUsages" type="ExtendedKeyUsages" />
 				<xs:element name="CertificatePolicies" type="CertificatePolicies" />
@@ -478,6 +478,9 @@
 	</xs:complexType>
 
 	<xs:complexType name="CertificateExtension">
+		<xs:sequence>
+			<xs:element name="octets" type="xs:base64Binary" minOccurs="0" />
+		</xs:sequence>
 		<xs:attribute name="OID" type="xs:string" />
 		<xs:attribute name="description" type="xs:string" use="optional" />
 		<xs:attribute name="critical" type="xs:boolean" use="optional" />

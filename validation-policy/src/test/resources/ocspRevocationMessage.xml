@@ -71,9 +71,6 @@
             <CountryName>RO</CountryName>
             <OrganizationName>CERTSIGN SA</OrganizationName>
             <OrganizationalUnit>certSIGN ROOT CA G2</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>AIA</Source>
             </Sources>
@@ -82,13 +79,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-657CFE2FA73FAA38462571F332A2363A46FCE7020951710702CDFBB6EEDA3305</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -98,7 +88,13 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIFRzCCAy+gAwIBAgIJEQA0tk7GNi02MA0GCSqGSIb3DQEBCwUAMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjAeFw0xNzAyMDYwOTI3MzVaFw00MjAyMDYwOTI3MzVaMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMDFdRmRfUR0dIf+DjuW3NgBFszuY5HnC2/OOwppGnzC46+CjobXXo9X69MhWf05N0IwvlDqtg+piNguLWkh59E3GE59kdUWX2tbAMI5Qw02hVK5U2UPHULlj88F0+7cDBrZuIt4ImfkabBoxTzkbFpG583H+u/E7Eu9aqSs/cwoUe+StCmrqzWaTOTECMYmzPhpn+Sc8CnTXPnGFiWeI8MgwT0PPzhAsP6CRDiqWhqKa2NYOLQV07YRaXseVO6MGiKscpc/I1mbySKEwQdPzH/iV8oScLumZfNpdWO9lfsbl83kqK/20U6o2YpxJM02PbyWxPFsqa7lzw1uKA2wDrXKUXt4FMMgL3/7FFXhEZn91QqhngLjYl/rNUssuHLoPj1PrCy7Lobio3aP5ZMqz6WryFyNSwb/EkaseMsUBzXgqd+L6a8VTxaJW732jcZZroiFDsGJ6x9nxUWO/203Nit4ZoORUSs9/1F3dmKh7Gc+PoGD4FapUB8fepmrY7+EF3fxDTvf95xhszWYijqy7DwaNz9+j5LP2RIUZNoQAhVB/0/E6xyjyfqZ90bp4RjZsbgyLcsUDFDYg2WD7rlcz8sFWkz6GZdr1l0T08JcVLwyc6B49fFtHsufpaafItzRUZ6CeWRgKRM+o/1Pcmqr4tTluCRVLERLiohEnMqE0yo7AgMBAAGjQjBAMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSCIS1mxteg4BXrzkwJd8RgnlRuAzANBgkqhkiG9w0BAQsFAAOCAgEAYN4auOfyYILVAzOBywaK8SJJ6ejqkX/GM15oGQOGO0MBzwdw5AgeZYWR5hEit/UCI46uuR59H35s5r0l1ZUa8gWmr4UCb6741jH/JclKyMeKqdmfS0mbEVeZkkMR3rYzpMzXjWR91M08KCy0mpbqTfXERMQlqiCA2ClV9+BB/AYm/7k29UMUA2Z44RGx2iBfRgB4ACGlHgAoYXhvqAEBj500mv/0OJD7uNGzcgbJceaBxXntC6Z58hMLnPddDnskk7RI24Zf3lCGeOdA5jGokHZwYa+cNywRtYK3qq4kNFtyDGkNzVmf9nGvnAvRCjj5BiKDUyUM/FHE5r7iOZULJK2v0ZXkltd0ZGtxTgI8qoXzIKNDOXZbbFD+mpwUHmUUihW9o4JFWklWatKcsWMy5WHgUyIOpwpJ6st+H6jiYoD2EEVSmAYY3qXNL3+q1Ok+CHLsIwMCPKaq2LxndD0UF/tUSxfj03k9bWtJySgOLnRQvwzZRjoQhsmnP+mg7H/rpXdYaXHmgwo38oZJar55CJD2AhZkPuXaTH4MNMn5X7azKFGnpyuqSfqNZSlO42sTp5SjLVFteAxEy9/eCG/Oo2Sr05WE1LlSVHJ7liXMvGnjSG4N0MedJ5qq+BOS3R7fY581qRY27Iy4g/Q9iY/NtBde17MXQRBdJ3NghVdJIgc=</Base64Encoded>
@@ -114,15 +110,6 @@
             <OrganizationName>CERTSIGN SA</OrganizationName>
             <GivenName>Bogdan-Nicolae</GivenName>
             <Surname>Patrascu</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.certsign.ro/certcrl/certsign-qualifiedca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.certsign.ro/certsign-qualifiedca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.certsign.ro</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -131,16 +118,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-49AAB7F1E44D844E956892C769BC457C0257F6403A634804A0A8622C317AC2B1</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -155,17 +132,35 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.certsign.ro/repository" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.certsign.ro/repository">1.3.6.1.4.1.25017.3.1.3.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.certsign.ro/certcrl/certsign-qualifiedca.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.certsign.ro</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.certsign.ro/certsign-qualifiedca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.certsign.ro/repository" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.certsign.ro/repository">1.3.6.1.4.1.25017.3.1.3.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
@@ -201,15 +196,6 @@
             <CommonName>certSIGN Qualified CA</CommonName>
             <CountryName>RO</CountryName>
             <OrganizationName>CERTSIGN SA</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.certsign.ro/certcrl/certsign-rootg2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.certsign.ro/certsign-rootg2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.certsign.ro</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>AIA</Source>
@@ -219,13 +205,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -239,9 +218,23 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.certsign.ro/repository">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.certsign.ro/repository">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.certsign.ro/certcrl/certsign-rootg2.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.certsign.ro</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.certsign.ro/certsign-rootg2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>

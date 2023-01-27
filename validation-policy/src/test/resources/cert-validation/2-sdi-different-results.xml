@@ -12,9 +12,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>TSP-5.3 Name</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>UNKNOWN</Source>
             	<Source>TRUSTED_LIST</Source>
@@ -24,13 +21,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D63E106FC51D93A2A04C36C66BC951B1C774AFC9A50CEBFC43836AE63C60B02A</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -41,7 +31,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>
@@ -84,13 +80,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>TL5 Organization</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://46.101.246.130:8080/esig-validation-tests/crt/SDI-5.3.3.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -99,11 +88,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E4A94773CF7B28C2BDF25015BE6716E501E73AB82BF0A9788D0DF8AD14D6876D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -117,14 +101,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://46.101.246.130:8080/esig-validation-tests/crt/SDI-5.3.3.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://46.101.246.130:8080/esig-validation-tests/crl/SDI-5.3.3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.3 Name</TSPName></TSPNames>

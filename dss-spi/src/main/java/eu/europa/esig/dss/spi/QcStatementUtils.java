@@ -102,6 +102,7 @@ public class QcStatementUtils {
         }
 
         final QcStatements result = new QcStatements();
+        result.setOctets(DSSASN1Utils.getDEREncoded(qcStatementsSeq));
         for (int i = 0; i < qcStatementsSeq.size(); i++) {
             final QCStatement statement = getQCStatement(qcStatementsSeq.getObjectAt(i));
             if (statement != null) {

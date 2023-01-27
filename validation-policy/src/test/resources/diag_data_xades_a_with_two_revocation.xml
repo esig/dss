@@ -158,15 +158,6 @@
             <CountryName>PL</CountryName>
             <GivenName>Peter</GivenName>
             <Surname>Moreka</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>https://cencert.pl/site_media/upload/zaswiadczenia/Enigma_cert_QCA_2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.cencert.pl/qca2017/cencert_new.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.cencert.pl/2017_new</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -175,11 +166,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-476F5EE1AF74D8D30416D8B5AC1B4F11A3090E906D147C9BE39C08FF2126E222</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -194,19 +180,31 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.10214.99.1.1.1.4</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcEuPDS>
-                    <PdsLocation lang="en">https://www.cencert.pl/pds</PdsLocation>
-                </QcEuPDS>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.10214.99.1.1.1.4</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://www.cencert.pl/pds</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://cencert.pl/site_media/upload/zaswiadczenia/Enigma_cert_QCA_2017.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.cencert.pl/2017_new</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.cencert.pl/qca2017/cencert_new.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-907137742E24F1EA0E66D8BD947B463D70838F6BB687621A174F3A19739374C2">
@@ -235,14 +233,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -252,13 +242,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-CBDF1A3694D6352C17481B7623A5654BD66F5FB25DA9A9E9D0D1EA92D8D26B0B</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -269,9 +252,23 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -288,9 +285,6 @@
             <CountryName>PL</CountryName>
             <OrganizationIdentifier>VATPL-5261029614</OrganizationIdentifier>
             <OrganizationName>Enigma Systemy Ochrony Informacji Sp. z o.o.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OCSP_RESPONSE</Source>
@@ -300,13 +294,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-801C3E43C599C922DA2FACA67832B5F8FE224015A1FB122E1261F65AA7F36D73</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -321,7 +308,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -338,12 +333,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -352,13 +341,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D5085FA10E84D47538CEA83B563A522C963E9816340C20D705C1CA454D5A97CF</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -372,9 +354,22 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -391,14 +386,6 @@
             <CountryName>IT</CountryName>
             <OrganizationName>Ministero della Difesa</OrganizationName>
             <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
@@ -407,13 +394,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B85AEB2C66F18DAFD9FAFD5DB49BE33EC79C4A3B1850B0291B5CC1066A4E40ED</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -427,9 +407,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-AFEC0F3D41AB53C6EBCA126045782F2D279F2D8578E1DF80892A7D577F274259">
@@ -451,9 +446,6 @@
             <CountryName>PL</CountryName>
             <OrganizationIdentifier>VATPL-5250008198</OrganizationIdentifier>
             <OrganizationName>Narodowy Bank Polski</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -463,13 +455,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-067115E6510B3BBA29338C1D170718DF31F35E3E3011DF5BDB2FE3E5C8697E5E</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -480,7 +465,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -498,9 +489,6 @@
             <CountryName>PL</CountryName>
             <OrganizationIdentifier>VATPL-5261029614</OrganizationIdentifier>
             <OrganizationName>Enigma Systemy Ochrony Informacji Sp. z o.o.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
@@ -511,14 +499,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B6CC2E8FA5C6C9BC81779E162512E4629A1B62998FE235AA0867292209FB9876</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -532,9 +512,18 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="www.nccert.pl">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="www.nccert.pl">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -551,9 +540,6 @@
             <CountryName>PL</CountryName>
             <OrganizationIdentifier>VATPL-5261029614</OrganizationIdentifier>
             <OrganizationName>Enigma Systemy Ochrony Informacji Sp. z o.o.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -563,13 +549,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-626C0BF00E7245D25FB7595709EBE8F605AF9B7D0B0E261B3DF0638A58D822FE</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -583,9 +562,16 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="www.nccert.pl">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="www.nccert.pl">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

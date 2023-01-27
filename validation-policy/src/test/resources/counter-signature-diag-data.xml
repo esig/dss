@@ -131,14 +131,6 @@
             <OrganizationalUnit>Esercito Italiano</OrganizationalUnit>
             <GivenName>D D</GivenName>
             <Surname>DE F</Surname>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.pki.difesa.it/cafirmadigitale.crl</crlUrl>
-                <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20CA%20di%20Firma%20Digitale,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsppkiff.difesa.it/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -147,10 +139,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A390D4D4774879EF567EB55875997A036EF3819E1AB515D3BAAEA29D62425D67</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -161,15 +149,27 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.14031.2.1.1.6</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                <QcSSCD present="true"/>
-                <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.14031.2.1.1.6</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/cafirmadigitale.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20CA%20di%20Firma%20Digitale,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                    <QcSSCD present="true"/>
+                    <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

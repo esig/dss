@@ -93,9 +93,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
@@ -104,12 +101,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-25CFB8D060976DB9BE98A7D70C59A5F5D005234B042B12713AA9673C37970C4B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -120,9 +111,15 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -139,11 +136,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>Cryptolog International</OrganizationName>
             <OrganizationalUnit>0002 43912916400026</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
             </Sources>
@@ -152,13 +144,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-21A83A6B84EBFFC4F0EDFB88B681B1999FF5C59276274B84D3ABEDC68734AEAC</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -172,9 +157,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-8BA8AE7751FC8DAA65F113239BCCC2A5E1AD41A95D7600F25721A42B7F6527DC">
@@ -196,9 +192,6 @@
             <CountryName>LU</CountryName>
             <OrganizationName>LuxTrust S.A.</OrganizationName>
             <OrganizationalUnit>Pki entity</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -207,13 +200,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-AEF2FAA0E617B60488BC06A4C2315B2B8776DC8E4CB6A76346CD83C455AAB615</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -224,7 +210,15 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ehPgiMXQe9FfG8SuW5ndfBepoL18zuIbr+TO3+eAn/w=</DigestValue>
@@ -239,9 +233,6 @@
             <CommonName>LuxTrust Global Root</CommonName>
             <CountryName>LU</CountryName>
             <OrganizationName>LuxTrust s.a.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -250,12 +241,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-85A3D81D2AD0C79DF0A79684E0E2666009A09DE15760EA1D76CF0EE7B2825DBD</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -266,7 +251,12 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>obLb62TnBsYWnjxBGLI7qgkBioQnZm2L8OKIkewFGVA=</DigestValue>
@@ -281,11 +271,6 @@
             <CommonName>LuxTrust Global Qualified CA</CommonName>
             <CountryName>LU</CountryName>
             <OrganizationName>LuxTrust S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.luxtrust.lu/LTGRCA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
@@ -295,12 +280,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F1F8C57531CDC2AEA33CB387C8581C7CDF80394EFCA3560FDADE5F9A2D60A8D5</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -314,9 +293,18 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGRCA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -336,18 +324,6 @@
             <GivenName>Lisa</GivenName>
             <Surname>MOCANU</Surname>
             <Email>Lisa.mocanu@publications.europa.eu</Email>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>OP-JO-AUTHENTIQUE@publications.europa.eu</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ca.luxtrust.lu/LTGQCA.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.luxtrust.lu/LTGQCA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.luxtrust.lu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -356,11 +332,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-1A83B4CC7D4B2604B049FE29E09E8098A35819DA650D7826A6580B2FDD832090</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -375,15 +346,30 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.1</certificatePolicy>
-                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>OP-JO-AUTHENTIQUE@publications.europa.eu</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGQCA.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGQCA.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.1</certificatePolicy>
+                    <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-07D5870CD192DF6D2F9054CDF3D47CE6D5DA164AB112EEDD70A1F78E1955B3D0">

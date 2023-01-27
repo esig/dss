@@ -133,10 +133,15 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @param oid {@link String} OID of the certificate extension
 	 * @return {@link XmlCertificateExtension} when present, NULL otherwise
 	 */
-	public XmlCertificateExtension getCertificateExtensionForOid(String oid) {
+	public <T extends XmlCertificateExtension> T getCertificateExtensionForOid(String oid, Class<T> targetClass) {
 		for (XmlCertificateExtension certificateExtension : getCertificateExtensions()) {
 			if (oid.equals(certificateExtension.getOID())) {
-				return certificateExtension;
+				if (targetClass.isInstance(certificateExtension)) {
+					return (T) certificateExtension;
+				} else {
+					throw new UnsupportedOperationException(String.format("A certificate extension with " +
+							"OID '%s' shall be in instance of '%s' class!", oid, targetClass.getName()));
+				}
 			}
 		}
 		return null;
@@ -153,7 +158,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlSubjectAlternativeNames getXmlSubjectAlternativeNames() {
-		return (XmlSubjectAlternativeNames) getCertificateExtensionForOid(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid(), XmlSubjectAlternativeNames.class);
 	}
 
 	/**
@@ -173,11 +178,12 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public int getPathLenConstraint() {
 		XmlBasicConstraints basicConstraints = getXmlBasicConstraints();
-		return basicConstraints != null && basicConstraints.isCA() ? basicConstraints.getPathLenConstraint() : -1;
+		return basicConstraints != null && basicConstraints.isCA() && basicConstraints.getPathLenConstraint() != null
+				? basicConstraints.getPathLenConstraint() : -1;
 	}
 
 	private XmlBasicConstraints getXmlBasicConstraints() {
-		return (XmlBasicConstraints) getCertificateExtensionForOid(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid(), XmlBasicConstraints.class);
 	}
 
 	/**
@@ -191,7 +197,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlKeyUsages getXmlKeyUsage() {
-		return (XmlKeyUsages) getCertificateExtensionForOid(CertificateExtensionEnum.KEY_USAGE.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.KEY_USAGE.getOid(), XmlKeyUsages.class);
 	}
 
 	/**
@@ -252,7 +258,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlIdPkixOcspNoCheck getXmlIdPkixOcspNoCheck() {
-		return (XmlIdPkixOcspNoCheck) getCertificateExtensionForOid(CertificateExtensionEnum.OCSP_NOCHECK.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.OCSP_NOCHECK.getOid(), XmlIdPkixOcspNoCheck.class);
 	}
 
 	/**
@@ -283,7 +289,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlValAssuredShortTermCertificate getXmlValAssuredShortTermCertificate() {
-		return (XmlValAssuredShortTermCertificate) getCertificateExtensionForOid(CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid(), XmlValAssuredShortTermCertificate.class);
 	}
 
 	/**
@@ -297,7 +303,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlExtendedKeyUsages getXmlExtendedKeyUsages() {
-		return (XmlExtendedKeyUsages) getCertificateExtensionForOid(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid(), XmlExtendedKeyUsages.class);
 	}
 
 	/**
@@ -593,7 +599,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints() {
-		return (XmlCRLDistributionPoints) getCertificateExtensionForOid(CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid(), XmlCRLDistributionPoints.class);
 	}
 
 	/**
@@ -634,7 +640,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlAuthorityInformationAccess getXmlAuthorityInformationAccess() {
-		return (XmlAuthorityInformationAccess) getCertificateExtensionForOid(CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid(), XmlAuthorityInformationAccess.class);
 	}
 
 	/**
@@ -651,7 +657,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlSubjectKeyIdentifier getXmlSubjectKeyIdentifier() {
-		return (XmlSubjectKeyIdentifier) getCertificateExtensionForOid(CertificateExtensionEnum.SUBJECT_KEY_IDENTIFIER.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.SUBJECT_KEY_IDENTIFIER.getOid(), XmlSubjectKeyIdentifier.class);
 	}
 
 	/**
@@ -688,7 +694,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlCertificatePolicies getXmlCertificatePolicies() {
-		return (XmlCertificatePolicies) getCertificateExtensionForOid(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid(), XmlCertificatePolicies.class);
 	}
 
 	/**
@@ -846,7 +852,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	private XmlQcStatements getXmlQcStatements() {
-		return (XmlQcStatements) getCertificateExtensionForOid(CertificateExtensionEnum.QC_STATEMENTS.getOid());
+		return getCertificateExtensionForOid(CertificateExtensionEnum.QC_STATEMENTS.getOid(), XmlQcStatements.class);
 	}
 
 	private List<String> getOidValues(List<? extends XmlOID> xmlOids) {

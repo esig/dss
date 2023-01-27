@@ -106,9 +106,6 @@
             <CountryName>FI</CountryName>
             <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
             <OrganizationalUnit>Certification Authority Services</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -117,12 +114,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-122312C081949106B7049F3FEBF199C010ADA13E3281CD358A41E7BD09C829D7</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -133,7 +124,12 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>NP8qRAncE4Pp+JZuit/lcZ66Nz/QrV4vSfkO4Hz11ME=</DigestValue>
@@ -149,15 +145,6 @@
             <CountryName>FI</CountryName>
             <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
             <OrganizationalUnit>Valtion kansalaisvarmenteet</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://proxy.fineid.fi/ca/vrkroot2c.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://proxy.fineid.fi/arl/vrkroot2a.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.fineid.fi/vrkroot2c</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
@@ -167,12 +154,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F1114D5F02E5AB98ECBEC5704678E0F12F40AF4615B11F9B824B2F04FA3B10B1</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -186,9 +167,22 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.201.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.201.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://proxy.fineid.fi/ca/vrkroot2c.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.fineid.fi/vrkroot2c</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://proxy.fineid.fi/arl/vrkroot2a.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -206,14 +200,6 @@
             <CountryName>FI</CountryName>
             <OrganizationName>Vaestorekisterikeskus CA</OrganizationName>
             <OrganizationalUnit>Valtion kansalaisvarmenteet</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>vaestorekisterikeskus@vrk.fi</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -223,14 +209,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-35093140C5C1F37A2EBD36E3C424097DADD0BA669F58C2CABBA7508B677ABDB3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -245,9 +223,25 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>vaestorekisterikeskus@vrk.fi</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -265,15 +259,6 @@
             <CountryName>FI</CountryName>
             <GivenName>JEAN</GivenName>
             <Surname>PIERRE</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://proxy.fineid.fi/crl/vrkcqc3c.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.fineid.fi/vrkcqc3</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -282,11 +267,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0184C1F5E3BB4DB31950CA2A0BF05968F125851B7D4E752A8A4D9041C78809E3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -301,17 +281,29 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.fineid.fi/cps31/">1.2.246.517.1.10.202.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.fineid.fi/vrkcqc3</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://proxy.fineid.fi/crl/vrkcqc3c.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">

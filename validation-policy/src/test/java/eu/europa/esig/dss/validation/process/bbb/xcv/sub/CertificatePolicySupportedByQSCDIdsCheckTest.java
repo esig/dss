@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -48,6 +49,7 @@ public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCh
 
 		XmlCertificate xc = new XmlCertificate();
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("0.4.0.1456.1.1");
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -71,6 +73,7 @@ public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCh
 		XmlCertificate xc = new XmlCertificate();
 
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("0.4.0.1456.1.12");
 		certificatePolicies.getCertificatePolicy().add(oid);
@@ -93,6 +96,7 @@ public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCh
 
 		XmlCertificate xc = new XmlCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
 		xmlQcSSCD.setPresent(true);
 		xmlQcStatements.setQcSSCD(xmlQcSSCD);

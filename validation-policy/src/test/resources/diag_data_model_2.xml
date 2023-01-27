@@ -71,13 +71,6 @@
             <OrganizationName>OL</OrganizationName>
             <OrganizationalUnit>OL</OrganizationalUnit>
             <Email>CRYPTOMODULE_CHAIN_ROOT@openlimit.com</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.openlimit.ol:8083/ejbca/publicweb/webdist/certdist?cmd=crl&amp;issuer=CN=CRYPTOMODULE_CA_2019_CHAIN_ROOT</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://www.openlimit.ol/CRYPTOMODULE/OCSP</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -86,16 +79,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -105,7 +88,23 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.openlimit.ol:8083/ejbca/publicweb/webdist/certdist?cmd=crl&amp;issuer=CN=CRYPTOMODULE_CA_2019_CHAIN_ROOT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://www.openlimit.ol/CRYPTOMODULE/OCSP</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -148,11 +147,6 @@
             <OrganizationName>OL</OrganizationName>
             <OrganizationalUnit>OL</OrganizationalUnit>
             <Email>CRYPTOMODULE_CHAIN_USER_4@openlimit.com</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -161,12 +155,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C01FC833D83EAF08F4031A1915A72BE6602A63587C5B65227D37461E35019532</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -181,7 +169,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -230,11 +226,6 @@
             <OrganizationName>OL</OrganizationName>
             <OrganizationalUnit>OL</OrganizationalUnit>
             <Email>CRYPTOMODULE_CHAIN_CA_3@openlimit.com</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -243,14 +234,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-24ABE927F4C70FB2371FA5463A31ACBDA662E791D0AA081BBBBAD36B2BF52B2B</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -264,7 +247,17 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspUrl>
+                </AuthorityInformationAccess>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
@@ -311,11 +304,6 @@
             <OrganizationName>OL</OrganizationName>
             <OrganizationalUnit>OL</OrganizationalUnit>
             <Email>CRYPTOMODULE_CHAIN_CA_4@openlimit.com</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -324,16 +312,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F4703E9EF1A4F93A57EB9CD2E63738870838FBB59F6DE9C07D4ADABE2255B729</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -347,7 +325,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>

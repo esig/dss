@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,6 +43,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcEuLimitValue xmlQCEuLimitValue = new XmlQcEuLimitValue();
         xmlQCEuLimitValue.setAmount(1000);
@@ -68,6 +70,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     @Test
     public void sameNumberTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcEuLimitValue xmlQCEuLimitValue = new XmlQcEuLimitValue();
         xmlQCEuLimitValue.setAmount(1000);
@@ -94,6 +97,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcEuLimitValue xmlQCEuLimitValue = new XmlQcEuLimitValue();
         xmlQCEuLimitValue.setAmount(1000);
@@ -120,6 +124,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     @Test
     public void qcLimitValueNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         IntValueConstraint constraint = new IntValueConstraint();
         constraint.setLevel(Level.FAIL);

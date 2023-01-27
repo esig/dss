@@ -7,6 +7,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.policy.SubContext;
@@ -25,6 +26,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
     @Test
     public void valid() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
+        xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription(ExtendedKeyUsage.TIMESTAMPING.getDescription());
         xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOID);
@@ -49,6 +51,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
     @Test
     public void invalid() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
+        xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription(ExtendedKeyUsage.TIMESTAMPING.getDescription());
         xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOID);
@@ -73,6 +76,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
     @Test
     public void multiValuesCheck() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
+        xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
 
         XmlOID xmlOIDOne = new XmlOID();
         xmlOIDOne.setDescription(ExtendedKeyUsage.OCSP_SIGNING.getDescription());

@@ -1550,7 +1550,9 @@ public abstract class DiagnosticDataBuilder {
 		final XmlBasicConstraints xmlBasicConstraints = new XmlBasicConstraints();
 		fillXmlCertificateExtension(xmlBasicConstraints, basicConstraints);
 		xmlBasicConstraints.setCA(basicConstraints.isCa());
-		xmlBasicConstraints.setPathLenConstraint(basicConstraints.getPathLenConstraint());
+		if (basicConstraints.getPathLenConstraint() != -1) {
+			xmlBasicConstraints.setPathLenConstraint(basicConstraints.getPathLenConstraint());
+		}
 		return xmlBasicConstraints;
 	}
 
@@ -1603,6 +1605,7 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateExtension certificateExtension : otherCertificateExtensions) {
 			XmlCertificateExtension xmlCertificateExtension = new XmlCertificateExtension();
 			fillXmlCertificateExtension(xmlCertificateExtension, certificateExtension);
+			xmlCertificateExtension.setOctets(certificateExtension.getOctets());
 			result.add(xmlCertificateExtension);
 		}
 		return result;

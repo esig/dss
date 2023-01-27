@@ -174,15 +174,6 @@
             <CountryName>UA</CountryName>
             <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
             <OrganizationName>State enterprise "DIIA"</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ca.informjust.ua/uploads/certificates/diia.p7b</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://ca.informjust.ua/download/crls/CA-B4748B39-Full.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ca.informjust.ua/services/ocsp/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -191,11 +182,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7E8A661771DC13A528DBBE30606650E45EA0DA7DCA4EBAD3D30AE0D2224350F9</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -210,33 +196,45 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements enactedMRA="true">
-                <QcCompliance present="false"/>
-                <QcSSCD present="false"/>
-                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-                <QcCClegislation>
-                    <CountryName>UA</CountryName>
-                </QcCClegislation>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-                <MRACertificateMapping>
-                    <EnactedTrustServiceLegalIdentifier>PKCForAdESeal</EnactedTrustServiceLegalIdentifier>
-                    <OriginalThirdCountryMapping>
-                        <QcCompliance present="true"/>
-                        <QcSSCD present="false"/>
-                        <QcTypes>
-                            <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                        </QcTypes>
-                        <QcCClegislation>
-                            <CountryName>UA</CountryName>
-                        </QcCClegislation>
-                    </OriginalThirdCountryMapping>
-                </MRACertificateMapping>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.informjust.ua/uploads/certificates/diia.p7b</caIssuersUrl>
+                    <ocspUrl>http://ca.informjust.ua/services/ocsp/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ca.informjust.ua/download/crls/CA-B4748B39-Full.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                    <QcCClegislation>
+                        <CountryName>UA</CountryName>
+                    </QcCClegislation>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                    <MRACertificateMapping>
+                        <EnactedTrustServiceLegalIdentifier>PKCForAdESeal</EnactedTrustServiceLegalIdentifier>
+                        <OriginalThirdCountryMapping>
+                            <QcCompliance present="true"/>
+                            <QcSSCD present="false"/>
+                            <QcTypes>
+                                <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                            </QcTypes>
+                            <QcCClegislation>
+                                <CountryName>UA</CountryName>
+                            </QcCClegislation>
+                        </OriginalThirdCountryMapping>
+                    </MRACertificateMapping>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
@@ -360,17 +358,6 @@
             <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
             <OrganizationName>State enterprise "DIIA"</OrganizationName>
             <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
-                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://czo.gov.ua/services/ocsp/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -380,13 +367,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E705D7BA08B6667BF06CF41A2A996263C12604E7D6FBDA38CD6B6C3D8012C1D7</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -400,28 +380,45 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements enactedMRA="true">
-                <QcCompliance present="false"/>
-                <QcSSCD present="false"/>
-                <QcEuPDS>
-                    <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
-                </QcEuPDS>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-                <MRACertificateMapping>
-                    <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
-                    <OriginalThirdCountryMapping>
-                        <QcCompliance present="true"/>
-                        <QcSSCD present="true"/>
-                    </OriginalThirdCountryMapping>
-                </MRACertificateMapping>
-            </QcStatements>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                    <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://czo.gov.ua/services/ocsp/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                    <MRACertificateMapping>
+                        <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                        <OriginalThirdCountryMapping>
+                            <QcCompliance present="true"/>
+                            <QcSSCD present="true"/>
+                        </OriginalThirdCountryMapping>
+                    </MRACertificateMapping>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
@@ -534,11 +531,6 @@
             <OrganizationIdentifier>NTRUA-43220851</OrganizationIdentifier>
             <OrganizationName>Ministry of digital transformation of Ukraine</OrganizationName>
             <OrganizationalUnit>Administrator ITS CCA</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -549,13 +541,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5F260FFBD972B85C8F9D0162D9871E04D8AFB4B9A8BE99E9417DA0AEB9FBE0A5</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -566,16 +551,26 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
@@ -623,15 +618,6 @@
             <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
             <OrganizationName>State enterprise "DIIA"</OrganizationName>
             <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
-                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>https://ca.informjust.ua/uploads/certificates/diia.p7b</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -640,13 +626,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D11F5D37CC5FB5473B977755B63A2FD8663A972AABCA2D5A720580EC919A0147</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -661,28 +640,44 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements enactedMRA="true">
-                <QcCompliance present="false"/>
-                <QcSSCD present="false"/>
-                <QcEuPDS>
-                    <PdsLocation lang="en">https://ca.informjust.ua/</PdsLocation>
-                </QcEuPDS>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-                <MRACertificateMapping>
-                    <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
-                    <OriginalThirdCountryMapping>
-                        <QcCompliance present="true"/>
-                        <QcSSCD present="true"/>
-                    </OriginalThirdCountryMapping>
-                </MRACertificateMapping>
-            </QcStatements>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                    <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://ca.informjust.ua/uploads/certificates/diia.p7b</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://ca.informjust.ua/reglament/">1.2.804.2.1.1.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false" enactedMRA="true">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://ca.informjust.ua/</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                    <MRACertificateMapping>
+                        <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                        <OriginalThirdCountryMapping>
+                            <QcCompliance present="true"/>
+                            <QcSSCD present="true"/>
+                        </OriginalThirdCountryMapping>
+                    </MRACertificateMapping>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
@@ -795,17 +790,6 @@
             <OrganizationIdentifier>NTRUA-43395033</OrganizationIdentifier>
             <OrganizationName>State enterprise "DIIA"</OrganizationName>
             <OrganizationalUnit>Department of Electronic Trust Services</OrganizationalUnit>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
-                <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://czo.gov.ua/services/ocsp/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -815,14 +799,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BD6FA8CE34EAE114EE5812B5AC67AB7361EA2D9199FE2C3DD243C2DB711AC3AE</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -836,17 +812,36 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcEuPDS>
-                    <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
-                </QcEuPDS>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>ca.informjust.ua</subjectAlternativeName>
+                    <subjectAlternativeName>ca@informjust.ua</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://czo.gov.ua/services/ocsp/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://czo.gov.ua/cps">1.2.804.2.1.1.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://czo.gov.ua/about</PdsLocation>
+                    </QcEuPDS>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>

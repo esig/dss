@@ -166,7 +166,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -5271,6 +5270,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue("1.3.76.38.1.1.2");
 		xmlCertificatePolicies.getCertificatePolicy().add(oid);
@@ -5314,6 +5314,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				.getSigningCertificate().getCertificate();
 
 		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.NCPP.getOid());
 		xmlCertificatePolicies.getCertificatePolicy().add(oid);
@@ -5355,6 +5356,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.NCPP.getOid());
 		xmlCertificatePolicies.getCertificatePolicy().add(oid);
@@ -5415,6 +5417,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
 		xmlQcCompliance.setPresent(true);
 		xmlQcStatements.setQcCompliance(xmlQcCompliance);
@@ -5434,6 +5437,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
 		xmlQcEuLimitValue.setCurrency("AUD");
 		xmlQcStatements.setQcEuLimitValue(xmlQcEuLimitValue);
@@ -5475,6 +5479,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcEuLimitValue xmlQCLimitValue = new XmlQcEuLimitValue();
 		xmlQCLimitValue.setAmount(1000);
 		xmlQCLimitValue.setExponent(0);
@@ -5517,6 +5522,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		xmlQcStatements.setQcEuRetentionPeriod(3);
 		signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
@@ -5556,6 +5562,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
 		xmlQcSSCD.setPresent(false);
 		xmlQcStatements.setQcSSCD(xmlQcSSCD);
@@ -5596,6 +5603,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlLangAndValue langAndValue = new XmlLangAndValue();
 		langAndValue.setLang("en");
 		langAndValue.setValue("https://repository.eid.lux.lu");
@@ -5638,6 +5646,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlOID xmlOID = new XmlOID();
 		xmlOID.setValue("0.4.0.1862.1.6.2");
 		xmlOID.setDescription("qc-type-eseal");
@@ -5681,6 +5690,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -5734,6 +5744,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlOID xmlOID = new XmlOID();
 		xmlOID.setDescription("Semantics identifier for natural person");
 		xmlOID.setValue("0.4.0.194121.1.1");
@@ -5777,6 +5788,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlOID xmlOID = new XmlOID();
 		xmlOID.setDescription("Semantics identifier for legal person");
 		xmlOID.setValue("0.4.0.194121.1.2");
@@ -5821,6 +5833,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlOID xmlOID = new XmlOID();
 		xmlOID.setDescription("Semantics identifier for eIDAS natural person");
 		xmlOID.setValue("0.4.0.194121.1.3");
@@ -5865,6 +5878,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlOID xmlOID = new XmlOID();
 		xmlOID.setDescription("Semantics identifier for eIDAS legal person");
 		xmlOID.setValue("0.4.0.194121.1.4");
@@ -5908,6 +5922,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlPSD2QcInfo xmlPSD2Info = new XmlPSD2QcInfo();
 		XmlRoleOfPSP roleOfPSP = new XmlRoleOfPSP();
 		XmlOID xmlOID = new XmlOID();
@@ -5955,6 +5970,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlPSD2QcInfo xmlPSD2Info = new XmlPSD2QcInfo();
 		xmlPSD2Info.setNcaName("NBB");
 		xmlQcStatements.setPSD2QcInfo(xmlPSD2Info);
@@ -5996,6 +6012,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		XmlCertificate signingCertificate = xmlDiagnosticData.getSignatures().get(0)
 				.getSigningCertificate().getCertificate();
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlPSD2QcInfo xmlPSD2Info = new XmlPSD2QcInfo();
 		xmlPSD2Info.setNcaId("BE-NBB");
 		xmlQcStatements.setPSD2QcInfo(xmlPSD2Info);
@@ -11853,6 +11870,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		if (qcStatements == null) {
 			qcStatements = new XmlQcStatements();
+			qcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 			signingCertificate.getCertificateExtensions().add(qcStatements);
 
 		}
@@ -11906,6 +11924,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		if (qcStatements == null) {
 			qcStatements = new XmlQcStatements();
+			qcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 			signingCertificate.getCertificateExtensions().add(qcStatements);
 
 		}

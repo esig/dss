@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -43,6 +44,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlLangAndValue langAndValueEn = new XmlLangAndValue();
         langAndValueEn.setLang("en");
@@ -72,6 +74,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlLangAndValue langAndValueEn = new XmlLangAndValue();
         langAndValueEn.setLang("en");
@@ -101,6 +104,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     @Test
     public void qcPDSNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);

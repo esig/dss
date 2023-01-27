@@ -105,14 +105,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>NBU</OrganizationName>
             <OrganizationalUnit>OCSP Responder P1</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-                <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -122,14 +114,6 @@
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-38EF9A0929BD4B939BDB2C087A575931BD9FFDA730C675C339F9D95730031F92</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -144,11 +128,28 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.158.36061701.1.3.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
-                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages>
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true"/>
+                <AuthorityInformationAccess>
+                    <caIssuersUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints>
+                    <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                    <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies>
+                    <certificatePolicy>1.3.158.36061701.1.3.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -282,15 +283,6 @@
             <Locality>Bratislava</Locality>
             <CountryName>SK</CountryName>
             <OrganizationName>Narodný bezpečnostný úrad</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ep.nbu.gov.sk/snca/certs3/snca3.p7c</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://snca3-ocsp.nbu.gov.sk/ocsp/snca3</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -299,12 +291,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3CF95234A0190CD33AB408C7FC243CA31C3DFB7722D150B09207DC4A7EBF33A0</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -319,10 +305,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_snca.pdf">1.3.158.36061701.0.1.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies>
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_snca.pdf">1.3.158.36061701.0.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages/>
+                <AuthorityInformationAccess>
+                    <caIssuersUrl>http://ep.nbu.gov.sk/snca/certs3/snca3.p7c</caIssuersUrl>
+                    <ocspUrl>http://snca3-ocsp.nbu.gov.sk/ocsp/snca3</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints>
+                    <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -427,16 +427,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
             <OrganizationalUnit>TS</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-                <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://snca3-ocsp.nbu.gov.sk/ocsp/snca3</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -446,13 +436,6 @@
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4329A61FF2ADF1F4D135B25F8CC988B7998C5B8396353B8D55192F78BAB3BAF8</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -467,10 +450,26 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_tsa_snca.pdf">1.3.158.36061701.0.1.4</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages>
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess>
+                    <caIssuersUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</caIssuersUrl>
+                    <ocspUrl>http://snca3-ocsp.nbu.gov.sk/ocsp/snca3</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints>
+                    <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                    <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies>
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_tsa_snca.pdf">1.3.158.36061701.0.1.4</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -601,14 +600,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>NBU</OrganizationName>
             <OrganizationalUnit>OCSP Responder P2</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-                <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -618,14 +609,6 @@
             <PublicKeySize>3072</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C727784E842E5158A2A849FEBD4988EB836122272E79C59FEA39EFE636690D6F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -640,11 +623,28 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.158.36061701.1.3.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
-                <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies>
+                    <certificatePolicy>1.3.158.36061701.1.3.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http:/ep.nbu.gov.sk/snca/doc/cp_ocsp_snca.pdf">1.3.158.36061701.0.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages>
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true"/>
+                <AuthorityInformationAccess>
+                    <caIssuersUrl>http://cdp.nbu.gov.sk/snca/certs3/snca3.p7c</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints>
+                    <crlUrl>http://cdp1.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                    <crlUrl>http://cdp2.nbu.gov.sk/snca/crls3/snca3.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -779,13 +779,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
             <OrganizationalUnit>SIBEP</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
-                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
@@ -794,12 +787,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -810,9 +797,20 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies>
+                    <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints>
+                    <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                    <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                    <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -867,17 +865,6 @@
             <CountryName>SK</CountryName>
             <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
             <OrganizationalUnit>SEP</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</aiaUrl>
-                <aiaUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
-                <aiaUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
-                <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-                <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
@@ -888,12 +875,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F230BECB27B1EE22EB4B83E84B548904AF2E55A529F06D5B315A42A7F9AF5E1B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -907,9 +888,25 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies>
+                    <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess>
+                    <caIssuersUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</caIssuersUrl>
+                    <caIssuersUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                    <caIssuersUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints>
+                    <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                    <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                    <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>

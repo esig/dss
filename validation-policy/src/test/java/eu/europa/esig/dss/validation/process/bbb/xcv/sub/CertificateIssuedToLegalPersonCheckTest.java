@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -46,6 +47,7 @@ public class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_LEGAL.getOid());
 		xmlCertificatePolicies.getCertificatePolicy().add(oid);
@@ -68,6 +70,7 @@ public class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_NATURAL.getOid());
 		xmlCertificatePolicies.getCertificatePolicy().add(oid);

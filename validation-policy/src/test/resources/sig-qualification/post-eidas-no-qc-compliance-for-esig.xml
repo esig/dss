@@ -90,9 +90,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>TSP-4.3 Name</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -102,13 +99,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3A4F14AD337C433EF40D23A9A3E739854E637877642E28F543494ACC5C285C71</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -119,7 +109,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-9014F24EFCD15F53D6766AA96D54A2E000833EC8C30AEBB5EB0BDCDA03D0E430" LOTL="LOTL-C5EDE50B5C3D01D4FAD9A33A65F8D4E0AC142E323EB1C36585B58A91B14462AF">
                     <TSPNames>
@@ -162,13 +158,6 @@
             <CountryName>FR</CountryName>
             <OrganizationName>TL4 Organization</OrganizationName>
             <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>https://esignature.ec.europa.eu/efda/validation-tests/crt/SDI-4.3.2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>https://esignature.ec.europa.eu/efda/validation-tests/crl/SDI-4.3.2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -177,13 +166,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-248DD67516CAF526C563B8CE7FAD7C2E336CF7FD5957E3614AFD670608BBDF57</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -197,7 +179,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://esignature.ec.europa.eu/efda/validation-tests/crt/SDI-4.3.2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>https://esignature.ec.europa.eu/efda/validation-tests/crl/SDI-4.3.2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-9014F24EFCD15F53D6766AA96D54A2E000833EC8C30AEBB5EB0BDCDA03D0E430" LOTL="LOTL-C5EDE50B5C3D01D4FAD9A33A65F8D4E0AC142E323EB1C36585B58A91B14462AF">
                     <TSPNames>

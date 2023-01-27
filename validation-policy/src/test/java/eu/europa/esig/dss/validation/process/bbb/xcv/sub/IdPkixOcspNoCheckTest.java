@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -45,6 +46,7 @@ public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 		
 		XmlCertificate xmlCertificate = new XmlCertificate();
 		XmlIdPkixOcspNoCheck ocspNoCheck = new XmlIdPkixOcspNoCheck();
+		ocspNoCheck.setOID(CertificateExtensionEnum.OCSP_NOCHECK.getOid());
 		ocspNoCheck.setPresent(true);
 		xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
 		CertificateWrapper certificateWrapper = new CertificateWrapper(xmlCertificate);
@@ -66,6 +68,7 @@ public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 
 		XmlCertificate xmlCertificate = new XmlCertificate();
 		XmlIdPkixOcspNoCheck ocspNoCheck = new XmlIdPkixOcspNoCheck();
+		ocspNoCheck.setOID(CertificateExtensionEnum.OCSP_NOCHECK.getOid());
 		ocspNoCheck.setPresent(false);
 		xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
 		CertificateWrapper certificateWrapper = new CertificateWrapper(xmlCertificate);

@@ -117,11 +117,6 @@
             <CountryName>EE</CountryName>
             <OrganizationName>SK ID Solutions AS</OrganizationName>
             <OrganizationalUnit>OCSP</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>https://sk.ee/upload/files/EID-SK_2016.der.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>OCSP_RESPONSE</Source>
@@ -131,13 +126,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-FB704940EA123E4B26FA6CA9D998B5BBA0A823BE0B6BA99116220C1015105C2B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -152,7 +140,18 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://sk.ee/upload/files/EID-SK_2016.der.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
@@ -183,13 +182,6 @@
             <CountryName>EE</CountryName>
             <GivenName>LIISA</GivenName>
             <Surname>LUKIN</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>https://c.sk.ee/EID-SK_2016.der.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://aia.sk.ee/eid2016</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -198,11 +190,6 @@
             <PublicKeySize>6144</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7C7A9FE7D2806E276868C5DDC67C0587C4D4B875A2E2DD4DD299A7A3576F20B1</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -217,18 +204,27 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://www.sk.ee/en/repository/CPS/">1.3.6.1.4.1.10015.17.2</certificatePolicy>
-                <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://c.sk.ee/EID-SK_2016.der.crt</caIssuersUrl>
+                    <ocspUrl>http://aia.sk.ee/eid2016</ocspUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://www.sk.ee/en/repository/CPS/">1.3.6.1.4.1.10015.17.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
@@ -267,11 +263,6 @@
             <CountryName>EE</CountryName>
             <OrganizationName>SK ID Solutions AS</OrganizationName>
             <OrganizationalUnit>TSA</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://aia.sk.ee/CA</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -282,14 +273,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -303,7 +286,18 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://aia.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
@@ -333,15 +327,6 @@
             <CommonName>EID-SK 2016</CommonName>
             <CountryName>EE</CountryName>
             <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.sk.ee/certs/EE_Certification_Centre_Root_CA.der.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.sk.ee/repository/crls/eeccrca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.sk.ee/CA</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -351,17 +336,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2E73F1F19A4459A6067A45E84DB585D6C1DF8F12A739D733F5B28996546F1875</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -375,14 +349,33 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
-                <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="qcp-natural">0.4.0.194112.1.0</certificatePolicy>
-                <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.sk.ee/certs/EE_Certification_Centre_Root_CA.der.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.sk.ee/repository/crls/eeccrca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="qcp-natural">0.4.0.194112.1.0</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS" Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
@@ -413,9 +406,6 @@
             <CountryName>EE</CountryName>
             <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
             <Email>pki@sk.ee</Email>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>AIA</Source>
             </Sources>
@@ -424,20 +414,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="codeSigning">1.3.6.1.5.5.7.3.3</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -447,7 +423,21 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="codeSigning">1.3.6.1.5.5.7.3.3</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIEAzCCAuugAwIBAgIQVID5oHPtPwBMyonY43HmSjANBgkqhkiG9w0BAQUFADB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlMCIYDzIwMTAxMDMwMTAxMDMwWhgPMjAzMDEyMTcyMzU5NTlaMHUxCzAJBgNVBAYTAkVFMSIwIAYDVQQKDBlBUyBTZXJ0aWZpdHNlZXJpbWlza2Vza3VzMSgwJgYDVQQDDB9FRSBDZXJ0aWZpY2F0aW9uIENlbnRyZSBSb290IENBMRgwFgYJKoZIhvcNAQkBFglwa2lAc2suZWUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIIMDs4MVLqwd4lfNE7vsLDP90jmG7sWLqI9iroWUyeuuOF0+W2Ap7kaJjbMeMTC55v6kF/GlclY1i+blw7cNRfdCT5mzrMEvhvH2/UpvObntl8jixwKIy72KyaOBhU8E2lf/slLo2rpwcpzIP5Xy0xm90/XsY6KxX7QYgSzIwWFv9zajmofxwvI6Sc9uXp3whrj3B9UiHbCe9nyV0gVWw93X2PaRka9ZP585ArQ/dMtO8ihJTmMmJ+xAdTX7Nfh9WDSFwhfYggx/2uh8Ej+p3iDXE/+pOoYtNP2MbRMNE1CV2yreN1x5KZmTNXMWcg+HCCIia7E6j8T4cLNlsHaFLAgMBAAGjgYowgYcwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFBLyWj7qVhy/zQas8fElyalL1BSZMEUGA1UdJQQ+MDwGCCsGAQUFBwMCBggrBgEFBQcDAQYIKwYBBQUHAwMGCCsGAQUFBwMEBggrBgEFBQcDCAYIKwYBBQUHAwkwDQYJKoZIhvcNAQEFBQADggEBAHv25MANqhlHt01Xo/6tu7Fq1Q+e2+RjxY6hUFaTlrg4wCQiZrxTFGGVv9DHKpY5P30osxBAIWrEr7BSdxjhlthWXePdNl4dp1BUoMUq5KqMlIpPnTX/dqQGE5Gion0ARD9V04I8GtVbvFZMIi5GQ4okQC3zErg7cBqklrkar4dBGmoYDQZPxz5uuSlNDUmJEYcyW+ZLBMjkXOZ0c5RdFpgTlf7727FE5TpwrDdr5rMzcijJs1eg9gIWiAYLtqZLICjU3j2LrTcFU3T+bsy8QxdxXvnFzBqpYe73dgzzcvRyrc9yAjYHR8/vGVCJYMzpJJUPwssd8m92kMfMdcGWxZ0=</Base64Encoded>

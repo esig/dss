@@ -56,7 +56,7 @@ public class BasicConstraintsMaxPathLengthCheck extends ChainItem<XmlSubXCV> {
             if (!cert.isSelfSigned()) {
                 --maxPathLength;
             }
-            int pathLenConstraint = certificateChain.get(i).getPathLenConstraint();
+            int pathLenConstraint = cert.getPathLenConstraint();
             /*
              * (m) If pathLenConstraint is present in the certificate and is
              * less than max_path_length, set max_path_length to the value

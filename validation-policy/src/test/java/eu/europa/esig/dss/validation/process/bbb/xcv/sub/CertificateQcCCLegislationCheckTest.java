@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -47,6 +48,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
@@ -67,6 +69,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("CR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -89,6 +92,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("CR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -111,6 +115,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -133,6 +138,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -155,6 +161,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -177,6 +184,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR", "FR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 
@@ -199,6 +207,7 @@ public class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
         XmlCertificate xc = new XmlCertificate();
 
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setQcCClegislation(Arrays.asList("BR", "CR", "FR"));
         xc.getCertificateExtensions().add(xmlQcStatements);
 

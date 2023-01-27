@@ -96,15 +96,6 @@
             <Title>Private Person</Title>
             <GivenName>Aleksandr</GivenName>
             <Surname>Beliakov</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ca.luxtrust.lu/LTGQCA3.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qca.ocsp.luxtrust.lu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -113,12 +104,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-41505B912E7E607E380855F82FB008065A4563D80CD97BB5B157EB0993920A05</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -132,10 +117,23 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.27</certificatePolicy>
-                <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGQCA3.crt</caIssuersUrl>
+                    <ocspUrl>http://qca.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.27</certificatePolicy>
+                    <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <Revocations/>
             <DigestAlgoAndValue>
@@ -152,9 +150,6 @@
             <CommonName>Tester</CommonName>
             <CountryName>Luxembourg</CountryName>
             <OrganizationName>Nowina</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -163,11 +158,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0627421E45BA45EED667C3F151561E29A2982314261007E621D5588369342919</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -182,15 +172,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-                <QcCClegislation/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -206,15 +201,6 @@
             <CommonName>LuxTrust Global Qualified CA 3</CommonName>
             <CountryName>LU</CountryName>
             <OrganizationName>LuxTrust S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://ca.luxtrust.lu/LTGRCA2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ltgroot.ocsp.luxtrust.lu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
@@ -223,13 +209,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C770C1175C54E68FBE0EFB7A53A69D90386F0BC916ACAD485AD2496798C1C35F</EntityKey>
-            <BasicConstraints CA="true" pathLenConstraint="0"/>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -240,9 +219,23 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" pathLenConstraint="0"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGRCA2.crt</caIssuersUrl>
+                    <ocspUrl>http://ltgroot.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

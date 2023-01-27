@@ -62,15 +62,6 @@
             <CommonName>QuoVadis EU Issuing Certification Authority G3</CommonName>
             <CountryName>NL</CountryName>
             <OrganizationName>QuoVadis Trustlink B.V.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://trust.quovadisglobal.com/qvrca.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.quovadisglobal.com/qvrca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.quovadisglobal.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -79,12 +70,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</EntityKey>
-            <BasicConstraints CA="true" />
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -94,9 +79,23 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://trust.quovadisglobal.com/qvrca.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.quovadisglobal.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.quovadisglobal.com/qvrca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
@@ -137,9 +136,6 @@
             <CountryName>BM</CountryName>
             <OrganizationName>QuoVadis Limited</OrganizationName>
             <OrganizationalUnit>OCSP Responder</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -148,10 +144,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-ADDFFA6FD0809A54A9F0B31FD25F74BF7F2D7AE11C80FD99DAA0FB603A65CD0E</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -165,9 +157,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.8024.1.300</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.8024.1.300</certificatePolicy>
+                </CertificatePolicies>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
@@ -202,15 +200,6 @@
             <OrganizationalUnit>Qualified Certificate</OrganizationalUnit>
             <GivenName>j N.</GivenName>
             <Surname>v e</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://trust.quovadisglobal.com/qveucag3.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.quovadisglobal.com/qvrca.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.quovadisglobal.com</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -219,11 +208,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EFDF173DD8B570A0587980070EF0EFC8C79DD4F4EF1A206511967A7F7532FC74</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -237,15 +221,28 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
-                <certificatePolicy>1.3.6.1.4.1.8024.1.400</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcSSCD present="true"/>
-                <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://trust.quovadisglobal.com/qveucag3.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.quovadisglobal.com</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.quovadisglobal.com/qvrca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy Description="qcp-public-with-sscd">0.4.0.1456.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.8024.1.400</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-2C9AB8299BAAD72CD5970EDC7F9D5AB766527E8EF65FB8447451A2E28637AD15" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">QuoVadis Trustlink B.V.</TSPName></TSPNames>
