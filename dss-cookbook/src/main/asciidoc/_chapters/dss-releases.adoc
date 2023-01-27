@@ -305,15 +305,37 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 </PDFSignatureDictionary>
 ----
 
-|Diagnostic Data: BasicConstraints     |
+|Diagnostic Data: Certificate extensions     a|[source,xml]
 ----
-not present
+<Certificate>
+    ...
+    <AuthorityInformationAccessUrls>
+        <aiaUrl>http://certs.eid.belgium.be/belgiumrs4.crt</aiaUrl>
+    </AuthorityInformationAccessUrls>
+    <CRLDistributionPoints>
+        <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+    </CRLDistributionPoints>
+    <OCSPAccessUrls>
+        <ocspServerUrl>http://ocsp.eid.belgium.be/2</ocspServerUrl>
+    </OCSPAccessUrls>
+    ...
+</Certificate>
 ----
                                                                      a|[source,xml]
 ----
 <Certificate>
     ...
-    <BasicConstraints CA="true" pathLenConstraint="0"/>
+    <CertificateExtensions>
+        ...
+        <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+            <caIssuersUrl>http://certs.eid.belgium.be/belgiumrs4.crt</caIssuersUrl>
+            <ocspUrl>http://ocsp.eid.belgium.be/2</ocspUrl>
+        </AuthorityInformationAccess>
+        <CRLDistributionPoints OID="2.5.29.31" critical="false">
+            <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+        </CRLDistributionPoints>
+        ...
+    </CertificateExtensions>
     ...
 </Certificate>
 ----
@@ -442,6 +464,21 @@ timestamp.isSignatureValid();
 ----
 TimestampToken timestamp = ...
 timestamp.isValid();
+----
+
+|Certificate extensions extraction     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+// and other method to extract certificate extensions
+----
+                                                                     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+// and so on
 ----
 
 |===
