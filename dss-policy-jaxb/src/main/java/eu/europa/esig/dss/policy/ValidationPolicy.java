@@ -313,6 +313,16 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate forbidden extensions constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if ForbiddenExtensions constraint for a given context element is present
+	 * 								   in the constraint file,null otherwise.
+	 */
+	MultiValuesConstraint getCertificateForbiddenExtensionsConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate's validity range constraint
 	 *
 	 * @param context {@link Context}
