@@ -908,6 +908,22 @@ Default: `FAIL` (`timeStamping`) for timestamp's signing-certificate
 </SigningCertificate>
 ----
 
+* `ForbiddenExtensions` - this constraint is used to check whether the certificate in question does not contain any of the certificate extensions present in the list of forbidden extensions for the certificate type. If the certificate contains one or more of the forbidden certificate extensions, the check will fail.
+
+Default: `FAIL` (`1.3.6.1.5.5.7.48.1.5` (for ocsp_noCheck)) for non-revocation certificates
+
+[source,xml,indent=0]
+.Example of ForbiddenExtensions usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
+    ...
+</SigningCertificate>
+----
+
 * `Surname` - this constraint is used to check whether the certificate's subject distinguished name contains the Surname attribute with one of the acceptable values. If the Surname attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
 
 Default: not executed
@@ -2235,6 +2251,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
                                                                                                                               CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2242,8 +2259,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints    .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
+.13+|CertificateConstraints       |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
                                   |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER

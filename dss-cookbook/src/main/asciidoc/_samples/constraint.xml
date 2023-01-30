@@ -69,6 +69,9 @@
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <SerialNumberPresent Level="WARN" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
@@ -147,6 +150,9 @@
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <SerialNumberPresent Level="WARN" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
@@ -209,6 +215,9 @@
                 <ExtendedKeyUsage Level="FAIL">
                     <Id>timeStamping</Id>
                 </ExtendedKeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <NotSelfSigned Level="WARN" />

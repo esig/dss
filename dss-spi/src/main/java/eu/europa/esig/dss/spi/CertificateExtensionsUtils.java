@@ -634,6 +634,9 @@ public class CertificateExtensionsUtils {
      * That is, the time as indicated in the certificate attribute from notBefore through notAfter,
      * inclusive, is shorter than the maximum time to process a revocation request as specified by
      * the certificate practice statement or certificate policy.
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return TRUE if the certificate has ext-etsi-valassured-ST-certs extension, FALSE otherwise
      */
     public static boolean hasValAssuredShortTermCertsExtension(CertificateToken certificateToken) {
         ValidityAssuredShortTerm valAssuredSTCerts = getValAssuredSTCerts(certificateToken);

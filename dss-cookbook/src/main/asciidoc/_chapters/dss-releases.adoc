@@ -757,6 +757,20 @@ not present
     <PDFACompliant Level="WARN" />
 </PDFAConstraints>
 ----
+|Forbidden extensions check                     |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
+    ...
+</SigningCertificate>
+----
 |CA certificate BasicConstraints check          |
 ----
 not present
