@@ -71,6 +71,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
@@ -11764,7 +11765,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCFCE_ANS)));
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCFCE_ANS, Arrays.asList(CertificateExtensionEnum.OCSP_NOCHECK.getOid()))));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
@@ -11829,7 +11830,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCFCE_ANS)));
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCFCE_ANS, Arrays.asList(CertificateExtensionEnum.OCSP_NOCHECK.getOid()))));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
@@ -11857,6 +11858,132 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(forbiddenExtensionCheckFound);
+	}
+
+	@Test
+	public void supportedCriticalCertificateExtensionsTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate xmlCertificate = xmlDiagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		XmlKeyUsages keyUsages = new XmlKeyUsages();
+		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
+		keyUsages.setCritical(true);
+		keyUsages.getKeyUsageBit().add(KeyUsageBit.NON_REPUDIATION);
+		xmlCertificate.getCertificateExtensions().add(keyUsages);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		levelConstraint.getId().add(CertificateExtensionEnum.KEY_USAGE.getOid());
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setSupportedCriticalExtensions(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCUCE_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstSignatureId());
+		assertNotNull(sigBBB);
+		assertEquals(Indication.PASSED, sigBBB.getConclusion().getIndication());
+
+		XmlXCV xcv = sigBBB.getXCV();
+		assertNotNull(xcv);
+		assertEquals(Indication.PASSED, xcv.getConclusion().getIndication());
+
+		assertEquals(3, xcv.getSubXCV().size());
+		XmlSubXCV subXCV = xcv.getSubXCV().get(0);
+		assertEquals(Indication.PASSED, subXCV.getConclusion().getIndication());
+
+		boolean supportedExtensionsCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			assertEquals(XmlStatus.OK, constraint.getStatus());
+			if (MessageTag.BBB_XCV_DCCUCE.getId().equals(constraint.getName().getKey())) {
+				supportedExtensionsCheckFound = true;
+			}
+		}
+		assertTrue(supportedExtensionsCheckFound);
+	}
+
+	@Test
+	public void supportedCriticalCertificateExtensionsInvalidTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlCertificate xmlCertificate = xmlDiagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
+			if (certificateExtension instanceof XmlKeyUsages) {
+				certificateExtension.setCritical(true);
+			}
+		}
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		levelConstraint.getId().add(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setSupportedCriticalExtensions(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCCUCE_ANS, Arrays.asList(CertificateExtensionEnum.KEY_USAGE.getOid()))));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, detailedReport.getBasicValidationSubIndication(simpleReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstSignatureId());
+		assertNotNull(sigBBB);
+		assertEquals(Indication.INDETERMINATE, sigBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, sigBBB.getConclusion().getSubIndication());
+
+		XmlXCV xcv = sigBBB.getXCV();
+		assertNotNull(xcv);
+		assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, xcv.getConclusion().getSubIndication());
+
+		assertEquals(3, xcv.getSubXCV().size());
+		XmlSubXCV subXCV = xcv.getSubXCV().get(0);
+		assertEquals(Indication.INDETERMINATE, subXCV.getConclusion().getIndication());
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, subXCV.getConclusion().getSubIndication());
+
+		boolean supportedExtensionsCheckFound = false;
+		for (XmlConstraint constraint : subXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_DCCUCE.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_DCCUCE_ANS.getId(), constraint.getError().getKey());
+				supportedExtensionsCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(supportedExtensionsCheckFound);
 	}
 
 	@Test

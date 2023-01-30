@@ -908,6 +908,28 @@ Default: `FAIL` (`timeStamping`) for timestamp's signing-certificate
 </SigningCertificate>
 ----
 
+* `SupportedCriticalExtensions` - this constraint is used to define a list of certificate critical extensions supported and processed by this application. If the certificate contains one or more critical certificate extension(s) not defined in the list, the check will fail.
+
+NOTE: Verifies only critical certificate extensions. The non-critical certificate extensions are ignored when not understood.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SupportedCriticalExtensions usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <SupportedCriticalExtensions Level="FAIL">
+        <Id>2.5.29.15</Id> <!-- keyUsage -->
+        <Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+        <Id>2.5.29.19</Id> <!-- basicConstraints -->
+        <Id>2.5.29.32</Id> <!-- certificatePolicies -->
+        ...
+    </SupportedCriticalExtensions>
+    ...
+</SigningCertificate>
+----
+
 * `ForbiddenExtensions` - this constraint is used to check whether the certificate in question does not contain any of the certificate extensions present in the list of forbidden extensions for the certificate type. If the certificate contains one or more of the forbidden certificate extensions, the check will fail.
 
 Default: `FAIL` (`1.3.6.1.5.5.7.48.1.5` (for ocsp_noCheck)) for non-revocation certificates
@@ -2233,7 +2255,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+.13+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
@@ -2246,11 +2268,12 @@ This table defines the correspondence between the enforced validation policy con
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |MaxPathLength                   |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+.12+|CertificateConstraints       |MaxPathLength                   |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
                                                                                                                               CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |SupportedCriticalExtensions     |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE

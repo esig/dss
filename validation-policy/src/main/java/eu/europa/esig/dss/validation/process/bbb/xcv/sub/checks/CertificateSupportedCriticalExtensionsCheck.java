@@ -15,11 +15,7 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class verifies if the certificate does not contain forbidden certificate extensions
- *
- */
-public class CertificateForbiddenExtensionsCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
+public class CertificateSupportedCriticalExtensionsCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
     /** Certificate to check */
     private final CertificateWrapper certificate;
@@ -32,7 +28,7 @@ public class CertificateForbiddenExtensionsCheck extends AbstractMultiValuesChec
      * @param certificate {@link CertificateWrapper}
      * @param constraint {@link MultiValuesConstraint}
      */
-    public CertificateForbiddenExtensionsCheck(I18nProvider i18nProvider, XmlSubXCV result,
+    public CertificateSupportedCriticalExtensionsCheck(I18nProvider i18nProvider, XmlSubXCV result,
                                                CertificateWrapper certificate, MultiValuesConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
@@ -40,28 +36,28 @@ public class CertificateForbiddenExtensionsCheck extends AbstractMultiValuesChec
 
     @Override
     protected boolean process() {
-        return Utils.isCollectionEmpty(getUsedForbiddenCertificateExtensionsOids());
+        return Utils.isCollectionEmpty(getUnsupportedCertificateExtensionsOids());
     }
 
     @Override
     protected MessageTag getMessageTag() {
-        return MessageTag.BBB_XCV_DCCFCE;
+        return MessageTag.BBB_XCV_DCCUCE;
     }
 
     @Override
     protected MessageTag getErrorMessageTag() {
-        return MessageTag.BBB_XCV_DCCFCE_ANS;
+        return MessageTag.BBB_XCV_DCCUCE_ANS;
     }
 
     @Override
     protected XmlMessage buildErrorMessage() {
-        return buildXmlMessage(getErrorMessageTag(), getUsedForbiddenCertificateExtensionsOids());
+        return buildXmlMessage(getErrorMessageTag(), getUnsupportedCertificateExtensionsOids());
     }
 
-    private List<String> getUsedForbiddenCertificateExtensionsOids() {
+    private List<String> getUnsupportedCertificateExtensionsOids() {
         List<String> values = new ArrayList<>();
         for (XmlCertificateExtension certificateExtension : certificate.getCertificateExtensions()) {
-            if (processValueCheck(certificateExtension.getOID())) {
+            if (certificateExtension.isCritical() && !processValueCheck(certificateExtension.getOID())) {
                 values.add(certificateExtension.getOID());
             }
         }
