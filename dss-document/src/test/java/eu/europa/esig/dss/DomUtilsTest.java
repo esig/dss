@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss;
 
+import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,8 +42,36 @@ public class DomUtilsTest {
 
 	private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
 	private static final String XML_TEXT = "<hello><world></world></hello>";
-
 	private static final String INCORRECT_XML_TEXT = "<hello><world></warld></hello>";
+	private static final String XML_WITH_NAMESPACE = "<m:manifest xmlns:m=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\"><m:file-entry m:media-type=\"text/plain\" m:full-path=\"hello.txt\" /></m:manifest>";
+
+	@Test
+	public void registerNamespaceTest() {
+		Document document = DomUtils.buildDOM(XML_WITH_NAMESPACE);
+
+		final String xPathExpression = "./m:file-entry";
+		Exception exception = assertThrows(DSSException.class, () -> DomUtils.getElement(document.getDocumentElement(), xPathExpression));
+		assertTrue(exception.getMessage().contains("Unable to create an XPath expression"));
+
+		DomUtils.registerNamespace(new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "m"));
+
+		Element fileEntry = DomUtils.getElement(document.getDocumentElement(), "./m:file-entry");
+		assertNotNull(fileEntry);
+
+		exception = assertThrows(UnsupportedOperationException.class,
+				() -> DomUtils.registerNamespace(new DSSNamespace("http://some-uri.net", null)));
+		assertEquals("The empty namespace cannot be registered!", exception.getMessage());
+
+		exception = assertThrows(UnsupportedOperationException.class,
+				() -> DomUtils.registerNamespace(new DSSNamespace("http://some-uri.net", "")));
+		assertEquals("The empty namespace cannot be registered!", exception.getMessage());
+
+		exception = assertThrows(UnsupportedOperationException.class,
+				() -> DomUtils.registerNamespace(new DSSNamespace("http://some-uri.net", "xmlns")));
+		assertEquals("The default namespace 'xmlns' cannot be registered!", exception.getMessage());
+
+		assertTrue(DomUtils.registerNamespace(new DSSNamespace("http://some-uri.net", "otherPrefix")));
+	}
 
 	@Test
 	public void testNoHeader() {

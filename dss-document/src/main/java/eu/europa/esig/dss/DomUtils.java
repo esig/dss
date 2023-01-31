@@ -87,6 +87,9 @@ public final class DomUtils {
 	/** The hash '#' character */
 	private static final String HASH = "#";
 
+	/** The default namespace prefix */
+	private static final String XMLNS = "xmlns";
+
 	/** The 'xmlns' opener */
 	private static final String XNS_OPEN = "xmlns(";
 
@@ -127,7 +130,15 @@ public final class DomUtils {
 	 * @return true if this map did not already contain the specified element
 	 */
 	public static boolean registerNamespace(final DSSNamespace namespace) {
-		return namespacePrefixMapper.registerNamespace(namespace.getPrefix(), namespace.getUri());
+		final String prefix = namespace.getPrefix();
+		final String uri = namespace.getUri();
+		if (Utils.isStringEmpty(prefix)) {
+			throw new UnsupportedOperationException("The empty namespace cannot be registered!");
+		}
+		if (XMLNS.equals(prefix)) {
+			throw new UnsupportedOperationException(String.format("The default namespace '%s' cannot be registered!", XMLNS));
+		}
+		return namespacePrefixMapper.registerNamespace(prefix, uri);
 	}
 
 	/**
