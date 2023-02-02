@@ -25,8 +25,6 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -373,22 +371,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	public void setRootDocument(Document rootDocument) {
 		this.rootDocument = rootDocument;
-	}
-
-	/**
-	 * The ID of xades:SignedProperties is contained in the signed content of the
-	 * xades Signature. We must create this ID in a deterministic way.
-	 *
-	 * @return the unique ID for the current signature
-	 */
-	public String getDeterministicId() {
-		String deterministicId = getContext().getDeterministicId();
-		if (deterministicId == null) {
-			final TokenIdentifier identifier = (getSigningCertificate() == null ? null : getSigningCertificate().getDSSId());
-			deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
-			getContext().setDeterministicId(deterministicId);
-		}
-		return deterministicId;
 	}
 
 	/**

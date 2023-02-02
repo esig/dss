@@ -227,7 +227,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			// the document needs to have an ID, if not the current system time is used, 
 			// and then the digest of the signed data will be different
 			if (pdDocument.getDocumentId() == null) {
-				pdDocument.setDocumentId(parameters.getSigningDate().getTime());
+				pdDocument.setDocumentId(documentReader.generateDocumentId(parameters));
 			}
 			checkEncryptedAndSaveIncrementally(pdDocument, outputStream, parameters);
 

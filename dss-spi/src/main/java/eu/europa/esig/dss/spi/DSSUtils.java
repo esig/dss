@@ -800,7 +800,7 @@ public final class DSSUtils {
 	 * @param id
 	 *            the token identifier
 	 * @param masterSignatureId
-	 *            id of a signature to be counter signed
+	 *            id of a signature to be counter-signed
 	 * @return a unique string
 	 */
 	public static String getCounterSignatureDeterministicId(final Date signingTime, TokenIdentifier id, String masterSignatureId) {
