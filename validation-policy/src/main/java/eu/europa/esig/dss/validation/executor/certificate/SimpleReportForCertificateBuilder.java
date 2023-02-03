@@ -30,11 +30,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSubject;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
@@ -54,6 +56,9 @@ public class SimpleReportForCertificateBuilder {
 	/** The detailed report */
 	private final DetailedReport detailedReport;
 
+	/** The validation policy */
+	private final ValidationPolicy policy;
+
 	/** The validation time */
 	private final Date currentTime;
 
@@ -66,12 +71,13 @@ public class SimpleReportForCertificateBuilder {
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param detailedReport {@link DetailedReport}
 	 * @param currentTime {@link Date} validation time
-	 * @param certificateId {@link String} if od certificate to be valdiated
+	 * @param certificateId {@link String} if od certificate to be validated
 	 */
 	public SimpleReportForCertificateBuilder(DiagnosticData diagnosticData, DetailedReport detailedReport,
-											 Date currentTime, String certificateId) {
+											 ValidationPolicy policy, Date currentTime, String certificateId) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
+		this.policy = policy;
 		this.currentTime = currentTime;
 		this.certificateId = certificateId;
 	}
@@ -82,7 +88,11 @@ public class SimpleReportForCertificateBuilder {
 	 * @return {@link XmlSimpleCertificateReport}
 	 */
 	public XmlSimpleCertificateReport build() {
-		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
+		final XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
+
+		addPolicyNode(simpleReport);
+		addValidationTime(simpleReport);
+
 		simpleReport.setValidationTime(currentTime);
 		List<XmlChainItem> chain = new ArrayList<>();
 
@@ -98,6 +108,17 @@ public class SimpleReportForCertificateBuilder {
 		simpleReport.setChain(chain);
 
 		return simpleReport;
+	}
+
+	private void addPolicyNode(XmlSimpleCertificateReport report) {
+		XmlValidationPolicy xmlPolicy = new XmlValidationPolicy();
+		xmlPolicy.setPolicyName(policy.getPolicyName());
+		xmlPolicy.setPolicyDescription(policy.getPolicyDescription());
+		report.setValidationPolicy(xmlPolicy);
+	}
+
+	private void addValidationTime(XmlSimpleCertificateReport report) {
+		report.setValidationTime(currentTime);
 	}
 
 	private XmlChainItem getChainItem(CertificateWrapper certificate) {

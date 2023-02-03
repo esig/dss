@@ -23,7 +23,12 @@ package eu.europa.esig.dss.ws.cert.validation.common;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -32,10 +37,14 @@ import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -68,6 +77,9 @@ public class RemoteCertificateValidationServiceTest {
 		
 		XmlDiagnosticData diagnosticData = reportsDTO.getDiagnosticData();
 		assertEquals(0, certificateDTO.getValidationTime().compareTo(diagnosticData.getValidationDate()));
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("QES AdESQC TL based", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 	
 	@Test
@@ -85,6 +97,67 @@ public class RemoteCertificateValidationServiceTest {
 		certificateDTO.setTokenExtractionStrategy(null);
 		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
 		validateReports(reportsDTO);
+	}
+
+	@Test
+	public void testWithValidationPolicy() {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		certificateDTO.setPolicy(policy);
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("QES AdESQC TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	public void testWithDefaultValidationPolicy() throws Exception {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
+		JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
+				.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/constraint.xml"));
+
+		ConstraintsParameters constraints = unmarshal.getValue();
+		constraints.setName("Default Policy");
+
+		RemoteCertificateValidationService validationService = new RemoteCertificateValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(new EtsiValidationPolicy(constraints));
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("Default Policy", simpleCertificateReport.getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	public void testWithDefaultAndOvewrittenValidationPolicy() throws Exception {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		certificateDTO.setPolicy(policy);
+
+		Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
+		JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
+				.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/constraint.xml"));
+
+		ConstraintsParameters constraints = unmarshal.getValue();
+		constraints.setName("Default Policy");
+
+		RemoteCertificateValidationService validationService = new RemoteCertificateValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(new EtsiValidationPolicy(constraints));
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("QES AdESQC TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
 	@Test

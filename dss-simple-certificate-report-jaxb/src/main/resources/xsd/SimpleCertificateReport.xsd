@@ -10,9 +10,17 @@
 
 	<xs:complexType name="SimpleCertificateReport">
 		<xs:sequence>
+			<xs:element name="ValidationPolicy" type="ValidationPolicy" />
 			<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
+	</xs:complexType>
+
+	<xs:complexType name="ValidationPolicy">
+		<xs:sequence>
+			<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
+			<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
+		</xs:sequence>
 	</xs:complexType>
 		
 	<xs:complexType name="Chain">

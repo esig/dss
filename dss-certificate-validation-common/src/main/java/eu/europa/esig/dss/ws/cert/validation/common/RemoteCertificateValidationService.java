@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.common;
 
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -32,9 +35,13 @@ import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -46,6 +53,9 @@ public class RemoteCertificateValidationService {
 
 	/** The CertificateVerifier to use */
 	private CertificateVerifier verifier;
+
+	/** The validation policy to be used by default */
+	private ValidationPolicy defaultValidationPolicy;
 
 	/**
 	 * Default construction instantiating object with null CertificateVerifier
@@ -64,6 +74,28 @@ public class RemoteCertificateValidationService {
 	}
 
 	/**
+	 * Sets the validation policy to be used by default, when no policy provided within the request
+	 *
+	 * @param validationPolicy {@link InputStream}
+	 */
+	public void setDefaultValidationPolicy(InputStream validationPolicy) {
+		try {
+			this.defaultValidationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(validationPolicy);
+		} catch (Exception e) {
+			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * Sets the validation policy to be used by default, when no policy provided within the request
+	 *
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public void setDefaultValidationPolicy(ValidationPolicy validationPolicy) {
+		this.defaultValidationPolicy = validationPolicy;
+	}
+
+	/**
 	 * Validates the certificate
 	 *
 	 * @param certificateToValidate {@link CertificateToValidateDTO} the DTO containing the certificate to be validated
@@ -73,13 +105,30 @@ public class RemoteCertificateValidationService {
 	public CertificateReportsDTO validateCertificate(CertificateToValidateDTO certificateToValidate) {
 		LOG.info("ValidateCertificate in process...");
 		CertificateValidator validator = initValidator(certificateToValidate);
-		
-		CertificateReports reports = validator.validate();
+
+		CertificateReports reports;
+		RemoteDocument policy = certificateToValidate.getPolicy();
+		if (policy != null) {
+			reports = validator.validate(getValidationPolicy(policy));
+		} else if (defaultValidationPolicy != null) {
+			reports = validator.validate(defaultValidationPolicy);
+		} else {
+			reports = validator.validate();
+		}
+
 		CertificateReportsDTO certificateReportsDTO = new CertificateReportsDTO(reports.getDiagnosticDataJaxb(), 
 				reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
 		LOG.info("ValidateCertificate is finished");
 		
 		return certificateReportsDTO;
+	}
+
+	private ValidationPolicy getValidationPolicy(RemoteDocument policy) {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(policy.getBytes())) {
+			return ValidationPolicyFacade.newFacade().getValidationPolicy(bais);
+		} catch (Exception e) {
+			throw new IllegalInputException(String.format("Unable to load the validation policy : %s", e.getMessage()), e);
+		}
 	}
 	
 	private CertificateValidator initValidator(CertificateToValidateDTO certificateToValidate) {

@@ -59,7 +59,7 @@ public class DefaultCertificateProcessExecutor extends AbstractProcessExecutor i
 		XmlDetailedReport detailedReport = detailedReportBuilder.build();
 
 		SimpleReportForCertificateBuilder simpleReportBuilder = new SimpleReportForCertificateBuilder(diagnosticData,
-				new eu.europa.esig.dss.detailedreport.DetailedReport(detailedReport), currentTime, certificateId);
+				new eu.europa.esig.dss.detailedreport.DetailedReport(detailedReport), policy, currentTime, certificateId);
 		XmlSimpleCertificateReport simpleReport = simpleReportBuilder.build();
 
 		return new CertificateReports(jaxbDiagnosticData, detailedReport, simpleReport);
