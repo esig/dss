@@ -63,7 +63,7 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/getDataToSign
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "aXqqUydmeN44Ay1vKo/AXPQwC59bAP27AJSccioJJgs="
+    "value" : "n/E7rimpFyH1H8cdEClb2jnbYcZFG+n60U4qWW12Fdo="
   }
 }'
 ----

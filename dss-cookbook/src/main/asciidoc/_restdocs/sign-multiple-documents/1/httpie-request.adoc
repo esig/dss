@@ -41,7 +41,7 @@ $ echo '{
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1670581626824,
+      "signingDate" : 1675669784067,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
