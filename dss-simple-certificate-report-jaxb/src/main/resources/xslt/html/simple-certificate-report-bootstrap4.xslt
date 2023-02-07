@@ -110,6 +110,8 @@
 			    		</dd>
 		        	</dl>
 	        	</xsl:if>
+
+				<!-- <xsl:apply-templates select="dss:QualificationDetails" /> --> <!-- do not include qualification details -->
 	        	
 	        	<xsl:if test="dss:enactedMRA">
 					<dl>
@@ -122,7 +124,44 @@
 							The qualification level has been determined using an enacted trust service equivalence mapping.
 			            </dd>
 					</dl>
-				</xsl:if>			
+				</xsl:if>
+
+				<dl>
+					<xsl:attribute name="class">row mb-0</xsl:attribute>
+					<dt>
+						<xsl:attribute name="class">col-sm-3</xsl:attribute>
+						Indication:
+					</dt>
+					<dd>
+						<xsl:attribute name="class">col-sm-9 text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+
+						<div>
+							<xsl:attribute name="class">badge mr-2 badge-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+							<xsl:value-of select="$indicationText" />
+						</div>
+
+						<xsl:variable name="indication-icon-class">
+							<xsl:choose>
+								<xsl:when test="$indicationText='PASSED' or dss:trustAnchors">fa-check-circle</xsl:when>
+								<xsl:when test="$indicationText='INDETERMINATE'">fa-exclamation-circle</xsl:when>
+								<xsl:when test="$indicationText='FAILED'">fa-times-circle</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+
+						<i>
+							<xsl:attribute name="class">fa <xsl:value-of select="$indication-icon-class" /> align-middle</xsl:attribute>
+							<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+							<xsl:attribute name="data-placement">right</xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$indicationText" /></xsl:attribute>
+						</i>
+					</dd>
+				</dl>
+
+				<xsl:apply-templates select="dss:SubIndication">
+					<xsl:with-param name="indicationClass" select="$indicationCssClass"/>
+				</xsl:apply-templates>
+
+				<xsl:apply-templates select="dss:AdESValidationDetails" />
 	        	
 				<xsl:apply-templates select="dss:subject"/>
 				
@@ -196,6 +235,65 @@
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+				<xsl:value-of select="$header" /> :
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<ul>
+					<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
+					<xsl:apply-templates select="dss:Error" />
+					<xsl:apply-templates select="dss:Warning" />
+					<xsl:apply-templates select="dss:Info" />
+				</ul>
+			</dd>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="style">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">danger</xsl:when>
+				<xsl:when test="name() = 'Warning'">warning</xsl:when>
+				<xsl:otherwise>auto</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<li>
+			<xsl:attribute name="class">text-<xsl:value-of select="$style" /></xsl:attribute>
+			<xsl:value-of select="." />
+		</li>
+	</xsl:template>
+
+	<xsl:template match="dss:SubIndication">
+		<xsl:param name="indicationClass" />
+		<xsl:variable name="subIndicationText" select="." />
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+				Sub indication:
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<div>
+					<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationClass" /></xsl:attribute>
+					<xsl:value-of select="$subIndicationText" />
+				</div>
+			</dd>
+		</dl>
+	</xsl:template>
     
     <xsl:template match="dss:subject">
      	<dl>

@@ -151,7 +151,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	public CertificateReports validate() {
 		ValidationPolicy defaultPolicy;
 		try {
-			defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+			defaultPolicy = ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
 		} catch (Exception e) {
 			throw new DSSException("Unable to load the default policy", e);
 		}
@@ -165,18 +165,19 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate(InputStream policyDataStream) {
-		ValidationPolicy validationPolicy;
 		try {
 			if (policyDataStream == null) {
 				LOG.debug("No provided validation policy : use the default policy");
-				validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+				return validate();
+
 			} else {
-				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+				ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
+				return validate(validationPolicy);
 			}
+
 		} catch (Exception e) {
 			throw new IllegalInputException("Unable to load the policy", e);
 		}
-		return validate(validationPolicy);
 	}
 
 	/**

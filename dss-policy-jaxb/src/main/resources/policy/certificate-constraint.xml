@@ -1,0 +1,163 @@
+<ConstraintsParameters Name="Certificate policy TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
+    <Description>Validates electronic certificates and indicates its qualification status at issuance and validation time.
+        All certificates and their related chains are validated against the EU Member State Trusted Lists (this includes
+        target certificate and certificates used to validate certificate validity status services - CRLs, OCSP).
+    </Description>
+    <SignatureConstraints>
+        <BasicSignatureConstraints>
+            <ProspectiveCertificateChain Level="FAIL" />
+            <SigningCertificate>
+                <Recognition Level="FAIL" />
+                <Signature Level="FAIL" />
+                <NotExpired Level="FAIL" />
+                <RevocationDataAvailable Level="FAIL" />
+                <AcceptableRevocationDataFound Level="FAIL" />
+                <CRLNextUpdatePresent Level="WARN" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+                <KeyUsage Level="WARN">
+                    <Id>*</Id>
+                </KeyUsage>
+                <SerialNumberPresent Level="WARN" />
+                <NotRevoked Level="FAIL" />
+                <NotOnHold Level="FAIL" />
+                <RevocationIssuerNotExpired Level="FAIL" />
+                <NotSelfSigned Level="INFORM" />
+                <UsePseudonym Level="INFORM" />
+                <Cryptographic />
+            </SigningCertificate>
+            <CACertificate>
+                <Signature Level="FAIL" />
+                <NotExpired Level="FAIL" />
+                <RevocationDataAvailable Level="FAIL" />
+                <AcceptableRevocationDataFound Level="FAIL" />
+                <CRLNextUpdatePresent Level="WARN" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+                <KeyUsage Level="FAIL">
+                    <Id>keyCertSign</Id>
+                </KeyUsage>
+                <NotRevoked Level="FAIL" />
+                <NotOnHold Level="FAIL" />
+                <Cryptographic />
+            </CACertificate>
+            <Cryptographic />
+        </BasicSignatureConstraints>
+    </SignatureConstraints>
+    <Revocation>
+        <UnknownStatus Level="FAIL" />
+        <SelfIssuedOCSP Level="WARN" />
+        <BasicSignatureConstraints>
+            <ReferenceDataExistence Level="FAIL" />
+            <ReferenceDataIntact Level="FAIL" />
+            <SignatureIntact Level="FAIL" />
+            <ProspectiveCertificateChain Level="FAIL" />
+            <SigningCertificate>
+                <Recognition Level="FAIL" />
+                <Signature Level="FAIL" />
+                <NotExpired Level="FAIL" />
+                <RevocationDataAvailable Level="FAIL" />
+                <AcceptableRevocationDataFound Level="FAIL" />
+                <CRLNextUpdatePresent Level="WARN" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+                <NotRevoked Level="FAIL" />
+                <NotOnHold Level="FAIL" />
+                <Cryptographic />
+            </SigningCertificate>
+            <CACertificate>
+                <Signature Level="FAIL" />
+                <NotExpired Level="FAIL" />
+                <RevocationDataAvailable Level="WARN" />
+                <AcceptableRevocationDataFound Level="WARN" />
+                <CRLNextUpdatePresent Level="WARN" />
+                <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+                <KeyUsage Level="FAIL">
+                    <Id>keyCertSign</Id>
+                </KeyUsage>
+                <NotRevoked Level="FAIL" />
+                <NotOnHold Level="FAIL" />
+                <Cryptographic />
+            </CACertificate>
+            <Cryptographic />
+        </BasicSignatureConstraints>
+    </Revocation>
+    <Cryptographic Level="FAIL">
+        <AcceptableEncryptionAlgo>
+            <Algo>RSA</Algo>
+            <Algo>DSA</Algo>
+            <Algo>ECDSA</Algo>
+            <Algo>PLAIN-ECDSA</Algo>
+            <!-- 		<Algo>Ed25519</Algo> 				Not referenced in ETSI/SOGIS -->
+        </AcceptableEncryptionAlgo>
+        <MiniPublicKeySize>
+            <Algo Size="1024">DSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="160">ECDSA</Algo>
+            <Algo Size="160">PLAIN-ECDSA</Algo>
+            <!-- 		<Algo Size="24">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+        </MiniPublicKeySize>
+        <AcceptableDigestAlgo>
+            <!--		<Algo>MD2</Algo> 		Not referenced in ETSI/SOGIS -->
+            <Algo>MD5</Algo>
+            <Algo>SHA1</Algo>
+            <Algo>SHA224</Algo>
+            <Algo>SHA256</Algo>
+            <Algo>SHA384</Algo>
+            <Algo>SHA512</Algo>
+            <!--		<Algo>SHA3-224</Algo> 		Not referenced in ETSI/SOGIS -->
+            <Algo>SHA3-256</Algo>
+            <Algo>SHA3-384</Algo>
+            <Algo>SHA3-512</Algo>
+            <Algo>RIPEMD160</Algo>
+            <Algo>WHIRLPOOL</Algo>
+        </AcceptableDigestAlgo>
+        <AlgoExpirationDate Format="yyyy">
+            <!-- Digest algorithms -->
+            <!--		<Algo Date="2005">MD2</Algo> 		Not referenced in ETSI/SOGIS -->
+            <Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2009">SHA1</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+            <Algo Date="2026">SHA224</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029">SHA256</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029">SHA384</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029">SHA512</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <!--		<Algo Date="2026">SHA3-224</Algo> 		Not referenced in ETSI/SOGIS  -->
+            <Algo Date="2029">SHA3-256</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029">SHA3-384</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029">SHA3-512</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2011">RIPEMD160</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+            <Algo Date="2015">WHIRLPOOL</Algo> <!-- ETSI 119 312 V1.1.1 -->
+            <!-- end Digest algorithms -->
+            <!-- Encryption algorithms -->
+            <Algo Date="2013" Size="1024">DSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2026" Size="2048">DSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="3072">DSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+            <Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+            <Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2013" Size="160">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2013" Size="192">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2016" Size="224">ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+            <Algo Date="2029" Size="256">ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="384">ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="512">ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2013" Size="160">PLAIN-ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2013" Size="192">PLAIN-ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
+            <Algo Date="2016" Size="224">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+            <Algo Date="2029" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+            <Algo Date="2029" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+
+            <!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+            <!-- end Encryption algorithms -->
+        </AlgoExpirationDate>
+    </Cryptographic>
+
+    <Model Value="SHELL" />
+
+    <!-- eIDAS REGL 910/EU/2014 -->
+    <eIDAS>
+        <TLFreshness Level="WARN" Unit="HOURS" Value="6" />
+        <TLNotExpired Level="WARN" />
+        <TLWellSigned Level="WARN" />
+        <TLVersion Level="FAIL" value="5" />
+    </eIDAS>
+</ConstraintsParameters>

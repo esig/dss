@@ -546,8 +546,9 @@ public class DetailedReport {
 		}
 		return result;
 	}
+
 	/**
-	 * This method returns the a complete block of a TL validation
+	 * This method returns a complete block of a TL validation
 	 * 
 	 * @param tlId
 	 *            the LOTL/TL identifier
@@ -575,13 +576,24 @@ public class DetailedReport {
 	}
 
 	/**
+	 * Returns if the certificate validation has been performed
+	 * (therefore the certificate corresponding data can be retrieved)
+	 *
+	 * @return if the certificate validation has been performed
+	 */
+	public boolean isCertificateValidation() {
+		List<XmlCertificate> certificates = getCertificates();
+		return certificates != null && !certificates.isEmpty();
+	}
+
+	/**
 	 * Gets the qualification for certificate with id at its issuance time
 	 *
 	 * @param certificateId {@link String}
 	 * @return {@link CertificateQualification}
 	 */
 	public CertificateQualification getCertificateQualificationAtIssuance(String certificateId) {
-		return getCertificateQualification(ValidationTime.CERTIFICATE_ISSUANCE_TIME, certificateId);
+		return getCertificateQualificationAtTime(ValidationTime.CERTIFICATE_ISSUANCE_TIME, certificateId);
 	}
 
 	/**
@@ -591,10 +603,10 @@ public class DetailedReport {
 	 * @return {@link CertificateQualification}
 	 */
 	public CertificateQualification getCertificateQualificationAtValidation(String certificateId) {
-		return getCertificateQualification(ValidationTime.VALIDATION_TIME, certificateId);
+		return getCertificateQualificationAtTime(ValidationTime.VALIDATION_TIME, certificateId);
 	}
 
-	private CertificateQualification getCertificateQualification(ValidationTime validationTime, String certificateId) {
+	private CertificateQualification getCertificateQualificationAtTime(ValidationTime validationTime, String certificateId) {
 		XmlCertificate certificate = getXmlCertificateById(certificateId);
 		if (certificate != null) {
 			List<XmlValidationCertificateQualification> validationCertificateQualifications = certificate.getValidationCertificateQualification();
@@ -624,15 +636,25 @@ public class DetailedReport {
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
 			XmlXCV xcv = xmlBasicBuildingBlocks.getXCV();
 			if (xcv != null) {
+				boolean trustAnchorReached = false;
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
+					if (xmlSubXCV.isTrustAnchor()) {
+						trustAnchorReached = true;
+					}
 					if (certificateId.equals(xmlSubXCV.getId())) {
 						return xmlSubXCV.getConclusion();
 					}
 				}
-				// if {@link SubX509CertificateValidation} is not executed, i.e. the certificate is in untrusted chain,
-				// return global XmlConclusion
-				return xcv.getConclusion();
+				if (trustAnchorReached) {
+					XmlConclusion xmlConclusion = new XmlConclusion();
+					xmlConclusion.setIndication(Indication.PASSED);
+					return xmlConclusion;
+				} else {
+					// if {@link SubX509CertificateValidation} is not executed and
+					// the certificate is in untrusted chain, return global XmlConclusion
+					return xcv.getConclusion();
+				}
 			}
 		}
 		return null;
@@ -803,6 +825,72 @@ public class DetailedReport {
 	 */
 	public List<Message> getQualificationInfos(String tokenId) {
 		return getMessageCollector().getQualificationInfos(tokenId);
+	}
+
+	/**
+	 * Returns a list of qualification validation errors for a certificate with the given id at certificate issuance time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification errors for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationErrorsAtIssuanceTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationErrorsAtIssuanceTime(certificateId);
+	}
+
+	/**
+	 * Returns a list of qualification validation warnings for a certificate with the given id at certificate issuance time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification warnings for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationWarningsAtIssuanceTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationWarningsAtIssuanceTime(certificateId);
+	}
+
+	/**
+	 * Returns a list of qualification validation information messages for a certificate with the given id at certificate issuance time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification information messages for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationInfosAtIssuanceTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationInfosAtIssuanceTime(certificateId);
+	}
+
+	/**
+	 * Returns a list of qualification validation errors for a certificate with the given id at validation time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification errors for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationErrorsAtValidationTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationErrorsAtValidationTime(certificateId);
+	}
+
+	/**
+	 * Returns a list of qualification validation warnings for a certificate with the given id at validation time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification warnings for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationWarningsAtValidationTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationWarningsAtValidationTime(certificateId);
+	}
+
+	/**
+	 * Returns a list of qualification validation information messages for a certificate with the given id at validation time
+	 * NOTE: applicable only on certificate validation (see {@code eu.europa.esig.dss.validation.CertificateValidator})
+	 *
+	 * @param certificateId {@link String} id of a certificate to get qualification information messages for
+	 * @return a list of {@link Message}s
+	 */
+	public List<Message> getCertificateQualificationInfosAtValidationTime(String certificateId) {
+		return getMessageCollector().getCertificateQualificationInfosAtValidationTime(certificateId);
 	}
 
 }

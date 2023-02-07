@@ -38,6 +38,9 @@
             </revocation>
             <Indication>INDETERMINATE</Indication>
             <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
+            <AdESValidationDetails>
+                <Error Key="ASCCM_AR_ANS_ANR">The algorithm SHA1 is no longer considered reliable for signature creation!</Error>
+            </AdESValidationDetails>
         </ChainItem>
         <ChainItem>
             <id>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</id>

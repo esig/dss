@@ -79,7 +79,7 @@ public class RemoteCertificateValidationServiceTest {
 		assertEquals(0, certificateDTO.getValidationTime().compareTo(diagnosticData.getValidationDate()));
 
 		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
-		assertEquals("QES AdESQC TL based", simpleCertificateReport.getValidationPolicy().getPolicyName());
+		assertEquals("Certificate policy TL based", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 	
 	@Test
@@ -136,7 +136,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 
 	@Test
-	public void testWithDefaultAndOvewrittenValidationPolicy() throws Exception {
+	public void testWithDefaultAndOverwrittenValidationPolicy() throws Exception {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));

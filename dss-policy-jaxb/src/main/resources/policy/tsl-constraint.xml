@@ -1,4 +1,4 @@
-<ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
+<ConstraintsParameters Name="TSL policy" xmlns="http://dss.esig.europa.eu/validation/policy">
 	<Description>Policy to validate Trusted Lists</Description>
 	<SignatureConstraints>
 		<AcceptableFormats Level="FAIL">

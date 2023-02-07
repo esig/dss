@@ -94,15 +94,21 @@ public class ValidationPolicyFacadeTest {
 	}
 
 	@Test
+	public void getCertificateValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+		ValidationPolicy certificateValidationPolicy = ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
+		assertNotNull(certificateValidationPolicy);
+		assertEquals("Certificate policy TL based", certificateValidationPolicy.getPolicyName());
+	}
+
+	@Test
 	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
-		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade()
-				.getTrustedListValidationPolicy();
+		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
 		assertNotNull(trustedListValidationPolicy);
 		assertEquals("Policy to validate Trusted Lists", trustedListValidationPolicy.getPolicyDescription());
 	}
 
 	@Test
-	public void incorrectPath() throws JAXBException, XMLStreamException, IOException, SAXException {
+	public void incorrectPath() {
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy("aaaa"));
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((InputStream) null));
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((File) null));
