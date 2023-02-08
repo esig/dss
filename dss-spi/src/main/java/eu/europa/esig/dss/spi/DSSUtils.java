@@ -990,7 +990,7 @@ public final class DSSUtils {
 			uri = uri.replace("+", "%2B"); // preserve '+' characters
 			return URLDecoder.decode(uri, UTF8_ENCODING);
 		} catch (UnsupportedEncodingException e) {
-			LOG.error("Unable to decode '{}' : {}", uri, e.getMessage(), e);
+			LOG.warn("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
 		return uri;
 	}

@@ -50,7 +50,7 @@ public class ASiCEXAdESSignASiCCAdESTest extends PKIFactoryAccess {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToSign(documentToSign, signatureParameters));
-		assertEquals("Container type doesn't match", exception.getMessage());
+		assertEquals("Container type doesn't match! The same container type shall be chosen.", exception.getMessage());
 	}
 
 	@Override

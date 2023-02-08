@@ -145,7 +145,7 @@ public class JAdESOCSPSource extends OfflineOCSPSource {
 		try {
 			addBinary(OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPBase64Encoded(ocspValueDerB64)), origin);
 		} catch (Exception e) {
-			LOG.error("Unable to extract OCSP from '{}'", ocspValueDerB64, e);
+			LOG.warn("Unable to extract OCSP from '{}'", ocspValueDerB64, e);
 		}
 	}
 

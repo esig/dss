@@ -440,7 +440,7 @@ public final class CMSUtils {
 				 */
 				if (signingDate.compareTo(JANUARY_1950) >= 0 && signingDate.before(JANUARY_2050)
 						&& !(attrValue.toASN1Primitive() instanceof ASN1UTCTime)) { // must be ASN1UTCTime
-					LOG.error("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
+					LOG.warn("RFC 3852 states that dates between January 1, 1950 and December 31, 2049 (inclusive) " +
 							"MUST be encoded as UTCTime. Any dates with year values before 1950 or after 2049 " +
 							"MUST be encoded as GeneralizedTime. Date found is {} encoded as {}",
 							signingDate, attrValue.getClass());
@@ -448,7 +448,7 @@ public final class CMSUtils {
 				}
 				return signingDate;
 			}
-			LOG.error("Error when reading signing time. Unrecognized {}", attrValue.getClass());
+			LOG.warn("Error when reading signing time. Unrecognized {}", attrValue.getClass());
 		}
 		return null;
 	}

@@ -760,7 +760,7 @@ public final class DSSASN1Utils {
 				}
 			}
 		} catch (Exception e) {
-			LOG.error("Unable to parse authorityInfoAccess", e);
+			LOG.warn("Unable to parse authorityInfoAccess", e);
 		}
 		return locationsUrls;
 	}
@@ -797,7 +797,7 @@ public final class DSSASN1Utils {
 					}
 				}
 			} catch (Exception e) {
-				LOG.error("Unable to parse cRLDistributionPoints", e);
+				LOG.warn("Unable to parse cRLDistributionPoints", e);
 			}
 		}
 
@@ -846,7 +846,7 @@ public final class DSSASN1Utils {
 				return true;
 			}
 		} catch (CertificateParsingException e) {
-			LOG.error("Unable to retrieve ExtendedKeyUsage from certificate", e);
+			LOG.warn("Unable to retrieve ExtendedKeyUsage from certificate", e);
 		}
 		return false;
 	}
@@ -1184,7 +1184,7 @@ public final class DSSASN1Utils {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return IssuerSerial.getInstance(seq);
 		} catch (Exception e) {
-			LOG.error("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
+			LOG.warn("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1219,7 +1219,7 @@ public final class DSSASN1Utils {
 
 			return signerIdentifier;
 		} catch (Exception e) {
-			LOG.error("Unable to read the IssuerSerial object", e);
+			LOG.warn("Unable to read the IssuerSerial object", e);
 			return null;
 		}
 	}

@@ -96,7 +96,7 @@ public final class DSSRevocationUtils {
 			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(asn1Sequence);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
+			LOG.warn("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
 		}
 		return basicOCSPResp;
 	}
@@ -114,7 +114,7 @@ public final class DSSRevocationUtils {
 			final OCSPResponse ocspResponse = OCSPResponse.getInstance(asn1Sequence);
 			ocspResp = new OCSPResp(ocspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create OCSPResp from ASN1Sequence!", e);
+			LOG.warn("Impossible to create OCSPResp from ASN1Sequence!", e);
 		}
 		return ocspResp;
 	}
@@ -136,7 +136,7 @@ public final class DSSRevocationUtils {
 				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
 			}
 		} catch (OCSPException e) {
-			LOG.error("Impossible to process OCSPResp!", e);
+			LOG.warn("Impossible to process OCSPResp!", e);
 		}
 		return basicOCSPResp;
 	}

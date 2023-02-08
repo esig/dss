@@ -501,7 +501,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						return userNotice;
 
 					} catch (Exception e) {
-						LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+						LOG.warn("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
 						return null;
 					}
 				}
