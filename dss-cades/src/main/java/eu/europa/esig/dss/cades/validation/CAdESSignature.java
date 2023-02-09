@@ -263,12 +263,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						signaturePolicy.setDocSpecification(spDocSpecification);
 
 					} else {
-						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
+						LOG.warn("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
 					}
 
 				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
+					LOG.warn("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
 				}
 			}
 		}
@@ -498,7 +498,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return claimedRoles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
+			LOG.warn("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}
@@ -539,7 +539,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return roles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with certified signer roles : {}", signerAttrValues, e);
+			LOG.warn("Error when dealing with certified signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}

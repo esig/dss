@@ -34,6 +34,11 @@ public class ProfileParameters implements Serializable {
 
     private static final long serialVersionUID = -8281291690615571695L;
 
+    /**
+     * The id created in a deterministic way based on the filled parameters to use in the signature file
+     */
+    private String deterministicId;
+
     /** Cached detached contents (used for DETACHED signature creation or/and ASiC containers signing) */
     private List<DSSDocument> detachedContents;
 
@@ -42,6 +47,24 @@ public class ProfileParameters implements Serializable {
      */
     public ProfileParameters() {
         // empty
+    }
+
+    /**
+     * Gets the deterministic id
+     *
+     * @return {@link String}
+     */
+    public String getDeterministicId() {
+        return deterministicId;
+    }
+
+    /**
+     * Sets the deterministic id
+     *
+     * @param deterministicId {@link String}
+     */
+    public void setDeterministicId(String deterministicId) {
+        this.deterministicId = deterministicId;
     }
 
     /**

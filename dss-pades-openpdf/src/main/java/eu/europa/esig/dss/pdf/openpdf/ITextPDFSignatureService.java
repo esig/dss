@@ -23,12 +23,10 @@ package eu.europa.esig.dss.pdf.openpdf;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
-import com.lowagie.text.pdf.ByteBuffer;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
-import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
@@ -116,7 +114,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		PdfReader reader = documentReader.getPdfReader();
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
 		stp.setIncludeFileID(true);
-		stp.setOverrideFileId(generateFileId(parameters));
+		stp.setOverrideFileId(documentReader.generateDocumentId(parameters));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(parameters.getSigningDate());
@@ -240,25 +238,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			}
 		}
 		return false;
-	}
-
-	private PdfObject generateFileId(PAdESCommonParameters parameters) {
-		try (ByteBuffer buf = new ByteBuffer(90)) {
-			String deterministicId = DSSUtils.getDeterministicId(parameters.getSigningDate(), null);
-			byte[] id = deterministicId.getBytes();
-			buf.append('[').append('<');
-			for (int k = 0; k < 16; ++k) {
-				buf.appendHex(id[k]);
-			}
-			buf.append('>').append('<');
-			for (int k = 0; k < 16; ++k) {
-				buf.appendHex(id[k]);
-			}
-			buf.append('>').append(']');
-			return new PdfLiteral(buf.toByteArray());
-		} catch (IOException e) {
-			throw new DSSException("Unable to generate the fileId", e);
-		}
 	}
 
 	@Override

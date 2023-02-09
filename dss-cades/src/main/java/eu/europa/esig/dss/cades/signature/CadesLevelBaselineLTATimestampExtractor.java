@@ -249,7 +249,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			}
 		}
 		if (!certHashesList.isEmpty()) {
-			LOG.error("{} attribute(s) hash in Cert Hashes has not been found in document attributes: {}", certHashesList.size(), certHashesList);
+			LOG.warn("{} attribute(s) hash in Cert Hashes has not been found in document attributes: {}", certHashesList.size(), certHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();
 		}
@@ -324,7 +324,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		}
 
 		if (!crlHashesList.isEmpty()) {
-			LOG.error("{} attribute(s) hash in CRL Hashes has not been found in document attributes: {}", crlHashesList.size(), crlHashesList);
+			LOG.warn("{} attribute(s) hash in CRL Hashes has not been found in document attributes: {}", crlHashesList.size(), crlHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();
 		}
@@ -423,7 +423,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			}
 		}
 		if (!timestampUnsignedAttributesHashesList.isEmpty()) {
-			LOG.error("{} attribute(s) hash in Timestamp has not been found in document attributes: {}", timestampUnsignedAttributesHashesList.size(),
+			LOG.warn("{} attribute(s) hash in Timestamp has not been found in document attributes: {}", timestampUnsignedAttributesHashesList.size(),
 					timestampUnsignedAttributesHashesList);
 			// return a empty DERSequence to screw up the hash
 			return new DERSequence();

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <SimpleCertificateReport ValidationTime="2018-02-09T07:03:45" xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
     <Chain>
         <ChainItem>
             <id>C-0E9B5C373AFEC1CED5723FCD9231F793BB330FFBF2B94BB8698301C90405B9BF</id>
@@ -32,6 +39,9 @@
             </revocation>
             <Indication>INDETERMINATE</Indication>
             <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
+            <AdESValidationDetails>
+                <Error Key="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer''s certificate!</Error>
+            </AdESValidationDetails>
         </ChainItem>
         <ChainItem>
             <id>C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</id>

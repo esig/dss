@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
@@ -39,6 +28,16 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class ExecuteDifferentPoliciesTest {
@@ -60,6 +59,7 @@ public class ExecuteDifferentPoliciesTest {
 				}
 
 				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getDefaultValidationPolicy() ));
+				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getCertificateValidationPolicy() ));
 				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy() ));
 
 			}

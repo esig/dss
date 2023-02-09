@@ -10,9 +10,17 @@
 
 	<xs:complexType name="SimpleCertificateReport">
 		<xs:sequence>
+			<xs:element name="ValidationPolicy" type="ValidationPolicy" />
 			<xs:element name="Chain" type="Chain" maxOccurs="1" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
+	</xs:complexType>
+
+	<xs:complexType name="ValidationPolicy">
+		<xs:sequence>
+			<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
+			<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
+		</xs:sequence>
 	</xs:complexType>
 		
 	<xs:complexType name="Chain">
@@ -66,12 +74,15 @@
 				</xs:complexType>
 			</xs:element>
 			<xs:element name="qualificationAtIssuance" type="CertificateQualification" minOccurs="0" />
+			<xs:element name="qualificationDetailsAtIssuance" type="Details" minOccurs="0" />
 			<xs:element name="qualificationAtValidation" type="CertificateQualification" minOccurs="0" />
+			<xs:element name="qualificationDetailsAtValidation" type="Details" minOccurs="0" />
 			<xs:element name="enactedMRA" type="xs:boolean" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
+			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -133,7 +144,7 @@
 			<xs:enumeration value="superseded" />
 			<xs:enumeration value="cessationOfOperation" />
 			<xs:enumeration value="certificateHold" />
-			<xs:enumeration value="unknow" />
+			<xs:enumeration value="unknown" />
 			<xs:enumeration value="removeFromCRL" />
 			<xs:enumeration value="privilegeWithdrawn" />
 			<xs:enumeration value="aACompromise" />
@@ -142,7 +153,7 @@
 	
 	<xs:complexType name="TrustAnchors">
 		<xs:sequence>
-			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="1" maxOccurs="unbounded" />
+			<xs:element name="trustAnchor" type="TrustAnchor" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -212,5 +223,21 @@
 			<xs:enumeration value="UNEXPECTED_ERROR" />
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:complexType name="Details">
+		<xs:sequence>
+			<xs:element name="Error" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Warning" type="Message" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Info" type="Message" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Message">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="Key" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 
 </xs:schema>

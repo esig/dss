@@ -30,7 +30,6 @@ import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.extension.AuthorityKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
-import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
@@ -50,11 +49,13 @@ import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -70,12 +71,19 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.bouncycastle.asn1.x509.CRLDistPoint;
+import org.bouncycastle.asn1.x509.DistributionPoint;
+import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.Time;
+import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -699,7 +707,37 @@ public final class DSSASN1Utils {
 	 */
 	@Deprecated
 	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
-		return CertificateExtensionsUtils.getOCSPAccessUrls(certificate);
+		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
+	}
+
+	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
+		List<String> locationsUrls = new ArrayList<>();
+		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
+		if (null == authInfoAccessExtensionValue) {
+			return locationsUrls;
+		}
+
+		try {
+			ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
+			if (asn1Sequence == null || asn1Sequence.size() == 0) {
+				LOG.warn("Empty ASN1Sequence for AuthorityInformationAccess");
+				return locationsUrls;
+			}
+			AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
+			AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
+			for (AccessDescription accessDescription : accessDescriptions) {
+				if (aiaType.equals(accessDescription.getAccessMethod())) {
+					GeneralName gn = accessDescription.getAccessLocation();
+					String location = parseGn(gn);
+					if (location != null) {
+						locationsUrls.add(location);
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("Unable to parse authorityInfoAccess", e);
+		}
+		return locationsUrls;
 	}
 
 	/**
@@ -712,7 +750,47 @@ public final class DSSASN1Utils {
 	 */
 	@Deprecated
 	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
-		return CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+		final List<String> urls = new ArrayList<>();
+
+		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
+		if (crlDistributionPointsBytes != null) {
+			try {
+				final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
+				final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
+				final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
+				for (final DistributionPoint distributionPoint : distributionPoints) {
+
+					final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
+					if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
+						continue;
+					}
+					final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
+					final GeneralName[] names = generalNames.getNames();
+					for (final GeneralName name : names) {
+						String location = parseGn(name);
+						if (location != null) {
+							urls.add(location);
+						}
+					}
+				}
+			} catch (Exception e) {
+				LOG.warn("Unable to parse cRLDistributionPoints", e);
+			}
+		}
+
+		return urls;
+	}
+
+	private static String parseGn(GeneralName gn) {
+		try {
+			if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
+				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getBaseObject();
+				return str.getString();
+			}
+		} catch (Exception e) {
+			LOG.warn("Unable to parse GN '{}'", gn, e);
+		}
+		return null;
 	}
 
 	/**
@@ -751,8 +829,15 @@ public final class DSSASN1Utils {
 	 */
 	@Deprecated
 	public static boolean isExtendedKeyUsagePresent(CertificateToken certToken, ASN1ObjectIdentifier oid) {
-		ExtendedKeyUsages extendedKeyUsage = CertificateExtensionsUtils.getExtendedKeyUsage(certToken);
-		return extendedKeyUsage != null && extendedKeyUsage.getOids().contains(oid.getId());
+		try {
+			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
+			if ((keyPurposes != null) && keyPurposes.contains(oid.getId())) {
+				return true;
+			}
+		} catch (CertificateParsingException e) {
+			LOG.warn("Unable to retrieve ExtendedKeyUsage from certificate", e);
+		}
+		return false;
 	}
 
 	/**
@@ -1088,7 +1173,7 @@ public final class DSSASN1Utils {
 			ASN1Sequence seq = (ASN1Sequence) is.readObject();
 			return IssuerSerial.getInstance(seq);
 		} catch (Exception e) {
-			LOG.error("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
+			LOG.warn("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
 			return null;
 		}
 	}
@@ -1123,7 +1208,7 @@ public final class DSSASN1Utils {
 
 			return signerIdentifier;
 		} catch (Exception e) {
-			LOG.error("Unable to read the IssuerSerial object", e);
+			LOG.warn("Unable to read the IssuerSerial object", e);
 			return null;
 		}
 	}

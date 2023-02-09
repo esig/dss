@@ -50,8 +50,8 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationMessages;
+import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -66,13 +66,25 @@ import java.util.stream.Collectors;
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
-public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
+public class SimpleReportBuilder {
 
 	/** i18nProvider */
 	private final I18nProvider i18nProvider;
 
 	/** Defines if the semantics shall be included */
 	private final boolean includeSemantics;
+
+	/** The validation time */
+	private final Date currentTime;
+
+	/** The validation policy */
+	private final ValidationPolicy policy;
+
+	/** The DiagnosticData to use */
+	private final DiagnosticData diagnosticData;
+
+	/** The detailed report */
+	private final DetailedReport detailedReport;
 
 	/** The number of processed signatures */
 	private int totalSignatureCount = 0;
@@ -101,7 +113,10 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 */
 	public SimpleReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
 			DiagnosticData diagnosticData, DetailedReport detailedReport, boolean includeSemantics) {
-		super(currentTime, policy, diagnosticData, detailedReport);
+		this.currentTime = currentTime;
+		this.policy = policy;
+		this.diagnosticData = diagnosticData;
+		this.detailedReport = detailedReport;
 		this.i18nProvider = i18nProvider;
 		this.includeSemantics = includeSemantics;
 	}
@@ -111,9 +126,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 *
 	 * @return the object representing {@code XmlSimpleReport}
 	 */
-	@Override
 	public XmlSimpleReport build() {
-
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 
@@ -121,9 +134,16 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		poe.init(diagnosticData, diagnosticData.getValidationDate());
 		poe.collectAllPOE(diagnosticData.getTimestampList());
 
-		XmlSimpleReport simpleReport = super.build();
+		final XmlSimpleReport simpleReport = new XmlSimpleReport();
+
+		addPolicyNode(simpleReport);
+		addValidationTime(simpleReport);
+		addDocumentName(simpleReport);
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
+		if (containerInfoPresent) {
+			addContainerType(simpleReport);
+		}
 
 		Set<String> attachedTimestampIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
@@ -147,6 +167,25 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		addPDFAProfile(simpleReport);
 
 		return simpleReport;
+	}
+
+	private void addPolicyNode(XmlSimpleReport report) {
+		XmlValidationPolicy xmlPolicy = new XmlValidationPolicy();
+		xmlPolicy.setPolicyName(policy.getPolicyName());
+		xmlPolicy.setPolicyDescription(policy.getPolicyDescription());
+		report.setValidationPolicy(xmlPolicy);
+	}
+
+	private void addValidationTime(XmlSimpleReport report) {
+		report.setValidationTime(currentTime);
+	}
+
+	private void addDocumentName(XmlSimpleReport report) {
+		report.setDocumentName(diagnosticData.getDocumentName());
+	}
+
+	private void addContainerType(XmlSimpleReport simpleReport) {
+		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
 	private void addSemantics(XmlSimpleReport simpleReport) {

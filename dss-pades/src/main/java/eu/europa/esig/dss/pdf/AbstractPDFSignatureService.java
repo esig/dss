@@ -572,9 +572,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			String message = String.format("/ByteRange validation ended with error : %s. Reason : %s", byteRange, e.getMessage());
 			if (LOG.isDebugEnabled()) {
 				// Exception displays the (long) hex value
-				LOG.error(message, e);
+				LOG.warn(message, e);
 			} else {
-				LOG.error(message);
+				LOG.warn(message);
 			}
 			return false;
 		}
@@ -743,9 +743,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		} catch (Exception e) {
 			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
 			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, e.getMessage(), e);
+				LOG.warn(errorMessage, e.getMessage(), e);
 			} else {
-				LOG.error(errorMessage, e.getMessage());
+				LOG.warn(errorMessage, e.getMessage());
 			}
 		}
 	}
@@ -775,9 +775,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		} catch (Exception e) {
 			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
 			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, e.getMessage(), e);
+				LOG.warn(errorMessage, e.getMessage(), e);
 			} else {
-				LOG.error(errorMessage, e.getMessage());
+				LOG.warn(errorMessage, e.getMessage());
 			}
 		}
 	}

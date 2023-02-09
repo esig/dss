@@ -1095,6 +1095,13 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBP
 
 |all versions              a|DSS produces an error "The algorithm *** is no longer considered reliable" and/or returns `INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE` indication.        a|DSS aligns its validation policy according to the latest available edition of the ETSI TS 119 312 (cf. <<R20>>). The standard provides a prospective validity of the cryptographic suites that may change based on evolution of the modern cryptography. Therefore, it is always advisable to use the up-to-date version of DSS aligned with the latest edition of the specification, as well as be aware of changes in the standard. Should you need to update the cryptographic constraints within your own validation policy, please refer to the section <<defaultXmlPolicy>> providing an up-to-date validation constraints (see `<Cryptographic>` element for cryptographic algorithms policy) and instructions how to use a modified <<validationPolicy>>. When using a default validation policy, the DSS version upgrade is sufficient.
 
+|all versions              a|I receive an error "Received fatal alert: protocol_version" on GET/POST request or during TL Validation Job      a|The error means the SSL protocol used to establish the connection by the client is not supported by the server or vice versa. Before version `5.11.1` (included) DSS enforced SSL protocol `TLSv1.2` for all connections by default. Starting from version `5.12` DSS does not set the default protocol version, thus using the protocol defined within JDK or system properties used by signing application. Therefore, it is advisable to use the up-to-date version of JDK ensuring the support of newest protocols. In case an explicit configuration is required, the following property may be used to enforce a specific version of SSL protocol and/or a list of supported protocols, e.g. for `TLSv1.3`:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=data-loader-tls-v3]
+----
+
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===

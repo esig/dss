@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -99,7 +100,7 @@ public class CertificateValidatorTest {
 		CertificateValidator cv = CertificateValidator
 				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> cv.validate(null));
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> cv.validate((ValidationPolicy) null));
 		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 

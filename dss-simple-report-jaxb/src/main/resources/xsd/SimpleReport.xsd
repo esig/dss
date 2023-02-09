@@ -10,14 +10,7 @@
 	
 	<xs:complexType name="SimpleReport">
 		<xs:sequence>
-			<xs:element name="ValidationPolicy">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
-						<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="ValidationPolicy" type="ValidationPolicy" />
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
@@ -32,6 +25,13 @@
 			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
+	</xs:complexType>
+
+	<xs:complexType name="ValidationPolicy">
+		<xs:sequence>
+			<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
+			<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:simpleType name="ContainerType" final="restriction">

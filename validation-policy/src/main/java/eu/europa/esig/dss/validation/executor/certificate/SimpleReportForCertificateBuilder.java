@@ -30,18 +30,25 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.jaxb.object.Message;
+import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlDetails;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSubject;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Builds a SimpleReport for a certificate validation
@@ -53,6 +60,9 @@ public class SimpleReportForCertificateBuilder {
 
 	/** The detailed report */
 	private final DetailedReport detailedReport;
+
+	/** The validation policy */
+	private final ValidationPolicy policy;
 
 	/** The validation time */
 	private final Date currentTime;
@@ -66,12 +76,13 @@ public class SimpleReportForCertificateBuilder {
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param detailedReport {@link DetailedReport}
 	 * @param currentTime {@link Date} validation time
-	 * @param certificateId {@link String} if od certificate to be valdiated
+	 * @param certificateId {@link String} if od certificate to be validated
 	 */
 	public SimpleReportForCertificateBuilder(DiagnosticData diagnosticData, DetailedReport detailedReport,
-											 Date currentTime, String certificateId) {
+											 ValidationPolicy policy, Date currentTime, String certificateId) {
 		this.diagnosticData = diagnosticData;
 		this.detailedReport = detailedReport;
+		this.policy = policy;
 		this.currentTime = currentTime;
 		this.certificateId = certificateId;
 	}
@@ -82,7 +93,11 @@ public class SimpleReportForCertificateBuilder {
 	 * @return {@link XmlSimpleCertificateReport}
 	 */
 	public XmlSimpleCertificateReport build() {
-		XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
+		final XmlSimpleCertificateReport simpleReport = new XmlSimpleCertificateReport();
+
+		addPolicyNode(simpleReport);
+		addValidationTime(simpleReport);
+
 		simpleReport.setValidationTime(currentTime);
 		List<XmlChainItem> chain = new ArrayList<>();
 
@@ -98,6 +113,17 @@ public class SimpleReportForCertificateBuilder {
 		simpleReport.setChain(chain);
 
 		return simpleReport;
+	}
+
+	private void addPolicyNode(XmlSimpleCertificateReport report) {
+		XmlValidationPolicy xmlPolicy = new XmlValidationPolicy();
+		xmlPolicy.setPolicyName(policy.getPolicyName());
+		xmlPolicy.setPolicyDescription(policy.getPolicyDescription());
+		report.setValidationPolicy(xmlPolicy);
+	}
+
+	private void addValidationTime(XmlSimpleCertificateReport report) {
+		report.setValidationTime(currentTime);
 	}
 
 	private XmlChainItem getChainItem(CertificateWrapper certificate) {
@@ -153,6 +179,11 @@ public class SimpleReportForCertificateBuilder {
 		XmlConclusion conclusion = detailedReport.getCertificateXCVConclusion(certificate.getId());
 		item.setIndication(conclusion.getIndication());
 		item.setSubIndication(conclusion.getSubIndication());
+
+		XmlDetails validationDetails = getAdESValidationDetails(certificate.getId());
+		if (isNotEmpty(validationDetails)) {
+			item.setAdESValidationDetails(validationDetails);
+		}
 
 		return item;
 	}
@@ -231,6 +262,15 @@ public class SimpleReportForCertificateBuilder {
 		firstChainItem.setQualificationAtIssuance(detailedReport.getCertificateQualificationAtIssuance(certificateId));
 		firstChainItem.setQualificationAtValidation(detailedReport.getCertificateQualificationAtValidation(certificateId));
 
+		XmlDetails qualificationDetailsAtIssuanceTime = getCertificateQualificationDetailsAtIssuanceTime(certificate.getId());
+		if (isNotEmpty(qualificationDetailsAtIssuanceTime)) {
+			firstChainItem.setQualificationDetailsAtIssuance(qualificationDetailsAtIssuanceTime);
+		}
+		XmlDetails qualificationDetailsAtValidationTime = getCertificateQualificationDetailsAtValidationTime(certificate.getId());
+		if (isNotEmpty(qualificationDetailsAtValidationTime)) {
+			firstChainItem.setQualificationDetailsAtValidation(qualificationDetailsAtValidationTime);
+		}
+
 		Boolean enactedMRA = null;
 		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();
 		for (TrustedServiceWrapper trustedServiceWrapper : trustedServices) {
@@ -240,6 +280,44 @@ public class SimpleReportForCertificateBuilder {
 			}
 		}
 		firstChainItem.setEnactedMRA(enactedMRA);
+	}
+
+	private XmlDetails getAdESValidationDetails(String tokenId) {
+		XmlDetails validationDetails = new XmlDetails();
+		validationDetails.getError().addAll(convert(detailedReport.getAdESValidationErrors(tokenId)));
+		validationDetails.getWarning().addAll(convert(detailedReport.getAdESValidationWarnings(tokenId)));
+		validationDetails.getInfo().addAll(convert(detailedReport.getAdESValidationInfos(tokenId)));
+		return validationDetails;
+	}
+
+	private XmlDetails getCertificateQualificationDetailsAtIssuanceTime(String tokenId) {
+		XmlDetails qualificationDetails = new XmlDetails();
+		qualificationDetails.getError().addAll(convert(detailedReport.getCertificateQualificationErrorsAtIssuanceTime(tokenId)));
+		qualificationDetails.getWarning().addAll(convert(detailedReport.getCertificateQualificationWarningsAtIssuanceTime(tokenId)));
+		qualificationDetails.getInfo().addAll(convert(detailedReport.getCertificateQualificationInfosAtIssuanceTime(tokenId)));
+		return qualificationDetails;
+	}
+
+	private XmlDetails getCertificateQualificationDetailsAtValidationTime(String tokenId) {
+		XmlDetails qualificationDetails = new XmlDetails();
+		qualificationDetails.getError().addAll(convert(detailedReport.getCertificateQualificationErrorsAtValidationTime(tokenId)));
+		qualificationDetails.getWarning().addAll(convert(detailedReport.getCertificateQualificationWarningsAtValidationTime(tokenId)));
+		qualificationDetails.getInfo().addAll(convert(detailedReport.getCertificateQualificationInfosAtValidationTime(tokenId)));
+		return qualificationDetails;
+	}
+
+	private List<XmlMessage> convert(Collection<Message> messages) {
+		return messages.stream().map(m -> {
+			XmlMessage xmlMessage = new XmlMessage();
+			xmlMessage.setKey(m.getKey());
+			xmlMessage.setValue(m.getValue());
+			return xmlMessage;
+		}).collect(Collectors.toList());
+	}
+
+	private boolean isNotEmpty(XmlDetails details) {
+		return Utils.isCollectionNotEmpty(details.getError()) || Utils.isCollectionNotEmpty(details.getWarning()) ||
+				Utils.isCollectionNotEmpty(details.getInfo());
 	}
 
 }

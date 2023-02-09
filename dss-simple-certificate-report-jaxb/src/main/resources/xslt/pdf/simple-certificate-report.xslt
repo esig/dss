@@ -135,25 +135,27 @@
 							
 							<fo:table table-layout="fixed">
 								<fo:table-column>
-									<xsl:attribute name="column-width">25%</xsl:attribute>
+									<xsl:attribute name="column-width">27%</xsl:attribute>
 								</fo:table-column>
 								<fo:table-column>
-									<xsl:attribute name="column-width">75%</xsl:attribute>
+									<xsl:attribute name="column-width">73%</xsl:attribute>
 								</fo:table-column>
 								
 								<fo:table-body>
 									<xsl:attribute name="start-indent">0</xsl:attribute>
 									<xsl:attribute name="end-indent">0</xsl:attribute>
+
+									<xsl:apply-templates select="dss:qualificationAtIssuance"/>
+									<xsl:apply-templates select="dss:qualificationAtValidation"/>
+									<xsl:apply-templates select="dss:enactedMRA"/>
 									
 									<fo:table-row>
 										<xsl:variable name="indicationText" select="dss:Indication/text()"/>
 										<xsl:variable name="indicationColor">
 								        	<xsl:choose>
-												<xsl:when test="$indicationText='TOTAL_PASSED'">green</xsl:when>
-												<xsl:when test="$indicationText='PASSED'">green</xsl:when>
+												<xsl:when test="$indicationText='PASSED' or dss:trustAnchors">green</xsl:when>
 												<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
 												<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-												<xsl:when test="$indicationText='TOTAL_FAILED'">red</xsl:when>
 											</xsl:choose>
 								        </xsl:variable>
         
@@ -161,7 +163,6 @@
 											<fo:block>
 												<xsl:attribute name="margin-top">1px</xsl:attribute>
 												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-												
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
 												<xsl:text>Indication :</xsl:text>
 											</fo:block>
@@ -180,11 +181,34 @@
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
-									
-     								<xsl:apply-templates select="dss:qualificationAtIssuance"/>
-     								<xsl:apply-templates select="dss:qualificationAtValidation"/>
-			       					<xsl:apply-templates select="*[not(self::dss:qualificationAtIssuance | self::dss:qualificationAtValidation)]"/>
-     								<xsl:apply-templates select="dss:enactedMRA"/>
+
+									<xsl:apply-templates select="dss:AdESValidationDetails" />
+
+									<xsl:apply-templates select="dss:subject" />
+									<xsl:apply-templates select="dss:commonName" />
+									<xsl:apply-templates select="dss:surname" />
+									<xsl:apply-templates select="dss:givenName" />
+									<xsl:apply-templates select="dss:pseudonym" />
+									<xsl:apply-templates select="dss:organizationName" />
+									<xsl:apply-templates select="dss:organizationUnit" />
+									<xsl:apply-templates select="dss:email" />
+									<xsl:apply-templates select="dss:locality" />
+									<xsl:apply-templates select="dss:state" />
+									<xsl:apply-templates select="dss:country" />
+									<xsl:apply-templates select="dss:issuerId" />
+									<xsl:apply-templates select="dss:notBefore" />
+									<xsl:apply-templates select="dss:notAfter" />
+
+									<xsl:apply-templates select="dss:keyUsages" />
+									<xsl:apply-templates select="dss:extendedKeyUsages" />
+									<xsl:apply-templates select="dss:ocspUrls" />
+									<xsl:apply-templates select="dss:crlUrls" />
+									<xsl:apply-templates select="dss:aiaUrls" />
+									<xsl:apply-templates select="dss:cpsUrls" />
+									<xsl:apply-templates select="dss:pdsUrls" />
+
+									<xsl:apply-templates select="dss:revocation" />
+									<xsl:apply-templates select="dss:trustAnchors" />
 			       					
 								</fo:table-body>
 							</fo:table>
@@ -197,10 +221,56 @@
     	</xsl:for-each>
 		
     </xsl:template>
-    
-    <xsl:template match="dss:subject">
-    	<xsl:apply-templates/>
-    </xsl:template>
+
+	<xsl:template match="dss:QualificationDetails|dss:AdESValidationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:value-of select="$header" /> :
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+
+				<xsl:apply-templates select="dss:Error" />
+				<xsl:apply-templates select="dss:Warning" />
+				<xsl:apply-templates select="dss:Info" />
+
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="indicationColor">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">red</xsl:when>
+				<xsl:when test="name() = 'Warning'">orange</xsl:when>
+				<xsl:otherwise>black</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+			<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+			<xsl:value-of select="." />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="dss:subject">
+		<xsl:apply-templates/>
+	</xsl:template>
     
     <xsl:template match="dss:commonName|dss:surname|dss:givenName|dss:pseudonym|dss:organizationName|
     		dss:organizationUnit|dss:email|dss:locality|dss:state|dss:country|

@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -32,6 +27,10 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ASiCSCAdESSignASiCXAdESTest extends PKIFactoryAccess {
 	
@@ -48,7 +47,7 @@ public class ASiCSCAdESSignASiCXAdESTest extends PKIFactoryAccess {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> service.getDataToSign(documentToSign, signatureParameters));
-		assertEquals("Container type doesn't match", exception.getMessage());
+		assertEquals("Container type doesn't match! The same container type shall be chosen.", exception.getMessage());
 	}
 
 	@Override

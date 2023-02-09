@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 import java.util.Date;
 
@@ -208,6 +209,11 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	public void setPasswordProtection(char[] passwordProtection) {
 		this.passwordProtection = passwordProtection;
+	}
+
+	@Override
+	public String getDeterministicId() {
+		return DSSUtils.getDeterministicId(timestampDate, null);
 	}
 
 	@Override

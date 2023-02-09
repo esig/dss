@@ -47,6 +47,7 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -69,6 +70,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -243,7 +245,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certificateId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtIssuanceTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtIssuanceTime(certificateId)));
+
 		assertEquals(CertificateQualification.QCERT_FOR_UNKNOWN_QSCD, simpleReport.getQualificationAtValidationTime());
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certificateId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certificateId)));
 	}
 
 	@Test
@@ -264,7 +273,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtIssuanceTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtIssuanceTime(certificateId)));
+
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certificateId)));
 	}
 
 	@Test
@@ -292,7 +308,14 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtCertificateIssuance());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtIssuanceTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtIssuanceTime(certificateId)));
+
 		assertEquals(CertificateQualification.NA, simpleReport.getQualificationAtValidationTime());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certificateId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certificateId)));
 	}
 
 	@Test
@@ -461,9 +484,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 		
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(
-				CertificateQualification.QCERT_FOR_ESIG,
-				simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
 	}
 
@@ -484,10 +505,15 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		checkReports(reports);
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
-		assertEquals(
-				CertificateQualification.QCERT_FOR_ESIG_QSCD,
-				simpleReport.getQualificationAtCertificateIssuance());
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
+
+		for (String certId : simpleReport.getCertificateIds()) {
+			assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+		}
 	}
 
 	@Test
@@ -710,11 +736,23 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		executor.setCertificateId(certId);
 
 		CertificateReports reports = executor.execute();
+		reports.print();
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtIssuanceTime(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtIssuanceTime(certId)));
+
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtValidationTime());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certId)));
 	}
 
 	@Test
@@ -867,8 +905,22 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		CertificateReports reports = executor.execute();
 		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getCertificateSubIndication(certId));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtIssuanceTime(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtIssuanceTime(certId)));
+
 		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certId)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlCertificate xmlCertificate = detailedReport.getXmlCertificateById(certId);
@@ -1005,4 +1057,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		return om;
 	}
 	
+	@Override
+	protected ValidationPolicy loadDefaultPolicy() throws Exception {
+		return ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
+	}
+
 }

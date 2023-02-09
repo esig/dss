@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.DERSet;
-import org.bouncycastle.asn1.DLSet;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.junit.jupiter.api.BeforeEach;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -47,7 +34,24 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.signature.ExternalSignatureResult;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.DLSet;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.junit.jupiter.api.BeforeEach;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * NOTE: This test is kept for retro-compatibility.
+ * For creation of PAdES with external CMS see {@code PAdESExternalCMSSignatureBLevelTest}.
+ */
 public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
@@ -79,16 +83,19 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = getService();
 
 		// Generate toBeSigned without signing certificate
-		assert params.getSigningCertificate() == null;
+		assertNull(params.getSigningCertificate());
 		ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), params);
 
-		/**
+		// store the deterministic Id, because of different signing-certificate definition, the deterministic id may differ
+		String deterministicId = signatureParameters.getContext().getDeterministicId();
+
+		/*
 		 * Simulate an external process that updates ASN.1 signed-attributes structure
 		 * in dataToSign with signing certificate and calculates signature value.
 		 */
 		ExternalSignatureResult externalSignatureResult = simulateExternalSignature(dataToSign);
 
-		/**
+		/*
 		 * Construct new set of parameters including explicitly specified signed data
 		 * created by external process and signature name used when calculating toBeSigned.
 		 */
@@ -100,6 +107,9 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignedData(externalSignatureResult.getSignedData());
 		signatureParameters.setSignerName(GOOD_USER);
+
+		// ensure the same deterministic Id is used
+		signatureParameters.getContext().setDeterministicId(deterministicId);
 
 		// Sign document using signature value created by external process.
 		return service.signDocument(toBeSigned, signatureParameters, externalSignatureResult.getSignatureValue());

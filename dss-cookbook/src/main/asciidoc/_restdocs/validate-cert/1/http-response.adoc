@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 09 Dec 2022 10:27:15 GMT
+Date: Mon, 06 Feb 2023 07:49:55 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -14,12 +14,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 6926
+Content-Length: 7511
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2022-12-09T10:27:15Z",
+    "ValidationDate" : "2023-02-06T07:49:55Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -97,6 +97,10 @@ Content-Length: 6926
     "TrustedList" : [ ]
   },
   "simpleCertificateReport" : {
+    "ValidationPolicy" : {
+      "PolicyName" : "QES AdESQC TL based",
+      "PolicyDescription" : "Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a\n\t\tQualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes\n\t\tsigner's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).\n\t"
+    },
     "ChainItem" : [ {
       "id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
       "subject" : {
@@ -133,7 +137,7 @@ Content-Length: 6926
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
     } ],
-    "ValidationTime" : "2022-12-09T10:27:15Z"
+    "ValidationTime" : "2023-02-06T07:49:55Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

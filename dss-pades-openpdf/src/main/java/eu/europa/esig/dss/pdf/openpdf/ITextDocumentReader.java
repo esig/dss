@@ -24,9 +24,11 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
+import com.lowagie.text.pdf.ByteBuffer;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfIndirectReference;
+import com.lowagie.text.pdf.PdfLiteral;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
@@ -36,6 +38,8 @@ import com.lowagie.text.pdf.PdfWriter;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
@@ -48,6 +52,7 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +78,9 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	/** The PDF document reader */
 	private final PdfReader pdfReader;
 
+	/** The original PDF document */
+	private DSSDocument dssDocument;
+
 	/** The map of signature dictionaries and corresponding signature fields */
 	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
 
@@ -97,6 +105,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 */
 	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
+		this.dssDocument = dssDocument;
 		try (InputStream is = dssDocument.openStream()) {
 			this.pdfReader = new PdfReader(is, passwordProtection);
 		} catch (BadPasswordException e) {
@@ -115,6 +124,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 */
 	public ITextDocumentReader(byte[] binaries, byte[] passwordProtection) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
+		this.dssDocument = new InMemoryDocument(binaries);
 		try {
 			this.pdfReader = new PdfReader(binaries, passwordProtection);
 		} catch (BadPasswordException e) {
@@ -389,6 +399,48 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public PdfDict getCatalogDictionary() {
 		return new ITextPdfDict(pdfReader.getCatalog());
+	}
+
+	/**
+	 * Computes a DocumentId in a deterministic way based on the given {@code parameters} and the document
+	 *
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return {@link PdfObject} representing an /ID entry containing a deterministic identifier
+	 */
+	public PdfObject generateDocumentId(PAdESCommonParameters parameters) {
+		/*
+		 * Computation is according to "14.4 File identifiers"
+		 */
+		String deterministicId = parameters.getDeterministicId();
+		if (dssDocument != null) {
+			if (dssDocument.getName() != null) {
+				deterministicId = deterministicId + "-" + dssDocument.getName();
+			}
+			deterministicId = deterministicId + "-" + DSSUtils.getFileByteSize(dssDocument);
+		}
+
+		final String md5 = DSSUtils.getMD5Digest(deterministicId.getBytes());
+		final byte[] bytes = Utils.fromHex(md5);
+
+		// see {@code com.lowagie.text.pdf.PdfEncryption.createInfoId(byte[] idPartOne, byte[] idPartTwo)}
+		try (ByteBuffer buf = new ByteBuffer(90)) {
+			buf.append('[').append('<');
+			for (int k = 0; k < 16; ++k) {
+				buf.appendHex(bytes[k]);
+			}
+			/*
+			 * When a PDF file is first written, both identifiers shall be set to the same value.
+			 */
+			buf.append('>').append('<');
+			for (int k = 0; k < 16; ++k) {
+				buf.appendHex(bytes[k]);
+			}
+			buf.append('>').append(']');
+			return new PdfLiteral(buf.toByteArray());
+
+		} catch (IOException e) {
+			throw new DSSException("Unable to generate the fileId", e);
+		}
 	}
 
 }

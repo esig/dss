@@ -60,7 +60,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -462,15 +461,15 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
-			Element element = (Element) encapsulatedNodes.item(ii);
-			byte[] binaries = getEncapsulatedTokenBinaries(element);
 			try {
+				Element element = (Element) encapsulatedNodes.item(ii);
+				byte[] binaries = getEncapsulatedTokenBinaries(element);
 				BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPFromBinaries(binaries);
 				ocspIdentifiers.add(OCSPResponseBinary.build(basicOCSPResp));
-			} catch (IOException e) {
+			} catch (Exception e) {
 				String errorMessage = "Unable to parse OCSP response binaries : {}";
 				if (LOG.isDebugEnabled()) {
-					LOG.error(errorMessage, e.getMessage(), e);
+					LOG.warn(errorMessage, e.getMessage(), e);
 				} else {
 					LOG.warn(errorMessage, e.getMessage());
 				}
@@ -481,6 +480,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	
 	/**
 	 * Returns encapsulated byte array from the given {@code encapsulatedElement}
+	 *
 	 * @param encapsulatedElement {@link Element} to get binaries from
 	 * @return byte array
 	 */
@@ -495,7 +495,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			}
 		}
 		throw new DSSException(String.format("Cannot create the token reference. "
-				+ "The element with local name [%s] must contain an encapsulated base64 token value!", encapsulatedElement.getLocalName()));
+				+ "The element with local name [%s] must contain an encapsulated base64 token value! "
+				+ "The found value is not a text node!", encapsulatedElement.getLocalName()));
 	}
 
 	@Override

@@ -101,16 +101,15 @@ public class ASiCEWithXAdESManifestParser {
 		try {
 			Document manifestDom = DomUtils.buildDOM(manifestDocument);
 			DSSNamespace manifestNamespace = getManifestNamespace(manifestDom);
-			DomUtils.registerNamespace(manifestNamespace);
 
 			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPaths.FILE_ENTRY_PATH);
 			if (nodeList != null && nodeList.getLength() > 0) {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					ManifestEntry manifestEntry = new ManifestEntry();
 					Element fileEntryElement = (Element) nodeList.item(i);
-					String fullpathValue = fileEntryElement.getAttribute(ManifestPaths.getFullPathAttribute(manifestNamespace));
-					if (!isFolder(fullpathValue)) {
-						manifestEntry.setFileName(fullpathValue);
+					String fullPathValue = fileEntryElement.getAttribute(ManifestPaths.getFullPathAttribute(manifestNamespace));
+					if (!isFolder(fullPathValue)) {
+						manifestEntry.setFileName(fullPathValue);
 						manifestEntry.setMimeType(getMimeType(fileEntryElement, manifestNamespace));
 						result.add(manifestEntry);
 					}
