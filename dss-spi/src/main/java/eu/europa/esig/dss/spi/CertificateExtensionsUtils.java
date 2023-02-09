@@ -670,11 +670,17 @@ public class CertificateExtensionsUtils {
         if (value != null) {
             certificateExtension = new CertificateExtension(value);
         } else {
-            LOG.warn("Not supported CertificateExtension with OID : '{}'", oid);
             certificateExtension = new CertificateExtension(oid);
         }
         certificateExtension.setOctets(certificateToken.getCertificate().getExtensionValue(oid));
         certificateExtension.checkCritical(certificateToken);
+        if (value == null) {
+            if (certificateExtension.isCritical()) {
+                LOG.warn("Unknown critical CertificateExtension with OID : '{}'", oid);
+            } else if (LOG.isDebugEnabled()) {
+                LOG.debug("Unknown non-critical CertificateExtension with OID : '{}'", oid);
+            }
+        }
         return certificateExtension;
     }
 
