@@ -163,7 +163,7 @@
 					<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 		       		
 					<xsl:attribute name="id">policy</xsl:attribute>
-					<xsl:text>Validation Policy : <xsl:value-of select="dss:PolicyName"/></xsl:text>
+					<xsl:text>Validation Policy: <xsl:value-of select="dss:PolicyName"/></xsl:text>
 		    	</fo:block>
 	    	</fo:block-container>
 		</fo:block-container>
@@ -257,10 +257,10 @@
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
 
 							<xsl:if test="$nodeName = 'Signature'">
-								<xsl:text>Signature : </xsl:text>
+								<xsl:text>Signature: </xsl:text>
 							</xsl:if>
 							<xsl:if test="$nodeName = 'Timestamp'">
-								<xsl:text>Timestamp : </xsl:text>
+								<xsl:text>Timestamp: </xsl:text>
 							</xsl:if>
 				       		<xsl:value-of select="$idToken" />
 			       		</fo:block>
@@ -334,7 +334,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Qualification level : 
+											Qualification level:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -364,7 +364,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 										
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Indication : 
+										Indication:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>
@@ -392,7 +392,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Signature Format : 
+											Signature Format:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -449,10 +449,10 @@
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 										<xsl:if test="$nodeName = 'Signature'">
-											On claimed time : 
+											On claimed time:
 										</xsl:if>
 										<xsl:if test="$nodeName = 'Timestamp'">
-											Production time : 
+											Production time:
 										</xsl:if>
 									</fo:block>
 								</fo:table-cell>
@@ -485,7 +485,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Best signature time : 
+											Best signature time:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -511,7 +511,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Signature position : 
+											Signature position:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -596,7 +596,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$header" /> :
+					<xsl:value-of select="$header" />:
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -635,7 +635,7 @@
 				<xsl:attribute name="font-size">7pt</xsl:attribute>
 
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				Timestamps :
+				Timestamps:
 			</fo:block>
 		</fo:block-container>
 		<fo:block-container>
@@ -713,7 +713,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Signatures status : 
+										Signatures status:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>
@@ -734,7 +734,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Document name : 
+										Document name:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>

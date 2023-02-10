@@ -39,9 +39,9 @@
             </revocation>
             <Indication>INDETERMINATE</Indication>
             <SubIndication>OUT_OF_BOUNDS_NO_POE</SubIndication>
-            <AdESValidationDetails>
+            <X509ValidationDetails>
                 <Error Key="BBB_XCV_ICTIVRSC_ANS">The current time is not in the validity range of the signer''s certificate!</Error>
-            </AdESValidationDetails>
+            </X509ValidationDetails>
         </ChainItem>
         <ChainItem>
             <id>C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</id>

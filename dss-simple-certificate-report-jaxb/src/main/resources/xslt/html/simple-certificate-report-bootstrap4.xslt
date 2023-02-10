@@ -70,7 +70,7 @@
 			    		
 			    		<dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		Qualification
+			        		Qualification:
 			        	</dt>
 			    		
 			    		<dd>
@@ -161,7 +161,7 @@
 					<xsl:with-param name="indicationClass" select="$indicationCssClass"/>
 				</xsl:apply-templates>
 
-				<xsl:apply-templates select="dss:AdESValidationDetails" />
+				<xsl:apply-templates select="dss:X509ValidationDetails" />
 	        	
 				<xsl:apply-templates select="dss:subject"/>
 				
@@ -187,7 +187,7 @@
 	        		
 	        		<dt>
 		        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-		        		Validity
+		        		Validity:
 			        </dt>
 	        		<dd>
 	        			<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -203,8 +203,7 @@
 	        		<xsl:if test="not(dss:trustAnchors)">
 	       				<dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
-			        		Revocation
+			        		Revocation:
 			        	</dt>
 	       				<dd>
 	        				<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -236,10 +235,10 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:AdESValidationDetails|dss:QualificationDetails">
+	<xsl:template match="dss:X509ValidationDetails|dss:QualificationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
-				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
 				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -248,7 +247,7 @@
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 
-				<xsl:value-of select="$header" /> :
+				<xsl:value-of select="$header" />:
 			</dt>
 			<dd>
 				<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -301,7 +300,7 @@
 	  		<xsl:if test="dss:commonName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Common name
+	        		Common name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -311,7 +310,7 @@
 	  		<xsl:if test="dss:givenName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Given name
+	        		Given name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -321,7 +320,7 @@
 	  		<xsl:if test="dss:surname">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Surname
+	        		Surname:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -331,7 +330,7 @@
 	  		<xsl:if test="dss:pseudonym">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-		        	Pseudonym
+		        	Pseudonym:
 		        </dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -341,7 +340,7 @@
 	  		<xsl:if test="dss:organizationName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Organization name
+	        		Organization name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -351,7 +350,7 @@
 	  		<xsl:if test="dss:organizationUnit">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Organization Unit
+	        		Organization Unit:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -361,7 +360,7 @@
 	  		<xsl:if test="dss:email">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Email
+	        		Email:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -371,7 +370,7 @@
 	  		<xsl:if test="dss:locality">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Locality
+	        		Locality:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -381,7 +380,7 @@
 	  		<xsl:if test="dss:state">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		State
+	        		State:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -391,7 +390,7 @@
 	  		<xsl:if test="dss:country">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Country
+	        		Country:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -407,7 +406,7 @@
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
-	        	Key usages
+	        	Key usages:
 	        </dt>
 			<dd>
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -427,7 +426,7 @@
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
-	        	Extended key usages
+	        	Extended key usages:
 	        </dt>
 			<dd>
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -474,7 +473,7 @@
 			        		
   			<acronym>
   				<xsl:attribute name="title">Online Certificate Status Protocol</xsl:attribute>
-  				OCSP
+  				OCSP:
   			</acronym>
 		</dt>
 		<dd>
@@ -494,7 +493,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Certificate Revocation List</xsl:attribute>
-		  		CRL
+		  		CRL:
 		  	</acronym>
 		</dt>
 		<dd>
@@ -514,7 +513,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Authority Information Access</xsl:attribute>
-  		  		AIA
+  		  		AIA:
   		  	</acronym>
 		</dt>
 		<dd>
@@ -534,7 +533,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Certification Practice Statements</xsl:attribute>
-  		  		CPS
+  		  		CPS:
   		  	</acronym>
 		</dt>
 		
@@ -552,8 +551,7 @@
     <xsl:template match="dss:trustAnchors">
   		<dt>
 			<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			
-  			Trust Anchor
+  			Trust Anchor:
 		</dt>
 		
 		<dd>

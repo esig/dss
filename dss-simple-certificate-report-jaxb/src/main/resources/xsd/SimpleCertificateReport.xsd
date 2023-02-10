@@ -82,7 +82,7 @@
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
+			<xs:element name="X509ValidationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	

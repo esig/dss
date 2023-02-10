@@ -108,7 +108,7 @@
 			       		
 						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 						
-						<xsl:text>Certificate : <xsl:value-of select="dss:id"/></xsl:text>
+						<xsl:text>Certificate: <xsl:value-of select="dss:id"/></xsl:text>
 			    	</fo:block>
 		    	</fo:block-container>
 			</fo:block-container>
@@ -153,7 +153,7 @@
 										<xsl:variable name="indicationText" select="dss:Indication/text()"/>
 										<xsl:variable name="indicationColor">
 								        	<xsl:choose>
-												<xsl:when test="$indicationText='PASSED' or dss:trustAnchors">green</xsl:when>
+												<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 												<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
 												<xsl:when test="$indicationText='FAILED'">red</xsl:when>
 											</xsl:choose>
@@ -164,7 +164,7 @@
 												<xsl:attribute name="margin-top">1px</xsl:attribute>
 												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
-												<xsl:text>Indication :</xsl:text>
+												<xsl:text>Indication:</xsl:text>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
@@ -182,7 +182,7 @@
 										</fo:table-cell>
 									</fo:table-row>
 
-									<xsl:apply-templates select="dss:AdESValidationDetails" />
+									<xsl:apply-templates select="dss:X509ValidationDetails" />
 
 									<xsl:apply-templates select="dss:subject" />
 									<xsl:apply-templates select="dss:commonName" />
@@ -222,10 +222,10 @@
 		
     </xsl:template>
 
-	<xsl:template match="dss:QualificationDetails|dss:AdESValidationDetails">
+	<xsl:template match="dss:QualificationDetails|dss:X509ValidationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
-				<xsl:when test="name() = 'AdESValidationDetails'">AdES Validation Details</xsl:when>
+				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
 				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -238,7 +238,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$header" /> :
+					<xsl:value-of select="$header" />:
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -301,7 +301,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 					
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+					<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -324,7 +324,7 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:text>Key usages :</xsl:text>
+						<xsl:text>Key usages:</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>
@@ -362,7 +362,7 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+						<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>
@@ -410,7 +410,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 					
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+					<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -460,7 +460,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation thisUpdate time :</xsl:text>
+							<xsl:text>Revocation thisUpdate time:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -479,7 +479,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation status :</xsl:text>
+							<xsl:text>Revocation status:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -508,7 +508,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation :</xsl:text>
+							<xsl:text>Revocation:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -534,7 +534,7 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:text>Trust anchor(s) :</xsl:text>
+						<xsl:text>Trust anchor(s):</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>

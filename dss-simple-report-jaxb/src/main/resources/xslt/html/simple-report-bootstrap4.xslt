@@ -104,14 +104,12 @@
 						<xsl:if test="$nodeName = 'Signature'">
 			            	<dt>
 			            		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            	
 			            		Signature filename:
 			            	</dt>
 						</xsl:if>
 						<xsl:if test="$nodeName = 'Timestamp'">
 			            	<dt>
 			            		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            	
 			            		Timestamp filename:
 			            	</dt>
 						</xsl:if>
@@ -128,7 +126,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            	
 			            	Qualification:
 			            </dt>
 			            <dd>
@@ -164,7 +161,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            	
 			            	Signature format:
 			            </dt>
 			            <dd>
@@ -236,7 +232,6 @@
 	        		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        	
 			        	Certificate Chain:
 			        </dt>
 		            <xsl:choose>
@@ -280,7 +275,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
 			        		On claimed time:
 			        	</dt>
 			            <dd>
@@ -298,7 +292,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
 			        		Production time:
 			        	</dt>
 			            <dd>
@@ -316,7 +309,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            	
 			            	Best signature time:
 			            </dt>
 			            <dd>
@@ -341,7 +333,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
 			        		Signature position:
 			        	</dt>
 			            <dd>
@@ -411,8 +402,7 @@
 			<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-
-				<xsl:value-of select="$header" /> :
+				<xsl:value-of select="$header" />:
 			</dt>
 			<dd>
 				<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -458,7 +448,6 @@
     		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
-				
 				Sub indication:
 			</dt>
 			<dd>
@@ -496,7 +485,6 @@
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
 			        		Container type:
 			        	</dt>
 			            <dd>
@@ -512,7 +500,6 @@
 						<xsl:attribute name="class">row mb-0</xsl:attribute>
 						<dt>
 							<xsl:attribute name="class">col-sm-3</xsl:attribute>
-
 							PDF/A Profile:
 						</dt>
 						<dd>
@@ -553,7 +540,6 @@
 		    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        	
 			        	Signatures status:
 			        </dt>
 		            <dd>
@@ -572,7 +558,6 @@
 		    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 		            <dt>
 			        	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        	
 			        	Document name:
 			        </dt>
 		            <dd>
