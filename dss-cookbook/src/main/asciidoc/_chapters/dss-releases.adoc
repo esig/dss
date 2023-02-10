@@ -873,6 +873,68 @@ not present
 </SignedAttributesConstraints>
 ----
 
+|Qualified certificate check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <Qualification />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <PolicyQualificationIds /> <!-- pre eIDAS -->
+    <QcCompliance /> <!-- post eIDAS -->
+    ...
+</SignedAttributesConstraints>
+----
+
+|QSCD/SSCD check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <SupportedByQSCD />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QcSSCD />
+    ...
+</SignedAttributesConstraints>
+----
+
+|QcStatements attributes presence           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QCStatementIds />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <!-- Choose the corresponding QcStatement -->
+    <QcCompliance />
+    <MinQcEuLimitValue />
+    <QcSSCD />
+    <QcEuPDSLocation />
+    <QcType />
+    <QcLegislationCountryCodes />
+    <SemanticsIdentifierForNaturalPerson />
+    <SemanticsIdentifierForLegalPerson />
+    <PSD2QcTypeRolesOfPSP />
+    <!-- etc -->
+    ...
+</SignedAttributesConstraints>
+----
+
 |===
 
 === Frequently asked questions and implementation issues
