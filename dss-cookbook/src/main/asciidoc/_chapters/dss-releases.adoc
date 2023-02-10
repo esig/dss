@@ -898,11 +898,20 @@ The property is available since BouncyCastle 1.73.
 
 |v5.8 and higher            |PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
 
-|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>. For example, to filter TLs from Germany and Romania:
+|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>.
 
-[source,java]
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country]
+----
+
+Starting from DSS `5.11` you may use a `TLPredicateFactory` class to facilitate predicate creation:
+
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists with TLPredicateFactory
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country-5.11]
 ----
 
 |v5.2 and higher            |XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +
