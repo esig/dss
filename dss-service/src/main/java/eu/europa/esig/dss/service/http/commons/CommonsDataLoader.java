@@ -31,6 +31,7 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.hc.client5.http.HttpRequestRetryStrategy;
 import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.Credentials;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -38,6 +39,7 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.client5.http.impl.auth.BasicScheme;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -233,6 +235,11 @@ public class CommonsDataLoader implements DataLoader {
 	 * The connection retry strategy
 	 */
 	private transient HttpRequestRetryStrategy retryStrategy;
+
+	/**
+	 * Defines whether the preemptive basic authentication should be used
+	 */
+	private boolean preemptiveAuthentication;
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -504,7 +511,7 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * This method sets the SSL protocol to be used ('TLSv1.2' by default)
+	 * This method sets the SSL protocol to be used
 	 *
 	 * @param sslProtocol
 	 *                    the ssl protocol to be used
@@ -552,7 +559,8 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Sets the KeyStore password
+	 * Sets the KeyStore password. Please note that the password shall be the same for the keystore and
+	 * the extraction of a corresponding key.
 	 *
 	 * @param sslKeystorePassword char array representing the password
 	 */
@@ -636,6 +644,19 @@ public class CommonsDataLoader implements DataLoader {
 		Map<HostConnection, UserCredentials> authenticationMap = getAuthenticationMap();
 		authenticationMap.put(hostConnection, userCredentials);
 		return this;
+	}
+
+	/**
+	 * Sets whether the preemptive authentication should be used.
+	 * When set to TRUE, the client sends authentication details (i.e. user credentials) within the initial request
+	 * to the remote host, instead of sending the credentials only after a request from the host.
+	 * Please note that the preemptive authentication should not be used over an insecure connection.
+	 * Default : FALSE (preemptive authentication is not used)
+	 *
+	 * @param preemptiveAuthentication whether the preemptive authentication should be used
+	 */
+	public void setPreemptiveAuthentication(boolean preemptiveAuthentication) {
+		this.preemptiveAuthentication = preemptiveAuthentication;
 	}
 
 	/**
@@ -981,7 +1002,7 @@ public class CommonsDataLoader implements DataLoader {
 	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client,
 													final HttpUriRequest httpRequest) throws IOException {
 		final HttpHost targetHost = getHttpHost(httpRequest);
-		final HttpContext localContext = getHttpContext();
+		final HttpContext localContext = getHttpContext(targetHost);
 		return client.execute(targetHost, httpRequest, localContext);
 	}
 
@@ -1004,9 +1025,38 @@ public class CommonsDataLoader implements DataLoader {
 	 * Gets the {@code HttpContext}
 	 *
 	 * @return {@link HttpContext}
+	 * @deprecated since DSS 5.12. Use {@code getHttpContext(httpHost)} method instead
 	 */
+	@Deprecated
 	protected HttpContext getHttpContext() {
 		return HttpClientContext.create();
+	}
+
+	/**
+	 * Gets the {@code HttpContext}
+	 *
+	 * @return {@link HttpContext}
+	 */
+	protected HttpContext getHttpContext(HttpHost httpHost) {
+		HttpClientContext localContext = HttpClientContext.create();
+		localContext = configurePreemptiveAuthentication(localContext, httpHost);
+		return localContext;
+	}
+
+	/**
+	 * This method is used to configure preemptive authentication process for {@code HttpClientContext}, when required
+	 *
+	 * @param localContext {@link HttpClientContext}
+	 * @param httpHost {@link HttpHost}
+	 */
+	protected HttpClientContext configurePreemptiveAuthentication(HttpClientContext localContext, HttpHost httpHost) {
+		if (preemptiveAuthentication && Utils.isMapNotEmpty(getAuthenticationMap())) {
+			Credentials credentials = getCredentialsProvider().getCredentials(new AuthScope(httpHost), localContext);
+			BasicScheme basicScheme = new BasicScheme();
+			basicScheme.initPreemptive(credentials);
+			localContext.resetAuthExchange(httpHost, basicScheme);
+		}
+		return localContext;
 	}
 
 	/**
@@ -1225,6 +1275,18 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return {@link HttpClientBuilder}
 	 */
 	private HttpClientBuilder configCredentials(HttpClientBuilder httpClientBuilder, final String url) {
+		final BasicCredentialsProvider credentialsProvider = getCredentialsProvider();
+		httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+		httpClientBuilder = configureProxy(httpClientBuilder, credentialsProvider, url);
+		return httpClientBuilder;
+	}
+
+	/**
+	 * Builds and returns a {@code BasicCredentialsProvider} configured with {@code authenticationMap}
+	 *
+	 * @return {@link BasicCredentialsProvider}
+	 */
+	protected BasicCredentialsProvider getCredentialsProvider() {
 		final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 		for (final Map.Entry<HostConnection, UserCredentials> entry : getAuthenticationMap().entrySet()) {
 			final HostConnection hostConnection = entry.getKey();
@@ -1237,9 +1299,7 @@ public class CommonsDataLoader implements DataLoader {
 					userCredentials.getUsername(), userCredentials.getPassword());
 			credentialsProvider.setCredentials(authscope, usernamePasswordCredentials);
 		}
-		httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-		httpClientBuilder = configureProxy(httpClientBuilder, credentialsProvider, url);
-		return httpClientBuilder;
+		return credentialsProvider;
 	}
 
 	/**
