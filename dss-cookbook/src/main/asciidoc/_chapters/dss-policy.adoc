@@ -1983,16 +1983,27 @@ Default: `FAIL` (`MD5`, `SHA1`, `SHA224`, `SHA256`, `SHA384`, `SHA512`, `SHA3-25
 </Cryptographic>
 ----
 
-* `AlgoExpirationDate` - this constraint defines a list of acceptable algorithms with the corresponding expiration date for this algorithm. If an algorithm has been used after the defined date, the check will fail.
+[[AlgoExpirationDateElement]]
+* `AlgoExpirationDate` - this constraint defines a list of acceptable algorithms with the corresponding expiration date for this algorithm. If an algorithm has been used after the control time, the check will fail.
 
-Default: `FAIL` (see values below)
+Default: `FAIL` (see other values below)
+
+The element contains the following properties allowing definition of the expiration time for each supported algorithm, as well as customization of the behavior:
+
+ * `Format` - defines the format of a Date to be used within the element and its children (e.g. `yyyy-MM-dd` for a year, month and day definition).
+ * `Algo`/`Date` - defines an expiration date for a particular cryptographic algorithm according to the pattern defined within `Format` attribute.
+ * `Level` _(optional)_ - allows overwriting of the global validation level of the cryptographic constraints defined within `Cryptographic` constraint element.
+ * `UpdateDate` _(optional)_ - defines a date of the latest update of the cryptographic suites within the signature policy. The expired algorithms with the expiration `Date` after the `UpdateDate` will be validated according to the level defined within `LevelAfterUpdate` attribute. The value of `UpdateDate` attribute shall be defined according to the value present within `Format` attribute. _(By default, the publication date of the actual version of ETSI TS 119 312 <<R20>> is used.)_
+ * `LevelAfterUpdate` _(optional)_ - defines a validation level for cryptographic algorithms with expiration date after the date defined within `UpdateDate` attribute, when the latter is present.
+
+NOTE: If one of the `UpdateDate` or `LevelAfterUpdate` attributes is not defined, all cryptographic algorithms will be validated against the main validation `Level`, regardless of their expiration time.
 
 [source,xml,indent=0]
 .Example of AcceptableDigestAlgo usage (with FAIL validation level)
 ----
 <Cryptographic Level="FAIL">
     ...
-    <AlgoExpirationDate Format="yyyy">
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
 			<!-- Digest algorithms -->
 			<Algo Date="2005">MD5</Algo>
 			<Algo Date="2009">SHA1</Algo>

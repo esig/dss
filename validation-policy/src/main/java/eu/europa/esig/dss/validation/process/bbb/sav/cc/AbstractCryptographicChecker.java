@@ -164,7 +164,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code encryptionAlgorithm} is not expired in validation time, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> encryptionAlgorithmOnValidationTime() {
-		return new EncryptionAlgorithmOnValidationTimeCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, validationDate, result,
+		return new EncryptionAlgorithmAtValidationTimeCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, validationDate, result,
 				position, constraintWrapper);
 	}
 
@@ -174,7 +174,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code digestAlgorithm} is not expired in validation time, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> digestAlgorithmOnValidationTime() {
-		return new DigestAlgorithmOnValidationTimeCheck(i18nProvider, digestAlgorithm, validationDate, result, position, constraintWrapper);
+		return new DigestAlgorithmAtValidationTimeCheck(i18nProvider, digestAlgorithm, validationDate, result, position, constraintWrapper);
 	}
 
 	/**
