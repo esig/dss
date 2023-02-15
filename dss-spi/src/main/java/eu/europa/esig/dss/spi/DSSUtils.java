@@ -1387,6 +1387,30 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * This method returns a {@code SignatureAlgorithm} used to create the {@code signatureValue}
+	 * NOTE: Only EdDSA algorithm is being returned by this method. For non-EdDSA or unsupported format, NULL will be returned
+	 *
+	 * @param signatureValue byte array representing the signature value
+	 * @return {@link SignatureAlgorithm}
+	 */
+	public static SignatureAlgorithm getEdDSASignatureAlgorithm(byte[] signatureValue) {
+		/*
+		 * See RFC 8032 "Edwards-Curve Digital Signature Algorithm (EdDSA)"
+		 * ...
+		 * 4.  EdDSA uses small public keys (32 or 57 bytes) and
+		 *     signatures (64 or 114 bytes) for Ed25519 and Ed448, respectively;
+		 */
+		if (signatureValue.length == 64) {
+			return SignatureAlgorithm.ED25519;
+		} else if (signatureValue.length == 114) {
+			return SignatureAlgorithm.ED448;
+		} else {
+			LOG.error("Unable to identify EdDSA Signature Algorithm!");
+			return null;
+		}
+	}
+
+	/**
 	 * This method verifies the validity of thw provided {@code UserNotice} object
 	 *
 	 * @param userNotice {@link UserNotice} to check
