@@ -275,7 +275,7 @@
 					<Algo>RIPEMD160</Algo>
 					<Algo>WHIRLPOOL</Algo>
 				</AcceptableDigestAlgo>
-				<AlgoExpirationDate Format="yyyy">
+				<AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
 					<!-- Digest algorithms -->
 <!--				<Algo Date="2005">MD2</Algo> 		Not referenced in ETSI/SOGIS -->
 					<Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
@@ -346,7 +346,7 @@
 			<Algo>RIPEMD160</Algo>
 			<Algo>WHIRLPOOL</Algo>
 		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy">
+		<AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
 			<!-- Digest algorithms -->
 <!--		<Algo Date="2005">MD2</Algo> 		Not referenced in ETSI/SOGIS -->
 			<Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->

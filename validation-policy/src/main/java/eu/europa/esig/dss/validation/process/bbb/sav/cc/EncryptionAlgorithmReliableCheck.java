@@ -35,6 +35,9 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	/** The algorithm to check */
 	private final EncryptionAlgorithm encryptionAlgo;
 
+	/** The constraint */
+	private final CryptographicConstraintWrapper constraintWrapper;
+
 	/**
 	 * Default constructor
 	 *
@@ -47,8 +50,9 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 											   XmlCC result, MessageTag position,
 											   CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper);
+		super(i18nProvider, result, position, constraintWrapper.getAcceptableEncryptionAlgoLevel());
 		this.encryptionAlgo = encryptionAlgo;
+		this.constraintWrapper = constraintWrapper;
 	}
 
 	@Override

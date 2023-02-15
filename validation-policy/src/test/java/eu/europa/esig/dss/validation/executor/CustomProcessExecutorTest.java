@@ -1677,7 +1677,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
-		validationPolicy.getCryptographic().setLevel(Level.WARN);
+		validationPolicy.getCryptographic().getAlgoExpirationDate().setLevel(Level.WARN);
 
 		SignedAttributesConstraints signedAttributes = validationPolicy.getSignatureConstraints().getSignedAttributes();
 		LevelConstraint levelConstraint = new LevelConstraint();
@@ -11688,6 +11688,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 		CryptographicConstraint cryptographicConstraint = defaultPolicy.getDefaultCryptographicConstraint();
 		cryptographicConstraint.setLevel(Level.WARN);
+		cryptographicConstraint.getAlgoExpirationDate().setLevel(Level.WARN);
 		return defaultPolicy;
 	}
 

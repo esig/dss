@@ -734,6 +734,38 @@ not enforced
     </SigningCertificate>
 </Timestamp>
 ----
+|Expiration of cryptographic suites              a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Format="yyyy">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+                                                            a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
 
 |===
 

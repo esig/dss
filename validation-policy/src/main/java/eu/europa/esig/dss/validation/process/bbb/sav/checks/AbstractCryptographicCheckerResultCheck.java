@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -73,26 +74,11 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
 		XmlConclusion conclusion = ccResult.getConclusion();
 		if (conclusion != null && constraint != null && constraint.getLevel() != null) {
-			// Collects messages from higher levels :
-			// (some checks can have a different level than crypto constraints, e.g. signing-certificate-ref)
+			// Collects messages from all levels (required for generic crypto check)
 			List<XmlMessage> messages = new ArrayList<>();
-			switch (constraint.getLevel()) {
-				case INFORM:
-					messages.addAll(conclusion.getInfos());
-					messages.addAll(conclusion.getWarnings());
-					messages.addAll(conclusion.getErrors());
-					break;
-				case WARN:
-					messages.addAll(conclusion.getWarnings());
-					messages.addAll(conclusion.getErrors());
-					break;
-				case FAIL:
-					messages.addAll(conclusion.getErrors());
-					break;
-				default:
-					break;
-			}
-			
+			messages.addAll(conclusion.getErrors());
+			messages.addAll(conclusion.getWarnings());
+			messages.addAll(conclusion.getInfos());
 			if (Utils.isCollectionNotEmpty(messages)) {
 				return messages.iterator().next(); // take the first one
 			}
@@ -117,6 +103,21 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 		return true;
 	}
 	
+	@Override
+	protected Level getLevel() {
+		XmlConclusion conclusion = ccResult.getConclusion();
+		if (conclusion != null) {
+			if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
+				return Level.FAIL;
+			} else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
+				return Level.WARN;
+			} else if (Utils.isCollectionNotEmpty(conclusion.getInfos())) {
+				return Level.INFORM;
+			}
+		}
+		return super.getLevel();
+	}
+
 	@Override
 	protected XmlMessage buildConstraintMessage() {
 		return buildXmlMessage(MessageTag.ACCM, position);
@@ -148,7 +149,8 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	 * @return {@link String}, or empty string if check succeeded
 	 */
 	protected String getErrorMessage() {
-		return checkerResultMessage != null ? checkerResultMessage.getValue() : Utils.EMPTY_STRING;
+		XmlMessage errorMessage = buildErrorMessage();
+		return errorMessage != null ? errorMessage.getValue() : Utils.EMPTY_STRING;
 	}
 
 }

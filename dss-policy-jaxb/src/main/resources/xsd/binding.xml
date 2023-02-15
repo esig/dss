@@ -15,10 +15,6 @@
 			<jaxb:property name="Algos" />
 		</jaxb:bindings>
 
-		<jaxb:bindings node="//xs:complexType[@name='AlgoExpirationDate']//xs:element[@name='Algo']">
-			<jaxb:property name="Algos" />
-		</jaxb:bindings>
-
 	</jaxb:bindings>
 
 </jaxb:bindings>

@@ -382,7 +382,10 @@ public class SimpleReport {
 
 	/**
 	 * If the signature validation is TOTAL_PASSED, the result date is the date from
-	 * when a signature extension is useful (all certificates can be covered by a usable revocation data).
+	 * when a signature extension is possible to ensure the revocation freshness
+	 * (all certificates can be covered by a usable revocation data).
+	 * When certificate chain(s) do not require fresh revocation data
+	 * (e.g. if signature contains all necessary revocation data), NULL is returned.
 	 * 
 	 * @param signatureId the signature id
 	 * @return the minimal useful date for a signature extension (or null)
