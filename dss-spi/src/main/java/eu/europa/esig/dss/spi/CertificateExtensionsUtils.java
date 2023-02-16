@@ -15,6 +15,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
+import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.QcStatements;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,6 +88,8 @@ public class CertificateExtensionsUtils {
                     certificateExtensions.setCRLDistributionPoints(getCRLDistributionPoints(certificateToken));
                 } else if (isBasicConstraints(oid)) {
                     certificateExtensions.setBasicConstraints(getBasicConstraints(certificateToken));
+                } else if (isPolicyConstraints(oid)) {
+                    certificateExtensions.setPolicyConstraints(getPolicyConstraints(certificateToken));
                 } else if (isKeyUsage(oid)) {
                     certificateExtensions.setKeyUsage(getKeyUsage(certificateToken));
                 } else if (isExtendedKeyUsage(oid)) {
@@ -163,6 +167,16 @@ public class CertificateExtensionsUtils {
      */
     public static boolean isBasicConstraints(String oid) {
         return CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid().equals(oid);
+    }
+
+    /**
+     * This method verifies whether {@code oid} corresponds to the policy constraints extension OID
+     *
+     * @param oid {@link String}
+     * @return TRUE if OID corresponds to the policy constraints extension OID, FALSE otherwise
+     */
+    public static boolean isPolicyConstraints(String oid) {
+        return CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid().equals(oid);
     }
 
     /**
@@ -476,6 +490,41 @@ public class CertificateExtensionsUtils {
         basicConstraints.setPathLenConstraint(value);
         basicConstraints.checkCritical(certificateToken);
         return basicConstraints;
+    }
+
+    /**
+     * Returns a policy constraints extension, when present
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link PolicyConstraints}
+     */
+    public static PolicyConstraints getPolicyConstraints(CertificateToken certificateToken) {
+        final byte[] policyConstraintsBinaries = certificateToken.getCertificate()
+                .getExtensionValue(CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid());
+        if (Utils.isArrayNotEmpty(policyConstraintsBinaries)) {
+            final PolicyConstraints policyConstraints = new PolicyConstraints();
+            policyConstraints.setOctets(policyConstraintsBinaries);
+            try {
+                ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(policyConstraintsBinaries);
+                org.bouncycastle.asn1.x509.PolicyConstraints bcPolicyConstraints =
+                        org.bouncycastle.asn1.x509.PolicyConstraints.getInstance(seq);
+                BigInteger inhibitPolicyMapping = bcPolicyConstraints.getInhibitPolicyMapping();
+                if (inhibitPolicyMapping != null) {
+                    policyConstraints.setInhibitPolicyMapping(inhibitPolicyMapping.intValue());
+                }
+                BigInteger requireExplicitPolicyMapping = bcPolicyConstraints.getRequireExplicitPolicyMapping();
+                if (requireExplicitPolicyMapping != null) {
+                    policyConstraints.setRequireExplicitPolicy(requireExplicitPolicyMapping.intValue());
+                }
+                policyConstraints.checkCritical(certificateToken);
+                return policyConstraints;
+
+            } catch (Exception e) {
+                LOG.warn("Unable to parse the policyConstraints extension '{}' : {}",
+                        Utils.toBase64(policyConstraintsBinaries), e.getMessage(), e);
+            }
+        }
+        return null;
     }
 
     /**

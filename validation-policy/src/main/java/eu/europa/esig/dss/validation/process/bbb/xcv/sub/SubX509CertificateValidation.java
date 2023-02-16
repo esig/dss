@@ -82,6 +82,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoChec
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PolicyTreeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
@@ -212,6 +213,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(maxPathLength(currentCertificate, subContext));
 
+		item = item.setNextItem(policyTree(currentCertificate, subContext));
+
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
 
 		item = item.setNextItem(extendedKeyUsage(currentCertificate, subContext));
@@ -322,6 +325,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> maxPathLength(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateMaxPathLengthConstraint(context, subContext);
 		return new BasicConstraintsMaxPathLengthCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> policyTree(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificatePolicyTreeConstraint(context, subContext);
+		return new PolicyTreeCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> keyUsage(CertificateWrapper certificate, SubContext subContext) {

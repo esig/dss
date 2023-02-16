@@ -45,6 +45,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
@@ -82,6 +83,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
+import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.ValidityAssuredShortTerm;
@@ -981,9 +983,13 @@ public abstract class DiagnosticDataBuilder {
 	private List<String> getCleanedUrls(List<String> urls) {
 		List<String> cleanedUrls = new ArrayList<>();
 		for (String url : urls) {
-			cleanedUrls.add(DSSUtils.removeControlCharacters(url));
+			getCleanedUrl(url);
 		}
 		return cleanedUrls;
+	}
+
+	private String getCleanedUrl(String url) {
+		return DSSUtils.removeControlCharacters(url);
 	}
 
 	/**
@@ -1472,6 +1478,9 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateExtensions.getBasicConstraints() != null) {
 			xmlCertificateExtensions.add(getXmlBasicConstraints(certificateExtensions.getBasicConstraints()));
 		}
+		if (certificateExtensions.getPolicyConstraints() != null) {
+			xmlCertificateExtensions.add(getXmlPolicyConstraints(certificateExtensions.getPolicyConstraints()));
+		}
 		if (certificateExtensions.getKeyUsage() != null) {
 			xmlCertificateExtensions.add(getXmlKeyUsages(certificateExtensions.getKeyUsage()));
 		}
@@ -1533,7 +1542,7 @@ public abstract class DiagnosticDataBuilder {
 			XmlCertificatePolicy xmlCP = new XmlCertificatePolicy();
 			xmlCP.setValue(cp.getOid());
 			xmlCP.setDescription(OidRepository.getDescription(cp.getOid()));
-			xmlCP.setCpsUrl(DSSUtils.removeControlCharacters(cp.getCpsUrl()));
+			xmlCP.setCpsUrl(getCleanedUrl(cp.getCpsUrl()));
 			result.add(xmlCP);
 		}
 		return result;
@@ -1556,10 +1565,22 @@ public abstract class DiagnosticDataBuilder {
 		return xmlBasicConstraints;
 	}
 
+	private XmlPolicyConstraints getXmlPolicyConstraints(PolicyConstraints policyConstraints) {
+		final XmlPolicyConstraints xmlPolicyConstraints = new XmlPolicyConstraints();
+		fillXmlCertificateExtension(xmlPolicyConstraints, policyConstraints);
+		if (policyConstraints.getInhibitPolicyMapping() != -1) {
+			xmlPolicyConstraints.setInhibitPolicyMapping(policyConstraints.getInhibitPolicyMapping());
+		}
+		if (policyConstraints.getRequireExplicitPolicy() != -1) {
+			xmlPolicyConstraints.setRequireExplicitPolicy(policyConstraints.getRequireExplicitPolicy());
+		}
+		return xmlPolicyConstraints;
+	}
+
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints(CRLDistributionPoints crlDistributionPoints) {
 		final XmlCRLDistributionPoints xmlCRLDistributionPoints = new XmlCRLDistributionPoints();
 		fillXmlCertificateExtension(xmlCRLDistributionPoints, crlDistributionPoints);
-		xmlCRLDistributionPoints.getCrlUrl().addAll(crlDistributionPoints.getCrlUrls());
+		xmlCRLDistributionPoints.getCrlUrl().addAll(getCleanedUrls(crlDistributionPoints.getCrlUrls()));
 		return xmlCRLDistributionPoints;
 	}
 
@@ -1581,8 +1602,8 @@ public abstract class DiagnosticDataBuilder {
 	private XmlAuthorityInformationAccess getXmlAuthorityInformationAccess(AuthorityInformationAccess aia) {
 		final XmlAuthorityInformationAccess xmlAuthorityInformationAccess = new XmlAuthorityInformationAccess();
 		fillXmlCertificateExtension(xmlAuthorityInformationAccess, aia);
-		xmlAuthorityInformationAccess.getCaIssuersUrls().addAll(aia.getCaIssuers());
-		xmlAuthorityInformationAccess.getOcspUrls().addAll(aia.getOcsp());
+		xmlAuthorityInformationAccess.getCaIssuersUrls().addAll(getCleanedUrls(aia.getCaIssuers()));
+		xmlAuthorityInformationAccess.getOcspUrls().addAll(getCleanedUrls(aia.getOcsp()));
 		return xmlAuthorityInformationAccess;
 	}
 
@@ -1641,18 +1662,6 @@ public abstract class DiagnosticDataBuilder {
 			}
 		}
 		return revocations;
-	}
-
-	private XmlBasicConstraints getXmlBasicConstraints(CertificateToken certificateToken) {
-		if (certificateToken.isCA()) {
-			XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
-			basicConstraints.setCA(certificateToken.isCA());
-			if (certificateToken.getPathLenConstraint() != -1) {
-				basicConstraints.setPathLenConstraint(certificateToken.getPathLenConstraint());
-			}
-			return basicConstraints;
-		}
-		return null;
 	}
 
 	private List<XmlOID> getXmlOids(Collection<String> oidList) {

@@ -21,6 +21,9 @@ public class CertificateExtensions {
     /** RFC 5280: 4.2.1.9. Basic Constraints */
     private BasicConstraints basicConstraints;
 
+    /** RFC 5280: 4.2.1.11. Policy Constraints */
+    private PolicyConstraints policyConstraints;
+
     /** RFC 5280: 4.2.1.12. Extended Key Usage */
     private ExtendedKeyUsages extendedKeyUsage;
 
@@ -125,6 +128,24 @@ public class CertificateExtensions {
      */
     public void setBasicConstraints(BasicConstraints basicConstraints) {
         this.basicConstraints = basicConstraints;
+    }
+
+    /**
+     * Returns the policy constraints
+     *
+     * @return {@link PolicyConstraints}
+     */
+    public PolicyConstraints getPolicyConstraints() {
+        return policyConstraints;
+    }
+
+    /**
+     * Sets the policy constrains
+     *
+     * @param policyConstraints {@link PolicyConstraints}
+     */
+    public void setPolicyConstraints(PolicyConstraints policyConstraints) {
+        this.policyConstraints = policyConstraints;
     }
 
     /**

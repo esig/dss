@@ -622,6 +622,11 @@
 					<xsd:documentation>Checks if the depth of the subject certificate within certificate chain is allowed by pathLenConstraint within intermediate CA certificates</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="PolicyTree" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of a policy tree as per RFC 5280</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's key usages are in the acceptable values list</xsd:documentation>

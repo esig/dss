@@ -39,6 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
@@ -184,6 +185,32 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlBasicConstraints getXmlBasicConstraints() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid(), XmlBasicConstraints.class);
+	}
+
+	/**
+	 * Returns value of the requireExplicitPolicy field of policyConstraints certificate extension
+	 *
+	 * @return requireExplicitPolicy value if present, -1 otherwise
+	 */
+	public int getRequireExplicitPolicy() {
+		XmlPolicyConstraints policyConstraints = getXmlPolicyConstraints();
+		return policyConstraints != null && policyConstraints.getRequireExplicitPolicy() != null ?
+				policyConstraints.getRequireExplicitPolicy() : -1;
+	}
+
+	/**
+	 * Returns value of the inhibitPolicyMapping field of policyConstraints certificate extension
+	 *
+	 * @return inhibitPolicyMapping value if present, -1 otherwise
+	 */
+	public int getInhibitPolicyMapping() {
+		XmlPolicyConstraints policyConstraints = getXmlPolicyConstraints();
+		return policyConstraints != null && policyConstraints.getInhibitPolicyMapping() != null ?
+				policyConstraints.getInhibitPolicyMapping() : -1;
+	}
+
+	private XmlPolicyConstraints getXmlPolicyConstraints() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid(), XmlPolicyConstraints.class);
 	}
 
 	/**
@@ -689,6 +716,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		if (xmlCertificatePolicies != null) {
 			List<XmlCertificatePolicy> certificatePolicyIds = xmlCertificatePolicies.getCertificatePolicy();
 			return getOidValues(certificatePolicyIds);
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns the certificate policies Ids
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<XmlCertificatePolicy> getCertificatePolicies() {
+		XmlCertificatePolicies xmlCertificatePolicies = getXmlCertificatePolicies();
+		if (xmlCertificatePolicies != null) {
+			return xmlCertificatePolicies.getCertificatePolicy();
 		}
 		return Collections.emptyList();
 	}
