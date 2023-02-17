@@ -293,16 +293,6 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext);
 
 	/**
-	 * Returns certificate PolicyTree constraint
-	 *
-	 * @param context {@link Context}
-	 * @param subContext {@link SubContext}
-	 * @return {@code LevelConstraint} if PolicyTree for a given context element is present in the constraint file,
-	 *         null otherwise.
-	 */
-	LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext);
-
-	/**
 	 * Returns certificate key usage constraint
 	 *
 	 * @param context {@link Context}
@@ -321,6 +311,16 @@ public interface ValidationPolicy {
 	 *                                 null otherwise.
 	 */
 	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate PolicyTree constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicyTree for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate supported critical extensions constraint

@@ -466,6 +466,7 @@
 				<xs:element name="SubjectAlternativeNames" type="SubjectAlternativeNames" />
 				<xs:element name="BasicConstraints" type="BasicConstraints" />
 				<xs:element name="PolicyConstraints" type="PolicyConstraints" />
+				<xs:element name="InhibitAnyPolicy" type="InhibitAnyPolicy" />
 				<xs:element name="CRLDistributionPoints" type="CRLDistributionPoints" />
 				<xs:element name="AuthorityKeyIdentifier" type="AuthorityKeyIdentifier" />
 				<xs:element name="SubjectKeyIdentifier" type="SubjectKeyIdentifier" />
@@ -541,6 +542,14 @@
 			<xs:extension base="CertificateExtension">
 				<xs:attribute name="requireExplicitPolicy" type="xs:int" use="optional" />
 				<xs:attribute name="inhibitPolicyMapping" type="xs:int" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="InhibitAnyPolicy">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="value" type="xs:int" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
@@ -211,6 +212,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlPolicyConstraints getXmlPolicyConstraints() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid(), XmlPolicyConstraints.class);
+	}
+
+	/**
+	 * Returns value of the inhibitAnyPolicy certificate extension's value
+	 *
+	 * @return inhibitAnyPolicy certificate extension's value if present, -1 otherwise
+	 */
+	public int getInhibitAnyPolicy() {
+		XmlInhibitAnyPolicy inhibitAnyPolicy = getXmlInhibitAnyPolicy();
+		return inhibitAnyPolicy != null && inhibitAnyPolicy.getValue() != null ?
+				inhibitAnyPolicy.getValue() : -1;
+	}
+
+	private XmlInhibitAnyPolicy getXmlInhibitAnyPolicy() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid(), XmlInhibitAnyPolicy.class);
 	}
 
 	/**

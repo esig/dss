@@ -362,10 +362,39 @@ public final class DSSASN1Utils {
 	 *
 	 * @param bytes
 	 *              {@code byte} representation of {@code DEROctetString}
-	 * @return encapsulated {@code ASN1Sequence} @ in case of a decoding problem
+	 * @return encapsulated {@code ASN1Sequence} or exception in case of a decoding problem
 	 */
 	public static ASN1Sequence getAsn1SequenceFromDerOctetString(byte[] bytes) {
 		return getASN1Sequence(getDEROctetStringContent(bytes));
+	}
+
+	private static ASN1Sequence getASN1Sequence(byte[] bytes) {
+		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
+			return (ASN1Sequence) input.readObject();
+		} catch (IOException e) {
+			throw new DSSException("Unable to retrieve the ASN1Sequence", e);
+		}
+	}
+
+	/**
+	 * This method returns the {@code ASN1Integer} encapsulated in
+	 * {@code DEROctetString}. The {@code DEROctetString} is represented as
+	 * {@code byte} array.
+	 *
+	 * @param bytes
+	 *              {@code byte} representation of {@code DEROctetString}
+	 * @return encapsulated {@code ASN1Integer} or exception in case of a decoding problem
+	 */
+	public static ASN1Integer getAsn1IntegerFromDerOctetString(byte[] bytes) {
+		return getASN1Integer(getDEROctetStringContent(bytes));
+	}
+
+	private static ASN1Integer getASN1Integer(byte[] bytes) {
+		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
+			return (ASN1Integer) input.readObject();
+		} catch (IOException e) {
+			throw new DSSException("Unable to retrieve the ASN1Integer", e);
+		}
 	}
 
 	private static byte[] getDEROctetStringContent(byte[] bytes) {
@@ -374,14 +403,6 @@ public final class DSSASN1Utils {
 			return s.getOctets();
 		} catch (IOException e) {
 			throw new DSSException("Unable to retrieve the DEROctetString content", e);
-		}
-	}
-
-	private static ASN1Sequence getASN1Sequence(byte[] bytes) {
-		try (ASN1InputStream input = new ASN1InputStream(bytes)) {
-			return (ASN1Sequence) input.readObject();
-		} catch (IOException e) {
-			throw new DSSException("Unable to retrieve the ASN1Sequence", e);
 		}
 	}
 

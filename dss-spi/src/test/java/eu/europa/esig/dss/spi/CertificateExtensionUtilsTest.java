@@ -5,9 +5,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.extension.AuthorityInformationAccess;
 import eu.europa.esig.dss.model.x509.extension.AuthorityKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.CRLDistributionPoints;
+import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
+import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
 import eu.europa.esig.dss.utils.Utils;
@@ -197,5 +200,65 @@ public class CertificateExtensionUtilsTest {
         assertEquals(0, Utils.collectionSize(subjectAlternativeNames));
     }
 
+    @Test
+    public void getPolicyConstraints() {
+        CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
+        PolicyConstraints policyConstraints = CertificateExtensionsUtils.getPolicyConstraints(certificate);
+        assertNotNull(policyConstraints);
+        assertEquals(0, policyConstraints.getRequireExplicitPolicy());
+        assertEquals(-1, policyConstraints.getInhibitPolicyMapping());
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        PolicyConstraints policyConstraintsExt = certificateExtensions.getPolicyConstraints();
+        assertNotNull(policyConstraintsExt);
+        assertEquals(0, policyConstraintsExt.getRequireExplicitPolicy());
+        assertEquals(-1, policyConstraintsExt.getInhibitPolicyMapping());
+    }
+
+    @Test
+    public void getPolicyConstraintsTwo() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIClDCCAf2gAwIBAgIBNzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
+                "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
+                "MTkxNDU3MjBaMEwxCzAJBgNVBAYTAlVTMRowGAYDVQQKExFUZXN0IENlcnRpZmljYXRlczEhMB8GA1UE\n" +
+                "AxMYaW5oaWJpdFBvbGljeU1hcHBpbmcwIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDQIzx8\n" +
+                "7J8x9DkeOhXlBG/eAUo6B99wk9uPjSwrZ7f+CXzaECXTCOk88n35mahe/lgpBbr8ujs9D6bCgS+AVciy\n" +
+                "qJAtZFW45FX6xjb6fcLzebF4HTOpBYVxkqlJ9nLLCkaBHMIq1U5jR8jDZhgTnMBvNm0yBdNFo6Lh6A5d\n" +
+                "+Gr5jwIDAQABo4GRMIGOMB8GA1UdIwQYMBaAFPts1C2Bnsonep4NsDzqmryH/0nqMB0GA1UdDgQWBBRs\n" +
+                "6ccKAUJAQfXzcI7u4dFSXtc3WjAOBgNVHQ8BAf8EBAMCAQYwFwYDVR0gBBAwDjAMBgpghkgBZQMCATAB\n" +
+                "MA8GA1UdEwEB/wQFMAMBAf8wEgYDVR0kAQH/BAgwBoABAIEBADANBgkqhkiG9w0BAQUFAAOBgQDR8om4\n" +
+                "2wMsHX434zvF/Yl3Lm4GBdFmFWIiRNpqH5iS8X1lGbi1pEAgm37Pvvobd5tcsZd2tsz0/DOTvntZhUdX\n" +
+                "5rmvN4x0i3JUXb9bOPMDs2iJs5oFF6IqTSk9wJXUwsPy3ltGGWpU817s4uj8HU3tffkyOyc7j1u3l8x2\n" +
+                "LJWPvA==");
+        PolicyConstraints policyConstraints = CertificateExtensionsUtils.getPolicyConstraints(certificate);
+        assertNotNull(policyConstraints);
+        assertEquals(0, policyConstraints.getRequireExplicitPolicy());
+        assertEquals(0, policyConstraints.getInhibitPolicyMapping());
+    }
+
+    @Test
+    public void getInhibitAnyPolicy() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIICmTCCAgKgAwIBAgIBOzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
+                "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
+                "MTkxNDU3MjBaMEgxCzAJBgNVBAYTAlVTMRowGAYDVQQKExFUZXN0IENlcnRpZmljYXRlczEdMBsGA1UE\n" +
+                "AxMUaW5oaWJpdEFueVBvbGljeTAgQ0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALXCzoaXAEbX\n" +
+                "pgMPDk3SCu2nzrt+I18MsI4lg/0oLjQAgPsD0np8LOGHMzo3UBtfJtpV0BXCc+E++Ni+ehXFWfA4BXjF\n" +
+                "c3GdUdJmn7y3F9X7XSIauTE1GSYR2+bMW/IRbmjpMDzldmRsWNb40N+jWAxw1h+YN61Pv0MD7Ef2ds0N\n" +
+                "AgMBAAGjgZowgZcwHwYDVR0jBBgwFoAU+2zULYGeyid6ng2wPOqavIf/SeowHQYDVR0OBBYEFJ1AmGAI\n" +
+                "5sj9XNHYLwvqAOwaRQbPMA4GA1UdDwEB/wQEAwIBBjAXBgNVHSAEEDAOMAwGCmCGSAFlAwIBMAEwDwYD\n" +
+                "VR0TAQH/BAUwAwEB/zAMBgNVHSQEBTADgAEAMA0GA1UdNgEB/wQDAgEAMA0GCSqGSIb3DQEBBQUAA4GB\n" +
+                "ALhhUDb9VolIM2bKpbpat4dNjGrkOmVT/HvGBl+FGwSXa7MjcLgZ3WygZ9gil3l7X+wL7lM9zKpXljV5\n" +
+                "WNpX+58RclQ2kK7Yk4qcY0tpPEUn8R4/9yg64Nferl/2gn9W79ODU3BiBFF/GiAJJ4SiwvLWl/JnPDoQ\n" +
+                "uJv67IS24+Oa");
+        InhibitAnyPolicy inhibitAnyPolicy = CertificateExtensionsUtils.getInhibitAnyPolicy(certificate);
+        assertNotNull(inhibitAnyPolicy);
+        assertEquals(0, inhibitAnyPolicy.getValue());
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        InhibitAnyPolicy inhibitAnyPolicyExt = certificateExtensions.getInhibitAnyPolicy();
+        assertNotNull(inhibitAnyPolicyExt);
+        assertEquals(0, inhibitAnyPolicyExt.getValue());
+    }
 
 }

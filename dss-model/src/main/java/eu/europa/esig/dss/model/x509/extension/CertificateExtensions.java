@@ -30,6 +30,9 @@ public class CertificateExtensions {
     /** RFC 5280: 4.2.1.13. CRL Distribution Points */
     private CRLDistributionPoints crlDistributionPoints;
 
+    /** RFC 5280: 4.2.1.14. Inhibit anyPolicy */
+    private InhibitAnyPolicy inhibitAnyPolicy;
+
     /** RFC 5280: 4.2.1.1. Authority Key Identifier */
     private AuthorityKeyIdentifier authorityKeyIdentifier;
 
@@ -182,6 +185,24 @@ public class CertificateExtensions {
      */
     public void setCRLDistributionPoints(CRLDistributionPoints crlDistributionPoints) {
         this.crlDistributionPoints = crlDistributionPoints;
+    }
+
+    /**
+     * Returns the InhibitAnyPolicy extension
+     *
+     * @return {@link InhibitAnyPolicy}
+     */
+    public InhibitAnyPolicy getInhibitAnyPolicy() {
+        return inhibitAnyPolicy;
+    }
+
+    /**
+     * Sets the InhibitAnyPolicy extension
+     *
+     * @param inhibitAnyPolicy {@link InhibitAnyPolicy}
+     */
+    public void setInhibitAnyPolicy(InhibitAnyPolicy inhibitAnyPolicy) {
+        this.inhibitAnyPolicy = inhibitAnyPolicy;
     }
 
     /**

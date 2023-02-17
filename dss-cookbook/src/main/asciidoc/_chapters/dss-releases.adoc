@@ -822,6 +822,18 @@ not enforced
     </SigningCertificate>
 </Timestamp>
 ----
+|Certificate Policy Tree                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <PolicyTree Level="WARN" />
+    ...
+</SigningCertificate>
+----
 |ResponderId for OCSP response                     |
 ----
 not enforced

@@ -58,6 +58,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
@@ -761,6 +762,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					XmlPolicyConstraints xmlPolicyConstraints = (XmlPolicyConstraints) xmlCertificateExtension;
 					assertTrue(xmlPolicyConstraints.getRequireExplicitPolicy() != null ||
 							xmlPolicyConstraints.getInhibitPolicyMapping() != null);
+				} else if (CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlInhibitAnyPolicy);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlInhibitAnyPolicy xmlInhibitAnyPolicy = (XmlInhibitAnyPolicy) xmlCertificateExtension;
+					assertNotNull(xmlInhibitAnyPolicy.getValue());
+					assertNotEquals(-1, xmlInhibitAnyPolicy.getValue().intValue());
 				} else if (CertificateExtensionEnum.KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlKeyUsages);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));

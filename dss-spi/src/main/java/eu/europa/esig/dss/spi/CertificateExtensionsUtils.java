@@ -13,6 +13,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
@@ -21,6 +22,7 @@ import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.ValidityAssuredShortTerm;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -90,6 +92,8 @@ public class CertificateExtensionsUtils {
                     certificateExtensions.setBasicConstraints(getBasicConstraints(certificateToken));
                 } else if (isPolicyConstraints(oid)) {
                     certificateExtensions.setPolicyConstraints(getPolicyConstraints(certificateToken));
+                } else if (isInhibitAnyPolicy(oid)) {
+                    certificateExtensions.setInhibitAnyPolicy(getInhibitAnyPolicy(certificateToken));
                 } else if (isKeyUsage(oid)) {
                     certificateExtensions.setKeyUsage(getKeyUsage(certificateToken));
                 } else if (isExtendedKeyUsage(oid)) {
@@ -197,6 +201,16 @@ public class CertificateExtensionsUtils {
      */
     public static boolean isExtendedKeyUsage(String oid) {
         return CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid().equals(oid);
+    }
+
+    /**
+     * This method verifies whether {@code oid} corresponds to the policy constraints extension OID
+     *
+     * @param oid {@link String}
+     * @return TRUE if OID corresponds to the policy constraints extension OID, FALSE otherwise
+     */
+    public static boolean isInhibitAnyPolicy(String oid) {
+        return CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid().equals(oid);
     }
 
     /**
@@ -522,6 +536,37 @@ public class CertificateExtensionsUtils {
             } catch (Exception e) {
                 LOG.warn("Unable to parse the policyConstraints extension '{}' : {}",
                         Utils.toBase64(policyConstraintsBinaries), e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns an inhibit anyPolicy extension, when present
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link PolicyConstraints}
+     */
+    public static InhibitAnyPolicy getInhibitAnyPolicy(CertificateToken certificateToken) {
+        final byte[] inhibitAnyPolicyBinaries = certificateToken.getCertificate()
+                .getExtensionValue(CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid());
+        if (Utils.isArrayNotEmpty(inhibitAnyPolicyBinaries)) {
+            final InhibitAnyPolicy inhibitAnyPolicy = new InhibitAnyPolicy();
+            inhibitAnyPolicy.setOctets(inhibitAnyPolicyBinaries);
+            try {
+                ASN1Integer asn1Integer = DSSASN1Utils.getAsn1IntegerFromDerOctetString(inhibitAnyPolicyBinaries);
+                if (asn1Integer != null) {
+                    BigInteger value = asn1Integer.getValue();
+                    if (value != null) {
+                        inhibitAnyPolicy.setValue(value.intValue());
+                        inhibitAnyPolicy.checkCritical(certificateToken);
+                        return inhibitAnyPolicy;
+                    }
+                }
+
+            } catch (Exception e) {
+                LOG.warn("Unable to parse the inhibitAnyPolicy extension '{}' : {}",
+                        Utils.toBase64(inhibitAnyPolicyBinaries), e.getMessage(), e);
             }
         }
         return null;

@@ -39,6 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
@@ -81,6 +82,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
@@ -983,7 +985,7 @@ public abstract class DiagnosticDataBuilder {
 	private List<String> getCleanedUrls(List<String> urls) {
 		List<String> cleanedUrls = new ArrayList<>();
 		for (String url : urls) {
-			getCleanedUrl(url);
+			cleanedUrls.add(getCleanedUrl(url));
 		}
 		return cleanedUrls;
 	}
@@ -1493,6 +1495,9 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateExtensions.getExtendedKeyUsage() != null) {
 			xmlCertificateExtensions.add(getXmlExtendedKeyUsages(certificateExtensions.getExtendedKeyUsage()));
 		}
+		if (certificateExtensions.getInhibitAnyPolicy() != null) {
+			xmlCertificateExtensions.add(getXmlInhibitAnyPolicy(certificateExtensions.getInhibitAnyPolicy()));
+		}
 		if (certificateExtensions.getAuthorityInformationAccess() != null) {
 			xmlCertificateExtensions.add(getXmlAuthorityInformationAccess(certificateExtensions.getAuthorityInformationAccess()));
 		}
@@ -1575,6 +1580,15 @@ public abstract class DiagnosticDataBuilder {
 			xmlPolicyConstraints.setRequireExplicitPolicy(policyConstraints.getRequireExplicitPolicy());
 		}
 		return xmlPolicyConstraints;
+	}
+
+	private XmlInhibitAnyPolicy getXmlInhibitAnyPolicy(InhibitAnyPolicy inhibitAnyPolicy) {
+		final XmlInhibitAnyPolicy xmlInhibitAnyPolicy = new XmlInhibitAnyPolicy();
+		fillXmlCertificateExtension(xmlInhibitAnyPolicy, inhibitAnyPolicy);
+		if (inhibitAnyPolicy.getValue() != -1) {
+			xmlInhibitAnyPolicy.setValue(inhibitAnyPolicy.getValue());
+		}
+		return xmlInhibitAnyPolicy;
 	}
 
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints(CRLDistributionPoints crlDistributionPoints) {

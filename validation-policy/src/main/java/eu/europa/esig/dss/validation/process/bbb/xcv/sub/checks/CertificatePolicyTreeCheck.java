@@ -21,7 +21,7 @@ import java.util.Set;
  * This check verifies if the certificate has a valid policy tree according to its certification path in regards to RFC 5280
  *
  */
-public class PolicyTreeCheck extends ChainItem<XmlSubXCV> {
+public class CertificatePolicyTreeCheck extends ChainItem<XmlSubXCV> {
 
     /** Certificate to check */
     private final CertificateWrapper certificate;
@@ -34,46 +34,61 @@ public class PolicyTreeCheck extends ChainItem<XmlSubXCV> {
      * @param certificate {@link CertificateWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public PolicyTreeCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-                           LevelConstraint constraint) {
+    public CertificatePolicyTreeCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
+                                      LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
     }
 
     @Override
     protected boolean process() {
+        /*
+         * 6.1.2. Initialization
+         */
         final List<CertificateWrapper> certificateChain = new ArrayList<>();
         certificateChain.add(certificate);
         certificateChain.addAll(certificate.getCertificateChain()); // current certificate is not returned
         /*
-         * (d)  explicit_policy:  an integer that indicates if a non-NULL
+         * (a) valid_policy_tree:  A tree of certificate policies with their
+         * optional qualifiers; each of the leaves of the tree
+         * represents a valid policy at this stage in the certification
+         * path validation.
+         * ...
+         * The initial value of the valid_policy_tree is a single node with
+         * valid_policy anyPolicy, an empty qualifier_set, and an
+         * expected_policy_set with the single value anyPolicy.
+         * This node is considered to be at depth zero.
+         */
+        PolicyTreeNode validPolicyTree = PolicyTreeNode.initTree();
+        /*
+         * (d) explicit_policy:  an integer that indicates if a non-NULL
          * valid_policy_tree is required.
          * ...
          * If initial-explicit-policy is set, then the
          * initial value is 0, otherwise the initial value is n+1.
          */
         int explicitPolicy = certificateChain.size() + 1;
-        PolicyTreeNode validPolicyTree = PolicyTreeNode.initTree();
+        /*
+         * (e) inhibit_anyPolicy:  an integer that indicates whether the
+         * anyPolicy policy identifier is considered a match.
+         * ...
+         * If initial-any-policy-inhibit is set, then the initial value is 0,
+         * otherwise the initial value is n+1.
+         */
+        int inhibitAnyPolicy = certificateChain.size() + 1;
+
+        // internal variable to facilitate processing
         Set<PolicyTreeNode> previousLevelNodes = Collections.singleton(validPolicyTree);
+
+        /*
+         * 6.1.3. Basic Certificate Processing
+         * The basic path processing actions to be performed for certificate i
+         * (for all i in [1..n]) are listed below.
+         */
         for (int i = certificateChain.size() - 1; i > -1; i--) {
-            /*
-             * (h) If certificate i is not self-issued:
-             * (1) If explicit_policy is not 0, decrement explicit_policy by 1.
-             * ...
-             */
             final CertificateWrapper cert = certificateChain.get(i);
-            if (explicitPolicy != 0 && !cert.isSelfSigned()) {
-                --explicitPolicy;
-            }
-            /*
-             * (i) (1) If requireExplicitPolicy is present and is less than
-             * explicit_policy, set explicit_policy to the value of
-             * requireExplicitPolicy.
-             */
-            int requireExplicitPolicy = cert.getRequireExplicitPolicy();
-            if (requireExplicitPolicy != -1 && requireExplicitPolicy < explicitPolicy) {
-                explicitPolicy = requireExplicitPolicy;
-            }
+            int certRequireExplicitPolicy = cert.getRequireExplicitPolicy();
+            int certInhibitAnyPolicy = cert.getInhibitAnyPolicy();
             /*
              * (d) If the certificate policies extension is present in the
              * certificate and the valid_policy_tree is not NULL, process
@@ -104,8 +119,7 @@ public class PolicyTreeCheck extends ChainItem<XmlSubXCV> {
                      * inhibit_anyPolicy is greater than 0 or (b) i<n and the
                      * certificate is self-issued, then:
                      */
-                    // TODO : add inhibit_anyPolicy support
-                    else if (i != 0 && cert.isSelfSigned()) {
+                    else if (inhibitAnyPolicy > 0 || (i != 0 && cert.isSelfSigned())) {
                         for (PolicyTreeNode node : previousLevelNodes) {
                             Set<PolicyTreeNode> children = node.createAnyPolicyChildren();
                             currentLevelNodes.addAll(children);
@@ -129,13 +143,87 @@ public class PolicyTreeCheck extends ChainItem<XmlSubXCV> {
             else if (Utils.isCollectionEmpty(certificatePolicies)) {
                 validPolicyTree = null;
             }
-            previousLevelNodes = currentLevelNodes;
             /*
              * (f) Verify that either explicit_policy is greater than 0 or the
              * valid_policy_tree is not equal to NULL;
              */
             if (explicitPolicy == 0 && validPolicyTree == null) {
                 return false;
+            }
+            /*
+             * If i is not equal to n, continue by performing the preparatory steps
+             * listed in Section 6.1.4. If i is equal to n, perform the wrap-up
+             * steps listed in Section 6.1.5.
+             */
+            // descending order
+            if (i != 0) {
+                /*
+                 * 6.1.4. Preparation for Certificate i+1
+                 */
+                previousLevelNodes = currentLevelNodes;
+                /*
+                 * (h) If certificate i is not self-issued:
+                 */
+                if (!cert.isSelfSigned()) {
+                    /*
+                     * (1) If explicit_policy is not 0, decrement explicit_policy by 1.
+                     * ...
+                     */
+                    if (explicitPolicy != 0) {
+                        --explicitPolicy;
+                    }
+                    /*
+                     * (3) If inhibit_anyPolicy is not 0, decrement inhibit_anyPolicy by 1.
+                     */
+                    if (inhibitAnyPolicy != 0) {
+                        --inhibitAnyPolicy;
+                    }
+                }
+                /*
+                 * (i) (1) If requireExplicitPolicy is present and is less than
+                 * explicit_policy, set explicit_policy to the value of
+                 * requireExplicitPolicy.
+                 */
+                if (certRequireExplicitPolicy != -1 && certRequireExplicitPolicy < explicitPolicy) {
+                    explicitPolicy = certRequireExplicitPolicy;
+                }
+                /*
+                 * (j) If the inhibitAnyPolicy extension is included in the
+                 * certificate and is less than inhibit_anyPolicy, set
+                 * inhibit_anyPolicy to the value of inhibitAnyPolicy.
+                 */
+                if (certInhibitAnyPolicy != -1 && certInhibitAnyPolicy < inhibitAnyPolicy) {
+                    inhibitAnyPolicy = certInhibitAnyPolicy;
+                }
+            }
+            /*
+             * 6.1.5. Wrap-Up Procedure
+             * To complete the processing of the target certificate, perform the
+             * following steps for certificate n:
+             */
+            else {
+                /*
+                 * (a) If explicit_policy is not 0, decrement explicit_policy by 1.
+                 */
+                if (explicitPolicy != 0) {
+                    --explicitPolicy;
+                }
+                /*
+                 * (b) If a policy constraints extension is included in the
+                 * certificate and requireExplicitPolicy is present and has a
+                 * value of 0, set the explicit_policy state variable to 0.
+                 */
+                if (certRequireExplicitPolicy == 0) {
+                    explicitPolicy = 0;
+                }
+                /*
+                 * If either (1) the value of explicit_policy variable is greater than
+                 * zero or (2) the valid_policy_tree is not NULL, then path processing
+                 * has succeeded.
+                 */
+                if (explicitPolicy == 0 && validPolicyTree == null) {
+                    return false;
+                }
             }
         }
 

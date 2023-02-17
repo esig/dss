@@ -16,10 +16,13 @@ public class PolicyTreeNode {
     /** Represents an anyPolicy OID */
     private static final String ANY_POLICY = "2.5.29.32.0";
 
+    /** Represents a valid_policy element of a policy tree node */
     private final String validPolicy;
 
+    /** Represents a qualifier_set element of a policy tree node */
     private final Set<String> qualifierSet;
 
+    /** Represents a expected_policy_set element of a policy tree node */
     private final Set<String> expectedPolicySet;
 
     /** Represents policy node's children */
