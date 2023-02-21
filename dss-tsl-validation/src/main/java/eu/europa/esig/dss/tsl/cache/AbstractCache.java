@@ -52,6 +52,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * Default constructor instantiating cache with empty map
 	 */
 	protected AbstractCache() {
+		// empty
 	}
 	
 	/**
@@ -65,6 +66,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 
 	/**
 	 * Returns the CachedEntry for the related {@code cacheKey}. Returns new empty entry if no result found for the key
+	 *
 	 * @param cacheKey {@link CacheKey}
 	 * @return {@link CachedEntry}
 	 */
@@ -83,6 +85,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Updates in the cache the value for {@code cacheKey} with the given {@code result}
+	 *
 	 * @param cacheKey {@link CacheKey} key to update value for
 	 * @param result {@link CachedResult} to store
 	 */
@@ -94,6 +97,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Updates the state for a CachedEntry matching to the given key to EXPIRED
+	 *
 	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
 	 */
 	public void expire(CacheKey cacheKey) {
@@ -104,6 +108,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Removes the requested entry with the given {@code cacheKey}
+	 *
 	 * @param cacheKey {@link CacheKey} of the entry to be deleted from the cache
 	 */
 	public void remove(CacheKey cacheKey) {
@@ -119,6 +124,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Updates the state for a CachedEntry matching to the given key to SYNCHRONIZED
+	 *
 	 * @param cacheKey {@link CacheKey} of a CachedEntry to update
 	 */
 	public void sync(CacheKey cacheKey) {
@@ -129,6 +135,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 
 	/**
 	 * Checks if a CachedEntry for the given key is not up to date
+	 *
 	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
 	 * @return TRUE if update is required for the matching CachedKey, FALSE otherwise
 	 */
@@ -142,6 +149,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Checks if a CachedEntry for the given key is not up to date
+	 *
 	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
 	 * @return TRUE if update is required for the matching CachedKey, FALSE otherwise
 	 */
@@ -155,6 +163,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 
 	/**
 	 * Checks if a CachedEntry for the given key is empty (has no result)
+	 *
 	 * @param cacheKey {@link CacheKey} of the CacheEntry to check
 	 * @return TRUE if the entry is empty, FALSE otherwise
 	 */
@@ -183,6 +192,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 
 	/**
 	 * Updates entry status to TO_BE_DELETED value
+	 *
 	 * @param cacheKey {@link CacheKey} to update
 	 */
 	public void toBeDeleted(CacheKey cacheKey) {
@@ -193,6 +203,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	
 	/**
 	 * Checks if the requested cacheKey has TO_BE_DELETED value
+	 *
 	 * @param cacheKey {@link CacheKey} to check
 	 * @return TRUE if the entry with the provided {@code cacheKey} has TO_BE_DELETED status, FALSE otherwise
 	 */

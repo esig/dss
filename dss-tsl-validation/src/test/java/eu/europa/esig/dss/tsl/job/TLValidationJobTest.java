@@ -1182,6 +1182,46 @@ public class TLValidationJobTest {
 		summary = tlValidationJob.getSummary();
 		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
 	}
+
+	@Test
+	public void dss2968Test() {
+		Map<String, DSSDocument> map = new HashMap<>();
+		map.put(LOTL_URL,new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
+
+		lotlSource.setPivotSupport(false);
+
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		trustedCertificateSource.addCertificate(lotlSigningCertificate);
+		trustedCertificateSource.addCertificate(pivotSigningCertificate);
+		lotlSource.setCertificateSource(trustedCertificateSource);
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		assertEquals(31, summary.getLOTLInfos().get(0).getTLInfos().size());
+
+		map.clear();
+		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/eu-lotl_original.xml"));
+
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		assertEquals(31, summary.getLOTLInfos().get(0).getTLInfos().size());
+	}
 	
 	@Test
 	public void lotlCorruptedKeystoreTest() throws IOException {

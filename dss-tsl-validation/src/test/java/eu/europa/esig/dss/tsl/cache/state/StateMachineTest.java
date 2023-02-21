@@ -49,8 +49,6 @@ public class StateMachineTest {
 		IllegalStateException e = assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
 		assertEquals("Transition from 'REFRESH_NEEDED' to 'SYNCHRONIZED' is not allowed", e.getMessage());
 
-		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertEquals(emptyStateDate, cachedEntry.getLastStateTransitionTime());
 
@@ -117,10 +115,23 @@ public class StateMachineTest {
 	}
 
 	@Test
-	public void testDesynchro() {
+	public void testDesynchronize() {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>(new MockCachedResult(8));
 		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
 		assertEquals(8, cachedEntry.getCachedResult().integer);
+		assertNotNull(cachedEntry.getLastStateTransitionTime());
+	}
+
+	@Test
+	public void testToBeDeletedNoSync() {
+		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>();
+		assertTrue(cachedEntry.isRefreshNeeded());
+		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
+		assertNotNull(cachedEntry.getLastStateTransitionTime());
+
+		cachedEntry.toBeDeleted();
+		assertTrue(cachedEntry.isToBeDeleted());
+		assertEquals(CacheStateEnum.TO_BE_DELETED, cachedEntry.getCurrentState());
 		assertNotNull(cachedEntry.getLastStateTransitionTime());
 	}
 	
