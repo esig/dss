@@ -736,7 +736,6 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		executor.setCertificateId(certId);
 
 		CertificateReports reports = executor.execute();
-		reports.print();
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));

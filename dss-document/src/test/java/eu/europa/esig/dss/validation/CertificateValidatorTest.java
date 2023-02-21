@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
+import eu.europa.esig.dss.enumerations.GeneralNameType;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -299,6 +300,43 @@ public class CertificateValidatorTest {
 
 		CertificateWrapper certificateWrapper = usedCertificates.get(0);
 		assertTrue(certificateWrapper.isValAssuredShortTermCertificate());
+	}
+
+	@Test
+	public void policyConstraintsTest() {
+		CertificateValidator cv = CertificateValidator
+				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/policyConstraintsCACert.crt")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+
+		CertificateReports reports = cv.validate();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		assertEquals(1, usedCertificates.size());
+
+		CertificateWrapper certificateWrapper = usedCertificates.get(0);
+		assertEquals(0, certificateWrapper.getRequireExplicitPolicy());
+		assertEquals(-1, certificateWrapper.getInhibitPolicyMapping());
+		assertEquals(5, certificateWrapper.getInhibitAnyPolicy());
+	}
+
+	@Test
+	public void nameConstraintsCertificateTest() {
+		CertificateValidator cv = CertificateValidator
+				.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/nameConstraintsCACert.crt")));
+		cv.setCertificateVerifier(new CommonCertificateVerifier());
+
+		CertificateReports reports = cv.validate();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		assertEquals(1, usedCertificates.size());
+
+		CertificateWrapper certificateWrapper = usedCertificates.get(0);
+		assertEquals(1, certificateWrapper.getPermittedSubtrees().size());
+		assertEquals(GeneralNameType.DIRECTORY_NAME, certificateWrapper.getPermittedSubtrees().get(0).getType());
+		assertEquals("OU=permittedSubtree1,O=Test Certificates,C=US", certificateWrapper.getPermittedSubtrees().get(0).getValue());
+		assertEquals(1, certificateWrapper.getExcludedSubtrees().size());
+		assertEquals(GeneralNameType.DIRECTORY_NAME, certificateWrapper.getExcludedSubtrees().get(0).getType());
+		assertEquals("OU=excludedSubtree1,OU=permittedSubtree1,O=Test Certificates,C=US", certificateWrapper.getExcludedSubtrees().get(0).getValue());
 	}
 
 }

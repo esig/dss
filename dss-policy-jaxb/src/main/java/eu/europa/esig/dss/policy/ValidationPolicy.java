@@ -323,6 +323,16 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate NameConstraints constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if NameConstraints for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate supported critical extensions constraint
 	 *
 	 * @param context {@link Context}

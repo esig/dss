@@ -1,9 +1,11 @@
 package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
+import eu.europa.esig.dss.enumerations.GeneralNameType;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.extension.AuthorityInformationAccess;
 import eu.europa.esig.dss.model.x509.extension.AuthorityKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.BasicConstraints;
@@ -13,8 +15,10 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
+import eu.europa.esig.dss.model.x509.extension.NameConstraints;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.QcStatements;
@@ -45,6 +49,7 @@ import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.cert.CertificateParsingException;
@@ -90,6 +95,8 @@ public class CertificateExtensionsUtils {
                     certificateExtensions.setCRLDistributionPoints(getCRLDistributionPoints(certificateToken));
                 } else if (isBasicConstraints(oid)) {
                     certificateExtensions.setBasicConstraints(getBasicConstraints(certificateToken));
+                } else if (isNameConstraints(oid)) {
+                    certificateExtensions.setNameConstraints(getNameConstraints(certificateToken));
                 } else if (isPolicyConstraints(oid)) {
                     certificateExtensions.setPolicyConstraints(getPolicyConstraints(certificateToken));
                 } else if (isInhibitAnyPolicy(oid)) {
@@ -171,6 +178,16 @@ public class CertificateExtensionsUtils {
      */
     public static boolean isBasicConstraints(String oid) {
         return CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid().equals(oid);
+    }
+
+    /**
+     * This method verifies whether {@code oid} corresponds to the name constraints extension OID
+     *
+     * @param oid {@link String}
+     * @return TRUE if OID corresponds to the name constraints extension OID, FALSE otherwise
+     */
+    public static boolean isNameConstraints(String oid) {
+        return CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(oid);
     }
 
     /**
@@ -504,6 +521,65 @@ public class CertificateExtensionsUtils {
         basicConstraints.setPathLenConstraint(value);
         basicConstraints.checkCritical(certificateToken);
         return basicConstraints;
+    }
+
+    /**
+     * Returns a name constraints extension, when present
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link NameConstraints}
+     */
+    public static NameConstraints getNameConstraints(CertificateToken certificateToken) {
+        final byte[] nameConstraintsBinaries = certificateToken.getCertificate()
+                .getExtensionValue(CertificateExtensionEnum.NAME_CONSTRAINTS.getOid());
+        if (Utils.isArrayNotEmpty(nameConstraintsBinaries)) {
+            try {
+                ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(nameConstraintsBinaries);
+                org.bouncycastle.asn1.x509.NameConstraints bcNameConstraints = org.bouncycastle.asn1.x509.NameConstraints.getInstance(seq);
+
+                final NameConstraints nameConstraints = new NameConstraints();
+                nameConstraints.setOctets(nameConstraintsBinaries);
+                nameConstraints.setPermittedSubtrees(getGeneralSubtrees(bcNameConstraints.getPermittedSubtrees()));
+                nameConstraints.setExcludedSubtrees(getGeneralSubtrees(bcNameConstraints.getExcludedSubtrees()));
+                nameConstraints.checkCritical(certificateToken);
+                return nameConstraints;
+
+            } catch (Exception e) {
+                LOG.warn("Unable to parse the nameConstraints extension '{}' : {}",
+                        Utils.toBase64(nameConstraintsBinaries), e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    private static List<GeneralSubtree> getGeneralSubtrees(org.bouncycastle.asn1.x509.GeneralSubtree[] generalSubtrees) {
+        if (Utils.isArrayEmpty(generalSubtrees)) {
+            return Collections.emptyList();
+        }
+
+        final List<GeneralSubtree> result = new ArrayList<>();
+        for (org.bouncycastle.asn1.x509.GeneralSubtree bcGeneralSubtree : generalSubtrees) {
+            final GeneralSubtree generalSubtree = new GeneralSubtree();
+
+            GeneralName generalName = bcGeneralSubtree.getBase();
+            GeneralNameType generalNameType = GeneralNameType.fromIndex(generalName.getTagNo());
+            generalSubtree.setGeneralNameType(generalNameType);
+
+            if (GeneralNameType.DIRECTORY_NAME.equals(generalNameType)) {
+                X500Principal x500Principal = new X500Principal(DSSASN1Utils.getDEREncoded(generalName.getName()));
+                generalSubtree.setValue(new X500PrincipalHelper(x500Principal).getRFC2253());
+
+            } else if (generalNameType == null) {
+                LOG.warn("Unsupported GeneralName type of index'{}'!", generalName.getTagNo());
+                continue;
+
+            } else {
+                LOG.warn("Unsupported GeneralName type '{}'! Base64-encoded value is returned.", generalNameType.getLabel());
+                generalSubtree.setValue(Utils.toBase64(DSSASN1Utils.getDEREncoded(generalName.getName())));
+            }
+            result.add(generalSubtree);
+        }
+        return result;
     }
 
     /**

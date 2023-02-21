@@ -637,6 +637,11 @@
 					<xsd:documentation>Performs validation of a policy tree as per RFC 5280</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="NameConstraints" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of the certificate distinguished and subject alternative names against the name constraints imposed by its certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="SupportedCriticalExtensions" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate extensions declared as critical are supported by the application. NOTE: unsupported non-critical extensions are simply ignored.</xsd:documentation>

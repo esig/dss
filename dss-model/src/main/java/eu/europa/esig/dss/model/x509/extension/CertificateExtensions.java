@@ -21,6 +21,9 @@ public class CertificateExtensions {
     /** RFC 5280: 4.2.1.9. Basic Constraints */
     private BasicConstraints basicConstraints;
 
+    /** RFC 5280: 4.2.1.10. Name Constraints */
+    private NameConstraints nameConstraints;
+
     /** RFC 5280: 4.2.1.11. Policy Constraints */
     private PolicyConstraints policyConstraints;
 
@@ -131,6 +134,24 @@ public class CertificateExtensions {
      */
     public void setBasicConstraints(BasicConstraints basicConstraints) {
         this.basicConstraints = basicConstraints;
+    }
+
+    /**
+     * Returns the name constraints
+     *
+     * @return {@link NameConstraints}
+     */
+    public NameConstraints getNameConstraints() {
+        return nameConstraints;
+    }
+
+    /**
+     * Sets the name constraints
+     *
+     * @param nameConstraints {@link NameConstraints}
+     */
+    public void setNameConstraints(NameConstraints nameConstraints) {
+        this.nameConstraints = nameConstraints;
     }
 
     /**

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This check verifies if the certificate has a valid policy tree according to its certification path in regards to RFC 5280
+ * This check verifies if the certificate has a valid policy tree according to its certification path in regard to RFC 5280
  *
  */
 public class CertificatePolicyTreeCheck extends ChainItem<XmlSubXCV> {
@@ -147,9 +147,7 @@ public class CertificatePolicyTreeCheck extends ChainItem<XmlSubXCV> {
              * (f) Verify that either explicit_policy is greater than 0 or the
              * valid_policy_tree is not equal to NULL;
              */
-            if (explicitPolicy == 0 && validPolicyTree == null) {
-                return false;
-            }
+            // skip this step in order to support flexible validation policy
             /*
              * If i is not equal to n, continue by performing the preparatory steps
              * listed in Section 6.1.4. If i is equal to n, perform the wrap-up

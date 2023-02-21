@@ -467,6 +467,7 @@
 				<xs:element name="BasicConstraints" type="BasicConstraints" />
 				<xs:element name="PolicyConstraints" type="PolicyConstraints" />
 				<xs:element name="InhibitAnyPolicy" type="InhibitAnyPolicy" />
+				<xs:element name="NameConstraints" type="NameConstraints" />
 				<xs:element name="CRLDistributionPoints" type="CRLDistributionPoints" />
 				<xs:element name="AuthorityKeyIdentifier" type="AuthorityKeyIdentifier" />
 				<xs:element name="SubjectKeyIdentifier" type="SubjectKeyIdentifier" />
@@ -553,6 +554,39 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="NameConstraints">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="PermittedSubtree" type="GeneralSubtree" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="ExcludedSubtree" type="GeneralSubtree" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GeneralSubtree">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="GeneralNameType" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="GeneralNameType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="otherName" />
+			<xs:enumeration value="rfc822Name" />
+			<xs:enumeration value="dNSName" />
+			<xs:enumeration value="x400Address" />
+			<xs:enumeration value="directoryName" />
+			<xs:enumeration value="ediPartyName" />
+			<xs:enumeration value="uniformResourceIdentifier" />
+			<xs:enumeration value="iPAddress" />
+			<xs:enumeration value="registeredID" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="CRLDistributionPoints">
 		<xs:complexContent>

@@ -38,10 +38,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
@@ -82,8 +84,10 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
+import eu.europa.esig.dss.model.x509.extension.NameConstraints;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
@@ -1480,9 +1484,6 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateExtensions.getBasicConstraints() != null) {
 			xmlCertificateExtensions.add(getXmlBasicConstraints(certificateExtensions.getBasicConstraints()));
 		}
-		if (certificateExtensions.getPolicyConstraints() != null) {
-			xmlCertificateExtensions.add(getXmlPolicyConstraints(certificateExtensions.getPolicyConstraints()));
-		}
 		if (certificateExtensions.getKeyUsage() != null) {
 			xmlCertificateExtensions.add(getXmlKeyUsages(certificateExtensions.getKeyUsage()));
 		}
@@ -1491,6 +1492,12 @@ public abstract class DiagnosticDataBuilder {
 		}
 		if (certificateExtensions.getSubjectAlternativeNames() != null) {
 			xmlCertificateExtensions.add(getXmlSubjectAlternativeNames(certificateExtensions.getSubjectAlternativeNames()));
+		}
+		if (certificateExtensions.getPolicyConstraints() != null) {
+			xmlCertificateExtensions.add(getXmlPolicyConstraints(certificateExtensions.getPolicyConstraints()));
+		}
+		if (certificateExtensions.getNameConstraints() != null) {
+			xmlCertificateExtensions.add(getXmlNameConstraints(certificateExtensions.getNameConstraints()));
 		}
 		if (certificateExtensions.getExtendedKeyUsage() != null) {
 			xmlCertificateExtensions.add(getXmlExtendedKeyUsages(certificateExtensions.getExtendedKeyUsage()));
@@ -1589,6 +1596,33 @@ public abstract class DiagnosticDataBuilder {
 			xmlInhibitAnyPolicy.setValue(inhibitAnyPolicy.getValue());
 		}
 		return xmlInhibitAnyPolicy;
+	}
+
+	private XmlNameConstraints getXmlNameConstraints(NameConstraints nameConstraints) {
+		final XmlNameConstraints xmlNameConstraints = new XmlNameConstraints();
+		fillXmlCertificateExtension(xmlNameConstraints, nameConstraints);
+		if (Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees())) {
+			xmlNameConstraints.getPermittedSubtrees().addAll(getXmlGeneralSubtrees(nameConstraints.getPermittedSubtrees()));
+		}
+		if (Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees())) {
+			xmlNameConstraints.getExcludedSubtrees().addAll(getXmlGeneralSubtrees(nameConstraints.getExcludedSubtrees()));
+		}
+		return xmlNameConstraints;
+	}
+
+	private List<XmlGeneralSubtree> getXmlGeneralSubtrees(List<GeneralSubtree> generalSubtrees) {
+		List<XmlGeneralSubtree> result = new ArrayList<>();
+		for (GeneralSubtree generalSubtree : generalSubtrees) {
+			result.add(getXmlGeneralSubtree(generalSubtree));
+		}
+		return result;
+	}
+
+	private XmlGeneralSubtree getXmlGeneralSubtree(GeneralSubtree generalSubtree) {
+		XmlGeneralSubtree xmlGeneralSubtree = new XmlGeneralSubtree();
+		xmlGeneralSubtree.setType(generalSubtree.getGeneralNameType());
+		xmlGeneralSubtree.setValue(generalSubtree.getValue());
+		return xmlGeneralSubtree;
 	}
 
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints(CRLDistributionPoints crlDistributionPoints) {

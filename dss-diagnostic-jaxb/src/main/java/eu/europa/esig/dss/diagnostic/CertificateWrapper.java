@@ -32,11 +32,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
@@ -227,6 +229,30 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlInhibitAnyPolicy getXmlInhibitAnyPolicy() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid(), XmlInhibitAnyPolicy.class);
+	}
+
+	/**
+	 * Returns value of the permittedSubtrees field of nameConstraints certificate extension, when present
+	 *
+	 * @return list of {@link XmlGeneralSubtree} if field is present, empty list otherwise
+	 */
+	public List<XmlGeneralSubtree> getPermittedSubtrees() {
+		XmlNameConstraints nameConstraints = getXmlNameConstraints();
+		return nameConstraints != null ? nameConstraints.getPermittedSubtrees() : Collections.emptyList();
+	}
+
+	/**
+	 * Returns value of the excludedSubtrees field of nameConstraints certificate extension, when present
+	 *
+	 * @return list of {@link XmlGeneralSubtree} if field is present, empty list otherwise
+	 */
+	public List<XmlGeneralSubtree> getExcludedSubtrees() {
+		XmlNameConstraints nameConstraints = getXmlNameConstraints();
+		return nameConstraints != null ? nameConstraints.getExcludedSubtrees() : Collections.emptyList();
+	}
+
+	private XmlNameConstraints getXmlNameConstraints() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.NAME_CONSTRAINTS.getOid(), XmlNameConstraints.class);
 	}
 
 	/**

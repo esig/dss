@@ -60,6 +60,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -784,6 +785,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						assertNotNull(certificatePolicy.getValue());
 						assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
 					}
+				} else if (CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlNameConstraints);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlNameConstraints xmlNameConstraints = (XmlNameConstraints) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlNameConstraints.getPermittedSubtrees()) ||
+							Utils.isCollectionNotEmpty(xmlNameConstraints.getExcludedSubtrees()));
 				} else if (CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlSubjectAlternativeNames);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
