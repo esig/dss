@@ -1035,6 +1035,7 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * Gets the {@code HttpContext}
 	 *
+	 * @param httpHost {@link HttpHost}
 	 * @return {@link HttpContext}
 	 */
 	protected HttpContext getHttpContext(HttpHost httpHost) {
@@ -1048,6 +1049,7 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param localContext {@link HttpClientContext}
 	 * @param httpHost {@link HttpHost}
+	 * @return {@link HttpClientContext}
 	 */
 	protected HttpClientContext configurePreemptiveAuthentication(HttpClientContext localContext, HttpHost httpHost) {
 		if (preemptiveAuthentication && Utils.isMapNotEmpty(getAuthenticationMap())) {

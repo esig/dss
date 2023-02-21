@@ -91,7 +91,11 @@ public class SignatureAlgorithmTest {
 				if (EncryptionAlgorithm.PLAIN_ECDSA.equals(sigAlgo.getEncryptionAlgorithm())) {
 					sigAlgo = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, sigAlgo.getDigestAlgorithm());
 				}
-				assertEquals(sigAlgo, SignatureAlgorithm.forJWA(sigAlgo.getJWAId()));
+				if (EncryptionAlgorithm.EDDSA.equals(sigAlgo.getEncryptionAlgorithm())) {
+					assertEquals(sigAlgo.getEncryptionAlgorithm(), SignatureAlgorithm.forJWA(sigAlgo.getJWAId()).getEncryptionAlgorithm());
+				} else {
+					assertEquals(sigAlgo, SignatureAlgorithm.forJWA(sigAlgo.getJWAId()));
+				}
 			}
 		}
 	}
