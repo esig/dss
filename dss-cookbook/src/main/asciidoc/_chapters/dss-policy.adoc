@@ -924,6 +924,22 @@ WARNING: Policy mapping certificate extension is not yet supported in DSS, which
 </SigningCertificate>
 ----
 
+* `NameConstraints` - this constraint is used to perform validation of certificate's subject distinguished names and subject alternative names (when present) as per RFC 5280 when certain requirements are imposed through the name constraints certificate extension by certificate's certificate chain. If the certificate's names do not satisfy the rules enforced by its certificate chain through the name constraints certificate extension, the check will fail.
+
+Default: `WARN`
+
+NOTE: DSS supports processing of the name constraints that are imposed only on the directoryName.
+
+[source,xml,indent=0]
+.Example of NameConstraints usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
 * `SupportedCriticalExtensions` - this constraint is used to define a list of certificate critical extensions supported and processed by this application. If the certificate contains one or more critical certificate extension(s) not defined in the list, the check will fail.
 
 NOTE: Verifies only critical certificate extensions. The non-critical certificate extensions are ignored when not understood.
@@ -2290,14 +2306,15 @@ This table defines the correspondence between the enforced validation policy con
                                                                                                                               CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyTree                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |NameConstraints                 |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SupportedCriticalExtensions     |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
@@ -2309,8 +2326,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2321,8 +2338,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.4+|CertificateConstraints        |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.5+|CertificateConstraints        |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint

@@ -59,6 +59,8 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -107,6 +109,8 @@
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -211,6 +215,8 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -259,6 +265,8 @@
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -349,6 +357,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />

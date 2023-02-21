@@ -834,6 +834,18 @@ not enforced
     ...
 </SigningCertificate>
 ----
+|Name Constraints                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
 |ResponderId for OCSP response                     |
 ----
 not enforced
