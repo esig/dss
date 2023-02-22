@@ -179,8 +179,8 @@ For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-unio
 
 * https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/[Digital Building Block]
 * https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/eSignature+FAQ[eSignature FAQ]
-* https://esignature.ec.europa.eu/efda/home/[Trust Services Dashboard]
-* https://esignature.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
+* https://eidas.ec.europa.eu/efda/home/[Trust Services Dashboard]
+* https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation tests]
 * https://ec.europa.eu/digital-building-blocks/wikis/display/TLSO/Trusted+List+Manager+non-EU[Trusted List Manager non-EU]
 * https://github.com/esig/dss[DSS source code (GitHub)]
 * https://ec.europa.eu/digital-building-blocks/code/projects/ESIG/repos/dss/browse[DSS source code (EC Bitbucket)]
