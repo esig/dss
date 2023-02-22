@@ -67,6 +67,7 @@
             <trustAnchors>
                 <trustAnchor>
                     <countryCode>DE</countryCode>
+                    <tslType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tslType>
                     <trustServiceProvider>D-Trust GmbH</trustServiceProvider>
                     <trustServiceProviderRegistrationId>VATDE-202620438 </trustServiceProviderRegistrationId>
                     <trustServiceName>D-TRUST Qualified CA 1 2008:PN</trustServiceName>

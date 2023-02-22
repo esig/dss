@@ -12,17 +12,22 @@
     <SignaturesCount>1</SignaturesCount>
     <Signature SignatureFormat="XAdES-BASELINE-LTA" Id="S-32E0E10DEDDA4D71E473BFF7B26966E350C5D3985F2B0DB447A5F90560769627">
         <CertificateChain>
-            <Certificate>
-                <id>C-3F6B65DE1882F14F463AD4E8D9015E7780CD6E00D6C024E2E9D4FFE9474ED6C8</id>
-                <qualifiedName>Joaquin Romera Ramirez</qualifiedName>
+            <Certificate Id="C-3F6B65DE1882F14F463AD4E8D9015E7780CD6E00D6C024E2E9D4FFE9474ED6C8">
+                <QualifiedName>Joaquin Romera Ramirez</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548</id>
-                <qualifiedName>LuxTrust Global Qualified CA</qualifiedName>
+            <Certificate Id="C-DB879417EC1424E4E57A3C91EC804C5DE4C6FDE73CC8281CD2F5BAED76DD6548" trusted="true">
+                <QualifiedName>LuxTrust Global Qualified CA</QualifiedName>
+                <TrustAnchors>
+                    <TrustAnchor countryCode="LU">
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+                        <TrustServiceProvider>LuxTrust S.A.</TrustServiceProvider>
+                        <TrustServiceProviderRegistrationId>VATLU-20976985</TrustServiceProviderRegistrationId>
+                        <TrustServiceName>LuxTrust Global Qualified Certification Authority 3</TrustServiceName>
+                    </TrustAnchor>
+                </TrustAnchors>
             </Certificate>
-            <Certificate>
-                <id>C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950</id>
-                <qualifiedName>LuxTrust Global Root</qualifiedName>
+            <Certificate Id="C-A1B2DBEB64E706C6169E3C4118B23BAA09018A8427666D8BF0E28891EC051950">
+                <QualifiedName>LuxTrust Global Root</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>

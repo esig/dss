@@ -6,12 +6,11 @@
 	xmlns:dss="http://dss.esig.europa.eu/validation/simple-certificate-report">
 	<xsl:output method="xml" indent="yes" />
 
-	<xsl:param name="rootTrustmarkUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
-	</xsl:param>
-	<xsl:param name="rootCountryUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
-	</xsl:param>
+	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
+	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
+	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
+	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 
 	<xsl:template match="/dss:SimpleCertificateReport">
 		<fo:root>
@@ -541,8 +540,16 @@
 					<xsl:attribute name="display-align">center</xsl:attribute>
 					
 			    	<xsl:for-each select="dss:trustAnchor">
-						<xsl:variable name="countryTlUrl" select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
-						<xsl:variable name="countryTspUrl" select="concat($rootTrustmarkUrlInTlBrowser, dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+						<xsl:variable name="subDirectory">
+							<xsl:choose>
+								<xsl:when test="dss:tslType and $euGenericTSLType = dss:tslType"><xsl:value-of select="$euTLSubDirectoryInTlBrowser" /></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$tcTLSubDirectoryInTlBrowser" /></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="countryTlUrl" select="concat($rootUrlInTlBrowser, $subDirectory, '/', dss:countryCode)" />
+						<xsl:variable name="countryTspUrl" select="concat($rootUrlInTlBrowser, $subDirectory,
+								$trustmarkSubDirectoryInTlBrowser, '/', dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+
 						<fo:block>
 							<xsl:attribute name="margin-top">1px</xsl:attribute>
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>

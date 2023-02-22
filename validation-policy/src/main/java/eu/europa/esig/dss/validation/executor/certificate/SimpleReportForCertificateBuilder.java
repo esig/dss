@@ -163,7 +163,8 @@ public class SimpleReportForCertificateBuilder {
 				for (String serviceName : uniqueServiceNames) {
 					XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
 					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getTL().getCountryCode());
-					trustAnchor.setTrustServiceProvider(getFirst(xmlTrustedServiceProvider.getTSPNames()));
+					trustAnchor.setTslType(xmlTrustedServiceProvider.getTL().getTSLType());
+					trustAnchor.setTrustServiceProvider(getEnOrFirst(xmlTrustedServiceProvider.getTSPNames()));
 					List<String> tspRegistrationIdentifiers = xmlTrustedServiceProvider.getTSPRegistrationIdentifiers();
 					if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
 						trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
@@ -189,8 +190,13 @@ public class SimpleReportForCertificateBuilder {
 		return item;
 	}
 
-	private String getFirst(List<XmlLangAndValue> langAndValues) {
+	private String getEnOrFirst(List<XmlLangAndValue> langAndValues) {
 		if (Utils.isCollectionNotEmpty(langAndValues)) {
+			for (XmlLangAndValue langAndValue : langAndValues) {
+				if (langAndValue.getLang() != null && "en".equalsIgnoreCase(langAndValue.getLang())) {
+					return langAndValue.getValue();
+				}
+			}
 			return langAndValues.get(0).getValue();
 		}
 		return null;
@@ -232,7 +238,7 @@ public class SimpleReportForCertificateBuilder {
 	private Set<String> getUniqueServiceNames(List<XmlTrustedService> trustedServices) {
 		Set<String> result = new HashSet<>();
 		for (XmlTrustedService xmlTrustedService : trustedServices) {
-			result.add(getFirst(xmlTrustedService.getServiceNames()));
+			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
 		}
 		return result;
 	}

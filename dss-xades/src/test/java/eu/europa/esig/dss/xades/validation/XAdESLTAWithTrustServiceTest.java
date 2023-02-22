@@ -20,11 +20,31 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.enumerations.TSLType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
+import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,27 +53,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustProperties;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 
@@ -89,7 +93,7 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 		MutableTimeDependentValues<TrustServiceStatusAndInformationExtensions> statusHistoryList = new MutableTimeDependentValues<>();
 		statusHistoryList.addOldest(statusAndInformationExtensions);
 		
-		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
+		TLInfo tlInfo = new TLInfo(null, new MockParsingInfo("BE"), null, "BE.xml");
 		TrustProperties trustProperties = new TrustProperties(tlInfo.getDSSId(), trustServiceProviderBuilder.build(), statusHistoryList);
 
 		Map<CertificateToken, List<TrustProperties>> trustPropertiesByCertMap = new HashMap<>();
@@ -159,6 +163,155 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		// do nothing
+	}
+
+	private class MockParsingInfo implements ParsingInfoRecord {
+
+		private final String territoryName;
+
+		public MockParsingInfo(String territoryName) {
+			this.territoryName = territoryName;
+		}
+
+		@Override
+		public boolean isRefreshNeeded() {
+			return false;
+		}
+
+		@Override
+		public boolean isDesynchronized() {
+			return false;
+		}
+
+		@Override
+		public boolean isSynchronized() {
+			return false;
+		}
+
+		@Override
+		public boolean isError() {
+			return false;
+		}
+
+		@Override
+		public boolean isToBeDeleted() {
+			return false;
+		}
+
+		@Override
+		public String getStatusName() {
+			return null;
+		}
+
+		@Override
+		public Date getLastStateTransitionTime() {
+			return null;
+		}
+
+		@Override
+		public Date getLastSuccessSynchronizationTime() {
+			return null;
+		}
+
+		@Override
+		public String getExceptionMessage() {
+			return null;
+		}
+
+		@Override
+		public String getExceptionStackTrace() {
+			return null;
+		}
+
+		@Override
+		public Date getExceptionFirstOccurrenceTime() {
+			return null;
+		}
+
+		@Override
+		public Date getExceptionLastOccurrenceTime() {
+			return null;
+		}
+
+		@Override
+		public boolean isResultExist() {
+			return false;
+		}
+
+		@Override
+		public TSLType getTSLType() {
+			return null;
+		}
+
+		@Override
+		public Integer getSequenceNumber() {
+			return null;
+		}
+
+		@Override
+		public Integer getVersion() {
+			return null;
+		}
+
+		@Override
+		public String getTerritory() {
+			return territoryName;
+		}
+
+		@Override
+		public Date getIssueDate() {
+			return null;
+		}
+
+		@Override
+		public Date getNextUpdateDate() {
+			return null;
+		}
+
+		@Override
+		public List<String> getDistributionPoints() {
+			return null;
+		}
+
+		@Override
+		public List<TrustServiceProvider> getTrustServiceProviders() {
+			return null;
+		}
+
+		@Override
+		public List<OtherTSLPointer> getLotlOtherPointers() {
+			return null;
+		}
+
+		@Override
+		public List<OtherTSLPointer> getTlOtherPointers() {
+			return null;
+		}
+
+		@Override
+		public List<String> getPivotUrls() {
+			return null;
+		}
+
+		@Override
+		public String getSigningCertificateAnnouncementUrl() {
+			return null;
+		}
+
+		@Override
+		public int getTSPNumber() {
+			return 0;
+		}
+
+		@Override
+		public int getTSNumber() {
+			return 0;
+		}
+
+		@Override
+		public int getCertNumber() {
+			return 0;
+		}
 	}
 
 }

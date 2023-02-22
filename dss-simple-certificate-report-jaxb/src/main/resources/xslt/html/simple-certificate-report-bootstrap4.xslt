@@ -4,13 +4,12 @@
                 xmlns:dss="http://dss.esig.europa.eu/validation/simple-certificate-report">
                 
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
-	
-	<xsl:param name="rootTrustmarkUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
-	</xsl:param>
-	<xsl:param name="rootCountryUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
-	</xsl:param>
+
+	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
+	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
+	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
+	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 	
    	<xsl:variable name="validationTime">
    		<xsl:value-of select="/dss:SimpleCertificateReport/@ValidationTime" />
@@ -566,10 +565,20 @@
 	</xsl:template>
     
     <xsl:template match="dss:trustAnchor">
+		<xsl:variable name="subDirectory">
+			<xsl:choose>
+				<xsl:when test="dss:tslType and $euGenericTSLType = dss:tslType"><xsl:value-of select="$euTLSubDirectoryInTlBrowser" /></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$tcTLSubDirectoryInTlBrowser" /></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="countryTlUrl" select="concat($rootUrlInTlBrowser, $subDirectory, '/', dss:countryCode)" />
+		<xsl:variable name="countryTspUrl" select="concat($rootUrlInTlBrowser, $subDirectory,
+				$trustmarkSubDirectoryInTlBrowser, '/', dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+
     	<li>
     		<a>
     			<xsl:attribute name="href">
-	    			<xsl:value-of select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
+	    			<xsl:value-of select="$countryTlUrl" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title"><xsl:value-of select="dss:countryCode" /></xsl:attribute>
@@ -587,7 +596,7 @@
     		
     		<a>
 	    		<xsl:attribute name="href">
-	    			<xsl:value-of select="concat($rootTrustmarkUrlInTlBrowser, dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+	    			<xsl:value-of select="$countryTspUrl" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title">View in TL Browser</xsl:attribute>

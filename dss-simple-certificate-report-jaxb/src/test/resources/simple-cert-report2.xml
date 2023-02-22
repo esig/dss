@@ -61,6 +61,7 @@
             <trustAnchors>
                 <trustAnchor>
                     <countryCode>BE</countryCode>
+                    <tslType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tslType>
                     <trustServiceProvider>Certipost n.v./s.a.</trustServiceProvider>
                     <trustServiceProviderRegistrationId>VATBE-0475396406</trustServiceProviderRegistrationId>
                     <trustServiceName>CN=Belgium Root CA2, C=BE</trustServiceName>

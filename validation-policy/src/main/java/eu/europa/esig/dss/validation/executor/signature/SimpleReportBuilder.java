@@ -28,6 +28,9 @@ import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -49,6 +52,8 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTrustAnchor;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTrustAnchors;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationMessages;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -349,10 +354,74 @@ public class SimpleReportBuilder {
 				XmlCertificate certificate = new XmlCertificate();
 				certificate.setId(certId);
 				certificate.setQualifiedName(getReadableCertificateName(certId));
+				if (isTrustAnchor(certId)) {
+					certificate.setTrusted(true);
+					certificate.setTrustAnchors(getXmlTrustAnchors(certId));
+				}
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
 		return xmlCertificateChain;
+	}
+
+	private XmlTrustAnchors getXmlTrustAnchors(String certId) {
+		List<XmlTrustedServiceProvider> xmlTrustedServiceProviders = filterByCertificateId(certId);
+		if (Utils.isCollectionNotEmpty(xmlTrustedServiceProviders)) {
+			final XmlTrustAnchors xmlTrustAnchors = new XmlTrustAnchors();
+			for (XmlTrustedServiceProvider trustedServiceProvider : xmlTrustedServiceProviders) {
+				final XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
+				trustAnchor.setCountryCode(trustedServiceProvider.getTL().getCountryCode());
+				trustAnchor.setTSLType(trustedServiceProvider.getTL().getTSLType());
+				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustedServiceProvider.getTSPNames()));
+				List<String> tspRegistrationIdentifiers = trustedServiceProvider.getTSPRegistrationIdentifiers();
+				if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
+					trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
+				}
+				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustedServiceProvider));
+				xmlTrustAnchors.getTrustAnchor().add(trustAnchor);
+			}
+			return xmlTrustAnchors;
+		}
+		return null;
+	}
+
+	private Set<String> getUniqueServiceNames(XmlTrustedServiceProvider trustedServiceProvider) {
+		Set<String> result = new HashSet<>();
+		for (XmlTrustedService xmlTrustedService : trustedServiceProvider.getTrustedServices()) {
+			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
+		}
+		return result;
+	}
+
+	private String getEnOrFirst(List<XmlLangAndValue> langAndValues) {
+		if (Utils.isCollectionNotEmpty(langAndValues)) {
+			for (XmlLangAndValue langAndValue : langAndValues) {
+				if (langAndValue.getLang() != null && "en".equalsIgnoreCase(langAndValue.getLang())) {
+					return langAndValue.getValue();
+				}
+			}
+			return langAndValues.get(0).getValue();
+		}
+		return null;
+	}
+
+	private List<XmlTrustedServiceProvider> filterByCertificateId(String certId) {
+		CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
+		List<XmlTrustedServiceProvider> result = new ArrayList<>();
+		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : certificate.getTrustServiceProviders()) {
+			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+			boolean foundCertId = false;
+			for (XmlTrustedService xmlTrustedService : trustedServices) {
+				if (Utils.areStringsEqual(certId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
+					foundCertId = true;
+					break;
+				}
+			}
+			if (foundCertId) {
+				result.add(xmlTrustedServiceProvider);
+			}
+		}
+		return result;
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {
@@ -395,6 +464,11 @@ public class SimpleReportBuilder {
 	private String getReadableCertificateName(final String certId) {
 		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
 		return certificateWrapper.getReadableCertificateName();
+	}
+
+	private boolean isTrustAnchor(final String certId) {
+		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
+		return certificateWrapper.isTrusted();
 	}
 
 	private void addSignatureProfile(final XmlSignature xmlSignature) {

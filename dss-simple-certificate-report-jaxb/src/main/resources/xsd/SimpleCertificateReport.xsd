@@ -160,6 +160,7 @@
 	<xs:complexType name="TrustAnchor">
 		<xs:sequence>
 			<xs:element name="countryCode" type="xs:string" />
+			<xs:element name="tslType" type="xs:string" minOccurs="0" />
 			<xs:element name="trustServiceProvider" type="xs:string" />
 			<xs:element name="trustServiceProviderRegistrationId" type="xs:string" />
 			<xs:element name="trustServiceName" type="xs:string" />
