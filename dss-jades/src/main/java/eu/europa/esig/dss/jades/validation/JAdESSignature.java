@@ -127,6 +127,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue(), null);
 		if (signatureAlgorithm == null) {
 			LOG.error("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
+		} else if (EncryptionAlgorithm.EDDSA.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
+			signatureAlgorithm = DSSUtils.getEdDSASignatureAlgorithm(getSignatureValue());
 		}
 		return signatureAlgorithm;
 	}

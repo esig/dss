@@ -290,7 +290,7 @@ The two trust service equivalence mapping schemes are supported:
  * Mutual Recognition Agreement (MRA) as per Article 14 of the eIDAS Regulation (<<R12>>) - establishes that "trust services provided by trust service providers established in a third country shall be recognised as legally equivalent to qualified trust services provided by qualified trust service providers established in the Union where the trust services originating from the third country are recognised under an agreement concluded between the Union and the third country in question or an international organisation in accordance with Article 218 TFEU"; and
  * Trust service equivalence mapping to facilitate the validation of third countries advanced electronic signatures and advanced electronic seals in public services of voluntary Member States, in the context of Article 27(1) and Article 37(1) of the eIDAS Regulation (<<R12>>).
 
-A Pilot for the International Compatibility of Trust Services based on the Mutual Recognition Agreement (as per Article 14 of eIDAS Regulation) can be found by the https://esignature.ec.europa.eu/efda/intl-pilot/#/screen/home/demo[link].
+A Pilot for the International Compatibility of Trust Services based on the Mutual Recognition Agreement (as per Article 14 of eIDAS Regulation) can be found by the https://eidas.ec.europa.eu/efda/intl-pilot/#/screen/home/demo[link].
 
 To enable Trust Service Equivalence Mapping in DSS, the corresponding instance of `LOTLSource` supporting the MRA-equivalence scheme has to be configured and provided within `TLValidationJob`:
 

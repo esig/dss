@@ -35,6 +35,9 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	/** The algorithm to check */
 	private final DigestAlgorithm digestAlgo;
 
+	/** The constraint */
+	private final CryptographicConstraintWrapper constraintWrapper;
+
 	/**
 	 * Default constructor
 	 *
@@ -46,8 +49,9 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	 */
 	protected DigestAlgorithmReliableCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, XmlCC result,
 										   MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper);
+		super(i18nProvider, result, position, constraintWrapper.getAcceptableDigestAlgoLevel());
 		this.digestAlgo = digestAlgo;
+		this.constraintWrapper = constraintWrapper;
 	}
 
 	@Override

@@ -66,7 +66,7 @@ public class LOTLChangeApplier {
 	}
 
 	/**
-	 * Applyes changes for all defined records
+	 * Applies changes for all defined records
 	 */
 	public void analyzeAndApply() {
 		for (Entry<CacheKey, ParsingCacheDTO> oldEntry : oldValues.entrySet()) {

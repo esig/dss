@@ -2,8 +2,15 @@
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:fo="http://www.w3.org/1999/XSL/Format"
+	xmlns:fox="http://xmlgraphics.apache.org/fop/extensions"
 	xmlns:dss="http://dss.esig.europa.eu/validation/simple-report">
 	<xsl:output method="xml" indent="yes" />
+
+	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
+	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
+	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
+	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 
 	<xsl:template match="/dss:SimpleReport">
 		<fo:root>
@@ -163,7 +170,7 @@
 					<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 		       		
 					<xsl:attribute name="id">policy</xsl:attribute>
-					<xsl:text>Validation Policy : <xsl:value-of select="dss:PolicyName"/></xsl:text>
+					<xsl:text>Validation Policy: <xsl:value-of select="dss:PolicyName"/></xsl:text>
 		    	</fo:block>
 	    	</fo:block-container>
 		</fo:block-container>
@@ -257,10 +264,10 @@
 		    				<xsl:attribute name="font-weight">bold</xsl:attribute>
 
 							<xsl:if test="$nodeName = 'Signature'">
-								<xsl:text>Signature : </xsl:text>
+								<xsl:text>Signature: </xsl:text>
 							</xsl:if>
 							<xsl:if test="$nodeName = 'Timestamp'">
-								<xsl:text>Timestamp : </xsl:text>
+								<xsl:text>Timestamp: </xsl:text>
 							</xsl:if>
 				       		<xsl:value-of select="$idToken" />
 			       		</fo:block>
@@ -334,7 +341,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Qualification level : 
+											Qualification level:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -364,7 +371,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 										
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Indication : 
+										Indication:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>
@@ -392,7 +399,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Signature Format : 
+											Signature Format:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -424,12 +431,26 @@
 									<xsl:choose>
 							            <xsl:when test="dss:CertificateChain/dss:Certificate">
 								            <xsl:for-each select="dss:CertificateChain/dss:Certificate">
+												<xsl:variable name="index" select="position()"/>
+
 								        		<fo:block>
-													<xsl:attribute name="margin-top">1px</xsl:attribute>
-													<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-											
-								        			<xsl:value-of select="dss:qualifiedName" />
-								        		</fo:block>	
+													<fo:inline>
+														<xsl:attribute name="margin-top">1px</xsl:attribute>
+														<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+														<xsl:if test="$index = 1">
+															<xsl:attribute name="font-weight">bold</xsl:attribute>
+														</xsl:if>
+														<xsl:if test="not(@trusted = 'true' or following-sibling::dss:Certificate[@trusted = 'true'])">
+															<xsl:attribute name="color">gray</xsl:attribute>
+														</xsl:if>
+														<xsl:value-of select="dss:QualifiedName" />
+													</fo:inline>
+													<fo:inline>
+														<xsl:if test="@trusted = 'true' and not(dss:TrustAnchors)"> (Trust anchor)</xsl:if>
+														<xsl:apply-templates select="dss:TrustAnchors"/>
+													</fo:inline>
+												</fo:block>
+
 								        	</xsl:for-each>
 							        	</xsl:when>
 							        	<xsl:otherwise>
@@ -449,10 +470,10 @@
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
 										<xsl:if test="$nodeName = 'Signature'">
-											On claimed time : 
+											On claimed time:
 										</xsl:if>
 										<xsl:if test="$nodeName = 'Timestamp'">
-											Production time : 
+											Production time:
 										</xsl:if>
 									</fo:block>
 								</fo:table-cell>
@@ -485,7 +506,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Best signature time : 
+											Best signature time:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -511,7 +532,7 @@
 											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 				       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-											Signature position : 
+											Signature position:
 										</fo:block>
 									</fo:table-cell>
 									<fo:table-cell>
@@ -580,6 +601,57 @@
 		</fo:table-row>
 	</xsl:template>
 
+	<xsl:template match="dss:TrustAnchors">
+		<xsl:apply-templates select="dss:TrustAnchor"/>
+	</xsl:template>
+
+	<xsl:template match="dss:TrustAnchor">
+		<xsl:variable name="subDirectory">
+			<xsl:choose>
+				<xsl:when test="dss:TSLType and $euGenericTSLType = dss:TSLType"><xsl:value-of select="$euTLSubDirectoryInTlBrowser" /></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$tcTLSubDirectoryInTlBrowser" /></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="countryTlUrl" select="concat($rootUrlInTlBrowser, $subDirectory, '/', @countryCode)" />
+		<xsl:variable name="countryTspUrl" select="concat($rootUrlInTlBrowser, $subDirectory,
+				$trustmarkSubDirectoryInTlBrowser, '/', @countryCode, '/', dss:TrustServiceProviderRegistrationId)" />
+
+		<xsl:text> </xsl:text>
+		<fo:instream-foreign-object fox:alt-text="arrow-right" content-height="6px" content-width="6px" height="6px" width="6px">
+			<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:black" d="M1413 896q0-27-18-45l-91-91-362-362q-18-18-45-18t-45 18l-91 91q-18 18-18 45t18 45l189 189h-502q-26 0-45 19t-19 45v128q0 26 19 45t45 19h502l-189 189q-19 19-19 45t19 45l91 91q18 18 45 18t45-18l362-362 91-91q18-18 18-45zm251 0q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+		</fo:instream-foreign-object>
+		<xsl:text> </xsl:text>
+		<fo:basic-link>
+			<xsl:attribute name="external-destination"><xsl:value-of select="$countryTlUrl"/></xsl:attribute>
+			<xsl:value-of select="@countryCode" />
+		</fo:basic-link>
+		<xsl:text> </xsl:text>
+		<fo:instream-foreign-object fox:alt-text="arrow-right" content-height="6px" content-width="6px" height="6px" width="6px">
+			<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:black" d="M1413 896q0-27-18-45l-91-91-362-362q-18-18-45-18t-45 18l-91 91q-18 18-18 45t18 45l189 189h-502q-26 0-45 19t-19 45v128q0 26 19 45t45 19h502l-189 189q-19 19-19 45t19 45l91 91q18 18 45 18t45-18l362-362 91-91q18-18 18-45zm251 0q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+		</fo:instream-foreign-object>
+		<xsl:text> </xsl:text>
+		<fo:basic-link>
+			<xsl:attribute name="external-destination"><xsl:value-of select="$countryTspUrl"/></xsl:attribute>
+			<xsl:value-of select="dss:TrustServiceProvider" />
+		</fo:basic-link>
+		<xsl:text> </xsl:text>
+
+		<!-- optionally display TrustedServices names -->
+		<!--
+		<fo:instream-foreign-object fox:alt-text="arrow-right" content-height="6px" content-width="6px" height="6px" width="6px">
+			<svg viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path style="fill:black" d="M1413 896q0-27-18-45l-91-91-362-362q-18-18-45-18t-45 18l-91 91q-18 18-18 45t18 45l189 189h-502q-26 0-45 19t-19 45v128q0 26 19 45t45 19h502l-189 189q-19 19-19 45t19 45l91 91q18 18 45 18t45-18l362-362 91-91q18-18 18-45zm251 0q0 209-103 385.5t-279.5 279.5-385.5 103-385.5-103-279.5-279.5-103-385.5 103-385.5 279.5-279.5 385.5-103 385.5 103 279.5 279.5 103 385.5z"/></svg>
+		</fo:instream-foreign-object>
+		<xsl:text> </xsl:text>
+		<xsl:for-each select="dss:TrustServiceName">
+			<xsl:value-of select="." />
+			<xsl:if test="position() &lt; last()">
+				<xsl:text>; </xsl:text>
+			</xsl:if>
+		</xsl:for-each>
+		-->
+
+	</xsl:template>
+
 	<xsl:template match="dss:QualificationDetails|dss:AdESValidationDetails">
 		<xsl:variable name="header">
 			<xsl:choose>
@@ -596,7 +668,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$header" /> :
+					<xsl:value-of select="$header" />:
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -635,7 +707,7 @@
 				<xsl:attribute name="font-size">7pt</xsl:attribute>
 
 				<xsl:attribute name="font-weight">bold</xsl:attribute>
-				Timestamps :
+				Timestamps:
 			</fo:block>
 		</fo:block-container>
 		<fo:block-container>
@@ -713,7 +785,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Signatures status : 
+										Signatures status:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>
@@ -734,7 +806,7 @@
 										<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 											
 			       						<xsl:attribute name="font-weight">bold</xsl:attribute>
-										Document name : 
+										Document name:
 									</fo:block>
 								</fo:table-cell>
 								<fo:table-cell>

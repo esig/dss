@@ -401,46 +401,46 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the ETSI EN 319 102-1 certificate validation errors for a given certificate by id
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation errors for a given certificate by id
 	 *
 	 * @param certificateId
 	 *            {@link String} certificate id
 	 * @return the linked errors
 	 */
-	public List<Message> getAdESValidationErrors(final String certificateId) {
+	public List<Message> getX509ValidationErrors(final String certificateId) {
 		XmlChainItem certificate = getCertificate(certificateId);
-		if (certificate != null && certificate.getAdESValidationDetails() != null) {
-			return convert(certificate.getAdESValidationDetails().getError());
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getError());
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method retrieve the ETSI EN 319 102-1 certificate validation warnings for a given certificate by id
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation warnings for a given certificate by id
 	 *
 	 * @param certificateId
 	 *            {@link String} certificate id
 	 * @return the linked warning messages
 	 */
-	public List<Message> getAdESValidationWarnings(final String certificateId) {
+	public List<Message> getX509ValidationWarnings(final String certificateId) {
 		XmlChainItem certificate = getCertificate(certificateId);
-		if (certificate != null && certificate.getAdESValidationDetails() != null) {
-			return convert(certificate.getAdESValidationDetails().getWarning());
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getWarning());
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method retrieve the ETSI EN 319 102-1 certificate validation information messages for a given certificate by id
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation information messages for a given certificate by id
 	 *
 	 * @param certificateId
 	 *            {@link String} certificate id
 	 * @return the linked information messages
 	 */
-	public List<Message> getAdESValidationInfo(final String certificateId) {
+	public List<Message> getX509ValidationInfo(final String certificateId) {
 		XmlChainItem certificate = getCertificate(certificateId);
-		if (certificate != null && certificate.getAdESValidationDetails() != null) {
-			return convert(certificate.getAdESValidationDetails().getInfo());
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getInfo());
 		}
 		return Collections.emptyList();
 	}

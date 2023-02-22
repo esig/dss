@@ -181,9 +181,27 @@
 	
 	<xs:complexType name="Certificate">
 		<xs:sequence>
-			<xs:element type="xs:string" name="id" />
-			<xs:element type="xs:string" name="qualifiedName" />
+			<xs:element name="QualifiedName" type="xs:string" />
+			<xs:element name="TrustAnchors" type="TrustAnchors" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="trusted" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="TrustAnchors">
+		<xs:sequence>
+			<xs:element name="TrustAnchor" type="TrustAnchor" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TrustAnchor">
+		<xs:sequence>
+			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceProvider" type="xs:string" />
+			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" />
+			<xs:element name="TrustServiceName" type="xs:string" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="countryCode" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureLevel">

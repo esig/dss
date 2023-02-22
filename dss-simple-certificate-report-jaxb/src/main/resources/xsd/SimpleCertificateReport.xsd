@@ -82,7 +82,7 @@
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
-			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
+			<xs:element name="X509ValidationDetails" type="Details" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -160,6 +160,7 @@
 	<xs:complexType name="TrustAnchor">
 		<xs:sequence>
 			<xs:element name="countryCode" type="xs:string" />
+			<xs:element name="tslType" type="xs:string" minOccurs="0" />
 			<xs:element name="trustServiceProvider" type="xs:string" />
 			<xs:element name="trustServiceProviderRegistrationId" type="xs:string" />
 			<xs:element name="trustServiceName" type="xs:string" />

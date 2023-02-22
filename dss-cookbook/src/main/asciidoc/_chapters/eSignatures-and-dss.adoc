@@ -448,9 +448,9 @@ can then apply the corresponding validation policy during validation.
 === Resources
 Certain resources have been developed to improve the adoption of the eIDAS Regulation as well as improve information sharing about the eIDAS Regulation and related concepts.
 
-The https://esignature.ec.europa.eu/efda/home/#/screen/home[EU Trust Services Dashboard] (EU TSD) is such a resource. It "proposes a centralized platform that enables interested parties and Digital Single Market players to easily and transparently access information and tools related to the trust services chapter of eIDAS".
+The https://eidas.ec.europa.eu/efda/home/#/screen/home[EU Trust Services Dashboard] (EU TSD) is such a resource. It "proposes a centralized platform that enables interested parties and Digital Single Market players to easily and transparently access information and tools related to the trust services chapter of eIDAS".
 
-It contains among others a https://esignature.ec.europa.eu/efda/tl-browser/#/screen/home[Trusted List Browser] to browse through the trusted lists of the different EU Member States.
+It contains among others a https://eidas.ec.europa.eu/efda/tl-browser/#/screen/home[Trusted List Browser] to browse through the trusted lists of the different EU Member States.
 
 https://ec.europa.eu/futurium/en/content/eidas-implementing-acts.html[eIDAS implementing acts] have been issued and adopted by the Commission:
 

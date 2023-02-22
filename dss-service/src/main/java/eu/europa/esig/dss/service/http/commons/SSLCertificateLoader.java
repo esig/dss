@@ -107,22 +107,23 @@ public class SSLCertificateLoader implements Serializable {
 		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 		
+		final CommonsDataLoader dataLoader = getCommonsDataLoader();
 		try {
-			httpRequest = getCommonsDataLoader().getHttpRequest(url);
+			httpRequest = dataLoader.getHttpRequest(url);
 			client = getHttpClient(url);
 
-			final HttpHost targetHost = getCommonsDataLoader().getHttpHost(httpRequest);
-			final HttpContext localContext = getCommonsDataLoader().getHttpContext();
+			final HttpHost targetHost = dataLoader.getHttpHost(httpRequest);
+			final HttpContext localContext = dataLoader.getHttpContext(targetHost);
 			httpResponse = client.execute(targetHost, httpRequest, localContext);
 
 			return readCertificates(localContext);
 
 		} catch (Exception e) {
-			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
+			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. " +
+					"Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		
 		} finally {
-			getCommonsDataLoader().closeQuietly(httpRequest, httpResponse, client);
-		
+			dataLoader.closeQuietly(httpRequest, httpResponse, client);
 		}
     }
     

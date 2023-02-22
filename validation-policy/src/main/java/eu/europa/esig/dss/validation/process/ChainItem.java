@@ -123,11 +123,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * {@code Level.FAIL} and not valid process.
 	 */
 	public void execute() {
-		if ((constraint == null) || (constraint.getLevel() == null)) {
+		final Level level = getLevel();
+		if (level == null) {
 			LOG.trace("Check skipped : constraint not defined");
 			callNext();
 		} else {
-			switch (constraint.getLevel()) {
+			switch (level) {
 			case IGNORE:
 				ignore();
 				break;
@@ -136,10 +137,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 				break;
 			case INFORM:
 			case WARN:
-				informOrWarn(constraint.getLevel());
+				informOrWarn(level);
 				break;
 			default:
-				LOG.warn("Unknown level : {}", constraint.getLevel());
+				LOG.warn("Unknown level : {}", level);
 				break;
 			}
 		}
@@ -151,6 +152,15 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * @return TRUE if the check succeeds, FALSE otherwise
 	 */
 	protected abstract boolean process();
+
+	/**
+	 * Returns an execution Level of the chain item
+	 *
+	 * @return {@link Level}
+	 */
+	protected Level getLevel() {
+		return constraint != null ? constraint.getLevel() : null;
+	}
 
 	/**
 	 * Returns an i18n key String of a message to get

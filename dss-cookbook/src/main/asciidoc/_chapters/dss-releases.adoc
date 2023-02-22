@@ -857,6 +857,37 @@ not enforced
     <OCSPResponderIdMatch Level="FAIL" />
     ...
 </Revocation>
+|Expiration of cryptographic suites              a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Format="yyyy">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+                                                            a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
 ----
 
 |===
@@ -997,6 +1028,68 @@ not present
 </SignedAttributesConstraints>
 ----
 
+|Qualified certificate check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <Qualification />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <PolicyQualificationIds /> <!-- pre eIDAS -->
+    <QcCompliance /> <!-- post eIDAS -->
+    ...
+</SignedAttributesConstraints>
+----
+
+|QSCD/SSCD check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <SupportedByQSCD />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QcSSCD />
+    ...
+</SignedAttributesConstraints>
+----
+
+|QcStatements attributes presence           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QCStatementIds />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <!-- Choose the corresponding QcStatement -->
+    <QcCompliance />
+    <MinQcEuLimitValue />
+    <QcSSCD />
+    <QcEuPDSLocation />
+    <QcType />
+    <QcLegislationCountryCodes />
+    <SemanticsIdentifierForNaturalPerson />
+    <SemanticsIdentifierForLegalPerson />
+    <PSD2QcTypeRolesOfPSP />
+    <!-- etc -->
+    ...
+</SignedAttributesConstraints>
+----
+
 |===
 
 === Frequently asked questions and implementation issues
@@ -1022,11 +1115,20 @@ The property is available since BouncyCastle 1.73.
 
 |v5.8 and higher            |PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
 
-|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>. For example, to filter TLs from Germany and Romania:
+|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>.
 
-[source,java]
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country]
+----
+
+Starting from DSS `5.11` you may use a `TLPredicateFactory` class to facilitate predicate creation:
+
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists with TLPredicateFactory
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country-5.11]
 ----
 
 |v5.2 and higher            |XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +

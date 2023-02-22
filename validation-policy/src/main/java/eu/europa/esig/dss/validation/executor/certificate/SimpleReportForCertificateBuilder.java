@@ -75,6 +75,7 @@ public class SimpleReportForCertificateBuilder {
 	 *
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param detailedReport {@link DetailedReport}
+	 * @param policy {@link ValidationPolicy}
 	 * @param currentTime {@link Date} validation time
 	 * @param certificateId {@link String} if od certificate to be validated
 	 */
@@ -162,7 +163,8 @@ public class SimpleReportForCertificateBuilder {
 				for (String serviceName : uniqueServiceNames) {
 					XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
 					trustAnchor.setCountryCode(xmlTrustedServiceProvider.getTL().getCountryCode());
-					trustAnchor.setTrustServiceProvider(getFirst(xmlTrustedServiceProvider.getTSPNames()));
+					trustAnchor.setTslType(xmlTrustedServiceProvider.getTL().getTSLType());
+					trustAnchor.setTrustServiceProvider(getEnOrFirst(xmlTrustedServiceProvider.getTSPNames()));
 					List<String> tspRegistrationIdentifiers = xmlTrustedServiceProvider.getTSPRegistrationIdentifiers();
 					if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
 						trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
@@ -180,16 +182,21 @@ public class SimpleReportForCertificateBuilder {
 		item.setIndication(conclusion.getIndication());
 		item.setSubIndication(conclusion.getSubIndication());
 
-		XmlDetails validationDetails = getAdESValidationDetails(certificate.getId());
+		XmlDetails validationDetails = getX509ValidationDetails(certificate.getId());
 		if (isNotEmpty(validationDetails)) {
-			item.setAdESValidationDetails(validationDetails);
+			item.setX509ValidationDetails(validationDetails);
 		}
 
 		return item;
 	}
 
-	private String getFirst(List<XmlLangAndValue> langAndValues) {
+	private String getEnOrFirst(List<XmlLangAndValue> langAndValues) {
 		if (Utils.isCollectionNotEmpty(langAndValues)) {
+			for (XmlLangAndValue langAndValue : langAndValues) {
+				if (langAndValue.getLang() != null && "en".equalsIgnoreCase(langAndValue.getLang())) {
+					return langAndValue.getValue();
+				}
+			}
 			return langAndValues.get(0).getValue();
 		}
 		return null;
@@ -231,7 +238,7 @@ public class SimpleReportForCertificateBuilder {
 	private Set<String> getUniqueServiceNames(List<XmlTrustedService> trustedServices) {
 		Set<String> result = new HashSet<>();
 		for (XmlTrustedService xmlTrustedService : trustedServices) {
-			result.add(getFirst(xmlTrustedService.getServiceNames()));
+			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
 		}
 		return result;
 	}
@@ -282,7 +289,7 @@ public class SimpleReportForCertificateBuilder {
 		firstChainItem.setEnactedMRA(enactedMRA);
 	}
 
-	private XmlDetails getAdESValidationDetails(String tokenId) {
+	private XmlDetails getX509ValidationDetails(String tokenId) {
 		XmlDetails validationDetails = new XmlDetails();
 		validationDetails.getError().addAll(convert(detailedReport.getAdESValidationErrors(tokenId)));
 		validationDetails.getWarning().addAll(convert(detailedReport.getAdESValidationWarnings(tokenId)));

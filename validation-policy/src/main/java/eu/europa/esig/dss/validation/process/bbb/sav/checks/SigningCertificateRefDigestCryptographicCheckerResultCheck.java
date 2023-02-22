@@ -21,14 +21,20 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class verifies whether a used {@code eu.europa.esig.dss.enumerations.DigestAlgorithm}
@@ -40,6 +46,12 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
 
     /** The certificate reference being validated */
     private final CertificateRefWrapper certificateRefWrapper;
+
+    /** Defines the check level */
+    private final LevelConstraint constraint;
+
+    /** The checker result message */
+    private final XmlMessage checkerResultMessage;
 
     /**
      * Default constructor
@@ -56,6 +68,36 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
                     XmlCC ccResult, LevelConstraint constraint) {
         super(i18nProvider, result, validationDate, MessageTag.ACCM_POS_SIG_CERT_REF, ccResult, constraint);
         this.certificateRefWrapper = certificateRefWrapper;
+        this.constraint = constraint;
+        this.checkerResultMessage = extractXmlMessage(ccResult, constraint);
+    }
+
+    private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
+        XmlConclusion conclusion = ccResult.getConclusion();
+        if (conclusion != null && constraint != null && constraint.getLevel() != null) {
+            // Collects messages from higher levels only
+            List<XmlMessage> messages = new ArrayList<>();
+            switch (constraint.getLevel()) {
+                case INFORM:
+                    messages.addAll(conclusion.getInfos());
+                    messages.addAll(conclusion.getWarnings());
+                    messages.addAll(conclusion.getErrors());
+                    break;
+                case WARN:
+                    messages.addAll(conclusion.getWarnings());
+                    messages.addAll(conclusion.getErrors());
+                    break;
+                case FAIL:
+                    messages.addAll(conclusion.getErrors());
+                    break;
+                default:
+                    break;
+            }
+            if (Utils.isCollectionNotEmpty(messages)) {
+                return messages.iterator().next(); // take the first one
+            }
+        }
+        return null;
     }
 
     @Override
@@ -68,6 +110,19 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
             return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
                     getErrorMessage(), dateTime, position, certificateRefWrapper.getCertificateId());
         }
+    }
+
+    @Override
+    protected Level getLevel() {
+        if (constraint != null) {
+            return constraint.getLevel();
+        }
+        return null;
+    }
+
+    @Override
+    protected XmlMessage buildErrorMessage() {
+        return checkerResultMessage;
     }
 
 }

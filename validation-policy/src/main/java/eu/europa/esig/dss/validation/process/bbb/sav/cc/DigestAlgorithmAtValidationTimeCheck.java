@@ -22,61 +22,71 @@ package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
 import java.util.Date;
 
 /**
- * Check EncryptionAlgorithm in validation time
+ * Check DigestAlgorithm at validation time
  */
-public class EncryptionAlgorithmOnValidationTimeCheck extends AbstractCryptographicCheck {
+public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicCheck {
 
 	/** The algorithm to check */
-	private final EncryptionAlgorithm encryptionAlgo;
+	private final DigestAlgorithm digestAlgo;
 
-	/** The used key size */
-	private final String keyLength;
-
-	/** Validation time */
+	/** The validation date */
 	private final Date validationDate;
+
+	/** The constraint */
+	private final CryptographicConstraintWrapper constraintWrapper;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param encryptionAlgo {@link EncryptionAlgorithm}
-	 * @param keyLength {@link String}
+	 * @param digestAlgo {@link DigestAlgorithm}
 	 * @param validationDate {@link Date}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
 	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
 	 */
-	protected EncryptionAlgorithmOnValidationTimeCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
-													   String keyLength, Date validationDate, XmlCC result,
-													   MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper);
-		this.encryptionAlgo = encryptionAlgo;
-		this.keyLength = keyLength;
+	protected DigestAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo,
+												   Date validationDate, XmlCC result, MessageTag position,
+												   CryptographicConstraintWrapper constraintWrapper) {
+		super(i18nProvider, result, position, constraintWrapper.getAlgoExpirationDateLevel());
+		this.digestAlgo = digestAlgo;
 		this.validationDate = validationDate;
+		this.constraintWrapper = constraintWrapper;
 	}
 
 	@Override
 	protected boolean process() {
-		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo, keyLength);
+		Date expirationDate = constraintWrapper.getExpirationDate(digestAlgo);
 		return expirationDate == null || !expirationDate.before(validationDate);
 	}
 	
 	@Override
+	protected Level getLevel() {
+		Date algoExpirationDate = constraintWrapper.getExpirationDate(digestAlgo);
+		Date cryptographicSuiteUpdateDate = constraintWrapper.getCryptographicSuiteUpdateDate();
+		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
+			return constraintWrapper.getAlgoExpirationDateAfterUpdateLevel();
+		}
+		return super.getLevel();
+	}
+
+	@Override
 	protected XmlMessage buildConstraintMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR, getName(encryptionAlgo));
+		return buildXmlMessage(MessageTag.ASCCM_AR, getName(digestAlgo));
 	}
 	
 	@Override
-		protected XmlMessage buildErrorMessage() {
-		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_AKSNR, getName(encryptionAlgo), keyLength, position);
+	protected XmlMessage buildErrorMessage() {
+		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_ANR, getName(digestAlgo), position);
 	}
 
 }

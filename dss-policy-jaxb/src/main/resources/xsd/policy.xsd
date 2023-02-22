@@ -846,6 +846,61 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+
+	<xsd:complexType name="ListAlgo">
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:annotation>
+					<xsd:documentation>List of algorithms</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AlgoExpirationDate">
+		<xsd:complexContent>
+			<xsd:extension base="ListAlgo">
+				<xsd:annotation>
+					<xsd:documentation>List of algorithms with their expiration date</xsd:documentation>
+				</xsd:annotation>
+				<xsd:attribute name="Format" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Specifies the date format to be followed (default : yyyy-MM-dd)</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="UpdateDate" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Date of the last update of cryptographic suites (matching the Format)</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="LevelAfterUpdate" type="level" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Defines a level of the check for cryptographic constraints expiring after the defined UpdateDate value</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="Algo">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute type="xsd:int" name="Size" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>The minimal key length</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute type="xsd:string" name="Date" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>The expiration date</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
 	
 	<!-- eIDAS REGL 910/EU/2014 -->
 	<xsd:complexType name="eIDAS">
@@ -876,51 +931,11 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="ListAlgo">
-		<xsd:annotation>
-			<xsd:documentation>List of algorithms</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="AlgoExpirationDate">
-		<xsd:annotation>
-			<xsd:documentation>List of algorithms with their expiration date</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="Format" type="xsd:string" use="optional">
-			<xsd:annotation>
-				<xsd:documentation>Specifies the date format to be followed (default : yyyy-MM-dd)</xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
-	</xsd:complexType>
-	
-	<xsd:complexType name="Algo">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute type="xsd:int" name="Size" use="optional">
-					<xsd:annotation>
-						<xsd:documentation>The minimal key length</xsd:documentation>
-					</xsd:annotation>
-				</xsd:attribute>
-				<xsd:attribute type="xsd:string" name="Date" use="optional">
-					<xsd:annotation>
-						<xsd:documentation>The expiration date</xsd:documentation>
-					</xsd:annotation>
-				</xsd:attribute>
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType>
-	
 	<xsd:complexType name="LevelConstraint">
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified level behavior in case of failure</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute type="level" name="Level">
+		<xsd:attribute name="Level" type="level">
 			<xsd:annotation>
 				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>

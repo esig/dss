@@ -510,9 +510,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		for (String certId : simpleReport.getCertificateIds()) {
 			assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
-			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
-			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
-			assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationErrors(certId)));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationWarnings(certId)));
+			assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationInfo(certId)));
 		}
 	}
 
@@ -739,9 +739,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
-		assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationErrors(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getX509ValidationWarnings(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationInfo(certId)));
 
 		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certId)));
@@ -907,9 +907,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
 		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getCertificateSubIndication(certId));
-		assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(certId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(certId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getX509ValidationErrors(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationWarnings(certId)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getX509ValidationInfo(certId)));
 
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtCertificateIssuance());
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtIssuanceTime(certId)));
