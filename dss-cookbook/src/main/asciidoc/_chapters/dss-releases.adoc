@@ -857,6 +857,7 @@ not enforced
     <OCSPResponderIdMatch Level="FAIL" />
     ...
 </Revocation>
+----
 |Expiration of cryptographic suites              a|[source,xml]
 ----
 <Cryptographic Level="FAIL">
