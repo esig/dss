@@ -11,17 +11,14 @@
     <SignaturesCount>1</SignaturesCount>
     <Signature SignatureFormat="JAdES-BASELINE-B" Id="S-EC1FD6906412EED291F00796F969D1D86786EFDFFF0E3700CF74BA65567B4B28">
         <CertificateChain>
-            <Certificate>
-                <id>C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014</id>
-                <qualifiedName>good-user</qualifiedName>
+            <Certificate Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014">
+                <QualifiedName>good-user</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126</id>
-                <qualifiedName>good-ca</qualifiedName>
+            <Certificate Id="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126">
+                <QualifiedName>good-ca</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F</id>
-                <qualifiedName>root-ca</qualifiedName>
+            <Certificate Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F">
+                <QualifiedName>root-ca</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
