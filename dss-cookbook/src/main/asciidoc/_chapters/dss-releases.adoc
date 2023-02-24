@@ -13,6 +13,43 @@
 |===
 |Version           |Release date             |Features
 
+|v5.12.RC1         |February 2023          a|Main new features / improvements :
+
+* PAdES : signature creation with external CMS provider;
+* PAdES : added PDF/A validation support;
+* PAdES : spoofing attack detection;
+* PAdES : improved performance and memory consumption on signature validation;
+* PAdES : VRI dictionary made optional;
+* XAdES : less memory-consuming message-imprint computation;
+* JAdES : added support of EdDSA algorithms;
+* Validation : improved RFC 5280 conformance;
+* Validation : return INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE if no acceptable revocation found;
+* Validation policy : improved handling of expired cryptographic algorithms;
+* DataLoader : removed default SSL-protocol definition;
+* DataLoader : added an option of pre-emptive basic authentication;
+* SignatureTokenConnection : possibility to filter keys;
+* REST/SOAP services : added a setter of default validation policy;
+* REST/SOAP services : added a signing method with a provided SignatureAlgorithm;
+* Simple report : added information about trust anchors;
+* DSS Standalone : signing of multiple document;
+* DSS Standalone : extension of signed documents;
+* DSS Standalone : validation of documents;
+* Dependencies update (BouncyCastle, HttpClient5, etc.);
+* Documentation improvement (F.A.Q. section, offline support, etc.);
+* Java 19 support.
+
+|v5.11             |February 2023          a|Bug fixes :
+
+* PAdES : unable to extend a document with /DSS dictionary before a timestamp;
+* PAdES : improved code to preserve PDF/A documents validity;
+* PAdES : fixed text auto-fitting function in certain configurations;
+* XAdES : improved handling of custom DSSReference configurations;
+* XAdES : fixed rare issue with inability to create ENVELOPED signature;
+* Fixed extension of not AdES signatures with a revoked certificate;
+* TLValidationJob : fixed unexpected exception and thread stuck during the refresh;
+* NativeHTTPDataLoader : threads can get stuck;
+* JdbcCacheConnector : improved code to allow some database implementations.
+
 |v5.11.1           |November 2022            a|Main new features / improvements :
 
 * Maven Central integration;
@@ -247,13 +284,13 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.11.1 using <<BomModule>>.
+The following example shows how to switch to DSS version 5.12.RC1 using <<BomModule>>.
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.11.1</dss.version>
+    <dss.version>5.12.RC1</dss.version>
     ...
 </properties>
 
