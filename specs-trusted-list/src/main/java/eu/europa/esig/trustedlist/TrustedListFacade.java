@@ -39,6 +39,13 @@ public class TrustedListFacade extends AbstractJaxbFacade<TrustStatusListType> {
 	private static final TrustedListUtils TL_UTILS = TrustedListUtils.getInstance();
 
 	/**
+	 * Default constructor
+	 */
+	protected TrustedListFacade() {
+		// empty
+	}
+
+	/**
 	 * Creates a new facade
 	 *
 	 * @return {@link TrustedListFacade}

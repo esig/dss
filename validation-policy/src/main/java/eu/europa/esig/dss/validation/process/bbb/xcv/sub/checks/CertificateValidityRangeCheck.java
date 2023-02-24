@@ -35,6 +35,8 @@ import java.util.Date;
 
 /**
  * Checks if the certificate is not expired
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

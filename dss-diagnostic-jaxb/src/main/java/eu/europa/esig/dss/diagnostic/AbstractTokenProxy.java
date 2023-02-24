@@ -42,6 +42,13 @@ import java.util.List;
 public abstract class AbstractTokenProxy implements TokenProxy {
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractTokenProxy() {
+		// empty
+	}
+
+	/**
 	 * Returns a basic signature validation
 	 *
 	 * @return {@link XmlBasicSignature}

@@ -25,6 +25,8 @@ import java.util.List;
 
 /**
  * Defined a "signed-signature-element" or "unsigned-signature-element" of a signature
+ *
+ * @param <SA> implementation of a signature attribute (signed or unsigned) corresponding to the current signature format
  */
 public interface SignatureProperties<SA extends SignatureAttribute> extends Serializable {
 	

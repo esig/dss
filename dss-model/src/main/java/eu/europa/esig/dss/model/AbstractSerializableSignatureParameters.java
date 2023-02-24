@@ -31,6 +31,8 @@ import java.util.Objects;
 
 /**
  * Parameters for a Signature creation/extension
+ *
+ * @param <TP> implementation of {@code SerializableTimestampParameters}
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSerializableSignatureParameters<TP extends SerializableTimestampParameters> implements SerializableSignatureParameters {

@@ -29,6 +29,8 @@ import java.util.Objects;
 /**
  * Implementation of {@code AlertHandler} which logs the object with the
  * specified {@code Level}
+ *
+ * @param <T> the object to execute logging based on
  */
 public class LogHandler<T> implements AlertHandler<T> {
 

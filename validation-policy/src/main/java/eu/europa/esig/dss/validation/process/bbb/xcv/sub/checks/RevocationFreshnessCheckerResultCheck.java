@@ -35,6 +35,8 @@ import java.util.List;
 
 /**
  * Checks if the revocation freshness checker's result is valid
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class RevocationFreshnessCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

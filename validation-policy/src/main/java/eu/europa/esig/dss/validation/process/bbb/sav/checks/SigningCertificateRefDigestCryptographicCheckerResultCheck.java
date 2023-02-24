@@ -40,6 +40,7 @@ import java.util.List;
  * This class verifies whether a used {@code eu.europa.esig.dss.enumerations.DigestAlgorithm}
  * for a signing-certificate-reference signing-attribute is reliable and acceptable at validation time
  *
+ * @param <T> {@code XmlConstraintsConclusion} implementation of the block's conclusion
  */
 public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
         extends DigestCryptographicCheckerResultCheck<T> {

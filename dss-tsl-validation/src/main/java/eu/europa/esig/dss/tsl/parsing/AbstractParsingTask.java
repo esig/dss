@@ -41,6 +41,8 @@ import java.util.function.Supplier;
 
 /**
  * Abstract class to parse a LOTL/TL
+ *
+ * @param <T> implementation of a corresponding parsing task (TL/LOTL)
  */
 public abstract class AbstractParsingTask<T extends AbstractParsingResult> implements Supplier<T> {
 

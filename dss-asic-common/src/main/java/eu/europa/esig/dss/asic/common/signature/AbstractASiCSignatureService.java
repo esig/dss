@@ -47,6 +47,10 @@ import java.util.Objects;
 
 /**
  * The abstract class containing the main methods for ASiC signature creation/extension
+ *
+ * @param <SP> implementation of signature parameters corresponding to the supported signature format
+ * @param <TP> implementation of timestamp parameters corresponding to the supported document format
+ * @param <CSP> implementation of counter-signature parameters corresponding to the supported signature format
  */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
 					CSP extends SerializableCounterSignatureParameters> extends AbstractSignatureService<SP, TP> 

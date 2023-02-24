@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Performs cryptographic validation
  *
- * @param <T> {@code XmlConstraintsConclusion}
+ * @param <T> {@code XmlConstraintsConclusion} implementation of the block's conclusion
  */
 public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 /**
  * Checks if an acceptable revocation data is present for a Past Signature Validation process
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.alert.handler.AlertHandler;
 /**
  * The class contains a general logic for alert handling
  *
+ * @param <T> the object to execute alert detection and handling on
  */
 public abstract class AbstractAlert<T> implements Alert<T> {
 

@@ -38,6 +38,7 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentChec
  * This class contains a common code to be processed as a part of a "5.2.2 Format Checking" building block
  * for validation of signatures and timestamps.
  *
+ * @param <S> signature or timestamp wrapper
  */
 public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper> extends Chain<XmlFC> {
 

@@ -28,6 +28,7 @@ import java.util.Objects;
 /**
  * Represents a wrapper class for an XML orphan token
  *
+ * @param <T> implementation of {@code XmlOrphanToken}
  */
 public abstract class OrphanTokenWrapper<T extends XmlOrphanToken> {
 

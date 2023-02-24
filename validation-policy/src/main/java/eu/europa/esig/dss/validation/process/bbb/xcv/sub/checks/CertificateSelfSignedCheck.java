@@ -31,6 +31,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the certificate is self-signed
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class CertificateSelfSignedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

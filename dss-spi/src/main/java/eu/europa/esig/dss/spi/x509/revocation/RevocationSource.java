@@ -28,6 +28,8 @@ import java.io.Serializable;
 /**
  * This interface allows revocation data retrieving for a given certificate.
  * Several implementations are available based on CRL and OCSP.
+ *
+ * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
  */
 public interface RevocationSource<R extends Revocation> extends Serializable {
 

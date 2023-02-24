@@ -15,6 +15,13 @@ import java.util.List;
 public abstract class AbstractSignatureWrapper extends AbstractTokenProxy {
 
     /**
+     * Default constructor
+     */
+    protected AbstractSignatureWrapper() {
+        // empty
+    }
+
+    /**
      * Returns a PAdES-specific PDF Revision info
      * NOTE: applicable only for PAdES
      *

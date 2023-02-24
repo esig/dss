@@ -55,6 +55,8 @@ import java.util.List;
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
  * additional verification to be performed on the signature itself or on the
  * attributes of the signature ETSI EN 319 132-1
+ *
+ * @param <T> validation token wrapper
  */
 public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy> extends Chain<XmlSAV> {
 

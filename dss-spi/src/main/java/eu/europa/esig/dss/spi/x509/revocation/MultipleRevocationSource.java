@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation;
 
-import java.io.Serializable;
-import java.util.List;
-
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * This interface allows to retrieve all revocation data for a given
  * certificate.
- * 
  * Several implementations are available based on CRL and OCSP.
+ *
+ * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
  */
 public interface MultipleRevocationSource<R extends Revocation> extends Serializable {
 

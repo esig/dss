@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the X.509 Certificate Validation as per clause 5.2.6 succeeded
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class X509CertificateValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

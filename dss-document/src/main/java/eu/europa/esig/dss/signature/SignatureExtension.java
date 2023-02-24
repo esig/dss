@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSDocument;
  * Extends the level of AdES signature of a document. After level -B, going upper in the signature format level
  * consists of adding unsigned properties to the signature. It can be done without breaking the signature.
  *
+ * @param <SP> implementation of signature parameters corresponding to the supported signature format
  */
 public interface SignatureExtension<SP extends AbstractSignatureParameters> {
 

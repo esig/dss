@@ -45,6 +45,13 @@ import java.io.StringWriter;
 public class DiagnosticDataFacade extends AbstractJaxbFacade<XmlDiagnosticData> {
 
 	/**
+	 * Default constructor
+	 */
+	protected DiagnosticDataFacade() {
+		// empty
+	}
+
+	/**
 	 * Creates a new instance of {@link DiagnosticDataFacade}
 	 *
 	 * @return {@link DiagnosticDataFacade}

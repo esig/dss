@@ -31,9 +31,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies if the result if X509CertificateValidation is not indication INDETERMINATE with the sub-indication
+ * Verifies if the result of X509CertificateValidation is not indication INDETERMINATE with the sub-indication
  * OUT_OF_BOUNDS_NO_POE or OUT_OF_BOUNDS_NOT_REVOKED
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class ValidationTimeAtCertificateValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

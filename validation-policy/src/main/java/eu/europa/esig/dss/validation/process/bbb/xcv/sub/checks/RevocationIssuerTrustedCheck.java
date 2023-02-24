@@ -32,6 +32,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * This class checks if the provided certificate token is trusted
  *
+ * @param <T> implementation of the block's conclusion
+ *
  */
 public class RevocationIssuerTrustedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -36,6 +36,8 @@ import java.util.List;
 
 /**
  * Parameters for a Signature creation/extension
+ *
+ * @param <TP> implementation of certain format signature parameters
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSignatureParameters<TP extends SerializableTimestampParameters> extends AbstractSerializableSignatureParameters<TP> {

@@ -37,6 +37,7 @@ import java.util.Date;
  * This class checks if the generation time of a content timestamp is not after
  * the revocation time of a signature's signing certificate
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class TimestampGenerationTimeNotAfterRevocationTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

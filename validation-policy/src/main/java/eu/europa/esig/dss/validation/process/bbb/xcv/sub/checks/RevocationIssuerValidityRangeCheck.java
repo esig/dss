@@ -37,6 +37,7 @@ import java.util.Date;
  * This class verifies if a validation time is in the validity range of the certificate of the issuer of
  * the revocation information
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class RevocationIssuerValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

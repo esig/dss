@@ -32,7 +32,7 @@ import java.util.Date;
 /**
  * Validates Digest cryptographic constraint
  *
- * @param <T> {@code XmlConstraintsConclusion}
+ * @param <T> {@code XmlConstraintsConclusion} implementation of the block's conclusion
  */
 public class DigestCryptographicCheckerResultCheck<T extends XmlConstraintsConclusion> extends AbstractCryptographicCheckerResultCheck<T> {
 

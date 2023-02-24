@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
  * This check verifies if the set of POEs contains a POE for the certificate after the issuance date and
  * before the expiration date of that certificate.
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class POEExistsWithinCertificateValidityRangeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

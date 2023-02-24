@@ -26,6 +26,8 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 
 /**
  * Sub-interface for online sources of {@link RevocationToken}s
+ *
+ * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
  */
 public interface OnlineRevocationSource<R extends Revocation> extends RevocationSource<R> {
 	
@@ -55,6 +57,7 @@ public interface OnlineRevocationSource<R extends Revocation> extends Revocation
 	 * This class represents an online revocation source reply, containing the extracted {@code RevocationToken}
 	 * and the URL {@code String} used to download the token from
 	 *
+	 * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
 	 */
 	class RevocationTokenAndUrl<R extends Revocation> {
 

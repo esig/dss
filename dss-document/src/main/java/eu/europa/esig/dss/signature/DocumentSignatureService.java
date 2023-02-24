@@ -34,7 +34,8 @@ import java.io.Serializable;
 /**
  * This interface {@code DocumentSignatureService} provides operations for the signature creation and for its extension.
  *
- *
+ * @param <SP> implementation of signature parameters corresponding to the supported signature format
+ * @param <TP> implementation of timestamp parameters corresponding to the supported document format
  */
 public interface DocumentSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 

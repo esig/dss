@@ -36,6 +36,8 @@ import java.util.Date;
 /**
  * This class verifies if there is a POE for the revocation information of the signer certificate
  * at (or before) the revocation time of the CA certificate
+ *
+ * @param <R> implementation of the revocation data wrapper (CRL/OCSP)
  */
 public class POENotAfterCARevocationTimeCheck<R extends RevocationWrapper> extends ChainItem<XmlPSV> {
 

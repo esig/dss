@@ -39,6 +39,13 @@ public class ValidationReportFacade extends AbstractJaxbFacade<ValidationReportT
 	private static final ValidationReportUtils ETSI_VR_UTILS = ValidationReportUtils.getInstance();
 
 	/**
+	 * Default constructor
+	 */
+	protected ValidationReportFacade() {
+		// empty
+	}
+
+	/**
 	 * Creates a new facade
 	 *
 	 * @return {@link ValidationReportFacade}

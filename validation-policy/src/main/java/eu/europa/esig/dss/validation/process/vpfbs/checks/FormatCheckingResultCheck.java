@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the format checking process as per clause 5.2.2 succeeded
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class FormatCheckingResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

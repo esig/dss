@@ -33,6 +33,8 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Checks message-imprint validity for a timestamp token
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

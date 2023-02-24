@@ -35,6 +35,7 @@ import java.util.List;
 /**
  * This class verifies whether MRA enacted trusted services are present
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class RelatedToMraEnactedTrustedServiceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

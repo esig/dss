@@ -42,14 +42,13 @@ import java.util.Objects;
 
 /**
  * This class is an item of the {@code Chain} class.
- *
  * That follows the design pattern "chain of responsibility".
- * 
- * Depending of the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
+ * Depending on the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
  * {@code ChainItem} is a validation
  * constraint which allows to collect information, warnings, errors,...
  * 
  * @see Chain
+ * @param <T> implementation of the block's conclusion
  */
 public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 

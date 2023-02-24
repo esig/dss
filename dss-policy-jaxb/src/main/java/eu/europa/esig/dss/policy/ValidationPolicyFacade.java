@@ -49,6 +49,13 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
 
 	/**
+	 * Default constructor
+	 */
+	protected ValidationPolicyFacade() {
+		// empty
+	}
+
+	/**
 	 * Initializes a new {@code ValidationPolicyFacade}
 	 *
 	 * @return {@link ValidationPolicyFacade}
