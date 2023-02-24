@@ -37,6 +37,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.auth.BasicScheme;
@@ -57,7 +58,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.BufferedHttpEntity;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
@@ -87,11 +88,11 @@ import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 /**
@@ -125,9 +126,6 @@ public class CommonsDataLoader implements DataLoader {
 
 	/** The content-type string */
 	private static final String CONTENT_TYPE = "Content-Type";
-
-	/** The list of accepted statuses for a successful connection */
-	private static final List<Integer> ACCEPTED_HTTP_STATUS = Collections.singletonList(HttpStatus.SC_OK);
 
 	/** The content type value */
 	protected String contentType;
@@ -164,9 +162,6 @@ public class CommonsDataLoader implements DataLoader {
 
 	/** Defines if the default system network properties shall be used */
 	private boolean useSystemProperties = false;
-
-	/** Defines the accepted HTTP statuses */
-	private List<Integer> acceptedHttpStatus = ACCEPTED_HTTP_STATUS;
 
 	/** Contains rules credentials for authentication to different resources */
 	private Map<HostConnection, UserCredentials> authenticationMap;
@@ -242,9 +237,16 @@ public class CommonsDataLoader implements DataLoader {
 	private boolean preemptiveAuthentication;
 
 	/**
+	 * Processes the HTTP client response and returns byte array in case of success
+	 * Default: {@code CommonsHttpClientResponseHandler}
+	 */
+	private HttpClientResponseHandler<byte[]> httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+
+	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
 	public CommonsDataLoader() {
+		// empty
 	}
 
 	/**
@@ -476,9 +478,20 @@ public class CommonsDataLoader implements DataLoader {
 	 * Returns a list of accepted HTTP status numbers
 	 *
 	 * @return a list of accepted HTTP status numbers
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+	 * 	    List<Integer> acceptedHttpStatus = httpClientResponseHandler.getAcceptedHttpStatuses();
+	 * }
 	 */
+	@Deprecated
 	public List<Integer> getAcceptedHttpStatus() {
-		return acceptedHttpStatus;
+		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.getAcceptedHttpStatuses() method.");
+		HttpClientResponseHandler<byte[]> httpClientResponseHandler = getHttpClientResponseHandler();
+		if (httpClientResponseHandler instanceof CommonsHttpClientResponseHandler) {
+			return ((CommonsHttpClientResponseHandler) httpClientResponseHandler).getAcceptedHttpStatuses();
+		}
+		throw new UnsupportedOperationException(String.format("Unable to retrieve accepted HTTP status for " +
+				"unknown implementation of HttpClientResponseHandler : '%s'", httpClientResponseHandler.getClass()));
 	}
 
 	/**
@@ -486,9 +499,21 @@ public class CommonsDataLoader implements DataLoader {
 	 *
 	 * @param acceptedHttpStatus
 	 *            a list of integer which correspond to the http status code
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+	 * 		httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+	 * 		commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+	 * }
 	 */
+	@Deprecated
 	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
-		this.acceptedHttpStatus = acceptedHttpStatus;
+		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.setAcceptedHttpStatuses(...) method.");
+		HttpClientResponseHandler<byte[]> httpClientResponseHandler = getHttpClientResponseHandler();
+		if (httpClientResponseHandler instanceof CommonsHttpClientResponseHandler) {
+			((CommonsHttpClientResponseHandler) httpClientResponseHandler).setAcceptedHttpStatuses(acceptedHttpStatus);
+		}
+		throw new UnsupportedOperationException(String.format("Unable to set accepted HTTP status for " +
+				"unknown implementation of HttpClientResponseHandler : '%s'", httpClientResponseHandler.getClass()));
 	}
 
 	/**
@@ -786,6 +811,26 @@ public class CommonsDataLoader implements DataLoader {
 		this.trustStrategy = trustStrategy;
 	}
 
+	/**
+	 * Returns the {@code HttpClientResponseHandler} response handler
+	 *
+	 * @return {@link HttpClientResponseHandler}
+	 */
+	public HttpClientResponseHandler<byte[]> getHttpClientResponseHandler() {
+		return httpClientResponseHandler;
+	}
+
+	/**
+	 * Sets the {@code HttpClientResponseHandler<byte[]>} response handler performing a processing of
+	 * an HTTP client response and returns a byte array in case of success.
+	 *
+	 * @param httpClientResponseHandler {@link HttpClientResponseHandler}
+	 */
+	public void setHttpClientResponseHandler(HttpClientResponseHandler<byte[]> httpClientResponseHandler) {
+		Objects.requireNonNull(httpClientResponseHandler, "HttpClientResponseHandler cannot be null!");
+		this.httpClientResponseHandler = httpClientResponseHandler;
+	}
+
 	@Override
 	public byte[] get(final String urlString) {
 
@@ -935,21 +980,18 @@ public class CommonsDataLoader implements DataLoader {
 	protected byte[] httpGet(final String url) {
 
 		HttpGet httpRequest = null;
-		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 
 		try {
 			httpRequest = getHttpRequest(url);
 			client = getHttpClient(url);
-			httpResponse = getHttpResponse(client, httpRequest);
-
-			return readHttpResponse(httpResponse);
+			return execute(client, httpRequest);
 
 		} catch (URISyntaxException | IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 
 		} finally {
-			closeQuietly(httpRequest, httpResponse, client);
+			closeQuietly(httpRequest, client);
 
 		}
 	}
@@ -960,7 +1002,6 @@ public class CommonsDataLoader implements DataLoader {
 		LOG.debug("Fetching data via POST from url {}", url);
 
 		HttpPost httpRequest = null;
-		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 		try {
 			final URI uri = URI.create(Utils.trim(url));
@@ -979,14 +1020,13 @@ public class CommonsDataLoader implements DataLoader {
 			httpRequest.setEntity(requestEntity);
 
 			client = getHttpClient(url);
-			httpResponse = getHttpResponse(client, httpRequest);
+			return execute(client, httpRequest);
 
-			return readHttpResponse(httpResponse);
 		} catch (IOException e) {
 			throw new DSSExternalResourceException(String.format("Unable to process POST call for url [%s]. Reason : [%s]", url, e.getMessage()) , e);
 
 		} finally {
-			closeQuietly(httpRequest, httpResponse, client);
+			closeQuietly(httpRequest, client);
 
 		}
 	}
@@ -998,12 +1038,29 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param httpRequest {@link HttpUriRequest}
 	 * @return {@link CloseableHttpResponse}
 	 * @throws IOException if an exception occurs
+	 * @deprecated since DSS 5.12. See {@code execute(CloseableHttpClient client, HttpUriRequest httpRequest)}
 	 */
+	@Deprecated
 	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client,
 													final HttpUriRequest httpRequest) throws IOException {
 		final HttpHost targetHost = getHttpHost(httpRequest);
 		final HttpContext localContext = getHttpContext(targetHost);
 		return client.execute(targetHost, httpRequest, localContext);
+	}
+
+	/**
+	 * Processes {@code httpRequest} and returns the byte array representing the response's content
+	 *
+	 * @param client {@link CloseableHttpClient}
+	 * @param httpRequest {@link HttpUriRequest}
+	 * @return byte array representing the response's content
+	 * @throws IOException if an exception occurs
+	 */
+	protected byte[] execute(final CloseableHttpClient client, final HttpUriRequest httpRequest) throws IOException {
+		final HttpHost targetHost = getHttpHost(httpRequest);
+		final HttpContext localContext = getHttpContext(targetHost);
+		final HttpClientResponseHandler<byte[]> responseHandler = getHttpClientResponseHandler();
+		return client.execute(targetHost, httpRequest, localContext, responseHandler);
 	}
 
 	/**
@@ -1067,13 +1124,15 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param httpResponse {@link CloseableHttpResponse}
 	 * @return the response's content
 	 * @throws IOException if an exception occurs
+	 * @deprecated since DSS 5.12. Use {@code CommonsHttpClientResponseHandler.handleResponse(CloseableHttpResponse httpResponse)}
 	 */
+	@Deprecated
 	protected byte[] readHttpResponse(final CloseableHttpResponse httpResponse) throws IOException {
 		final StatusLine statusLine = new StatusLine(httpResponse);
 		final int statusCode = statusLine.getStatusCode();
 		final String reasonPhrase = statusLine.getReasonPhrase();
 
-		if (!acceptedHttpStatus.contains(statusCode)) {
+		if (!getAcceptedHttpStatus().contains(statusCode)) {
 			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
 			throw new IOException("Not acceptable HTTP Status (HTTP status code : " + statusCode + reason + ")");
 		}
@@ -1092,7 +1151,9 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param responseEntity {@link HttpEntity}
 	 * @return byte array
 	 * @throws IOException if an exception occurs
+	 * @deprecated since DSS 5.12. Use {@code CommonsHttpClientResponseHandler.getContent(HttpEntity responseEntity)}
 	 */
+	@Deprecated
 	protected byte[] getContent(final HttpEntity responseEntity) throws IOException {
 		try (InputStream content = responseEntity.getContent()) {
 			return DSSUtils.toByteArray(content);
@@ -1105,7 +1166,9 @@ public class CommonsDataLoader implements DataLoader {
 	 * @param httpRequest {@link HttpUriRequestBase}
 	 * @param httpResponse {@link CloseableHttpResponse}
 	 * @param client {@link CloseableHttpClient}
+	 * @deprecated since DSS 5.12. See {@code #closeQuietly(HttpUriRequestBase httpRequest, CloseableHttpClient client)}
 	 */
+	@Deprecated
 	protected void closeQuietly(HttpUriRequestBase httpRequest, CloseableHttpResponse httpResponse,
 								CloseableHttpClient client) {
 		try {
@@ -1121,15 +1184,35 @@ public class CommonsDataLoader implements DataLoader {
 		}
 	}
 
+	/**
+	 * Closes all the parameters quietly
+	 *
+	 * @param httpRequest {@link HttpUriRequestBase}
+	 * @param client {@link CloseableHttpClient}
+	 */
+	protected void closeQuietly(HttpUriRequestBase httpRequest, CloseableHttpClient client) {
+		try {
+			if (httpRequest != null) {
+				httpRequest.cancel();
+			}
+		} finally {
+			Utils.closeQuietly(client);
+		}
+	}
+
 	private HttpClientConnectionManager getConnectionManager() {
 		final PoolingHttpClientConnectionManagerBuilder builder = PoolingHttpClientConnectionManagerBuilder.create()
 				.setSSLSocketFactory(getConnectionSocketFactoryHttps())
 				.setDefaultSocketConfig(getSocketConfig())
 				.setMaxConnTotal(getConnectionsMaxTotal())
-				.setMaxConnPerRoute(getConnectionsMaxPerRoute())
-				.setConnectionTimeToLive(connectionTimeToLive);
+				.setMaxConnPerRoute(getConnectionsMaxPerRoute());
+
+		final ConnectionConfig.Builder connectionConfigBuilder = ConnectionConfig.custom()
+				.setConnectTimeout(timeoutConnection)
+				.setTimeToLive(connectionTimeToLive);
 
 		final PoolingHttpClientConnectionManager connectionManager = builder.build();
+		connectionManager.setDefaultConnectionConfig(connectionConfigBuilder.build());
 
 		LOG.debug("PoolingHttpClientConnectionManager: max total: {}", connectionManager.getMaxTotal());
 		LOG.debug("PoolingHttpClientConnectionManager: max per route: {}", connectionManager.getDefaultMaxPerRoute());
@@ -1246,7 +1329,6 @@ public class CommonsDataLoader implements DataLoader {
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
 		final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
-				.setConnectTimeout(timeoutConnection)
 				.setConnectionRequestTimeout(timeoutConnectionRequest)
 				.setResponseTimeout(timeoutResponse)
 				.setConnectionKeepAlive(connectionKeepAlive)

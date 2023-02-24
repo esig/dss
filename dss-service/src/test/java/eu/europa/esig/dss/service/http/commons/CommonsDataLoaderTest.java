@@ -30,6 +30,7 @@ import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -208,6 +209,24 @@ public class CommonsDataLoaderTest {
 
 		proxyProperties.setExcludedHosts(Arrays.asList("certs.eid.belgium.be"));
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+	}
+
+	@Test
+	public void httpClientResponseHandlerTest() {
+		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+		dataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_OK));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_OK, HttpStatus.SC_CONTINUE));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_CONTINUE));
+		Exception exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertEquals("Unable to process GET call for url [http://certs.eid.belgium.be/belgiumrs2.crt]. " +
+				"Reason : [Not acceptable HTTP Status (HTTP status code : 200 / reason : OK)]", exception.getMessage());
 	}
 
 }

@@ -420,6 +420,51 @@ dataLoader.setConnectTimeout(1000);
 dataLoader.setReadTimeout(1000);
 ----
 
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader password implementation                           a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword);
+commonsDataLoader.setSslTruststorePassword(trustStorePassword);
+commonsDataLoader.addAuthentication(host, port, scheme, login, password);
+----
+                                                                     a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword.toCharArray());
+commonsDataLoader.setSslTruststorePassword(trustStorePassword.toCharArray());
+commonsDataLoader.addAuthentication(host, port, scheme, login, password.toCharArray());
+----
+
+|CommonsDataLoader #get                           a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url, false);
+----
+                                                                     a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url);
+// or use alternative implementation for caching, e.g. FileCacheDataLoader
+----
+
 |===
 
 [cols="2,5,5"]
