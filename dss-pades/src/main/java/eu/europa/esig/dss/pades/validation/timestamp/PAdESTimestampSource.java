@@ -61,12 +61,12 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
     /**
      * This variable contains the list of embedded document timestamps.
      */
-    protected List<TimestampToken> documentTimestamps;
+    protected transient List<TimestampToken> documentTimestamps;
 
     /**
      * This variable contains the list of embedded /VRI timestamps corresponding to the signature.
      */
-    protected List<TimestampToken> vriTimestamps;
+    protected transient List<TimestampToken> vriTimestamps;
 
     /**
      * The default constructor to extract timestamps for a signature

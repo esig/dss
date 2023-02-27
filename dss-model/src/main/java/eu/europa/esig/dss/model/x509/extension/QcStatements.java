@@ -32,6 +32,8 @@ import java.util.List;
  */
 public class QcStatements extends CertificateExtension {
 
+    private static final long serialVersionUID = -2866428750530761071L;
+
     /**
      * esi4-qcStatement-1 QC-STATEMENT ::= { IDENTIFIED BY id-etsi-qcs-QcCompliance }
      * id-etsi-qcs-QcCompliance OBJECT IDENTIFIER ::= { id-etsi-qcs 1 }

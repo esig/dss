@@ -24,6 +24,8 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 
+import java.util.Objects;
+
 /**
  * The signature scope represents a signed PDF byte range
  *
@@ -50,6 +52,31 @@ public abstract class PdfByteRangeSignatureScope extends SignatureScope {
 	@Override
 	public String getDescription() {
 		return "The document ByteRange : " + byteRange;
+	}
+
+	@Override
+	public String toString() {
+		return "PdfByteRangeSignatureScope{" +
+				"byteRange=" + byteRange +
+				"} " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PdfByteRangeSignatureScope)) return false;
+		if (!super.equals(o)) return false;
+
+		PdfByteRangeSignatureScope that = (PdfByteRangeSignatureScope) o;
+
+		return Objects.equals(byteRange, that.byteRange);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (byteRange != null ? byteRange.hashCode() : 0);
+		return result;
 	}
 
 }

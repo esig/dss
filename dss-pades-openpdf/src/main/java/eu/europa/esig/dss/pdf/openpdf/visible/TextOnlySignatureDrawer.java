@@ -66,6 +66,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	 * Default constructor with null font
 	 */
 	public TextOnlySignatureDrawer() {
+		// empty
 	}
 	
 	@Override

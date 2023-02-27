@@ -50,6 +50,7 @@ public class CompositeTSPSource implements TSPSource {
 	 * Default constructor instantiating object with null values
 	 */
 	public CompositeTSPSource() {
+		// empty
 	}
 
 	/**

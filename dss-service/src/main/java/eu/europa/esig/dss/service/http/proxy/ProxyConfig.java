@@ -39,6 +39,7 @@ public class ProxyConfig implements Serializable {
 	 * Default constructor with null properties
 	 */
 	public ProxyConfig() {
+		// empty
 	}
 
 	/**

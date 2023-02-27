@@ -37,6 +37,7 @@ public class LogTLExpirationAlertHandler implements AlertHandler<TLInfo> {
 	 * Default constructor
 	 */
 	public LogTLExpirationAlertHandler() {
+		// empty
 	}
 
 	@Override

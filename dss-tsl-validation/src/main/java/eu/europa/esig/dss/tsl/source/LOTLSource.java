@@ -65,6 +65,7 @@ public class LOTLSource extends TLSource {
 	 * Default constructor instantiating object with minimal EU configuration
 	 */
 	public LOTLSource() {
+		// empty
 	}
 
 	/**

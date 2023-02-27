@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.model.x509.extension;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Represents a PSD-2-QC type
  *
  */
-public class PSD2QcType {
+public class PSD2QcType implements Serializable {
+
+	private static final long serialVersionUID = 3691830305051608960L;
 
 	/** A list of {@code RoleOfPSP}s */
 	private List<RoleOfPSP> rolesOfPSP;

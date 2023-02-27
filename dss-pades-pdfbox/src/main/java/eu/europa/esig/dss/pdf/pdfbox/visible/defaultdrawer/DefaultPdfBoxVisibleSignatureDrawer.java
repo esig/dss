@@ -43,6 +43,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 	 * Default constructor
 	 */
 	public DefaultPdfBoxVisibleSignatureDrawer() {
+		// empty
 	}
 
 	@Override

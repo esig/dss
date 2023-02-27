@@ -10,6 +10,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class BasicConstraints extends CertificateExtension {
 
+    private static final long serialVersionUID = -2670814551087982603L;
+
     /**
      * Defines whether the certificate is a CA certificate
      */

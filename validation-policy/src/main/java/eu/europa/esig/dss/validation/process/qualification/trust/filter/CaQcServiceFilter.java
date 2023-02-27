@@ -33,6 +33,7 @@ public class CaQcServiceFilter extends AbstractTrustedServiceFilter {
 	 * Default constructor
 	 */
 	public CaQcServiceFilter() {
+		// empty
 	}
 
 	@Override

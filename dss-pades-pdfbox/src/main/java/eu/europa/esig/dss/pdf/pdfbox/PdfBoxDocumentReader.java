@@ -400,23 +400,30 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					if (base instanceof COSArray) {
 						COSArray refArray = (COSArray) base;
 						for (int i = 0; i < refArray.size(); i++) {
-							base = refArray.getObject(i);
-							if (base instanceof COSDictionary) {
-								COSDictionary sigRefDict = (COSDictionary) base;
-								if (COSName.DOCMDP.equals(sigRefDict.getDictionaryObject(COSName.TRANSFORM_METHOD))) {
-									base = sigRefDict.getDictionaryObject(COSName.TRANSFORM_PARAMS);
-									if (base instanceof COSDictionary) {
-										COSDictionary transformDict = (COSDictionary) base;
-										int accessPermissions = transformDict.getInt(COSName.P, 2);
-										if (accessPermissions < 1 || accessPermissions > 3) {
-											accessPermissions = 2;
-										}
-										return CertificationPermission.fromCode(accessPermissions);
-									}
-								}
+							CertificationPermission certificationPermission = getPermissionFromReference(refArray.getObject(i));
+							if (certificationPermission != null) {
+								return certificationPermission;
 							}
 						}
 					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private CertificationPermission getPermissionFromReference(COSBase reference) {
+		if (reference instanceof COSDictionary) {
+			COSDictionary sigRefDict = (COSDictionary) reference;
+			if (COSName.DOCMDP.equals(sigRefDict.getDictionaryObject(COSName.TRANSFORM_METHOD))) {
+				COSBase transformParams = sigRefDict.getDictionaryObject(COSName.TRANSFORM_PARAMS);
+				if (transformParams instanceof COSDictionary) {
+					COSDictionary transformDict = (COSDictionary) transformParams;
+					int accessPermissions = transformDict.getInt(COSName.P, 2);
+					if (accessPermissions < 1 || accessPermissions > 3) {
+						accessPermissions = 2;
+					}
+					return CertificationPermission.fromCode(accessPermissions);
 				}
 			}
 		}

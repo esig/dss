@@ -12,6 +12,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class InhibitAnyPolicy extends CertificateExtension {
 
+    private static final long serialVersionUID = 872144242608534696L;
+
     /**
      * Indicates the number of additional non-self-issued certificates that may appear
      * in the path before anyPolicy is no longer permitted.

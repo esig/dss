@@ -80,7 +80,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	/**
 	 * The builder is to be used to create a new {@code DSSResourcesHandler} for visual signature creation,
 	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
-	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}
 	 */
 	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
@@ -89,11 +88,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * Default constructor instantiating object with default parameter values
 	 */
 	public NativePdfBoxVisibleSignatureDrawer() {
+		// empty
 	}
 
 	/**
 	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation
-	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
 	 *
 	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}

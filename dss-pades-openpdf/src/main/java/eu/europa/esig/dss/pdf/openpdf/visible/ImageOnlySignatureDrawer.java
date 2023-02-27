@@ -48,6 +48,7 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	 * Default constructor
 	 */
 	public ImageOnlySignatureDrawer() {
+		// empty
 	}
 
 	@Override

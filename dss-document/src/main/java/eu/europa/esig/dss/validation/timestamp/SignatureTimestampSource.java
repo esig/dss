@@ -86,37 +86,37 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     /**
      * Enclosed content timestamps.
      */
-    protected List<TimestampToken> contentTimestamps;
+    protected transient List<TimestampToken> contentTimestamps;
 
     /**
      * Enclosed signature timestamps.
      */
-    protected List<TimestampToken> signatureTimestamps;
+    protected transient List<TimestampToken> signatureTimestamps;
 
     /**
      * Enclosed SignAndRefs timestamps.
      */
-    protected List<TimestampToken> sigAndRefsTimestamps;
+    protected transient List<TimestampToken> sigAndRefsTimestamps;
 
     /**
      * Enclosed RefsOnly timestamps.
      */
-    protected List<TimestampToken> refsOnlyTimestamps;
+    protected transient List<TimestampToken> refsOnlyTimestamps;
 
     /**
      * This variable contains the list of enclosed archive signature timestamps.
      */
-    protected List<TimestampToken> archiveTimestamps;
+    protected transient List<TimestampToken> archiveTimestamps;
 
     /**
      * This variable contains the list of detached timestamp tokens (used in ASiC with CAdES).
      */
-    protected List<TimestampToken> detachedTimestamps;
+    protected transient List<TimestampToken> detachedTimestamps;
 
     /**
      * A list of all TimestampedReferences extracted from a signature
      */
-    protected List<TimestampedReference> unsignedPropertiesReferences;
+    protected transient List<TimestampedReference> unsignedPropertiesReferences;
 
     /**
      * A cached instance of Signed Signature Properties

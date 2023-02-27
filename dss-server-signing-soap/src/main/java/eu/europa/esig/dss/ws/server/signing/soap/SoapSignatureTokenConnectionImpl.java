@@ -45,6 +45,7 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	 * Default construction instantiating object with null token connection
 	 */
 	public SoapSignatureTokenConnectionImpl() {
+		// empty
 	}
 
 	/**

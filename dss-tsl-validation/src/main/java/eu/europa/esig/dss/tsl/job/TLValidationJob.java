@@ -136,6 +136,7 @@ public class TLValidationJob {
 	 * Default constructor instantiating object with null configuration
 	 */
 	public TLValidationJob() {
+		// empty
 	}
 
 	/**

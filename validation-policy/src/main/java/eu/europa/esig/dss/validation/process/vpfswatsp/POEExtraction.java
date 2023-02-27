@@ -67,6 +67,7 @@ public class POEExtraction {
 	 * Default constructor initializing an empty map
 	 */
 	public POEExtraction() {
+		// empty
 	}
 
 	/**

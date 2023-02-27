@@ -41,6 +41,7 @@ public class IgnoreDataLoader implements DataLoader {
 	 * Default constructor
 	 */
 	public IgnoreDataLoader() {
+		// empty
 	}
 
 	@Override

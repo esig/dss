@@ -9,6 +9,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class SubjectKeyIdentifier extends CertificateExtension {
 
+    private static final long serialVersionUID = -187448404652061938L;
+
     /** The subject key identifier */
     private byte[] ski;
 

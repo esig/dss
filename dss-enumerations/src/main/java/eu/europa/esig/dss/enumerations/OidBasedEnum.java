@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.io.Serializable;
+
 /**
  * The interface represent an OID-based property
  */
-public interface OidBasedEnum {
+public interface OidBasedEnum extends Serializable {
 
 	/**
 	 * This method returns the OID value

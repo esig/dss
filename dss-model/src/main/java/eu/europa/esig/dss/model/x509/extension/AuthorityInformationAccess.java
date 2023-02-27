@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class AuthorityInformationAccess extends CertificateExtension {
 
+    private static final long serialVersionUID = 3737049345593065825L;
+
     /** Lists certificates that were issued to the CA that issued this certificate */
     private List<String> caIssuers;
 

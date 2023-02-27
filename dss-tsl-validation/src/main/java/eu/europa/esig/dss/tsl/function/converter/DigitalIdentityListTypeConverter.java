@@ -44,6 +44,7 @@ public class DigitalIdentityListTypeConverter implements Function<DigitalIdentit
 	 * Default constructor
 	 */
 	public DigitalIdentityListTypeConverter() {
+		// empty
 	}
 
 	@Override

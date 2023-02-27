@@ -49,6 +49,9 @@ public interface QCType extends OidDescription {
 
         LOG.debug("Not supported QcType : '{}'", oid);
         return new QCType() {
+
+            private static final long serialVersionUID = -8051274586981146105L;
+
             @Override
             public String getDescription() { return UNKNOWN_TYPE; }
             @Override

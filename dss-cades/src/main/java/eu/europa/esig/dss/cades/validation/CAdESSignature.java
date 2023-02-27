@@ -570,9 +570,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttribute getSignerAttributeV1() {
-		final Attribute id_aa_ets_signerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
-		if (id_aa_ets_signerAttr != null) {
-			final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
+		final Attribute idAaEtsSignerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		if (idAaEtsSignerAttr != null) {
+			final ASN1Set attrValues = idAaEtsSignerAttr.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 			try {
 				return SignerAttribute.getInstance(attrValue);
@@ -589,9 +589,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttributeV2 getSignerAttributeV2() {
-		final Attribute id_aa_ets_signerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
-		if (id_aa_ets_signerAttrV2 != null) {
-			final ASN1Set attrValues = id_aa_ets_signerAttrV2.getAttrValues();
+		final Attribute idAaEtsSignerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
+		if (idAaEtsSignerAttrV2 != null) {
+			final ASN1Set attrValues = idAaEtsSignerAttrV2.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 			try {
 				return SignerAttributeV2.getInstance(attrValue);

@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.model.x509.extension;
 
+import java.io.Serializable;
+
 /**
  * The class represents a certificate policy
  *
  */
-public class CertificatePolicy {
+public class CertificatePolicy implements Serializable {
+
+	private static final long serialVersionUID = 2136045831073101720L;
 
 	/** Certificate policy OID */
 	private String oid;

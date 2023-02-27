@@ -197,9 +197,9 @@ public class CAdESLevelBaselineB {
 			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<>(claimedSignerRoles.size());
 			for (final String claimedSignerRole : claimedSignerRoles) {
 				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
+				final org.bouncycastle.asn1.x509.Attribute idAaEtsSignerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
 						new DERSet(roles));
-				claimedAttributes.add(id_aa_ets_signerAttr);
+				claimedAttributes.add(idAaEtsSignerAttr);
 			}
 			org.bouncycastle.asn1.cms.Attribute signerAttributes;
 			if (!parameters.isEn319122()) {

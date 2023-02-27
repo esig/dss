@@ -56,6 +56,7 @@ public class ApacheCommonsUtils implements IUtils {
 	 * Default constructor
 	 */
 	public ApacheCommonsUtils() {
+		// empty
 	}
 
 	@Override

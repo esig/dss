@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.Digest;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This SignatureScope represents a Manifest entry document
@@ -64,6 +65,31 @@ public class ManifestEntrySignatureScope extends SignatureScopeWithTransformatio
 	@Override
 	public SignatureScopeType getType() {
 		return SignatureScopeType.FULL;
+	}
+
+	@Override
+	public String toString() {
+		return "ManifestEntrySignatureScope{" +
+				"manifestName='" + manifestName + '\'' +
+				"} " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ManifestEntrySignatureScope)) return false;
+		if (!super.equals(o)) return false;
+
+		ManifestEntrySignatureScope that = (ManifestEntrySignatureScope) o;
+
+		return Objects.equals(manifestName, that.manifestName);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (manifestName != null ? manifestName.hashCode() : 0);
+		return result;
 	}
 
 }

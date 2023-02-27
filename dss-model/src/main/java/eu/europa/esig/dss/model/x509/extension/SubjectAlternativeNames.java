@@ -23,6 +23,8 @@ import java.util.List;
  */
 public class SubjectAlternativeNames extends CertificateExtension {
 
+    private static final long serialVersionUID = 1164359049003917189L;
+
     /** List of subject alternative names */
     private List<String> names;
 

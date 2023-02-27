@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.io.Serializable;
+
 /**
- * Defines an enumeration containing an URI
+ * Defines an enumeration containing a URI
  */
-public interface UriBasedEnum {
+public interface UriBasedEnum extends Serializable {
 
 	/**
 	 * Returns a URI

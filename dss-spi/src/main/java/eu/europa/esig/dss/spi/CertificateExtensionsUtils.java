@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.ValidityAssuredShortTerm;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
@@ -65,6 +66,13 @@ import java.util.List;
 public class CertificateExtensionsUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificateExtensionsUtils.class);
+
+    /**
+     * Utils class
+     */
+    private CertificateExtensionsUtils() {
+        // empty
+    }
 
     /**
      * This method extracts the certificate extensions from the given {@code certificateToken}
@@ -710,19 +718,7 @@ public class CertificateExtensionsUtils {
             try {
                 ASN1Sequence seq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(certificatePoliciesBinaries);
                 for (int ii = 0; ii < seq.size(); ii++) {
-                    CertificatePolicy cp = new CertificatePolicy();
-                    final PolicyInformation policyInfo = PolicyInformation.getInstance(seq.getObjectAt(ii));
-                    cp.setOid(policyInfo.getPolicyIdentifier().getId());
-                    ASN1Sequence policyQualifiersSeq = policyInfo.getPolicyQualifiers();
-                    if (policyQualifiersSeq != null) {
-                        for (int jj = 0; jj < policyQualifiersSeq.size(); jj++) {
-                            PolicyQualifierInfo pqi = PolicyQualifierInfo.getInstance(policyQualifiersSeq.getObjectAt(jj));
-                            if (PolicyQualifierId.id_qt_cps.equals(pqi.getPolicyQualifierId())) {
-                                cp.setCpsUrl(DSSASN1Utils.getString(pqi.getQualifier()));
-                            }
-                        }
-                    }
-                    policiesList.add(cp);
+                    policiesList.add(getCertificatePolicy(seq.getObjectAt(ii)));
                 }
                 certificatePolicies.setPolicyList(policiesList);
                 certificatePolicies.checkCritical(certificateToken);
@@ -733,6 +729,22 @@ public class CertificateExtensionsUtils {
             }
         }
         return null;
+    }
+
+    private static CertificatePolicy getCertificatePolicy(ASN1Encodable policyObject) {
+        final CertificatePolicy cp = new CertificatePolicy();
+        final PolicyInformation policyInfo = PolicyInformation.getInstance(policyObject);
+        cp.setOid(policyInfo.getPolicyIdentifier().getId());
+        ASN1Sequence policyQualifiersSeq = policyInfo.getPolicyQualifiers();
+        if (policyQualifiersSeq != null) {
+            for (int jj = 0; jj < policyQualifiersSeq.size(); jj++) {
+                PolicyQualifierInfo pqi = PolicyQualifierInfo.getInstance(policyQualifiersSeq.getObjectAt(jj));
+                if (PolicyQualifierId.id_qt_cps.equals(pqi.getPolicyQualifierId())) {
+                    cp.setCpsUrl(DSSASN1Utils.getString(pqi.getQualifier()));
+                }
+            }
+        }
+        return cp;
     }
 
     /**

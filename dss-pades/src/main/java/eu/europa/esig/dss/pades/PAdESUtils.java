@@ -147,9 +147,8 @@ public final class PAdESUtils {
 	 * @param dssDocument {@link DSSDocument} to process
 	 * @param byteRange {@link ByteRange} specifying the signatureValue
 	 * @return signatureValue binaries
-	 * @throws IOException if an exception occurs
 	 */
-	public static byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
+	public static byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) {
 		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
 		int endSigValueContent = byteRange.getSecondPartStart() - 1;
 

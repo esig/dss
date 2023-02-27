@@ -35,6 +35,7 @@ public class DateAdapter extends XmlAdapter<String, Date> {
 	 * Default constructor
 	 */
 	public DateAdapter() {
+		// empty
 	}
 
 	@Override

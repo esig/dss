@@ -46,6 +46,7 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	 * Default construction instantiating object with null token connection
 	 */
 	public RestSignatureTokenConnectionImpl() {
+		// empty
 	}
 
 	/**

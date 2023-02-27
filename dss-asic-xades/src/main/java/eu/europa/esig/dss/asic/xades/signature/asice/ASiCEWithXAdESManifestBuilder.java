@@ -67,6 +67,7 @@ public class ASiCEWithXAdESManifestBuilder {
 	 * Empty constructor
 	 */
 	public ASiCEWithXAdESManifestBuilder() {
+		// empty
 	}
 
 	/**

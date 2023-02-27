@@ -63,6 +63,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	 * Default constructor
 	 */
 	public TrustServiceConverter() {
+		// emptyTrustServiceEquivalenceConverter
 	}
 
 	@Override

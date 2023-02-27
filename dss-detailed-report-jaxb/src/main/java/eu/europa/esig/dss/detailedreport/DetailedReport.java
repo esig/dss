@@ -639,7 +639,7 @@ public class DetailedReport {
 				boolean trustAnchorReached = false;
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
-					if (xmlSubXCV.isTrustAnchor()) {
+					if (xmlSubXCV.isTrustAnchor() != null && xmlSubXCV.isTrustAnchor()) {
 						trustAnchorReached = true;
 					}
 					if (certificateId.equals(xmlSubXCV.getId())) {

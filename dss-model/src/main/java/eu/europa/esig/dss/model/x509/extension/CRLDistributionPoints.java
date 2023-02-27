@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class CRLDistributionPoints extends CertificateExtension {
 
+    private static final long serialVersionUID = 8414843047407478743L;
+
     /** List of CRL distribution points */
     private List<String> crlUrls;
 

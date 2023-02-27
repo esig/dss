@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSUtils;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,9 @@ import java.util.List;
  * This class represents a ByteRange of a PDF Revision
  *
  */
-public class ByteRange {
+public class ByteRange implements Serializable {
+
+	private static final long serialVersionUID = 3577208788371349439L;
 
 	/** Represents a PDF signature byteRange */
 	private final int[] byteRangeArray;

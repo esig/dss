@@ -58,6 +58,7 @@ public class RemoteDocumentValidationService {
 	 * Default construction instantiating object with null certificate verifier
 	 */
 	public RemoteDocumentValidationService() {
+		// empty
 	}
 
 	/**

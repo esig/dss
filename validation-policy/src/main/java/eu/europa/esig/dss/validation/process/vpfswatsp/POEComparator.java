@@ -44,6 +44,7 @@ public class POEComparator implements Comparator<POE>, Serializable {
 	 * Default constructor
 	 */
 	public POEComparator() {
+		// empty
 	}
 
 	@Override

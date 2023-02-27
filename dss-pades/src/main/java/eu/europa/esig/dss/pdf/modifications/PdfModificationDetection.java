@@ -22,13 +22,16 @@ package eu.europa.esig.dss.pdf.modifications;
 
 import eu.europa.esig.dss.utils.Utils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * The class contains necessary information about a PDF visual or structure modifications
  *
  */
-public class PdfModificationDetection {
+public class PdfModificationDetection implements Serializable {
+
+	private static final long serialVersionUID = -3111838612302655954L;
 
 	/** List of annotation overlaps */
 	private List<PdfModification> annotationOverlaps;
@@ -46,6 +49,7 @@ public class PdfModificationDetection {
 	 * Default constructor instantiating object with null values
 	 */
 	public PdfModificationDetection() {
+		// empty
 	}
 
 	/**

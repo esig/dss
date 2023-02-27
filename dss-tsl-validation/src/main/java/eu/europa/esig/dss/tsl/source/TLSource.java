@@ -66,6 +66,7 @@ public class TLSource {
 	 * Default constructor instantiating object with null values
 	 */
 	public TLSource() {
+		// empty
 	}
 
 	/**

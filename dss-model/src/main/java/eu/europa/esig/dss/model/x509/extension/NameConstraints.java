@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class NameConstraints extends CertificateExtension {
 
+    private static final long serialVersionUID = -1598798674152749825L;
+
     /** Contains a list of subtrees that should match in the issued certificates */
     private List<GeneralSubtree> permittedSubtrees;
 

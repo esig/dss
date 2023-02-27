@@ -33,6 +33,7 @@ public class QTSTServiceFilter extends AbstractTrustedServiceFilter {
 	 * Default constructor
 	 */
 	public QTSTServiceFilter() {
+		// empty
 	}
 
 	@Override

@@ -28,6 +28,12 @@ public class PolicyTreeNode {
     /** Represents policy node's children */
     private final Set<PolicyTreeNode> children = new HashSet<>();
 
+    /**
+     * Default constructor
+     *
+     * @param policyOid {@link String} OID of the policy
+     * @param policyQualifier {@link String} qualifier URL of the policy
+     */
     public PolicyTreeNode(String policyOid, String policyQualifier) {
         this.validPolicy = policyOid;
         this.qualifierSet = policyQualifier != null ? Collections.singleton(policyQualifier) : Collections.emptySet();

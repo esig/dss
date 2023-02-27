@@ -65,8 +65,8 @@ public class KSPrivateKeyEntry implements DSSPrivateKeyEntry {
 		for (final Certificate currentCertificate : simpleCertificateChain) {
 			x509CertificateList.add(new CertificateToken((X509Certificate) currentCertificate));
 		}
-		final CertificateToken[] certificateChain_ = new CertificateToken[x509CertificateList.size()];
-		certificateChain = x509CertificateList.toArray(certificateChain_);
+		final CertificateToken[] certificateChainArray = new CertificateToken[x509CertificateList.size()];
+		certificateChain = x509CertificateList.toArray(certificateChainArray);
 		privateKey = privateKeyEntry.getPrivateKey();
 	}
 

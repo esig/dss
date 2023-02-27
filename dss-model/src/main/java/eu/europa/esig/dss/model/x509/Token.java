@@ -69,6 +69,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	protected Token() {
+		// empty
 	}
 
 	@Override

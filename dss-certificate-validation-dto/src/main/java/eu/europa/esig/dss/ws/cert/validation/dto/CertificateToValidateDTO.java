@@ -67,6 +67,7 @@ public class CertificateToValidateDTO {
 	 * The empty constructor
 	 */
 	public CertificateToValidateDTO() {
+		// empty
 	}
 
 	/**

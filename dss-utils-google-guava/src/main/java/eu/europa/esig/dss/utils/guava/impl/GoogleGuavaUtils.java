@@ -60,6 +60,7 @@ public class GoogleGuavaUtils implements IUtils {
 	 * Default constructor
 	 */
 	public GoogleGuavaUtils() {
+		// empty
 	}
 
 	@Override

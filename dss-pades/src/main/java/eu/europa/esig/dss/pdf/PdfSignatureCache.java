@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class is used as a DTO containing cached data to be used to accelerate the signature creation process
@@ -96,6 +97,25 @@ public class PdfSignatureCache implements Serializable {
      */
     public void setToBeSignedDocument(DSSDocument toBeSignedDocument) {
         this.toBeSignedDocument = toBeSignedDocument;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PdfSignatureCache)) return false;
+
+        PdfSignatureCache that = (PdfSignatureCache) o;
+
+        if (!Objects.equals(messageDigest, that.messageDigest))
+            return false;
+        return Objects.equals(toBeSignedDocument, that.toBeSignedDocument);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = messageDigest != null ? messageDigest.hashCode() : 0;
+        result = 31 * result + (toBeSignedDocument != null ? toBeSignedDocument.hashCode() : 0);
+        return result;
     }
 
 }

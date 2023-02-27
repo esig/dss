@@ -15,6 +15,8 @@ import java.util.List;
  */
 public class CertificatePolicies extends CertificateExtension {
 
+    private static final long serialVersionUID = -7265911253903526171L;
+
     /** List of certificate policies */
     private List<CertificatePolicy> policyList;
 

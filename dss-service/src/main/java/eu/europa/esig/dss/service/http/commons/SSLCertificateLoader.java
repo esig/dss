@@ -71,6 +71,7 @@ public class SSLCertificateLoader implements Serializable {
 	 * Default constructor with null CommonsDataLoader
 	 */
 	public SSLCertificateLoader() {
+		// empty
 	}
 
 	/**

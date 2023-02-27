@@ -39,6 +39,7 @@ public final class PivotSchemeInformationURI implements Predicate<NonEmptyMultiL
 	 * Default constructor
 	 */
 	public PivotSchemeInformationURI() {
+		// empty
 	}
 
 	@Override

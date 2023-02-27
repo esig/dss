@@ -66,7 +66,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	@Override
 	public PdfDict getAsDict(String name) {
 		PdfObject directObject = wrapped.getDirectObject(new PdfName(name));
-		if (directObject != null && directObject instanceof PdfDictionary) {
+		if (directObject instanceof PdfDictionary) {
 			return new ITextPdfDict((PdfDictionary) directObject);
 		}
 		return null;

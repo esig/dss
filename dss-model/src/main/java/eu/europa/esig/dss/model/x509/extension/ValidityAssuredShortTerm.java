@@ -11,6 +11,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class ValidityAssuredShortTerm extends CertificateExtension {
 
+    private static final long serialVersionUID = -5778233789227661204L;
+
     /** Defines the value of ext-etsi-valassured-ST-certs extension */
     private boolean valAssuredSTCerts;
 

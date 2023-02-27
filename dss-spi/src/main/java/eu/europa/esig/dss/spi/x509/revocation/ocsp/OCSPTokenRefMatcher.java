@@ -47,6 +47,7 @@ public class OCSPTokenRefMatcher implements RevocationTokenRefMatcher<OCSP> {
 	 * Default constructor
 	 */
 	public OCSPTokenRefMatcher() {
+		// empty
 	}
 
 	@Override

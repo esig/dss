@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class regroups the signature parameters related to ASiC form.
@@ -113,6 +114,38 @@ public class ASiCParameters implements Serializable {
 	 */
 	public void setContainerType(ASiCContainerType containerType) {
 		this.containerType = containerType;
+	}
+
+	@Override
+	public String toString() {
+		return "ASiCParameters{" +
+				"zipComment=" + zipComment +
+				", mimeType='" + mimeType + '\'' +
+				", containerType=" + containerType +
+				", signatureFileName='" + signatureFileName + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof ASiCParameters)) return false;
+
+		ASiCParameters that = (ASiCParameters) o;
+
+		if (zipComment != that.zipComment) return false;
+		if (!Objects.equals(mimeType, that.mimeType)) return false;
+		if (containerType != that.containerType) return false;
+		return Objects.equals(signatureFileName, that.signatureFileName);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (zipComment ? 1 : 0);
+		result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
+		result = 31 * result + (containerType != null ? containerType.hashCode() : 0);
+		result = 31 * result + (signatureFileName != null ? signatureFileName.hashCode() : 0);
+		return result;
 	}
 
 }

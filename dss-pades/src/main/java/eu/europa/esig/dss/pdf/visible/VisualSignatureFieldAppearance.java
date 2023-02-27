@@ -22,11 +22,13 @@ package eu.europa.esig.dss.pdf.visible;
 
 import eu.europa.esig.dss.pdf.AnnotationBox;
 
+import java.io.Serializable;
+
 /**
  * Contains information about a visual SignatureField appearance
  *
  */
-public interface VisualSignatureFieldAppearance {
+public interface VisualSignatureFieldAppearance extends Serializable {
 	
 	/**
 	 * Creates an {@code AnnotationBox} from the SignatureFieldBox

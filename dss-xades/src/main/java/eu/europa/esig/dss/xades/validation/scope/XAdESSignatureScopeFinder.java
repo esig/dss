@@ -55,6 +55,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	 * Default constructor
 	 */
 	public XAdESSignatureScopeFinder() {
+		// empty
 	}
 
 	@Override

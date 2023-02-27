@@ -34,6 +34,7 @@ public class TLSignatureErrorDetection implements AlertDetector<TLInfo> {
 	 * Default constructor
 	 */
 	public TLSignatureErrorDetection() {
+		// empty
 	}
 
 	@Override

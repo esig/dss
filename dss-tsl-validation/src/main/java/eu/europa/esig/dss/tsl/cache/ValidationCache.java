@@ -32,6 +32,7 @@ public class ValidationCache extends AbstractCache<ValidationResult> {
 	 * Default constructor
 	 */
 	public ValidationCache() {
+		// empty
 	}
 
 	@Override

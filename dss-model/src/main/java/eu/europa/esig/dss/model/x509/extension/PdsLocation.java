@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss.model.x509.extension;
 
+import java.io.Serializable;
+
 /**
  * PdsLocation::= SEQUENCE {
  *  url IA5String,
  *  language PrintableString (SIZE(2))} --ISO 639-1 language code
  */
-public class PdsLocation {
+public class PdsLocation implements Serializable {
+
+    private static final long serialVersionUID = 8286970864745135226L;
 
     /** The URL */
     private String url;

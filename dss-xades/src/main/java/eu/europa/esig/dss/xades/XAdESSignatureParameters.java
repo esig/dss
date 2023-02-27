@@ -223,9 +223,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
-		if (Utils.isStringEmpty(signedInfoCanonicalizationMethod)) {
-			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
-		}
+		assertCanonicalizationNotEmpty(signedInfoCanonicalizationMethod);
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
@@ -245,9 +243,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
-		if (Utils.isStringEmpty(signedPropertiesCanonicalizationMethod)) {
-			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
-		}
+		assertCanonicalizationNotEmpty(signedPropertiesCanonicalizationMethod);
 		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
 	}
 	
@@ -266,10 +262,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @param keyInfoCanonicalizationMethod - name of the canonicalization algorithm for dealing with KeyInfo.
 	 */
 	public void setKeyInfoCanonicalizationMethod(final String keyInfoCanonicalizationMethod) {
-		if (Utils.isStringEmpty(keyInfoCanonicalizationMethod)) {
+		assertCanonicalizationNotEmpty(keyInfoCanonicalizationMethod);
+		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
+	}
+
+	private static void assertCanonicalizationNotEmpty(String canonicalizationMethod) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
 		}
-		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
 	}
 	
 	/**

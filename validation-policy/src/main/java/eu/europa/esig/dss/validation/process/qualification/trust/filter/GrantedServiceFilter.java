@@ -34,6 +34,7 @@ public class GrantedServiceFilter extends AbstractTrustedServiceFilter {
 	 * Default constructor
 	 */
 	public GrantedServiceFilter() {
+		// empty
 	}
 
 	@Override

@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class ExtendedKeyUsages extends CertificateExtension {
 
+    private static final long serialVersionUID = -7670242503924784204L;
+
     /** List of extended key usage OIDs */
     private List<String> oids;
 

@@ -20,10 +20,14 @@
  */
 package eu.europa.esig.dss.model.x509.extension;
 
+import java.io.Serializable;
+
 /**
  * Defines limits of transactions for a given certificate (QcStatement)
  */
-public class QCLimitValue {
+public class QCLimitValue implements Serializable {
+
+    private static final long serialVersionUID = -7080238483406477664L;
 
     /** The used currency */
     private String currency;

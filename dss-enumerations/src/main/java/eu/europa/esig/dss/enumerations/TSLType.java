@@ -50,6 +50,9 @@ public interface TSLType extends UriBasedEnum {
             }
         }
         return new TSLType() {
+
+            private static final long serialVersionUID = -2240326302871808895L;
+
             @Override
             public String getUri() { return uri; }
             @Override

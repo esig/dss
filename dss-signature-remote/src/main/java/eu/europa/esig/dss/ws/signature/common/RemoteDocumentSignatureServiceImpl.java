@@ -79,6 +79,7 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 	 * Default constructor instantiating object with null services
 	 */
 	public RemoteDocumentSignatureServiceImpl() {
+		// empty
 	}
 
 	/**

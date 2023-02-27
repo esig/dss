@@ -22,6 +22,8 @@ package eu.europa.esig.dss.asic.xades.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 
+import java.io.Serializable;
+
 /**
  * This interface is used to provide filenames for newly created ZIP-entries
  * during a signature creation or extension for an ASiC with XAdES containers.
@@ -34,7 +36,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
  * The type of the container can be obtained from {@code asicContent.getContainerType()} method.
  *
  */
-public interface ASiCWithXAdESFilenameFactory {
+public interface ASiCWithXAdESFilenameFactory extends Serializable {
 
     /**
      * Returns a filename for a signature file to be created

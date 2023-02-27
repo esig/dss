@@ -258,9 +258,7 @@ public class CryptographicConstraintWrapper {
 			for (Algo algo : acceptableDigestAlgo.getAlgos()) {
 				try {
 					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(algo.getValue());
-					if (digestAlgorithm != null) {
-						reliableDigestAlgorithms.add(digestAlgorithm);
-					}
+					reliableDigestAlgorithms.add(digestAlgorithm);
 				} catch (IllegalArgumentException e) {
 					LOG.warn("Unable to parse a DigestAlgorithm with name '{}'! Reason : {}", algo.getValue(), e.getMessage(), e);
 				}

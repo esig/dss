@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class manages the internal variables used in the process of creating of a signature and which allows to
@@ -83,6 +84,33 @@ public class ProfileParameters implements Serializable {
      */
     public void setDetachedContents(List<DSSDocument> detachedContents) {
         this.detachedContents = detachedContents;
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileParameters{" +
+                "deterministicId='" + deterministicId + '\'' +
+                ", detachedContents=" + detachedContents +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int result = deterministicId != null ? deterministicId.hashCode() : 0;
+        result = 31 * result + (detachedContents != null ? detachedContents.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProfileParameters)) return false;
+
+        ProfileParameters that = (ProfileParameters) o;
+
+        if (!Objects.equals(deterministicId, that.deterministicId))
+            return false;
+        return Objects.equals(detachedContents, that.detachedContents);
     }
 
 }

@@ -506,14 +506,22 @@ public class SimpleReport {
 				if (tokenId.equals(token.getId())) {
 					return token;
 				} else if (token instanceof XmlSignature) {
-					XmlTimestamps timestamps = ((XmlSignature) token).getTimestamps();
-					if (timestamps != null) {
-						for (XmlTimestamp timestamp : timestamps.getTimestamp()) {
-							if (tokenId.equals(timestamp.getId())) {
-								return timestamp;
-							}
-						}
+					XmlTimestamp timestampById = getSignatureTimestampById((XmlSignature) token, tokenId);
+					if (timestampById != null) {
+						return timestampById;
 					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private XmlTimestamp getSignatureTimestampById(XmlSignature signature, String tokenId) {
+		XmlTimestamps timestamps = signature.getTimestamps();
+		if (timestamps != null && timestamps.getTimestamp() != null) {
+			for (XmlTimestamp timestamp : timestamps.getTimestamp()) {
+				if (tokenId.equals(timestamp.getId())) {
+					return timestamp;
 				}
 			}
 		}

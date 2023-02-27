@@ -14,6 +14,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class AuthorityKeyIdentifier extends CertificateExtension {
 
+    private static final long serialVersionUID = -4382641249022016152L;
+
     /** Key identifier property */
     private byte[] keyIdentifier;
 

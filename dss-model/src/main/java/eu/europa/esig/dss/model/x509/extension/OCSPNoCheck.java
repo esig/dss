@@ -16,6 +16,8 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class OCSPNoCheck extends CertificateExtension {
 
+    private static final long serialVersionUID = 8531078272781544641L;
+
     /** Defines if the ocsp-nocheck extension is present and set to true */
     private boolean ocspNoCheck;
 

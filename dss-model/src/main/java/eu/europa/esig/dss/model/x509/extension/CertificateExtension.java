@@ -10,6 +10,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
  */
 public class CertificateExtension implements OidDescription {
 
+    private static final long serialVersionUID = 580856406397002942L;
+
     /** The corresponding OID of the certificate extension */
     private final String oid;
 

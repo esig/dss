@@ -35,6 +35,7 @@ public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {
 	 * Default constructor
 	 */
 	public PdfBoxDefaultObjectFactory() {
+		// empty
 	}
 
 	@Override

@@ -40,6 +40,7 @@ public class DefaultCertificateProcessExecutor extends AbstractProcessExecutor i
 	 * Default constructor instantiating object with null certificate id
 	 */
 	public DefaultCertificateProcessExecutor() {
+		// empty
 	}
 
 	@Override

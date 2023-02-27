@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.modifications;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,9 @@ import java.util.List;
  * Contains a collection of {@code ObjectModification}s categorized by different groups
  *
  */
-public class PdfObjectModifications {
+public class PdfObjectModifications implements Serializable {
+
+    private static final long serialVersionUID = -3635513805958905805L;
 
     /**
      * Modifications that are not considered as changes in an incremental update

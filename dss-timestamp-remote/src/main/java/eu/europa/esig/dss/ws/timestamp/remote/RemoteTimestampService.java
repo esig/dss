@@ -45,6 +45,7 @@ public class RemoteTimestampService {
 	 * Default construction instantiating object with null TSPSource
 	 */
 	public RemoteTimestampService() {
+		// empty
 	}
 
 	/**

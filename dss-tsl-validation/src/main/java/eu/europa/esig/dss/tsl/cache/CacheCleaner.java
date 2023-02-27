@@ -55,6 +55,7 @@ public class CacheCleaner {
 	 * Default constructor instantiating object with default configuration and null file loader
 	 */
 	public CacheCleaner() {
+		// empty
 	}
 	
 	/**

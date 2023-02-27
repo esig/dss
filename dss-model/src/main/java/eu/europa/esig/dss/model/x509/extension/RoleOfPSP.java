@@ -22,11 +22,15 @@ package eu.europa.esig.dss.model.x509.extension;
 
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 
+import java.io.Serializable;
+
 /**
  * Object Identifier for roles of payment service providers
  *
  */
-public class RoleOfPSP {
+public class RoleOfPSP implements Serializable {
+
+	private static final long serialVersionUID = -5276890972990138238L;
 
 	/** Role OID */
 	private RoleOfPspOid pspOid;

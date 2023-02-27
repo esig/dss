@@ -69,6 +69,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 	 * Default constructor instantiating a CriteriaListTypeConverter
 	 */
 	public TrustServiceEquivalenceConverter() {
+		// empty
 	}
 
 	@Override

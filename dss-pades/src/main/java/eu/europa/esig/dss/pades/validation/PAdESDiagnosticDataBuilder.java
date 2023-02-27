@@ -63,6 +63,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	 * Default constructor
 	 */
 	public PAdESDiagnosticDataBuilder() {
+		// empty
 	}
 
 	@Override

@@ -39,6 +39,7 @@ public class SoapTimestampServiceImpl implements SoapTimestampService {
 	 * Default construction instantiating object with null RemoteTimestampService
 	 */
 	public SoapTimestampServiceImpl() {
+		// empty
 	}
 
 	/**

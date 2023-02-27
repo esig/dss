@@ -34,6 +34,7 @@ public class ITextDefaultPdfObjFactory extends AbstractPdfObjFactory {
 	 * Default constructor
 	 */
 	public ITextDefaultPdfObjFactory() {
+		// empty
 	}
 
 	@Override

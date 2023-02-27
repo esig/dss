@@ -52,6 +52,7 @@ public class DefaultSignatureProcessExecutor extends AbstractProcessExecutor imp
 	 * Default constructor instantiating object with default configuration
 	 */
 	public DefaultSignatureProcessExecutor() {
+		// empty
 	}
 
 	@Override

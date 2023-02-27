@@ -32,6 +32,7 @@ public class ParsingCache extends AbstractCache<AbstractParsingResult> {
 	 * Default constructor
 	 */
 	public ParsingCache() {
+		// empty
 	}
 
 	@Override

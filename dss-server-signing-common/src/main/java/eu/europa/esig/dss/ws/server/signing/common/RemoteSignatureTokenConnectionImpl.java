@@ -52,6 +52,7 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	 * Default construction instantiating object with null token connection
 	 */
 	public RemoteSignatureTokenConnectionImpl() {
+		// empty
 	}
 
 	/**

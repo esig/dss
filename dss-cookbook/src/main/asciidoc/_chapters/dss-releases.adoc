@@ -20,7 +20,7 @@
 * PAdES : spoofing attack detection;
 * PAdES : improved performance and memory consumption on signature validation;
 * PAdES : VRI dictionary made optional;
-* XAdES : less memory-consuming message-imprint computation;
+* XAdES : less memory consuming message-imprint computation;
 * JAdES : added support of EdDSA algorithms;
 * Validation : improved RFC 5280 conformance;
 * Validation : return INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE if no acceptable revocation found;
@@ -535,6 +535,8 @@ byte[] content = commonsDataLoader.get(url, false);
 ----
 byte[] content = commonsDataLoader.get(url);
 // or use alternative implementation for caching, e.g. FileCacheDataLoader
+----
+
 |TimestampToken #isSignatureValid     a|[source,java]
 ----
 TimestampToken timestamp = ...

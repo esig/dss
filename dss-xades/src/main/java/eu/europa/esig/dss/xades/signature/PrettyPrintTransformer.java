@@ -48,6 +48,7 @@ public class PrettyPrintTransformer {
 	 * Default constructor
 	 */
 	public PrettyPrintTransformer() {
+		// empty
 	}
 	
 	/**

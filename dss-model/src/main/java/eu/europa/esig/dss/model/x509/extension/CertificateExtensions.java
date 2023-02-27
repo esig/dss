@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.model.x509.extension;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import java.util.List;
  * This class contains a set of certificate extensions processed by the application
  *
  */
-public class CertificateExtensions {
+public class CertificateExtensions implements Serializable {
+
+    private static final long serialVersionUID = 1192565195947571006L;
 
     /** RFC 5280: 4.2.1.3. Key Usage */
     private KeyUsage keyUsage;

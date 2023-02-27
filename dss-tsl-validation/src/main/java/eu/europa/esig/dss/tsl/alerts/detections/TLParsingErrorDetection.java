@@ -33,6 +33,7 @@ public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 	 * Default constructor
 	 */
 	public TLParsingErrorDetection() {
+		// empty
 	}
 	
 	@Override

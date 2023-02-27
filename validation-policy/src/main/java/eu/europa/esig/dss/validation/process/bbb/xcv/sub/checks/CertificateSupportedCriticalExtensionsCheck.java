@@ -15,6 +15,11 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Verifies if the certificate does not contain any of the certificate extensions listed within
+ * a list of unsupported certificate extensions
+ *
+ */
 public class CertificateSupportedCriticalExtensionsCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 
     /** Certificate to check */

@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class KeyUsage extends CertificateExtension {
 
+    private static final long serialVersionUID = 431287385123264310L;
+
     /** List of defined key usage bits */
     private List<KeyUsageBit> keyUsageBits;
 

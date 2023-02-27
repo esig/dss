@@ -100,7 +100,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	@Override
 	public PdfDict getAsDict(int i) {
 		PdfObject directObject = wrapped.getDirectObject(i);
-		if (directObject != null && directObject instanceof PdfDictionary) {
+		if (directObject instanceof PdfDictionary) {
 			return new ITextPdfDict((PdfDictionary) directObject);
 		}
 		return null;

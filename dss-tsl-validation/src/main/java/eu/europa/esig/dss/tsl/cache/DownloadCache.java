@@ -38,6 +38,7 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 	 * Default constructor
 	 */
 	public DownloadCache() {
+		// empty
 	}
 	
 	/**
