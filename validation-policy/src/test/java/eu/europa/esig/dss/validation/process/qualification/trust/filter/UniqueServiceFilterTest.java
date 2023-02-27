@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
@@ -32,7 +33,6 @@ import org.junit.jupiter.api.Test;
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -243,7 +243,7 @@ public class UniqueServiceFilterTest {
 	private CertificateWrapper getCertificate(Date notBefore) {
 		XmlCertificate xmlCertificate = new XmlCertificate();
 		xmlCertificate.setNotBefore(notBefore);
-		xmlCertificate.setCertificatePolicies(Collections.emptyList());
+		xmlCertificate.getCertificateExtensions().add(new XmlCertificatePolicies());
 		return new CertificateWrapper(xmlCertificate);
 	}
 

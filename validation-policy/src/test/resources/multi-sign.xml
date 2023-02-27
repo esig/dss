@@ -290,9 +290,6 @@
             <CommonName>PWPW - kwalifikowany CA</CommonName>
             <CountryName>PL</CountryName>
             <OrganizationName>Polska Wytwórnia Papierów Wartościowych S.A.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -301,11 +298,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -316,9 +308,16 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
@@ -358,11 +357,6 @@
             <CommonName>PZ3</CommonName>
             <CountryName>PL</CountryName>
             <OrganizationName>Ministerstwo Cyfryzacji</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.cencert.pl/crl/CCfirmowy.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -371,10 +365,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -385,7 +375,14 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.cencert.pl/crl/CCfirmowy.crl</crlUrl>
+                </CRLDistributionPoints>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIDujCCAqKgAwIBAgIIBRchbrVWi6EwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCUEwxHjAcBgNVBAoMFUVOSUdNQSBTT0kgU3AuIHogby5vLjEwMC4GA1UEAwwnQ2VuQ2VydCBDZW50cnVtIENlcnR5ZmlrYXTDs3cgRmlybW93eWNoMB4XDTE2MDgyNDE0NDcwNFoXDTE4MDgyNDE0NDcwNFowPTELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF01pbmlzdGVyc3R3byBDeWZyeXphY2ppMQwwCgYDVQQDDANQWjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2Mt1nzPu8W2eN6eT2GVWh3HPXCqopQJVag+3nN0H8TOQCg8s6sVlHnqA117e/xUiOd1c8jgKOsDYixKb7eO3S2Bm+UyBX5jh1K5pGw362VVEfDs0kpQ5DRTm/eBGsT+98CGS9sIrvZujg9iRLVmyOWbx7Mj3iPAsfDqwnJAUQe3SURkN2uVq/OFCCem5SQEkl5sXLunPLmsZAlQmIvjo1e2sArw3XOL07TzEGD9Wgmg+uh+CXLwLPAbdIPuoEGx9pmVFeoMmDhSN1QwwiV3kZM57BvufmntWhXEbbUXX8DN6JzVTk7SC1+lR9be8opa2JwzyugrgZDu8qPmsj/QFAgMBAAGjgZswgZgwDgYDVR0PAQH/BAQDAgZAMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUbXBJHtX51FFd7dGblde1mdERGjswHQYDVR0OBBYEFMG6bAQisupd5Zp8LubkPlZ4he9qMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly93d3cuY2VuY2VydC5wbC9jcmwvQ0NmaXJtb3d5LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAbUq6RgY3//2ozVKQ6J1yE05z6E2gvw7QSvwI002Ee6Np7pGvwkR4kSd4yJzSFuFv5zUYq9zaFGCYpCvIpTwHGJpoa9oxvYe8KNxaDiGkqiVU2SVEXX2GrVF/qqJmqMre4NxBr04fhWCKro135fESmv0kvjDYNWzDqUgy9AbIC4VQ46KOwuxBDlnj1KbYn4EJoQG+2ZhQMcuUbM1qY3/FlY+M/60c2FQvgIo6u9J5/Ew7YFPpczWjLetK9PKLvfQfPQBU/sszQ6rXRKxyoaEwbzQjhQ8W5SlyUwePay1lAtlzJIo5x7NN/NB1+S/vr71HLq3/mFoOgCNdFDVdGD8XUw==</Base64Encoded>
@@ -402,9 +399,6 @@
             <GivenName>Michał</GivenName>
             <Surname>Kalański</Surname>
             <Pseudonym>mikala</Pseudonym>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -413,10 +407,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -430,9 +420,14 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>

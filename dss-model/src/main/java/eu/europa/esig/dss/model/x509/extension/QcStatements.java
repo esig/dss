@@ -18,8 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.model.x509;
+package eu.europa.esig.dss.model.x509.extension;
 
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * This class contains the QcStatement information based on ETSI EN 319 412-1/5 and ETSI TS 119 495
  */
-public class QcStatements {
+public class QcStatements extends CertificateExtension {
 
     /**
      * esi4-qcStatement-1 QC-STATEMENT ::= { IDENTIFIED BY id-etsi-qcs-QcCompliance }
@@ -97,7 +98,7 @@ public class QcStatements {
      * Default constructor instantiating object with null values
      */
     public QcStatements() {
-        // empty
+        super(CertificateExtensionEnum.QC_STATEMENTS.getOid());
     }
 
     /**

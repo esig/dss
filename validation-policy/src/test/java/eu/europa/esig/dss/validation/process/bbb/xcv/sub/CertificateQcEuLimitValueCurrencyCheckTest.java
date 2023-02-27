@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,6 +43,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
         xmlQcEuLimitValue.setCurrency("EUR");
@@ -52,7 +54,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
         constraint.setValue("EUR");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
@@ -67,6 +69,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcEuLimitValue xmlQcEuLimitValue = new XmlQcEuLimitValue();
         xmlQcEuLimitValue.setCurrency("EUR");
@@ -77,7 +80,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
         constraint.setValue("AUD");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
@@ -92,13 +95,14 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     @Test
     public void qcLimitValueNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.setValue("EUR");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(

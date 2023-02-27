@@ -342,6 +342,41 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 </PDFSignatureDictionary>
 ----
 
+|Diagnostic Data: Certificate extensions     a|[source,xml]
+----
+<Certificate>
+    ...
+    <AuthorityInformationAccessUrls>
+        <aiaUrl>http://certs.eid.belgium.be/belgiumrs4.crt</aiaUrl>
+    </AuthorityInformationAccessUrls>
+    <CRLDistributionPoints>
+        <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+    </CRLDistributionPoints>
+    <OCSPAccessUrls>
+        <ocspServerUrl>http://ocsp.eid.belgium.be/2</ocspServerUrl>
+    </OCSPAccessUrls>
+    ...
+</Certificate>
+----
+                                                                     a|[source,xml]
+----
+<Certificate>
+    ...
+    <CertificateExtensions>
+        ...
+        <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+            <caIssuersUrl>http://certs.eid.belgium.be/belgiumrs4.crt</caIssuersUrl>
+            <ocspUrl>http://ocsp.eid.belgium.be/2</ocspUrl>
+        </AuthorityInformationAccess>
+        <CRLDistributionPoints OID="2.5.29.31" critical="false">
+            <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+        </CRLDistributionPoints>
+        ...
+    </CertificateExtensions>
+    ...
+</Certificate>
+----
+
 |PDFSignatureService #digest     a|[source,java]
 ----
 PDFSignatureService pdfSignatureService = ...
@@ -500,6 +535,30 @@ byte[] content = commonsDataLoader.get(url, false);
 ----
 byte[] content = commonsDataLoader.get(url);
 // or use alternative implementation for caching, e.g. FileCacheDataLoader
+|TimestampToken #isSignatureValid     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isSignatureValid();
+----
+                                                                     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isValid();
+----
+
+|Certificate extensions extraction     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+// and other method to extract certificate extensions
+----
+                                                                     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+// and so on
 ----
 
 |===
@@ -778,6 +837,33 @@ not present
     <PDFACompliant Level="WARN" />
 </PDFAConstraints>
 ----
+|Forbidden extensions check                     |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
+    ...
+</SigningCertificate>
+----
+|CA certificate BasicConstraints check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
+----
 |KeyUsage for CA certificates                     |
 ----
 not enforced
@@ -815,6 +901,42 @@ not enforced
         ...
     </SigningCertificate>
 </Timestamp>
+----
+|Certificate Policy Tree                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <PolicyTree Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|Name Constraints                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|ResponderId for OCSP response                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
 ----
 |Expiration of cryptographic suites              a|[source,xml]
 ----

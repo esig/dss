@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.NonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -147,19 +148,21 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			LOG.info("OCSP alternative urls : {}", alternativeUrls);
 		}
 
-		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-		if (Utils.isCollectionEmpty(ocspAccessLocations) && Utils.isCollectionEmpty(alternativeUrls)) {
+		List<String> ocspAccessUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+		if (Utils.isCollectionEmpty(ocspAccessUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
 			LOG.warn("No OCSP location found for {}", dssIdAsString);
 			return null;
 		}
-		ocspAccessLocations.addAll(alternativeUrls);
+		final List<String> ocspUrls = new ArrayList<>();
+		ocspUrls.addAll(ocspAccessUrls);
+		ocspUrls.addAll(alternativeUrls);
 
-		RevocationTokenAndUrl<OCSP> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerCertificateToken, ocspAccessLocations);
+		RevocationTokenAndUrl<OCSP> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerCertificateToken, ocspUrls);
 		if (revocationTokenAndUrl != null) {
 			return (OCSPToken) revocationTokenAndUrl.getRevocationToken();
 		} else {
 			LOG.debug("No OCSP has been downloaded for a CertificateToken with Id '{}' from a list of urls : {}",
-					certificateToken.getDSSIdAsString(), ocspAccessLocations);
+					certificateToken.getDSSIdAsString(), ocspUrls);
 			return null;
 		}
 	}
@@ -167,7 +170,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	@Override
 	public RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
 																CertificateToken issuerToken) {
-		final List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+		final List<String> ocspAccessLocations = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
 		if (Utils.isCollectionEmpty(ocspAccessLocations)) {
 			LOG.warn("No OCSP location found for {}", certificateToken.getDSSIdAsString());
 			return null;

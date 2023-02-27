@@ -84,10 +84,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -97,9 +93,16 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
                         <TrustedServiceProviders />
 	        <DigestAlgoAndValue>
 	            <DigestMethod>SHA256</DigestMethod>
@@ -124,10 +127,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -137,9 +136,16 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
                         <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -165,9 +171,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -181,15 +184,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.76.36.1.1.1</certificatePolicy>
-                <certificatePolicy>1.3.76.24.1.1.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                <QcSSCD present="true"/>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.76.36.1.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.76.24.1.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                    <QcSSCD present="true"/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-69674FCADB3AF99EAB7E9700EEB220216D7E423B3C2FF3B79EF4FC1B1954D26E">
@@ -231,10 +239,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -248,7 +252,12 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies />
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
                         <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -273,12 +282,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-C3001FF8575E8C49F0D04A9A3C7A36E6F28E389CC514C2CBFC55227ACE4A275A</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -292,9 +295,17 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.76.36.1.1.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.76.36.1.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
                         <TrustedServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-E3338F7F9E1963241C750B0FABA972C18C401EF51A1FF049CB3CD1EAD069C29F">
@@ -324,10 +335,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          	<EntityKey>PK-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -341,7 +348,12 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies />
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
                         <TrustedServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -371,6 +383,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>yl8eaHFKyymDFYT4pXjt7wjTeahmqyQd+n4Vv1J6fsw=</DigestValue>
@@ -395,6 +419,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>vJiJmppf/Vj83i+217pf8M/fFNZKYMGM14F+FwwrdDw=</DigestValue>
@@ -419,6 +455,18 @@
 		        <ChainItem Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A"/>
 		        <ChainItem Certificate="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5"/>
 		    </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-200BB21E10FDE02A75E6738ECB5D61BAFBE10028171C85A47E7F297B7E2F859A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
 		     <DigestAlgoAndValue>
 		         <DigestMethod>SHA256</DigestMethod>
 		         <DigestValue>ncfUfryvFn3rgFo6T/YEdaUYAgZw1CJdTK/B9Qg+wcU=</DigestValue>
@@ -443,10 +491,22 @@
                 <ChainItem Certificate="C-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0"/>
                 <ChainItem Certificate="C-FC8BFE53A334F6F762F5EA9AFF47E01AA62DF620E55E8CE9BECB713BB70755A7"/>
             </CertificateChain>
-             <DigestAlgoAndValue>
-                 <DigestMethod>SHA256</DigestMethod>
-                 <DigestValue>3oTBCg11NLrPCxx2YaQSertjfeHPlWiN8tb5oPesR9Y=</DigestValue>
-             </DigestAlgoAndValue>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C7D570E1C918E1DA6AA5C8A2C6B9D4E4FC382F790B149B901E80B157F1CF3AA0">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>IAuyHhD94Cp15nOOy11huvvhACgXHIWkfn8pe34vhZo=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>x9Vw4ckY4dpqpciixrnU5Pw4L3kLFJuQHoCxV/HPOqA=</DigestValue>
+            </DigestAlgoAndValue>
         </Revocation>
     </UsedRevocations>
     <UsedTimestamps>

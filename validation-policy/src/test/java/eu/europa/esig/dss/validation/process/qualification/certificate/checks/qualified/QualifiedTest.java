@@ -22,11 +22,13 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.OidDescription;
@@ -175,8 +177,9 @@ public class QualifiedTest {
 	private CertificateWrapper createPreEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds, List<QCType> qcTypes) {
 		XmlCertificate xmlCert = new XmlCertificate();
 		xmlCert.setNotBefore(PRE_EIDAS_DATE);
-		xmlCert.setCertificatePolicies(toCertPolicies(certificatePolicyIds));
+		xmlCert.getCertificateExtensions().add(toCertPolicies(certificatePolicyIds));
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
 			XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
@@ -188,7 +191,7 @@ public class QualifiedTest {
 			xmlQcCompliance.setPresent(true);
 			xmlQcStatements.setQcCompliance(xmlQcCompliance);
 		}
-		xmlCert.setQcStatements(xmlQcStatements);
+		xmlCert.getCertificateExtensions().add(xmlQcStatements);
 
 		return new CertificateWrapper(xmlCert);
 	}
@@ -200,8 +203,9 @@ public class QualifiedTest {
 	private CertificateWrapper createPostEIDAS(List<OidDescription> qcStatementIds, List<String> certificatePolicyIds, List<QCType> qcTypes) {
 		XmlCertificate xmlCert = new XmlCertificate();
 		xmlCert.setNotBefore(POST_EIDAS_DATE);
-		xmlCert.setCertificatePolicies(toCertPolicies(certificatePolicyIds));
+		xmlCert.getCertificateExtensions().add(toCertPolicies(certificatePolicyIds));
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		xmlQcStatements.setQcTypes(toOids(qcTypes));
 		if (qcStatementIds.contains(QCStatement.QC_SSCD)) {
 			XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
@@ -213,18 +217,19 @@ public class QualifiedTest {
 			xmlQcCompliance.setPresent(true);
 			xmlQcStatements.setQcCompliance(xmlQcCompliance);
 		}
-		xmlCert.setQcStatements(xmlQcStatements);
+		xmlCert.getCertificateExtensions().add(xmlQcStatements);
 		return new CertificateWrapper(xmlCert);
 	}
 
-	private List<XmlCertificatePolicy> toCertPolicies(List<String> certificatePolicyIds) {
-		List<XmlCertificatePolicy> cerPolicies = new ArrayList<>();
+	private XmlCertificatePolicies toCertPolicies(List<String> certificatePolicyIds) {
+		XmlCertificatePolicies xmlCertificatePolicies = new XmlCertificatePolicies();
+		xmlCertificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		for (String oid : certificatePolicyIds) {
 			XmlCertificatePolicy cp = new XmlCertificatePolicy();
 			cp.setValue(oid);
-			cerPolicies.add(cp);
+			xmlCertificatePolicies.getCertificatePolicy().add(cp);
 		}
-		return cerPolicies;
+		return xmlCertificatePolicies;
 	}
 
 	private List<XmlOID> toOids(List<QCType> qcTypes) {

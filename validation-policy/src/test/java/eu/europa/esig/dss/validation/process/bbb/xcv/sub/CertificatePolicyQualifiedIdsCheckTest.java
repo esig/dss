@@ -25,9 +25,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -35,7 +37,6 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyQualifiedIdsCheck;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,11 +49,12 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
+		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
-		certPolicies.add(oid);
-		xc.setCertificatePolicies(certPolicies);
+		certificatePolicies.getCertificatePolicy().add(oid);
+		xc.getCertificateExtensions().add(certificatePolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
@@ -70,11 +72,12 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
+		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid());
-		certPolicies.add(oid);
-		xc.setCertificatePolicies(certPolicies);
+		certificatePolicies.getCertificatePolicy().add(oid);
+		xc.getCertificateExtensions().add(certificatePolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
@@ -92,11 +95,12 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCertificate xc = new XmlCertificate();
-		List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
+		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
 		oid.setValue(CertificatePolicy.DVCP.getOid());
-		certPolicies.add(oid);
-		xc.setCertificatePolicies(certPolicies);
+		certificatePolicies.getCertificatePolicy().add(oid);
+		xc.getCertificateExtensions().add(certificatePolicies);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
@@ -116,10 +120,11 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 		XmlCertificate xc = new XmlCertificate();
 
 		XmlQcStatements xmlQcStatements = new XmlQcStatements();
+		xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 		XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
 		xmlQcCompliance.setPresent(true);
 		xmlQcStatements.setQcCompliance(xmlQcCompliance);
-		xc.setQcStatements(xmlQcStatements);
+		xc.getCertificateExtensions().add(xmlQcStatements);
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(

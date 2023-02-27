@@ -64,14 +64,6 @@
             <OrganizationName>secrypt GmbH</OrganizationName>
             <GivenName>Matthias Johann Stefan</GivenName>
             <Surname>Schlede</Surname>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_ca_3_2014.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qual.ocsp.d-trust.net</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -80,11 +72,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3967083A1B9CE00484905529E22C64BBF622EE356088D62371B8069A84FE47F72</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -98,13 +85,25 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_ca_3_2014.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://qual.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
@@ -209,16 +208,6 @@
             <CommonName>D-TRUST OCSP 2 3-1 2016</CommonName>
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</aiaUrl>
-                <aiaUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
-                <crlUrl>http://cdn.d-trust-cloudcrl.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -227,13 +216,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B1D2241CA12BD9F10ECF52EA62388E6F2F3E6E6099F3C56168FF87CFF4A96677</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -247,7 +229,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</caIssuersUrl>
+                    <caIssuersUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
+                    <crlUrl>http://cdn.d-trust-cloudcrl.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
@@ -279,16 +278,6 @@
             <CommonName>D-TRUST OCSP 2 3-1 2016</CommonName>
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</aiaUrl>
-                <aiaUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
-                <crlUrl>http://cdn.d-trust-cloudcrl.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -297,13 +286,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B1D2241CA12BD9F10ECF52EA62388E6F2F3E6E6099F3C56168FF87CFF4A95626</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -317,7 +299,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_3-1_2016.crt</caIssuersUrl>
+                    <caIssuersUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
+                    <crlUrl>http://cdn.d-trust-cloudcrl.net/crl/d-trust_ca_3-1_2016.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
@@ -351,14 +350,6 @@
             <CommonName>D-TRUST Qualified CA 3 2014:PN</CommonName>
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_root_ca_3_2014.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qual.ocsp.d-trust.net</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
             </Sources>
@@ -367,12 +358,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DE5AE81F11D1B93516A65E6BBEFC07C17D9EEF01B66E1330CB0424D7AC2FD569</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -386,12 +371,26 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-            </QcStatements>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_root_ca_3_2014.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://qual.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
@@ -477,14 +476,6 @@
             <CommonName>D-TRUST Qualified Root CA 3 2014:PN</CommonName>
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_root_ca_3_2014.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qual.ocsp.d-trust.net</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -493,12 +484,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -508,12 +493,26 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-            </QcStatements>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.4788.2.31.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Qualified%20Root%20CA%203%202014%3APN,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_qualified_root_ca_3_2014.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://qual.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>
@@ -567,16 +566,6 @@
             <CommonName>D-TRUST CA 3-1 2016</CommonName>
             <CountryName>DE</CountryName>
             <OrganizationName>D-Trust GmbH</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.d-trust.net/cgi-bin/D-TRUST_Root_CA_3_2016.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%203%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
-                <crlUrl>http://crl.d-trust.net/crl/d-trust_root_ca_3_2016.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://root-ca-3-2016.ocsp.d-trust.net</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -585,12 +574,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-554A164B9236CF9C380DF9959F751DED503F91BE3EC646C7042CBB0E1E17A7D5</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -600,10 +583,25 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.d-trust.net/internet/files/D-TRUST_Root_PKI_CPS.pdf">1.3.6.1.4.1.4788.2.150.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.d-trust.net/internet/files/D-TRUST_Root_PKI_CPS.pdf">1.3.6.1.4.1.4788.2.150.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.d-trust.net/cgi-bin/D-TRUST_Root_CA_3_2016.crt</caIssuersUrl>
+                    <ocspUrl>http://root-ca-3-2016.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%203%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_root_ca_3_2016.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-C876A5D23654549B5B16B869E1368AFF6EB2E5ECD13F05C489E23F6A919A2164" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames>

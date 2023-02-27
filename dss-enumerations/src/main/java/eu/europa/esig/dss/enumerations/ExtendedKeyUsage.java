@@ -59,10 +59,10 @@ public enum ExtendedKeyUsage implements OidDescription {
 	 */
 	TSL_SIGNING("tslSigning", "0.4.0.2231.3.0");
 
-	/** KeyUsage description */
+	/** ExtendedKeyUsage description */
 	private final String description;
 
-	/** KeyUsage OID */
+	/** ExtendedKeyUsage OID */
 	private final String oid;
 
 	/**

@@ -280,18 +280,17 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Indicates if the token's signature is intact.
+	 * Indicated if the signature is intact and the message-imprint matches the computed message-imprint.
 	 *
-	 * NOTE: The method isSignedBy(CertificateToken) must be called to set this flag.
-	 *       Return false if the check isSignedBy() was not performed or
-	 *       the signer's public key does not much.
-	 *       In order to check if the validation has been performed, use
-	 *       the method getSignatureValidity() that returns a three-state value.
+	 * NOTE: The method isSignedBy(CertificateToken) must be called before calling the method.
+	 *       See {@code TimestampToken.isSignatureIntact()} for more details
 	 *
-	 * @return TRUE if the signature is intact (== SignatureValidity.VALID), FALSE otherwise
+	 * @return TRUE if the signature is cryptographically intact and message-imprint matches, FALSE otherwise
+	 * @deprecated since DSS 5.12. Use {@code #isValid} method instead.
 	 */
-	public boolean isSignatureIntact() {
-		return SignatureValidity.VALID == signatureValidity;
+	@Deprecated
+	public boolean isSignatureValid() {
+		return isValid();
 	}
 
 	/**
@@ -302,7 +301,8 @@ public class TimestampToken extends Token {
 	 *
 	 * @return TRUE if the signature is cryptographically intact and message-imprint matches, FALSE otherwise
 	 */
-	public boolean isSignatureValid() {
+	@Override
+	public boolean isValid() {
 		return isSignatureIntact() && isMessageImprintDataFound() && isMessageImprintDataIntact();
 	}
 

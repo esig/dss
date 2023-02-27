@@ -394,6 +394,11 @@
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="OCSPResponderIdMatch" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if an OCSP response's ResponderId matches the certificate used to sign the response</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="OCSPCertHashPresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if an OCSP response has certHash attribute</xsd:documentation>
@@ -607,6 +612,16 @@
 					<xsd:documentation>Defines whether the revocation freshness shall be checked against the difference between thisUpdate and nextUpdate times, in case when the RevocationFreshness constraint is not defined.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="CA" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's basicConstraints extension is present and that cA is set to TRUE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaxPathLength" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the depth of the subject certificate within certificate chain is allowed by pathLenConstraint within intermediate CA certificates</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's key usages are in the acceptable values list</xsd:documentation>
@@ -615,6 +630,26 @@
 			<xsd:element name="ExtendedKeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's extended key usages are in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PolicyTree" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of a policy tree as per RFC 5280</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NameConstraints" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of the certificate distinguished and subject alternative names against the name constraints imposed by its certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SupportedCriticalExtensions" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate extensions declared as critical are supported by the application. NOTE: unsupported non-critical extensions are simply ignored.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ForbiddenExtensions" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate does not contain any of the extensions defined in the list (e.g. ocsp-noCheck for end-entity certificate), whether critical or not</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">

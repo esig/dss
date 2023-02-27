@@ -133,21 +133,6 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NetLock Kft.</OrganizationName>
             <OrganizationalUnit>Tanúsítványkiadók (Certification Services)</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=gold</aiaUrl>
-                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=gold</aiaUrl>
-                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=gold</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
-                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
-                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp1.netlock.hu/gold.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp2.netlock.hu/gold.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp3.netlock.hu/gold.cgi</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -157,12 +142,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C1BA80BE3544C4DCD8824593FA9B106BB30371822C70648E6196B4726E71F373</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -176,7 +155,26 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://aia1.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <caIssuersUrl>http://aia2.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <caIssuersUrl>http://aia3.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <ocspUrl>http://ocsp1.netlock.hu/gold.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp2.netlock.hu/gold.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp3.netlock.hu/gold.cgi</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
+                    <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
+                    <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -194,9 +192,6 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NetLock Kft.</OrganizationName>
             <OrganizationalUnit>Tanúsítványkiadók (Certification Services)</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -206,12 +201,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F48BADD7DF6A06690D0AE31373B12855F8DEDB14517F362A313101CC98CC6B35</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -222,7 +211,13 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -239,21 +234,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NETLOCK Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=gold</aiaUrl>
-                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=gold</aiaUrl>
-                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=gold</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
-                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
-                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp1.netlock.hu/gold.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp2.netlock.hu/gold.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp3.netlock.hu/gold.cgi</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -263,12 +243,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7B6CBE21CCB2580EE664A4101562D51F7E1C7583A16BFDF74FF484D988FB8E9F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -282,7 +256,26 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://aia1.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <caIssuersUrl>http://aia2.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <caIssuersUrl>http://aia3.netlock.hu/index.cgi?ca=gold</caIssuersUrl>
+                    <ocspUrl>http://ocsp1.netlock.hu/gold.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp2.netlock.hu/gold.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp3.netlock.hu/gold.cgi</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl1.netlock.hu/index.cgi?crl=gold</crlUrl>
+                    <crlUrl>http://crl2.netlock.hu/index.cgi?crl=gold</crlUrl>
+                    <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -300,9 +293,6 @@
             <CountryName>HU</CountryName>
             <OrganizationName>NETLOCK Kft.</OrganizationName>
             <OrganizationalUnit>Visszavonási Szolgáltatások</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -311,13 +301,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-577047142FC737AE717BA97734D5D08A6997BF8C54E1021C1E9111914328CDD7</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -332,7 +315,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -349,9 +340,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NETLOCK Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -360,13 +348,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-0ECB43380A972ECE9BDC0B6EF346E6289A02B7AC1D1D0E3DCBE4B88BCB1B455C</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -381,7 +362,15 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -401,24 +390,6 @@
             <GivenName>TESZT</GivenName>
             <Surname>TESZT</Surname>
             <Email>TESZT@test.hu</Email>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>TESZT@test.hu</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
-                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
-                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=qtrustscd</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
-                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
-                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp1.netlock.hu/qtrustscd.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp2.netlock.hu/qtrustscd.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp3.netlock.hu/qtrustscd.cgi</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -427,14 +398,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4ABCC9C93B3F194C0C8D0186557FEBE5D5AB4B74721AE52A05E9C3454CBA1F24</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -449,9 +412,34 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>1.3.6.1.4.1.48016.3.2.2.1.1.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.3.6.1.4.1.48016.3.2.2.1.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>TESZT@test.hu</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://aia1.netlock.hu/index.cgi?ca=qtrustscd</caIssuersUrl>
+                    <caIssuersUrl>http://aia2.netlock.hu/index.cgi?ca=qtrustscd</caIssuersUrl>
+                    <caIssuersUrl>http://aia3.netlock.hu/index.cgi?ca=qtrustscd</caIssuersUrl>
+                    <ocspUrl>http://ocsp1.netlock.hu/qtrustscd.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp2.netlock.hu/qtrustscd.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp3.netlock.hu/qtrustscd.cgi</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl1.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+                    <crlUrl>http://crl2.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+                    <crlUrl>http://crl3.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
@@ -484,21 +472,6 @@
             <CountryName>HU</CountryName>
             <OrganizationIdentifier>VATHU-12201521-2-42</OrganizationIdentifier>
             <OrganizationName>NETLOCK Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://aia1.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
-                <aiaUrl>http://aia2.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
-                <aiaUrl>http://aia3.netlock.hu/index.cgi?ca=cqlca</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl1.netlock.hu/index.cgi?crl=cqlca</crlUrl>
-                <crlUrl>http://crl2.netlock.hu/index.cgi?crl=cqlca</crlUrl>
-                <crlUrl>http://crl3.netlock.hu/index.cgi?crl=cqlca</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp1.netlock.hu/cqlca.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp2.netlock.hu/cqlca.cgi</ocspServerUrl>
-                <ocspServerUrl>http://ocsp3.netlock.hu/cqlca.cgi</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
@@ -508,13 +481,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9AB991CB30392ED4E2CFD2F3FCB4020F5963F39E3277A67BE375A1389A08A871</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -529,7 +495,27 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://aia1.netlock.hu/index.cgi?ca=cqlca</caIssuersUrl>
+                    <caIssuersUrl>http://aia2.netlock.hu/index.cgi?ca=cqlca</caIssuersUrl>
+                    <caIssuersUrl>http://aia3.netlock.hu/index.cgi?ca=cqlca</caIssuersUrl>
+                    <ocspUrl>http://ocsp1.netlock.hu/cqlca.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp2.netlock.hu/cqlca.cgi</ocspUrl>
+                    <ocspUrl>http://ocsp3.netlock.hu/cqlca.cgi</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl1.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                    <crlUrl>http://crl2.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                    <crlUrl>http://crl3.netlock.hu/index.cgi?crl=cqlca</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">

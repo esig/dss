@@ -110,7 +110,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * 
 	 * @param nextItem
 	 *            the next {@code ChainItem} to call if this one succeed
-	 * @return the current item
+	 * @return the next item
 	 */
 	public ChainItem<T> setNextItem(ChainItem<T> nextItem) {
 		this.nextItem = nextItem;

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.OidDescription;
@@ -37,13 +38,14 @@ public class OidRepository {
 	private static final Map<String, String> repository = new HashMap<>();
 
 	static {
-		for (OidDescription oid : CertificatePolicy.values()) {
-			repository.put(oid.getOid(), oid.getDescription());
-		}
-		for (OidDescription oid : QCStatement.values()) {
-			repository.put(oid.getOid(), oid.getDescription());
-		}
-		for (ExtendedKeyUsage oid : ExtendedKeyUsage.values()) {
+		addToRepository(CertificatePolicy.values());
+		addToRepository(QCStatement.values());
+		addToRepository(ExtendedKeyUsage.values());
+		addToRepository(CertificateExtensionEnum.values());
+	}
+
+	static void addToRepository(OidDescription... oidDescriptions) {
+		for (OidDescription oid : oidDescriptions) {
 			repository.put(oid.getOid(), oid.getDescription());
 		}
 	}

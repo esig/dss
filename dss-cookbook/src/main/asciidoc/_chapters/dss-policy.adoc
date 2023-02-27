@@ -493,7 +493,7 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
-* `ByteRangeAllDocument` - this constraint verifies if the document does not contain a signature or a document timestamp with invalid `/ByteRange` (PAdES only). If the PDF document contains a signature or a document timestamp with inconsistent /ByteRange`, then the check fails.
+* `ByteRangeAllDocument` - this constraint verifies if the document does not contain a signature or a document timestamp with invalid `/ByteRange` (PAdES only). If the PDF document contains a signature or a document timestamp with inconsistent `/ByteRange`, then the check fails.
 
 Default: not executed
 
@@ -848,6 +848,34 @@ Default: not executed
 </SigningCertificate>
 ----
 
+* `CA` - this constraint is used to check whether the certificate in question is a CA certificate. If the certificate does not have `BasicConstraints.cA` extension with a value set to true, the check will fail.
+
+Default: `FAIL` (for CA certificates)
+
+[source,xml,indent=0]
+.Example of CA usage (with FAIL validation level)
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    ...
+</CACertificate>
+----
+
+* `MaxPathLength` - this constraint is used to check whether the certificate path's depth of the current certificate does not exceed the `BasicConstraints.pathLenConstraint` extension value defined in the intermediate CA certificates. If the certificate's certification path depth exceeds the maximum allowed path length, the check will fail.
+
+Default: `FAIL` (for CA certificates)
+
+[source,xml,indent=0]
+.Example of CA usage (with FAIL validation level)
+----
+<CACertificate>
+    ...
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
+----
+
 * `KeyUsage` - this constraint is used to check whether the certificate in question have one of the acceptable key usages. If the certificate does not have one of the key usages defined within the list, the check will fail.
 
 Default: `WARN` (`nonRepudiation`) for signature's signing-certificate, `FAIL` (`keyCertSign`) for all CA certificates
@@ -876,6 +904,76 @@ Default: `FAIL` (`timeStamping`) for timestamp's signing-certificate
     <ExtendedKeyUsage Level="FAIL">
         <Id>timeStamping</Id>
     </ExtendedKeyUsage>
+    ...
+</SigningCertificate>
+----
+
+* `PolicyTree` - this constraint is used to perform validation of a policy tree as per RFC 5280. This check takes into account the available certificate policies, policy constraints and inhibit anyPolicy certificate extensions. If the process is not able to build a valid policy tree for the target certificate when enforced by its certificate chain, the check will fail.
+
+Default: `WARN`
+
+WARNING: Policy mapping certificate extension is not yet supported in DSS, which presence may have an impact on the policy tree validation process.
+
+[source,xml,indent=0]
+.Example of PolicyTree usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <PolicyTree Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `NameConstraints` - this constraint is used to perform validation of certificate's subject distinguished names and subject alternative names (when present) as per RFC 5280 when certain requirements are imposed through the name constraints certificate extension by certificate's certificate chain. If the certificate's names do not satisfy the rules enforced by its certificate chain through the name constraints certificate extension, the check will fail.
+
+Default: `WARN`
+
+NOTE: DSS supports processing of the name constraints that are imposed only on the directoryName.
+
+[source,xml,indent=0]
+.Example of NameConstraints usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `SupportedCriticalExtensions` - this constraint is used to define a list of certificate critical extensions supported and processed by this application. If the certificate contains one or more critical certificate extension(s) not defined in the list, the check will fail.
+
+NOTE: Verifies only critical certificate extensions. The non-critical certificate extensions are ignored when not understood.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SupportedCriticalExtensions usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <SupportedCriticalExtensions Level="FAIL">
+        <Id>2.5.29.15</Id> <!-- keyUsage -->
+        <Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+        <Id>2.5.29.19</Id> <!-- basicConstraints -->
+        <Id>2.5.29.32</Id> <!-- certificatePolicies -->
+        ...
+    </SupportedCriticalExtensions>
+    ...
+</SigningCertificate>
+----
+
+* `ForbiddenExtensions` - this constraint is used to check whether the certificate in question does not contain any of the certificate extensions present in the list of forbidden extensions for the certificate type. If the certificate contains one or more of the forbidden certificate extensions, the check will fail.
+
+Default: `FAIL` (`1.3.6.1.5.5.7.48.1.5` (for ocsp_noCheck)) for non-revocation certificates
+
+[source,xml,indent=0]
+.Example of ForbiddenExtensions usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
     ...
 </SigningCertificate>
 ----
@@ -1873,6 +1971,20 @@ Default: `FAIL`
 </Revocation>
 ----
 
+* `OCSPResponderIdMatch` - this constraint checks whether the ResponderId field of OCSP response matches the certificate used to sign this OCSP response. If the ResponderId does not match the certificate, the check will fail.
+
+Default: `FAIL` (executed for OCSP only)
+
+[source,xml,indent=0]
+.Example of OCSPResponderIdMatch usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
+----
+
 * `OCSPCertHashPresent` - this constraint checks whether the OCSP response contains "certHash" field. If the OCSP response does not contain "certHash" field, the check will fail.
 
 Default: not executed
@@ -2188,49 +2300,56 @@ This table defines the correspondence between the enforced validation policy con
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
 .12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                               .2+|NotExpired                      .2+|LevelConstraint                |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
+                               .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
                                                                                                       |FAILED                |EXPIRED
                                   |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |AcceptableRevocationDataFound   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |MaxPathLength                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
+                                                                                                                              CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicyTree                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |NameConstraints                 |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |SupportedCriticalExtensions     |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
-.12+|CertificateConstraints       |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationIssuerNotExpired      |LevelConstraint                   |INDETERMINATE         |REVOCATION_OUT_OF_BOUNDS_NO_POE
                                   |SelfSigned                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.11+|CertificateConstraints       |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcLegislationCountryCodes       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.5+|CertificateConstraints        |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2267,10 +2386,11 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.5+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+.6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPResponderIdMatch             |LevelConstraint                   |INDETERMINATE        |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
 .4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE

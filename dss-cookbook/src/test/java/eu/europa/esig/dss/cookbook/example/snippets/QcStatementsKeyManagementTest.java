@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.QcStatements;
+import eu.europa.esig.dss.model.x509.extension.QcStatements;
 import eu.europa.esig.dss.spi.QcStatementUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
@@ -42,7 +42,7 @@ public class QcStatementsKeyManagementTest extends PKIFactoryAccess {
 
     // tag::qcQscdPredicate[]
     // import eu.europa.esig.dss.model.x509.CertificateToken;
-    // import eu.europa.esig.dss.model.x509.QcStatements;
+    // import eu.europa.esig.dss.model.x509.extension.QcStatements;
     // import eu.europa.esig.dss.spi.QcStatementUtils;
     // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
     // import eu.europa.esig.dss.token.predicate.DSSKeyEntryPredicate;

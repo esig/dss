@@ -36,6 +36,9 @@
         <KeyUsage Level="WARN">
           <Id>nonRepudiation</Id>
         </KeyUsage>
+        <ForbiddenExtensions Level="FAIL">
+          <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+        </ForbiddenExtensions>
         <NotRevoked Level="FAIL"/>
         <NotOnHold Level="FAIL"/>
         <QcCompliance Level="WARN"/>

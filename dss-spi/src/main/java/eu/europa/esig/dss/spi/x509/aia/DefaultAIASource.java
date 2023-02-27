@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.spi.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
@@ -117,8 +117,7 @@ public class DefaultAIASource implements OnlineAIASource {
     
     @Override
     public List<CertificatesAndAIAUrl> getCertificatesAndAIAUrls(CertificateToken certificateToken) {
-        List<String> urls = DSSASN1Utils.getCAAccessLocations(certificateToken);
-
+        List<String> urls = CertificateExtensionsUtils.getCAIssuersAccessUrls(certificateToken);
         if (Utils.isCollectionEmpty(urls)) {
             LOG.info("There is no AIA extension for certificate download.");
             return Collections.emptyList();

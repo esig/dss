@@ -83,6 +83,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -103,9 +108,16 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -169,6 +181,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -187,9 +204,16 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -251,6 +275,11 @@
 				<ExtendedKeyUsage Level="FAIL">
 					<Id>timeStamping</Id>
 				</ExtendedKeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
@@ -263,9 +292,16 @@
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -284,6 +320,7 @@
 	</Timestamp>
 	<Revocation>
         <UnknownStatus Level="FAIL" />
+		<OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
@@ -298,6 +335,8 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -309,9 +348,16 @@
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<KeyUsage Level="FAIL">
 					<Id>keyCertSign</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />

@@ -24,11 +24,11 @@ import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.PSD2QcType;
-import eu.europa.esig.dss.model.x509.PdsLocation;
-import eu.europa.esig.dss.model.x509.QCLimitValue;
-import eu.europa.esig.dss.model.x509.QcStatements;
-import eu.europa.esig.dss.model.x509.RoleOfPSP;
+import eu.europa.esig.dss.model.x509.extension.PSD2QcType;
+import eu.europa.esig.dss.model.x509.extension.PdsLocation;
+import eu.europa.esig.dss.model.x509.extension.QCLimitValue;
+import eu.europa.esig.dss.model.x509.extension.QcStatements;
+import eu.europa.esig.dss.model.x509.extension.RoleOfPSP;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An utils class to retrieve qc-statement from a certificate token
+ * A utils class to retrieve qc-statement from a certificate token
  *
  */
 public class QcStatementUtils {
@@ -68,16 +68,18 @@ public class QcStatementUtils {
      * @return {@link QcStatements}
      */
     public static QcStatements getQcStatements(CertificateToken certToken) {
-        final byte[] qcStatements = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
-        if (Utils.isArrayNotEmpty(qcStatements)) {
+        final byte[] qcStatementsExtension = certToken.getCertificate().getExtensionValue(Extension.qCStatements.getId());
+        if (Utils.isArrayNotEmpty(qcStatementsExtension)) {
             try {
-                final ASN1Sequence qcStatementsSeq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatements);
-                return getQcStatements(qcStatementsSeq);
+                final ASN1Sequence qcStatementsSeq = DSSASN1Utils.getAsn1SequenceFromDerOctetString(qcStatementsExtension);
+                final QcStatements qcStatements = getQcStatements(qcStatementsSeq);
+                qcStatements.checkCritical(certToken);
+                return qcStatements;
 
             } catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
                     LOG.warn("Unable to extract QcStatements : {}. Obtained binaries : '{}'",
-                            e.getMessage(), Utils.toBase64(qcStatements));
+                            e.getMessage(), Utils.toBase64(qcStatementsExtension));
                 } else {
                     LOG.warn("Unable to extract QcStatements : {}", e.getMessage());
                 }
@@ -87,7 +89,9 @@ public class QcStatementUtils {
     }
 
     /**
-     * Extracts the QCStatements from a qcStatementsSeq
+     * Extracts the QCStatements from a qcStatementsSeq.
+     * NOTE: does not check if the extension is critical. Use {@code #getQcStatements(CertificateToken certToken)}
+     * if you need to know whether the certificate extension is critical.
      *
      * @param qcStatementsSeq {@link ASN1Sequence}
      * @return {@link QcStatements}
@@ -98,6 +102,7 @@ public class QcStatementUtils {
         }
 
         final QcStatements result = new QcStatements();
+        result.setOctets(DSSASN1Utils.getDEREncoded(qcStatementsSeq));
         for (int i = 0; i < qcStatementsSeq.size(); i++) {
             final QCStatement statement = getQCStatement(qcStatementsSeq.getObjectAt(i));
             if (statement != null) {

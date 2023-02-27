@@ -427,6 +427,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCA();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMaxPathLength();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -440,6 +458,42 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getExtendedKeyUsage();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPolicyTree();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNameConstraints();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateSupportedCriticalExtensionsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSupportedCriticalExtensions();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateForbiddenExtensionsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getForbiddenExtensions();
 		}
 		return null;
 	}
@@ -579,6 +633,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 	
+	@Override
+	public LevelConstraint getOCSPResponseResponderIdMatchConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getOCSPResponderIdMatch();
+		}
+		return null;
+	}
+
 	@Override
 	public LevelConstraint getOCSPResponseCertHashPresentConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();

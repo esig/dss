@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,6 +43,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("Semantics identifier for natural person");
@@ -54,7 +56,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.1");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -69,6 +71,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     @Test
     public void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("Semantics identifier for natural person");
@@ -82,7 +85,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.3");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -97,6 +100,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     @Test
     public void nameTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("Semantics identifier for legal person");
@@ -109,7 +113,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("qcs-SemanticsId-Legal");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -124,6 +128,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription("Semantics identifier for legal person");
@@ -136,7 +141,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
         constraint.getId().add("0.4.0.194121.1.3");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
@@ -151,13 +156,14 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     @Test
     public void qcPS2DNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("0.4.0.194121.1.4");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(

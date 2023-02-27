@@ -14,15 +14,6 @@
             <GivenName>Test</GivenName>
             <Surname>User</Surname>
             <Email>T.User@athex.gr</Email>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.athex.gr/pki.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.athex.gr/pki.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.athexgroup.gr/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>UNKNOWN</Source>
             </Sources>
@@ -31,11 +22,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BF4F2D73BD38ECDE845C1CB18D6DBE212BC7A7BADD4009BF52BF3482A9F4F907</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -47,7 +33,18 @@
             <CertificateChain />
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies />
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.athex.gr/pki.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.athexgroup.gr/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.athex.gr/pki.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>

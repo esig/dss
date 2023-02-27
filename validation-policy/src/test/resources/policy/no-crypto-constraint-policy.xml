@@ -59,6 +59,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -76,6 +81,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -131,6 +138,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -148,6 +160,8 @@
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -200,6 +214,8 @@
 				<RevocationDataAvailable Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -230,6 +246,8 @@
 				<RevocationDataAvailable Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />

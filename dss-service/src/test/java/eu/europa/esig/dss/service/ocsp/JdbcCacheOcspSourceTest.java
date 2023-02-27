@@ -22,10 +22,11 @@ package eu.europa.esig.dss.service.ocsp;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.extension.AuthorityInformationAccess;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
@@ -151,7 +152,9 @@ public class JdbcCacheOcspSourceTest {
 		OCSPToken firstOCSPToken = onlineOCSPSource.getRevocationToken(goodUser, goodCa);
 		OCSPToken secondOCSPToken = onlineOCSPSource.getRevocationToken(goodUser, goodCa);
 
-		List<String> ocspAccessLocations = DSSASN1Utils.getOCSPAccessLocations(goodUser);
+		AuthorityInformationAccess aia = CertificateExtensionsUtils.getAuthorityInformationAccess(goodUser);
+		assertNotNull(aia);
+		List<String> ocspAccessLocations = aia.getOcsp();
 		assertEquals(1, ocspAccessLocations.size());
 		String ocspRevocationKey = DSSRevocationUtils.getOcspRevocationKey(goodUser, ocspAccessLocations.get(0));
 

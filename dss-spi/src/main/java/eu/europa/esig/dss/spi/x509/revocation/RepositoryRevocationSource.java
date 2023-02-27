@@ -363,6 +363,9 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 					updateRevocation(revocationTokenKey, newToken);
 					LOG.info("Revocation token for certificate '{}' is updated in the cache", certificateToken.getDSSIdAsString());
 				}
+			} else {
+				LOG.warn("The extracted revocation token with Id '{}' is invalid! Reason: {}",
+						newToken.getDSSIdAsString(), newToken.getInvalidityReason());
 			}
 		}
 		return newToken;

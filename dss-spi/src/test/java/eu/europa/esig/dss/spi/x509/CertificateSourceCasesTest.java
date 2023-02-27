@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
@@ -59,8 +60,8 @@ public class CertificateSourceCasesTest {
 		assertEquals(2, lcs.getNumberOfEntities());
 		assertEquals(2, lcs.getBySubject(c1.getSubject()).size());
 
-		assertEquals(1, lcs.getBySki(DSSASN1Utils.getSki(c1)).size());
-		assertEquals(1, lcs.getBySki(DSSASN1Utils.getSki(c2)).size());
+		assertEquals(1, lcs.getBySki(CertificateExtensionsUtils.getSubjectKeyIdentifier(c1).getSki()).size());
+		assertEquals(1, lcs.getBySki(CertificateExtensionsUtils.getSubjectKeyIdentifier(c2).getSki()).size());
 		assertEquals(1, lcs.getByPublicKey(c1.getPublicKey()).size());
 		assertEquals(1, lcs.getByPublicKey(c2.getPublicKey()).size());
 

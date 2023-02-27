@@ -44,16 +44,34 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAuthorityInformationAccess;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAuthorityKeyIdentifier;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCRLDistributionPoints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -472,6 +490,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkSignatureLevel(diagnosticData);
 		checkSigningDate(diagnosticData);
 		checkCertificates(diagnosticData);
+		checkCertificateExtensions(diagnosticData);
 		checkRevocationData(diagnosticData);
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
@@ -703,6 +722,106 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertNotNull(certificateWrapper.getNotBefore());
 			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
 			assertNotNull(certificateWrapper.getEntityKey());
+		}
+	}
+
+	protected void checkCertificateExtensions(DiagnosticData diagnosticData) {
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			Set<String> oids = new HashSet<>();
+			Set<String> descriptions = new HashSet<>();
+			for (XmlCertificateExtension xmlCertificateExtension : certificateWrapper.getCertificateExtensions()) {
+				assertNotNull(xmlCertificateExtension.getOID());
+				assertNotNull(xmlCertificateExtension.isCritical());
+
+				assertFalse(oids.contains(xmlCertificateExtension.getOID()));
+				oids.add(xmlCertificateExtension.getOID());
+
+				assertFalse(descriptions.contains(xmlCertificateExtension.getDescription()));
+				if (Utils.isStringNotEmpty(xmlCertificateExtension.getDescription())) {
+					descriptions.add(xmlCertificateExtension.getDescription());
+				}
+
+				if (CertificateExtensionEnum.AUTHORITY_KEY_IDENTIFIER.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlAuthorityKeyIdentifier);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlAuthorityKeyIdentifier xmlAuthorityKeyIdentifier = (XmlAuthorityKeyIdentifier) xmlCertificateExtension;
+					assertTrue(Utils.isArrayNotEmpty(xmlAuthorityKeyIdentifier.getKeyIdentifier()) ||
+							Utils.isArrayNotEmpty(xmlAuthorityKeyIdentifier.getAuthorityCertIssuerSerial()));
+				} else if (CertificateExtensionEnum.SUBJECT_KEY_IDENTIFIER.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlSubjectKeyIdentifier);
+					assertFalse(xmlCertificateExtension.isCritical());
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlSubjectKeyIdentifier xmlSubjectKeyIdentifier = (XmlSubjectKeyIdentifier) xmlCertificateExtension;
+					assertTrue(Utils.isArrayNotEmpty(xmlSubjectKeyIdentifier.getSki()));
+				} else if (CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlBasicConstraints);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlPolicyConstraints);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlPolicyConstraints xmlPolicyConstraints = (XmlPolicyConstraints) xmlCertificateExtension;
+					assertTrue(xmlPolicyConstraints.getRequireExplicitPolicy() != null ||
+							xmlPolicyConstraints.getInhibitPolicyMapping() != null);
+				} else if (CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlInhibitAnyPolicy);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlInhibitAnyPolicy xmlInhibitAnyPolicy = (XmlInhibitAnyPolicy) xmlCertificateExtension;
+					assertNotNull(xmlInhibitAnyPolicy.getValue());
+					assertNotEquals(-1, xmlInhibitAnyPolicy.getValue().intValue());
+				} else if (CertificateExtensionEnum.KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlKeyUsages);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlKeyUsages xmlKeyUsages = (XmlKeyUsages) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlKeyUsages.getKeyUsageBit()));
+				} else if (CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlCertificatePolicies);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlCertificatePolicies xmlCertificatePolicies = (XmlCertificatePolicies) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlCertificatePolicies.getCertificatePolicy()));
+					assertEquals(new HashSet<>(xmlCertificatePolicies.getCertificatePolicy()).size(),
+							xmlCertificatePolicies.getCertificatePolicy().size());
+					for (XmlCertificatePolicy certificatePolicy : xmlCertificatePolicies.getCertificatePolicy()) {
+						assertNotNull(certificatePolicy.getValue());
+						assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
+					}
+				} else if (CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlNameConstraints);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlNameConstraints xmlNameConstraints = (XmlNameConstraints) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlNameConstraints.getPermittedSubtrees()) ||
+							Utils.isCollectionNotEmpty(xmlNameConstraints.getExcludedSubtrees()));
+				} else if (CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlSubjectAlternativeNames);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlExtendedKeyUsages);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlExtendedKeyUsages xmlExtendedKeyUsages = (XmlExtendedKeyUsages) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsagesOid()));
+				} else if (CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlAuthorityInformationAccess);
+					assertFalse(xmlCertificateExtension.isCritical());
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlAuthorityInformationAccess xmlAuthorityInformationAccess = (XmlAuthorityInformationAccess) xmlCertificateExtension;
+					assertTrue(Utils.isCollectionNotEmpty(xmlAuthorityInformationAccess.getCaIssuersUrls()) ||
+							Utils.isCollectionNotEmpty(xmlAuthorityInformationAccess.getOcspUrls()));
+				} else if (CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlCRLDistributionPoints);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.OCSP_NOCHECK.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlIdPkixOcspNoCheck);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlValAssuredShortTermCertificate);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(xmlCertificateExtension.getOID())) {
+					assertTrue(xmlCertificateExtension instanceof XmlQcStatements);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else {
+					assertTrue(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				}
+			}
 		}
 	}
 	
@@ -1201,12 +1320,11 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	}
 	
 	protected void verifyDiagnosticDataJaxb(XmlDiagnosticData diagnosticDataJaxb) {
-
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			assertTrue(xmlCertificate.getBase64Encoded() != null || xmlCertificate.getDigestAlgoAndValue() != null);
 			
-			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
+			if (!xmlCertificate.isTrusted() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
 				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();
@@ -1228,6 +1346,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		for (XmlTimestamp xmlTimestamp : timestamps) {
 			assertTrue(xmlTimestamp.getBase64Encoded() != null || xmlTimestamp.getDigestAlgoAndValue() != null);
 		}
+	}
+
+	protected boolean hasOcspNoCheck(XmlCertificate xmlCertificate) {
+		for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
+			if (CertificateExtensionEnum.OCSP_NOCHECK.getOid().equals(certificateExtension.getOID())) {
+				return ((XmlIdPkixOcspNoCheck) certificateExtension).isPresent();
+			}
+		}
+		return false;
 	}
 
 	protected void verifySimpleReport(SimpleReport simpleReport) {

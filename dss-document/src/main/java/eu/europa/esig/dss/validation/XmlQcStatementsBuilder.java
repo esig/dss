@@ -31,11 +31,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
 import eu.europa.esig.dss.enumerations.OidDescription;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.RoleOfPspOid;
-import eu.europa.esig.dss.model.x509.PSD2QcType;
-import eu.europa.esig.dss.model.x509.PdsLocation;
-import eu.europa.esig.dss.model.x509.QCLimitValue;
-import eu.europa.esig.dss.model.x509.QcStatements;
-import eu.europa.esig.dss.model.x509.RoleOfPSP;
+import eu.europa.esig.dss.model.x509.extension.PSD2QcType;
+import eu.europa.esig.dss.model.x509.extension.PdsLocation;
+import eu.europa.esig.dss.model.x509.extension.QCLimitValue;
+import eu.europa.esig.dss.model.x509.extension.QcStatements;
+import eu.europa.esig.dss.model.x509.extension.RoleOfPSP;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
@@ -62,6 +62,8 @@ public class XmlQcStatementsBuilder {
      */
     public XmlQcStatements build(QcStatements qcStatements) {
         XmlQcStatements result = new XmlQcStatements();
+        result.setOID(qcStatements.getOid());
+        result.setCritical(qcStatements.isCritical());
         result.setQcCompliance(buildXmlQcCompliance(qcStatements.isQcCompliance()));
         result.setQcSSCD(buildXmlQcSSCD(qcStatements.isQcQSCD()));
         if (qcStatements.getQcEuRetentionPeriod() != null) {

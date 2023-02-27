@@ -89,6 +89,7 @@ public class OnlineCRLSourceTest {
 
 		revocationToken = onlineCRLSource.getRevocationToken(ed25519goodCa, ed25519RootCa);
 		assertNotNull(revocationToken);
+		assertTrue(revocationToken.isSignatureIntact());
 		assertTrue(revocationToken.isValid());
 		assertEquals(SignatureAlgorithm.ED25519, revocationToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, revocationToken.getSignatureValidity());

@@ -11,15 +11,6 @@
             <CommonName>f RDC 2015</CommonName>
             <CountryName>HR</CountryName>
             <OrganizationName>f a</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rdc.f.hr/Root/fRootCA.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://rdc.f.hr/Root/fRootCA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TRUSTED_LIST</Source>
             </Sources>
@@ -28,12 +19,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>crlSign</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -43,9 +28,23 @@
             </BasicSignature>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://rdc.f.hr/Root/fRootCA-CP1-0-en.pdf">1.3.124.1104.5.2.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>crlSign</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://rdc.f.hr/Root/fRootCA-CP1-0-en.pdf">1.3.124.1104.5.2.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rdc.f.hr/Root/fRootCA.cer</caIssuersUrl>
+                    <ocspUrl>http://ocsp.f.hr</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://rdc.f.hr/Root/fRootCA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
@@ -99,16 +98,6 @@
             <CommonName>f RDC 2015 OCSP</CommonName>
             <CountryName>HR</CountryName>
             <OrganizationName>f a</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
-                <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -117,14 +106,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A1C213591D7738A3B4048487174769B1A09824927782ED76A2892819A5E1207F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -138,9 +119,27 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://rdc.f.hr/Root/fRootCA-CPCPS2-1-en.pdf">1.3.124.1104.5.12.9</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://rdc.f.hr/Root/fRootCA-CPCPS2-1-en.pdf">1.3.124.1104.5.12.9</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</caIssuersUrl>
+                    <ocspUrl>http://ocsp.f.hr</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
+                    <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
@@ -188,16 +187,6 @@
             <OrganizationName>f</OrganizationName>
             <GivenName>e</GivenName>
             <Surname>m</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
-                <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.f.hr</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>UNKNOWN</Source>
             </Sources>
@@ -206,11 +195,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -224,16 +208,29 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://rdc.f.hr/RDC2015/fRDC2015-CPSQC1-0-en.pdf">1.3.124.1104.5.12.12.2.2</certificatePolicy>
-                <certificatePolicy Description="qcp-natural">0.4.0.194112.1.0</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                                <QcTypes>
-                    <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.cer</caIssuersUrl>
+                    <ocspUrl>http://ocsp.f.hr</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://rdc.f.hr/RDC2015/fRDCCA2015.crl</crlUrl>
+                    <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://rdc.f.hr/RDC2015/fRDC2015-CPSQC1-0-en.pdf">1.3.124.1104.5.12.12.2.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural">0.4.0.194112.1.0</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>

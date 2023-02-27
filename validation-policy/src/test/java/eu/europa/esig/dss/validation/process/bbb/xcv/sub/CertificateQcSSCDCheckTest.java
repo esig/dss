@@ -25,9 +25,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -43,6 +45,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
         xmlQcSSCD.setPresent(true);
@@ -52,7 +55,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -67,6 +70,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcSSCD xmlQcSSCD = new XmlQcSSCD();
         xmlQcSSCD.setPresent(false);
@@ -76,7 +80,7 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -94,9 +98,12 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
+        XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+        certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
         XmlCertificatePolicy oid = new XmlCertificatePolicy();
         oid.setValue("0.4.0.1456.1.1");
-        xc.getCertificatePolicies().add(oid);
+        certificatePolicies.getCertificatePolicy().add(oid);
+        xc.getCertificateExtensions().add(certificatePolicies);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
@@ -111,12 +118,13 @@ public class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     @Test
     public void qcComplianceNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,

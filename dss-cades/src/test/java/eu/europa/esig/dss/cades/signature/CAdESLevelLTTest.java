@@ -86,7 +86,7 @@ public class CAdESLevelLTTest extends AbstractCAdESTestSignature {
 
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
-			if (!xmlCertificate.isTrusted() && !xmlCertificate.isIdPkixOcspNoCheck() && !xmlCertificate.isSelfSigned()) {
+			if (!xmlCertificate.isTrusted() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
 				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				assertTrue(Utils.isCollectionNotEmpty(revocations));
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {

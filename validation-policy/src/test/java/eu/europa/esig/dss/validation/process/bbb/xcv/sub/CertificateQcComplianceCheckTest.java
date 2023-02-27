@@ -25,9 +25,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -35,7 +37,6 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcComplianceCheck;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +46,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
         xmlQcCompliance.setPresent(true);
@@ -54,7 +56,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
@@ -69,6 +71,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlQcCompliance xmlQcCompliance = new XmlQcCompliance();
         xmlQcCompliance.setPresent(false);
@@ -78,7 +81,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
@@ -96,11 +99,12 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        List<XmlCertificatePolicy> certPolicies = new ArrayList<>();
+        XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
+        certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
         XmlCertificatePolicy oid = new XmlCertificatePolicy();
         oid.setValue(CertificatePolicy.QCP_PUBLIC.getOid());
-        certPolicies.add(oid);
-        xc.setCertificatePolicies(certPolicies);
+        certificatePolicies.getCertificatePolicy().add(oid);
+        xc.getCertificateExtensions().add(certificatePolicies);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
@@ -115,12 +119,13 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     @Test
     public void qcComplianceNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,

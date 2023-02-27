@@ -273,6 +273,26 @@ public interface ValidationPolicy {
 	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate CA constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if CA for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate MaxPathLength constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if MaxPathLength for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate key usage constraint
 	 *
 	 * @param context {@link Context}
@@ -291,6 +311,46 @@ public interface ValidationPolicy {
 	 *                                 null otherwise.
 	 */
 	MultiValuesConstraint getCertificateExtendedKeyUsageConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate PolicyTree constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if PolicyTree for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate NameConstraints constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if NameConstraints for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate supported critical extensions constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if SupportedCriticalExtensions constraint for a given context element is present
+	 * 								   in the constraint file,null otherwise.
+	 */
+	MultiValuesConstraint getCertificateSupportedCriticalExtensionsConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate forbidden extensions constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if ForbiddenExtensions constraint for a given context element is present
+	 * 								   in the constraint file,null otherwise.
+	 */
+	MultiValuesConstraint getCertificateForbiddenExtensionsConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate's validity range constraint
@@ -327,6 +387,13 @@ public interface ValidationPolicy {
 	 * @return {@link LevelConstraint}
 	 */
 	LevelConstraint getUnknownStatusConstraint();
+
+	/**
+	 * The method returns OCSPResponderIdMatch constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getOCSPResponseResponderIdMatchConstraint();
 
 	/**
 	 * The method returns OCSPCertHashPresent constraint

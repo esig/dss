@@ -167,17 +167,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Secretaria da Receita Federal do Brasil - RFB</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.certificadodigital.com.br/cadeias/serasarfbv2.p7b</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.certificadodigital.com.br/repositorio/lcr/serasarfbv2.crl</crlUrl>
-                <crlUrl>http://lcr.certificados.com.br/repositorio/lcr/serasarfbv2.crl</crlUrl>
-                <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Serasa/repositorio/lcr/serasarfbv2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.certificadodigital.com.br/serasarfbv2</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -186,16 +175,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F5ADDE9792A56C8C5FF3872560E3E85221E62D7A517DAD428D623299CCEF373B</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -211,9 +190,29 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://publicacao.certificadodigital.com.br/repositorio/dpc/declaracao-rfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://publicacao.certificadodigital.com.br/repositorio/dpc/declaracao-rfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.certificadodigital.com.br/cadeias/serasarfbv2.p7b</caIssuersUrl>
+                    <ocspUrl>http://ocsp.certificadodigital.com.br/serasarfbv2</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.certificadodigital.com.br/repositorio/lcr/serasarfbv2.crl</crlUrl>
+                    <crlUrl>http://lcr.certificados.com.br/repositorio/lcr/serasarfbv2.crl</crlUrl>
+                    <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Serasa/repositorio/lcr/serasarfbv2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -231,11 +230,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Instituto Nacional de Tecnologia da Informacao - ITI</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>AIA</Source>
             </Sources>
@@ -244,12 +238,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-FB47D92A9909FD4FA9BEC02737543E1F3514CED747407A8D9CFA397B09150CB</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -259,9 +247,19 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://acraiz.icpbrasil.gov.br/DPCacraiz.pdf">2.16.76.1.1.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://acraiz.icpbrasil.gov.br/DPCacraiz.pdf">2.16.76.1.1.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -279,17 +277,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Autenticado por AC Certisign Tempo</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://icp-brasil.certisign.com.br/repositorio/certificados/AC_Certisign_Tempo.p7c</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignTempo/LatestCRL.crl</crlUrl>
-                <crlUrl>http://icp-brasil.outralcr.com.br/repositorio/lcr/ACCertisignTempo/LatestCRL.crl</crlUrl>
-                <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Certisign/ACCertisignTempo/LatestCRL.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.certisign.com.br</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
             	<Source>TIMESTAMP</Source>
             </Sources>
@@ -298,15 +285,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-2086827691ADF87520375749ADF3616AC5FACA0456E8F2DA54DDCF844D24B86E</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -322,9 +300,28 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc/AC_Certisign_Tempo/DPC_AC_Certisign_Tempo.pdf">2.16.76.1.2.303.6</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc/AC_Certisign_Tempo/DPC_AC_Certisign_Tempo.pdf">2.16.76.1.2.303.6</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://icp-brasil.certisign.com.br/repositorio/certificados/AC_Certisign_Tempo.p7c</caIssuersUrl>
+                    <ocspUrl>http://ocsp.certisign.com.br</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignTempo/LatestCRL.crl</crlUrl>
+                    <crlUrl>http://icp-brasil.outralcr.com.br/repositorio/lcr/ACCertisignTempo/LatestCRL.crl</crlUrl>
+                    <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Certisign/ACCertisignTempo/LatestCRL.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -342,11 +339,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Secretaria da Receita Federal do Brasil - RFB</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.receita.fazenda.gov.br/acrfb/acrfbv3.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>AIA</Source>
             </Sources>
@@ -355,12 +347,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-498D3379F39A398AFCCA536C528F91A013D0A868FEAEFFA1114EC3B6938249F0</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -375,12 +361,22 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.1.13</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.2.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.4.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.1.13</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.receita.fazenda.gov.br/acrfb/dpcacrfb.pdf">2.16.76.1.2.4.2</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.receita.fazenda.gov.br/acrfb/acrfbv3.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -398,11 +394,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Autoridade Certificadora Raiz Brasileira v2</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>AIA</Source>
             </Sources>
@@ -411,12 +402,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-87FF04CEB4942FF4363217CACD7800987FA2751D8081AC7EFF612F7184D4B505</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -430,9 +415,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.16.76.1.1.5</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.16.76.1.1.5</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -452,13 +447,6 @@
             <CountryName>US</CountryName>
             <OrganizationName>DocuSign, Inc.</OrganizationName>
             <OrganizationalUnit>Engineering Operations</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?cACertificate?base?objectClass=certificationAuthority</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=SEA-CAS-01,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?certificateRevocationList?base?objectClass=cRLDistributionPoint</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>SIGNATURE</Source>
             </Sources>
@@ -467,14 +455,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C4DCF22C04E2914AEB651F660A2558AF783D8C344E62D82D0DE5DBD5DC87F2F5</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyEncipherment</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
@@ -485,7 +465,21 @@
             <CertificateChain/>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyEncipherment</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?cACertificate?base?objectClass=certificationAuthority</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=SEA-CAS-01,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?certificateRevocationList?base?objectClass=cRLDistributionPoint</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -503,11 +497,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Autoridade Certificadora Raiz Brasileira v2</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>AIA</Source>
             </Sources>
@@ -516,12 +505,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B123A861174F40C01E50D039652E64F9E34DF9F762F36891987E2AB371627EF9</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -535,9 +518,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.16.76.1.1.8</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.16.76.1.1.8</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -555,11 +548,6 @@
             <CountryName>BR</CountryName>
             <OrganizationName>ICP-Brasil</OrganizationName>
             <OrganizationalUnit>Certisign Certificadora Digital S.A.</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignG6/LatestCRL.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
             	<Source>AIA</Source>
             </Sources>
@@ -568,12 +556,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A21B5D840E294525B986A1E5741FC80192ACECCABD6D0196C6639B4B6AEEB33D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -588,10 +570,20 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.303.6</certificatePolicy>
-                <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.304.5</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.303.6</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc">2.16.76.1.2.304.5</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignG6/LatestCRL.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

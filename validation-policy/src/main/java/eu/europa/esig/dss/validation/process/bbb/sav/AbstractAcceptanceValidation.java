@@ -137,26 +137,29 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	/**
 	 * Verifies cryptographic validity of signature references and signing-certificate signed attribute
 	 *
+	 * @param item {@link ChainItem} the last initialized chain item to be processed
 	 * @return {@link ChainItem}
 	 */
-	protected ChainItem<XmlSAV> cryptographic() {
-		ChainItem<XmlSAV> firstItem;
-		
+	protected ChainItem<XmlSAV> cryptographic(ChainItem<XmlSAV> item) {
 		// The basic signature constraints validation
 		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		MessageTag position = ValidationProcessUtils.getCryptoPosition(context);
 		
 		CryptographicChecker cc = new CryptographicChecker(i18nProvider, token, currentTime, position, constraint);
 		XmlCC ccResult = cc.execute();
-		
-		ChainItem<XmlSAV> item = firstItem = cryptographicCheckResult(ccResult, position, constraint);
+
+		if (item == null) {
+			item = firstItem = cryptographicCheckResult(ccResult, position, constraint);
+		} else {
+			item = item.setNextItem(cryptographicCheckResult(ccResult, position, constraint));
+		}
 
 		cryptographicValidation = getCryptographicValidation(ccResult);
 		cryptographicValidation.setConcernedMaterial(token.getId());
 		
 		if (!isValid(ccResult)) {
 			// return if not valid
-			return firstItem;
+			return item;
 		}
 		
 		// process digestMatchers
@@ -183,7 +186,17 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				}
 			}
 		}
+		
+		return item;
+	}
 
+	/**
+	 * This method verifies the validity of the used cryptographic constraints for signed-attributes
+	 *
+	 * @param item {@link ChainItem} the last initialized chain item to be processed
+	 * @return {@link ChainItem}
+	 */
+	protected ChainItem<XmlSAV> cryptographicSignedAttributes(ChainItem<XmlSAV> item) {
 		if (token.isSigningCertificateReferencePresent()) {
 			List<CertificateRefWrapper> signingCertificateReferences = token.getSigningCertificateReferences();
 			for (CertificateRefWrapper certificateRefWrapper : signingCertificateReferences) {
@@ -194,9 +207,14 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 
 				XmlCC dacResult = getSigningCertificateDigestCryptographicCheckResult(certificateRefWrapper);
 
-				item = item.setNextItem(signingCertificateRefDigestAlgoCheckResult(certificateRefWrapper, dacResult));
+				if (item == null) {
+					item = firstItem = signingCertificateRefDigestAlgoCheckResult(certificateRefWrapper, dacResult);
+				} else {
+					item = item.setNextItem(signingCertificateRefDigestAlgoCheckResult(certificateRefWrapper, dacResult));
+				}
 
-				if (!isValid(dacResult)) {
+				// overwrite only if previous checks are secure
+				if ((cryptographicValidation == null || cryptographicValidation.isSecure()) && !isValid(dacResult)) {
 					cryptographicValidation = getCryptographicValidation(dacResult);
 					cryptographicValidation.setConcernedMaterial(getTokenDescription(
 							certificateRefWrapper.getCertificateId(), MessageTag.ACCM_POS_SIG_CERT_REF));
@@ -204,8 +222,8 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 				}
 			}
 		}
-		
-		return firstItem;
+
+		return item;
 	}
 	
 	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {

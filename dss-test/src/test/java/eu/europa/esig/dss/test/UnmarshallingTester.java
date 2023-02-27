@@ -356,7 +356,10 @@ public class UnmarshallingTester {
 			CertificateWrapper originalCert = original.getUsedCertificateById(unmarshalledCert.getId());
 			assertNotNull(originalCert);
 			assertEquals(unmarshalledCert.getCertificateChain().size(), originalCert.getCertificateChain().size());
-			assertEquals(unmarshalledCert.getAuthorityInformationAccessUrls().size(), originalCert.getAuthorityInformationAccessUrls().size());
+			assertEquals(unmarshalledCert.getCAIssuersAccessUrls().size(), originalCert.getCAIssuersAccessUrls().size());
+			assertEquals(unmarshalledCert.getOCSPAccessUrls().size(), originalCert.getOCSPAccessUrls().size());
+			assertEquals(unmarshalledCert.getCRLDistributionPoints().size(), originalCert.getCRLDistributionPoints().size());
+			assertEquals(unmarshalledCert.getPolicyIds().size(), originalCert.getPolicyIds().size());
 			assertEquals(unmarshalledCert.getCertificateRevocationData().size(), originalCert.getCertificateRevocationData().size());
 			assertEquals(unmarshalledCert.getExtendedKeyUsages().size(), originalCert.getExtendedKeyUsages().size());
 			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());

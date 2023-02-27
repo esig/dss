@@ -25,6 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.policy.SubContext;
@@ -34,7 +36,6 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,15 +44,16 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void keyUsageCheck() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
-		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
+		XmlKeyUsages keyUsages = new XmlKeyUsages();
+		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
+		keyUsages.getKeyUsageBit().add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
-		constraint.getId().add(keyUsageBits.get(0).getValue());
+		constraint.getId().add(keyUsages.getKeyUsageBit().get(0).getValue());
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setKeyUsageBits(keyUsageBits);
+		xc.getCertificateExtensions().add(keyUsages);
 
 		XmlSubXCV result = new XmlSubXCV();
 		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
@@ -64,15 +66,16 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void failedKeyUsageCheck() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
-		keyUsageBits.add(KeyUsageBit.CRL_SIGN);
+		XmlKeyUsages keyUsages = new XmlKeyUsages();
+		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
+		keyUsages.getKeyUsageBit().add(KeyUsageBit.CRL_SIGN);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Key");
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setKeyUsageBits(keyUsageBits);
+		xc.getCertificateExtensions().add(keyUsages);
 
 		XmlSubXCV result = new XmlSubXCV();
 		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
@@ -85,16 +88,18 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
 	public void multiValuesCheck() {
-		List<KeyUsageBit> keyUsageBits = new ArrayList<>();
-		keyUsageBits.add(KeyUsageBit.DIGITAL_SIGNATURE);
-		keyUsageBits.add(KeyUsageBit.NON_REPUDIATION);
+		XmlKeyUsages keyUsages = new XmlKeyUsages();
+		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
+		keyUsages.getKeyUsageBit().add(KeyUsageBit.DIGITAL_SIGNATURE);
+		keyUsages.getKeyUsageBit().add(KeyUsageBit.NON_REPUDIATION);
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add(KeyUsageBit.NON_REPUDIATION.getValue());
 
 		XmlCertificate xc = new XmlCertificate();
-		xc.setKeyUsageBits(keyUsageBits);
+		xc.getCertificateExtensions().add(keyUsages);
+		constraint.getId().add(keyUsages.getKeyUsageBit().get(0).getValue());
 
 		XmlSubXCV result = new XmlSubXCV();
 		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.SIGNATURE, SubContext.SIGNING_CERT, constraint);

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -264,7 +264,7 @@ public class RevocationDataVerifier {
         if (isTrusted(certificateToken)) {
             return false;
         }
-        if (DSSASN1Utils.hasIdPkixOcspNoCheckExtension(certificateToken)) {
+        if (CertificateExtensionsUtils.hasOcspNoCheckExtension(certificateToken)) {
             return false;
         }
         return true;
@@ -275,13 +275,8 @@ public class RevocationDataVerifier {
     }
 
     private boolean hasRevocationAccessPoints(final CertificateToken certificateToken) {
-        if (Utils.isCollectionNotEmpty(DSSASN1Utils.getOCSPAccessLocations(certificateToken))) {
-            return true;
-        }
-        if (Utils.isCollectionNotEmpty(DSSASN1Utils.getCrlUrls(certificateToken))) {
-            return true;
-        }
-        return false;
+        return Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getCRLAccessUrls(certificateToken)) ||
+                Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken));
     }
 
     private boolean isConsistent(RevocationToken<?> revocation) {
