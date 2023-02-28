@@ -316,7 +316,9 @@ public class DetailedReportMessageCollector {
 				return getMessages(type,certificateQualification);
 			}
 		}
-		LOG.warn("The validation at time '{}' is not found or not performed!", validationTime);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("The validation at time '{}' is not found or not performed!", validationTime);
+		}
 		return Collections.emptyList();
 	}
 
