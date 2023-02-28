@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.12-SNAPSHOT</version>
+		<version>5.12.RC1</version>
 	</parent>
 	
 	<name>DSS Server signing SOAP Service</name>
