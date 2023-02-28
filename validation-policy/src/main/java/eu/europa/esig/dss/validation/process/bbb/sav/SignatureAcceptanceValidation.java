@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -30,14 +28,11 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
@@ -50,7 +45,6 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierMatchCh
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateRefDigestCryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
@@ -255,34 +249,6 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> certifiedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint(context);
 		return new CertifiedRolesCheck(i18nProvider, result, token, constraint);
-	}
-
-	private ChainItem<XmlSAV> signingCertificateRefDigestAlgoCheckResult(CertificateRefWrapper certificateRefWrapper,
-																		 XmlCC ccResult) {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestAlgorithmConstraint(context);
-		return new SigningCertificateRefDigestCryptographicCheckerResultCheck<>(i18nProvider, result,
-				currentTime, certificateRefWrapper, ccResult, constraint);
-	}
-
-	private XmlCC getSigningCertificateDigestCryptographicCheckResult(CertificateRefWrapper certificateRef) {
-		SubContext subContext;
-		CertificateRefWrapper signingCertificateReference = token.getSigningCertificateReference();
-		if (signingCertificateReference != null &&
-				signingCertificateReference.getCertificateId().equals(certificateRef.getCertificateId())) {
-			subContext = SubContext.SIGNING_CERT;
-		} else {
-			subContext = SubContext.CA_CERTIFICATE;
-		}
-
-		CryptographicConstraint certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
-
-		DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, certificateRef.getDigestMethod(),
-				currentTime, MessageTag.ACCM_POS_SIG_CERT_REF, certificateConstraint);
-		return dac.execute();
-	}
-
-	private String getTokenDescription(String id, MessageTag position) {
-		return i18nProvider.getMessage(MessageTag.ACCM_DESC_WITH_ID, position, id);
 	}
 
 }

@@ -240,7 +240,7 @@ public class CommonsDataLoader implements DataLoader {
 	 * Processes the HTTP client response and returns byte array in case of success
 	 * Default: {@code CommonsHttpClientResponseHandler}
 	 */
-	private HttpClientResponseHandler<byte[]> httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+	private transient HttpClientResponseHandler<byte[]> httpClientResponseHandler = new CommonsHttpClientResponseHandler();
 
 	/**
 	 * The default constructor for CommonsDataLoader.
@@ -486,12 +486,12 @@ public class CommonsDataLoader implements DataLoader {
 	@Deprecated
 	public List<Integer> getAcceptedHttpStatus() {
 		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.getAcceptedHttpStatuses() method.");
-		HttpClientResponseHandler<byte[]> httpClientResponseHandler = getHttpClientResponseHandler();
-		if (httpClientResponseHandler instanceof CommonsHttpClientResponseHandler) {
-			return ((CommonsHttpClientResponseHandler) httpClientResponseHandler).getAcceptedHttpStatuses();
+		HttpClientResponseHandler<byte[]> responseHandler = getHttpClientResponseHandler();
+		if (responseHandler instanceof CommonsHttpClientResponseHandler) {
+			return ((CommonsHttpClientResponseHandler) responseHandler).getAcceptedHttpStatuses();
 		}
 		throw new UnsupportedOperationException(String.format("Unable to retrieve accepted HTTP status for " +
-				"unknown implementation of HttpClientResponseHandler : '%s'", httpClientResponseHandler.getClass()));
+				"unknown implementation of HttpClientResponseHandler : '%s'", responseHandler.getClass()));
 	}
 
 	/**
@@ -508,12 +508,12 @@ public class CommonsDataLoader implements DataLoader {
 	@Deprecated
 	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
 		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.setAcceptedHttpStatuses(...) method.");
-		HttpClientResponseHandler<byte[]> httpClientResponseHandler = getHttpClientResponseHandler();
-		if (httpClientResponseHandler instanceof CommonsHttpClientResponseHandler) {
-			((CommonsHttpClientResponseHandler) httpClientResponseHandler).setAcceptedHttpStatuses(acceptedHttpStatus);
+		HttpClientResponseHandler<byte[]> responseHandler = getHttpClientResponseHandler();
+		if (responseHandler instanceof CommonsHttpClientResponseHandler) {
+			((CommonsHttpClientResponseHandler) responseHandler).setAcceptedHttpStatuses(acceptedHttpStatus);
 		}
 		throw new UnsupportedOperationException(String.format("Unable to set accepted HTTP status for " +
-				"unknown implementation of HttpClientResponseHandler : '%s'", httpClientResponseHandler.getClass()));
+				"unknown implementation of HttpClientResponseHandler : '%s'", responseHandler.getClass()));
 	}
 
 	/**

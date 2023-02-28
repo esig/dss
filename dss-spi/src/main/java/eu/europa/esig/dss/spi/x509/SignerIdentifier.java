@@ -161,9 +161,9 @@ public class SignerIdentifier implements Serializable {
 		SignerIdentifier id = new SignerIdentifier();
 		id.setIssuerName(certificateToken.getIssuerX500Principal());
 		id.setSerialNumber(certificateToken.getSerialNumber());
-		SubjectKeyIdentifier ski = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken);
-		if (ski != null) {
-			id.setSki(ski.getSki());
+		SubjectKeyIdentifier certSki = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken);
+		if (certSki != null) {
+			id.setSki(certSki.getSki());
 		}
 		return isEquivalent(id);
 	}

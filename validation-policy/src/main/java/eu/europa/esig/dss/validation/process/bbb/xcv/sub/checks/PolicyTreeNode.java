@@ -82,9 +82,10 @@ public class PolicyTreeNode {
          * the valid_policy anyPolicy, generate a child node with
          * the following values: set the valid_policy to P-OID,
          * set the qualifier_set to P-Q, and set the
-         * expected_policy_set to  {P-OID}.
+         * expected_policy_set to {P-OID}.
          */
         else if (isAnyPolicy()) {
+            // AnyPolicy child is created within the caller class
             children.add(policyNode);
             return true;
         }
@@ -97,13 +98,13 @@ public class PolicyTreeNode {
      * @return set of {@link PolicyTreeNode}s
      */
     public Set<PolicyTreeNode> createAnyPolicyChildren() {
-        Set<PolicyTreeNode> children = new HashSet<>();
+        Set<PolicyTreeNode> anyPolicyChildren = new HashSet<>();
         for (String expectedPolicy : this.expectedPolicySet) {
             PolicyTreeNode child = new PolicyTreeNode(expectedPolicy, ANY_POLICY);
-            children.add(child);
+            anyPolicyChildren.add(child);
         }
-        this.children.addAll(children);
-        return children;
+        this.children.addAll(anyPolicyChildren);
+        return anyPolicyChildren;
     }
 
     /**

@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import java.io.Serializable;
+
 /**
  * Contains information extracted from TrustServiceTSLType element
  *
  */
-public class ServiceTypeASi {
+public class ServiceTypeASi implements Serializable {
+
+	private static final long serialVersionUID = 4310435264375542204L;
 
 	/** ServiceTypeIdentifier value */
 	private String type;

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi.tsl;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,9 @@ import java.util.Map;
  * This class represents a wrapper for TrustServiceEquivalenceInformation element from MRA scheme
  *
  */
-public class ServiceEquivalence {
+public class ServiceEquivalence implements Serializable {
+
+	private static final long serialVersionUID = 7729236073848705753L;
 
 	/** TrustServiceLegalIdentifier */
 	private String legalInfoIdentifier;

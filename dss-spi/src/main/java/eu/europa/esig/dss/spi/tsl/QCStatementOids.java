@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This objects represents a collection of properties extracted from an MRA condition
  *
  */
-public class QCStatementOids {
+public class QCStatementOids implements Serializable {
+
+	private static final long serialVersionUID = 6212079045876178122L;
 
 	/** List of QcStatement identifiers to be included */
 	private List<String> qcStatementIds;

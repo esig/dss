@@ -282,8 +282,10 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         if (subtree.size() > dn.size()) {
             return false;
         }
-        for (String subtreeKey : subtree.keySet()) {
-            if (!dn.containsKey(subtreeKey) || !subtree.get(subtreeKey).equals(dn.get(subtreeKey))) {
+        for (Map.Entry<String, String> entry : subtree.entrySet()) {
+            String subtreeKey = entry.getKey();
+            String subtreeValue = entry.getValue();
+            if (!dn.containsKey(subtreeKey) || !subtreeValue.equals(dn.get(subtreeKey))) {
                 return false;
             }
         }

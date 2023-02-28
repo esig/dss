@@ -589,9 +589,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @param document {@link DSSDocument} current PDF document
 	 * @param cms binaries of the CMSSignedData extracted from /Contents field
 	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
-	 * @throws IOException if an exception occurs on a signature value extraction
 	 */
-	private boolean isContentValueEqualsByteRangeExtraction(ByteRange byteRange, DSSDocument document, byte[] cms) throws IOException {
+	private boolean isContentValueEqualsByteRangeExtraction(ByteRange byteRange, DSSDocument document, byte[] cms) {
 		byte[] cmsWithByteRange = PAdESUtils.getSignatureValue(document, byteRange);
 		boolean match = Arrays.equals(cms, cmsWithByteRange);
 		if (!match) {
