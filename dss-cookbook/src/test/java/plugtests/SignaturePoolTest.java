@@ -262,7 +262,8 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 					assertNotNull(timestampWrapper.getDigestAlgorithm());
 				}
 			}
-			if (!timestampWrapper.getType().isContentTimestamp() || timestampWrapper.isMessageImprintDataIntact()) {
+			if ((!timestampWrapper.getType().isContentTimestamp() && !timestampWrapper.getType().isDocumentTimestamp())
+					|| timestampWrapper.isMessageImprintDataIntact()) {
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
 			}
 		}
