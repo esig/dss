@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -44,6 +45,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
         xmlRoleOfPSP.setName("Payment Initiation Service Provider");
@@ -61,7 +63,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -75,6 +77,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     @Test
     public void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
         xmlRoleOfPSP.setName("Payment Initiation Service Provider");
@@ -93,7 +96,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -108,6 +111,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     @Test
     public void oidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
         xmlRoleOfPSP.setName("Payment Initiation Service Provider");
@@ -125,7 +129,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("0.4.0.19495.1.2");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -140,6 +144,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlRoleOfPSP xmlRoleOfPSP = new XmlRoleOfPSP();
         xmlRoleOfPSP.setName("Payment Initiation Service Provider");
@@ -157,7 +162,7 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(
@@ -172,13 +177,14 @@ public class CertificatePS2DQcRolesOfPSPCheckTest extends AbstractTestCheck {
     @Test
     public void qcPS2DNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("psp-pi");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcRolesOfPSPCheck cqcps2drc = new CertificatePS2DQcRolesOfPSPCheck(

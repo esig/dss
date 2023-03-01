@@ -155,6 +155,16 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	}
 
 	@Override
+	public String toString() {
+		return "SignatureScope{" +
+				"name='" + name + '\'' +
+				", dataDigest=" + dataDigest +
+				", dssId=" + dssId +
+				", children=" + children +
+				'}';
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;

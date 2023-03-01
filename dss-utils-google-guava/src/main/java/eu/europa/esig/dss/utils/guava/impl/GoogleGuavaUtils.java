@@ -32,6 +32,7 @@ import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 import eu.europa.esig.dss.utils.IUtils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -59,6 +60,7 @@ public class GoogleGuavaUtils implements IUtils {
 	 * Default constructor
 	 */
 	public GoogleGuavaUtils() {
+		// empty
 	}
 
 	@Override
@@ -194,6 +196,16 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isArrayEmpty(char[] array) {
+		return array == null || array.length == 0;
+	}
+
+	@Override
+	public boolean isArrayNotEmpty(char[] array) {
+		return !isArrayEmpty(array);
+	}
+
+	@Override
 	public byte[] subarray(byte[] array, int start, int length) {
 		if (array == null) {
 			return null;
@@ -297,6 +309,32 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public long getInputStreamSize(InputStream is) throws IOException {
 		return ByteStreams.exhaust(is);
+	}
+
+	@Override
+	public boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException {
+		if (stream1 == stream2) {
+			return true;
+		}
+		if (stream1 == null || stream2 == null) {
+			return false;
+		}
+		if (!(stream1 instanceof BufferedInputStream)) {
+			stream1 = new BufferedInputStream(stream1);
+		}
+		if (!(stream2 instanceof BufferedInputStream)) {
+			stream2 = new BufferedInputStream(stream2);
+		}
+		int b1 = stream1.read();
+		while (-1 != b1) {
+			int b2 = stream2.read();
+			if (b1 != b2) {
+				return false;
+			}
+			b1 = stream1.read();
+		}
+		int b2 = stream2.read();
+		return b2 == -1;
 	}
 
 	@Override

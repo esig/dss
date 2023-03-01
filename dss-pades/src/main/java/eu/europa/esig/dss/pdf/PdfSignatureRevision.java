@@ -38,7 +38,7 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	private final PdfCompositeDssDictionary compositeDssDictionary;
 
 	/** The corresponding DSS dictionary */
-	private final PdfDssDict dssDictionarySource;
+	private final PdfDssDict dssDictionary;
 
 	/**
 	 * Default constructor
@@ -53,15 +53,17 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 *            list of {@link PdfSignatureField}s
 	 * @param signedContent
 	 *            {@link DSSDocument} the signed data
+	 * @param previousRevision
+	 *            {@link DSSDocument} the originally signed PDF revision (before signature)
 	 * @param coverCompleteRevision
 	 *            identifies if the signature covers the whole revision
 	 */
 	public PdfSignatureRevision(PdfSignatureDictionary signatureDictionary, PdfCompositeDssDictionary compositeDssDictionary,
 								PdfDssDict dssDictionary, List<PdfSignatureField> signatureFields, DSSDocument signedContent,
-								boolean coverCompleteRevision) {
-		super(signatureDictionary, signatureFields, signedContent, coverCompleteRevision);
+								DSSDocument previousRevision, boolean coverCompleteRevision) {
+		super(signatureDictionary, signatureFields, signedContent, previousRevision, coverCompleteRevision);
 		this.compositeDssDictionary = compositeDssDictionary;
-		this.dssDictionarySource = dssDictionary;
+		this.dssDictionary = dssDictionary;
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class PdfSignatureRevision extends PdfCMSRevision {
 	 * @return {@link PdfDssDict}
 	 */
 	public PdfDssDict getDssDictionary() {
-		return dssDictionarySource;
+		return dssDictionary;
 	}
 
 }

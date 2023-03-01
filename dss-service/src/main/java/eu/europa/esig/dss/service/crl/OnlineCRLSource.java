@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
@@ -127,11 +127,13 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			LOG.info("CRL alternative urls : {}", alternativeUrls);
 		}
 
-		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
-		if (Utils.isCollectionEmpty(crlUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
+		final List<String> crlAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+		if (Utils.isCollectionEmpty(crlAccessUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
 			LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
 			return null;
 		}
+		final List<String> crlUrls = new ArrayList<>();
+		crlUrls.addAll(crlAccessUrls);
 		crlUrls.addAll(alternativeUrls);
 
 		RevocationTokenAndUrl<CRL> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerToken, crlUrls);
@@ -152,7 +154,7 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 			return null;
 		}
 
-		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+		final List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
 		if (Utils.isCollectionEmpty(crlUrls)) {
 			LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
 			return null;

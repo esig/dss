@@ -56,6 +56,7 @@ public class ApacheCommonsUtils implements IUtils {
 	 * Default constructor
 	 */
 	public ApacheCommonsUtils() {
+		// empty
 	}
 
 	@Override
@@ -139,13 +140,23 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public boolean isArrayEmpty(byte[] array) {
+		return ArrayUtils.isEmpty(array);
+	}
+
+	@Override
 	public boolean isArrayNotEmpty(byte[] array) {
 		return ArrayUtils.isNotEmpty(array);
 	}
 
 	@Override
-	public boolean isArrayEmpty(byte[] array) {
+	public boolean isArrayEmpty(char[] array) {
 		return ArrayUtils.isEmpty(array);
+	}
+
+	@Override
+	public boolean isArrayNotEmpty(char[] array) {
+		return ArrayUtils.isNotEmpty(array);
 	}
 
 	@Override
@@ -263,6 +274,11 @@ public class ApacheCommonsUtils implements IUtils {
 	    	byteCounter += nRead;
 	    }
 		return byteCounter;
+	}
+
+	@Override
+	public boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException {
+		return IOUtils.contentEquals(stream1, stream2);
 	}
 
 	@Override

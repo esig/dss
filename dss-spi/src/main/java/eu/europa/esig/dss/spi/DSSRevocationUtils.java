@@ -96,7 +96,7 @@ public final class DSSRevocationUtils {
 			final BasicOCSPResponse basicOcspResponse = BasicOCSPResponse.getInstance(asn1Sequence);
 			basicOCSPResp = new BasicOCSPResp(basicOcspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
+			LOG.warn("Impossible to create BasicOCSPResp from ASN1Sequence!", e);
 		}
 		return basicOCSPResp;
 	}
@@ -114,7 +114,7 @@ public final class DSSRevocationUtils {
 			final OCSPResponse ocspResponse = OCSPResponse.getInstance(asn1Sequence);
 			ocspResp = new OCSPResp(ocspResponse);
 		} catch (Exception e) {
-			LOG.error("Impossible to create OCSPResp from ASN1Sequence!", e);
+			LOG.warn("Impossible to create OCSPResp from ASN1Sequence!", e);
 		}
 		return ocspResp;
 	}
@@ -136,7 +136,7 @@ public final class DSSRevocationUtils {
 				LOG.warn("Unknown OCSP response type: {}", responseObject.getClass());
 			}
 		} catch (OCSPException e) {
-			LOG.error("Impossible to process OCSPResp!", e);
+			LOG.warn("Impossible to process OCSPResp!", e);
 		}
 		return basicOCSPResp;
 	}
@@ -337,12 +337,13 @@ public final class DSSRevocationUtils {
 	
 	/**
 	 * Initialize a list revocation token keys {@link String} for {@link CRLToken} from the given {@link CertificateToken}
+	 * 
 	 * @param certificateToken {@link CertificateToken}
 	 * @return list of {@link String} revocation keys
 	 */
 	public static List<String> getCRLRevocationTokenKeys(final CertificateToken certificateToken) {
-		final List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
-		List<String> revocationKeys = new ArrayList<>();
+		final List<String> revocationKeys = new ArrayList<>();
+		final List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
 		for (String crlUrl : crlUrls) {
 			revocationKeys.add(getCRLRevocationTokenKey(crlUrl));
 		}
@@ -361,12 +362,13 @@ public final class DSSRevocationUtils {
 
 	/**
 	 * Initialize a list revocation token keys {@link String} for {@link OCSPToken} from the given {@link CertificateToken}
+	 *
 	 * @param certificateToken {@link CertificateToken}
 	 * @return list of {@link String} revocation keys
 	 */
 	public static List<String> getOcspRevocationTokenKeys(final CertificateToken certificateToken) {
-		final List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
-		List<String> revocationKeys = new ArrayList<>();
+		final List<String> revocationKeys = new ArrayList<>();
+		final List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
 		for (String ocspUrl : ocspUrls) {
 			revocationKeys.add(getOcspRevocationKey(certificateToken, ocspUrl));
 		}

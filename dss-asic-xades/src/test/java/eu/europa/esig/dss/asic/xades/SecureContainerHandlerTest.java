@@ -21,17 +21,18 @@
 package eu.europa.esig.dss.asic.xades;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ContainerEntryDocument;
 import eu.europa.esig.dss.asic.common.DSSZipEntry;
 import eu.europa.esig.dss.asic.common.DSSZipEntryDocument;
 import eu.europa.esig.dss.asic.common.SecureContainerHandler;
-import eu.europa.esig.dss.asic.common.ContainerEntryDocument;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -188,7 +189,7 @@ public class SecureContainerHandlerTest {
 		calendar.set(Calendar.MILLISECOND, 0);
 		creationTime = calendar.getTime(); // reset millis
 
-		MimeType mimeType = MimeType.ASICE;
+		MimeType mimeType = MimeTypeEnum.ASICE;
 
 		DSSZipEntry mimetypeZipEntry = new DSSZipEntry("mimetype");
 		mimetypeZipEntry.setCompressionMethod(ZipEntry.DEFLATED);

@@ -20,26 +20,25 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 
 @Tag("slow")
 public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
@@ -52,7 +51,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(PAdESLevelBLoopTest.class.getResourceAsStream(listFiles)))) {
 			String filepath;
 			while ((filepath = br.readLine()) != null) {
-				args.add(Arguments.of(new InMemoryDocument(PAdESLevelBLoopTest.class.getResourceAsStream(filepath), filepath, MimeType.PDF)));
+				args.add(Arguments.of(new InMemoryDocument(PAdESLevelBLoopTest.class.getResourceAsStream(filepath), filepath, MimeTypeEnum.PDF)));
 			}
 
 		}

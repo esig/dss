@@ -56,6 +56,15 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     private static final Logger LOG = LoggerFactory.getLogger(CAdESBaselineRequirementsChecker.class);
 
     /**
+     * Constructor is used to verify conformance of signature to Baseline-B level
+     *
+     * @param signature {@link CAdESSignature}
+     */
+    protected CAdESBaselineRequirementsChecker(final CAdESSignature signature) {
+        this(signature, null);
+    }
+
+    /**
      * Default constructor
      *
      * @param signature {@link CAdESSignature}
@@ -65,7 +74,6 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                                             final CertificateVerifier offlineCertificateVerifier) {
         super(signature, offlineCertificateVerifier);
     }
-
 
     /**
      * Returns the signature form corresponding to the signature
@@ -321,7 +329,8 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         // complete-revocation-references
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
-        boolean allSelfSigned = certificateSources.isAllSelfSigned();
+        boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+        boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
         if (!allSelfSigned &&
                 CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs) == null) {
             LOG.debug("complete-revocation-references attribute shall be present for CAdES-C signature (cardinality == 1)!");

@@ -28,11 +28,11 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -62,7 +62,7 @@ public class SignTwoAsicAndMergeTest extends CookbookTools {
                 new FileDocument("src/main/resources/hello-world.pdf"));
         List<DSSDocument> documentsToBeSignedBySecondSignature = Arrays.asList(
                 new FileDocument("src/test/resources/signature-pen.png"),
-                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeType.TEXT));
+                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 

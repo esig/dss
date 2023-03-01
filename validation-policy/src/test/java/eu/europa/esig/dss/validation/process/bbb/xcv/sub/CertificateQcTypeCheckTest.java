@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -43,6 +44,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setValue("0.4.0.1862.1.6.1");
@@ -54,7 +56,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -69,6 +71,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     @Test
     public void multipleAllowedValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setValue("0.4.0.1862.1.6.1");
@@ -81,7 +84,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-eseal");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -96,6 +99,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     @Test
     public void oidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setValue("0.4.0.1862.1.6.1");
@@ -107,7 +111,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("0.4.0.1862.1.6.1");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -122,6 +126,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlOID xmlOID = new XmlOID();
         xmlOID.setValue("0.4.0.1862.1.6.2");
@@ -133,7 +138,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,
@@ -148,13 +153,14 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     @Test
     public void qcTypeNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("qc-type-esign");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcTypeCheck cqctc = new CertificateQcTypeCheck(i18nProvider, result,

@@ -25,8 +25,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -36,6 +38,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
@@ -44,7 +47,6 @@ import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -96,7 +98,9 @@ public class AllDataObjectsTimeStampBuilder {
 		// Prepare references
 		List<DSSReference> references = signatureParameters.getReferences();
 		if (Utils.isCollectionEmpty(references)) {
-			final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters);
+			final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+			referenceIdProvider.setSignatureParameters(signatureParameters);
+			final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, signatureParameters, referenceIdProvider);
 			references = referenceBuilder.build();
 			signatureParameters.getContext().setReferences(references);
 		} else {
@@ -104,45 +108,40 @@ public class AllDataObjectsTimeStampBuilder {
 			referenceVerifier.checkReferencesValidity();
 		}
 
-		byte[] dataToBeDigested;
 		XAdESTimestampParameters contentTimestampParameters = signatureParameters.getContentTimestampParameters();
 		String canonicalizationMethod = contentTimestampParameters.getCanonicalizationMethod();
-		
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			for (DSSReference reference : references) {
-				/*
-				 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
-				 * clause 4.4.3.2;
-				 */
-				ReferenceProcessor referenceProcessor = new ReferenceProcessor(signatureParameters);
-				DSSDocument referenceContent = referenceProcessor.getReferenceOutput(reference);
-				byte[] binaries = DSSUtils.toByteArray(referenceContent);
-				/*
-				 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
-				 */
-				if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
-					binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
-				}
-				/*
-				 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
-				 * ds:SignedInfo.
-				 */
-				baos.write(binaries);
-			}
-			dataToBeDigested = baos.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException("Unable to compute the data to be digested", e);
-		}
 
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Computed AllDataObjectsTimestampData bytes:");
-			LOG.trace(new String(dataToBeDigested));
-		}
-		
 		DigestAlgorithm digestAlgorithm = contentTimestampParameters.getDigestAlgorithm();
+		final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+		for (DSSReference reference : references) {
+			/*
+			 * 1) process the retrieved ds:Reference element according to the reference-processing model of XMLDSIG [1]
+			 * clause 4.4.3.2;
+			 */
+			ReferenceProcessor referenceProcessor = new ReferenceProcessor(signatureParameters);
+			DSSDocument referenceContent = referenceProcessor.getReferenceOutput(reference);
+			byte[] binaries = DSSUtils.toByteArray(referenceContent);
+			/*
+			 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
+			 */
+			if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
+				binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
+			}
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Computed AllDataObjectsTimestampData reference bytes: {}", new String(binaries));
+			}
+			/*
+			 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
+			 * ds:SignedInfo.
+			 */
+			digestCalculator.update(binaries);
+		}
+		DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+		if (LOG.isTraceEnabled()) {
+			LOG.trace("Computed AllDataObjectsTimestampData data: {}", messageDigest);
+		}
 
-		byte[] digestToTimestamp = DSSUtils.digest(digestAlgorithm, dataToBeDigested);
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, digestToTimestamp);
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest.getValue());
 		try {
 			TimestampToken token = new TimestampToken(timeStampResponse.getBytes(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 			token.setCanonicalizationMethod(canonicalizationMethod);

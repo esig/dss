@@ -11,6 +11,7 @@
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidationDate" type="xs:dateTime" />
 			<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
+			<xs:element name="PDFAInfo" type="PDFAInfo" minOccurs="0" />
 			<xs:element name="Signatures" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -111,6 +112,20 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="PDFAInfo">
+		<xs:sequence>
+			<xs:element name="ProfileId" type="xs:string" />
+			<xs:element name="ValidationMessages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Error" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="compliant" type="xs:boolean" use="required" />
+	</xs:complexType>
 	
 	<xs:complexType name="AbstractToken" abstract="true">
 		<xs:attribute name="Id" type="xs:ID" use="required" />
@@ -151,6 +166,7 @@
 					<xs:element name="SignaturePolicyStore" type="SignaturePolicyStore" minOccurs="0" />
 					<xs:element name="SignerInformationStore" type="SignerInformationStore" minOccurs="0" /> <!-- CAdES -->
 					<xs:element name="PDFRevision" type="PDFRevision" minOccurs="0" /> <!-- PAdES -->
+					<xs:element name="VRIDictionaryCreationTime" type="xs:dateTime" minOccurs="0" /> <!-- PDF only -->
 					
 					<xs:element name="SignerDocumentRepresentations" minOccurs="0">
 						<xs:complexType>
@@ -306,11 +322,7 @@
 			<xs:element name="ContactInfo" type="xs:string" minOccurs="0" />
 			<xs:element name="Location" type="xs:string" minOccurs="0" />
 			<xs:element name="Reason" type="xs:string" minOccurs="0" />
-			<xs:element name="SignatureByteRange" minOccurs="0" >
-				<xs:simpleType>
-					<xs:list itemType="xs:integer"/>
-				</xs:simpleType>
-			</xs:element>
+			<xs:element name="SignatureByteRange" type="ByteRange" minOccurs="0" />
 			<xs:element name="DocMDP" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -320,7 +332,20 @@
 			</xs:element>
 			<xs:element name="FieldMDP" type="PDFLockDictionary" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="consistent" type="xs:boolean" use="required" />
 	</xs:complexType>
+
+	<xs:complexType name="ByteRange">
+		<xs:simpleContent>
+			<xs:extension base="int-list">
+				<xs:attribute name="valid" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="int-list">
+		<xs:list itemType="xs:integer"/>
+	</xs:simpleType>
 	
 	<xs:complexType name="ModificationDetection">
 		<xs:sequence>
@@ -383,36 +408,7 @@
 					<xs:element name="Surname" type="xs:string" minOccurs="0"/>
 					<xs:element name="Pseudonym" type="xs:string" minOccurs="0"/>
 					<xs:element name="Email" type="xs:string" minOccurs="0"/>
-					
-					<xs:element name="SubjectAlternativeNames" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="subjectAlternativeName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="AuthorityInformationAccessUrls" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="aiaUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="CRLDistributionPoints" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="crlUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="OCSPAccessUrls" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="ocspServerUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					
+
 					<xs:element name="Sources">
 						<xs:complexType>
 							<xs:sequence>
@@ -426,24 +422,6 @@
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
 					<xs:element name="EntityKey" type="xs:string" />
-		
-					<xs:element name="KeyUsageBits" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="KeyUsage" type="KeyUsage" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="ExtendedKeyUsages" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="extendedKeyUsagesOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-
-					<xs:element name="IdPkixOcspNoCheck" type="xs:boolean" minOccurs="0" />
-					<xs:element name="ValAssuredShortTermCertificate" type="xs:boolean" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
@@ -452,15 +430,7 @@
 					<xs:element name="Trusted" type="xs:boolean" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
 
-					<xs:element name="CertificatePolicies" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-
-					<xs:element name="QcStatements" type="QcStatements" minOccurs="0" />
+					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
 
 					<xs:element name="TrustedServiceProviders" minOccurs="0">
 						<xs:complexType>
@@ -487,23 +457,214 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="QcStatements">
+	<xs:complexType name="CertificateExtensions">
 		<xs:sequence>
-			<xs:element name="QcCompliance" type="QcCompliance" minOccurs="0" />
-			<xs:element name="QcEuLimitValue" type="QcEuLimitValue" minOccurs="0" />
-			<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
-			<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
-			<xs:element name="QcEuPDS" type="QcEuPDS" minOccurs="0" />
-			<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
-			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
-			<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
-			<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
-			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
-
-			<xs:element name="MRACertificateMapping" type="MRACertificateMapping" minOccurs="0" />
-
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="KeyUsages" type="KeyUsages" />
+				<xs:element name="ExtendedKeyUsages" type="ExtendedKeyUsages" />
+				<xs:element name="CertificatePolicies" type="CertificatePolicies" />
+				<xs:element name="SubjectAlternativeNames" type="SubjectAlternativeNames" />
+				<xs:element name="BasicConstraints" type="BasicConstraints" />
+				<xs:element name="PolicyConstraints" type="PolicyConstraints" />
+				<xs:element name="InhibitAnyPolicy" type="InhibitAnyPolicy" />
+				<xs:element name="NameConstraints" type="NameConstraints" />
+				<xs:element name="CRLDistributionPoints" type="CRLDistributionPoints" />
+				<xs:element name="AuthorityKeyIdentifier" type="AuthorityKeyIdentifier" />
+				<xs:element name="SubjectKeyIdentifier" type="SubjectKeyIdentifier" />
+				<xs:element name="AuthorityInformationAccess" type="AuthorityInformationAccess" />
+				<xs:element name="IdPkixOcspNoCheck" type="IdPkixOcspNoCheck" />
+				<xs:element name="ValAssuredShortTermCertificate" type="ValAssuredShortTermCertificate" />
+				<xs:element name="QcStatements" type="QcStatements" />
+				<xs:element name="OtherExtension" type="CertificateExtension" />
+			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="CertificateExtension">
+		<xs:sequence>
+			<xs:element name="octets" type="xs:base64Binary" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="OID" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" use="optional" />
+		<xs:attribute name="critical" type="xs:boolean" use="optional" />
+	</xs:complexType>
+
+	<xs:complexType name="KeyUsages">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="keyUsageBit" type="KeyUsageBit" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ExtendedKeyUsages">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="extendedKeyUsagesOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CertificatePolicies">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="certificatePolicy" type="CertificatePolicy" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SubjectAlternativeNames">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="subjectAlternativeName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BasicConstraints">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="CA" type="xs:boolean" use="required" />
+				<xs:attribute name="pathLenConstraint" type="xs:int" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PolicyConstraints">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="requireExplicitPolicy" type="xs:int" use="optional" />
+				<xs:attribute name="inhibitPolicyMapping" type="xs:int" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="InhibitAnyPolicy">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="value" type="xs:int" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NameConstraints">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="PermittedSubtree" type="GeneralSubtree" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="ExcludedSubtree" type="GeneralSubtree" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GeneralSubtree">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="GeneralNameType" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:simpleType name="GeneralNameType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="otherName" />
+			<xs:enumeration value="rfc822Name" />
+			<xs:enumeration value="dNSName" />
+			<xs:enumeration value="x400Address" />
+			<xs:enumeration value="directoryName" />
+			<xs:enumeration value="ediPartyName" />
+			<xs:enumeration value="uniformResourceIdentifier" />
+			<xs:enumeration value="iPAddress" />
+			<xs:enumeration value="registeredID" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="CRLDistributionPoints">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="crlUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="AuthorityInformationAccess">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="caIssuersUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="ocspUrl" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="AuthorityKeyIdentifier">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="keyIdentifier" type="xs:base64Binary" minOccurs="0" />
+					<xs:element name="authorityCertIssuerSerial" type="xs:base64Binary" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SubjectKeyIdentifier">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="ski" type="xs:base64Binary" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="IdPkixOcspNoCheck">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="present" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValAssuredShortTermCertificate">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="present" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="QcStatements">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:sequence>
+					<xs:element name="QcCompliance" type="QcCompliance" minOccurs="0" />
+					<xs:element name="QcEuLimitValue" type="QcEuLimitValue" minOccurs="0" />
+					<xs:element name="QcEuRetentionPeriod" type="xs:int" minOccurs="0" />
+					<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
+					<xs:element name="QcEuPDS" type="QcEuPDS" minOccurs="0" />
+					<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
+					<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
+					<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
+					<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
+					<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
+					<xs:element name="MRACertificateMapping" type="MRACertificateMapping" minOccurs="0" />
+				</xs:sequence>
+				<xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 
 	<xs:complexType name="MRACertificateMapping">
@@ -1004,6 +1165,7 @@
 			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="DOCUMENT_TIMESTAMP" /> <!-- PDF Timestamp -->
+			<xs:enumeration value="VRI_TIMESTAMP" /> <!-- PDF Timestamp of a VRI dictionary -->
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1052,7 +1214,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="KeyUsage" final="restriction">
+	<xs:simpleType name="KeyUsageBit" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="digitalSignature" />
 			<xs:enumeration value="nonRepudiation" />

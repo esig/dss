@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -83,12 +83,11 @@ public class XAdESLevelX extends XAdESLevelC {
 			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final DigestAlgorithm digestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] timestampX1Data = xadesSignature.getTimestampSource().getTimestampX1Data(
-					canonicalizationMethod, params.isEn319132());
-			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, timestampX1Data);
-			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, digestValue);
+			final DSSMessageDigest messageDigest = xadesSignature.getTimestampSource().getTimestampX1MessageDigest(
+					digestAlgorithm, canonicalizationMethod, params.isEn319132());
+			createXAdESTimeStampType(TimestampType.VALIDATION_DATA_TIMESTAMP, canonicalizationMethod, messageDigest);
 			
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelCUnsignedProperties);
 		}

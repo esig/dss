@@ -25,10 +25,10 @@ import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.merge.AbstractWithCAdESTestMerge;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -47,8 +47,8 @@ public class ASiCEWithCAdESLevelBContainerMergerDifferentSingleDocumentsTest ext
 
     @BeforeEach
     public void init() {
-        documentToSignOne = new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeType.TEXT);
-        documentToSignTwo = new InMemoryDocument("Bye World!".getBytes(), "bye.txt", MimeType.TEXT);
+        documentToSignOne = new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT);
+        documentToSignTwo = new InMemoryDocument("Bye World!".getBytes(), "bye.txt", MimeTypeEnum.TEXT);
 
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 

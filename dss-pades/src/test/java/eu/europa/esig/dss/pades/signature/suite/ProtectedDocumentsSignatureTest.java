@@ -20,20 +20,23 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -46,28 +49,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
+public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation {
 
-	private final String correctProtectionPhrase = " ";
-	private final String wrongProtectionPhrase = "AAAA";
+	private final char[] correctProtectionPhrase = new char[]{ ' ' };
+	private final char[] wrongProtectionPhrase = new char[]{ 'A', 'A', 'A', 'A'};
 
 	private final DSSDocument openProtected = new InMemoryDocument(
-			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeType.PDF);
+			getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedNone = new InMemoryDocument(
-			getClass().getResourceAsStream("/protected/edition_protected_none.pdf"), "sample.pdf", MimeType.PDF);
+			getClass().getResourceAsStream("/protected/edition_protected_none.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedSigningAllowedNoField = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"), "sample.pdf",
-			MimeType.PDF);
+			MimeTypeEnum.PDF);
 
 	private final DSSDocument editionProtectedSigningAllowedWithField = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_with_field.pdf"), "sample.pdf",
-			MimeType.PDF);
+			MimeTypeEnum.PDF);
 
 	private final DSSDocument protectedWithEmptyFields = new InMemoryDocument(
 			getClass().getResourceAsStream("/protected/protected_two_empty_fields.pdf"), "sample.pdf",
-			MimeType.PDF);
+			MimeTypeEnum.PDF);
 
 	@Test
 	public void validateEmptyDocsCorrectPassword() {
@@ -79,29 +82,54 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 
 	@Test
 	public void validateEmptyDocsWrongPassword() {
-		assertThrows(InvalidPasswordException.class,
+		Exception exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(openProtected, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class,
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(editionProtectedNone, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class,
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(editionProtectedSigningAllowedNoField, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class,
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(editionProtectedSigningAllowedWithField, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 	}
 
 	@Test
 	public void validateEmptyDocsNoPassword() {
-		assertThrows(InvalidPasswordException.class, () -> validateEmptyDocWithPassword(openProtected, null));
+		Exception exception = assertThrows(InvalidPasswordException.class,
+				() -> validateEmptyDocWithPassword(openProtected, null));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedNone, null));
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedSigningAllowedNoField, null));
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedSigningAllowedWithField, null));
 	}
 
-	private Reports validateEmptyDocWithPassword(DSSDocument doc, String passProtection) {
+	private Reports validateEmptyDocWithPassword(DSSDocument doc, char[] passProtection) {
 		PDFDocumentValidator validator = (PDFDocumentValidator) SignedDocumentValidator.fromDocument(doc);
 		validator.setPasswordProtection(passProtection);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		return validator.validateDocument();
+	}
+
+	@Test
+	public void signatureOperationsCorrectPassword() throws Exception {
+		DSSDocument document = sign(openProtected, correctProtectionPhrase);
+		verify(document);
+
+		document = sign(editionProtectedNone, correctProtectionPhrase);
+		verify(document);
+
+		document = sign(editionProtectedSigningAllowedNoField, correctProtectionPhrase);
+		verify(document);
+
+		document = sign(editionProtectedSigningAllowedWithField, correctProtectionPhrase);
+		verify(document);
 	}
 
 	@Test
@@ -116,90 +144,304 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 		sigValue.setAlgorithm(parameters.getSignatureAlgorithm());
 		PAdESTimestampParameters timestampParameters = getTimestampParameters();
 
-		assertThrows(InvalidPasswordException.class, () -> service.getContentTimestamp(openProtected, parameters));
-		assertThrows(InvalidPasswordException.class, () -> service.getDataToSign(openProtected, parameters));
-		assertThrows(InvalidPasswordException.class, () -> service.signDocument(openProtected, parameters, sigValue));
-		assertThrows(InvalidPasswordException.class, () -> service.timestamp(openProtected, timestampParameters));
+		Exception exception = assertThrows(InvalidPasswordException.class, () -> service.getContentTimestamp(openProtected, parameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 
-		assertThrows(InvalidPasswordException.class,
-				() -> service.getContentTimestamp(openProtected, parameters));
+		exception = assertThrows(InvalidPasswordException.class, () -> service.getDataToSign(openProtected, parameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 
-		assertThrows(InvalidPasswordException.class, () -> service.getDataToSign(openProtected, parameters));
+		exception = assertThrows(InvalidPasswordException.class, () -> service.signDocument(openProtected, parameters, sigValue));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 
-		assertThrows(InvalidPasswordException.class, () -> service.signDocument(openProtected, parameters,sigValue));
+		exception = assertThrows(InvalidPasswordException.class, () -> service.timestamp(openProtected, timestampParameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 
-		assertThrows(InvalidPasswordException.class, () -> service.timestamp(openProtected, timestampParameters));
+		exception = assertThrows(InvalidPasswordException.class, () -> service.getContentTimestamp(openProtected, parameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> service.getDataToSign(openProtected, parameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> service.signDocument(openProtected, parameters,sigValue));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> service.timestamp(openProtected, timestampParameters));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 
 		// --------
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getContentTimestamp(editionProtectedNone, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getDataToSign(editionProtectedNone, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.signDocument(editionProtectedNone, parameters, sigValue));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedNone, timestampParameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
 		// --------
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getContentTimestamp(editionProtectedSigningAllowedNoField, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getDataToSign(editionProtectedSigningAllowedNoField, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class, () -> service.signDocument(editionProtectedSigningAllowedNoField,
+		exception = assertThrows(ProtectedDocumentException.class, () -> service.signDocument(editionProtectedSigningAllowedNoField,
 				parameters, sigValue));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedSigningAllowedNoField, timestampParameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
 		// --------
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getContentTimestamp(editionProtectedSigningAllowedWithField, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.getDataToSign(editionProtectedSigningAllowedWithField, parameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class, () -> service
+		exception = assertThrows(ProtectedDocumentException.class, () -> service
 				.signDocument(editionProtectedSigningAllowedWithField, parameters, sigValue));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
-		assertThrows(ProtectedDocumentException.class,
+		exception = assertThrows(ProtectedDocumentException.class,
 				() -> service.timestamp(editionProtectedSigningAllowedWithField, timestampParameters));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 
 	}
 	
 	@Test
 	public void signWithNoPassword() {
-		assertThrows(InvalidPasswordException.class, () -> sign(openProtected, null));
-		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedNone, null));
-		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedNoField, null));
-		assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedWithField, null));
+		Exception exception = assertThrows(InvalidPasswordException.class, () -> sign(openProtected, null));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedNone, null));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
+
+		exception = assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedNoField, null));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
+
+		exception = assertThrows(ProtectedDocumentException.class, () -> sign(editionProtectedSigningAllowedWithField, null));
+		assertEquals("The creation of new signatures is not permitted in the current document. " +
+				"Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
+				"including signature fields when document is open with user-access!", exception.getMessage());
 	}
 	
 	@Test
 	public void signWithWrongPassword() {
-		assertThrows(InvalidPasswordException.class, () -> sign(openProtected, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedNone, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedSigningAllowedNoField, wrongProtectionPhrase));
-		assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedSigningAllowedWithField, wrongProtectionPhrase));
+		Exception exception = assertThrows(InvalidPasswordException.class, () -> sign(openProtected, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedNone, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedSigningAllowedNoField, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> sign(editionProtectedSigningAllowedWithField, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+	}
+
+	@Test
+	public void extendOperationsCorrectPasswordTest() {
+		DSSDocument signedDoc = sign(openProtected, correctProtectionPhrase);
+
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		signatureParameters.setPasswordProtection(correctProtectionPhrase);
+
+		DSSDocument extendedDoc = service.extendDocument(signedDoc, signatureParameters);
+
+		Reports reports = verify(extendedDoc);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Test
-	public void extendOperationsTest() throws Exception {
-		assertThrows(InvalidPasswordException.class, () -> extend(openProtected, null));
-		assertThrows(InvalidPasswordException.class, () -> extend(openProtected, wrongProtectionPhrase));
+	public void extendOperationsInvalidPasswordTest() {
+		Exception exception = assertThrows(InvalidPasswordException.class, () -> extend(openProtected, null));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
+
+		exception = assertThrows(InvalidPasswordException.class, () -> extend(openProtected, wrongProtectionPhrase));
+		assertTrue(exception.getMessage().contains("Encrypted document"));
 	}
 	
 	@Test
-	public void readSignatureFieldsTest() throws Exception {
+	public void readSignatureFieldsTest() {
 		PAdESService padesService = new PAdESService(getOfflineCertificateVerifier());
 		List<String> availableSignatureFields = padesService.getAvailableSignatureFields(protectedWithEmptyFields, correctProtectionPhrase);
 		assertEquals(2, availableSignatureFields.size());
 		assertTrue(availableSignatureFields.contains("SignatureField1"));
 		assertTrue(availableSignatureFields.contains("SignatureField2"));
+	}
+
+	@Test
+	public void ltaSigningTest() {
+		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
+		padesService.setTspSource(getGoodTsa());
+
+		PAdESSignatureParameters signatureParameters = getParameters();
+		signatureParameters.setPasswordProtection(correctProtectionPhrase);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		DSSDocument signed = sign(padesService, openProtected, signatureParameters);
+
+		Reports reports = verify(signed);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		assertTrue(diagnosticData.isThereALevel(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+	}
+
+	@Test
+	public void addSignatureFieldTest() throws Exception {
+		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
+
+		DSSDocument document = openProtected;
+
+		List<String> signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
+		assertEquals(0, signatureFields.size());
+
+		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
+		signatureFieldParameters.setPage(1);
+		signatureFieldParameters.setOriginX(20);
+		signatureFieldParameters.setOriginY(20);
+		signatureFieldParameters.setWidth(150);
+		signatureFieldParameters.setHeight(30);
+
+		String firstFieldName = "SignatureField1";
+		signatureFieldParameters.setFieldId(firstFieldName);
+		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
+
+		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
+		assertEquals(1, signatureFields.size());
+
+		signatureFieldParameters.setOriginX(20);
+		signatureFieldParameters.setOriginY(60);
+		signatureFieldParameters.setWidth(150);
+		signatureFieldParameters.setHeight(30);
+
+		String secondFieldName = "SignatureField2";
+		signatureFieldParameters.setFieldId(secondFieldName);
+
+		document = service.addNewSignatureField(document, signatureFieldParameters, correctProtectionPhrase);
+
+		signatureFields = service.getAvailableSignatureFields(document, correctProtectionPhrase);
+		assertEquals(2, signatureFields.size());
+		assertTrue(signatureFields.contains(firstFieldName));
+		assertTrue(signatureFields.contains(secondFieldName));
+
+		// sign
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setSigningCertificate(getSigningCert());
+		signatureParameters.setCertificateChain(getCertificateChain());
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
+		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setPasswordProtection(correctProtectionPhrase);
+		signatureParameters.getImageParameters().getTextParameters().setText("My signature");
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(firstFieldName);
+
+		ToBeSigned dataToSign = service.getDataToSign(document, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		DSSDocument signedDocument = service.signDocument(document, signatureParameters, signatureValue);
+
+		Reports reports = verify(signedDocument);
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(firstFieldName, signature.getFirstFieldName());
+
+		signatureFields = service.getAvailableSignatureFields(signedDocument, correctProtectionPhrase);
+		assertEquals(1, signatureFields.size());
+		assertEquals(secondFieldName, signatureFields.get(0));
+	}
+
+	// TODO : OpenPdf does not keep the same identifier on protected documents signing
+	@Test
+	public void recreateParamsTest() throws Exception {
+		Date date = new Date();
+		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
+		padesService.setTspSource(getGoodTsa());
+
+		PAdESSignatureParameters parametersDataToBeSigned = getParameters();
+		parametersDataToBeSigned.bLevel().setSigningDate(date);
+		parametersDataToBeSigned.setPasswordProtection(correctProtectionPhrase);
+		parametersDataToBeSigned.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		ToBeSigned dataToSign = padesService.getDataToSign(openProtected, parametersDataToBeSigned);
+
+		PAdESSignatureParameters parametersSignatureValue = getParameters();
+		parametersSignatureValue.bLevel().setSigningDate(date);
+		parametersSignatureValue.setPasswordProtection(correctProtectionPhrase);
+		parametersSignatureValue.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getDigestAlgorithm(), getPrivateKeyEntry());
+
+		PAdESSignatureParameters parametersSign = getParameters();
+		parametersSign.bLevel().setSigningDate(date);
+		parametersSign.setPasswordProtection(correctProtectionPhrase);
+		parametersSign.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+
+		DSSDocument signedDocument = padesService.signDocument(openProtected, parametersSign, signatureValue);
+
+		PDFDocumentValidator validator = (PDFDocumentValidator) getValidator(signedDocument);
+		validator.setPasswordProtection(correctProtectionPhrase);
+
+		Reports reports = validator.validateDocument();
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+		checkBLevelValid(diagnosticData);
+		checkTimestamps(diagnosticData);
+	}
+
+	private DSSDocument sign(PAdESService service, DSSDocument doc, PAdESSignatureParameters signatureParameters) {
+		ToBeSigned dataToSign = service.getDataToSign(doc, signatureParameters);
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
+				getPrivateKeyEntry());
+		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 
 	private PAdESSignatureParameters getParameters() {
@@ -211,11 +453,10 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 	}
 
 	private PAdESTimestampParameters getTimestampParameters() {
-		PAdESTimestampParameters params = new PAdESTimestampParameters();
-		return params;
+		return new PAdESTimestampParameters();
 	}
 
-	private DSSDocument sign(DSSDocument doc, String pwd) throws Exception {
+	private DSSDocument sign(DSSDocument doc, char[] pwd) {
 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(
 				getOfflineCertificateVerifier());
@@ -233,7 +474,7 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 		return service.signDocument(doc, signatureParameters, signatureValue);
 	}
 	
-	private DSSDocument extend(DSSDocument doc, String pwd) throws Exception {
+	private DSSDocument extend(DSSDocument doc, char[] pwd) {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -247,6 +488,23 @@ public class ProtectedDocumentsSignatureTest extends PKIFactoryAccess {
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
+	}
+
+	@Override
+	protected DSSDocument getSignedDocument() {
+		return null;
+	}
+
+	@Override
+	public void validate() {
+		// do nothing
+	}
+
+	@Override
+	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+		PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+		validator.setPasswordProtection(correctProtectionPhrase);
+		return validator;
 	}
 
 }

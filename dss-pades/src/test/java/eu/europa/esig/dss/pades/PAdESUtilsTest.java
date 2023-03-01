@@ -22,11 +22,14 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -34,11 +37,16 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -147,13 +155,74 @@ public abstract class PAdESUtilsTest {
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder()));
         assertEquals("Byte array is not defined!", exception.getMessage());
 
-        exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY),
+        exception = assertThrows(IllegalInputException.class, () -> PAdESUtils.replaceSignature(InMemoryDocument.createEmptyDocument(),
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder()));
         assertEquals("Reserved space to insert a signature was not found!", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class, () -> PAdESUtils.replaceSignature(documentToBeSigned,
                 DSSUtils.EMPTY_BYTE_ARRAY, new InMemoryResourcesHandlerBuilder()));
         assertEquals("cmsSignedData cannot be empty!", exception.getMessage());
+    }
+
+    @Test
+    public void extractRevisionsTest() {
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LT.pdf"));
+        List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(document);
+        assertEquals(8, revisions.size());
+
+        List<String> digests = revisions.stream().map(p -> p.getDigest(DigestAlgorithm.SHA256)).collect(Collectors.toList());
+        assertTrue(digests.contains("vWy56bH8ogyHwEx2a65rFT0bahMyDaJtOQyUOxcu+Yk="));
+        assertTrue(digests.contains("eIeuDc3ay6bOu+93QiJQauyLDT0a2duT3ZaqVST6u3c=")); // extracted from sig validation
+        assertTrue(digests.contains("fgC1+020dbjbSOkxdR3JgNuiBbaSHSDXql53yN1cC5k=")); // extracted from sig validation
+        assertTrue(digests.contains("J6IxR6PX7pMQmeqNEPx78cReGfg6GG1OLyvYBxhps2w=")); // extracted from sig validation
+        assertTrue(digests.contains("BtOxj9EJfZjuODT3dqyeUlbzFH9SMY1CamuwlchttzM="));
+        assertTrue(digests.contains("R37cKcGUgtmajdUnjvv5bSWW5OhKdUNl+ZZZaAkbNFU=")); // extracted from sig validation
+        assertTrue(digests.contains("lOyk18Y+sl+KP5Wup9/2CKlaO1jfTkkTyfuEbYoQdW0="));
+        assertTrue(digests.contains("Hh7B01RSa9N9nhD30TDRdEnrHPGE2MnTJIREhlxX2Ms="));
+    }
+
+    @Test
+    public void getSignatureValueTest() throws IOException  {
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LT.pdf"));
+        ByteRange byteRange = new ByteRange(new int[]{0, 92856, 111802, 50376});
+
+        byte[] signatureValue = PAdESUtils.getSignatureValue(document, byteRange);
+        assertTrue(Utils.isArrayNotEmpty(signatureValue));
+        CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(signatureValue);
+        assertNotNull(cmsSignedData);
+    }
+
+    @Test
+    void retrievePreviousPDFRevisionFirst() {
+        String expectedSHA256 = "IyA/kmQWFxTNuNL0dLm2QeanNfjOpAmMQKPKuHQ710k=";
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
+        ByteRange byteRange = new ByteRange(new int[]{0, 4883, 23829, 70196});
+
+        List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(document);
+        assertEquals(54, revisions.size());
+
+        DSSDocument originalRevision = PAdESUtils.getPreviousRevision(byteRange, revisions);
+        assertEquals(expectedSHA256, originalRevision.getDigest(DigestAlgorithm.SHA256));
+    }
+
+    @Test
+    void retrievePreviousPDFRevisionLast() {
+        String expectedSHA256 = "kRdqr7p5115vX+2McvMb/f0X/Jah0qPzKFrYrlY4v8E=";
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
+        ByteRange byteRange = new ByteRange(new int[]{0, 4533638, 4552584, 17463});
+
+        List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(document);
+        assertEquals(54, revisions.size());
+
+        DSSDocument originalRevision = PAdESUtils.getPreviousRevision(byteRange, revisions);
+        assertEquals(expectedSHA256, originalRevision.getDigest(DigestAlgorithm.SHA256));
+    }
+
+    @Test
+    void eofWithSpaceDocTest() {
+        DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample_end_space.pdf"));
+        List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(document);
+        assertEquals(1, revisions.size());
     }
 
 }

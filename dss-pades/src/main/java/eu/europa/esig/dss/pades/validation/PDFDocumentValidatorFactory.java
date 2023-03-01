@@ -33,6 +33,7 @@ public class PDFDocumentValidatorFactory implements DocumentValidatorFactory {
 	 * Default constructor
 	 */
 	public PDFDocumentValidatorFactory() {
+		// empty
 	}
 
 	@Override

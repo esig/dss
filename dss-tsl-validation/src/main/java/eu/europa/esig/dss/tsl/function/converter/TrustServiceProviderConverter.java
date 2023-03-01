@@ -59,6 +59,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	 * Default constructor with null territory country code
 	 */
 	public TrustServiceProviderConverter() {
+		// empty
 	}
 
 	/**

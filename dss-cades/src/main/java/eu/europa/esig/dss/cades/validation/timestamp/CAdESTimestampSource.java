@@ -117,8 +117,13 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
-	protected CAdESTimestampDataBuilder getTimestampDataBuilder() {
-		return new CAdESTimestampDataBuilder(signature, certificateSource);
+	protected CAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
+		return new CAdESTimestampMessageDigestBuilder(signature, certificateSource, digestAlgorithm);
+	}
+
+	@Override
+	protected CAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
+		return new CAdESTimestampMessageDigestBuilder(signature, certificateSource, timestampToken);
 	}
 
 	@Override

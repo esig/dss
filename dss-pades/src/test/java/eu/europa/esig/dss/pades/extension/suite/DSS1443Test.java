@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -40,7 +41,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,7 +57,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
-		assertEquals(SignatureLevel.PAdES_BASELINE_LTA, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureLevel.PAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 
 		PAdESService service = new PAdESService(getCertificateVerifier());
 		service.setTspSource(getCompositeTsa());
@@ -71,7 +72,13 @@ public class DSS1443Test extends PKIFactoryAccess {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		assertEquals(1, diagnosticData.getAllSignatures().size());
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertEquals(2, signature.getDocumentTimestamps().size());
+		assertEquals(2, signature.getTLevelTimestamps().size());
+		assertEquals(1, signature.getALevelTimestamps().size());
+
+		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		assertEquals(2, allTimestamps.size());
 
 		for (TimestampWrapper timestampWrapper : allTimestamps) {

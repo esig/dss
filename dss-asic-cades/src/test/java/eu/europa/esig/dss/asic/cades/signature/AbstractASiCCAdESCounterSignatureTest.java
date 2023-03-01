@@ -26,9 +26,10 @@ import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -50,9 +51,9 @@ public abstract class AbstractASiCCAdESCounterSignatureTest extends AbstractCoun
 	@Override
 	protected MimeType getExpectedMime() {
 		if (ASiCContainerType.ASiC_S.equals(getSignatureParameters().aSiC().getContainerType())) {
-			return MimeType.ASICS;
+			return MimeTypeEnum.ASICS;
 		}
-		return MimeType.ASICE;
+		return MimeTypeEnum.ASICE;
 	}
 
 	@Override

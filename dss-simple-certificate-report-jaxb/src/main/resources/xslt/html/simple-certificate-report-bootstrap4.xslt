@@ -4,13 +4,12 @@
                 xmlns:dss="http://dss.esig.europa.eu/validation/simple-certificate-report">
                 
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
-	
-	<xsl:param name="rootTrustmarkUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
-	</xsl:param>
-	<xsl:param name="rootCountryUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
-	</xsl:param>
+
+	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
+	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
+	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
+	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 	
    	<xsl:variable name="validationTime">
    		<xsl:value-of select="/dss:SimpleCertificateReport/@ValidationTime" />
@@ -70,7 +69,7 @@
 			    		
 			    		<dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		Qualification
+			        		Qualification:
 			        	</dt>
 			    		
 			    		<dd>
@@ -110,6 +109,8 @@
 			    		</dd>
 		        	</dl>
 	        	</xsl:if>
+
+				<!-- <xsl:apply-templates select="dss:QualificationDetails" /> --> <!-- do not include qualification details -->
 	        	
 	        	<xsl:if test="dss:enactedMRA">
 					<dl>
@@ -122,7 +123,44 @@
 							The qualification level has been determined using an enacted trust service equivalence mapping.
 			            </dd>
 					</dl>
-				</xsl:if>			
+				</xsl:if>
+
+				<dl>
+					<xsl:attribute name="class">row mb-0</xsl:attribute>
+					<dt>
+						<xsl:attribute name="class">col-sm-3</xsl:attribute>
+						Indication:
+					</dt>
+					<dd>
+						<xsl:attribute name="class">col-sm-9 text-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+
+						<div>
+							<xsl:attribute name="class">badge mr-2 badge-<xsl:value-of select="$indicationCssClass" /></xsl:attribute>
+							<xsl:value-of select="$indicationText" />
+						</div>
+
+						<xsl:variable name="indication-icon-class">
+							<xsl:choose>
+								<xsl:when test="$indicationText='PASSED' or dss:trustAnchors">fa-check-circle</xsl:when>
+								<xsl:when test="$indicationText='INDETERMINATE'">fa-exclamation-circle</xsl:when>
+								<xsl:when test="$indicationText='FAILED'">fa-times-circle</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+
+						<i>
+							<xsl:attribute name="class">fa <xsl:value-of select="$indication-icon-class" /> align-middle</xsl:attribute>
+							<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+							<xsl:attribute name="data-placement">right</xsl:attribute>
+							<xsl:attribute name="title"><xsl:value-of select="$indicationText" /></xsl:attribute>
+						</i>
+					</dd>
+				</dl>
+
+				<xsl:apply-templates select="dss:SubIndication">
+					<xsl:with-param name="indicationClass" select="$indicationCssClass"/>
+				</xsl:apply-templates>
+
+				<xsl:apply-templates select="dss:X509ValidationDetails" />
 	        	
 				<xsl:apply-templates select="dss:subject"/>
 				
@@ -148,7 +186,7 @@
 	        		
 	        		<dt>
 		        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-		        		Validity
+		        		Validity:
 			        </dt>
 	        		<dd>
 	        			<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -164,8 +202,7 @@
 	        		<xsl:if test="not(dss:trustAnchors)">
 	       				<dt>
 			        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			        		
-			        		Revocation
+			        		Revocation:
 			        	</dt>
 	       				<dd>
 	        				<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -196,6 +233,65 @@
     		</div>
     	</div>
     </xsl:template>
+
+	<xsl:template match="dss:X509ValidationDetails|dss:QualificationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+
+				<xsl:value-of select="$header" />:
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<ul>
+					<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
+					<xsl:apply-templates select="dss:Error" />
+					<xsl:apply-templates select="dss:Warning" />
+					<xsl:apply-templates select="dss:Info" />
+				</ul>
+			</dd>
+		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="style">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">danger</xsl:when>
+				<xsl:when test="name() = 'Warning'">warning</xsl:when>
+				<xsl:otherwise>auto</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<li>
+			<xsl:attribute name="class">text-<xsl:value-of select="$style" /></xsl:attribute>
+			<xsl:value-of select="." />
+		</li>
+	</xsl:template>
+
+	<xsl:template match="dss:SubIndication">
+		<xsl:param name="indicationClass" />
+		<xsl:variable name="subIndicationText" select="." />
+		<dl>
+			<xsl:attribute name="class">row mb-0</xsl:attribute>
+			<dt>
+				<xsl:attribute name="class">col-sm-3</xsl:attribute>
+				Sub indication:
+			</dt>
+			<dd>
+				<xsl:attribute name="class">col-sm-9</xsl:attribute>
+				<div>
+					<xsl:attribute name="class">badge badge-<xsl:value-of select="$indicationClass" /></xsl:attribute>
+					<xsl:value-of select="$subIndicationText" />
+				</div>
+			</dd>
+		</dl>
+	</xsl:template>
     
     <xsl:template match="dss:subject">
      	<dl>
@@ -203,7 +299,7 @@
 	  		<xsl:if test="dss:commonName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Common name
+	        		Common name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -213,7 +309,7 @@
 	  		<xsl:if test="dss:givenName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Given name
+	        		Given name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -223,7 +319,7 @@
 	  		<xsl:if test="dss:surname">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Surname
+	        		Surname:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -233,7 +329,7 @@
 	  		<xsl:if test="dss:pseudonym">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-		        	Pseudonym
+		        	Pseudonym:
 		        </dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -243,7 +339,7 @@
 	  		<xsl:if test="dss:organizationName">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Organization name
+	        		Organization name:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -253,7 +349,7 @@
 	  		<xsl:if test="dss:organizationUnit">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Organization Unit
+	        		Organization Unit:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -263,7 +359,7 @@
 	  		<xsl:if test="dss:email">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Email
+	        		Email:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -273,7 +369,7 @@
 	  		<xsl:if test="dss:locality">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Locality
+	        		Locality:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -283,7 +379,7 @@
 	  		<xsl:if test="dss:state">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		State
+	        		State:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -293,7 +389,7 @@
 	  		<xsl:if test="dss:country">
 		   		<dt>
 	        		<xsl:attribute name="class">col-sm-3</xsl:attribute>
-	        		Country
+	        		Country:
 	        	</dt>
 		   		<dd>
 	        		<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -309,7 +405,7 @@
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
-	        	Key usages
+	        	Key usages:
 	        </dt>
 			<dd>
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -329,7 +425,7 @@
 		    
 		    <dt>
 	        	<xsl:attribute name="class">col-sm-6</xsl:attribute>
-	        	Extended key usages
+	        	Extended key usages:
 	        </dt>
 			<dd>
 	       		<xsl:attribute name="class">col-sm-6</xsl:attribute>
@@ -376,7 +472,7 @@
 			        		
   			<acronym>
   				<xsl:attribute name="title">Online Certificate Status Protocol</xsl:attribute>
-  				OCSP
+  				OCSP:
   			</acronym>
 		</dt>
 		<dd>
@@ -396,7 +492,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Certificate Revocation List</xsl:attribute>
-		  		CRL
+		  		CRL:
 		  	</acronym>
 		</dt>
 		<dd>
@@ -416,7 +512,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Authority Information Access</xsl:attribute>
-  		  		AIA
+  		  		AIA:
   		  	</acronym>
 		</dt>
 		<dd>
@@ -436,7 +532,7 @@
 			
   			<acronym>
   				<xsl:attribute name="title">Certification Practice Statements</xsl:attribute>
-  		  		CPS
+  		  		CPS:
   		  	</acronym>
 		</dt>
 		
@@ -454,8 +550,7 @@
     <xsl:template match="dss:trustAnchors">
   		<dt>
 			<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			
-  			Trust Anchor
+  			Trust Anchor:
 		</dt>
 		
 		<dd>
@@ -470,10 +565,20 @@
 	</xsl:template>
     
     <xsl:template match="dss:trustAnchor">
+		<xsl:variable name="subDirectory">
+			<xsl:choose>
+				<xsl:when test="dss:tslType and $euGenericTSLType = dss:tslType"><xsl:value-of select="$euTLSubDirectoryInTlBrowser" /></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$tcTLSubDirectoryInTlBrowser" /></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="countryTlUrl" select="concat($rootUrlInTlBrowser, $subDirectory, '/', dss:countryCode)" />
+		<xsl:variable name="countryTspUrl" select="concat($rootUrlInTlBrowser, $subDirectory,
+				$trustmarkSubDirectoryInTlBrowser, '/', dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+
     	<li>
     		<a>
     			<xsl:attribute name="href">
-	    			<xsl:value-of select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
+	    			<xsl:value-of select="$countryTlUrl" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title"><xsl:value-of select="dss:countryCode" /></xsl:attribute>
@@ -491,7 +596,7 @@
     		
     		<a>
 	    		<xsl:attribute name="href">
-	    			<xsl:value-of select="concat($rootTrustmarkUrlInTlBrowser, dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+	    			<xsl:value-of select="$countryTspUrl" />
 	    		</xsl:attribute>
 	    		<xsl:attribute name="target">_blank</xsl:attribute>
 	    		<xsl:attribute name="title">View in TL Browser</xsl:attribute>

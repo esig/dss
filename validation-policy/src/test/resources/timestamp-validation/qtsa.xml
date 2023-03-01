@@ -14,15 +14,6 @@
             <Locality>Vilnius</Locality>
             <CountryName>LT</CountryName>
             <OrganizationName>BalTstamp UAB</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp-3nqc.ssc.lt/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>TRUSTED_LIST</Source>
@@ -32,13 +23,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -53,9 +37,24 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp-3nqc.ssc.lt/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -183,15 +182,6 @@
             <CountryName>LT</CountryName>
             <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
             <OrganizationalUnit>Certification Authority</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp2.ssc.lt</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>AIA</Source>
                 <Source>TIMESTAMP</Source>
@@ -202,13 +192,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -222,9 +205,24 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp2.ssc.lt</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
@@ -294,11 +292,6 @@
             <CountryName>LT</CountryName>
             <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
             <OrganizationalUnit>Certification Authority</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints>
-                <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>AIA</Source>
             </Sources>
@@ -307,12 +300,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -322,9 +309,19 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
@@ -361,11 +358,11 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature1" />
-                <PDFSignatureDictionary>
+                <PDFSignatureDictionary consistent="true">
                     <Type>DocTimeStamp</Type>
                     <Filter>Adobe.PPKLite</Filter>
                     <SubFilter>ETSI.RFC3161</SubFilter>
-                    <SignatureByteRange>0 137494 156440 536</SignatureByteRange>
+                    <SignatureByteRange valid="true">0 137494 156440 536</SignatureByteRange>
                 </PDFSignatureDictionary>
             </PDFRevision>
             <FoundCertificates/>

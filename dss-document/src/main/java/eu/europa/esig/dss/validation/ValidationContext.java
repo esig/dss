@@ -184,8 +184,33 @@ public interface ValidationContext {
 	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
 	 * 
 	 * @return true if all certificates are valid
+	 * @deprecated since DSS 5.12. Use {@code #checkCertificateNotRevoked(CertificateToken certificateToken)} or
+	 *             {@code #checkCertificatesNotRevoked(AdvancedSignature signature)} depending on validation context
 	 */
+	@Deprecated
 	boolean checkAllCertificatesValid();
+
+	/**
+	 * This method allows to verify if the certificate is not revoked
+	 *
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @param certificateToken {@code CertificateToken} certificate to be checked
+	 * @return true if all certificates are valid
+	 */
+	boolean checkCertificateNotRevoked(CertificateToken certificateToken);
+
+	/**
+	 * This method allows to verify if signature certificates are not revoked
+	 *
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @param signature {@code AdvancedSignature} signature to be checked
+	 * @return true if all certificates are valid
+	 */
+	boolean checkCertificatesNotRevoked(AdvancedSignature signature);
 
 	/**
 	 * This method allows to verify if there is at least one revocation data present

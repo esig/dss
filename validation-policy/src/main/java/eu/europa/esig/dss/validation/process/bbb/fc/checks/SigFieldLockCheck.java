@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -40,11 +41,11 @@ public class SigFieldLockCheck extends AbstractPdfLockDictionaryCheck {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param signature {@link SignatureWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param pdfRevision {@link SignatureWrapper}
+     * @param constraint {@link PDFRevisionWrapper}
      */
-    public SigFieldLockCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
-        super(i18nProvider, result, signature, signature.getSigFieldLock(), constraint);
+    public SigFieldLockCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelConstraint constraint) {
+        super(i18nProvider, result, pdfRevision, pdfRevision.getSigFieldLock(), constraint);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class SigFieldLockCheck extends AbstractPdfLockDictionaryCheck {
         if (!super.process()) {
             return false;
         }
-        if (!signature.arePdfObjectModificationsDetected()) {
+        if (!pdfRevision.arePdfObjectModificationsDetected()) {
             return true;
         }
         if (pdfLockDictionary == null) {
@@ -63,20 +64,20 @@ public class SigFieldLockCheck extends AbstractPdfLockDictionaryCheck {
         if (pdfLockDictionary.getPermissions() != null) {
             switch (pdfLockDictionary.getPermissions()) {
                 case NO_CHANGE_PERMITTED:
-                    if (Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()) ||
-                            Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
-                            Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                    if (Utils.isCollectionNotEmpty(pdfRevision.getPdfSignatureOrFormFillChanges()) ||
+                            Utils.isCollectionNotEmpty(pdfRevision.getPdfAnnotationChanges()) ||
+                            Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                         return false;
                     }
                     break;
                 case MINIMAL_CHANGES_PERMITTED:
-                    if (Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
-                            Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                    if (Utils.isCollectionNotEmpty(pdfRevision.getPdfAnnotationChanges()) ||
+                            Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                         return false;
                     }
                     break;
                 case CHANGES_PERMITTED:
-                    if (Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                    if (Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                         return false;
                     }
                     break;

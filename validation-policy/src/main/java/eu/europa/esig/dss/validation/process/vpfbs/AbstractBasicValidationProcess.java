@@ -67,6 +67,7 @@ import java.util.Map;
 /**
  * The abstract class implementing the "5.3 Validation process for Basic Signatures" process
  *
+ * @param <T> implementation of the block's conclusion
  */
 public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsConclusion> extends Chain<T> {
 

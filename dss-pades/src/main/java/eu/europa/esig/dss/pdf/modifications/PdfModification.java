@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.pdf.modifications;
 
+import java.io.Serializable;
+
 /**
  * This interface contains information about the occurred modifications in a PDF
  *
  */
-public interface PdfModification {
+public interface PdfModification extends Serializable {
 	
 	/**
 	 * Returns a page where the modification occurs

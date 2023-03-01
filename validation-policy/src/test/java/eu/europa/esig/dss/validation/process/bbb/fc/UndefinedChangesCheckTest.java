@@ -23,12 +23,11 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,17 +41,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UndefinedChangesCheckTest extends AbstractTestCheck {
 
     @Test
-    public void noChangesTest() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void noChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -61,11 +57,8 @@ public class UndefinedChangesCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void identifiedChangesTest() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void identifiedChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlModificationDetection modificationDetection = new XmlModificationDetection();
         pdfRevision.setModificationDetection(modificationDetection);
@@ -79,7 +72,7 @@ public class UndefinedChangesCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,11 +81,8 @@ public class UndefinedChangesCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void undefinedChangesTest() throws Exception {
-        XmlSignature xmlSignature = new XmlSignature();
-
+    public void undefinedChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
-        xmlSignature.setPDFRevision(pdfRevision);
 
         XmlModificationDetection modificationDetection = new XmlModificationDetection();
         pdfRevision.setModificationDetection(modificationDetection);
@@ -107,7 +97,7 @@ public class UndefinedChangesCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

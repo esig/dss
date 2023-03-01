@@ -239,6 +239,16 @@ public class PdfSignatureDictionaryComparatorTest {
 		}
 
 		@Override
+		public boolean checkConsistency(PdfSignatureDictionary signatureDictionary) {
+			return false;
+		}
+
+		@Override
+		public boolean isConsistent() {
+			return false;
+		}
+
+		@Override
 		public byte[] getContents() {
 			return null;
 		}

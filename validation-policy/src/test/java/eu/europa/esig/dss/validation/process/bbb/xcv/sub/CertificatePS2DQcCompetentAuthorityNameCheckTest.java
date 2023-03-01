@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -42,6 +43,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     @Test
     public void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
         xmlPSD2QcInfo.setNcaName("CSSF");
@@ -52,7 +54,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -67,6 +69,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     @Test
     public void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
         xmlPSD2QcInfo.setNcaName("CSSF");
@@ -78,7 +81,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -93,6 +96,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     @Test
     public void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         XmlPSD2QcInfo xmlPSD2QcInfo = new XmlPSD2QcInfo();
         xmlPSD2QcInfo.setNcaName("NBB");
@@ -103,7 +107,7 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
@@ -118,13 +122,14 @@ public class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTe
     @Test
     public void qcPS2DNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
+        xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("CSSF");
 
         XmlCertificate xc = new XmlCertificate();
-        xc.setQcStatements(xmlQcStatements);
+        xc.getCertificateExtensions().add(xmlQcStatements);
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(

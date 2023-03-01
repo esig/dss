@@ -41,6 +41,9 @@
             <SignatureDuplicated Level="FAIL" />
             <ProspectiveCertificateChain Level="FAIL" />
             <SignerInformationStore Level="FAIL" />
+            <ByteRange Level="FAIL" />
+            <ByteRangeCollision Level="WARN" />
+            <PdfSignatureDictionary Level="FAIL" />
             <PdfPageDifference Level="FAIL" />
             <PdfAnnotationOverlap Level="WARN" />
             <PdfVisualDifference Level="WARN" />
@@ -66,6 +69,9 @@
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <SerialNumberPresent Level="WARN" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
@@ -144,6 +150,9 @@
                 <KeyUsage Level="WARN">
                     <Id>nonRepudiation</Id>
                 </KeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <SerialNumberPresent Level="WARN" />
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
@@ -203,9 +212,12 @@
                 <RevocationDataAvailable Level="FAIL" />
                 <CRLNextUpdatePresent Level="WARN" />
                 <RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
-                <ExtendedKeyUsage Level="WARN">
+                <ExtendedKeyUsage Level="FAIL">
                     <Id>timeStamping</Id>
                 </ExtendedKeyUsage>
+                <ForbiddenExtensions Level="FAIL">
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </ForbiddenExtensions>
                 <NotRevoked Level="FAIL" />
                 <NotOnHold Level="FAIL" />
                 <NotSelfSigned Level="WARN" />
@@ -234,6 +246,7 @@
     </Timestamp>
     <Revocation>
         <UnknownStatus Level="FAIL" />
+        <OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
         <BasicSignatureConstraints>
             <ReferenceDataExistence Level="FAIL" />
@@ -294,7 +307,7 @@
             <Algo>RIPEMD160</Algo>
             <Algo>WHIRLPOOL</Algo>
         </AcceptableDigestAlgo>
-        <AlgoExpirationDate Format="yyyy">
+        <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
             <!-- Digest algorithms -->
 <!--		<Algo Date="2005">MD2</Algo> 		Not referenced in ETSI/SOGIS -->
             <Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->

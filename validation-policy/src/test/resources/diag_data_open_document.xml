@@ -229,15 +229,6 @@
             <OrganizationalUnit>TEST UNIT</OrganizationalUnit>
             <GivenName>GOMES</GivenName>
             <Surname>FRANSICSO BARBOSA</Surname>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://ocsp.sinpe.fi.cr/ocsp</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -246,14 +237,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-DA1476A9F1392E747DBD64FBE36AC4EDF7E216F5CCAEE7155067B2B1A0EEFBB3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -269,9 +252,25 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy>2.16.188.1.1.1.1.2</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.16.188.1.1.1.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.sinpe.fi.cr/ocsp</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-703A8E4F71886016871680FB6455D83A8E920EF349BE0A669D85D31F0B4232A8">
@@ -294,15 +293,6 @@
             <CountryName>CR</CountryName>
             <OrganizationName>MICITT</OrganizationName>
             <OrganizationalUnit>DCFD</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -311,13 +301,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-919530E99CFCDCA84AA273A4165D77D28926F07F054D5B3E0EC15FCF0773FCAC</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -331,12 +314,28 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                    <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
@@ -359,15 +358,6 @@
             <CountryName>CR</CountryName>
             <OrganizationName>BANCO CENTRAL DE COSTA RICA</OrganizationName>
             <OrganizationalUnit>0001</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TIMESTAMP</Source>
@@ -377,14 +367,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4FEB2D474B5B505E4521A1D7D6A6A7BFE3DD6A0B9A11983E8CE5AA821E89EF2F</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -399,9 +381,26 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://tsa.sinpe.fi.cr/tsahttp/">2.16.188.1.1.1.1.5</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://tsa.sinpe.fi.cr/tsahttp/">2.16.188.1.1.1.1.5</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                    <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-B63353136519CC56A8D37FFB0742B56BA2FF31DCBC2EFE37FE5FF918275205AF">
@@ -420,12 +419,6 @@
             <IssuerDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#131043504a2d342d3030302d303034303137</IssuerDistinguishedName>
             <SerialNumber>446017723375857826877495391996177220779919637</SerialNumber>
             <CommonName>PORVENIR.fdi.cr</CommonName>
-            <SubjectAlternativeNames>
-                <subjectAlternativeName>PORVENIR.fdi.cr</subjectAlternativeName>
-            </SubjectAlternativeNames>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -435,13 +428,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-952E049E16F0862714594313E0E775F289AFB1A447F0DC7288F6C056D329AC81</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -457,7 +443,18 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName>PORVENIR.fdi.cr</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -475,15 +472,6 @@
             <CountryName>CR</CountryName>
             <OrganizationName>COSTA RICA</OrganizationName>
             <OrganizationalUnit>DIVISION SISTEMAS</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crt</aiaUrl>
-                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crl</crlUrl>
-                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -492,13 +480,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-4E034103F8233FC1CE11A580D2B3CBACBF7A9B11E08F6B8A2BD6C36C0F98AE99</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -513,12 +494,28 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20POLITICA.crl</crlUrl>
+                    <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E24E4D9A635DDD44A4070669E11C0BF6A77CEBAE54FCBBBC9E03DCC4D20908F5">
@@ -541,9 +538,6 @@
             <CountryName>CR</CountryName>
             <OrganizationName>MICITT</OrganizationName>
             <OrganizationalUnit>DCFD</OrganizationalUnit>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
                 <Source>TRUSTED_STORE</Source>
@@ -553,13 +547,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8B0BF667167C21C78269D86E0990102F8D4296345925C0616C8660F103ED3FE1</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -570,7 +557,14 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -588,15 +582,6 @@
             <CountryName>CR</CountryName>
             <OrganizationName>MICITT</OrganizationName>
             <OrganizationalUnit>DCFD</OrganizationalUnit>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-                <aiaUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-                <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -605,13 +590,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8F92FA3FA791B7A69DB21BCB8FE11DC6FF9B0B2354ED3D0F6E00AAC31CEC8CCB</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -625,11 +603,27 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.5</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.micit.go.cr/firmadigital">2.16.188.1.1.1.1.5</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                    <caIssuersUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.firmadigital.go.cr/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                    <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">

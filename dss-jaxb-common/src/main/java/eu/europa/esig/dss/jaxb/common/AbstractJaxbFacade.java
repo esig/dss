@@ -53,6 +53,7 @@ public abstract class AbstractJaxbFacade<T> {
 	 * Default constructor
 	 */
 	protected AbstractJaxbFacade() {
+		// empty
 	}
 
 	/**

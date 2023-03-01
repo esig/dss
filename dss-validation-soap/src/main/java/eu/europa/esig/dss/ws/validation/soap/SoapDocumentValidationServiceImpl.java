@@ -41,6 +41,7 @@ public class SoapDocumentValidationServiceImpl implements SoapDocumentValidation
 	 * Default construction instantiating object with null RemoteDocumentValidationService
 	 */
 	public SoapDocumentValidationServiceImpl() {
+		// empty
 	}
 
 	/**

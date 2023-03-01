@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 import java.util.Date;
 
@@ -78,7 +79,7 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	/**
 	 * Password used to encrypt a PDF
 	 */
-	private String passwordProtection;
+	private char[] passwordProtection;
 
 	/**
 	 * Empty constructor
@@ -185,18 +186,34 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampDate;
 	}
 
-	@Override
-	public String getPasswordProtection() {
-		return passwordProtection;
-	}
-
 	/**
 	 * Sets a password string
 	 * 
 	 * @param passwordProtection {@link String} password to set
+	 * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(passwordProtection.toCharArray())}
 	 */
+	@Deprecated
 	public void setPasswordProtection(String passwordProtection) {
+		this.passwordProtection = passwordProtection != null ? passwordProtection.toCharArray() : null;
+	}
+
+	@Override
+	public char[] getPasswordProtection() {
+		return passwordProtection;
+	}
+
+	/**
+	 * Sets password to the document
+	 *
+	 * @param passwordProtection char array representing a password of the document
+	 */
+	public void setPasswordProtection(char[] passwordProtection) {
 		this.passwordProtection = passwordProtection;
+	}
+
+	@Override
+	public String getDeterministicId() {
+		return DSSUtils.getDeterministicId(timestampDate, null);
 	}
 
 	@Override

@@ -22,7 +22,6 @@ package eu.europa.esig.dss.asic.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.definition.ASiCElement;
@@ -142,8 +141,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		XAdESSignatureParameters xadesParameters = getXAdESParameters(
 				parameters, asicContent.getSignatureDocuments(), dataToSignHelper.isOpenDocument());
 		final DSSDocument newSignature = getXAdESService().signDocument(dataToSignHelper.getToBeSigned(), xadesParameters, signatureValue);
-		String newSignatureFilename = getSignatureFilename(parameters.aSiC(), asicContent);
-		newSignature.setName(newSignatureFilename);
+		newSignature.setName(asicFilenameFactory.getSignatureFilename(asicContent));
 
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), newSignature);
 
@@ -151,21 +149,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		asicSignature.setName(getFinalDocumentName(asicSignature, SigningOperation.SIGN, parameters.getSignatureLevel(), asicSignature.getMimeType()));
 		parameters.reinit();
 		return asicSignature;
-	}
-
-	/**
-	 * NOTE: Temporary method to allow migration from parameters.aSiC().setSignatureFilename(filename)
-	 * to ASiCWithXAdESFilenameFactory
-	 *
-	 * @return {@link String} filename
-	 */
-	private String getSignatureFilename(ASiCParameters asicParameters, ASiCContent asicContent) {
-		if (Utils.isStringNotEmpty(asicParameters.getSignatureFileName())) {
-			LOG.warn("The signature filename has been defined within deprecated method parameters.aSiC().setSignatureFilename(filename). " +
-					"Please use asicWithXAdESService.setAsicFilenameFactory(asicFilenameFactory) defining a custom filename factory.");
-			return asicParameters.getSignatureFileName();
-		}
-		return asicFilenameFactory.getSignatureFilename(asicContent);
 	}
 
 	@Override

@@ -23,12 +23,12 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -73,7 +73,7 @@ public class XAdESEnvelopingWithCustomObjectsTest extends AbstractXAdESTestSigna
         String base64EncodedImage = Utils.toBase64(DSSUtils.toByteArray(image));
         base64Object.setContent(new InMemoryDocument(base64EncodedImage.getBytes()));
         base64Object.setId("o-id-image");
-        base64Object.setMimeType(MimeType.PNG);
+        base64Object.setMimeType(MimeTypeEnum.PNG.getMimeTypeString());
         base64Object.setEncodingAlgorithm("http://www.w3.org/2000/09/xmldsig#base64");
 
         signatureParameters.setObjects(Arrays.asList(xmlObject, base64Object));
@@ -107,7 +107,7 @@ public class XAdESEnvelopingWithCustomObjectsTest extends AbstractXAdESTestSigna
                 String textContent = content.getTextContent();
                 assertTrue(Utils.isBase64Encoded(textContent));
 
-                assertEquals(MimeType.PNG.getMimeTypeString(),
+                assertEquals(MimeTypeEnum.PNG.getMimeTypeString(),
                         DSSXMLUtils.getAttribute(objectNode, XMLDSigAttribute.MIME_TYPE.getAttributeName()));
                 assertEquals("http://www.w3.org/2000/09/xmldsig#base64",
                         DSSXMLUtils.getAttribute(objectNode, XMLDSigAttribute.ENCODING.getAttributeName()));

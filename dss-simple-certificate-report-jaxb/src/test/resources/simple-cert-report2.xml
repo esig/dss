@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <SimpleCertificateReport ValidationTime="2018-02-09T07:23:22" xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
     <Chain>
         <ChainItem>
             <id>C-D74AF393CF3B506DA33B46BC52B49CD6FAC12B2BDAA9CE1FBA25C0C1E4EBBE19</id>
@@ -31,6 +38,9 @@
             </revocation>
             <Indication>INDETERMINATE</Indication>
             <SubIndication>CRYPTO_CONSTRAINTS_FAILURE_NO_POE</SubIndication>
+            <X509ValidationDetails>
+                <Error Key="ASCCM_AR_ANS_ANR">The algorithm SHA1 is no longer considered reliable for signature creation!</Error>
+            </X509ValidationDetails>
         </ChainItem>
         <ChainItem>
             <id>C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8</id>
@@ -51,6 +61,7 @@
             <trustAnchors>
                 <trustAnchor>
                     <countryCode>BE</countryCode>
+                    <tslType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</tslType>
                     <trustServiceProvider>Certipost n.v./s.a.</trustServiceProvider>
                     <trustServiceProviderRegistrationId>VATBE-0475396406</trustServiceProviderRegistrationId>
                     <trustServiceName>CN=Belgium Root CA2, C=BE</trustServiceName>

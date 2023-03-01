@@ -29,10 +29,10 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -216,24 +216,21 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	/**
 	 * Generates and returns a TimeStamp attribute value
 	 *
-	 * @param messageToTimestamp binaries to be timestamped
+	 * @param timestampMessageDigest {@link DSSMessageDigest} message-digest to be timestamped
 	 * @param timestampDigestAlgorithm {@link DigestAlgorithm} to use
 	 * @param attributesForTimestampToken {@link Attribute}s to add
 	 * @return {@link ASN1Object} representing a TimeStamp token attribute value
 	 */
-	protected ASN1Object getTimeStampAttributeValue(final byte[] messageToTimestamp, final DigestAlgorithm timestampDigestAlgorithm,
+	protected ASN1Object getTimeStampAttributeValue(
+			final DSSMessageDigest timestampMessageDigest, final DigestAlgorithm timestampDigestAlgorithm,
 			final Attribute... attributesForTimestampToken) {
 		try {
 
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Message to timestamp is: {}", Utils.toHex(messageToTimestamp));
-			}
-			byte[] timestampDigest = DSSUtils.digest(timestampDigestAlgorithm, messageToTimestamp);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Digested ({}) message to timestamp is {}", timestampDigestAlgorithm, Utils.toHex(timestampDigest));
+				LOG.debug("Message to timestamp is {}", timestampMessageDigest);
 			}
 
-			final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampDigest);
+			final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampMessageDigest.getValue());
 			CMSSignedData cmsSignedDataTimeStampToken = new CMSSignedData(timeStampToken.getBytes());
 
 			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
@@ -270,13 +267,18 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			for (SignerInformation signerInformation : signerInformationCollection) {
 				if (signerInformationsToExtend.contains(signerInformation)) {
 					CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
-					assertSignatureValid(cadesSignature);
+					assertSignatureValid(cadesSignature, parameters);
 				}
 			}
 		}
 	}
 
-	private void assertSignatureValid(final CAdESSignature cadesSignature) {
+	private void assertSignatureValid(final CAdESSignature cadesSignature, final CAdESSignatureParameters parameters) {
+		if (parameters.isGenerateTBSWithoutCertificate() && cadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
+			return;
+		}
+
 		final SignatureCryptographicVerification signatureCryptographicVerification = cadesSignature.getSignatureCryptographicVerification();
 		if (!signatureCryptographicVerification.isSignatureIntact()) {
 			final String errorMessage = signatureCryptographicVerification.getErrorMessage();

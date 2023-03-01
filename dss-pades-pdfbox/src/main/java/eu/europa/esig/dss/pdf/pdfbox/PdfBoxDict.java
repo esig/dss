@@ -199,6 +199,24 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
+	public InputStream createRawInputStream() throws IOException {
+		if (wrapped instanceof COSStream) {
+			return ((COSStream) wrapped).createRawInputStream();
+		}
+		return null;
+	}
+
+	@Override
+	public long getRawStreamSize() throws IOException {
+		try (InputStream is = createRawInputStream()) {
+			if (is != null) {
+				return Utils.getInputStreamSize(is);
+			}
+		}
+		return -1;
+	}
+
+	@Override
 	public String toString() {
 		return wrapped.toString();
 	}

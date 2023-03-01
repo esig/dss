@@ -20,9 +20,14 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,15 +36,9 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.List;
 
-import eu.europa.esig.dss.utils.Utils;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SSLCommonDataLoaderTest {
 
@@ -100,7 +99,7 @@ public class SSLCommonDataLoaderTest {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(correctKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);
-		dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
+		dataLoader.setSslTruststorePassword(KS_PASSWORD);
 
 		byte[] binaries = dataLoader.get(URL);
 		assertNotNull(binaries);
@@ -113,11 +112,11 @@ public class SSLCommonDataLoaderTest {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(wrongKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);
-		dataLoader.setSslTruststorePassword(new String(KS_PASSWORD));
+		dataLoader.setSslTruststorePassword(KS_PASSWORD);
 
-		dataLoader.setSslTruststore(wrongKeyStore);
+		dataLoader.setSslKeystore(wrongKeyStore);
 		dataLoader.setSslKeystoreType(KS_TYPE);
-		dataLoader.setSslKeystorePassword(new String(KS_PASSWORD));
+		dataLoader.setSslKeystorePassword(KS_PASSWORD);
 
 		Exception exception = assertThrows(DSSException.class, () -> dataLoader.get(URL));
 		assertTrue(exception.getMessage().contains("Unable to process GET call for url [" + URL + "]"));

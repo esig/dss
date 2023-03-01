@@ -42,13 +42,13 @@
             </SignerInformationStore>
             <PDFRevision>
                 <SignatureField name="Signature-20191101-150121" />
-	            <PDFSignatureDictionary>
+	            <PDFSignatureDictionary consistent="true">
 	                <SignerName>POLYSYS kft.</SignerName>
 	                <Filter>Adobe.PPKLite</Filter>
 	                <SubFilter>ETSI.CAdES.detached</SubFilter>
 	                <ContactInfo>info@polysys.eu</ContactInfo>
 	                <Reason>Document certification - electronic seal produced by PolySigno product from Polysys Ltd.</Reason>
-	                <SignatureByteRange>0 139747 169749 48336</SignatureByteRange>
+	                <SignatureByteRange valid="true">0 139747 169749 48336</SignatureByteRange>
 	            </PDFSignatureDictionary>
             </PDFRevision>
             <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
@@ -165,13 +165,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rootca2017-aia1.e-szigno.hu/rootca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu/</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -180,14 +173,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-8AFE59C13F25CCA072AD8E1A7A704D1277D48CE974BA5AE356D788DB539484FA</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -201,9 +186,23 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rootca2017-aia1.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <ocspUrl>http://rootca2017-ocsp1.e-szigno.hu/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -223,21 +222,6 @@
             <OrganizationName>Sys com</OrganizationName>
             <OrganizationalUnit>Sys (R)</OrganizationalUnit>
             <Email>info@sys.com</Email>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-                <aiaUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-                <aiaUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://eqcpca2017-crl1.e-szigno.hu/eqcpca2017.crl</crlUrl>
-                <crlUrl>http://eqcpca2017-crl2.e-szigno.hu/eqcpca2017.crl</crlUrl>
-                <crlUrl>http://eqcpca2017-crl3.e-szigno.hu/eqcpca2017.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://eqcpca2017-ocsp1.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://eqcpca2017-ocsp2.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://eqcpca2017-ocsp3.e-szigno.hu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -246,11 +230,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-82FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -265,17 +244,35 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.183.2.7</certificatePolicy>
-                <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.183.2.7</certificatePolicy>
+                    <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                    <ocspUrl>http://eqcpca2017-ocsp1.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://eqcpca2017-ocsp2.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://eqcpca2017-ocsp3.e-szigno.hu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://eqcpca2017-crl1.e-szigno.hu/eqcpca2017.crl</crlUrl>
+                    <crlUrl>http://eqcpca2017-crl2.e-szigno.hu/eqcpca2017.crl</crlUrl>
+                    <crlUrl>http://eqcpca2017-crl3.e-szigno.hu/eqcpca2017.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-231BBF685163B4EFC7BA4BF46EBD0FADDDAF780126503EC4504E866C0247528B">
@@ -297,9 +294,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -308,12 +302,6 @@
             <PublicKeySize>4096</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-C2157309D9AEE17BF34F4DF5E88DBAEBA57E0361EB814CBC239F4D54D329A38D</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -323,7 +311,13 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -341,11 +335,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
             </Sources>
@@ -354,14 +343,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-B026C53A35DE256A30B46A484EEA72781A7C94A24B6666FFAC431A58F8942666</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -376,7 +357,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -394,21 +387,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</aiaUrl>
-                <aiaUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</aiaUrl>
-                <aiaUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
-                <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
-                <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
@@ -418,12 +396,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-6081BEE5B0DF191AC4E265AC0F6F7899F078B8C89F06055AE166AF91DF70D6E0</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -437,9 +409,29 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <ocspUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
+                    <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
+                    <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -457,21 +449,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</aiaUrl>
-                <aiaUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</aiaUrl>
-                <aiaUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
-                <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
-                <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
@@ -481,14 +458,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9E94BB8ADAD7A6CE4DCB1208F1239DC1E43483F1B7E81F74A90A20FB5E5C49B7</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -502,9 +471,32 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://rootca2017-ca1.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://rootca2017-ca2.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://rootca2017-ca3.e-szigno.hu/rootca2017.crt</caIssuersUrl>
+                    <ocspUrl>http://rootca2017-ocsp1.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://rootca2017-ocsp2.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://rootca2017-ocsp3.e-szigno.hu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://rootca2017-crl1.e-szigno.hu/rootca2017.crl</crlUrl>
+                    <crlUrl>http://rootca2017-crl2.e-szigno.hu/rootca2017.crl</crlUrl>
+                    <crlUrl>http://rootca2017-crl3.e-szigno.hu/rootca2017.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -522,13 +514,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -537,14 +522,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-9077688FD079D30B438755AA1E97F2538C1DC86433809BFC5AF248651625C540</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -559,9 +536,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -579,15 +571,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TIMESTAMP</Source>
                 <Source>SIGNATURE</Source>
@@ -597,13 +580,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-30816BE67E801D2594DAD5CDCEE994677A0F48562B78C58527BDD632599CEF38</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -618,16 +594,31 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
-                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.17.1.2</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.17.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</caIssuersUrl>
+                    <ocspUrl>http://qocsp.hiteles.gov.hu/ocsp</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-Qv2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-97FADB0975D8597E8A892FC4AE5D05B10D490F0EFAD1842E221CCACD7ACA705F">
@@ -652,11 +643,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -666,14 +652,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E23EDC1D934D61A12A13921AADC46945516A22011D1F75EA27158DEC454ADBD6</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -688,7 +666,19 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca.hiteles.gov.hu/cer/GOVCA-Qv2.cer</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -706,24 +696,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</aiaUrl>
-                <aiaUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017-link-rootca2009.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://etsaca2017-crl1.e-szigno.hu/etsaca2017.crl</crlUrl>
-                <crlUrl>http://etsaca2017-crl2.e-szigno.hu/etsaca2017.crl</crlUrl>
-                <crlUrl>http://etsaca2017-crl3.e-szigno.hu/etsaca2017.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://etsaca2017-ocsp1.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://etsaca2017-ocsp2.e-szigno.hu</ocspServerUrl>
-                <ocspServerUrl>http://etsaca2017-ocsp3.e-szigno.hu</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>TIMESTAMP</Source>
@@ -734,14 +706,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-A7B674857F467C1F4B87B0AFB97D41E279C526EA76DB6220A194EA420102BB99</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -756,16 +720,41 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.182.2.11</certificatePolicy>
-            </CertificatePolicies>
-            <QcStatements>
-                <QcCompliance present="true"/>
-                <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
-                                <QcTypes>
-                    <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
-                </QcTypes>
-            </QcStatements>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca1.e-szigno.hu/etsaca2017-link-rootca2009.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca2.e-szigno.hu/etsaca2017-link-rootca2009.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://etsaca2017-ca3.e-szigno.hu/etsaca2017-link-rootca2009.crt</caIssuersUrl>
+                    <ocspUrl>http://etsaca2017-ocsp1.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://etsaca2017-ocsp2.e-szigno.hu</ocspUrl>
+                    <ocspUrl>http://etsaca2017-ocsp3.e-szigno.hu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://etsaca2017-crl1.e-szigno.hu/etsaca2017.crl</crlUrl>
+                    <crlUrl>http://etsaca2017-crl2.e-szigno.hu/etsaca2017.crl</crlUrl>
+                    <crlUrl>http://etsaca2017-crl3.e-szigno.hu/etsaca2017.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/qcps">1.3.6.1.4.1.21528.2.1.1.182.2.11</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>10</QcEuRetentionPeriod>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -783,15 +772,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints>
-                <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-ROOT.crl</crlUrl>
-            </CRLDistributionPoints>
-            <OCSPAccessUrls>
-                <ocspServerUrl>http://qocsp.hiteles.gov.hu/ocsp-root</ocspServerUrl>
-            </OCSPAccessUrls>
             <Sources>
                 <Source>TRUSTED_LIST</Source>
                 <Source>SIGNATURE</Source>
@@ -801,12 +781,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-F9885503EF87A30F9E95DFF53B0BAF31B088DF0F20E14DEEB9C9EF62D452D888</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -820,9 +794,23 @@
             </CertificateChain>
             <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</caIssuersUrl>
+                    <ocspUrl>http://qocsp.hiteles.gov.hu/ocsp-root</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://qca.hiteles.gov.hu/crl/GOVCA-ROOT.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -840,9 +828,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls/>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -851,12 +836,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BEB00B30839B9BC32C32E4447905950641F26421B15ED089198B518AE2EA1B99</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>keyCertSign</KeyUsage>
-                <KeyUsage>crlSign</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages/>
-            <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -866,7 +845,13 @@
             </BasicSignature>
             <Trusted>false</Trusted>
             <SelfSigned>true</SelfSigned>
-            <CertificatePolicies/>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -884,13 +869,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>Microsec Ltd.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-                <aiaUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-                <aiaUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>OCSP_RESPONSE</Source>
                 <Source>SIGNATURE</Source>
@@ -900,14 +878,6 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3066A3E28500603CEFC0647768C693AC071262D0F02AE0EB13B56F0ED3FBECC3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>digitalSignature</KeyUsage>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -922,9 +892,24 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://cp.e-szigno.hu/acps">1.3.6.1.4.1.21528.2.1.1.185.2.11</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://eqcpca2017-ca1.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://eqcpca2017-ca2.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                    <caIssuersUrl>http://eqcpca2017-ca3.e-szigno.hu/eqcpca2017.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
@@ -942,11 +927,6 @@
             <Locality>Budapest</Locality>
             <CountryName>HU</CountryName>
             <OrganizationName>NISZ Nemzeti Infokommunikációs Szolgáltató Zrt.</OrganizationName>
-            <AuthorityInformationAccessUrls>
-                <aiaUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</aiaUrl>
-            </AuthorityInformationAccessUrls>
-            <CRLDistributionPoints/>
-            <OCSPAccessUrls/>
             <Sources>
                 <Source>SIGNATURE</Source>
             </Sources>
@@ -955,13 +935,6 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3066A3E28500603CEFC0647768C693AC071262D0F02AE0EB13B56F0ED3FBECC3</EntityKey>
-            <KeyUsageBits>
-                <KeyUsage>nonRepudiation</KeyUsage>
-            </KeyUsageBits>
-            <ExtendedKeyUsages>
-                <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-            </ExtendedKeyUsages>
-            <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -975,9 +948,21 @@
             </CertificateChain>
             <Trusted>false</Trusted>
             <SelfSigned>false</SelfSigned>
-            <CertificatePolicies>
-                <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
-            </CertificatePolicies>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://hiteles.gov.hu/szabalyzatok">0.2.216.1.200.1100.100.42.3.1.5.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca.hiteles.gov.hu/cer/GOVCA-ROOT.cer</caIssuersUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
             <TrustedServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>

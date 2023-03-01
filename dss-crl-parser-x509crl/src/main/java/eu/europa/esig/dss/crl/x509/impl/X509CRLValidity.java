@@ -24,6 +24,7 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 
 import java.security.cert.X509CRL;
+import java.util.Objects;
 
 /**
  * The java.security.cert.X509CRL extension of {@code CRLValidity}
@@ -60,6 +61,24 @@ public class X509CRLValidity extends CRLValidity {
 	 */
 	public void setX509CRL(X509CRL x509crl) {
 		x509CRL = x509crl;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof X509CRLValidity)) return false;
+		if (!super.equals(o)) return false;
+
+		X509CRLValidity that = (X509CRLValidity) o;
+
+		return Objects.equals(x509CRL, that.x509CRL);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (x509CRL != null ? x509CRL.hashCode() : 0);
+		return result;
 	}
 
 }

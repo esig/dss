@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[AdvancedConcepts]]
 == Advanced DSS java concepts
@@ -105,6 +105,31 @@ This implementation is based on the OpenPDF framework. DSS provides two drawers 
 * `ImageOnlySignatureDrawer` - to draw an image within a signature field.
 
 WARNING: DSS provides a limited support of OpenPDF framework, therefore not all features are supported (e.g. text+image drawing).
+
+[[mimetype]]
+==== MimeType
+
+With a help of `ServiceLoader`, DSS provides a possibility of creation custom mimetype values in addition to the default enumerations defined within `MimeTypeEnum` class.
+
+In case a support of new mimetype(s) or file extension(s) is required, a new class defining the new values shall be created implementing the `MimeType` interface and an implementation of `MimeTypeLoader` handling the logic of new values processing.
+
+See an example of a class mimetypes implementation below:
+
+[source,java,indent=0]
+.Custom MimeType implementation example
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/CustomMimeTypeLoader.java[tags=demo]
+----
+
+In order to make the class accessible by `ServiceLoader` and visible for DSS, a new file with name `eu.europa.esig.dss.enumerations.MimeTypeLoader` shall be created within `META-INF/services` directory of your project containing the name of the `MimeTypeLoader` implementation:
+
+[source,java,indent=0]
+.Content of META-INF/services/eu.europa.esig.dss.enumerations.MimeTypeLoader file for CustomMimeTypeLoader class
+----
+eu.europa.esig.dss.cookbook.example.CustomMimeTypeLoader
+----
+
+This will load firstly the created class (`CustomMimeTypeLoader.java`) and after other available implementations (i.e. `MimeTypeEnumLoader` with default mimetypes).
 
 === Multithreading
 

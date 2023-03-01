@@ -28,6 +28,8 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
+import eu.europa.esig.dss.tsl.parsing.AbstractParsingTask;
+import eu.europa.esig.dss.tsl.parsing.LOTLParsingTask;
 import eu.europa.esig.dss.tsl.parsing.ParsingUtils;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
@@ -38,44 +40,41 @@ import java.util.concurrent.Callable;
  */
 public class PivotProcessing extends AbstractAnalysis implements Callable<PivotProcessingResult> {
 
-	/** The pivot source */
-	private final LOTLSource pivotSource;
-
-	/** The cache access of the record */
-	private final CacheAccessByKey cacheAccess;
+	/** The cache access of the LOTL */
+	private final CacheAccessByKey lotlCacheAccess;
 
 	/**
 	 * Default constructor
 	 *
-	 * @param source {@link LOTLSource} pivot source
-	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param pivotSource {@link LOTLSource} pivot source
+	 * @param pivotCacheAccess {@link CacheAccessByKey} cache access of the current Pivot to process
+	 * @param lotlCacheAccess {@link CacheAccessByKey} cache access of the corresponding LOTL
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 */
-	public PivotProcessing(final LOTLSource source, final CacheAccessByKey cacheAccess,
-						   final DSSFileLoader dssFileLoader) {
-		super(cacheAccess, dssFileLoader);
-		this.pivotSource = source;
-		this.cacheAccess = cacheAccess;
+	public PivotProcessing(final LOTLSource pivotSource, final CacheAccessByKey pivotCacheAccess,
+						   final CacheAccessByKey lotlCacheAccess, final DSSFileLoader dssFileLoader) {
+		super(pivotSource, pivotCacheAccess, dssFileLoader);
+		this.lotlCacheAccess = lotlCacheAccess;
 	}
 
 	@Override
 	public PivotProcessingResult call() throws Exception {
-
-		DSSDocument pivot = download(pivotSource.getUrl());
-
+		DSSDocument pivot = download(getSource().getUrl());
 		if (pivot != null) {
+			parsing(pivot);
 
-			lotlParsing(pivot, pivotSource);
-
-			ParsingCacheDTO parsingResult = cacheAccess.getParsingReadOnlyResult();
+			ParsingCacheDTO parsingResult = getCacheAccessByKey().getParsingReadOnlyResult();
 			OtherTSLPointer xmllotlPointer = ParsingUtils.getXMLLOTLPointer(parsingResult);
-			
 			if (xmllotlPointer != null) {
 				return new PivotProcessingResult(pivot, getLOTLAnnouncedCertificateSource(xmllotlPointer), xmllotlPointer.getLocation());
 			}
 		}
-
 		return null;
+	}
+
+	@Override
+	protected AbstractParsingTask<?> getParsingTask(DSSDocument document) {
+		return new LOTLParsingTask(document, (LOTLSource) getSource());
 	}
 
 	private CertificateSource getLOTLAnnouncedCertificateSource(OtherTSLPointer currentLOTLPointer) {
@@ -84,6 +83,12 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 			certificateSource.addCertificate(certificate);
 		}
 		return certificateSource;
+	}
+
+	@Override
+	protected void expireCache() {
+		super.expireCache();
+		lotlCacheAccess.expireValidation(); // ensure LOTL will be updated in case of pivot refresh
 	}
 
 }

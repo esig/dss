@@ -21,9 +21,8 @@
 package eu.europa.esig.dss.pades.timestamp.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -83,15 +82,12 @@ public class PDFTimestampServiceTest extends AbstractPAdESTestValidation {
 		super.checkPdfRevision(diagnosticData);
 		
 		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-		XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
+		PDFRevisionWrapper pdfRevision = timestampWrapper.getPDFRevision();
 		assertNotNull(pdfRevision);
-		assertEquals(1, pdfRevision.getFields().size());
+		assertEquals(1, pdfRevision.getSignatureFieldNames().size());
 		
-		XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-		assertNotNull(pdfSignatureDictionary);
-		
-		assertEquals("Adobe.PPKLite", pdfSignatureDictionary.getFilter());
-		assertEquals("ETSI.RFC3161", pdfSignatureDictionary.getSubFilter());
+		assertEquals("Adobe.PPKLite", pdfRevision.getFilter());
+		assertEquals("ETSI.RFC3161", pdfRevision.getSubFilter());
 	}
 
 }

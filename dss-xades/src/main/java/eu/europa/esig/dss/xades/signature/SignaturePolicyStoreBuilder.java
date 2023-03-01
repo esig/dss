@@ -57,6 +57,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	 * Default constructor
 	 */
 	public SignaturePolicyStoreBuilder() {
+		// empty
 	}
 
 	/**

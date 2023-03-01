@@ -31,12 +31,14 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -49,10 +51,14 @@ public class RemoteDocumentValidationService {
 	/** The certificate verifier to use */
 	private CertificateVerifier verifier;
 
+	/** The validation policy to be used by default */
+	private ValidationPolicy defaultValidationPolicy;
+
 	/**
 	 * Default construction instantiating object with null certificate verifier
 	 */
 	public RemoteDocumentValidationService() {
+		// empty
 	}
 
 	/**
@@ -62,6 +68,28 @@ public class RemoteDocumentValidationService {
 	 */
 	public void setVerifier(CertificateVerifier verifier) {
 		this.verifier = verifier;
+	}
+
+	/**
+	 * Sets the validation policy to be used by default, when no policy provided within the request
+	 *
+	 * @param validationPolicy {@link InputStream}
+	 */
+	public void setDefaultValidationPolicy(InputStream validationPolicy) {
+		try {
+			this.defaultValidationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(validationPolicy);
+		} catch (Exception e) {
+			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * Sets the validation policy to be used by default, when no policy provided within the request
+	 *
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public void setDefaultValidationPolicy(ValidationPolicy validationPolicy) {
+		this.defaultValidationPolicy = validationPolicy;
 	}
 
 	/**
@@ -76,10 +104,12 @@ public class RemoteDocumentValidationService {
 
 		Reports reports;
 		RemoteDocument policy = dataToValidate.getPolicy();
-		if (policy == null) {
-			reports = validator.validateDocument();
-		} else {
+		if (policy != null) {
 			reports = validator.validateDocument(getValidationPolicy(policy));
+		} else if (defaultValidationPolicy != null) {
+			reports = validator.validateDocument(defaultValidationPolicy);
+		} else {
+			reports = validator.validateDocument();
 		}
 
 		WSReportsDTO reportsDTO = new WSReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), 

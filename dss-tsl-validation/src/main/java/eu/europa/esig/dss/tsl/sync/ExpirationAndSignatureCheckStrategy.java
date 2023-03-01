@@ -61,6 +61,7 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 	 * Default constructor instantiating object with null values
 	 */
 	public ExpirationAndSignatureCheckStrategy() {
+		// empty
 	}
 
 	/**

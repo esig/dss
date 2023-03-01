@@ -12,13 +12,11 @@
     <SignaturesCount>1</SignaturesCount>
     <Signature SignatureFormat="PAdES-BASELINE-T" Id="S-632D8A2F2763E5538C8B9CF45EE057737FFDF0475EF0029CBE1D11C6B1750B1D">
         <CertificateChain>
-            <Certificate>
-                <id>C-12598566F2213834E81EB215855CDC124DA12B3D8498FD171AE3CAAF9A90480B</id>
-                <qualifiedName>TEST Signature.Bank</qualifiedName>
+            <Certificate Id="C-12598566F2213834E81EB215855CDC124DA12B3D8498FD171AE3CAAF9A90480B">
+                <QualifiedName>TEST Signature.Bank</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-917791BF89BAB924E1C30764793A2427CD2D544B7E38D9C5168BD2F75E9B00AE</id>
-                <qualifiedName>Legal Person CA G2 Test</qualifiedName>
+            <Certificate Id="C-917791BF89BAB924E1C30764793A2427CD2D544B7E38D9C5168BD2F75E9B00AE">
+                <QualifiedName>Legal Person CA G2 Test</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_FAILED</Indication>

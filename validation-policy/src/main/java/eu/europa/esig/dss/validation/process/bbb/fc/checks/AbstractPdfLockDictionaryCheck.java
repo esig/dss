@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -36,8 +36,8 @@ import java.util.List;
  */
 public abstract class AbstractPdfLockDictionaryCheck extends ChainItem<XmlFC> {
 
-    /** The PDF signature to be checked */
-    protected final SignatureWrapper signature;
+    /** The PDF revision */
+    protected final PDFRevisionWrapper pdfRevision;
 
     /** Corresponding lock dictionary */
     protected final XmlPDFLockDictionary pdfLockDictionary;
@@ -47,28 +47,27 @@ public abstract class AbstractPdfLockDictionaryCheck extends ChainItem<XmlFC> {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param signature {@link SignatureWrapper}
+     * @param pdfRevision {@link PDFRevisionWrapper}
      * @param pdfLockDictionary {@link XmlPDFLockDictionary}
      * @param constraint {@link LevelConstraint}
      */
-    protected AbstractPdfLockDictionaryCheck(I18nProvider i18nProvider, XmlFC result,
-                                          SignatureWrapper signature, XmlPDFLockDictionary pdfLockDictionary,
-                                          LevelConstraint constraint) {
+    protected AbstractPdfLockDictionaryCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision,
+                                             XmlPDFLockDictionary pdfLockDictionary, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
-        this.signature = signature;
+        this.pdfRevision = pdfRevision;
         this.pdfLockDictionary = pdfLockDictionary;
     }
 
     @Override
     protected boolean process() {
-        if (!signature.arePdfObjectModificationsDetected()) {
+        if (!pdfRevision.arePdfObjectModificationsDetected()) {
             return true;
         }
         if (pdfLockDictionary == null) {
             return true;
         }
 
-        List<String> modifiedFieldNames = signature.getModifiedFieldNames();
+        List<String> modifiedFieldNames = pdfRevision.getModifiedFieldNames();
         if (Utils.isCollectionEmpty(modifiedFieldNames)) {
             return true;
         }

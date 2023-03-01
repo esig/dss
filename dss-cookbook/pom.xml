@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.11.1</version>
+		<version>5.12.RC1</version>
 	</parent>
 
 	<name>CookBook</name>
@@ -55,6 +55,10 @@
 <!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
 <!-- 			<artifactId>dss-pades-openpdf</artifactId> -->
 <!-- 		</dependency> -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-pdfa</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>

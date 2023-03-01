@@ -62,7 +62,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 			assertExtendSignatureToAPossible();
-			checkSignatureIntegrity();
+			assertSignatureValid(signature);
 
 			if (xadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;

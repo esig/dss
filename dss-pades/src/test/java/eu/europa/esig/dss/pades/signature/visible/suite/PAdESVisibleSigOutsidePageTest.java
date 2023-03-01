@@ -22,22 +22,19 @@ package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
-import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
-import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfSignatureFieldPositionChecker;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +58,7 @@ public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
         SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
-        signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG));
+        signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG));
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
         fieldParameters.setOriginX(-100);
@@ -77,14 +74,16 @@ public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
 
     @Override
     protected DSSDocument sign() {
-        MockLogAlertPdfObjectFactory pdfObjectFactory = new MockLogAlertPdfObjectFactory();
-        pdfObjectFactory.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+        IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+        PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+        pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+        pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
         service.setPdfObjFactory(pdfObjectFactory);
 
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
-        pdfObjectFactory.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+        pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
 
         return super.sign();
     }
@@ -107,42 +106,6 @@ public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
     @Override
     protected String getSigningAlias() {
         return GOOD_USER;
-    }
-
-    private static class MockLogAlertPdfObjectFactory extends AbstractPdfObjFactory {
-
-        private static final IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
-
-        private static AbstractPDFSignatureService service;
-
-        static {
-            service = (AbstractPDFSignatureService) pdfObjectFactory.newPAdESSignatureService();
-        }
-
-        public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-            service.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
-        }
-
-        @Override
-        public PDFSignatureService newPAdESSignatureService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newContentTimestampService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newSignatureTimestampService() {
-            return service;
-        }
-
-        @Override
-        public PDFSignatureService newArchiveTimestampService() {
-            return service;
-        }
-
     }
 
 }

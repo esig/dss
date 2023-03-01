@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -44,7 +44,7 @@ public class PAdESEnvelopingOtherPdfTest extends AbstractPAdESTestValidation {
         super.checkPdfRevision(diagnosticData);
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        XmlPDFRevision pdfRevision = signature.getPDFRevision();
+        PDFRevisionWrapper pdfRevision = signature.getPDFRevision();
         assertNotNull(pdfRevision);
 
         assertFalse(signature.arePdfModificationsDetected());

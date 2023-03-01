@@ -43,6 +43,7 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 	 * Default constructor
 	 */
 	public DefaultPdfBoxVisibleSignatureDrawer() {
+		// empty
 	}
 
 	@Override
@@ -93,8 +94,13 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 	}
 
 	@Override
-	protected String getExpectedColorSpaceName() throws IOException {
-		return COSName.DEVICERGB.getName();
+	protected String getExpectedColorSpaceName() {
+		if (parameters.getImage() != null) {
+			// RGB image is being created for Default Drawer
+			return COSName.DEVICERGB.getName();
+		} else {
+			return ImageUtils.containRGBColor(parameters) ? COSName.DEVICERGB.getName() : COSName.DEVICEGRAY.getName();
+		}
 	}
 
 }

@@ -69,6 +69,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	protected Token() {
+		// empty
 	}
 
 	@Override
@@ -217,6 +218,30 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return signatureAlgorithm;
 	}
+
+	/**
+	 * Indicates if the token's signature is intact.
+	 * NOTE: The method isSignedBy(CertificateToken) must be called to set this flag.
+	 *       Return false if the check isSignedBy() was not performed or
+	 *       the signer's public key does not much.
+	 *       In order to check if the validation has been performed, use
+	 *       the method getSignatureValidity() that returns a three-state value.
+	 *
+	 * @return whether the token's signature is intact
+	 */
+	public boolean isSignatureIntact() {
+		return SignatureValidity.VALID == signatureValidity;
+	}
+
+	/**
+	 * Indicates if the token's signature is intact and the token is valid (e.g. token's structure, message-imprint, etc.).
+	 * NOTE: method isSignedBy(CertificateToken) shall be called before.
+	 *
+	 * @return {@code true} if the conditions corresponding to the token validity are met
+	 */
+	public boolean isValid() {
+		return isSignatureIntact();
+	}
 	
 	/**
 	 * Indicates a status of the token's signature validity. For each kind of token the
@@ -226,6 +251,16 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 */
 	public SignatureValidity getSignatureValidity() {
 		return signatureValidity;
+	}
+
+	/**
+	 * Returns the token invalidity reason when applicable.
+	 * NOTE: method isSignedBy(CertificateToken) shall be called before.
+	 *
+	 * @return {@link String} containing the reason of token invalidity, empty string when token is valid
+	 */
+	public String getInvalidityReason() {
+		return signatureInvalidityReason;
 	}
 
 	/**

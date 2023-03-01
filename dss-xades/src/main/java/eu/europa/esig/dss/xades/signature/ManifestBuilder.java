@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -162,8 +163,9 @@ public class ManifestBuilder {
 		if (Utils.isCollectionEmpty(documents)) {
 			throw new IllegalArgumentException("List of documents cannot be empty!");
 		}
-		ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, digestAlgorithm);
-		referenceBuilder.setReferenceIdPrefix("r-" + manifestId + "-");
+		final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+		referenceIdProvider.setReferenceIdPrefix("r-" + manifestId);
+		final ReferenceBuilder referenceBuilder = new ReferenceBuilder(documents, digestAlgorithm, referenceIdProvider);
 		return referenceBuilder.build();
 	}
 

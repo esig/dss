@@ -32,10 +32,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -62,9 +62,9 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 	@Test
 	public void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<>();
-		DSSDocument firstDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT);
+		DSSDocument firstDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		documentToSigns.add(firstDocument);
-		DSSDocument secondDocument = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT);
+		DSSDocument secondDocument = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
 		documentToSigns.add(secondDocument);
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -140,7 +140,7 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);
 		try {
-			assertEquals(MimeType.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
+			assertEquals(MimeTypeEnum.ASICE.getMimeTypeString(), new String(mimeTypeContent, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			fail(e.getMessage());
 		}

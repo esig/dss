@@ -33,6 +33,7 @@ public class CAdESTimestampParameters extends TimestampParameters {
 	 * The empty constructor
 	 */
 	public CAdESTimestampParameters() {
+		// empty
 	}
 
 	/**

@@ -22,22 +22,26 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxDocumentReaderTest {
+public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 
 	private static final String FILE = "/validation/doc-firmado-LT.pdf";
 
@@ -51,7 +55,7 @@ public class PdfBoxDocumentReaderTest {
 	
 	@Test
 	public void testPdfBoxUtilsEmptyDocument() throws Exception {
-		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "empty_doc")));
+		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(InMemoryDocument.createEmptyDocument()));
 	}
 	
 	@Test
@@ -72,9 +76,121 @@ public class PdfBoxDocumentReaderTest {
 
 			currentAccessPermission.setReadOnly();
 			assertTrue(currentAccessPermission.isReadOnly());
-			
-			pdfBoxDocumentReader.checkDocumentPermissions();
+
+			assertFalse(pdfBoxDocumentReader.isEncrypted());
+			assertTrue(pdfBoxDocumentReader.isOpenWithOwnerAccess());
+			assertTrue(pdfBoxDocumentReader.canFillSignatureForm());
+			assertTrue(pdfBoxDocumentReader.canCreateSignatureField());
 		}
+	}
+
+	@Test
+	public void permissionsProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void permissionsEditionProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void permissionsEditionNoFieldsProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
+			assertTrue(documentReader.isEncrypted());
+			assertTrue(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertTrue(documentReader.canCreateSignatureField());
+		}
+	}
+
+	// NOTE : Edition 6 is not supported in OpenPdf
+	@Test
+	public void permissionsEditionSixProtectedDocument() throws IOException {
+		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/restricted_fields.pdf"));
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument)) {
+			assertTrue(documentReader.isEncrypted());
+			assertFalse(documentReader.isOpenWithOwnerAccess());
+			assertTrue(documentReader.canFillSignatureForm());
+			assertFalse(documentReader.canCreateSignatureField());
+		}
+	}
+
+	@Test
+	public void generateDocumentIdTest() throws IOException {
+		DSSDocument firstDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+		DSSDocument secondDocument = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		Date date = new Date();
+		PAdESSignatureParameters parametersOne = new PAdESSignatureParameters();
+		parametersOne.bLevel().setSigningDate(date);
+		PAdESSignatureParameters parametersTwo = new PAdESSignatureParameters();
+		parametersTwo.bLevel().setSigningDate(date);
+
+		try (PdfBoxDocumentReader firstReader = new PdfBoxDocumentReader(firstDocument);
+			 PdfBoxDocumentReader secondReader = new PdfBoxDocumentReader(secondDocument)) {
+			assertEquals(firstReader.generateDocumentId(parametersOne), firstReader.generateDocumentId(parametersOne));
+			assertEquals(firstReader.generateDocumentId(parametersTwo), firstReader.generateDocumentId(parametersTwo));
+			assertEquals(secondReader.generateDocumentId(parametersOne), secondReader.generateDocumentId(parametersOne));
+			assertEquals(secondReader.generateDocumentId(parametersTwo), secondReader.generateDocumentId(parametersTwo));
+
+			assertEquals(firstReader.generateDocumentId(parametersOne), firstReader.generateDocumentId(parametersTwo));
+			assertEquals(secondReader.generateDocumentId(parametersOne), secondReader.generateDocumentId(parametersTwo));
+
+			assertNotEquals(firstReader.generateDocumentId(parametersOne), secondReader.generateDocumentId(parametersOne));
+			assertNotEquals(firstReader.generateDocumentId(parametersTwo), secondReader.generateDocumentId(parametersTwo));
+
+			long docIdOne = firstReader.generateDocumentId(parametersOne);
+			firstDocument.setName("newDocName");
+			assertNotEquals(docIdOne, firstReader.generateDocumentId(parametersOne));
+
+			secondDocument.setName("newDocName");
+			assertNotEquals(firstReader.generateDocumentId(parametersOne), secondReader.generateDocumentId(parametersOne));
+
+			parametersTwo.setSigningCertificate(getCertificate(GOOD_USER));
+			parametersTwo.reinit();
+			assertEquals(firstReader.generateDocumentId(parametersTwo), firstReader.generateDocumentId(parametersTwo));
+			assertNotEquals(firstReader.generateDocumentId(parametersOne), firstReader.generateDocumentId(parametersTwo));
+
+			parametersOne.setSigningCertificate(getCertificate(RSA_SHA3_USER));
+			parametersOne.reinit();
+			assertEquals(firstReader.generateDocumentId(parametersOne), firstReader.generateDocumentId(parametersOne));
+			assertNotEquals(firstReader.generateDocumentId(parametersOne), firstReader.generateDocumentId(parametersTwo));
+
+			// time test
+			for (int i = 0; i < 1000; i++) {
+				PAdESSignatureParameters sameTimeParameters = new PAdESSignatureParameters();
+				sameTimeParameters.bLevel().setSigningDate(date);
+
+				PAdESSignatureParameters diffTimeParameters = new PAdESSignatureParameters();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(new Date());
+				calendar.add(Calendar.MILLISECOND, 1);
+				diffTimeParameters.bLevel().setSigningDate(calendar.getTime());
+				assertNotEquals(firstReader.generateDocumentId(sameTimeParameters),
+						firstReader.generateDocumentId(diffTimeParameters));
+				assertEquals(firstReader.generateDocumentId(diffTimeParameters),
+						firstReader.generateDocumentId(diffTimeParameters));
+			}
+		}
+	}
+
+	@Override
+	protected String getSigningAlias() {
+		return null;
 	}
 
 }

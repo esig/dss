@@ -118,7 +118,7 @@ public class XAdESLevelBDoubleCounterSignTest extends AbstractXAdESCounterSignat
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signatureWrapper.isStructuralValidationValid());
-		assertEquals(8, signatureWrapper.getStructuralValidationMessages().size());
+		assertEquals(10, signatureWrapper.getStructuralValidationMessages().size());
 
 		boolean duplicateIdErrorFound = false;
 		for (String error : signatureWrapper.getStructuralValidationMessages()) {

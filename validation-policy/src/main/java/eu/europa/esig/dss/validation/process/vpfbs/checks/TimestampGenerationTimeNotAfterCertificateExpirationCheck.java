@@ -35,6 +35,8 @@ import java.util.Date;
 
 /**
  * This class verifies if the generation time of a content timestamp is not after the certificate's expiration time
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class TimestampGenerationTimeNotAfterCertificateExpirationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

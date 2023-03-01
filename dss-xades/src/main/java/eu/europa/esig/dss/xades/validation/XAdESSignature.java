@@ -378,7 +378,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public XAdESTimestampSource getTimestampSource() {
 		if (signatureTimestampSource == null) {
-			signatureTimestampSource = new XAdESTimestampSource(this, signatureElement, xadesPaths);
+			signatureTimestampSource = new XAdESTimestampSource(this);
 		}
 		return (XAdESTimestampSource) signatureTimestampSource;
 	}
@@ -410,12 +410,19 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (policyId != null) {
 				// Explicit policy
 				String policyUrlString = null;
+
 				String policyIdString = policyId.getTextContent();
-				policyIdString = DSSUtils.getObjectIdentifier(policyIdString);
-				if (!DSSUtils.isUrnOid(policyIdString)) {
+				if (Utils.isStringNotBlank(policyIdString) && !DSSUtils.isUrnOid(policyIdString) && !DSSUtils.isOidCode(policyIdString)) {
 					policyUrlString = policyIdString;
 				}
 
+				ObjectIdentifierQualifier qualifier = null;
+				String qualifierString = policyId.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
+				if (Utils.isStringNotBlank(qualifierString)) {
+					qualifier = ObjectIdentifierQualifier.fromValue(qualifierString);
+				}
+
+				policyIdString = DSSUtils.getObjectIdentifierValue(policyIdString, qualifier);
 				xadesSignaturePolicy = new XAdESSignaturePolicy(policyIdString);
 
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(policyIdentifier, xadesPaths.getCurrentSignaturePolicyDigestAlgAndValue()));
@@ -603,12 +610,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		Element identifierElement = DomUtils.getElement(spDocSpecificationElement, xadesPaths.getCurrentIdentifier());
 		if (identifierElement != null) {
 			String spDocSpecId = identifierElement.getTextContent();
-			spDocSpec.setId(DSSUtils.getObjectIdentifier(spDocSpecId));
 
+			ObjectIdentifierQualifier qualifier = null;
 			String qualifierString = identifierElement.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
 			if (Utils.isStringNotBlank(qualifierString)) {
-				spDocSpec.setQualifier(ObjectIdentifierQualifier.fromValue(qualifierString));
+				qualifier = ObjectIdentifierQualifier.fromValue(qualifierString);
+				spDocSpec.setQualifier(qualifier);
 			}
+
+			spDocSpec.setId(DSSUtils.getObjectIdentifierValue(spDocSpecId, qualifier));
 		}
 
 		String description = DomUtils.getValue(spDocSpecificationElement, xadesPaths.getCurrentDescription());
@@ -1491,14 +1501,21 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			result = new ArrayList<>();
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 				Node commitmentTypeIndicationNode = nodeList.item(ii);
-				String uri = DomUtils.getValue(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentIdentifierPath());
+				Element identifier = DomUtils.getElement(commitmentTypeIndicationNode, xadesPaths.getCurrentCommitmentIdentifierPath());
+
+				String uri = identifier.getTextContent();
 				if (uri == null) {
 					LOG.warn("The Identifier for a CommitmentTypeIndication is not defined! The CommitmentType is skipped.");
 					continue;
 				}
-				if (DSSUtils.isUrnOid(uri)) {
-					uri = DSSUtils.getOidCode(uri);
+
+				ObjectIdentifierQualifier qualifier = null;
+				String qualifierString = identifier.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
+				if (Utils.isStringNotBlank(qualifierString)) {
+					qualifier = ObjectIdentifierQualifier.fromValue(qualifierString);
 				}
+
+				uri = DSSUtils.getObjectIdentifierValue(uri, qualifier);
 
 				final CommitmentTypeIndication commitmentTypeIndication = new CommitmentTypeIndication(uri);
 				

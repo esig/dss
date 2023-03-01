@@ -38,6 +38,9 @@ public enum TimestampType {
 	/** CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp */
 	SIGNATURE_TIMESTAMP(1, true),
 
+	/** PAdES: /VRI/TS */
+	VRI_TIMESTAMP(1, true),
+
 	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp */
 	VALIDATION_DATA_REFSONLY_TIMESTAMP(2, false),
 

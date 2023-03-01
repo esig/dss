@@ -22,6 +22,8 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
+import eu.europa.esig.dss.pdf.PdfSignatureFieldPositionChecker;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
@@ -100,6 +102,16 @@ public class ITextPdfObjFactoryTest {
 
 		@Override
 		public void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder) {
+			// do nothing
+		}
+
+		@Override
+		public void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker) {
+			// do nothing
+		}
+
+		@Override
+		public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
 			// do nothing
 		}
 

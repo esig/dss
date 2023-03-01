@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +42,7 @@ public class ASiCUtilsTest {
 	public void isZip() {
 		assertFalse(ASiCUtils.isZip((DSSDocument) null));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 0 })));
+		assertFalse(ASiCUtils.isZip(InMemoryDocument.createEmptyDocument()));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'P' })));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'p', 'k' })));
 		InMemoryDocument emptyInMemoryDoc = new InMemoryDocument();
@@ -52,19 +53,18 @@ public class ASiCUtilsTest {
 
 	@Test
 	public void getASiCContainerType() {
-		MimeType mt = new MimeType();
-		mt.setMimeTypeString("application/vnd.etsi.asic-e+zip");
-		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(mt));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getASiCContainerType(MimeTypeEnum.ASICS));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ASICE));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ODT));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ODG));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ODP));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ODS));
 
-		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeType.ASICE));
-	}
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> ASiCUtils.getASiCContainerType(MimeTypeEnum.TEXT));
+		assertEquals(String.format("Not allowed mimetype '%s'", MimeTypeEnum.TEXT.getMimeTypeString()), exception.getMessage());
 
-	@Test
-	public void getWrongASiCContainerType() {
-		MimeType mt = new MimeType();
-		mt.setMimeTypeString("application/wrong");
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> ASiCUtils.getASiCContainerType(mt));
-		assertEquals("Not allowed mimetype 'application/wrong'", exception.getMessage());
+		exception = assertThrows(NullPointerException.class, () -> ASiCUtils.getASiCContainerType(null));
+		assertEquals("MimeType cannot be null!", exception.getMessage());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class ASiCUtilsTest {
 
 		zipComment = asicContent.getZipComment();
 		assertNotNull(zipComment);
-		assertEquals(ASiCUtils.getZipComment(MimeType.ASICS), zipComment);
+		assertEquals(ASiCUtils.getZipComment(MimeTypeEnum.ASICS), zipComment);
 	}
 
 	@Test

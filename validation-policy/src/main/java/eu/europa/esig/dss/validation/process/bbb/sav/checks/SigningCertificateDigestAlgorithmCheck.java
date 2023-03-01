@@ -35,6 +35,7 @@ import java.util.Date;
 /**
  * Verifies a DigestAlgorithm used for a signing-certificate-reference
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class SigningCertificateDigestAlgorithmCheck<T extends XmlConstraintsConclusion> extends
         SigningCertificateRefDigestCryptographicCheckerResultCheck<T> {

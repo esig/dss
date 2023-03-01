@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * XPointer signature scope
@@ -71,6 +72,31 @@ public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 	@Override
 	public SignatureScopeType getType() {
 		return DomUtils.isRootXPointer(uri) ? SignatureScopeType.FULL : SignatureScopeType.PARTIAL;
+	}
+
+	@Override
+	public String toString() {
+		return "XPointerSignatureScope{" +
+				"uri='" + uri + '\'' +
+				"} " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof XPointerSignatureScope)) return false;
+		if (!super.equals(o)) return false;
+
+		XPointerSignatureScope that = (XPointerSignatureScope) o;
+
+		return Objects.equals(uri, that.uri);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (uri != null ? uri.hashCode() : 0);
+		return result;
 	}
 
 }

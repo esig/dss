@@ -37,6 +37,7 @@ import java.util.Date;
 /**
  * Checks if a POE exists before the control time
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class POEExistsAtOrBeforeControlTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

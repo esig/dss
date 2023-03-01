@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pades.validation.dss.PdfVriDictSource;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -72,6 +73,9 @@ public class PAdESSignature extends CAdESSignature {
 
 	/** Represents an OCSP source obtained from DSS/VRI revisions */
 	private ListRevocationSource<OCSP> dssOCSPSource;
+
+	/** SHA-1 key computed on /Contents of the signature */
+	private String vriKey;
 
 	/**
 	 * The default constructor for PAdESSignature.
@@ -180,6 +184,20 @@ public class PAdESSignature extends CAdESSignature {
 			signatureTimestampSource = new PAdESTimestampSource(this, documentRevisions);
 		}
 		return (PAdESTimestampSource) signatureTimestampSource;
+	}
+
+	@Override
+	public List<TimestampToken> getDocumentTimestamps() {
+		return getTimestampSource().getDocumentTimestamps();
+	}
+
+	/**
+	 * Returns a list of timestamps enveloped within /VRI dictionary for the current signature
+	 *
+	 * @return a list of {@code TimestampToken}s
+	 */
+	public List<TimestampToken> getVRITimestamps() {
+		return getTimestampSource().getVriTimestamps();
 	}
 
 	@Override
@@ -373,11 +391,28 @@ public class PAdESSignature extends CAdESSignature {
 	 * @return related {@link String} VRI dictionary name
 	 */
 	public String getVRIKey() {
-		// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
-		// SHA1 digest of the signature to which it applies
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, getPdfSignatureDictionary().getContents());
-		String vriId = Utils.toHex(digest);
-		return vriId.toUpperCase();
+		if (vriKey == null) {
+			// By ETSI EN 319 142-1 V1.1.1, VRI dictionary's name is the base-16-encoded (uppercase)
+			// SHA1 digest of the signature to which it applies
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, getPdfSignatureDictionary().getContents());
+			String vriId = Utils.toHex(digest);
+			vriKey = vriId.toUpperCase();
+		}
+		return vriKey;
+	}
+
+	/**
+	 * Returns a VRI creation time defined within 'TU' field of a corresponding /VRI dictionary
+	 *
+	 * @return {@link Date} of VRI dictionary creation, when present
+	 */
+	public Date getVRICreationTime() {
+		PdfDssDict dssDictionary = getDssDictionary();
+		if (dssDictionary != null) {
+			PdfVriDictSource pdfVriDictTimestampSource = new PdfVriDictSource(dssDictionary, getVRIKey());
+			return pdfVriDictTimestampSource.getVRICreationTime();
+		}
+		return null;
 	}
 
 	@Override

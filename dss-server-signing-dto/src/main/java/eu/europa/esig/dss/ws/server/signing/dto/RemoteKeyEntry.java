@@ -47,6 +47,7 @@ public class RemoteKeyEntry implements Serializable {
 	 * Default constructor initializing object with null values
 	 */
 	public RemoteKeyEntry() {
+		// empty
 	}
 
 	/**

@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
+import java.io.Serializable;
+
 /**
  * Image horizontal and vertical resolution
  *
  */
-public class ImageResolution {
+public class ImageResolution implements Serializable {
+
+	private static final long serialVersionUID = -141396204517073379L;
 
 	/** X axis dpi */
 	private int xDpi;

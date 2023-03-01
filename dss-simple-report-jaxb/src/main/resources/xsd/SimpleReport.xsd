@@ -10,18 +10,12 @@
 	
 	<xs:complexType name="SimpleReport">
 		<xs:sequence>
-			<xs:element name="ValidationPolicy">
-				<xs:complexType>
-					<xs:sequence>
-						<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
-						<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
-					</xs:sequence>
-				</xs:complexType>
-			</xs:element>
+			<xs:element name="ValidationPolicy" type="ValidationPolicy" />
 			<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 			<xs:element name="ValidSignaturesCount" type="xs:int" />
 			<xs:element name="SignaturesCount" type="xs:int" />
 			<xs:element name="ContainerType" type="ContainerType" minOccurs="0" />
+			<xs:element name="PDFAInfo" type="PDFAInfo" minOccurs="0" />
 			
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
@@ -32,6 +26,13 @@
 		</xs:sequence>
 		<xs:attribute name="ValidationTime" type="xs:dateTime" />
 	</xs:complexType>
+
+	<xs:complexType name="ValidationPolicy">
+		<xs:sequence>
+			<xs:element name="PolicyName" type="xs:string" minOccurs="0" />
+			<xs:element name="PolicyDescription" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:simpleType name="ContainerType" final="restriction">
 		<xs:restriction base="xs:string">
@@ -39,6 +40,20 @@
 			<xs:enumeration value="ASiC-E" />
 		</xs:restriction>
 	</xs:simpleType>
+
+	<xs:complexType name="PDFAInfo">
+		<xs:sequence>
+			<xs:element name="PDFAProfile" type="xs:string" minOccurs="0" />
+			<xs:element name="ValidationMessages" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Error" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="valid" type="xs:boolean" />
+	</xs:complexType>
 	
 	<xs:complexType name="Token" abstract="true">
 		<xs:sequence>
@@ -166,9 +181,27 @@
 	
 	<xs:complexType name="Certificate">
 		<xs:sequence>
-			<xs:element type="xs:string" name="id" />
-			<xs:element type="xs:string" name="qualifiedName" />
+			<xs:element name="QualifiedName" type="xs:string" />
+			<xs:element name="TrustAnchors" type="TrustAnchors" minOccurs="0" />
 		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" use="required" />
+		<xs:attribute name="trusted" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="TrustAnchors">
+		<xs:sequence>
+			<xs:element name="TrustAnchor" type="TrustAnchor" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TrustAnchor">
+		<xs:sequence>
+			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceProvider" type="xs:string" />
+			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" />
+			<xs:element name="TrustServiceName" type="xs:string" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="countryCode" type="xs:string" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureLevel">

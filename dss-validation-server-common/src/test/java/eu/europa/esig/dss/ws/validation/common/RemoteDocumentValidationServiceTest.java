@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.ws.validation.common;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -40,6 +28,9 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -48,6 +39,19 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.validation.dto.DataToValidateDTO;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteDocumentValidationServiceTest {
 
@@ -93,6 +97,7 @@ public class RemoteDocumentValidationServiceTest {
 		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, null);
 		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
+		assertEquals("QES AdESQC TL based", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
 	@Test
@@ -103,6 +108,52 @@ public class RemoteDocumentValidationServiceTest {
 		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, policy);
 		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
+		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	public void testWithDefaultPolicyAndOriginalFile() throws Exception {
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+
+		Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
+		JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
+				.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/constraint.xml"));
+
+		ConstraintsParameters constraints = unmarshal.getValue();
+		constraints.setName("Default Policy");
+
+		RemoteDocumentValidationService validationService = new RemoteDocumentValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(new EtsiValidationPolicy(constraints));
+
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+		assertEquals("Default Policy", result.getSimpleReport().getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	public void testWithOverwrittenDefaultPolicyAndOriginalFile() throws Exception {
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+
+		Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
+		JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
+				.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/constraint.xml"));
+
+		ConstraintsParameters constraints = unmarshal.getValue();
+		constraints.setName("Default Policy");
+
+		RemoteDocumentValidationService validationService = new RemoteDocumentValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(new EtsiValidationPolicy(constraints));
+
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, policy);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
 	@Test

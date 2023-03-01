@@ -23,8 +23,12 @@ package eu.europa.esig.dss.spi;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -273,6 +277,8 @@ public class DSSUtilsTest {
 		assertFalse(signed.isSelfSigned());
 
 		assertFalse(tsa.isCA());
+		assertEquals(-1, tsa.getPathLenConstraint());
+
 		assertTrue(tsa.isSignedBy(signed));
 		assertTrue(tsa.isSignedBy(selfSign));
 	}
@@ -577,6 +583,45 @@ public class DSSUtilsTest {
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x20));
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x6E));
 		assertFalse(DSSUtils.isLineBreakByte((byte) 0x72));
+	}
+
+	@Test
+	public void getObjectIdentifierValue() {
+		// Silent processing
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com"));
+		assertEquals("https://nowina.lu/policy", DSSUtils.getObjectIdentifierValue("https://nowina.lu/policy"));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3"));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("1.2.3.4.5"));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3"));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3.4.5"));
+	}
+
+	@Test
+	public void getObjectIdentifierValueWithQualifier() {
+		// See DEBUG logs
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", null));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", null));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3", null));
+
+		assertEquals("https://nowina.lu/policy", DSSUtils.getObjectIdentifierValue("https://nowina.lu/policy", ObjectIdentifierQualifier.OID_AS_URN));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", ObjectIdentifierQualifier.OID_AS_URN));
+		assertEquals("1.2.3.4.5", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3.4.5", ObjectIdentifierQualifier.OID_AS_URN));
+
+		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", ObjectIdentifierQualifier.OID_AS_URI));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
+		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("urn:oid:1.2.3", ObjectIdentifierQualifier.OID_AS_URI));
+	}
+
+	@Test
+	public void isDocumentEmptyTest() {
+		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(new byte[] {})));
+		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY)));
+		assertTrue(DSSUtils.isEmpty(InMemoryDocument.createEmptyDocument()));
+		assertTrue(DSSUtils.isEmpty(new DigestDocument()));
+		assertTrue(DSSUtils.isEmpty(new DigestDocument(DigestAlgorithm.SHA1, DSSUtils.getSHA1Digest("Hello World!"))));
+		assertFalse(DSSUtils.isEmpty(new InMemoryDocument(new byte[] { 'a' })));
+		assertFalse(DSSUtils.isEmpty(new InMemoryDocument(getClass().getResourceAsStream("/good-user.crt"))));
+		assertFalse(DSSUtils.isEmpty(new FileDocument("src/test/resources/good-user.crt")));
 	}
 
 }

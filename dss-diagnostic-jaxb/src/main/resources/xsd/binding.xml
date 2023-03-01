@@ -98,7 +98,7 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.printShortName" />
 		</jaxb:bindings>
 		
-  <jaxb:bindings node="//xs:simpleType[@name='KeyUsage']">
+  <jaxb:bindings node="//xs:simpleType[@name='KeyUsageBit']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.KeyUsageBit" 
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.print" />
@@ -175,6 +175,12 @@
 						 parseMethod="eu.europa.esig.dss.jaxb.parsers.CertificationPermissionParser.parse"
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.CertificationPermissionParser.print" />
 	  </jaxb:bindings>
+
+	  <jaxb:bindings node="//xs:simpleType[@name='GeneralNameType']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.GeneralNameType"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.GeneralNameTypeParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.GeneralNameTypeParser.print" />
+	  </jaxb:bindings>
 		
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
@@ -227,7 +233,19 @@
 	<jaxb:bindings node="//xs:complexType[@name='ObjectModifications']//xs:element[@name='AnnotationChange']">
 		<jaxb:property name="AnnotationChanges" />
 	</jaxb:bindings>
-		
+	  <jaxb:bindings node="//xs:complexType[@name='AuthorityInformationAccess']//xs:element[@name='caIssuersUrl']">
+		  <jaxb:property name="caIssuersUrls" />
+	  </jaxb:bindings>
+	  <jaxb:bindings node="//xs:complexType[@name='AuthorityInformationAccess']//xs:element[@name='ocspUrl']">
+		  <jaxb:property name="ocspUrls" />
+	  </jaxb:bindings>
+	  <jaxb:bindings node="//xs:complexType[@name='NameConstraints']//xs:element[@name='PermittedSubtree']">
+		  <jaxb:property name="PermittedSubtrees" />
+	  </jaxb:bindings>
+	  <jaxb:bindings node="//xs:complexType[@name='NameConstraints']//xs:element[@name='ExcludedSubtree']">
+		  <jaxb:property name="ExcludedSubtrees" />
+	  </jaxb:bindings>
+
  	<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:attribute[@name='Parent']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignature" />

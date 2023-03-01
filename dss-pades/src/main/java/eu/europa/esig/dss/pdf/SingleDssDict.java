@@ -42,7 +42,7 @@ public class SingleDssDict extends AbstractPdfDssDict {
 	private static final Logger LOG = LoggerFactory.getLogger(SingleDssDict.class);
 
 	/** Represents a list of VRI dictionaries incorporated into the DSS dictionary */
-	private final List<PdfVRIDict> vris;
+	private final List<PdfVriDict> vris;
 
 	/**
 	 * Extract a DSS dictionary from a {@code PdfDict}
@@ -71,17 +71,17 @@ public class SingleDssDict extends AbstractPdfDssDict {
 		this.vris = extractVRIs(dssDictionary);
 	}
 
-	private List<PdfVRIDict> extractVRIs(PdfDict dssDictionary) {
+	private List<PdfVriDict> extractVRIs(PdfDict dssDictionary) {
 		PdfDict vriDict = dssDictionary.getAsDict(PAdESConstants.VRI_DICTIONARY_NAME);
 		if (vriDict != null) {
 			LOG.trace("There is a VRI dictionary in DSS dictionary");
 			try {
 				String[] names = vriDict.list();
 				if (Utils.isArrayNotEmpty(names)) {
-					List<PdfVRIDict> result = new ArrayList<>();
+					List<PdfVriDict> result = new ArrayList<>();
 					for (String name : names) {
 						if (isDictionaryKey(name)) {
-							result.add(new PdfVRIDict(name, vriDict.getAsDict(name)));
+							result.add(new PdfVriDict(name, vriDict.getAsDict(name)));
 						}
 					}
 					return result;
@@ -134,7 +134,7 @@ public class SingleDssDict extends AbstractPdfDssDict {
 	}
 
 	@Override
-	public List<PdfVRIDict> getVRIs() {
+	public List<PdfVriDict> getVRIs() {
 		return vris;
 	}
 

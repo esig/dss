@@ -26,10 +26,11 @@ import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
 import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
@@ -196,9 +197,9 @@ public class CAdESLevelBaselineB {
 			List<org.bouncycastle.asn1.x509.Attribute> claimedAttributes = new ArrayList<>(claimedSignerRoles.size());
 			for (final String claimedSignerRole : claimedSignerRoles) {
 				final DERUTF8String roles = new DERUTF8String(claimedSignerRole);
-				final org.bouncycastle.asn1.x509.Attribute id_aa_ets_signerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
+				final org.bouncycastle.asn1.x509.Attribute idAaEtsSignerAttr = new org.bouncycastle.asn1.x509.Attribute(OID.id_at_role,
 						new DERSet(roles));
-				claimedAttributes.add(id_aa_ets_signerAttr);
+				claimedAttributes.add(idAaEtsSignerAttr);
 			}
 			org.bouncycastle.asn1.cms.Attribute signerAttributes;
 			if (!parameters.isEn319122()) {
@@ -595,7 +596,7 @@ public class CAdESLevelBaselineB {
 			return;
 		}
 
-		MimeType mimeType = MimeType.BINARY;
+		MimeType mimeType = MimeTypeEnum.BINARY;
 		if (documentToSign != null && documentToSign.getMimeType() != null) {
 			mimeType = documentToSign.getMimeType();
 		}

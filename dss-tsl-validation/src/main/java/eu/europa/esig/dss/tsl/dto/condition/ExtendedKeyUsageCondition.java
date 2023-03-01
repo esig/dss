@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.tsl.dto.condition;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.utils.Utils;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +63,7 @@ public class ExtendedKeyUsageCondition implements Condition {
 	}
 
     /**
-     * Returns the list key purpose IDs to be be checked against the
+     * Returns the list key purpose IDs to be checked against the
      * certificate’s extended key usage extension.
      * 
      * @return an unmodifiable list, possibly empty; never {@code null}
@@ -77,8 +77,12 @@ public class ExtendedKeyUsageCondition implements Condition {
 	@Override
 	public boolean check(CertificateToken certificateToken) {
 		if (Utils.isCollectionNotEmpty(extendedKeyUsageOids)) {
+			ExtendedKeyUsages extendedKeyUsage = CertificateExtensionsUtils.getExtendedKeyUsage(certificateToken);
+			if (extendedKeyUsage == null || Utils.isCollectionEmpty(extendedKeyUsage.getOids())) {
+				return false;
+			}
 			for (String oid : extendedKeyUsageOids) {
-				if (!DSSASN1Utils.isExtendedKeyUsagePresent(certificateToken, new ASN1ObjectIdentifier(oid))) {
+				if (!extendedKeyUsage.getOids().contains(oid)) {
 					return false;
 				}
 			}

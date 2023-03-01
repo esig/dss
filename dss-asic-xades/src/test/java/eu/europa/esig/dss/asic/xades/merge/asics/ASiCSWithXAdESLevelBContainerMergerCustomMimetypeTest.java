@@ -27,11 +27,11 @@ import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,21 +54,21 @@ public class ASiCSWithXAdESLevelBContainerMergerCustomMimetypeTest extends Abstr
     @BeforeEach
     public void init() {
         documentsToSign = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
-                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeType.TEXT));
+                new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 
         firstSignatureParameters = new ASiCWithXAdESSignatureParameters();
         firstSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-        firstSignatureParameters.aSiC().setMimeType(MimeType.ZIP.getMimeTypeString());
+        firstSignatureParameters.aSiC().setMimeType(MimeTypeEnum.ZIP.getMimeTypeString());
         firstSignatureParameters.aSiC().setZipComment(true);
         firstSignatureParameters.bLevel().setSigningDate(new Date());
 
         secondSignatureParameters = new ASiCWithXAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         secondSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-        secondSignatureParameters.aSiC().setMimeType(MimeType.ZIP.getMimeTypeString());
+        secondSignatureParameters.aSiC().setMimeType(MimeTypeEnum.ZIP.getMimeTypeString());
         secondSignatureParameters.bLevel().setSigningDate(new Date());
     }
 
@@ -101,8 +101,8 @@ public class ASiCSWithXAdESLevelBContainerMergerCustomMimetypeTest extends Abstr
         super.checkContainerInfo(diagnosticData);
 
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
-        assertEquals(MimeType.ZIP.getMimeTypeString(), containerInfo.getMimeTypeContent());
-        assertEquals(ASiCUtils.getZipComment(MimeType.ZIP), containerInfo.getZipComment());
+        assertEquals(MimeTypeEnum.ZIP.getMimeTypeString(), containerInfo.getMimeTypeContent());
+        assertEquals(ASiCUtils.getZipComment(MimeTypeEnum.ZIP), containerInfo.getZipComment());
     }
 
     @Override

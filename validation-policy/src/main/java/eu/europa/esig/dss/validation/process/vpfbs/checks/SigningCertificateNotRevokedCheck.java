@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  * Verifies if the X.509 Certificate Validation as per clause 5.2.6 did not return
  * INDETERMINATE/REVOKED_NO_POE indication
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class SigningCertificateNotRevokedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

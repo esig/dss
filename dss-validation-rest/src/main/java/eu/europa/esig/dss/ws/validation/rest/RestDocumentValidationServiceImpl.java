@@ -41,6 +41,7 @@ public class RestDocumentValidationServiceImpl implements RestDocumentValidation
 	 * Default construction instantiating object with null RemoteDocumentValidationService
 	 */
 	public RestDocumentValidationServiceImpl() {
+		// empty
 	}
 
 	/**

@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades.validation;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -67,12 +66,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     private List<PdfRevision> documentRevisions;
 
     /** The PDF document password (for protected documents) */
-    private String passwordProtection;
+    private char[] passwordProtection;
 
     /**
      * Empty constructor
      */
-    PDFDocumentValidator() {
+    protected PDFDocumentValidator() {
         // empty
     }
 
@@ -110,9 +109,20 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
      * Specify the used password for the encrypted document
      *
      * @param pwd the used password
+     * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(pwd.toCharArray())}
      */
+    @Deprecated
     public void setPasswordProtection(String pwd) {
-        this.passwordProtection = pwd;
+        this.passwordProtection = pwd != null ? pwd.toCharArray(): null;
+    }
+
+    /**
+     * Specify the used password for the encrypted document
+     *
+     * @param passwordProtection the used password
+     */
+    public void setPasswordProtection(char[] passwordProtection) {
+        this.passwordProtection = passwordProtection;
     }
 
     @Override
@@ -161,6 +171,24 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     protected void postProcessing(List<AdvancedSignature> signatures) {
         PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
         pdfSignatureService.analyzePdfModifications(document, signatures, passwordProtection);
+    }
+
+    @Override
+    public List<TimestampToken> getDetachedTimestamps() {
+        List<TimestampToken> detachedTimestamps = super.getDetachedTimestamps();
+        timestampPostProcessing(detachedTimestamps);
+        return detachedTimestamps;
+    }
+
+    /**
+     * Post-process the extracted detached timestamps
+     * NOTE: the method shall be used only for the document validation
+     *
+     * @param timestampTokens a list of {@link TimestampToken}s
+     */
+    protected void timestampPostProcessing(List<TimestampToken> timestampTokens) {
+        PDFSignatureService pdfSignatureService = pdfObjectFactory.newPAdESSignatureService();
+        pdfSignatureService.analyzeTimestampPdfModifications(document, timestampTokens, passwordProtection);
     }
 
     @Override
@@ -350,8 +378,8 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         PAdESSignature padesSignature = (PAdESSignature) advancedSignature;
         List<DSSDocument> result = new ArrayList<>();
-        InMemoryDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
-        if (originalPDF != null && originalPDF.getBytes().length != 0) {
+        DSSDocument originalPDF = PAdESUtils.getOriginalPDF(padesSignature);
+        if (originalPDF != null && !DSSUtils.isEmpty(originalPDF)) {
             result.add(originalPDF);
         }
         return result;

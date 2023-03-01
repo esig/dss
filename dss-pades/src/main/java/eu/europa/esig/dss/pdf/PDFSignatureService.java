@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
@@ -29,6 +30,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.List;
 
@@ -46,8 +48,26 @@ public interface PDFSignatureService {
 	 * @param parameters
 	 *            the signature/timestamp parameters
 	 * @return the digest value
+	 *
+	 * @deprecated since 5.12. Use
+	 * {@code
+	 * 		MessageDigest messageDigest = messageDigest(toSignDocument, parameters);
+	 * 	    byte[] digest = messageDigest.getValue();
+	 * }
 	 */
+	@Deprecated
 	byte[] digest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
+
+	/**
+	 * Returns the message-digest computed on PDF signature revision's ByteRange
+	 *
+	 * @param toSignDocument
+	 *            the document to be signed
+	 * @param parameters
+	 *            the signature/timestamp parameters
+	 * @return {@link DSSMessageDigest}
+	 */
+	DSSMessageDigest messageDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters);
 
 	/**
 	 * Signs a PDF document
@@ -72,11 +92,25 @@ public interface PDFSignatureService {
 	 *            the password protection phrase used to encrypt the PDF document
 	 *            use 'null' value for not an encrypted document
 	 * @return list of extracted {@link PdfRevision}s
+	 * @deprecated since DSS 5.12. Use {@code #getRevisions(document, pwd.toCharArray())}
 	 */
+	@Deprecated
 	List<PdfRevision> getRevisions(final DSSDocument document, final String pwd);
 
 	/**
-	 * This method adds the DSS dictionary (Baseline-LT)
+	 * Retrieves revisions from a PDF document
+	 *
+	 * @param document
+	 *            the document to extract revisions from
+	 * @param pwd
+	 *            the password protection phrase used to encrypt the PDF document
+	 *            use 'null' value for not an encrypted document
+	 * @return list of extracted {@link PdfRevision}s
+	 */
+	List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd);
+
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT) to a document without password-protection and without VRI dictionary.
 	 * 
 	 * @param document
 	 *            the document to be extended
@@ -96,9 +130,41 @@ public interface PDFSignatureService {
 	 * @param pwd
 	 *            the password protection used to create the encrypted document (optional)
 	 * @return the pdf document with the added dss dictionary
+	 * @deprecated since DSS 5.12. Use {@code #addDssDictionary(document, validationDataForInclusion, pwd.toCharArray())}
 	 */
+	@Deprecated
 	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
 								 final String pwd);
+
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document without inclusion of VRI dictionary.
+	 *
+	 * @param document
+	 *            the document to be extended
+	 * @param validationDataForInclusion
+	 *            {@link PdfValidationDataContainer}
+	 * @param pwd
+	 *            the password protection used to create the encrypted document (optional)
+	 * @return the pdf document with the added dss dictionary
+	 */
+	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+								 final char[] pwd);
+
+	/**
+	 * This method adds the DSS dictionary (Baseline-LT) to a password-protected document with a VRI dictionary if defined.
+	 *
+	 * @param document
+	 *            the document to be extended
+	 * @param validationDataForInclusion
+	 *            {@link PdfValidationDataContainer}
+	 * @param pwd
+	 *            the password protection used to create the encrypted document (optional)
+	 * @param includeVRIDict
+	 *            defines whether VRI dictionary should be included to the created DSS dictionary
+	 * @return the pdf document with the added dss dictionary
+	 */
+	DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+								 final char[] pwd, final boolean includeVRIDict);
 
 	/**
 	 * This method returns not signed signature-fields
@@ -117,8 +183,21 @@ public interface PDFSignatureService {
 	 * @param pwd
 	 *            the password protection phrase used to encrypt the document
 	 * @return the list of not signed signature field names
+	 * @deprecated since DSS 5.12. Use {@code #getAvailableSignatureFields(document, pwd.toCharArray())}
 	 */
+	@Deprecated
 	List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd);
+
+	/**
+	 * Returns not-signed signature fields from an encrypted document
+	 *
+	 * @param document
+	 *            the pdf document
+	 * @param pwd
+	 *            the password protection phrase used to encrypt the document
+	 * @return the list of not signed signature field names
+	 */
+	List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd);
 
 	/**
 	 * This method allows to add a new signature field to an existing pdf document
@@ -141,9 +220,25 @@ public interface PDFSignatureService {
 	 * @param pwd
 	 *            the password protection used to create the encrypted document (optional)
 	 * @return the pdf document with the new added signature field
+	 * @deprecated since DSS 5.12. Use {@code #addNewSignatureField(document, parameters, pwd.toCharArray())}
 	 */
+	@Deprecated
 	DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
 									 final String pwd);
+
+	/**
+	 * This method allows to add a new signature field to an existing encrypted pdf document
+	 *
+	 * @param document
+	 *            the pdf document
+	 * @param parameters
+	 *            the parameters with the coordinates,... of the signature field
+	 * @param pwd
+	 *            the password protection used to create the encrypted document (optional)
+	 * @return the pdf document with the new added signature field
+	 */
+	DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+									 final char[] pwd);
 
 	/**
 	 * Analyze the PDF revision and try to detect any modification (shadow attacks)
@@ -151,8 +246,28 @@ public interface PDFSignatureService {
 	 * @param document {@link DSSDocument} the document
 	 * @param signatures       the different signatures to analyse
 	 * @param pwd                 {@link String} password protection
+	 * @deprecated since DSS 5.12. Use {@code #analyzePdfModifications(document, signatures, pwd.toCharArray())}
 	 */
-	void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd);
+	@Deprecated
+	void analyzePdfModifications(final DSSDocument document, final List<AdvancedSignature> signatures, final String pwd);
+
+	/**
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks) for signatures
+	 *
+	 * @param document    {@link DSSDocument} the document
+	 * @param signatures  the different signatures to be analysed
+	 * @param pwd         {@link String} password protection
+	 */
+	void analyzePdfModifications(final DSSDocument document, final List<AdvancedSignature> signatures, final char[] pwd);
+
+	/**
+	 * Analyze the PDF revision and try to detect any modification (shadow attacks) for PDf document timestamps
+	 *
+	 * @param document    {@link DSSDocument} the document
+	 * @param timestamps  the detached document timestamps to be analysed
+	 * @param pwd         {@link String} password protection
+	 */
+	void analyzeTimestampPdfModifications(final DSSDocument document, final List<TimestampToken> timestamps, final char[] pwd);
 
 	/**
 	 * Returns a page preview with the visual signature
@@ -205,5 +320,21 @@ public interface PDFSignatureService {
 	 * @param pdfObjectModificationsFinder {@link PdfObjectModificationsFinder}
 	 */
 	void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder);
+
+	/**
+	 * Sets the {@code PdfPermissionsChecker} used to verify the PDF document rules for a new signature creation
+	 *
+	 * @param pdfPermissionsChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker);
+
+	/**
+	 * Sets the {@code PdfSignatureFieldPositionChecker} used to verify the validity of new signature field placement.
+	 * For example to ensure the new signature field lies within PDF page borders and/or
+	 * it does not overlap with existing signature fields.
+	 *
+	 * @param pdfSignatureFieldPositionChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker);
 
 }

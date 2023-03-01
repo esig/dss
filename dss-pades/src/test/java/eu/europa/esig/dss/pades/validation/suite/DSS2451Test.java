@@ -21,14 +21,18 @@
 package eu.europa.esig.dss.pades.validation.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS2451Test extends AbstractPAdESTestValidation {
@@ -61,7 +65,7 @@ public class DSS2451Test extends AbstractPAdESTestValidation {
         boolean failedSigFound = false;
         for (String signatureId : simpleReport.getSignatureIdList()) {
             if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(signatureId))) {
-                assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(signatureId));
+                assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(signatureId));
                 failedSigFound = true;
             } else {
                 validSigFound = true;
@@ -69,6 +73,34 @@ public class DSS2451Test extends AbstractPAdESTestValidation {
         }
         assertTrue(validSigFound);
         assertTrue(failedSigFound);
+    }
+
+    @Override
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        int validByteRangeSigCounter = 0;
+        int invalidByteRangeSigCounter = 0;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
+            assertNotNull(pdfRevision);
+            assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
+            checkPdfSignatureDictionary(pdfRevision);
+
+            if (pdfRevision.isSignatureByteRangeValid()) {
+                ++validByteRangeSigCounter;
+            } else {
+                ++invalidByteRangeSigCounter;
+            }
+
+            assertFalse(signatureWrapper.arePdfModificationsDetected());
+            assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+        }
+        assertEquals(1, validByteRangeSigCounter);
+        assertEquals(1, invalidByteRangeSigCounter);
+    }
+
+    @Override
+    protected void checkByteRange(PDFRevisionWrapper pdfRevision) {
+        // skip
     }
 
 }

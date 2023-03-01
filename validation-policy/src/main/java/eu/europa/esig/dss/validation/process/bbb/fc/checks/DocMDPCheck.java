@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -37,47 +38,47 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class DocMDPCheck extends ChainItem<XmlFC> {
 
-    /** The PDF signature to be checked */
-    private final SignatureWrapper signature;
+    /** The PDF revision */
+    private final PDFRevisionWrapper pdfRevision;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param signature {@link SignatureWrapper}
+     * @param pdfRevision {@link SignatureWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public DocMDPCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature, LevelConstraint constraint) {
+    public DocMDPCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
-        this.signature = signature;
+        this.pdfRevision = pdfRevision;
     }
 
     @Override
     protected boolean process() {
-        if (!signature.arePdfObjectModificationsDetected()) {
+        if (!pdfRevision.arePdfObjectModificationsDetected()) {
             return true;
         }
-        CertificationPermission docMDPPermissions = signature.getDocMDPPermissions();
+        CertificationPermission docMDPPermissions = pdfRevision.getDocMDPPermissions();
         if (docMDPPermissions == null) {
             return true;
         }
         switch (docMDPPermissions) {
             case NO_CHANGE_PERMITTED:
-                if (Utils.isCollectionNotEmpty(signature.getPdfSignatureOrFormFillChanges()) ||
-                        Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
-                        Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                if (Utils.isCollectionNotEmpty(pdfRevision.getPdfSignatureOrFormFillChanges()) ||
+                        Utils.isCollectionNotEmpty(pdfRevision.getPdfAnnotationChanges()) ||
+                        Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                     return false;
                 }
                 break;
             case MINIMAL_CHANGES_PERMITTED:
-                if (Utils.isCollectionNotEmpty(signature.getPdfAnnotationChanges()) ||
-                        Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                if (Utils.isCollectionNotEmpty(pdfRevision.getPdfAnnotationChanges()) ||
+                        Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                     return false;
                 }
                 break;
             case CHANGES_PERMITTED:
-                if (Utils.isCollectionNotEmpty(signature.getPdfUndefinedChanges())) {
+                if (Utils.isCollectionNotEmpty(pdfRevision.getPdfUndefinedChanges())) {
                     return false;
                 }
                 break;

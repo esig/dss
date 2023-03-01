@@ -46,7 +46,7 @@ public class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature 
 
 	@BeforeEach
 	public void init() throws Exception {
-		documentToSign = new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY);
+		documentToSign = InMemoryDocument.createEmptyDocument();
 
 		signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

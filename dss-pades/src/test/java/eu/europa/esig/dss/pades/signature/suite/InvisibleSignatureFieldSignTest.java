@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
 
 public class InvisibleSignatureFieldSignTest extends AbstractPAdESTestSignature {
 
@@ -43,7 +42,7 @@ public class InvisibleSignatureFieldSignTest extends AbstractPAdESTestSignature 
 
 		documentToSign = new InMemoryDocument(InvisibleSignatureFieldSignTest.class.getResourceAsStream("/unsignedPDFWithSignatureFieldButInvisible.pdf"),
 				"unsignedPDFWithSignatureFieldButInvisible.pdf",
-				MimeType.PDF);
+				MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

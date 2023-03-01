@@ -47,6 +47,7 @@ public abstract class RevocationRef<R extends Revocation> implements IdentifierB
 	 * Default constructor instantiating object with null values
 	 */
 	protected RevocationRef() {
+		// empty
 	}
 
 	/**

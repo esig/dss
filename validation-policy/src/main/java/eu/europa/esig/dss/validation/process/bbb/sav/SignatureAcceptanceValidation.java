@@ -170,7 +170,10 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		item = item.setNextItem(certifiedRoles());
 
 		// cryptographic check
-		item = item.setNextItem(cryptographic());
+		item = cryptographic(item);
+
+		// cryptographic check on signed attributes
+		item = cryptographicSignedAttributes(item);
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {

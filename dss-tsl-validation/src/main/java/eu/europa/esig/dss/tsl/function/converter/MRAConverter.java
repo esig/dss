@@ -42,6 +42,7 @@ public class MRAConverter implements Function<MutualRecognitionAgreementInformat
 	 * Default constructor
 	 */
 	public MRAConverter() {
+		// empty
 	}
 
 	@Override

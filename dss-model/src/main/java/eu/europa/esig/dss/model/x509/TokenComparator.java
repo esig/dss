@@ -35,6 +35,7 @@ public class TokenComparator implements Comparator<Token>, Serializable {
 	 * Default constructor
 	 */
 	public TokenComparator() {
+		// empty
 	}
 
 	@Override

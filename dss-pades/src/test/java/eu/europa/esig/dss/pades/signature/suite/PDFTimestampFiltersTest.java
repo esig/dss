@@ -21,9 +21,8 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -94,14 +93,11 @@ public class PDFTimestampFiltersTest extends AbstractPAdESTestSignature {
 				signatureTimestampFound = true;
 				
 			} else if (TimestampType.DOCUMENT_TIMESTAMP == timestampWrapper.getType()) {
-				XmlPDFRevision pdfRevision = timestampWrapper.getPDFRevision();
+				PDFRevisionWrapper pdfRevision = timestampWrapper.getPDFRevision();
 				assertNotNull(pdfRevision);
 				
-				XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-				assertNotNull(pdfSignatureDictionary);
-				
-				assertEquals("Adobe.PPKLite", pdfSignatureDictionary.getFilter());
-				assertEquals("ETSI.RFC3161", pdfSignatureDictionary.getSubFilter());
+				assertEquals("Adobe.PPKLite", pdfRevision.getFilter());
+				assertEquals("ETSI.RFC3161", pdfRevision.getSubFilter());
 
 				docTimestampFound = true;
 				

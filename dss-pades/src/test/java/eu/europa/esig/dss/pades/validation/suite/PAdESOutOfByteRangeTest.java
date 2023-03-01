@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PAdESOutOfByteRangeTest extends AbstractPAdESTestValidation {
 
@@ -38,6 +41,13 @@ public class PAdESOutOfByteRangeTest extends AbstractPAdESTestValidation {
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertFalse(signature.isSignatureIntact());
+	}
+
+	@Override
+	protected void checkByteRange(PDFRevisionWrapper pdfRevision) {
+		assertNotNull(pdfRevision.getSignatureByteRange());
+		assertEquals(4, pdfRevision.getSignatureByteRange().size());
+		assertFalse(pdfRevision.isSignatureByteRangeValid());
 	}
 
 }

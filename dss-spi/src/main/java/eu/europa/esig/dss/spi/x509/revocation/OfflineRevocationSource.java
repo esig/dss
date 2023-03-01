@@ -217,8 +217,8 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 		final List<RevocationToken<R>> revocationTokens = getRevocationTokens(certificateToken, issuerCertificateToken);
 		if (Utils.isCollectionNotEmpty(revocationTokens)) {
 			for (RevocationToken<R> revocationToken : revocationTokens) {
-				if (latestRevocationToken == null || (revocationToken.getProductionDate() != null
-						&& latestRevocationToken.getProductionDate().before(revocationToken.getProductionDate()))) {
+				if (latestRevocationToken == null || (revocationToken.getThisUpdate() != null
+						&& latestRevocationToken.getThisUpdate().before(revocationToken.getThisUpdate()))) {
 					latestRevocationToken = revocationToken;
 				}
 			}

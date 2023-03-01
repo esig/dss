@@ -14,17 +14,14 @@
     <Signature SignatureFormat="CAdES-BASELINE-B" Id="S-132A03478A000A8356CE0470BCB15FF5A51B7A4C00B1EBD83AFC78DB67DFE178">
         <Filename>META-INF/signature001.p7s</Filename>
         <CertificateChain>
-            <Certificate>
-                <id>C-2CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4</id>
-                <qualifiedName>good-user</qualifiedName>
+            <Certificate Id="C-2CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4">
+                <QualifiedName>good-user</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB</id>
-                <qualifiedName>good-ca</qualifiedName>
+            <Certificate Id="C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB">
+                <QualifiedName>good-ca</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023</id>
-                <qualifiedName>root-ca</qualifiedName>
+            <Certificate Id="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023" trusted="true">
+                <QualifiedName>root-ca</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
@@ -47,17 +44,14 @@
     <Signature SignatureFormat="CAdES-BASELINE-B" Id="S-5A5C2391891B3D58E7AC7472ACC38CE3894E965FA5840694D7A94AFC9A4BDB59">
         <Filename>META-INF/signature002.p7s</Filename>
         <CertificateChain>
-            <Certificate>
-                <id>C-2CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4</id>
-                <qualifiedName>good-user</qualifiedName>
+            <Certificate Id="C-2CFD70C719A4175EE5E68712499F8D33B45AB5CB727ED7D6FC43B62210AD26B4">
+                <QualifiedName>good-user</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB</id>
-                <qualifiedName>good-ca</qualifiedName>
+            <Certificate Id="C-A67956063E9D60455B955541D8437C252DF781A29C403B778C9AAF48D1D129EB">
+                <QualifiedName>good-ca</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023</id>
-                <qualifiedName>root-ca</qualifiedName>
+            <Certificate Id="C-17C7950D341270B2431503B41816F260E68B14C95D5B3EC7E497855598F00023" trusted="true">
+                <QualifiedName>root-ca</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>INDETERMINATE</Indication>
@@ -80,13 +74,11 @@
     <Timestamp Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
         <Filename>META-INF/timestamp002.tst</Filename>
         <CertificateChain>
-            <Certificate>
-                <id>C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241</id>
-                <qualifiedName>ee-good-tsa</qualifiedName>
+            <Certificate Id="C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241">
+                <QualifiedName>ee-good-tsa</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3</id>
-                <qualifiedName>ee-root-ca</qualifiedName>
+            <Certificate Id="C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3" trusted="true">
+                <QualifiedName>ee-root-ca</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>PASSED</Indication>
@@ -103,13 +95,11 @@
     <Timestamp Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
         <Filename>META-INF/timestamp001.tst</Filename>
         <CertificateChain>
-            <Certificate>
-                <id>C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241</id>
-                <qualifiedName>ee-good-tsa</qualifiedName>
+            <Certificate Id="C-70FC6AEDDE983F0641B81C10E7FAEF57D5815AF462385C034F874D1E27301241">
+                <QualifiedName>ee-good-tsa</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3</id>
-                <qualifiedName>ee-root-ca</qualifiedName>
+            <Certificate Id="C-6D096B9723FE55DFC4FC1B8A3C015CDF4D3AD7210CDF5E8558775F796EC9DEB3" trusted="true">
+                <QualifiedName>ee-root-ca</QualifiedName>
             </Certificate>
         </CertificateChain>
         <Indication>PASSED</Indication>

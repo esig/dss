@@ -33,6 +33,7 @@ public class PdfBoxDefaultSignatureDrawerFactory implements PdfBoxSignatureDrawe
 	 * Default constructor
 	 */
 	public PdfBoxDefaultSignatureDrawerFactory() {
+		// empty
 	}
 
 	@Override

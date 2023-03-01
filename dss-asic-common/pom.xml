@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.11.1</version>
+		<version>5.12.RC1</version>
 	</parent>
 
 	<artifactId>dss-asic-common</artifactId>
@@ -59,6 +59,7 @@
 			<id>quick-init</id>
 			<properties>
 				<maven.test.skip>false</maven.test.skip>
+				<maven.test.skip.exec>true</maven.test.skip.exec>
 			</properties>
 		</profile>
 	</profiles>

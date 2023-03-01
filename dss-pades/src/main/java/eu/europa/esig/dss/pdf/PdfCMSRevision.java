@@ -50,6 +50,11 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	private final DSSDocument signedContent;
 
 	/**
+	 * Original signed revision content
+	 */
+	private final DSSDocument previousRevision;
+
+	/**
 	 * Defines if the revision covers all document bytes
 	 */
 	private final boolean coverAllOriginalBytes;
@@ -73,29 +78,42 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	 *                              the list of {@link PdfSignatureField}s
 	 * @param signedContent
 	 *                              {@link DSSDocument} the signed content
+	 * @param previousRevision
+	 *                              {@link DSSDocument} the originally signed PDF revision (before signature)
 	 * @param coverAllOriginalBytes
 	 *                              true if the signature covers all original bytes
 	 */
 	protected PdfCMSRevision(PdfSignatureDictionary signatureDictionary, List<PdfSignatureField> signatureFields,
-							 DSSDocument signedContent, boolean coverAllOriginalBytes) {
+							 DSSDocument signedContent, DSSDocument previousRevision, boolean coverAllOriginalBytes) {
 		Objects.requireNonNull(signatureDictionary, "The signature dictionary cannot be null!");
 		Objects.requireNonNull(signatureFields, "The signature fields must be defined!");
 		Objects.requireNonNull(signedContent, "The signed content cannot be null!");
+		Objects.requireNonNull(previousRevision, "The previous revision cannot be null!");
 		this.signatureDictionary = signatureDictionary;
 		this.signatureFields = signatureFields;
 		this.signedContent = signedContent;
+		this.previousRevision = previousRevision;
 		this.coverAllOriginalBytes = coverAllOriginalBytes;
 	}
 
 	/**
-	 * Gets the bytes of the signature revision
+	 * Gets the current signature revision
 	 *
-	 * @return byte array
+	 * @return {@link DSSDocument}
 	 */
 	public DSSDocument getSignedData() {
 		return signedContent;
 	}
-	
+
+	/**
+	 * Gets PDF revision preceding to the current signature revision
+	 *
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getPreviousRevision() {
+		return previousRevision;
+	}
+
 	@Override
 	public PdfSignatureDictionary getPdfSigDictInfo() {
 		return signatureDictionary;

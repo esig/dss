@@ -22,9 +22,10 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +44,7 @@ public class JAdESLevelBWithCompleteTypHeaderTest extends AbstractJAdESTestValid
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertNotNull(signature.getMimeType());
-        assertEquals(MimeType.JOSE, MimeType.fromMimeTypeString(signature.getMimeType()));
+        assertEquals(MimeTypeEnum.JOSE, MimeType.fromMimeTypeString(signature.getMimeType()));
     }
 
     @Override
@@ -51,7 +52,7 @@ public class JAdESLevelBWithCompleteTypHeaderTest extends AbstractJAdESTestValid
         super.validateETSIDataObjectFormatType(dataObjectFormat);
 
         assertNotNull(dataObjectFormat.getMimeType());
-        assertEquals(MimeType.JOSE, MimeType.fromMimeTypeString(dataObjectFormat.getMimeType()));
+        assertEquals(MimeTypeEnum.JOSE, MimeType.fromMimeTypeString(dataObjectFormat.getMimeType()));
     }
 
 }

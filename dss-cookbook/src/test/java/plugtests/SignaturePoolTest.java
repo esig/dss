@@ -493,6 +493,13 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation<Serializab
 	}
 	
 	@Override
+	protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+		if (Utils.isCollectionNotEmpty(diagnosticData.getUsedCertificates())) {
+			super.checkOrphanTokens(diagnosticData);
+		}
+	}
+
+	@Override
 	protected void checkStructureValidation(DiagnosticData diagnosticData) {
 		// skip
 	}

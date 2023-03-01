@@ -29,18 +29,22 @@ public enum TextWrapping {
 
     /**
      * When using the value, a font size is adapted in order to fill the whole signature field's space,
-     * by keeping the defined whitespaces in new lines by user
+     * by keeping the defined whitespaces in new lines by user.
+     * When using with a combination of image, the image block is computed at first and the rest space is filled by text.
      */
     FILL_BOX,
 
     /**
      * The text is formatted, by separating the provided text to multiple lines in order to find the biggest font size
-     * in order to wrap the text to the defined signature field's box
+     * in order to wrap the text to the defined signature field's box.
+     * When using with a combination of image, the image block is computed at first and the rest space is filled by text.
      */
     FILL_BOX_AND_LINEBREAK,
 
     /**
-     * When using the value, the text is generated based on the font values provided within parameters
+     * When using the value, the text is generated based on the font values provided within parameters.
+     * When using this value with combination of image, the text is computed at first and
+     * the rest space is filled by the image.
      */
     FONT_BASED;
 

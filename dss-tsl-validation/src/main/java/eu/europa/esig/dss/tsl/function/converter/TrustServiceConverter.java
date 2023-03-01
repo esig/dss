@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.Condition;
@@ -31,17 +30,7 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
-import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
-import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
-import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
-import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.trustedlist.enums.Assert;
-import eu.europa.esig.trustedlist.jaxb.ecc.CriteriaListType;
-import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageBitType;
-import eu.europa.esig.trustedlist.jaxb.ecc.KeyUsageType;
-import eu.europa.esig.trustedlist.jaxb.ecc.PoliciesListType;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualificationElementType;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualificationsType;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualifierType;
@@ -56,10 +45,6 @@ import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryInstanceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceSupplyPointsType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
-import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
-import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
-import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -79,6 +64,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	 * Default constructor
 	 */
 	public TrustServiceConverter() {
+		// emptyTrustServiceEquivalenceConverter
 	}
 
 	@Override
@@ -183,7 +169,7 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	private ConditionForQualifiers toConditionForQualifiers(QualificationElementType qualificationElement) {
 		List<String> qualifiers = extractQualifiers(qualificationElement);
 		if (Utils.isCollectionNotEmpty(qualifiers)) {
-			Condition condition = getCondition(qualificationElement.getCriteriaList());
+			Condition condition = new CriteriaListConverter().apply(qualificationElement.getCriteriaList());
 			return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
 		}
 		return null;
@@ -246,100 +232,6 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 			}
 		}
 		return qualifiers;
-	}
-
-	private Condition getCondition(CriteriaListType criteriaList) {
-		Assert matchingCriteriaIndicator = criteriaList.getAssert();
-		CompositeCondition condition = new CompositeCondition(matchingCriteriaIndicator);
-
-		addKeyUsageConditionsIfPresent(criteriaList.getKeyUsage(), condition);
-		addPolicyIdConditionsIfPresent(criteriaList.getPolicySet(), condition);
-		addOtherCriteriaListConditionsIfPresent(criteriaList.getOtherCriteriaList(), condition);
-		addCriteriaListConditionsIfPresent(criteriaList.getCriteriaList(), condition);
-
-		return condition;
-	}
-
-	/**
-	 * ETSI TS 119 612 V1.1.1 / 5.5.9.2.2.3
-	 * 
-	 * @param otherCriteriaList {@link eu.europa.esig.xades.jaxb.xades132.AnyType}
-	 * @param condition {@link CompositeCondition}
-	 */
-	@SuppressWarnings("rawtypes")
-	private void addOtherCriteriaListConditionsIfPresent(eu.europa.esig.xades.jaxb.xades132.AnyType otherCriteriaList,
-														 CompositeCondition condition) {
-		if (otherCriteriaList != null && Utils.isCollectionNotEmpty(otherCriteriaList.getContent())) {
-			for (Object content : otherCriteriaList.getContent()) {
-				if (content instanceof JAXBElement) {
-					JAXBElement jaxbElement = (JAXBElement) content;
-					Object objectValue = jaxbElement.getValue();
-					if (objectValue instanceof CertSubjectDNAttributeType) {
-						CertSubjectDNAttributeType certSubDNAttr = (CertSubjectDNAttributeType) objectValue;
-						condition.addChild(new CertSubjectDNAttributeCondition(extractOids(certSubDNAttr.getAttributeOID())));
-					} else if (objectValue instanceof ExtendedKeyUsageType) {
-						ExtendedKeyUsageType extendedKeyUsage = (ExtendedKeyUsageType) objectValue;
-						condition.addChild(new ExtendedKeyUsageCondition(extractOids(extendedKeyUsage.getKeyPurposeId())));
-					} else {
-						throw new DSSException("Unsupported OtherCriteriaList");
-					}
-				}
-			}
-		}
-	}
-
-	private List<String> extractOids(List<ObjectIdentifierType> oits) {
-		List<String> oids = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(oits)) {
-			for (ObjectIdentifierType objectIdentifierType : oits) {
-				oids.add(getOID(objectIdentifierType.getIdentifier()));
-			}
-		}
-		return oids;
-	}
-
-	private void addPolicyIdConditionsIfPresent(List<PoliciesListType> policySet, CompositeCondition criteriaCondition) {
-		if (Utils.isCollectionNotEmpty(policySet)) {
-			for (PoliciesListType policiesListType : policySet) {
-				CompositeCondition condition = new CompositeCondition();
-				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
-					IdentifierType identifier = oidType.getIdentifier();
-					String id = getOID(identifier);
-					condition.addChild(new PolicyIdCondition(id));
-				}
-				criteriaCondition.addChild(condition);
-			}
-		}
-	}
-
-	private String getOID(IdentifierType identifier) {
-		String id = identifier.getValue();
-		// ES TSL : <ns4:Identifier
-		// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
-		if (DSSUtils.isUrnOid(id)) {
-			id = DSSUtils.getOidCode(id);
-		}
-		return id;
-	}
-
-	private void addKeyUsageConditionsIfPresent(List<KeyUsageType> keyUsages, CompositeCondition criteriaCondition) {
-		if (Utils.isCollectionNotEmpty(keyUsages)) {
-			for (KeyUsageType keyUsageType : keyUsages) {
-				CompositeCondition condition = new CompositeCondition();
-				for (KeyUsageBitType keyUsageBit : keyUsageType.getKeyUsageBit()) {
-					condition.addChild(new KeyUsageCondition(keyUsageBit.getName(), keyUsageBit.isValue()));
-				}
-				criteriaCondition.addChild(condition);
-			}
-		}
-	}
-
-	private void addCriteriaListConditionsIfPresent(List<CriteriaListType> criteriaList, CompositeCondition condition) {
-		if (Utils.isCollectionNotEmpty(criteriaList)) {
-			for (CriteriaListType criteriaListType : criteriaList) {
-				condition.addChild(getCondition(criteriaListType));
-			}
-		}
 	}
 
 	private List<String> getServiceSupplyPoints(ServiceSupplyPointsType serviceSupplyPoints) {

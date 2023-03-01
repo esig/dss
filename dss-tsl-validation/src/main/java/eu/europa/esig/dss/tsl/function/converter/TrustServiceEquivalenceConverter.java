@@ -63,12 +63,13 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceEquivalenceConverter.class);
 
 	/** The used {@code CriteriaListTypeConverter} */
-	private final CriteriaListTypeConverter criteriaConverter = new CriteriaListTypeConverter();
+	private final CriteriaListConverter criteriaConverter = new CriteriaListConverter();
 
 	/**
 	 * Default constructor instantiating a CriteriaListTypeConverter
 	 */
 	public TrustServiceEquivalenceConverter() {
+		// empty
 	}
 
 	@Override

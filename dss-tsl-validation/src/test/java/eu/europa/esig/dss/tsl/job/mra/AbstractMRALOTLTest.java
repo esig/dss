@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -164,7 +165,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         Element x509SKI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "X509SKI");
         digitalId.appendChild(x509SKI);
 
-        valueNode = tlDocument.createTextNode(Utils.toBase64(DSSASN1Utils.getSki(rootCA)));
+        valueNode = tlDocument.createTextNode(Utils.toBase64(CertificateExtensionsUtils.getSubjectKeyIdentifier(rootCA).getSki()));
         x509SKI.appendChild(valueNode);
 
 
@@ -900,7 +901,9 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         return "John Doe";
     }
 
-    protected abstract class AbstractSetCondition<C extends Condition> implements Condition {
+    protected static abstract class AbstractSetCondition<C extends Condition> implements Condition {
+
+        private static final long serialVersionUID = 2549774575899981832L;
 
         private List<C> conditions;
 
@@ -929,7 +932,9 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     }
 
-    protected class QcStatementSetCondition extends AbstractSetCondition<QCStatementCondition> {
+    protected static class QcStatementSetCondition extends AbstractSetCondition<QCStatementCondition> {
+
+        private static final long serialVersionUID = -3881948771564940082L;
 
         protected QcStatementSetCondition(List<QCStatementCondition> conditions) {
             super(conditions);
@@ -937,7 +942,9 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     }
 
-    protected class PolicySetCondition extends AbstractSetCondition<PolicyIdCondition> {
+    protected static class PolicySetCondition extends AbstractSetCondition<PolicyIdCondition> {
+
+        private static final long serialVersionUID = 2632064261799775863L;
 
         protected PolicySetCondition(List<PolicyIdCondition> conditions) {
             super(conditions);
@@ -945,7 +952,9 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     }
 
-    protected class KeyUsageSetCondition extends AbstractSetCondition<KeyUsageCondition> {
+    protected static class KeyUsageSetCondition extends AbstractSetCondition<KeyUsageCondition> {
+
+        private static final long serialVersionUID = 3064644508989552789L;
 
         protected KeyUsageSetCondition(List<KeyUsageCondition> conditions) {
             super(conditions);

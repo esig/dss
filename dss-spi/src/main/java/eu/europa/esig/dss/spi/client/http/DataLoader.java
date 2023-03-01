@@ -102,7 +102,10 @@ public interface DataLoader extends Serializable {
 	 * @param refresh
 	 *            if true indicates that the cached data should be refreshed
 	 * @return {@code byte} array of obtained data or null
+	 * @deprecated since 5.12. To be removed in DSS 5.13. Use {@code #get(url)} for no cache,
+	 * 				or an alternative DataLoader providing caching functionality.
 	 */
+	@Deprecated
 	byte[] get(String url, boolean refresh);
 
 	/**

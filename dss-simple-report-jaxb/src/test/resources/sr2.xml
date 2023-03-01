@@ -11,13 +11,19 @@
     <SignaturesCount>1</SignaturesCount>
     <Signature SignatureFormat="XAdES-BASELINE-T" Id="xmldsig-0a9a9d45-c8f6-44c5-9e74-462fa3441a26">
         <CertificateChain>
-            <Certificate>
-                <id>C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E</id>
-                <qualifiedName>L R</qualifiedName>
+            <Certificate Id="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
+                <QualifiedName>L R</QualifiedName>
             </Certificate>
-            <Certificate>
-                <id>C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5</id>
-                <qualifiedName>InfoCert Firma Qualificata 2</qualifiedName>
+            <Certificate Id="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5" trusted="true">
+                <QualifiedName>InfoCert Firma Qualificata 2</QualifiedName>
+                <TrustAnchors>
+                    <TrustAnchor countryCode="FR">
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+                        <TrustServiceProvider>InfoCert S.p.A.</TrustServiceProvider>
+                        <TrustServiceProviderRegistrationId>VATIT-07945211006</TrustServiceProviderRegistrationId>
+                        <TrustServiceName>InfoCert Firma Qualificata 2</TrustServiceName>
+                    </TrustAnchor>
+                </TrustAnchors>
             </Certificate>
         </CertificateChain>
         <Indication>TOTAL_PASSED</Indication>

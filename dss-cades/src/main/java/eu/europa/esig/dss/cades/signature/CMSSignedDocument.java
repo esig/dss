@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
-import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +68,7 @@ public class CMSSignedDocument extends CommonDocument {
 		Objects.requireNonNull(data, "The CMSSignedData cannot be null");
 		this.signedData = data;
 		this.name = name;
-		this.mimeType = MimeType.PKCS7;
+		this.mimeType = MimeTypeEnum.PKCS7;
 	}
 
 	@Override
@@ -103,10 +101,8 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		final byte[] encoded = signedData.getEncoded();
-		final ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(encoded);
 		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
-		asn1OutputStream.writeObject(asn1Primitive);
+		asn1OutputStream.writeObject(signedData.toASN1Structure());
 	}
 
 }

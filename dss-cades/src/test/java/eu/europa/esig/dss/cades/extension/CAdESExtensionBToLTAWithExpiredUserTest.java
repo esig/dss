@@ -79,7 +79,7 @@ public class CAdESExtensionBToLTAWithExpiredUserTest extends AbstractCAdESTestEx
                 "there is no POE during its validity range :"));
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(getSigningCert().getNotAfter());
         calendar.add(Calendar.MONTH, -6);
         Date tstTime = calendar.getTime();
 

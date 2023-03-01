@@ -111,13 +111,12 @@ public class ReferenceProcessor {
             return null;
         }
 
+        final Document doc = DomUtils.buildDOM(contents);
         String uri = reference.getUri();
 
         if (signatureParameters != null && signatureParameters.isEmbedXML()) {
-            Document doc = DomUtils.buildDOM(contents);
             Element root = doc.getDocumentElement();
-
-            Document doc2 = DomUtils.buildDOM();
+            final Document doc2 = DomUtils.buildDOM();
             final Element dom = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
             final Element dom2 = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
             doc2.appendChild(dom2);
@@ -128,19 +127,20 @@ public class ReferenceProcessor {
             dom.appendChild(adopted);
             return dom;
 
-        } else if (DomUtils.startsFromHash(uri)) {
-            final Document document = DomUtils.buildDOM(contents);
-            DSSXMLUtils.recursiveIdBrowse(document.getDocumentElement());
+        } else if (DomUtils.isElementReference(uri)) {
+            DSSXMLUtils.recursiveIdBrowse(doc.getDocumentElement());
             final String targetId = DomUtils.getId(uri);
-            Element elementById = document.getElementById(targetId);
+            Element elementById = doc.getElementById(targetId);
             if (elementById != null) {
                 return elementById;
             }
+            // continue for on-fly document creation
 
         }
+        // TODO : add support of xPointer
 
         if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
-            return DomUtils.buildDOM(contents);
+            return doc;
         }
 
         return null;

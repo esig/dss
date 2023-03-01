@@ -36,7 +36,9 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -64,7 +66,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	@Override
 	public PdfDict getAsDict(String name) {
 		PdfObject directObject = wrapped.getDirectObject(new PdfName(name));
-		if (directObject != null && directObject instanceof PdfDictionary) {
+		if (directObject instanceof PdfDictionary) {
 			return new ITextPdfDict((PdfDictionary) directObject);
 		}
 		return null;
@@ -183,6 +185,24 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 			return PdfReader.getStreamBytes((PRStream) wrapped);
 		}
 		return null;
+	}
+
+	@Override
+	public InputStream createRawInputStream() throws IOException {
+		if (wrapped instanceof PRStream) {
+			byte[] streamBytesRaw = PdfReader.getStreamBytesRaw((PRStream) wrapped);
+			return new ByteArrayInputStream(streamBytesRaw);
+		}
+		return null;
+	}
+
+	@Override
+	public long getRawStreamSize() throws IOException {
+		if (wrapped instanceof PRStream) {
+			byte[] streamBytesRaw = PdfReader.getStreamBytesRaw((PRStream) wrapped);
+			return streamBytesRaw.length;
+		}
+		return -1;
 	}
 
 }

@@ -263,12 +263,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 						signaturePolicy.setDocSpecification(spDocSpecification);
 
 					} else {
-						LOG.error("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
+						LOG.warn("Unknown signature policy qualifier id: {} with value: {}", policyQualifierInfoId,
 								policyQualifierInfoValue);
 					}
 
 				} catch (Exception e) {
-					LOG.error("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
+					LOG.warn("Unable to read SigPolicyQualifierInfo {} : {}", ii, e.getMessage());
 				}
 			}
 		}
@@ -498,7 +498,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return claimedRoles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
+			LOG.warn("Error when dealing with claimed signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}
@@ -539,7 +539,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			}
 			return roles;
 		} catch (Exception e) {
-			LOG.error("Error when dealing with certified signer roles : {}", signerAttrValues, e);
+			LOG.warn("Error when dealing with certified signer roles : {}", signerAttrValues, e);
 			return Collections.emptyList();
 		}
 	}
@@ -570,9 +570,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttribute getSignerAttributeV1() {
-		final Attribute id_aa_ets_signerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
-		if (id_aa_ets_signerAttr != null) {
-			final ASN1Set attrValues = id_aa_ets_signerAttr.getAttrValues();
+		final Attribute idAaEtsSignerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
+		if (idAaEtsSignerAttr != null) {
+			final ASN1Set attrValues = idAaEtsSignerAttr.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 			try {
 				return SignerAttribute.getInstance(attrValue);
@@ -589,9 +589,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private SignerAttributeV2 getSignerAttributeV2() {
-		final Attribute id_aa_ets_signerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
-		if (id_aa_ets_signerAttrV2 != null) {
-			final ASN1Set attrValues = id_aa_ets_signerAttrV2.getAttrValues();
+		final Attribute idAaEtsSignerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
+		if (idAaEtsSignerAttrV2 != null) {
+			final ASN1Set attrValues = idAaEtsSignerAttrV2.getAttrValues();
 			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 			try {
 				return SignerAttributeV2.getInstance(attrValue);

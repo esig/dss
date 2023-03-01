@@ -80,6 +80,8 @@ public class JWSCompactDocumentValidatorTest extends AbstractTestValidator {
 		assertFalse(validator.isSupported(wrong));
 		wrong = new InMemoryDocument(new byte[] {});
 		assertFalse(validator.isSupported(wrong));
+		wrong = InMemoryDocument.createEmptyDocument();
+		assertFalse(validator.isSupported(wrong));
 	}
 	
 	@Override

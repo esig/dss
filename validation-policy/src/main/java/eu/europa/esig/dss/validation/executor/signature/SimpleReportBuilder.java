@@ -28,6 +28,9 @@ import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -40,6 +43,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
+import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignatureLevel;
@@ -48,8 +52,11 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestampLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTrustAnchor;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTrustAnchors;
+import eu.europa.esig.dss.simplereport.jaxb.XmlValidationMessages;
+import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.AbstractSimpleReportBuilder;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -64,13 +71,25 @@ import java.util.stream.Collectors;
 /**
  * This class builds a SimpleReport XmlDom from the diagnostic data and detailed validation report.
  */
-public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
+public class SimpleReportBuilder {
 
 	/** i18nProvider */
 	private final I18nProvider i18nProvider;
 
 	/** Defines if the semantics shall be included */
 	private final boolean includeSemantics;
+
+	/** The validation time */
+	private final Date currentTime;
+
+	/** The validation policy */
+	private final ValidationPolicy policy;
+
+	/** The DiagnosticData to use */
+	private final DiagnosticData diagnosticData;
+
+	/** The detailed report */
+	private final DetailedReport detailedReport;
 
 	/** The number of processed signatures */
 	private int totalSignatureCount = 0;
@@ -99,7 +118,10 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 */
 	public SimpleReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy,
 			DiagnosticData diagnosticData, DetailedReport detailedReport, boolean includeSemantics) {
-		super(currentTime, policy, diagnosticData, detailedReport);
+		this.currentTime = currentTime;
+		this.policy = policy;
+		this.diagnosticData = diagnosticData;
+		this.detailedReport = detailedReport;
 		this.i18nProvider = i18nProvider;
 		this.includeSemantics = includeSemantics;
 	}
@@ -109,9 +131,7 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	 *
 	 * @return the object representing {@code XmlSimpleReport}
 	 */
-	@Override
 	public XmlSimpleReport build() {
-
 		validSignatureCount = 0;
 		totalSignatureCount = 0;
 
@@ -119,9 +139,16 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 		poe.init(diagnosticData, diagnosticData.getValidationDate());
 		poe.collectAllPOE(diagnosticData.getTimestampList());
 
-		XmlSimpleReport simpleReport = super.build();
+		final XmlSimpleReport simpleReport = new XmlSimpleReport();
+
+		addPolicyNode(simpleReport);
+		addValidationTime(simpleReport);
+		addDocumentName(simpleReport);
 
 		boolean containerInfoPresent = diagnosticData.isContainerInfoPresent();
+		if (containerInfoPresent) {
+			addContainerType(simpleReport);
+		}
 
 		Set<String> attachedTimestampIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
@@ -142,7 +169,28 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 			addSemantics(simpleReport);
 		}
 
+		addPDFAProfile(simpleReport);
+
 		return simpleReport;
+	}
+
+	private void addPolicyNode(XmlSimpleReport report) {
+		XmlValidationPolicy xmlPolicy = new XmlValidationPolicy();
+		xmlPolicy.setPolicyName(policy.getPolicyName());
+		xmlPolicy.setPolicyDescription(policy.getPolicyDescription());
+		report.setValidationPolicy(xmlPolicy);
+	}
+
+	private void addValidationTime(XmlSimpleReport report) {
+		report.setValidationTime(currentTime);
+	}
+
+	private void addDocumentName(XmlSimpleReport report) {
+		report.setDocumentName(diagnosticData.getDocumentName());
+	}
+
+	private void addContainerType(XmlSimpleReport simpleReport) {
+		simpleReport.setContainerType(diagnosticData.getContainerType());
 	}
 
 	private void addSemantics(XmlSimpleReport simpleReport) {
@@ -166,6 +214,25 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private void addStatistics(XmlSimpleReport simpleReport) {
 		simpleReport.setValidSignaturesCount(validSignatureCount);
 		simpleReport.setSignaturesCount(totalSignatureCount);
+	}
+
+	private void addPDFAProfile(XmlSimpleReport simpleReport) {
+		String pdfaProfileId = diagnosticData.getPDFAProfileId();
+		if (pdfaProfileId != null) {
+			XmlPDFAInfo xmlPDFAInfo = new XmlPDFAInfo();
+			xmlPDFAInfo.setPDFAProfile(pdfaProfileId);
+			xmlPDFAInfo.setValid(diagnosticData.isPDFACompliant());
+			if (Utils.isCollectionNotEmpty(diagnosticData.getPDFAValidationErrors())) {
+				xmlPDFAInfo.setValidationMessages(toXmlValidationMessages(diagnosticData.getPDFAValidationErrors()));
+			}
+			simpleReport.setPDFAInfo(xmlPDFAInfo);
+		}
+	}
+
+	private XmlValidationMessages toXmlValidationMessages(Collection<String> errors) {
+		XmlValidationMessages xmlValidationMessages = new XmlValidationMessages();
+		xmlValidationMessages.getError().addAll(errors);
+		return xmlValidationMessages;
 	}
 
 	/**
@@ -287,10 +354,74 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 				XmlCertificate certificate = new XmlCertificate();
 				certificate.setId(certId);
 				certificate.setQualifiedName(getReadableCertificateName(certId));
+				if (isTrustAnchor(certId)) {
+					certificate.setTrusted(true);
+					certificate.setTrustAnchors(getXmlTrustAnchors(certId));
+				}
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
 		return xmlCertificateChain;
+	}
+
+	private XmlTrustAnchors getXmlTrustAnchors(String certId) {
+		List<XmlTrustedServiceProvider> xmlTrustedServiceProviders = filterByCertificateId(certId);
+		if (Utils.isCollectionNotEmpty(xmlTrustedServiceProviders)) {
+			final XmlTrustAnchors xmlTrustAnchors = new XmlTrustAnchors();
+			for (XmlTrustedServiceProvider trustedServiceProvider : xmlTrustedServiceProviders) {
+				final XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
+				trustAnchor.setCountryCode(trustedServiceProvider.getTL().getCountryCode());
+				trustAnchor.setTSLType(trustedServiceProvider.getTL().getTSLType());
+				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustedServiceProvider.getTSPNames()));
+				List<String> tspRegistrationIdentifiers = trustedServiceProvider.getTSPRegistrationIdentifiers();
+				if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
+					trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
+				}
+				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustedServiceProvider));
+				xmlTrustAnchors.getTrustAnchor().add(trustAnchor);
+			}
+			return xmlTrustAnchors;
+		}
+		return null;
+	}
+
+	private Set<String> getUniqueServiceNames(XmlTrustedServiceProvider trustedServiceProvider) {
+		Set<String> result = new HashSet<>();
+		for (XmlTrustedService xmlTrustedService : trustedServiceProvider.getTrustedServices()) {
+			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
+		}
+		return result;
+	}
+
+	private String getEnOrFirst(List<XmlLangAndValue> langAndValues) {
+		if (Utils.isCollectionNotEmpty(langAndValues)) {
+			for (XmlLangAndValue langAndValue : langAndValues) {
+				if (langAndValue.getLang() != null && "en".equalsIgnoreCase(langAndValue.getLang())) {
+					return langAndValue.getValue();
+				}
+			}
+			return langAndValues.get(0).getValue();
+		}
+		return null;
+	}
+
+	private List<XmlTrustedServiceProvider> filterByCertificateId(String certId) {
+		CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
+		List<XmlTrustedServiceProvider> result = new ArrayList<>();
+		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : certificate.getTrustServiceProviders()) {
+			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+			boolean foundCertId = false;
+			for (XmlTrustedService xmlTrustedService : trustedServices) {
+				if (Utils.areStringsEqual(certId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
+					foundCertId = true;
+					break;
+				}
+			}
+			if (foundCertId) {
+				result.add(xmlTrustedServiceProvider);
+			}
+		}
+		return result;
 	}
 
 	private void addBestSignatureTime(SignatureWrapper signature, XmlSignature xmlSignature) {
@@ -333,6 +464,11 @@ public class SimpleReportBuilder extends AbstractSimpleReportBuilder {
 	private String getReadableCertificateName(final String certId) {
 		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
 		return certificateWrapper.getReadableCertificateName();
+	}
+
+	private boolean isTrustAnchor(final String certId) {
+		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateByIdNullSafe(certId);
+		return certificateWrapper.isTrusted();
 	}
 
 	private void addSignatureProfile(final XmlSignature xmlSignature) {

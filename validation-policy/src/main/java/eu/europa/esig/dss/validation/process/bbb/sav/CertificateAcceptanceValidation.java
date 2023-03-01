@@ -55,7 +55,7 @@ public class CertificateAcceptanceValidation extends AbstractAcceptanceValidatio
 
     @Override
     protected void initChain() {
-        firstItem = cryptographic();
+        firstItem = cryptographic(firstItem);
     }
 
 }

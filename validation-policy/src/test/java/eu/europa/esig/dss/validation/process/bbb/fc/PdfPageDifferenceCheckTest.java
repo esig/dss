@@ -20,40 +20,35 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.math.BigInteger;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void valid() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
-		sig.setPDFRevision(xmlPDFRevision);
+	public void valid() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -62,21 +57,17 @@ public class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void fail() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void fail() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getPageDifference().add(getXmlModification(2));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -85,21 +76,17 @@ public class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void annotationOverlap() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void annotationOverlap() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -108,23 +95,19 @@ public class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void multipleFailure() throws Exception {
-		XmlSignature sig = new XmlSignature();
-		
-		XmlPDFRevision xmlPDFRevision = new XmlPDFRevision();
+	public void multipleFailure() {
+		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(2));
 		xmlModificationDetection.getPageDifference().add(getXmlModification(3));
-		xmlPDFRevision.setModificationDetection(xmlModificationDetection);
-
-		sig.setPDFRevision(xmlPDFRevision);
+		pdfRevision.setModificationDetection(xmlModificationDetection);
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

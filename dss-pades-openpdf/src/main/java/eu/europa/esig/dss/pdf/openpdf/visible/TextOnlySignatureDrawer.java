@@ -24,9 +24,13 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.ExtendedColor;
+import com.lowagie.text.pdf.GrayColor;
+import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.RGBColor;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.DSSFileFont;
@@ -36,10 +40,12 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
@@ -60,6 +66,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	 * Default constructor with null font
 	 */
 	public TextOnlySignatureDrawer() {
+		// empty
 	}
 	
 	@Override
@@ -90,7 +97,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		DSSFont dssFont = textParameters.getFont();
 		BaseFont baseFont = getBaseFont(dssFont);
 		Font font = new Font(baseFont, dssFont.getSize());
-		font.setColor(textParameters.getTextColor());
+		font.setColor(toExtendedColor(textParameters.getTextColor()));
 		return font;
 	}
 	
@@ -127,6 +134,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		return new ITextDSSFontMetrics(iTextFont.getBaseFont());
 	}
 	
+	@Override
+	protected PdfName getExpectedColorSpaceName() {
+		return ImageUtils.containRGBColor(parameters) ? PdfName.DEVICERGB : PdfName.DEVICEGRAY;
+	}
+
 	private void drawText(SignatureFieldDimensionAndPosition dimensionAndPosition) {
 
 		ITextDSSFontMetrics iTextFontMetrics = getDSSFontMetrics();
@@ -139,11 +151,11 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		layer.setFontAndSize(iTextFont.getBaseFont(), size);
 
 		Rectangle textRectangle = getTextBoxRectangle(dimensionAndPosition);
-		textRectangle.setBackgroundColor(textParameters.getBackgroundColor());
+		textRectangle.setBackgroundColor(toExtendedColor(textParameters.getBackgroundColor()));
 		layer.rectangle(textRectangle);
 
 		if (textParameters.getTextColor() != null) {
-			layer.setColorFill(textParameters.getTextColor());
+			layer.setColorFill(toExtendedColor(textParameters.getTextColor()));
 		}
 		
 		String[] lines = iTextFontMetrics.getLines(text);
@@ -184,6 +196,17 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 		}
 		
 		layer.endText();
+	}
+
+	private ExtendedColor toExtendedColor(Color color) {
+		if (color == null) {
+			return null;
+		}
+		if (ImageUtils.isGrayscale(color)) {
+			return new GrayColor(color.getRed());
+		} else {
+			return new RGBColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		}
 	}
 
 	private Rectangle getTextBoxRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {

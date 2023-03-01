@@ -32,6 +32,7 @@ public class PseudoAttributeStrategy implements PseudoStrategy {
 	 * Default constructor
 	 */
 	public PseudoAttributeStrategy() {
+		// empty
 	}
 
 	@Override

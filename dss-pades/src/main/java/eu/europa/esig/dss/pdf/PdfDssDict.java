@@ -57,8 +57,8 @@ public interface PdfDssDict extends Serializable {
 	/**
 	 * Returns a list of VRI dictionaries
 	 * 
-	 * @return a list of {@link PdfVRIDict}s
+	 * @return a list of {@link PdfVriDict}s
 	 */
-	List<PdfVRIDict> getVRIs();
+	List<PdfVriDict> getVRIs();
 
 }

@@ -38,6 +38,9 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	/** Used public key length */
 	private final String keyLength;
 
+	/** The constraint */
+	private final CryptographicConstraintWrapper constraintWrapper;
+
 	/**
 	 * Default constructor
 	 *
@@ -50,9 +53,10 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keyLength,
 			XmlCC result, MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper);
+		super(i18nProvider, result, position, constraintWrapper.getMiniPublicKeySizeLevel());
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
+		this.constraintWrapper = constraintWrapper;
 	}
 
 	@Override

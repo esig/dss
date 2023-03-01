@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.11.1</version>
+		<version>5.12.RC1</version>
 	</parent>
 	
 	<artifactId>specs-saml-assertion</artifactId>
@@ -83,7 +83,7 @@
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.6</version>
+						<version>2.3.8</version>
 					</dependency>
 				</dependencies>
 			</plugin>

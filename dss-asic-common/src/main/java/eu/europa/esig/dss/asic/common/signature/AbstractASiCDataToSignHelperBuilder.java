@@ -22,8 +22,8 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Date;
@@ -73,7 +73,7 @@ public abstract class AbstractASiCDataToSignHelperBuilder {
 		asicContent.setContainerDocuments(documents);
 		packageZip.setName(getDataPackageName(asicContent));
 
-		packageZip.setMimeType(MimeType.ZIP);
+		packageZip.setMimeType(MimeTypeEnum.ZIP);
 		return packageZip;
 	}
 

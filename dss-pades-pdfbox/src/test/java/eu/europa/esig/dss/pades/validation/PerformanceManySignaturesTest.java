@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
@@ -60,10 +59,11 @@ public class PerformanceManySignaturesTest {
     @Test
     void getSignatures() {
         InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
+        initClasses(inMemoryDocument);
 
         PDFDocumentValidator validator = new PDFDocumentValidator(inMemoryDocument);
 
-        assertTimeout(Duration.ofSeconds(15), () -> validator.getRevisions());
+        assertTimeout(Duration.ofSeconds(3), () -> validator.getRevisions());
 
         List<PdfRevision> revisions = assertTimeout(Duration.ofSeconds(1), () -> validator.getRevisions()); // cached
         assertNotNull(revisions);
@@ -102,6 +102,12 @@ public class PerformanceManySignaturesTest {
         assertEquals(51, pdfDssDict.getVRIs().size());
     }
 
+    // This method is used to initialize all the required classes, to avoid delay during unit test with timeout
+    private void initClasses(DSSDocument documentToValidate) {
+        PDFDocumentValidator validator = new PDFDocumentValidator(documentToValidate);
+        validator.getRevisions();
+    }
+
     private <R extends Revocation> void verifyRevocationSource(List<EncapsulatedRevocationTokenIdentifier<?>> binaries,
                                                                OfflineRevocationSource<R> source) {
         Set<EncapsulatedRevocationTokenIdentifier<R>> allRevocationBinaries = source.getAllRevocationBinaries();
@@ -119,24 +125,6 @@ public class PerformanceManySignaturesTest {
             }
         }
         return false;
-    }
-
-    @Test
-    void retrievePreviousPDFRevisionFirst() {
-        String expectedSHA256 = "zr24pCby+v9AN0effpTLOahaEBsynz/Ap0EoARhvpsI=";
-        InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
-        ByteRange byteRange = new ByteRange(new int[]{0, 4883, 23829, 70196});
-        InMemoryDocument previousRevision = PAdESUtils.retrievePreviousPDFRevision(inMemoryDocument, byteRange);
-        assertEquals(expectedSHA256, previousRevision.getDigest(DigestAlgorithm.SHA256));
-    }
-
-    @Test
-    void retrievePreviousPDFRevisionLast() {
-        String expectedSHA256 = "kRdqr7p5115vX+2McvMb/f0X/Jah0qPzKFrYrlY4v8E=";
-        InMemoryDocument inMemoryDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/51sigs.pdf"));
-        ByteRange byteRange = new ByteRange(new int[]{0, 4533638, 4552584, 17463});
-        InMemoryDocument previousRevision = PAdESUtils.retrievePreviousPDFRevision(inMemoryDocument, byteRange);
-        assertEquals(expectedSHA256, previousRevision.getDigest(DigestAlgorithm.SHA256));
     }
 
 }

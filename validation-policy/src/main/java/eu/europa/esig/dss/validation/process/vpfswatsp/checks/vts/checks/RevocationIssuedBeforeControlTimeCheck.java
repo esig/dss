@@ -35,6 +35,7 @@ import java.util.Date;
 /**
  * This class verifies if the issuance date of the revocation status information is before control time
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class RevocationIssuedBeforeControlTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

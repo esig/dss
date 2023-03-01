@@ -26,6 +26,7 @@ import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.client.jdbc.query.SqlQuery;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 
@@ -115,5 +116,18 @@ public class CRLSourceSnippet {
 		// end::demo-cached[]
 
 	}
+
+	@SuppressWarnings("serial")
+	// tag::demo-postgresql[]
+	public class PostgreSqlJdbcCacheCRLSource extends JdbcCacheCRLSource {
+
+		@Override
+		protected SqlQuery getCreateTableQuery() {
+			// Override datatypes with BYTEA, supported by PostgreSQL
+			return SqlQuery.createQuery("CREATE TABLE CACHED_CRL (ID CHAR(40), DATA BYTEA, ISSUER BYTEA)");
+		}
+
+	}
+	// end::demo-postgresql[]
 
 }

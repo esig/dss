@@ -37,11 +37,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Abstract class to parse a LOTL/TL
+ *
+ * @param <T> implementation of a corresponding parsing task (TL/LOTL)
  */
-public abstract class AbstractParsingTask {
+public abstract class AbstractParsingTask<T extends AbstractParsingResult> implements Supplier<T> {
 
 	/** The document to parse */
 	private final DSSDocument document;

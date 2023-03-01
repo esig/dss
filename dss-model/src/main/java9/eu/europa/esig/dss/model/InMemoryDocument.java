@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.MimeType;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -119,6 +121,15 @@ public class InMemoryDocument extends CommonDocument {
 		} catch (Exception e) {
 			throw new DSSException("Unable to fully read the InputStream", e);
 		}
+	}
+
+	/**
+	 * Creates an empty in memory document
+	 *
+	 * @return {@link InMemoryDocument}
+	 */
+	public static InMemoryDocument createEmptyDocument() {
+		return new InMemoryDocument(new byte[0]);
 	}
 
 	@Override

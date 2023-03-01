@@ -38,11 +38,13 @@ import eu.europa.esig.dss.ws.signature.dto.TimestampOneDocumentDTO;
 /**
  * Interface for the Contract of the Signature Web Service. The signing web service allows to create a new signature or
  * to extend existing one. Different forms of signature:
- * XAdES, CAdES, PAdES, ASiC-S are accepted.
+ * XAdES, CAdES, PAdES, JAdES (as well as ASiC containers) are accepted.
+ * <p>
  * The digital signature of a document in a web environment is performed in three steps:
  * 1. Creating a byte stream representing the data to be signed.
  * 2. Hashing of the data previously obtained and its encryption.
  * 3. The creation of the envelope containing all the elements of a digital signature.
+ * <p>
  * The process is controlled by a set of parameters.
  */
 @WebService(targetNamespace = "http://signature.dss.esig.europa.eu/")

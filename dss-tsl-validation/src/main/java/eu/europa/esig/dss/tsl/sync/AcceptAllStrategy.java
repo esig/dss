@@ -32,6 +32,7 @@ public class AcceptAllStrategy implements SynchronizationStrategy {
 	 * Default constructor
 	 */
 	public AcceptAllStrategy() {
+		// empty
 	}
 
 	@Override

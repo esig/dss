@@ -83,7 +83,7 @@ public class PadesWrongDigestAlgoTest extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
-		assertEquals(4, diagnosticData.getTimestampSet().size());
+		assertEquals(4, diagnosticData.getTimestampList().size());
 		
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			assertTrue(timestampWrapper.isSigningCertificateIdentified());

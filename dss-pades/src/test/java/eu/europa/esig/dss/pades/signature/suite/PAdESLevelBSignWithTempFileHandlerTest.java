@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -65,7 +65,7 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
     @BeforeEach
     public void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBSignWithTempFileHandlerTest.class
-                .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeType.PDF);
+                .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeTypeEnum.PDF);
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -106,7 +106,9 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
 
         PdfSignatureCache pdfSignatureCache = params.getPdfSignatureCache();
         assertNotNull(pdfSignatureCache);
-        assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getDigest()));
+        assertNotNull(pdfSignatureCache.getMessageDigest());
+        assertNotNull(pdfSignatureCache.getMessageDigest().getAlgorithm());
+        assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getMessageDigest().getValue()));
         assertNotNull(pdfSignatureCache.getToBeSignedDocument());
         assertTrue(pdfSignatureCache.getToBeSignedDocument() instanceof FileDocument);
         assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(pdfSignatureCache.getToBeSignedDocument())));

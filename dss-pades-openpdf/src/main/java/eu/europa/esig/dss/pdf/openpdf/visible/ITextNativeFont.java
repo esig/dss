@@ -25,7 +25,7 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
 
-import java.awt.*;
+import java.awt.Font;
 
 /**
  * The IText (OpenPDF) native font

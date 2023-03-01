@@ -132,8 +132,8 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 			int nbRevoc = certificateWrapper.getCertificateRevocationData().size();
 			assertEquals(1, nbRevoc, "Nb revoc for cert " + certificateWrapper.getCommonName() + " = " + nbRevoc);
 		}
-		
-		Set<TimestampWrapper> allTimestamps = diagnosticData.getTimestampSet();
+
+		List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 		assertTrue(Utils.isCollectionNotEmpty(allTimestamps));
 		
 		for (TimestampWrapper timestamp : allTimestamps) {

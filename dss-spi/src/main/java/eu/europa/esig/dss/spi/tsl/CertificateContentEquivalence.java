@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import java.io.Serializable;
+
 /**
  * Contains information about MRA equivalence mapping
  *
  */
-public class CertificateContentEquivalence {
+public class CertificateContentEquivalence implements Serializable {
+
+	private static final long serialVersionUID = 6732042479139934031L;
 
 	/** Defines rules to trigger the equivalence translation */
 	private Condition condition;

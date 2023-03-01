@@ -44,6 +44,13 @@ import java.io.StringWriter;
 public class SimpleReportFacade extends AbstractJaxbFacade<XmlSimpleReport> {
 
 	/**
+	 * Default constructor
+	 */
+	protected SimpleReportFacade() {
+		// empty
+	}
+
+	/**
 	 * Instantiates a new {@code SimpleReportFacade}
 	 *
 	 * @return {@link SimpleReportFacade}

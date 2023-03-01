@@ -32,6 +32,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.PDFAConstraints;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
@@ -120,6 +121,42 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 	
+	@Override
+	public LevelConstraint getByteRangeConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getByteRange();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getByteRangeCollisionConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getByteRangeCollision();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getByteRangeAllDocumentConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getByteRangeAllDocument();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getPdfSignatureDictionaryConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getPdfSignatureDictionary();
+		}
+		return null;
+	}
+
 	@Override
 	public LevelConstraint getPdfPageDifferenceConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
@@ -390,6 +427,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getCA();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getMaxPathLength();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCertificateKeyUsageConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -403,6 +458,42 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getExtendedKeyUsage();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificatePolicyTreeConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getPolicyTree();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNameConstraints();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateSupportedCriticalExtensionsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSupportedCriticalExtensions();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateForbiddenExtensionsConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getForbiddenExtensions();
 		}
 		return null;
 	}
@@ -542,6 +633,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 	
+	@Override
+	public LevelConstraint getOCSPResponseResponderIdMatchConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			return revocationConstraints.getOCSPResponderIdMatch();
+		}
+		return null;
+	}
+
 	@Override
 	public LevelConstraint getOCSPResponseCertHashPresentConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();
@@ -1211,6 +1311,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public MultiValuesConstraint getAcceptablePDFAProfilesConstraint() {
+		PDFAConstraints pdfaConstraints = getPDFAConstraints();
+		if (pdfaConstraints != null) {
+			return pdfaConstraints.getAcceptablePDFAProfiles();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getPDFACompliantConstraint() {
+		PDFAConstraints pdfaConstraints = getPDFAConstraints();
+		if (pdfaConstraints != null) {
+			return pdfaConstraints.getPDFACompliant();
+		}
+		return null;
+	}
+
+	@Override
 	public boolean isEIDASConstraintPresent() {
 		return getEIDASConstraints() != null;
 	}
@@ -1264,6 +1382,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	@Override
 	public ContainerConstraints getContainerConstraints() {
 		return policy.getContainerConstraints();
+	}
+
+	@Override
+	public PDFAConstraints getPDFAConstraints() {
+		return policy.getPDFAConstraints();
 	}
 
 	@Override

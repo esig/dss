@@ -31,6 +31,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * Checks if the signature is intact for the given token, with a difference
  * that provides the token's Id to the additional information
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class SignatureIntactWithIdCheck<T extends XmlConstraintsConclusion> extends SignatureIntactCheck<T> {
 

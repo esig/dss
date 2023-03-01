@@ -22,6 +22,7 @@ package eu.europa.esig.dss.ws.server.signing.soap;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
@@ -44,6 +45,7 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	 * Default construction instantiating object with null token connection
 	 */
 	public SoapSignatureTokenConnectionImpl() {
+		// empty
 	}
 
 	/**
@@ -76,6 +78,11 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	}
 
 	@Override
+	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, SignatureAlgorithm signatureAlgorithm, String alias) {
+		return token.sign(toBeSigned, signatureAlgorithm, alias);
+	}
+
+	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, String alias) {
 		return token.signDigest(digest, alias);
 	}
@@ -83,6 +90,11 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) {
 		return token.signDigest(digest, mgf, alias);
+	}
+
+	@Override
+	public SignatureValueDTO signDigest(DigestDTO digest, SignatureAlgorithm signatureAlgorithm, String alias) {
+		return token.signDigest(digest, signatureAlgorithm, alias);
 	}
 
 }

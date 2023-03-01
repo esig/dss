@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class manages the internal variables used in the process of creating of a signature and which allows to
@@ -34,6 +35,11 @@ public class ProfileParameters implements Serializable {
 
     private static final long serialVersionUID = -8281291690615571695L;
 
+    /**
+     * The id created in a deterministic way based on the filled parameters to use in the signature file
+     */
+    private String deterministicId;
+
     /** Cached detached contents (used for DETACHED signature creation or/and ASiC containers signing) */
     private List<DSSDocument> detachedContents;
 
@@ -42,6 +48,24 @@ public class ProfileParameters implements Serializable {
      */
     public ProfileParameters() {
         // empty
+    }
+
+    /**
+     * Gets the deterministic id
+     *
+     * @return {@link String}
+     */
+    public String getDeterministicId() {
+        return deterministicId;
+    }
+
+    /**
+     * Sets the deterministic id
+     *
+     * @param deterministicId {@link String}
+     */
+    public void setDeterministicId(String deterministicId) {
+        this.deterministicId = deterministicId;
     }
 
     /**
@@ -60,6 +84,33 @@ public class ProfileParameters implements Serializable {
      */
     public void setDetachedContents(List<DSSDocument> detachedContents) {
         this.detachedContents = detachedContents;
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileParameters{" +
+                "deterministicId='" + deterministicId + '\'' +
+                ", detachedContents=" + detachedContents +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int result = deterministicId != null ? deterministicId.hashCode() : 0;
+        result = 31 * result + (detachedContents != null ? detachedContents.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProfileParameters)) return false;
+
+        ProfileParameters that = (ProfileParameters) o;
+
+        if (!Objects.equals(deterministicId, that.deterministicId))
+            return false;
+        return Objects.equals(detachedContents, that.detachedContents);
     }
 
 }

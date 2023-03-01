@@ -40,56 +40,86 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 	private static final String ERROR_MESSAGE = "An error occurred while reading from url '%s' : %s";
 
 	/** The URL */
-	private String url;
+	private final String url;
 
 	/** The content */
-	private byte[] content;
-
-	/** Max input size */
-	private long maxInputSize;
-
+	private final byte[] content;
 
 	/** Defines the cache is used */
-	private boolean useCaches;
+	private final boolean useCaches;
+
+	/** Max input size */
+	private final int maxInputSize;
+
+	/** Timeout on opening a connection with remote resource */
+	private final int connectTimeout;
+
+	/** Timeout on reading a response from remote resource */
+	private final int readTimeout;
 
 	/**
-	 * Default constructor
+	 * Constructor with unconfigured timeout
 	 *
 	 * @param url {@link String}
 	 * @param content byte array
 	 * @param useCaches if the caches shall be used
 	 * @param maxInputSize maximum InputStream size
 	 */
-	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, long maxInputSize) {
-		super();
+	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize) {
+		this(url, content, useCaches, maxInputSize, 0, 0);
+	}
+
+	/**
+	 * Constructor with configured timeouts
+	 *
+	 * @param url {@link String}
+	 * @param content byte array
+	 * @param useCaches if the caches shall be used
+	 * @param maxInputSize maximum InputStream size
+	 * @param connectTimeout timeout on opening a connection (in milliseconds)
+	 * @param readTimeout timeout on reading a response from a remote resource (in milliseconds)
+	 */
+	public NativeDataLoaderCall(String url, byte[] content, boolean useCaches, int maxInputSize,
+								int connectTimeout, int readTimeout) {
 		this.url = url;
 		this.content = content;
 		this.useCaches = useCaches;
 		this.maxInputSize = maxInputSize;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
 	
 	@Override
 	public byte[] call() {
-		OutputStream out = null;
-		InputStream inputStream = null;
+		OutputStream os = null;
+		InputStream is = null;
 		byte[] result;
 		try {
 			URLConnection connection = createConnection();
-
 			connection.setUseCaches(useCaches);
 			connection.setDoInput(true);
+			if (connectTimeout > 0) {
+				connection.setConnectTimeout(connectTimeout);
+			}
+			if (readTimeout > 0) {
+				connection.setReadTimeout(readTimeout);
+			}
 			if (content != null) {
 				connection.setDoOutput(true);
-				out = connection.getOutputStream();
-				Utils.write(content, out);
+				os = connection.getOutputStream();
+				Utils.write(content, os);
 			}
-			inputStream = connection.getInputStream();
-			result = Utils.toByteArray(maxInputSize > 0? new MaxSizeInputStream(inputStream, maxInputSize, url): inputStream);
+			is = connection.getInputStream();
+			if (maxInputSize > 0) {
+				is = new MaxSizeInputStream(is, maxInputSize, url);
+			}
+			result = Utils.toByteArray(is);
+
 		} catch (IOException e) {
 			throw new DSSExternalResourceException(String.format(ERROR_MESSAGE, url, e.getMessage()), e);
 		} finally {
-			Utils.closeQuietly(out);
-			Utils.closeQuietly(inputStream);
+			Utils.closeQuietly(os);
+			Utils.closeQuietly(is);
 		}
 		return result;
 	}
@@ -104,39 +134,4 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 		return new URL(url).openConnection();
 	}
 
-	/**
-	 * Gets URL
-	 *
-	 * @return {@link String}
-	 */
-	public String getUrl() {
-		return url;
-	}
-
-	/**
-	 * Gets content
-	 *
-	 * @return byte array
-	 */
-	public byte[] getContent() {
-		return content;
-	}
-
-	/**
-	 * Gets the maximum InputStream size
-	 *
-	 * @return maximum InputStream size
-	 */
-	public long getMaxInputSize() {
-		return maxInputSize;
-	}
-
-	/**
-	 * Gets if the caches are used
-	 *
-	 * @return TRUE if to use caches, FALSE otherwise
-	 */
-	public boolean isUseCaches() {
-		return useCaches;
-	}
 }

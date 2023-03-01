@@ -29,6 +29,8 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -38,7 +40,6 @@ import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
@@ -58,6 +59,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import org.apache.xml.security.transforms.Transforms;
@@ -95,13 +97,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	protected DSSDocument document;
 
-	/** The canonicalication method used for KeyInfo signing */
+	/** The canonicalization method used for KeyInfo signing */
 	protected String keyInfoCanonicalizationMethod;
 
-	/** The canonicalication method used for SignedInfo signing */
+	/** The canonicalization method used for SignedInfo signing */
 	protected String signedInfoCanonicalizationMethod;
 
-	/** The canonicalication method used for SignedProperties signing */
+	/** The canonicalization method used for SignedProperties signing */
 	protected String signedPropertiesCanonicalizationMethod;
 
 	/** The deterministic Id used for elements creation */
@@ -298,7 +300,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	private ReferenceBuilder initReferenceBuilder() {
 		List<DSSDocument> detachedContent = Utils.isCollectionNotEmpty(params.getDetachedContents()) ?
 				params.getDetachedContents() : Arrays.asList(document);
-		return new ReferenceBuilder(detachedContent, params);
+		final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
+		referenceIdProvider.setSignatureParameters(params);
+		return new ReferenceBuilder(detachedContent, params, referenceIdProvider);
 	}
 	
 	private void checkSignaturePackagingValidity() {
@@ -653,8 +657,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// incorporate MimeType attribute
-		if (object.getMimeType() != null) {
-			objectDom.setAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName(), object.getMimeType().getMimeTypeString());
+		if (Utils.isStringNotBlank(object.getMimeType())) {
+			objectDom.setAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName(), object.getMimeType());
 		}
 
 		// incorporate Encoding attribute
@@ -1074,7 +1078,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateSignedDataObjectProperties() {
-		
 		incorporateDataObjectFormat();
 		incorporateCommitmentTypeIndications();
 		incorporateContentTimestamps();
@@ -1124,6 +1127,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				continue;
 			}
 
+			if (Utils.isStringEmpty(reference.getId())) {
+				throw new IllegalArgumentException("A reference shall have a defined Id attribute!");
+			}
 			final String dataObjectFormatObjectReference = DomUtils.toElementReference(reference.getId());
 
 			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
@@ -1142,10 +1148,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 *
 	 * @param reference
 	 *            the reference to compute
-	 * @return the {@code MimeType} of the reference or the default value {@code MimeType.BINARY}
+	 * @return the {@code MimeType} of the reference or the default value {@code MimeTypeEnum.BINARY}
 	 */
 	private MimeType getReferenceMimeType(final DSSReference reference) {
-		MimeType dataObjectFormatMimeType = MimeType.BINARY;
+		MimeType dataObjectFormatMimeType = MimeTypeEnum.BINARY;
 		DSSDocument content = reference.getContents();
 		if (content != null && content.getMimeType() != null) {
 			dataObjectFormatMimeType = content.getMimeType();

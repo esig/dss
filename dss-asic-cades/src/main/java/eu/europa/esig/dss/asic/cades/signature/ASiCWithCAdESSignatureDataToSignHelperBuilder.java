@@ -25,8 +25,6 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCWithCAdESSignatureManifestBuilder;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.ASiCParameters;
-import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,23 +48,8 @@ public class ASiCWithCAdESSignatureDataToSignHelperBuilder extends ASiCWithCAdES
     @Override
     protected ASiCEWithCAdESManifestBuilder getManifestBuilder(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
         // Required as a part of the created manifest file
-        String signatureFilename = getSignatureFilename(parameters.aSiC(), asicContent);
+        String signatureFilename = asicFilenameFactory.getSignatureFilename(asicContent);
         return new ASiCWithCAdESSignatureManifestBuilder(asicContent, parameters.getDigestAlgorithm(), signatureFilename, asicFilenameFactory);
-    }
-
-    /**
-     * NOTE: Temporary method to allow migration from parameters.aSiC().setSignatureFilename(filename)
-     * to ASiCWithXAdESFilenameFactory
-     *
-     * @return {@link String} filename
-     */
-    private String getSignatureFilename(ASiCParameters asicParameters, ASiCContent asicContent) {
-        if (Utils.isStringNotEmpty(asicParameters.getSignatureFileName())) {
-            LOG.warn("The signature filename has been defined within deprecated method parameters.aSiC().setSignatureFilename(filename). " +
-                    "Please use asicWithCAdESService.setAsicFilenameFactory(asicFilenameFactory) defining a custom filename factory.");
-            return asicParameters.getSignatureFileName();
-        }
-        return asicFilenameFactory.getSignatureFilename(asicContent);
     }
 
 }

@@ -88,7 +88,7 @@ public class DSS1444Test {
 	public void test3() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
-			assertEquals("Error: End-of-File, expected line", exception.getMessage());
+			assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
 		}
 	}
 

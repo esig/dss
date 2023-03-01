@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -36,7 +35,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +42,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidation {
 
@@ -78,36 +75,29 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 			}
 
 			for (TimestampToken timestampToken : documentTimestamps) {
-				try {
-					assertTrue(timestampToken instanceof PdfTimestampToken);
-					PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+				assertTrue(timestampToken instanceof PdfTimestampToken);
+				PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
 
-					PdfDocTimestampRevision pdfRevision = pdfTimestampToken.getPdfRevision();
-					byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
-					byte[] signedContent = PAdESUtils.getSignedContentFromRevision(revisionContent, pdfRevision.getByteRange());
+				PdfDocTimestampRevision pdfRevision = pdfTimestampToken.getPdfRevision();
 
-					SignedDocumentValidator timestampValidator = SignedDocumentValidator
-							.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
-					timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-					timestampValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signedContent)));
+				SignedDocumentValidator timestampValidator = SignedDocumentValidator
+						.fromDocument(new InMemoryDocument(pdfTimestampToken.getEncoded()));
+				timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+				timestampValidator.setDetachedContents(Arrays.asList(pdfRevision.getSignedData()));
 
-					Reports reports = timestampValidator.validateDocument();
-					assertNotNull(reports);
+				Reports reports = timestampValidator.validateDocument();
+				assertNotNull(reports);
 
-					DiagnosticData diagnosticData = reports.getDiagnosticData();
-					List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-					assertEquals(1, timestampList.size());
+				DiagnosticData diagnosticData = reports.getDiagnosticData();
+				List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+				assertEquals(1, timestampList.size());
 
-					TimestampWrapper timestampWrapper = timestampList.get(0);
-					assertTrue(timestampWrapper.isMessageImprintDataFound());
-					assertTrue(timestampWrapper.isMessageImprintDataIntact());
+				TimestampWrapper timestampWrapper = timestampList.get(0);
+				assertTrue(timestampWrapper.isMessageImprintDataFound());
+				assertTrue(timestampWrapper.isMessageImprintDataIntact());
 
-					SimpleReport simpleReport = reports.getSimpleReport();
-					assertNotEquals(Indication.FAILED, simpleReport.getIndication(pdfTimestampToken.getDSSIdAsString()));
-
-				} catch (IOException e) {
-					fail(e);
-				}
+				SimpleReport simpleReport = reports.getSimpleReport();
+				assertNotEquals(Indication.FAILED, simpleReport.getIndication(pdfTimestampToken.getDSSIdAsString()));
 			}
 		}
 		assertTrue(firstSignature);

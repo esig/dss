@@ -23,10 +23,13 @@ package eu.europa.esig.dss.signature;
 import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureValidationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -37,6 +40,8 @@ import java.util.List;
  *
  */
 public class SignatureRequirementsChecker {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SignatureRequirementsChecker.class);
 
     /** CertificateVerifier to be used for certificates validation */
     private final CertificateVerifier certificateVerifier;
@@ -74,6 +79,11 @@ public class SignatureRequirementsChecker {
      * @param signature {@link AdvancedSignature} to verify
      */
     public void assertSigningCertificateIsValid(final AdvancedSignature signature) {
+        if (signatureParameters.isGenerateTBSWithoutCertificate() && signature.getCertificateSource().getNumberOfCertificates() == 0) {
+            LOG.debug("Signature has been generated without certificate. Validity of the signing-certificate is not checked.");
+            return;
+        }
+
         CertificateToken signingCertificate = signature.getSigningCertificateToken(); // can be null
         assertSigningCertificateIsYetValid(signingCertificate);
         assertSigningCertificateIsNotExpired(signingCertificate);
@@ -84,7 +94,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is yet valid at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is yet valid, FALSE otherwise
      */
     private void assertSigningCertificateIsYetValid(final CertificateToken certificateToken) {
         if (signatureParameters.isSignWithNotYetValidCertificate()) {
@@ -103,7 +112,7 @@ public class SignatureRequirementsChecker {
             throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
                             "is not yet valid at signing time %s! Change signing certificate or use method " +
                             "setSignWithNotYetValidCertificate(true).",
-                    notBefore.toString(), notAfter.toString(), signingDate.toString()));
+                    DSSUtils.formatDateToRFC(notBefore), DSSUtils.formatDateToRFC(notAfter), DSSUtils.formatDateToRFC(signingDate)));
         }
     }
 
@@ -111,7 +120,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is not expired at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertSigningCertificateIsNotExpired(final CertificateToken certificateToken) {
         if (signatureParameters.isSignWithExpiredCertificate()) {
@@ -130,7 +138,7 @@ public class SignatureRequirementsChecker {
             throw new IllegalArgumentException(String.format("The signing certificate (notBefore : %s, notAfter : %s) " +
                             "is expired at signing time %s! Change signing certificate or use method " +
                             "setSignWithExpiredCertificate(true).",
-                    notBefore.toString(), notAfter.toString(), signingDate.toString()));
+                    DSSUtils.formatDateToRFC(notBefore), DSSUtils.formatDateToRFC(notAfter), DSSUtils.formatDateToRFC(signingDate)));
         }
     }
 
@@ -138,7 +146,6 @@ public class SignatureRequirementsChecker {
      * This method verifies whether the given {@code CertificateToken} is not revoked nor suspended at the current time
      *
      * @param certificateToken {@link CertificateToken}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertCertificatesAreNotRevoked(final CertificateToken certificateToken) {
         if (!signatureParameters.isCheckCertificateRevocation()) {
@@ -161,14 +168,13 @@ public class SignatureRequirementsChecker {
         validationContext.validate();
 
         validationContext.checkAllRequiredRevocationDataPresent();
-        validationContext.checkAllCertificatesValid();
+        validationContext.checkCertificateNotRevoked(certificateToken);
     }
 
     /**
      * This method verifies whether the given {@code AdvancedSignature} do not contain revoked certificates
      *
      * @param signature {@link AdvancedSignature}
-     * @return TRUE if the certificate is not expired, FALSE otherwise
      */
     private void assertCertificatesAreNotRevoked(final AdvancedSignature signature) {
         if (!signatureParameters.isCheckCertificateRevocation()) {
@@ -184,7 +190,7 @@ public class SignatureRequirementsChecker {
         validationContext.validate();
 
         validationContext.checkAllRequiredRevocationDataPresent();
-        validationContext.checkAllCertificatesValid();
+        validationContext.checkCertificatesNotRevoked(signature);
     }
 
 }

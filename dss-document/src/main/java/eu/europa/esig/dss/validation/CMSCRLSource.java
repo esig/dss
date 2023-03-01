@@ -139,7 +139,16 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 		RevocationValues revValues = DSSASN1Utils.getRevocationValues(attValue);
 		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
-				addX509CRLHolder(new X509CRLHolder(revValue), origin);
+				try {
+					addX509CRLHolder(new X509CRLHolder(revValue), origin);
+				} catch (Exception e) {
+					String errorMessage = "Unable to process CRL binary : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
+				}
 			}
 		}
 	}
@@ -166,14 +175,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 			if (attrValue != null) {
 				final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
 				for (int ii = 0; ii < revocationRefs.size(); ii++) {
-					final CrlOcspRef crlOcspRef = CrlOcspRef.getInstance(revocationRefs.getObjectAt(ii));
-					final CrlListID crlIds = crlOcspRef.getCrlids();
-					if (crlIds != null) {
-						for (final CrlValidatedID id : crlIds.getCrls()) {
-							final CRLRef crlRef = new CRLRef(id);
-							addRevocationReference(crlRef, origin);
-						}
-					}
+					collectRevocationRefFromASN1Encodable(revocationRefs.getObjectAt(ii), origin);
 				}
 			}
 		} catch (Exception e) {
@@ -182,6 +184,26 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 					"An error occurred during extraction of revocation references from  signature unsigned properties. "
 							+ "Revocations for origin {} were not stored",
 					origin.toString(), e);
+		}
+	}
+
+	private void collectRevocationRefFromASN1Encodable(ASN1Encodable asn1Encodable, RevocationRefOrigin origin) {
+		try {
+			final CrlOcspRef crlOcspRef = CrlOcspRef.getInstance(asn1Encodable);
+			final CrlListID crlIds = crlOcspRef.getCrlids();
+			if (crlIds != null) {
+				for (final CrlValidatedID id : crlIds.getCrls()) {
+					final CRLRef crlRef = new CRLRef(id);
+					addRevocationReference(crlRef, origin);
+				}
+			}
+		} catch (Exception e) {
+			String errorMessage = "Unable to process CRL reference : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 		}
 	}
 

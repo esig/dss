@@ -24,7 +24,9 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -34,6 +36,8 @@ import java.util.List;
 
 /**
  * Parameters for a Signature creation/extension
+ *
+ * @param <TP> implementation of certain format signature parameters
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSignatureParameters<TP extends SerializableTimestampParameters> extends AbstractSerializableSignatureParameters<TP> {
@@ -201,6 +205,23 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	}
 
 	/**
+	 * The deterministic identifier used for unique identification of a created signature (used in XAdES and PAdES).
+	 * The identifier shall be built in a deterministic way to ensure the same value on both method calls
+	 * during the signature creation.
+	 *
+	 * @return the unique ID for the current signature or a document
+	 */
+	public String getDeterministicId() {
+		String deterministicId = getContext().getDeterministicId();
+		if (deterministicId == null) {
+			final TokenIdentifier identifier = (getSigningCertificate() == null ? null : getSigningCertificate().getDSSId());
+			deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
+			getContext().setDeterministicId(deterministicId);
+		}
+		return deterministicId;
+	}
+
+	/**
 	 * Gets the signature creation context (internal variable)
 	 *
 	 * @return {@link ProfileParameters}
@@ -213,7 +234,7 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	}
 
 	/**
-	 * This methods re-inits signature parameters to clean temporary settings
+	 * This method re-inits signature parameters to clean temporary settings
 	 */
 	public void reinit() {
 		context = null;

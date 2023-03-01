@@ -1,5 +1,5 @@
 <ConstraintsParameters Name="QES AdESQC TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
-	<Description>Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+	<Description>Validates electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
 		Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
 		signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
 	</Description>
@@ -22,6 +22,15 @@
 		<SignedFilesPresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
+	<PDFAConstraints>
+		<!-- PDF/A only -->
+<!--		<AcceptablePDFAProfiles Level="WARN">-->
+<!--			<Id>PDF/A-2A</Id>-->
+<!--			<Id>PDF/A-2B</Id>-->
+<!--			<Id>PDF/A-2U</Id>-->
+<!--		</AcceptablePDFAProfiles>-->
+<!--		<PDFACompliant Level="WARN" />-->
+	</PDFAConstraints>
 	<SignatureConstraints>
 		<StructuralValidation Level="WARN" />
 		<AcceptablePolicies Level="FAIL">
@@ -41,6 +50,9 @@
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<SignerInformationStore Level="FAIL" />
+			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
+			<PdfSignatureDictionary Level="FAIL" />
 			<PdfPageDifference Level="FAIL" />
 			<PdfAnnotationOverlap Level="WARN" />
 			<PdfVisualDifference Level="WARN" />
@@ -71,6 +83,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -91,6 +108,16 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -154,6 +181,11 @@
 				<KeyUsage Level="WARN">
 					<Id>nonRepudiation</Id>
 				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -172,6 +204,16 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -212,6 +254,16 @@
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
+			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
+			<PdfSignatureDictionary Level="FAIL" />
+			<PdfPageDifference Level="FAIL" />
+			<PdfAnnotationOverlap Level="WARN" />
+			<PdfVisualDifference Level="WARN" />
+			<DocMDP Level="WARN" />
+			<FieldMDP Level="WARN" />
+			<SigFieldLock Level="WARN" />
+			<UndefinedChanges Level="WARN" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -220,9 +272,14 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
-				<ExtendedKeyUsage Level="WARN">
+				<ExtendedKeyUsage Level="FAIL">
 					<Id>timeStamping</Id>
 				</ExtendedKeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
@@ -235,6 +292,16 @@
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -253,6 +320,7 @@
 	</Timestamp>
 	<Revocation>
         <UnknownStatus Level="FAIL" />
+		<OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
@@ -267,6 +335,8 @@
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -278,6 +348,16 @@
 				<AcceptableRevocationDataFound Level="WARN" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
+				<CA Level="FAIL" />
+				<MaxPathLength Level="FAIL" />
+				<KeyUsage Level="FAIL">
+					<Id>keyCertSign</Id>
+				</KeyUsage>
+				<PolicyTree Level="WARN" />
+				<NameConstraints Level="WARN" />
+				<ForbiddenExtensions Level="FAIL">
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+				</ForbiddenExtensions>
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -315,7 +395,7 @@
 			<Algo>RIPEMD160</Algo>
 			<Algo>WHIRLPOOL</Algo>
 		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Format="yyyy">
+		<AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
 			<!-- Digest algorithms -->
 <!--		<Algo Date="2005">MD2</Algo> 		Not referenced in ETSI/SOGIS -->
 			<Algo Date="2005">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
@@ -351,7 +431,6 @@
 			<Algo Date="2029" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
-
 <!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>

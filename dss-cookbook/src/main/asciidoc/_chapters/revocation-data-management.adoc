@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[RevocationDataManagement]]
 == Revocation data management
@@ -70,6 +70,19 @@ An example for JdbcCacheOCSPSource :
 .JdbcCacheOCSPSource usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-cached]
+----
+
+==== JDBC sources with other databases
+
+Depending on a used database, the executed SQL requests may differ (for example one or another datatype may be not supported).
+In order to adapt the `JdbcRevocationSource` to the used database, the easiest way is to override the SQL requests with values supported by the target database.
+
+For instance, in PostgreSQL a `bytea` datatype is required for storing binary data instead of `blob` or `longvarbinary` used in default implementation of Jdbc sources. The following example demonstrates a Jdbc implementation example for CRL data storing adapted for PostgreSQL:
+
+[source,java,indent=0]
+.JdbcCacheCRLSource with PostgreSQL
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-postgresql]
 ----
 
 === Online fetching

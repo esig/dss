@@ -26,7 +26,7 @@ import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.MimeType;
+import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -47,6 +47,10 @@ import java.util.Objects;
 
 /**
  * The abstract class containing the main methods for ASiC signature creation/extension
+ *
+ * @param <SP> implementation of signature parameters corresponding to the supported signature format
+ * @param <TP> implementation of timestamp parameters corresponding to the supported document format
+ * @param <CSP> implementation of counter-signature parameters corresponding to the supported signature format
  */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
 					CSP extends SerializableCounterSignatureParameters> extends AbstractSignatureService<SP, TP> 

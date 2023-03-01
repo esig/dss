@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[Annex]]
 == Annex
@@ -200,6 +200,21 @@ DSS provides a set of functions allowing to place the signature field on a speci
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=positioning]
 ----
+
+[[PdfSignatureFieldPositionChecker]]
+====== Signature Field Position Checker
+
+In certain cases it is beneficial to ensure validity of a position for a newly created signature field, in particular to verify if the signature field lies within the borders of a PDF page and/or it does not cover other existing signature field(s).
+
+To set up the behavior, DSS provides `PdfSignatureFieldPositionChecker` class, a configured instance of which should be provided within a used `IPdfObjFactory` object in a `PAdESService`. It can be configured as in the example below:
+
+[source,java,indent=0]
+.Ensure validity of a signature field position
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESWithIPdfObjFactoryConfiguration.java[tags=pdf-signature-field-position-checker]
+----
+
+For more information about configuration with alerts please see <<Alerts>> section.
 
 [[Dimensions]]
 ====== Dimensions

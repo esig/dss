@@ -20,19 +20,17 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
+import eu.europa.esig.dss.pades.exception.ProtectedDocumentException;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,8 +68,9 @@ public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSign
         DSSDocument signedDocument = super.sign();
 
         documentToSign = signedDocument;
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
-        assertEquals("The creation of new signatures is not permitted in the current document.", exception.getMessage());
+        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        assertEquals("The creation of new signatures is not permitted in the current document. " +
+                "Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 
         documentToSign = originalDocument;
         return signedDocument;
@@ -85,15 +84,10 @@ public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSign
         assertEquals(1, signatures.size());
 
         SignatureWrapper signatureWrapper = signatures.get(0);
-        XmlPDFRevision pdfRevision = signatureWrapper.getPDFRevision();
+        PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
         assertNotNull(pdfRevision);
 
-        XmlPDFSignatureDictionary pdfSignatureDictionary = pdfRevision.getPDFSignatureDictionary();
-        assertNotNull(pdfSignatureDictionary);
-
-        XmlDocMDP docMDP = pdfSignatureDictionary.getDocMDP();
-        assertNotNull(docMDP);
-        assertEquals(CertificationPermission.NO_CHANGE_PERMITTED, docMDP.getPermissions());
+        assertEquals(CertificationPermission.NO_CHANGE_PERMITTED, pdfRevision.getDocMDPPermissions());
     }
 
     @Override

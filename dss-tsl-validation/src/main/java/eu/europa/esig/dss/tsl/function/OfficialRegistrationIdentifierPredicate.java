@@ -42,6 +42,7 @@ public class OfficialRegistrationIdentifierPredicate implements Predicate<String
 	 * Default constructor
 	 */
 	public OfficialRegistrationIdentifierPredicate() {
+		// empty
 	}
 
 	@Override

@@ -37,6 +37,7 @@ public class LogTLParsingErrorAlertHandler implements AlertHandler<TLInfo> {
 	 * Default constructor
 	 */
 	public LogTLParsingErrorAlertHandler() {
+		// empty
 	}
 
 	@Override

@@ -39,6 +39,7 @@ public class RestTimestampServiceImpl implements RestTimestampService {
 	 * Default construction instantiating object with null RemoteTimestampService
 	 */
 	public RestTimestampServiceImpl() {
+		// empty
 	}
 
 	/**

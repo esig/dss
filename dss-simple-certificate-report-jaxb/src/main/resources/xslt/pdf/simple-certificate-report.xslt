@@ -6,12 +6,11 @@
 	xmlns:dss="http://dss.esig.europa.eu/validation/simple-certificate-report">
 	<xsl:output method="xml" indent="yes" />
 
-	<xsl:param name="rootTrustmarkUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/trustmark/
-	</xsl:param>
-	<xsl:param name="rootCountryUrlInTlBrowser">
-		https://esignature.ec.europa.eu/efda/tl-browser/#/screen/tl/
-	</xsl:param>
+	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
+	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
+	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
+	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 
 	<xsl:template match="/dss:SimpleCertificateReport">
 		<fo:root>
@@ -108,7 +107,7 @@
 			       		
 						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 						
-						<xsl:text>Certificate : <xsl:value-of select="dss:id"/></xsl:text>
+						<xsl:text>Certificate: <xsl:value-of select="dss:id"/></xsl:text>
 			    	</fo:block>
 		    	</fo:block-container>
 			</fo:block-container>
@@ -135,25 +134,27 @@
 							
 							<fo:table table-layout="fixed">
 								<fo:table-column>
-									<xsl:attribute name="column-width">25%</xsl:attribute>
+									<xsl:attribute name="column-width">27%</xsl:attribute>
 								</fo:table-column>
 								<fo:table-column>
-									<xsl:attribute name="column-width">75%</xsl:attribute>
+									<xsl:attribute name="column-width">73%</xsl:attribute>
 								</fo:table-column>
 								
 								<fo:table-body>
 									<xsl:attribute name="start-indent">0</xsl:attribute>
 									<xsl:attribute name="end-indent">0</xsl:attribute>
+
+									<xsl:apply-templates select="dss:qualificationAtIssuance"/>
+									<xsl:apply-templates select="dss:qualificationAtValidation"/>
+									<xsl:apply-templates select="dss:enactedMRA"/>
 									
 									<fo:table-row>
 										<xsl:variable name="indicationText" select="dss:Indication/text()"/>
 										<xsl:variable name="indicationColor">
 								        	<xsl:choose>
-												<xsl:when test="$indicationText='TOTAL_PASSED'">green</xsl:when>
 												<xsl:when test="$indicationText='PASSED'">green</xsl:when>
 												<xsl:when test="$indicationText='INDETERMINATE'">orange</xsl:when>
 												<xsl:when test="$indicationText='FAILED'">red</xsl:when>
-												<xsl:when test="$indicationText='TOTAL_FAILED'">red</xsl:when>
 											</xsl:choose>
 								        </xsl:variable>
         
@@ -161,9 +162,8 @@
 											<fo:block>
 												<xsl:attribute name="margin-top">1px</xsl:attribute>
 												<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-												
 												<xsl:attribute name="font-weight">bold</xsl:attribute>
-												<xsl:text>Indication :</xsl:text>
+												<xsl:text>Indication:</xsl:text>
 											</fo:block>
 										</fo:table-cell>
 										<fo:table-cell>
@@ -180,11 +180,34 @@
 											</fo:block>
 										</fo:table-cell>
 									</fo:table-row>
-									
-     								<xsl:apply-templates select="dss:qualificationAtIssuance"/>
-     								<xsl:apply-templates select="dss:qualificationAtValidation"/>
-			       					<xsl:apply-templates select="*[not(self::dss:qualificationAtIssuance | self::dss:qualificationAtValidation)]"/>
-     								<xsl:apply-templates select="dss:enactedMRA"/>
+
+									<xsl:apply-templates select="dss:X509ValidationDetails" />
+
+									<xsl:apply-templates select="dss:subject" />
+									<xsl:apply-templates select="dss:commonName" />
+									<xsl:apply-templates select="dss:surname" />
+									<xsl:apply-templates select="dss:givenName" />
+									<xsl:apply-templates select="dss:pseudonym" />
+									<xsl:apply-templates select="dss:organizationName" />
+									<xsl:apply-templates select="dss:organizationUnit" />
+									<xsl:apply-templates select="dss:email" />
+									<xsl:apply-templates select="dss:locality" />
+									<xsl:apply-templates select="dss:state" />
+									<xsl:apply-templates select="dss:country" />
+									<xsl:apply-templates select="dss:issuerId" />
+									<xsl:apply-templates select="dss:notBefore" />
+									<xsl:apply-templates select="dss:notAfter" />
+
+									<xsl:apply-templates select="dss:keyUsages" />
+									<xsl:apply-templates select="dss:extendedKeyUsages" />
+									<xsl:apply-templates select="dss:ocspUrls" />
+									<xsl:apply-templates select="dss:crlUrls" />
+									<xsl:apply-templates select="dss:aiaUrls" />
+									<xsl:apply-templates select="dss:cpsUrls" />
+									<xsl:apply-templates select="dss:pdsUrls" />
+
+									<xsl:apply-templates select="dss:revocation" />
+									<xsl:apply-templates select="dss:trustAnchors" />
 			       					
 								</fo:table-body>
 							</fo:table>
@@ -197,10 +220,56 @@
     	</xsl:for-each>
 		
     </xsl:template>
-    
-    <xsl:template match="dss:subject">
-    	<xsl:apply-templates/>
-    </xsl:template>
+
+	<xsl:template match="dss:QualificationDetails|dss:X509ValidationDetails">
+		<xsl:variable name="header">
+			<xsl:choose>
+				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
+				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:value-of select="$header" />:
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+
+				<xsl:apply-templates select="dss:Error" />
+				<xsl:apply-templates select="dss:Warning" />
+				<xsl:apply-templates select="dss:Info" />
+
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="dss:Error|dss:Warning|dss:Info">
+		<xsl:variable name="indicationColor">
+			<xsl:choose>
+				<xsl:when test="name() = 'Error'">red</xsl:when>
+				<xsl:when test="name() = 'Warning'">orange</xsl:when>
+				<xsl:otherwise>black</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<fo:block>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+			<xsl:attribute name="color"><xsl:value-of select="$indicationColor" /></xsl:attribute>
+			<xsl:value-of select="." />
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="dss:subject">
+		<xsl:apply-templates/>
+	</xsl:template>
     
     <xsl:template match="dss:commonName|dss:surname|dss:givenName|dss:pseudonym|dss:organizationName|
     		dss:organizationUnit|dss:email|dss:locality|dss:state|dss:country|
@@ -231,7 +300,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 					
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+					<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -254,7 +323,7 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:text>Key usages :</xsl:text>
+						<xsl:text>Key usages:</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>
@@ -292,7 +361,7 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+						<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>
@@ -340,7 +409,7 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 					
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$label" /><xsl:text> :</xsl:text>
+					<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
 				</fo:block>
 			</fo:table-cell>
 			<fo:table-cell>
@@ -390,7 +459,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation thisUpdate time :</xsl:text>
+							<xsl:text>Revocation thisUpdate time:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -409,7 +478,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation status :</xsl:text>
+							<xsl:text>Revocation status:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -438,7 +507,7 @@
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 							
 							<xsl:attribute name="font-weight">bold</xsl:attribute>
-							<xsl:text>Revocation :</xsl:text>
+							<xsl:text>Revocation:</xsl:text>
 						</fo:block>
 					</fo:table-cell>
 					<fo:table-cell>
@@ -464,15 +533,23 @@
 						<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 						
 						<xsl:attribute name="font-weight">bold</xsl:attribute>
-						<xsl:text>Trust anchor(s) :</xsl:text>
+						<xsl:text>Trust anchor(s):</xsl:text>
 					</fo:block>
 				</fo:table-cell>
 				<fo:table-cell>
 					<xsl:attribute name="display-align">center</xsl:attribute>
 					
 			    	<xsl:for-each select="dss:trustAnchor">
-						<xsl:variable name="countryTlUrl" select="concat($rootCountryUrlInTlBrowser, dss:countryCode)" />
-						<xsl:variable name="countryTspUrl" select="concat($rootTrustmarkUrlInTlBrowser, dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+						<xsl:variable name="subDirectory">
+							<xsl:choose>
+								<xsl:when test="dss:tslType and $euGenericTSLType = dss:tslType"><xsl:value-of select="$euTLSubDirectoryInTlBrowser" /></xsl:when>
+								<xsl:otherwise><xsl:value-of select="$tcTLSubDirectoryInTlBrowser" /></xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+						<xsl:variable name="countryTlUrl" select="concat($rootUrlInTlBrowser, $subDirectory, '/', dss:countryCode)" />
+						<xsl:variable name="countryTspUrl" select="concat($rootUrlInTlBrowser, $subDirectory,
+								$trustmarkSubDirectoryInTlBrowser, '/', dss:countryCode, '/', dss:trustServiceProviderRegistrationId)" />
+
 						<fo:block>
 							<xsl:attribute name="margin-top">1px</xsl:attribute>
 							<xsl:attribute name="margin-bottom">1px</xsl:attribute>

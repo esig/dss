@@ -45,6 +45,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -665,7 +667,7 @@ public class DiagnosticData {
 	 * @return timestamp wrapper or null
 	 */
 	public TimestampWrapper getTimestampById(String id) {
-		Set<TimestampWrapper> allTimestamps = getTimestampSet();
+		List<TimestampWrapper> allTimestamps = getTimestampList();
 		for (TimestampWrapper timestampWrapper : allTimestamps) {
 			if (id.equals(timestampWrapper.getId())) {
 				return timestampWrapper;
@@ -990,7 +992,9 @@ public class DiagnosticData {
 	 * This method returns timestamps
 	 * 
 	 * @return a set of TimestampWrapper
+	 * @deprecated since 5.12. Use {@code Set<TimestampWrapper> timestampSet = new LinkedHashSet<>(getTimestampList());}
 	 */
+	@Deprecated
 	public Set<TimestampWrapper> getTimestampSet() {
 		return new LinkedHashSet<>(getTimestampList());
 	}
@@ -1165,6 +1169,51 @@ public class DiagnosticData {
 	 */
 	public XmlContainerInfo getContainerInfo() {
 		return wrapped.getContainerInfo();
+	}
+
+	/**
+	 * Returns whether a document has been validated against PDF/A compliance
+	 *
+	 * @return TRUE if the PDF/A validation has been performed, FALSE otherwise
+	 */
+	public boolean isPDFAValidationPerformed() {
+		return wrapped.getPDFAInfo() != null;
+	}
+
+	/**
+	 * Returns evaluated PDF/A profile Id
+	 *
+	 * @return {@link String}
+	 */
+	public String getPDFAProfileId() {
+		if (wrapped.getPDFAInfo() != null) {
+			return wrapped.getPDFAInfo().getProfileId();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns whether the document is a PDF/A compliant (PDF/A validation shall be performed!)
+	 *
+	 * @return TRUE if the document is PDF/A compliant, FALSE otherwise
+	 */
+	public boolean isPDFACompliant() {
+		if (wrapped.getPDFAInfo() != null) {
+			return wrapped.getPDFAInfo().isCompliant();
+		}
+		return false;
+	}
+
+	/**
+	 * Returns a collection of PDF/A validation errors occurred during the validation
+	 *
+	 * @return a collection of {@link String}s
+	 */
+	public Collection<String> getPDFAValidationErrors() {
+		if (wrapped.getPDFAInfo() != null) {
+			return wrapped.getPDFAInfo().getValidationMessages();
+		}
+		return Collections.emptyList();
 	}
 
 	/**

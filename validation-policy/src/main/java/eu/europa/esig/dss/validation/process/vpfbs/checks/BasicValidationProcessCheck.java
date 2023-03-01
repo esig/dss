@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the Basic Signature Validation Process succeeds
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class BasicValidationProcessCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

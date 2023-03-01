@@ -24,17 +24,21 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlRevocation;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlTrustAnchor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A SimpleCertificateReport holder to fetch values from a JAXB SimpleCertificateReport.
@@ -397,6 +401,155 @@ public class SimpleCertificateReport {
 	}
 
 	/**
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation errors for a given certificate by id
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked errors
+	 */
+	public List<Message> getX509ValidationErrors(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getError());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation warnings for a given certificate by id
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked warning messages
+	 */
+	public List<Message> getX509ValidationWarnings(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getWarning());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the ETSI EN 319 102-1 X.509 certificate validation information messages for a given certificate by id
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked information messages
+	 */
+	public List<Message> getX509ValidationInfo(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getX509ValidationDetails() != null) {
+			return convert(certificate.getX509ValidationDetails().getInfo());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's errors for a given certificate by id at issuance time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked errors
+	 */
+	public List<Message> getQualificationErrorsAtIssuanceTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtIssuance() != null) {
+			return convert(certificate.getQualificationDetailsAtIssuance().getError());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's warnings for a given certificate by id at issuance time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked warning messages
+	 */
+	public List<Message> getQualificationWarningsAtIssuanceTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtIssuance() != null) {
+			return convert(certificate.getQualificationDetailsAtIssuance().getWarning());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's information messages for a given certificate by id at issuance time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked information messages
+	 */
+	public List<Message> getQualificationInfoAtIssuanceTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtIssuance() != null) {
+			return convert(certificate.getQualificationDetailsAtIssuance().getInfo());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's errors for a given certificate by id at validation time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked errors
+	 */
+	public List<Message> getQualificationErrorsAtValidationTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtValidation() != null) {
+			return convert(certificate.getQualificationDetailsAtValidation().getError());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's warnings for a given certificate by id at validation time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked warning messages
+	 */
+	public List<Message> getQualificationWarningsAtValidationTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtValidation() != null) {
+			return convert(certificate.getQualificationDetailsAtValidation().getWarning());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method retrieve the qualification process's information messages for a given certificate by id at validation time
+	 *
+	 * @param certificateId
+	 *            {@link String} certificate id
+	 * @return the linked information messages
+	 */
+	public List<Message> getQualificationInfoAtValidationTime(final String certificateId) {
+		XmlChainItem certificate = getCertificate(certificateId);
+		if (certificate != null && certificate.getQualificationDetailsAtValidation() != null) {
+			return convert(certificate.getQualificationDetailsAtValidation().getInfo());
+		}
+		return Collections.emptyList();
+	}
+
+	private Message convert(XmlMessage v) {
+		if (v != null) {
+			return new Message(v.getKey(), v.getValue());
+		}
+		return null;
+	}
+
+	private List<Message> convert(Collection<XmlMessage> messages) {
+		if (messages != null) {
+			return messages.stream().map(this::convert).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
 	 * This method returns the qualification of the first certificate at its issuance
 	 * 
 	 * @return the qualification at the certificate creation
@@ -404,6 +557,16 @@ public class SimpleCertificateReport {
 	public CertificateQualification getQualificationAtCertificateIssuance() {
 		XmlChainItem cert = getFirstCertificate();
 		return cert.getQualificationAtIssuance();
+	}
+
+	/**
+	 * This method returns the qualification of the first certificate at the validation time
+	 *
+	 * @return the qualification at the validation time
+	 */
+	public CertificateQualification getQualificationAtValidationTime() {
+		XmlChainItem cert = getFirstCertificate();
+		return cert.getQualificationAtValidation();
 	}
 
 	/**
@@ -431,16 +594,6 @@ public class SimpleCertificateReport {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * This method returns the qualification of the first certificate at the validation time
-	 * 
-	 * @return the qualification at the validation time
-	 */
-	public CertificateQualification getQualificationAtValidationTime() {
-		XmlChainItem cert = getFirstCertificate();
-		return cert.getQualificationAtValidation();
 	}
 
 	private XmlChainItem getFirstCertificate() {

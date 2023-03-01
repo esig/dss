@@ -194,9 +194,19 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attValue);
 			if (revocationValues != null) {
 				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-					OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
-					addBinary(ocspResponseIdentifier, origin);
+					try {
+						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+						OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
+						addBinary(ocspResponseIdentifier, origin);
+
+					} catch (Exception e) {
+						String errorMessage = "Unable to process OCSP binary : {}";
+						if (LOG.isDebugEnabled()) {
+							LOG.warn(errorMessage, e.getMessage(), e);
+						} else {
+							LOG.warn(errorMessage, e.getMessage());
+						}
+					}
 				}
 			}
 			/*
@@ -219,15 +229,23 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 		}
 	
 		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final ASN1Sequence completeRevocationRefs = (ASN1Sequence) attrValue;
-		for (int i = 0; i < completeRevocationRefs.size(); i++) {
-	
-			final CrlOcspRef otherCertId = CrlOcspRef.getInstance(completeRevocationRefs.getObjectAt(i));
-			final OcspListID ocspListID = otherCertId.getOcspids();
-			if (ocspListID != null) {
-				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-					final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
-					addRevocationReference(ocspRef, origin);
+		final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
+		for (int i = 0; i < revocationRefs.size(); i++) {
+			try {
+				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(revocationRefs.getObjectAt(i));
+				final OcspListID ocspListID = otherCertId.getOcspids();
+				if (ocspListID != null) {
+					for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
+						final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
+						addRevocationReference(ocspRef, origin);
+					}
+				}
+			} catch (Exception e) {
+				String errorMessage = "Unable to process OCSP reference : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, e.getMessage());
 				}
 			}
 		}

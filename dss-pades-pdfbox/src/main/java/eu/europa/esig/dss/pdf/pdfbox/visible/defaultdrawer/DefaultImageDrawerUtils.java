@@ -74,6 +74,8 @@ public final class DefaultImageDrawerUtils {
         if (isTransparent(textParameters.getTextColor(), textParameters.getBackgroundColor())) {
             LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
             imageType = BufferedImage.TYPE_INT_ARGB;
+        } else if (isGrayscale(textParameters.getTextColor(), textParameters.getBackgroundColor())) {
+            imageType = BufferedImage.TYPE_BYTE_GRAY;
         } else {
             imageType = BufferedImage.TYPE_INT_RGB;
         }
@@ -151,6 +153,17 @@ public final class DefaultImageDrawerUtils {
             }
         }
         return false;
+    }
+
+    private static boolean isGrayscale(Color... colors) {
+        if (colors != null) {
+            for (Color color : colors) {
+                if (color != null && !ImageUtils.isGrayscale(color)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -244,11 +257,23 @@ public final class DefaultImageDrawerUtils {
     }
 
     private static int getImageType(final BufferedImage image1, final BufferedImage image2) {
+        // default
         int imageType = BufferedImage.TYPE_INT_RGB;
+        if (image1 != null && image2 == null) {
+            imageType = image1.getType();
+        } else if (image1 == null && image2 != null) {
+            imageType = image2.getType();
+        } else if (image1 != null && image1.getType() == image2.getType()) {
+            imageType = image1.getType();
+        }
 
         if ((image1 != null && ImageUtils.isTransparent(image1)) || (image2 != null && ImageUtils.isTransparent(image2))) {
             LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
             imageType = BufferedImage.TYPE_INT_ARGB;
+
+        } else if (BufferedImage.TYPE_CUSTOM == imageType) {
+            LOG.info("Original image type is not recognized! Use RGB as the target color profile.");
+            imageType = BufferedImage.TYPE_INT_RGB;
         }
 
         return imageType;

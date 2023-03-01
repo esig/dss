@@ -20,14 +20,12 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.alert.status.MessageStatus;
-import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -35,11 +33,13 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pades.validation.dss.PdfCompositeDssDictionary;
+import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
@@ -52,14 +52,13 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -105,28 +104,14 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	protected PdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
 
 	/**
-	 * This variable set the behavior to follow in case of overlapping a new
-	 * signature field with existing annotations.
-	 * 
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Used to verify PDF document permissions regarding a new signature creation
 	 */
-	private StatusAlert alertOnSignatureFieldOverlap = new ExceptionOnStatusAlert();
+	protected PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
 
 	/**
-	 * This variable allows setting a behavior when
-	 * a new signature field is created outside the page dimensions
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Used to verify the signature field position placement validity
 	 */
-	private StatusAlert alertOnSignatureFieldOutsidePageDimensions = new ExceptionOnStatusAlert();
-
-	/**
-	 * This variable indicates a behavior for creation of a new signature
-	 * in a document that does not permit a new signature creation
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 */
-	private StatusAlert alertOnForbiddenSignatureCreation = new ExceptionOnStatusAlert();
+	protected PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -160,6 +145,18 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		this.pdfObjectModificationsFinder = pdfObjectModificationsFinder;
 	}
 
+	@Override
+	public void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker) {
+		Objects.requireNonNull(pdfPermissionsChecker, "PdfPermissionsChecker cannot be null!");
+		this.pdfPermissionsChecker = pdfPermissionsChecker;
+	}
+
+	@Override
+	public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
+		Objects.requireNonNull(pdfSignatureFieldPositionChecker, "PdfSignatureFieldPositionChecker cannot be null!");
+		this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
+	}
+
 	/**
 	 * Sets alert on a signature field overlap with existing fields or/and
 	 * annotations
@@ -167,10 +164,16 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 * 
 	 * @param alertOnSignatureFieldOverlap {@link StatusAlert} to execute
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOutsidePageDimensions);
+	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 * 			}
 	 */
+	@Deprecated
 	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
-		Objects.requireNonNull(alertOnSignatureFieldOverlap, "StatusAlert cannot be null!");
-		this.alertOnSignatureFieldOverlap = alertOnSignatureFieldOverlap;
+		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap)!");
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap);
 	}
 
 	/**
@@ -179,51 +182,35 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 *
 	 * @param alertOnSignatureFieldOutsidePageDimensions {@link StatusAlert} to execute
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
+	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+	 * 			}
 	 */
+	@Deprecated
 	public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-		this.alertOnSignatureFieldOutsidePageDimensions = alertOnSignatureFieldOutsidePageDimensions;
+		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions)!");
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
 	}
 
 	/**
 	 * Sets a behavior to follow when creating a new signature in a document that forbids creation of new signatures
 	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * Default : ProtectedDocumentExceptionOnStatusAlert -
+	 *                 throws the {@code eu.europa.esig.dss.pades.exception.ProtectedDocumentException} exception
 	 *
 	 * @param alertOnForbiddenSignatureCreation {@link StatusAlert} to execute
-	 */
-	public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnForbiddenSignatureCreation) {
-		this.alertOnForbiddenSignatureCreation = alertOnForbiddenSignatureCreation;
-	}
-
-	/**
-	 * Sets a maximal pages amount in a PDF to process a visual screenshot
-	 * comparison Example: for value 10, the visual comparison will be executed for
-	 * a PDF containing 10 and fewer pages
-	 * 
-	 * NOTE: In order to disable visual comparison check set the pages amount to 0
-	 * (zero)
-	 * 
-	 * Default : 10 pages
-	 * 
-	 * @param pagesAmount the amount of the pages to execute visual comparison for
-	 * @deprecated since 5.11. Use
-	 * 		{@code
-	*           PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
-	 *          ...
-	 *          IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
-	 * 			DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
-	 *          pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
-	 *          pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
-	 *          validator.setPdfObjFactory(pdfObjFactory);
-	 * 		}
+	 * @deprecated since DSS 5.12. Use {@code
+	 * 				PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+	 *				pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
+	 *			    pdfObjFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
+	 * 			}
 	 */
 	@Deprecated
-	public void setMaximalPagesAmountForVisualComparison(int pagesAmount) {
-		LOG.warn("Use of deprecated setMaximalPagesAmountForVisualComparison(pagesAmount) method! " +
-				"See more details in JavaDoc.");
-		DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
-		pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(pagesAmount);
-		setPdfDifferencesFinder(pdfDifferencesFinder);
+	public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnForbiddenSignatureCreation) {
+		LOG.warn("Use of deprecated method setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation)!");
+		pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
 	}
 
 	/**
@@ -252,13 +239,19 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
+	@Deprecated
 	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		return messageDigest(toSignDocument, parameters).getValue();
+	}
+
+	@Override
+	public DSSMessageDigest messageDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
-		if (Utils.isArrayEmpty(pdfSignatureCache.getDigest())) {
-			byte[] digest = computeDigest(toSignDocument, parameters);
-			pdfSignatureCache.setDigest(digest);
+		if (pdfSignatureCache.getMessageDigest() == null) {
+			final DSSMessageDigest messageDigest = computeDigest(toSignDocument, parameters);
+			pdfSignatureCache.setMessageDigest(messageDigest);
 		}
-		return pdfSignatureCache.getDigest();
+		return pdfSignatureCache.getMessageDigest();
 	}
 
 	/**
@@ -267,9 +260,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * @param toSignDocument {@link DSSDocument} to be signed
 	 * @param parameters {@link PAdESCommonParameters}
-	 * @return byte array
+	 * @return {@link DSSMessageDigest}
 	 */
-	protected abstract byte[] computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
+	protected abstract DSSMessageDigest computeDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters);
 
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
@@ -293,7 +286,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		if (signedDocument == null) {
 			signedDocument = signDocument(toSignDocument, cmsSignedData, parameters);
 		}
-		signedDocument.setMimeType(MimeType.PDF);
+		signedDocument.setMimeType(MimeTypeEnum.PDF);
 		return signedDocument;
 	}
 
@@ -332,67 +325,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
-	/**
-	 * This method checks if the document is not encrypted or with limited edition rights
-	 * 
-	 * @param pdfDocumentReader {@link PdfDocumentReader} to check
-	 */
-	protected void checkDocumentPermissions(final PdfDocumentReader pdfDocumentReader) {
-		pdfDocumentReader.checkDocumentPermissions();
-	}
-
-	/**
-	 * This method verifies whether a new signature is permitted
-	 *
-	 * @param reader {@link PdfDocumentReader}
-	 * @param fieldParameters {@link SignatureFieldParameters}
-	 */
-	protected void checkNewSignatureIsPermitted(final PdfDocumentReader reader,
-												final SignatureFieldParameters fieldParameters) {
-		final CertificationPermission certificationPermission = reader.getCertificationPermission();
-		if (isDocumentChangeForbidden(certificationPermission)) {
-			alertOnForbiddenSignatureCreation();
-		}
-		if (reader.isUsageRightsSignaturePresent()) {
-			/*
-			 * Deprecated. See ISO 32000-2:
-			 *
-			 * When a usage rights signature is present, it is up to the PDF processor or
-			 * to the signature handler to process it or not.
-			 */
-			LOG.info("A usage rights signature is present. The feature is deprecated and the entry is not handled.");
-		}
-
-		try {
-			String signatureFieldId = fieldParameters.getFieldId();
-
-			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
-			sigDictionaries = sortSignatureDictionaries(sigDictionaries);
-			for (PdfSignatureDictionary signatureDictionary : sigDictionaries.keySet()) {
-				SigFieldPermissions fieldMDP = signatureDictionary.getFieldMDP();
-				if (fieldMDP != null && isSignatureFieldCreationForbidden(fieldMDP, signatureFieldId)) {
-					alertOnForbiddenSignatureCreation();
-				}
-			}
-
-			for (List<PdfSignatureField> signatureFieldList : sigDictionaries.values()) {
-				for (PdfSignatureField signatureField : signatureFieldList) {
-					SigFieldPermissions lockDict = signatureField.getLockDictionary();
-					if (lockDict != null && lockDict.getCertificationPermission() != null &&
-							isSignatureFieldCreationForbidden(lockDict, signatureFieldId)) {
-						alertOnForbiddenSignatureCreation();
-					}
-				}
-			}
-
-		} catch (IOException e) {
-			LOG.warn("An error occurred while reading signature dictionary entries : {}", e.getMessage(), e);
-		}
+	@Override
+	@Deprecated
+	public List<PdfRevision> getRevisions(DSSDocument document, String pwd) {
+		return getRevisions(document, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
-	public List<PdfRevision> getRevisions(final DSSDocument document, final String pwd) {
+	public List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd) {
 		final List<PdfRevision> revisions = new ArrayList<>();
+		final List<PdfByteRangeDocument> revisionDocuments = PAdESUtils.extractRevisions(document);
+
 		try (PdfDocumentReader reader = loadPdfDocumentReader(document, pwd)) {
 
 			final PdfCompositeDssDictionary compositeDssDictionary = new PdfCompositeDssDictionary();
@@ -407,39 +350,53 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
 				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
 				List<PdfSignatureField> fields = sigDictEntry.getValue();
-				List<String> fieldNames = fields.stream().map(PdfSignatureField::getFieldName).collect(Collectors.toList());
+				List<String> fieldNames = toStringNames(fields);
 
 				try {
 					LOG.info("Signature fields: {}", fieldNames);
 
 					final ByteRange byteRange = signatureDictionary.getByteRange();
-					byteRange.validate();
-
 					final byte[] cms = signatureDictionary.getContents();
-					byte[] revisionContent = DSSUtils.EMPTY_BYTE_ARRAY;
-					if (!isContentValueEqualsByteRangeExtraction(document, byteRange, cms, fieldNames)) {
-						LOG.warn("Signature {} is invalid. SIWA detected !", fieldNames);
+					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
+					byteRange.setValid(byteRangeValid);
+
+					final DSSDocument signedContent;
+					if (byteRangeValid) {
+						signedContent = new PdfByteRangeDocument(document, byteRange);
 					} else {
-						revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
+						signedContent = InMemoryDocument.createEmptyDocument();
+						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
+								"The validation will result to a broken signature.", fieldNames);
 					}
 
-					boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
-					byte[] signedData = PAdESUtils.getSignedContentFromRevision(revisionContent, byteRange);
-					DSSDocument signedContent = new InMemoryDocument(signedData);
+					final boolean signatureCoversWholeDocument = reader.isSignatureCoversWholeDocument(signatureDictionary);
 
-					// create a DSS revision if updated
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
-							lastDSSDictionary, revisionContent, pwd);
+					final DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
+					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(revisionContent, pwd)) {
 
+						// Method is used to detect modification within the signature dictionary itself (spoofing attack)
+						verifyPdfSignatureDictionary(signatureDictionary, fieldNames, revisionReader);
+
+						// create a DSS revision if updated
+						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+								lastDSSDictionary, revisionReader.getDSSDictionary());
+
+					} catch (Exception e) {
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("Cannot read signature revision '{}' : {}", fieldNames, e.getMessage());
+						}
+					}
+
+					final DSSDocument previousRevision = PAdESUtils.getPreviousRevision(byteRange, revisionDocuments);
 					PdfCMSRevision newRevision = null;
 					if (isDocTimestamp(signatureDictionary)) {
 						newRevision = new PdfDocTimestampRevision(signatureDictionary, fields, signedContent,
-								signatureCoversWholeDocument);
+								previousRevision, signatureCoversWholeDocument);
 
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
 						newRevision = new PdfSignatureRevision(signatureDictionary, compositeDssDictionary,
-								dssDictionary, fields, signedContent, signatureCoversWholeDocument);
+								dssDictionary, fields, signedContent, previousRevision, signatureCoversWholeDocument);
 
 					} else {
 						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' " +
@@ -453,9 +410,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						revisions.add(newRevision);
 					}
 
-					// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
-					lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
-							lastDSSDictionary, extractBeforeSignatureValue(byteRange, revisionContent), pwd);
+					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(previousRevision, pwd)) {
+
+						// checks if there is a previous update of the DSS dictionary and creates a new revision if needed
+						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
+								lastDSSDictionary, revisionReader.getDSSDictionary());
+
+					} catch (Exception e) {
+						// do nothing
+					}
 
 
 				} catch (Exception e) {
@@ -483,45 +446,56 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion) {
-		return addDssDictionary(document, validationDataForInclusion, null);
+		return addDssDictionary(document, validationDataForInclusion, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+										final String pwd) {
+		return addDssDictionary(document, validationDataForInclusion, pwd != null ? pwd.toCharArray() : null);
+	}
+
+	@Override
+	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
+										final char[] pwd) {
+		return addDssDictionary(document, validationDataForInclusion, pwd, false);
 	}
 
 	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document) {
-		return getAvailableSignatureFields(document, null);
+		return getAvailableSignatureFields(document, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
+		return getAvailableSignatureFields(document, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		return addNewSignatureField(document, parameters, null);
+		return addNewSignatureField(document, parameters, (char[]) null);
+	}
+
+	@Override
+	@Deprecated
+	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
+											final String pwd) {
+		return addNewSignatureField(document, parameters, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	/**
 	 * Loads {@code PdfDocumentReader} instance
 	 * 
 	 * @param dssDocument        {@link DSSDocument} to read
-	 * @param passwordProtection {@link String} the password used to protect the
-	 *                           document
+	 * @param passwordProtection the password used to protect the document
 	 * @return {@link PdfDocumentReader}
 	 * @throws IOException              in case of loading error
 	 * @throws InvalidPasswordException if the password is not provided or invalid
 	 *                                  for a protected document
 	 */
-	protected abstract PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, String passwordProtection)
-			throws IOException, InvalidPasswordException;
-
-	/**
-	 * Loads {@code PdfDocumentReader} instance
-	 * 
-	 * @param binaries           a byte array
-	 * @param passwordProtection {@link String} the password used to protect the
-	 *                           document
-	 * @return {@link PdfDocumentReader}
-	 * @throws IOException              in case of loading error
-	 * @throws InvalidPasswordException if the password is not provided or invalid
-	 *                                  for a protected document
-	 */
-	protected abstract PdfDocumentReader loadPdfDocumentReader(byte[] binaries, String passwordProtection)
+	protected abstract PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection)
 			throws IOException, InvalidPasswordException;
 
 	/**
@@ -540,11 +514,35 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
+	private void verifyPdfSignatureDictionary(PdfSignatureDictionary signatureDictionary, List<String> fieldNames,
+											  PdfDocumentReader revisionReader) throws IOException {
+		PdfSignatureDictionary signatureDictionaryToCompare = getSignatureDictionaryForFieldNames(fieldNames, revisionReader);
+		if (!signatureDictionary.checkConsistency(signatureDictionaryToCompare)) {
+			LOG.warn("The signature dictionary for signature {} is not consistent!", fieldNames);
+		}
+	}
+
+	private PdfSignatureDictionary getSignatureDictionaryForFieldNames(List<String> fieldNames,
+																	   PdfDocumentReader revisionReader) throws IOException{
+		Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = revisionReader.extractSigDictionaries();
+		for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> entry : pdfSignatureDictionaryListMap.entrySet()) {
+			PdfSignatureDictionary signatureDictionary = entry.getKey();
+			List<PdfSignatureField> signatureFields = entry.getValue();
+			if (fieldNames.equals(toStringNames(signatureFields))) {
+				return signatureDictionary;
+			}
+		}
+		return null;
+	}
+
+	private List<String> toStringNames(List<PdfSignatureField> signatureFields) {
+		return signatureFields.stream().map(PdfSignatureField::getFieldName).collect(Collectors.toList());
+	}
+
 	private PdfDssDict getPreviousDssDictAndUpdateIfNeeded(List<PdfRevision> revisions,
 														   PdfCompositeDssDictionary compositeDssDictionary,
 														   PdfDssDict lastDSSDictionary,
-														   byte[] dssDictionaryRevision, String pwd) {
-		PdfDssDict currentDssDict = getDSSDictionaryPresentInRevision(dssDictionaryRevision, pwd);
+														   PdfDssDict currentDssDict) {
 		if (lastDSSDictionary != null && !lastDSSDictionary.equals(currentDssDict)) {
 			compositeDssDictionary.populateFromDssDictionary(lastDSSDictionary);
 			revisions.add(new PdfDocDssRevision(compositeDssDictionary, lastDSSDictionary));
@@ -552,18 +550,33 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return currentDssDict;
 	}
 
-	private PdfDssDict getDSSDictionaryPresentInRevision(final byte[] originalBytes, final String pwd) {
-		if (Utils.isArrayEmpty(originalBytes)) {
-			return null;
-		}
-
-		try (PdfDocumentReader reader = loadPdfDocumentReader(originalBytes, pwd)) {
-			return reader.getDSSDictionary();
-		} catch (Exception e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Cannot extract DSS dictionary from the previous revision : {}", e.getMessage());
+	/**
+	 * This method verifies the validity of /ByteRange field against the extracted from /Contents field {@code cms}
+	 * and the current pdf {@code document}
+	 *
+	 * @param byteRange {@link ByteRange} to be validated
+	 * @param document {@link DSSDocument} current PDF document
+	 * @param cms byte array representing the binaries extracted from /Contents field
+	 * @return TRUE if the /ByteRange is valid, FALSE otherwise
+	 */
+	protected boolean validateByteRange(ByteRange byteRange, DSSDocument document, byte[] cms) {
+		try {
+			byteRange.validate();
+			if (!isContentValueEqualsByteRangeExtraction(byteRange, document, cms)) {
+				LOG.warn("Signature with the /ByteRange '{}' is invalid. SIWA detected!", byteRange);
+				return false;
 			}
-			return null;
+			return true;
+
+		} catch (Exception e) {
+			String message = String.format("/ByteRange validation ended with error : %s. Reason : %s", byteRange, e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				// Exception displays the (long) hex value
+				LOG.warn(message, e);
+			} else {
+				LOG.warn(message);
+			}
+			return false;
 		}
 	}
 
@@ -572,76 +585,19 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * NOTE: used for SIWA detection
 	 *
-	 * @param document {@link DSSDocument} to be validated
-	 * @param byteRange {@link ByteRange}
-	 * @param cms binaries of the CMSSignedData
-	 * @param signatureFieldNames a list of signature field {@link String} names
+	 * @param byteRange {@link ByteRange} defined within a signature
+	 * @param document {@link DSSDocument} current PDF document
+	 * @param cms binaries of the CMSSignedData extracted from /Contents field
 	 * @return TRUE if the content value equals the byte range extraction, FALSE otherwise
 	 */
-	protected boolean isContentValueEqualsByteRangeExtraction(DSSDocument document, ByteRange byteRange, byte[] cms,
-			List<String> signatureFieldNames) {
-		boolean match = false;
-		try {
-			byte[] cmsWithByteRange = getSignatureValue(document, byteRange);
-			match = Arrays.equals(cms, cmsWithByteRange);
-			if (!match) {
-				LOG.warn("Conflict between /Content and ByteRange for Signature {}.", signatureFieldNames);
-			}
-		} catch (Exception e) {
-			String message = String.format("Unable to retrieve data from the ByteRange : %s. Reason : %s", byteRange, e.getMessage());
-			if (LOG.isDebugEnabled()) {
-				// Exception displays the (long) hex value
-				LOG.error(message, e);
-			} else {
-				LOG.error(message);
-			}
+	private boolean isContentValueEqualsByteRangeExtraction(ByteRange byteRange, DSSDocument document, byte[] cms) {
+		byte[] cmsWithByteRange = PAdESUtils.getSignatureValue(document, byteRange);
+		boolean match = Arrays.equals(cms, cmsWithByteRange);
+		if (!match) {
+			LOG.warn("The value extracted according to /ByteRange '{}' " +
+					"does not match the signature present in /Contents field!", byteRange);
 		}
 		return match;
-	}
-
-	/**
-	 * Gets the SignatureValue from the {@code dssDocument} according to the {@code byteRange}
-	 *
-	 * Example: extracts bytes from 841 to 959. [0, 840, 960, 1200]
-	 *
-	 * @param dssDocument {@link DSSDocument} to process
-	 * @param byteRange {@link ByteRange} specifying the signatureValue
-	 * @return signatureValue binaries
-	 * @throws IOException if an exception occurs
-	 */
-	protected byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) throws IOException {
-		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
-		int endSigValueContent = byteRange.getSecondPartStart() - 1;
-
-		int signatureValueArraySize = endSigValueContent - startSigValueContent;
-		if (signatureValueArraySize < 1) {
-			throw new DSSException("The byte range present in the document is not valid! "
-					+ "SignatureValue size cannot be negative or equal to zero!");
-		}
-
-		byte[] signatureValueArray = new byte[signatureValueArraySize];
-
-		try (InputStream is = dssDocument.openStream()) {
-			DSSUtils.skipAvailableBytes(is, startSigValueContent);
-			DSSUtils.readAvailableBytes(is, signatureValueArray);
-		}
-
-		return Utils.fromHex(new String(signatureValueArray));
-	}
-
-	/**
-	 * Extract the content before the signature value
-	 *
-	 * @param byteRange {@link ByteRange}
-	 * @param signedContent byte array representing the signed content
-	 * @return the first part of the byte range
-	 */
-	protected byte[] extractBeforeSignatureValue(ByteRange byteRange, byte[] signedContent) {
-		final int length = byteRange.getFirstPartEnd();
-		if (signedContent.length < length) {
-			return new byte[0];
-		}
-		return PAdESUtils.retrievePreviousPDFRevision(new InMemoryDocument(signedContent), byteRange).getBytes();
 	}
 
 	/**
@@ -689,10 +645,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
 			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
-			int pageRotation = documentReader.getPageRotation(fieldParameters.getPage());
-			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox, pageRotation);
+			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox);
 
-			assertSignatureFieldPositionValid(signatureFieldAnnotation, documentReader, fieldParameters);
+			assertSignatureFieldPositionValid(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
 		}
 		return signatureFieldAnnotation;
 	}
@@ -732,11 +687,23 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 																SignatureFieldParameters parameters) throws IOException {
 		AnnotationBox annotationBox = new AnnotationBox(parameters);
 		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		int pageRotation = reader.getPageRotation(parameters.getPage());
-		annotationBox = toPdfPageCoordinates(annotationBox, pageBox, pageRotation);
+		annotationBox = toPdfPageCoordinates(annotationBox, pageBox);
 
-		assertSignatureFieldPositionValid(annotationBox, reader, parameters);
+		assertSignatureFieldPositionValid(reader, annotationBox, parameters.getPage());
 		return annotationBox;
+	}
+
+	/**
+	 * This method verifies validity of the signature field box configuration
+	 * calling the provided {@code pdfSignatureFieldPositionChecker}
+	 *
+	 * @param documentReader {@link PdfDocumentReader} document where the new signature field should be created
+	 * @param annotationBox {@link AnnotationBox} defining position and dimensions of the new signature field
+	 * @param pageNumber the number of a page where the new signature should be created
+	 */
+	protected void assertSignatureFieldPositionValid(PdfDocumentReader documentReader, AnnotationBox annotationBox,
+													 int pageNumber) {
+		pdfSignatureFieldPositionChecker.assertSignatureFieldPositionValid(documentReader, annotationBox, pageNumber);
 	}
 
 	/**
@@ -744,92 +711,93 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 *
 	 * @param fieldAnnotationBox {@link AnnotationBox} computed field of a signature
 	 * @param pageBox {@link AnnotationBox} page's box
-	 * @param pageRotation defines the page's rotation
 	 * @return {@link AnnotationBox}
 	 */
-	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox, int pageRotation) {
+	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox) {
 		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
 	}
 
-	private void assertSignatureFieldPositionValid(AnnotationBox annotationBox, final PdfDocumentReader reader,
-												  SignatureFieldParameters parameters) throws IOException {
-		int pageRotation = reader.getPageRotation(parameters.getPage());
-		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		checkSignatureFieldAgainstPageDimensions(annotationBox, pageBox, pageRotation);
-		List<PdfAnnotation> pdfAnnotations = reader.getPdfAnnotations(parameters.getPage());
-		checkSignatureFieldBoxOverlap(annotationBox, pdfAnnotations);
-	}
-
-	/**
-	 * This method verifies whether the {@code signatureFieldBox} overlaps
-	 * with one of the extracted {@code pdfAnnotations}
-	 *
-	 * @param signatureFieldBox {@link AnnotationBox} to verify
-	 * @param pdfAnnotations a list of {@link AnnotationBox} to verify against
-	 */
-	protected void checkSignatureFieldBoxOverlap(final AnnotationBox signatureFieldBox, List<PdfAnnotation> pdfAnnotations) {
-		if (pdfDifferencesFinder.isAnnotationBoxOverlapping(signatureFieldBox, pdfAnnotations)) {
-			alertOnSignatureFieldOverlap();
-		}
-	}
-
-	/**
-	 * Executes the alert {@code alertOnSignatureFieldOverlap}
-	 */
-	private void alertOnSignatureFieldOverlap() {
-		MessageStatus status = new MessageStatus();
-		status.setMessage("The new signature field position overlaps with an existing annotation!");
-		alertOnSignatureFieldOverlap.alert(status);
-	}
-
-	/**
-	 * This method verifies whether the {@code signatureFieldBox} is within {@code pageBox}
-	 *
-	 * @param signatureFieldBox {@link AnnotationBox} to check
-	 * @param pageBox {@link AnnotationBox} representing the page's box
-	 * @param pageRotation defines the page's rotation
-	 */
-	protected void checkSignatureFieldAgainstPageDimensions(final AnnotationBox signatureFieldBox, AnnotationBox pageBox,
-															int pageRotation) {
-		if (signatureFieldBox.getMinX() < pageBox.getMinX() || signatureFieldBox.getMaxX() > pageBox.getMaxX() ||
-				signatureFieldBox.getMinY() < pageBox.getMinY() || signatureFieldBox.getMaxY() > pageBox.getMaxY()) {
-			alertOnSignatureFieldOutsidePageDimensions(signatureFieldBox, pageBox);
-		}
-	}
-
-	private void alertOnSignatureFieldOutsidePageDimensions(final AnnotationBox signatureFieldBox,
-															final AnnotationBox pageBox) {
-		MessageStatus status = new MessageStatus();
-		status.setMessage(String.format("The new signature field position is outside the page dimensions! " +
-				"Signature Field : [minX=%s, maxX=%s, minY=%s, maxY=%s], " +
-				"Page : [minX=%s, maxX=%s, minY=%s, maxY=%s]",
-				signatureFieldBox.getMinX(), signatureFieldBox.getMaxX(), signatureFieldBox.getMinY(), signatureFieldBox.getMaxY(),
-				pageBox.getMinX(), pageBox.getMaxX(), pageBox.getMinY(), pageBox.getMaxY()));
-		alertOnSignatureFieldOutsidePageDimensions.alert(status);
+	@Override
+	@Deprecated
+	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
+		analyzePdfModifications(document, signatures, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
-	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
+	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, char[] pwd) {
+		if (Utils.isCollectionEmpty(signatures)) {
+			return;
+		}
+
 		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
 			for (AdvancedSignature signature : signatures) {
 				PAdESSignature padesSignature = (PAdESSignature) signature;
-				PdfSignatureRevision pdfRevision = padesSignature.getPdfRevision();
-				byte[] revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
-				pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, new InMemoryDocument(revisionContent), pwd));
+				analyzePdfModifications(document, padesSignature.getPdfRevision(), finalRevisionReader, pwd);
+			}
+			for (TimestampToken timestampToken : getUniqueTimestamps(signatures)) {
+				PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+				analyzePdfModifications(document, pdfTimestampToken.getPdfRevision(), finalRevisionReader, pwd);
 			}
 
 		} catch (Exception e) {
 			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
 			if (LOG.isDebugEnabled()) {
-				LOG.error(errorMessage, e.getMessage(), e);
+				LOG.warn(errorMessage, e.getMessage(), e);
 			} else {
-				LOG.error(errorMessage, e.getMessage());
+				LOG.warn(errorMessage, e.getMessage());
 			}
 		}
 	}
 
+	private List<TimestampToken> getUniqueTimestamps(List<AdvancedSignature> signatures) {
+		List<TimestampToken> timestampTokens = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			timestampTokens.addAll(signature.getDocumentTimestamps());
+		}
+		return timestampTokens;
+	}
+
+	@Override
+	public void analyzeTimestampPdfModifications(DSSDocument document, List<TimestampToken> timestamps, char[] pwd) {
+		if (Utils.isCollectionEmpty(timestamps)) {
+			return;
+		}
+
+		try (PdfDocumentReader finalRevisionReader = loadPdfDocumentReader(document, pwd)) {
+			for (TimestampToken timestampToken : timestamps) {
+				if (timestampToken instanceof PdfTimestampToken) {
+					PdfTimestampToken pdfTimestampToken = (PdfTimestampToken) timestampToken;
+					analyzePdfModifications(document, pdfTimestampToken.getPdfRevision(), finalRevisionReader, pwd);
+				}
+			}
+
+		} catch (Exception e) {
+			String errorMessage = "Unable to proceed PDF modification detection. Reason : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
+		}
+	}
+
+	/**
+	 * This method performs a modification analysis for a single given {@code pdfRevision}
+	 *
+	 * @param document {@link DSSDocument} the validating document
+	 * @param pdfRevision {@link PdfCMSRevision} signature revision to be validated
+	 * @param finalRevisionReader {@link PdfDocumentReader} final document revision
+	 * @param pwd char array representing the password string
+	 * @throws IOException if an exception occurs while reading the PDF document
+	 */
+	protected void analyzePdfModifications(DSSDocument document, PdfCMSRevision pdfRevision,
+										   PdfDocumentReader finalRevisionReader, char[] pwd) throws IOException {
+		DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, pdfRevision.getByteRange());
+		pdfRevision.setModificationDetection(getModificationDetection(finalRevisionReader, revisionContent, pwd));
+	}
+
 	private PdfModificationDetection getModificationDetection(PdfDocumentReader finalRevisionReader,
-															  DSSDocument originalDocument, String pwd) throws IOException {
+															  DSSDocument originalDocument, char[] pwd) throws IOException {
 		try (PdfDocumentReader signedRevisionReader = loadPdfDocumentReader(originalDocument , pwd)) {
 			PdfModificationDetection pdfModificationDetection = new PdfModificationDetection();
 			pdfModificationDetection.setAnnotationOverlaps(
@@ -859,42 +827,17 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		return pdfDifferencesFinder.getVisualDifferences(signedRevisionReader, finalRevisionReader);
 	}
 
-	private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {
-		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
-	}
-
-	private void alertOnForbiddenSignatureCreation() {
-		MessageStatus status = new MessageStatus();
-		status.setMessage("The creation of new signatures is not permitted in the current document.");
-		alertOnForbiddenSignatureCreation.alert(status);
-	}
-
-	private boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {
-		switch (sigFieldPermissions.getAction()) {
-			case ALL:
-				return true;
-			case INCLUDE:
-				if (Utils.isStringEmpty(signatureFieldId)) {
-					return false;
-				}
-				if (sigFieldPermissions.getFields().contains(signatureFieldId)) {
-					return true;
-				}
-				break;
-			case EXCLUDE:
-				if (Utils.isStringEmpty(signatureFieldId)) {
-					return true;
-				}
-				if (!sigFieldPermissions.getFields().contains(signatureFieldId)) {
-					return true;
-				}
-				break;
-			default:
-				throw new UnsupportedOperationException(
-						String.format("The action value '%s' is not supported!", sigFieldPermissions.getAction()));
+	/**
+	 * This method verifies the PDF permissions dictionaries
+	 *
+	 * @param documentReader {@link PdfDocumentReader} document to be checked
+	 * @param fieldParameters {@link SignatureFieldParameters} identifying a new signature field configuration
+	 */
+	protected void checkPdfPermissions(PdfDocumentReader documentReader, SignatureFieldParameters fieldParameters) {
+		pdfPermissionsChecker.checkDocumentPermissions(documentReader, fieldParameters);
+		if (!isDocumentTimestampLayer()) {
+			pdfPermissionsChecker.checkSignatureRestrictionDictionaries(documentReader, fieldParameters);
 		}
-		CertificationPermission certificationPermission = sigFieldPermissions.getCertificationPermission();
-		return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
 	}
 
 }

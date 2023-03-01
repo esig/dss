@@ -63,6 +63,7 @@ public class MemoryDataLoader implements DataLoader {
 	}
 
 	@Override
+	@Deprecated
 	public byte[] get(String url, boolean refresh) {
 		return get(url);
 	}

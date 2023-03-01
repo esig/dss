@@ -30,6 +30,7 @@ import javax.jws.WebService;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
@@ -100,6 +101,24 @@ public interface SoapSignatureTokenConnection extends Serializable {
 			@WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf, @WebParam(name = "alias") String alias);
 
 	/**
+	 * This method signs the {@code toBeSigned} data with the
+	 * {@code signatureAlgorithm} and the given {@code alias}.
+	 *
+	 * @param toBeSigned
+	 *                        The data that need to be signed
+	 * @param signatureAlgorithm
+	 *                        The digest algorithm to be used for signing
+	 * @param alias
+	 *                        The key alias to be used
+	 * @return The array of bytes representing the signature value
+	 */
+	@WebMethod(operationName = "signWithSignatureAlgo")
+	@WebResult(name = "response")
+	SignatureValueDTO sign(@WebParam(name = "toBeSigned") ToBeSignedDTO toBeSigned,
+						   @WebParam(name = "signatureAlgorithm") SignatureAlgorithm signatureAlgorithm,
+						   @WebParam(name = "alias") String alias);
+
+	/**
 	 * 
 	 * This method signs the {@code digest} data with the given {@code alias}.
 	 * 
@@ -132,5 +151,25 @@ public interface SoapSignatureTokenConnection extends Serializable {
 	@WebResult(name = "response")
 	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest, @WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf,
 			@WebParam(name = "alias") String alias);
+
+	/**
+	 *
+	 * This method signs the {@code digest} data with a {@code signatureAlgorithm} and
+	 * the given {@code alias}.
+	 *
+	 * @param digest
+	 *               The digested data that need to be signed
+	 * @param signatureAlgorithm
+	 *                        The digest algorithm to be used for signing
+	 * @param alias
+	 *               The key alias to be used
+	 * @return the signature value representation with the used algorithm and the
+	 *         binary value
+	 */
+	@WebMethod(operationName = "signDigestWithSignatureAlgo")
+	@WebResult(name = "response")
+	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest,
+								 @WebParam(name = "signatureAlgorithm") SignatureAlgorithm signatureAlgorithm,
+								 @WebParam(name = "alias") String alias);
 
 }

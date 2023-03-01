@@ -75,7 +75,7 @@ public class CriteriaListConverterTest {
 
         criteriaListType.getKeyUsage().add(keyUsageType);
 
-        CriteriaListTypeConverter criteriaListConverter = new CriteriaListTypeConverter();
+        CriteriaListConverter criteriaListConverter = new CriteriaListConverter();
         Condition condition = criteriaListConverter.apply(criteriaListType);
         assertTrue(condition instanceof CompositeCondition);
 
@@ -124,7 +124,7 @@ public class CriteriaListConverterTest {
 
         criteriaListType.getPolicySet().add(policiesListType);
 
-        CriteriaListTypeConverter criteriaListConverter = new CriteriaListTypeConverter();
+        CriteriaListConverter criteriaListConverter = new CriteriaListConverter();
         Condition condition = criteriaListConverter.apply(criteriaListType);
         assertTrue(condition instanceof CompositeCondition);
 
@@ -176,7 +176,7 @@ public class CriteriaListConverterTest {
         anyType.getContent().add(new JAXBElement<>(new QName("CertSubjectDNAttribute"), CertSubjectDNAttributeType.class, certSubjectDNAttributeType));
         criteriaListType.setOtherCriteriaList(anyType);
 
-        CriteriaListTypeConverter criteriaListConverter = new CriteriaListTypeConverter();
+        CriteriaListConverter criteriaListConverter = new CriteriaListConverter();
         Condition condition = criteriaListConverter.apply(criteriaListType);
         assertTrue(condition instanceof CompositeCondition);
 
@@ -217,11 +217,17 @@ public class CriteriaListConverterTest {
         oidNoQualifierObjectIdentifier.setIdentifier(oidNoQualifierIdentifier);
         extendedKeyUsageType.getKeyPurposeId().add(oidNoQualifierObjectIdentifier);
 
+        ObjectIdentifierType notOIDQualifierObjectIdentifier = new ObjectIdentifierType();
+        IdentifierType notOIDQualifierIdentifier = new IdentifierType();
+        notOIDQualifierIdentifier.setValue("hello-world");
+        notOIDQualifierObjectIdentifier.setIdentifier(notOIDQualifierIdentifier);
+        extendedKeyUsageType.getKeyPurposeId().add(notOIDQualifierObjectIdentifier);
+
         AnyType anyType = new AnyType();
         anyType.getContent().add(new JAXBElement<>(new QName("ExtendedKeyUsage"), ExtendedKeyUsageType.class, extendedKeyUsageType));
         criteriaListType.setOtherCriteriaList(anyType);
 
-        CriteriaListTypeConverter criteriaListConverter = new CriteriaListTypeConverter();
+        CriteriaListConverter criteriaListConverter = new CriteriaListConverter();
         Condition condition = criteriaListConverter.apply(criteriaListType);
         assertTrue(condition instanceof CompositeCondition);
 
@@ -275,7 +281,7 @@ public class CriteriaListConverterTest {
         anyType.getContent().add(new JAXBElement<>(new QName("QcStatementSet"), QcStatementListType.class, qcStatementListType));
         criteriaListType.setOtherCriteriaList(anyType);
 
-        CriteriaListTypeConverter criteriaListConverter = new CriteriaListTypeConverter();
+        CriteriaListConverter criteriaListConverter = new CriteriaListConverter();
         Condition condition = criteriaListConverter.apply(criteriaListType);
         assertTrue(condition instanceof CompositeCondition);
 

@@ -38,6 +38,7 @@ public class PAdESSignatureScopeFinder extends PdfRevisionScopeFinder implements
 	 * Default constructor
 	 */
 	public PAdESSignatureScopeFinder() {
+		// empty
 	}
 
 	@Override

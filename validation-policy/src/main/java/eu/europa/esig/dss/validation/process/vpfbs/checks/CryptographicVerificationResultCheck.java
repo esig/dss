@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the format Cryptographic Verification process as per clause 5.2.7 succeeded
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class CryptographicVerificationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

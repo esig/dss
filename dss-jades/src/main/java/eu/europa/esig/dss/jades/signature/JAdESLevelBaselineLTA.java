@@ -30,10 +30,10 @@ import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -70,7 +70,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertExtendSignatureToLTAPossible(jadesSignature, params);
-			checkSignatureIntegrity(jadesSignature);
+			assertSignatureValid(jadesSignature, params);
 
 			if (jadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;
@@ -131,13 +131,12 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	private TimestampBinary getArchiveTimestamp(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
 		JAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
 		DigestAlgorithm digestAlgorithmForTimestampRequest = archiveTimestampParameters.getDigestAlgorithm();
-
 		// TODO : Support canonicalization
 		String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		byte[] messageImprint = jadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
-		
-		byte[] digest = DSSUtils.digest(digestAlgorithmForTimestampRequest, messageImprint);
-		return tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, digest);
+
+		final DSSMessageDigest messageDigest = jadesSignature.getTimestampSource().getArchiveTimestampData(
+				digestAlgorithmForTimestampRequest, canonicalizationMethod);
+		return tspSource.getTimeStampResponse(digestAlgorithmForTimestampRequest, messageDigest.getValue());
 	}
 
 	/**

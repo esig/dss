@@ -25,6 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -38,12 +40,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 	
 	@Test
-	public void idPkixOcspNoCheck() throws Exception {
+	public void validTest() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
 		XmlCertificate xmlCertificate = new XmlCertificate();
-		xmlCertificate.setIdPkixOcspNoCheck(true);
+		XmlIdPkixOcspNoCheck ocspNoCheck = new XmlIdPkixOcspNoCheck();
+		ocspNoCheck.setOID(CertificateExtensionEnum.OCSP_NOCHECK.getOid());
+		ocspNoCheck.setPresent(true);
+		xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
 		CertificateWrapper certificateWrapper = new CertificateWrapper(xmlCertificate);
 
 		XmlSubXCV result = new XmlSubXCV();
@@ -54,14 +59,26 @@ public class IdPkixOcspNoCheckTest extends AbstractTestCheck {
 		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
 
-		result = new XmlSubXCV();
-		xmlCertificate.setIdPkixOcspNoCheck(false);
+	@Test
+	public void invalidTest() throws Exception {
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
 
-		IdPkixOcspNoCheck<XmlSubXCV> ic_fail = new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, constraint);
-		ic_fail.execute();
+		XmlCertificate xmlCertificate = new XmlCertificate();
+		XmlIdPkixOcspNoCheck ocspNoCheck = new XmlIdPkixOcspNoCheck();
+		ocspNoCheck.setOID(CertificateExtensionEnum.OCSP_NOCHECK.getOid());
+		ocspNoCheck.setPresent(false);
+		xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
+		CertificateWrapper certificateWrapper = new CertificateWrapper(xmlCertificate);
 
-		constraints = result.getConstraint();
+		XmlSubXCV result = new XmlSubXCV();
+
+		IdPkixOcspNoCheck<XmlSubXCV> ic_ok = new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, constraint);
+		ic_ok.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
 		assertEquals(1, constraints.size());
 		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
 	}

@@ -26,6 +26,8 @@ package eu.europa.esig.dss.pdf.modifications;
  */
 public class CommonPdfModification implements PdfModification {
 
+	private static final long serialVersionUID = 5098480832510387427L;
+
 	/** Defines page of the found modification */
 	private final int page;
 

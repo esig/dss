@@ -49,6 +49,7 @@ public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters i
 	 * The empty constructor
 	 */
 	public ASiCWithCAdESTimestampParameters() {
+		// empty
 	}
 
 	/**

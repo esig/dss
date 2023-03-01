@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.TimestampParameters;
@@ -37,7 +38,6 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -45,7 +45,6 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -205,17 +204,16 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 			assertExtendSignatureToTPossible();
 			assertSignatureValid(xadesSignature);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
-
 			final XAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
+			final DigestAlgorithm digestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
 			final String canonicalizationMethod = signatureTimestampParameters.getCanonicalizationMethod();
-			final byte[] canonicalizedValue = xadesSignature.getTimestampSource().getSignatureTimestampData(canonicalizationMethod);
-			final DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
-			final byte[] digestValue = DSSUtils.digest(timestampDigestAlgorithm, canonicalizedValue);
-			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, digestValue);
+			final DSSMessageDigest messageDigest = xadesSignature.getTimestampSource()
+					.getSignatureTimestampMessageDigest(digestAlgorithm, canonicalizationMethod);
+			createXAdESTimeStampType(TimestampType.SIGNATURE_TIMESTAMP, canonicalizationMethod, messageDigest);
 
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelBUnsignedProperties);
 		}
@@ -506,15 +504,11 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected void incorporateArchiveTimestamp() {
 		final XAdESTimestampParameters archiveTimestampParameters = params.getArchiveTimestampParameters();
+		final DigestAlgorithm digestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
 		final String canonicalizationMethod = archiveTimestampParameters.getCanonicalizationMethod();
-		final byte[] archiveTimestampData = xadesSignature.getTimestampSource().getArchiveTimestampData(canonicalizationMethod);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Data to be signed by the ArchiveTimestamp:");
-			LOG.trace(new String(archiveTimestampData));
-		}
-		final DigestAlgorithm timestampDigestAlgorithm = archiveTimestampParameters.getDigestAlgorithm();
-		final byte[] digestBytes = DSSUtils.digest(timestampDigestAlgorithm, archiveTimestampData);
-		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, digestBytes);
+		final DSSMessageDigest messageDigest = xadesSignature.getTimestampSource().getArchiveTimestampData(
+				digestAlgorithm, canonicalizationMethod);
+		createXAdESTimeStampType(TimestampType.ARCHIVE_TIMESTAMP, canonicalizationMethod, messageDigest);
 	}
 
 	/**
@@ -524,12 +518,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 *            {@code TimestampType}
 	 * @param timestampC14nMethod
 	 *            canonicalization method
-	 * @param digestValue
-	 *            array of {@code byte} representing the digest to timestamp
+	 * @param messageDigest
+	 *            {@link DSSMessageDigest} representing the message-imprint digest to timestamp
 	 * @throws DSSException
 	 *             in case of any error
 	 */
-	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final byte[] digestValue) throws DSSException {
+	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final DSSMessageDigest messageDigest) throws DSSException {
 
 		if ((XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())
 				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri()))
@@ -574,9 +568,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Timestamp generation: {} / {} / {}", timestampDigestAlgorithm.getName(), timestampC14nMethod,
-					Utils.toBase64(digestValue));
+					Utils.toBase64(messageDigest.getValue()));
 		}
-		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, digestValue);
+		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
 		
 		if (XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri())) {
@@ -619,21 +613,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	private void incorporateXAdES122Include(Element timeStampDom) {
 		Element includeDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), XAdES122Element.INCLUDE);
 		includeDom.setAttribute(XAdES122Attribute.URI.getAttributeName(), '#' + xadesSignature.getSignatureValueId());
-	}
-
-	/**
-	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
-	 *
-	 * @throws DSSException in case of the cryptographic signature verification fails
-	 */
-	protected void checkSignatureIntegrity() throws DSSException {
-		final SignatureCryptographicVerification signatureCryptographicVerification =
-				xadesSignature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" +
-					(errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
-		}
 	}
 
 	/**

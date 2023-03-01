@@ -22,6 +22,7 @@ package eu.europa.esig.dss.ws.cert.validation.dto;
 
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,11 @@ public class CertificateToValidateDTO {
 	 * OPTIONAL.
 	 */
 	private Date validationTime;
+
+	/**
+	 * The custom validation policy to use
+	 */
+	private RemoteDocument policy;
 	
 	/**
 	 * Allows to specify the token extraction to follow
@@ -61,6 +67,7 @@ public class CertificateToValidateDTO {
 	 * The empty constructor
 	 */
 	public CertificateToValidateDTO() {
+		// empty
 	}
 
 	/**
@@ -94,10 +101,28 @@ public class CertificateToValidateDTO {
 	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
 	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
-			Date validationTime, TokenExtractionStrategy tokenExtractionStrategy) {
+									Date validationTime,  TokenExtractionStrategy tokenExtractionStrategy) {
 		this.certificate = certificate;
 		this.certificateChain = certificateChain;
 		this.validationTime = validationTime;
+		this.tokenExtractionStrategy = tokenExtractionStrategy;
+	}
+
+	/**
+	 * The default constructor with a custom validation policy
+	 *
+	 * @param certificate {@link RemoteCertificate} to be validated
+	 * @param certificateChain a list of {@link RemoteCertificate}s representing the certificate chain
+	 * @param validationTime {@link Date} the validation time
+	 * @param policy {@link RemoteDocument}
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
+	 */
+	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
+			Date validationTime, RemoteDocument policy, TokenExtractionStrategy tokenExtractionStrategy) {
+		this.certificate = certificate;
+		this.certificateChain = certificateChain;
+		this.validationTime = validationTime;
+		this.policy = policy;
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
@@ -153,6 +178,24 @@ public class CertificateToValidateDTO {
 	 */
 	public void setValidationTime(Date validationTime) {
 		this.validationTime = validationTime;
+	}
+
+	/**
+	 * Gets the validation policy
+	 *
+	 * @return {@link RemoteDocument}
+	 */
+	public RemoteDocument getPolicy() {
+		return policy;
+	}
+
+	/**
+	 * Sets the validation policy
+	 *
+	 * @param policy {@link RemoteDocument}
+	 */
+	public void setPolicy(RemoteDocument policy) {
+		this.policy = policy;
 	}
 
 	/**

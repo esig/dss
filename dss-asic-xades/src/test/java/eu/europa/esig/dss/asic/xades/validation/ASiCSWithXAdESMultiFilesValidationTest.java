@@ -30,13 +30,13 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -52,8 +52,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ASiCSWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdESTestValidation {
 
 	private final static List<DSSDocument> EXPECTED_MULTIFILES = Arrays.asList(
-			new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeType.TEXT),
-			new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeType.TEXT));
+			new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT),
+			new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));
 
 	@Override
 	protected DSSDocument getSignedDocument() {

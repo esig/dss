@@ -41,6 +41,7 @@ public class IgnoreDataLoader implements DataLoader {
 	 * Default constructor
 	 */
 	public IgnoreDataLoader() {
+		// empty
 	}
 
 	@Override
@@ -56,6 +57,7 @@ public class IgnoreDataLoader implements DataLoader {
 	}
 
 	@Override
+	@Deprecated
 	public byte[] get(String url, boolean refresh) {
 		LOG.debug(URL_IS_IGNORED, url);
 		return null;

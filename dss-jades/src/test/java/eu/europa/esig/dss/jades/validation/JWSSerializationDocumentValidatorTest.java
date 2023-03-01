@@ -39,6 +39,7 @@ public class JWSSerializationDocumentValidatorTest extends AbstractTestValidator
 	public void test() {
 		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
 		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {})));
+		assertFalse(validator.isSupported(InMemoryDocument.createEmptyDocument()));
 		assertFalse(validator.isSupported(new InMemoryDocument("{".getBytes())));
 		assertTrue(validator.isSupported(new InMemoryDocument("{}".getBytes())));
 		assertFalse(validator.isSupported(new InMemoryDocument("{hello:\"world\"}".getBytes())));

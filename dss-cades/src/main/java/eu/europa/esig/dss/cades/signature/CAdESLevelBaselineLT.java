@@ -218,6 +218,8 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		if (CAdES_BASELINE_LT.equals(signatureLevel) && cadesSignature.hasLTAProfile()) {
 			throw new IllegalInputException(String.format(
 					"Cannot extend signature to '%s'. The signedData is already extended with LTA level.", signatureLevel));
+		} else if (cadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
+			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
 		} else if (cadesSignature.areAllSelfSignedCertificates()) {
 			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}

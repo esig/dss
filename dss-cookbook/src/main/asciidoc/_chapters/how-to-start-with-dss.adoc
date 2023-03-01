@@ -2,8 +2,9 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
+[[HowToStart]]
 == How to start with DSS
 
 === Integration instructions
@@ -18,7 +19,7 @@ This section explains the usage and build requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
-* Java 11 and higher (tested up to Java 18) for the build is required. For usage Java 8 is a minimum requirement;
+* Java 11 and higher (tested up to Java 19) for the build is required. For usage Java 8 is a minimum requirement;
 * Maven 3.6 and higher;
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
 * Operating system: no specific requirements (tested on Windows and Linux).
@@ -31,7 +32,7 @@ WARNING: Before processing the integration steps, please ensure you have success
 
 ====== Using Maven Central (starting from version 5.11.1)
 
-The simplest way to include DSS to your project is to use https://mvnrepository.com/artifact/eu.europa.ec.joinup.sd-dss[Maven Central repository]. To do this you need to define the required modules within a list of dependencies in `pom.xml` file of your Maven project, for example:
+The simplest way to include DSS to your project is to use https://central.sonatype.dev/namespace/eu.europa.ec.joinup.sd-dss[Maven Central repository]. To do this you need to define the required modules within a list of dependencies in `pom.xml` file of your Maven project, for example:
 
 [source,xml]
 ----
@@ -40,13 +41,13 @@ The simplest way to include DSS to your project is to use https://mvnrepository.
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>5.11.1</version>
+        <version>5.12.RC1</version>
     </dependency>
     ...
 </dependencies>
 ----
 
-NOTE: The integration with Maven Central repository is available only for the versions DSS 5.10.2 and 5.11.1.
+NOTE: The integration with Maven Central repository is available for versions starting from 5.11.1 and 5.10.2.
 
 See <<MavenModules>> to get familiar with the available modules in DSS.
 
@@ -85,7 +86,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.11.1</version>
+            <version>5.12.RC1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -108,6 +109,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
 
 See <<MavenModules>> to get familiar with the available modules in DSS.
 
+[[MavenBuildProfiles]]
 ===== Maven build and profiles
 
 In order to use a customized bundle of DSS, you may want to build the DSS Core framework modules.
@@ -162,7 +164,7 @@ This section explains the build and use requirements for the https://github.com/
 
 The minimal requirements to build/run DSS Demonstrations:
 
-* Java 8 and higher (tested up to Java 18) is required;
+* Java 8 and higher (tested up to Java 19) is required;
 * Maven 3.6 and higher (if build required);
 * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
 * Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
@@ -219,10 +221,10 @@ The documentation and javadoc will be copied automatically from the built DSS Co
 * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
 * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 18, the following profile can be used from the `dss-demo-bundle` module:
+In order to build a bundle for JDK 19, the following profile can be used from the `dss-demo-bundle` module:
 
 ----
-mvn clean install -P java18
+mvn clean install -P java19
 ----
 
 This will create a bundle with Tomcat 9.
@@ -283,8 +285,8 @@ dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certifi
 
 ===== JSON validation modules
 
-specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R05>>).
-specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R20>>).
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R21>>).
+specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R05>>).
 
 ===== Utils modules
 
@@ -296,6 +298,7 @@ dss-utils-google-guava:: Implementation of dss-utils with Google Guava.
 
 dss-i18n:: a module allowing internationalization of generated reports.
 
+[[CoreModules]]
 ===== Core modules
 
 dss-model:: Data model used in almost every module.
@@ -313,6 +316,7 @@ dss-jades:: Implementation of the JAdES signature, augmentation and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, augmentation and validation with https://pdfbox.apache.org/[PDFBox].
 dss-pades-openpdf:: Implementation of the PAdES signature, augmentation and validation with https://github.com/LibrePDF/OpenPDF[OpenPDF (fork of iText)].
+dss-pdfa:: Performs PDF validation against PDF/A specification.
 dss-asic-common:: Common code which is shared between dss-asic-xades and dss-asic-cades.
 dss-asic-cades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on CAdES signatures.
 dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation and validation based on XAdES signatures.

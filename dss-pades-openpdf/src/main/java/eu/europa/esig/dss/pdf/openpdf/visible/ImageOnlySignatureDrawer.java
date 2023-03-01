@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pdf.openpdf.visible;
 
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfTemplate;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -40,15 +41,19 @@ import java.io.IOException;
  */
 public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 
+	/** Cached instance of Image representation */
+	private Image image;
+
 	/**
 	 * Default constructor
 	 */
 	public ImageOnlySignatureDrawer() {
+		// empty
 	}
 
 	@Override
 	public void draw() {
-		Image image = getImage();
+		Image currentImage = getImage();
 
 		SignatureFieldParameters fieldParameters = parameters.getFieldParameters();
 		String signatureFieldId = fieldParameters.getFieldId();
@@ -73,30 +78,48 @@ public class ImageOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 			x = dimensionAndPosition.getImageY();
 			y = dimensionAndPosition.getImageX();
 		}
-		image.setAbsolutePosition(x, y);
-		image.scaleAbsolute(width, height);
+		currentImage.setAbsolutePosition(x, y);
+		currentImage.scaleAbsolute(width, height);
 
-		image.setRotationDegrees((float) ImageRotationUtils.ANGLE_360 - finalRotation); // opposite rotation
+		currentImage.setRotationDegrees((float) ImageRotationUtils.ANGLE_360 - finalRotation); // opposite rotation
 
 		PdfTemplate layer = appearance.getLayer(2);
 		Rectangle boundingBox = layer.getBoundingBox();
 		boundingBox.setBackgroundColor(parameters.getBackgroundColor());
 		layer.rectangle(boundingBox);
-		layer.addImage(image);
+		layer.addImage(currentImage);
 	}
 
 	private Image getImage() {
-		try {
-			return Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
-		} catch (IOException e) {
-			throw new IllegalInputException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
+		if (image == null) {
+			try {
+				image = Image.getInstance(DSSUtils.toByteArray(parameters.getImage()));
+			} catch (IOException e) {
+				throw new IllegalInputException(String.format("Unable to read the provided image file. Reason : %s", e.getMessage()), e);
+			}
 		}
+		return image;
 	}
 
 	@Override
 	protected DSSFontMetrics getDSSFontMetrics() {
 		// not applicable
 		return null;
+	}
+
+	@Override
+	protected PdfName getExpectedColorSpaceName() {
+		/*
+		 * see {@code com.lowagie.text.pdf.PdfImage}
+		 */
+		switch (getImage().getColorspace()) {
+			case 1:
+				return PdfName.DEVICEGRAY;
+			case 3:
+				return PdfName.DEVICERGB;
+			default:
+				return PdfName.DEVICECMYK;
+		}
 	}
 
 }

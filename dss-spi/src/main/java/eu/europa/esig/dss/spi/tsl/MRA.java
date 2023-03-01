@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +28,9 @@ import java.util.List;
  * of a Mutual Recognition Agreement schema
  *
  */
-public class MRA {
+public class MRA implements Serializable {
+
+	private static final long serialVersionUID = 6498087340536063280L;
 
 	/** Value of technicalType attribute */
 	private String technicalType;

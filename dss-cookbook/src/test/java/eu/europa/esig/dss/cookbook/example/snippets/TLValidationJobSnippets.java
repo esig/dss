@@ -47,12 +47,15 @@ import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+import eu.europa.esig.dss.tsl.function.SchemeTerritoryOtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
+import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -346,11 +349,14 @@ public class TLValidationJobSnippets {
 		// "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists" type
 		lotlSource.setLotlPredicate(TLPredicateFactory.createEULOTLPredicate());
 
-		// tag::predicate-country[]
 		// the predicates filter only TSL pointers with scheme territories "DE" (Germany) and "RO" (Romania)
 		// to XML documents with "http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric" type
-		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
+		// tag::predicate-country[]
+		lotlSource.setTlPredicate(new SchemeTerritoryOtherTSLPointer(Arrays.asList("DE", "RO")).and(new EUTLOtherTSLPointer()).and(new XMLOtherTSLPointer()));
 		// end::predicate-country[]
+		// tag::predicate-country-5.11[]
+		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
+		// end::predicate-country-5.11[]
 		// end::predicates[]
 	}
 

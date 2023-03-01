@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the Validation Context Initialization as per clause 5.2.4 succeeded
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class ValidationContextInitializationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 == eIDAS
 
@@ -10,7 +10,7 @@
 
 ==== Qualified status of certificate
 
-The qualification status determination is based on ETSI TS 119 615 standard (cf. <<R14>>), that requires extraction of information from a certificate (i.e. QcStatements, see <<R24>>) and from a Trusted List (under TSPService corresponding to the certificate).
+The qualification status determination is based on ETSI TS 119 615 standard (cf. <<R14>>), that requires extraction of information from a certificate (i.e. QcStatements, see <<R25>>) and from a Trusted List (under TSPService corresponding to the certificate).
 
 For more information about how to verify a certificate qualification status using DSS, please see the section <<CertificateValidation>>.
 
@@ -26,7 +26,7 @@ A qualified certificate shall comply with the eIDAS regulation <<R12>>, for each
 
 The certificate type determination is based on ETSI TS 119 615 standard (cf. <<R14>>). The validation process takes into account the following factors but not limited to:
 
- * The certificate type defined in QcStatements (see <<R24>>). One of the following values is supported:
+ * The certificate type defined in QcStatements (see <<R25>>). One of the following values is supported:
     ** `qc-type-esign` (OID "0.4.0.1862.1.6.1") - identifies a certificate for a electronic signature;
     ** `qc-type-eseal` (OID "0.4.0.1862.1.6.2") - identifies a certificate for a electronic seal;
     ** `qc-type-web` (OID "0.4.0.1862.1.6.3") - identifies a certificate for a web authentication.

@@ -35,6 +35,8 @@ import java.util.List;
 
 /**
  * Checks if a collection of content timestamps is not empty
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class ContentTimestampsCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

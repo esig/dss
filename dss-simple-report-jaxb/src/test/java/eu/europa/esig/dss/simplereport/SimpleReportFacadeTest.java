@@ -40,6 +40,11 @@ public class SimpleReportFacadeTest {
 	}
 
 	@Test
+	public void pdfaTest() throws Exception {
+		createAndValidate("sr-pades.xml");
+	}
+
+	@Test
 	public void sigAndTstTest() throws Exception {
 		createAndValidate("sr-sig-and-tst.xml");
 	}

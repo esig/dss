@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
 import eu.europa.esig.dss.enumerations.ImageScaling;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -41,7 +41,7 @@ import java.util.Date;
 public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
 
     private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
-            getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeType.JPEG);
+            getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG);
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

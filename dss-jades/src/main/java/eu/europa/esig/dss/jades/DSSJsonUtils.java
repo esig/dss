@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -490,6 +491,32 @@ public class DSSJsonUtils {
 	}
 
 	/**
+	 * Writes digest on a concatenated binaries of provided {@code documents}
+	 *
+	 * @param documents list of {@link DSSDocument}s to be concatenated
+	 * @param isBase64UrlEncoded defines whether the document octets shall be base64url-encoded
+	 * @param digestCalculator {@link DSSMessageDigestCalculator} to compute message-digest with
+	 */
+	public static void writeDocumentsDigest(List<DSSDocument> documents, boolean isBase64UrlEncoded,
+											DSSMessageDigestCalculator digestCalculator) {
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new IllegalArgumentException("Unable to build a message-digest. Reason : the detached content is not provided!");
+		}
+
+		byte[] octets = null;
+		if (documents.size() == 1) {
+			octets = getDocumentOctets(documents.get(0), isBase64UrlEncoded);
+			digestCalculator.update(octets);
+
+		} else {
+			for (DSSDocument document : documents) {
+				octets = getDocumentOctets(document, isBase64UrlEncoded);
+				digestCalculator.update(octets);
+			}
+		}
+	}
+
+	/**
 	 * This method returns binaries of the {@code document} to be used for payload computation,
 	 * depending on the {@code isBase64UrlEncoded} parameter.
 	 * When {@code isBase64UrlEncoded} is set to TRUE, returns base64url-encoded binaries of the {@code document}.
@@ -846,7 +873,7 @@ public class DSSJsonUtils {
 
 			String id = getAsString(spDSpec, JAdESHeaderParameterNames.ID);
 			if (Utils.isStringNotEmpty(id)) {
-				spDocSpecification.setId(DSSUtils.getObjectIdentifier(id));
+				spDocSpecification.setId(DSSUtils.getObjectIdentifierValue(id));
 			}
 
 			String desc = getAsString(spDSpec, JAdESHeaderParameterNames.DESC);

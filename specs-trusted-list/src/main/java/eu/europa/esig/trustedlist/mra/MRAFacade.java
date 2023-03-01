@@ -37,6 +37,13 @@ public class MRAFacade extends TrustedListFacade {
     private static final MRAUtils MRA_UTILS = MRAUtils.getInstance();
 
     /**
+     * Default constructor
+     */
+    protected MRAFacade() {
+        // empty
+    }
+
+    /**
      * Creates a new facade
      *
      * @return {@link MRAFacade}

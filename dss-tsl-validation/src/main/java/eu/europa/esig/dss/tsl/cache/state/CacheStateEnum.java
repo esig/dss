@@ -41,6 +41,11 @@ public enum CacheStateEnum implements CacheState {
 		}
 
 		@Override
+		public void toBeDeleted(CacheContext cacheContext) {
+			cacheContext.state(TO_BE_DELETED);
+		}
+
+		@Override
 		public void error(CacheContext cacheContext, CachedExceptionWrapper exception) {
 			cacheContext.error(exception);
 		}

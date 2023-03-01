@@ -88,14 +88,14 @@ public abstract class PKIFactoryAccess {
 	private static final String CERT_EXTENSION = ".crt";
 
 	private static final String TSA_ROOT_PATH = "/tsa/";
-	private static final String GOOD_TSA = "good-tsa";
-	private static final String PSS_GOOD_TSA = "pss-good-tsa";
-	private static final String RSASSA_PSS_GOOD_TSA = "rsassa-pss-good-tsa";
-	private static final String SHA3_GOOD_TSA = "sha3-good-tsa";
-	private static final String REVOKED_TSA = "revoked-tsa";
-	private static final String EE_GOOD_TSA = "ee-good-tsa";
-	private static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
-	private static final String SELF_SIGNED_TSA = "self-signed-tsa";
+	protected static final String GOOD_TSA = "good-tsa";
+	protected static final String PSS_GOOD_TSA = "pss-good-tsa";
+	protected static final String RSASSA_PSS_GOOD_TSA = "rsassa-pss-good-tsa";
+	protected static final String SHA3_GOOD_TSA = "sha3-good-tsa";
+	protected static final String REVOKED_TSA = "revoked-tsa";
+	protected static final String EE_GOOD_TSA = "ee-good-tsa";
+	protected static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
+	protected static final String SELF_SIGNED_TSA = "self-signed-tsa";
 
 	/* Produces timestamp with a fail status */
 	private static final String FAIL_GOOD_TSA = "fail/good-tsa";

@@ -33,6 +33,7 @@ public class NonEmptyTrustService implements TrustServiceProviderPredicate {
 	 * Default constructor
 	 */
 	public NonEmptyTrustService() {
+		// empty
 	}
 
 	@Override

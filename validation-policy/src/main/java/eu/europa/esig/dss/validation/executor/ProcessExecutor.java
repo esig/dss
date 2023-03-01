@@ -20,15 +20,17 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import java.util.Date;
-import java.util.Locale;
-
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.AbstractReports;
 
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * This interface allows to define how the validation process should be carried out.
+ *
+ * @param <R> implementation of reports wrapper
  */
 public interface ProcessExecutor<R extends AbstractReports> {
 

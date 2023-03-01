@@ -43,7 +43,10 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColorSpace;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceGray;
+import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
@@ -74,13 +77,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	/** PDFBox font */
 	private PDFont pdFont;
 
-	/** Defines the default value for a non-transparent alpha layer */
-	private static final float OPAQUE_VALUE = 0xff;
-
 	/**
 	 * The builder is to be used to create a new {@code DSSResourcesHandler} for visual signature creation,
 	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
-	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}
 	 */
 	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
@@ -89,29 +88,11 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * Default constructor instantiating object with default parameter values
 	 */
 	public NativePdfBoxVisibleSignatureDrawer() {
-	}
-
-	/**
-	 * Sets whether only a subset of used glyphs should be embedded to a PDF, when a {@code DSSFileFont} is used.
-	 *
-	 * When set to TRUE, only the used glyphs will be embedded to a font.
-	 * When set to FALSE, all glyphs from a font will be embedded to a PDF.
-	 *
-	 * DEFAULT : FALSE (the whole font file is embedded to a PDF)
-	 *
-	 * @param embedFontSubset whether only a subset of used glyphs should be embedded to a PDF
-	 *
-	 * @deprecated since DSS 5.11. Use {@code DSSFileFont.setEmbedFontSubset(embedFontSubset)} method
-	 */
-	@Deprecated
-	public void setEmbedFontSubset(boolean embedFontSubset) {
-		LOG.warn("Use of deprecated method! The use of the method will not take effect on processing. " +
-				"Please use DSSFileFont.setEmbedFontSubset(embedFontSubset) method.");
+		// empty
 	}
 
 	/**
 	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesFactory} creation
-	 *
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
 	 *
 	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
@@ -351,8 +332,21 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	private void setNonStrokingColor(PDPageContentStream cs, Color color) throws IOException {
 		if (color != null) {
-			cs.setNonStrokingColor(color);
+			cs.setNonStrokingColor(toPDColor(color));
 		}
+	}
+
+	private PDColor toPDColor(Color color) {
+		float[] components;
+		PDColorSpace pdColorSpace;
+		if (ImageUtils.isGrayscale(color)) {
+			components = new float[] { color.getRed() / 255f };
+			pdColorSpace = PDDeviceGray.INSTANCE;
+		} else {
+			components = new float[] { color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f };
+			pdColorSpace = PDDeviceRGB.INSTANCE;
+		}
+		return new PDColor(components, pdColorSpace);
 	}
 
 	/**
@@ -366,7 +360,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		if (color != null) {
 			// if alpha value is less then 255 (is transparent)
 			float alpha = color.getAlpha();
-			if (alpha < OPAQUE_VALUE) {
+			if (alpha < ImageUtils.OPAQUE_VALUE) {
 				LOG.warn("Transparency detected and enabled (Be aware: not valid with PDF/A !)");
 				setAlpha(cs, alpha);
 			}
@@ -375,7 +369,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 	private void setAlpha(PDPageContentStream cs, float alpha) throws IOException {
 		PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
-		gs.setNonStrokingAlphaConstant(alpha / OPAQUE_VALUE);
+		gs.setNonStrokingAlphaConstant(alpha / ImageUtils.OPAQUE_VALUE);
 		cs.setGraphicsStateParameters(gs);
 	}
 
@@ -390,8 +384,8 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 		if (color != null) {
 			// if alpha value is less than 255 (is transparent)
 			float alpha = color.getAlpha();
-			if (alpha < OPAQUE_VALUE) {
-				setAlpha(cs, OPAQUE_VALUE);
+			if (alpha < ImageUtils.OPAQUE_VALUE) {
+				setAlpha(cs, ImageUtils.OPAQUE_VALUE);
 			}
 		}
 	}
@@ -426,8 +420,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 				return colorSpace.getName();
 			}
 		} else {
-			// RGB is default for text
-			return COSName.DEVICERGB.getName();
+			return ImageUtils.containRGBColor(parameters) ? COSName.DEVICERGB.getName() : COSName.DEVICEGRAY.getName();
 		}
 	}
 

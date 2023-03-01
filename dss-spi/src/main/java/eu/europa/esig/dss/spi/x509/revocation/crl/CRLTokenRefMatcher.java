@@ -41,6 +41,7 @@ public class CRLTokenRefMatcher implements RevocationTokenRefMatcher<CRL> {
 	 * Default constructor
 	 */
 	public CRLTokenRefMatcher() {
+		// empty
 	}
 
 	@Override

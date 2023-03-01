@@ -26,6 +26,11 @@
 					<xsd:documentation>ASiC specific constraints</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="PDFAConstraints" type="PDFAConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>PDF/A validation constraints</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="SignatureConstraints" type="SignatureConstraints" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Constraints on the signature (signed/unsigned properties, coverage,...)</xsd:documentation>
@@ -112,6 +117,24 @@
 			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="PDFAConstraints">
+		<xsd:annotation>
+			<xsd:documentation>A group of constraints used for a PDF document validation against a PDF/A specification. Note : to enforce the constraints, the module dss-pdfa shall be loaded.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="AcceptablePDFAProfiles" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the determined profile of a PDF document corresponds to one of the allowed values.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PDFACompliant" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks whether a PDF is a PDF/A compliant to the determined profile.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -371,6 +394,11 @@
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="OCSPResponderIdMatch" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if an OCSP response's ResponderId matches the certificate used to sign the response</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="OCSPCertHashPresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if an OCSP response has certHash attribute</xsd:documentation>
@@ -441,39 +469,59 @@
 					<xsd:documentation>Checks if CMS Signed Data Signer Information Store has only one signer information</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ByteRange" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if /ByteRange dictionary is consistent with PDF specification as well as with the /Contents dictionary placement</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ByteRangeCollision" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if /ByteRange of the signature does not intersect with other signature byte ranges</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ByteRangeAllDocument" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if /ByteRange dictionary is consistent across all signatures and timestamps within the document</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PdfSignatureDictionary" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if signature dictionary is consistent across the PDF document revisions.</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="PdfPageDifference" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signed revision has more or less pages comparing to the final provided document</xsd:documentation>
+					<xsd:documentation>Checks if the signed revision has more or less pages comparing to the final provided document</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PdfAnnotationOverlap" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation>
+					<xsd:documentation>Checks if the document contains any annotation overlaps</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="PdfVisualDifference" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation>
+					<xsd:documentation>Checks if the signed revision have a visual difference(s) with the provided document</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="DocMDP" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the permission dictionary /DocMDP, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /DocMDP, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="FieldMDP" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the permission dictionary /FieldMDP, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the permission dictionary /FieldMDP, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SigFieldLock" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation>
+					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="UndefinedChanges" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation>
+					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
@@ -564,6 +612,16 @@
 					<xsd:documentation>Defines whether the revocation freshness shall be checked against the difference between thisUpdate and nextUpdate times, in case when the RevocationFreshness constraint is not defined.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="CA" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's basicConstraints extension is present and that cA is set to TRUE</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="MaxPathLength" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the depth of the subject certificate within certificate chain is allowed by pathLenConstraint within intermediate CA certificates</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="KeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's key usages are in the acceptable values list</xsd:documentation>
@@ -572,6 +630,26 @@
 			<xsd:element name="ExtendedKeyUsage" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's extended key usages are in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="PolicyTree" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of a policy tree as per RFC 5280</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NameConstraints" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of the certificate distinguished and subject alternative names against the name constraints imposed by its certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SupportedCriticalExtensions" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate extensions declared as critical are supported by the application. NOTE: unsupported non-critical extensions are simply ignored.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ForbiddenExtensions" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate does not contain any of the extensions defined in the list (e.g. ocsp-noCheck for end-entity certificate), whether critical or not</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">
@@ -768,6 +846,61 @@
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
+
+	<xsd:complexType name="ListAlgo">
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:annotation>
+					<xsd:documentation>List of algorithms</xsd:documentation>
+				</xsd:annotation>
+				<xsd:sequence>
+					<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="AlgoExpirationDate">
+		<xsd:complexContent>
+			<xsd:extension base="ListAlgo">
+				<xsd:annotation>
+					<xsd:documentation>List of algorithms with their expiration date</xsd:documentation>
+				</xsd:annotation>
+				<xsd:attribute name="Format" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Specifies the date format to be followed (default : yyyy-MM-dd)</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="UpdateDate" type="xsd:string" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Date of the last update of cryptographic suites (matching the Format)</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="LevelAfterUpdate" type="level" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>Defines a level of the check for cryptographic constraints expiring after the defined UpdateDate value</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="Algo">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute type="xsd:int" name="Size" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>The minimal key length</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute type="xsd:string" name="Date" use="optional">
+					<xsd:annotation>
+						<xsd:documentation>The expiration date</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
 	
 	<!-- eIDAS REGL 910/EU/2014 -->
 	<xsd:complexType name="eIDAS">
@@ -798,51 +931,11 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="ListAlgo">
-		<xsd:annotation>
-			<xsd:documentation>List of algorithms</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="AlgoExpirationDate">
-		<xsd:annotation>
-			<xsd:documentation>List of algorithms with their expiration date</xsd:documentation>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="Algo" type="Algo" minOccurs="0" maxOccurs="unbounded" />
-		</xsd:sequence>
-		<xsd:attribute name="Format" type="xsd:string" use="optional">
-			<xsd:annotation>
-				<xsd:documentation>Specifies the date format to be followed (default : yyyy-MM-dd)</xsd:documentation>
-			</xsd:annotation>
-		</xsd:attribute>
-	</xsd:complexType>
-	
-	<xsd:complexType name="Algo">
-		<xsd:simpleContent>
-			<xsd:extension base="xsd:string">
-				<xsd:attribute type="xsd:int" name="Size" use="optional">
-					<xsd:annotation>
-						<xsd:documentation>The minimal key length</xsd:documentation>
-					</xsd:annotation>
-				</xsd:attribute>
-				<xsd:attribute type="xsd:string" name="Date" use="optional">
-					<xsd:annotation>
-						<xsd:documentation>The expiration date</xsd:documentation>
-					</xsd:annotation>
-				</xsd:attribute>
-			</xsd:extension>
-		</xsd:simpleContent>
-	</xsd:complexType>
-	
 	<xsd:complexType name="LevelConstraint">
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified level behavior in case of failure</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute type="level" name="Level">
+		<xsd:attribute name="Level" type="level">
 			<xsd:annotation>
 				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>

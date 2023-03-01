@@ -94,10 +94,10 @@ public class DTOConverter {
 	 * @return {@link Digest}
 	 */
 	public static Digest toDigest(DigestDTO digestDTO) {
-		if (digestDTO == null) {
-			return null;
+		if (digestDTO != null) {
+			return new Digest(digestDTO.getAlgorithm(), digestDTO.getValue());
 		}
-		return new Digest(digestDTO.getAlgorithm(), digestDTO.getValue());
+		return null;
 	}
 
 	/**
@@ -107,11 +107,10 @@ public class DTOConverter {
 	 * @return {@link DigestDTO}
 	 */
 	public static DigestDTO toDigestDTO(Digest digest) {
-		if (digest == null) {
-			return null;
+		if (digest != null) {
+			return new DigestDTO(digest.getAlgorithm(), digest.getValue());
 		}
-		return new DigestDTO(digest.getAlgorithm(), digest.getValue());
-		
+		return null;
 	}
 
 }

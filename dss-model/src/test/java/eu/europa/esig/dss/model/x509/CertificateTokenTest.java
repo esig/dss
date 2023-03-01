@@ -112,6 +112,11 @@ public class CertificateTokenTest {
 		assertEquals(SignatureValidity.VALID, certificate3.getSignatureValidity());
 		assertTrue(certificate3.isSignedBy(certificate2));
 		assertEquals(SignatureValidity.VALID, certificate3.getSignatureValidity());
+
+		assertFalse(certificate1.isSignatureIntact());
+		assertFalse(certificate1.isValid());
+		assertTrue(certificate3.isSignatureIntact());
+		assertTrue(certificate3.isValid());
 		
 		assertNull(certificate3.getPublicKeyOfTheSigner());
 

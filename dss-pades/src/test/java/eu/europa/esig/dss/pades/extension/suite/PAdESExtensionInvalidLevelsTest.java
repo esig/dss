@@ -90,7 +90,7 @@ public class PAdESExtensionInvalidLevelsTest extends AbstractPAdESTestExtension 
 
         finalSignatureLevel = SignatureLevel.PAdES_BASELINE_T;
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'PAdES-BASELINE-T'. The signature is already extended with LT level.", exception.getMessage());
+        assertEquals("Cannot extend signature to 'PAdES-BASELINE-T'. The signature is already extended with LTA level.", exception.getMessage());
 
         finalSignatureLevel = SignatureLevel.PAdES_BASELINE_LT;
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));

@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 /**
  * Interface representing a DSS document.

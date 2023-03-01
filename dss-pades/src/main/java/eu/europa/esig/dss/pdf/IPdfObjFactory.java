@@ -81,4 +81,20 @@ public interface IPdfObjFactory {
 	 */
 	void setPdfObjectModificationsFinder(PdfObjectModificationsFinder pdfObjectModificationsFinder);
 
+	/**
+	 * This method is used to set a custom {@code PdfPermissionsChecker} to verify the PDF document
+	 * encryption dictionary permission rules for a new signature creation, when applicable
+	 *
+	 * @param pdfPermissionsChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfPermissionsChecker(PdfPermissionsChecker pdfPermissionsChecker);
+
+	/**
+	 * This method is used to set a custom {@code PdfSignatureFieldPositionChecker} to verify the validity
+	 * of new signature field placement.
+	 *
+	 * @param pdfSignatureFieldPositionChecker {@link PdfPermissionsChecker}
+	 */
+	void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker);
+
 }

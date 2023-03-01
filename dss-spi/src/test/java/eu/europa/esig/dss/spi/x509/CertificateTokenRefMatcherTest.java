@@ -23,6 +23,7 @@ package eu.europa.esig.dss.spi.x509;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -100,7 +101,8 @@ public class CertificateTokenRefMatcherTest {
     @Test
     public void responderIdTest() {
         CertificateRef validCertificateRef = new CertificateRef();
-        ResponderId responderId = new ResponderId(certificateToken.getSubject().getPrincipal(), DSSASN1Utils.getSki(certificateToken));
+        ResponderId responderId = new ResponderId(certificateToken.getSubject().getPrincipal(),
+                CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken).getSki());
         validCertificateRef.setResponderId(responderId);
 
         assertTrue(certificateTokenRefMatcher.match(certificateToken, validCertificateRef));
@@ -113,7 +115,8 @@ public class CertificateTokenRefMatcherTest {
     @Test
     public void invalidResponderIdTest() {
         CertificateRef validCertificateRef = new CertificateRef();
-        ResponderId responderId = new ResponderId(caCertificate.getSubject().getPrincipal(), DSSASN1Utils.getSki(caCertificate));
+        ResponderId responderId = new ResponderId(caCertificate.getSubject().getPrincipal(),
+                CertificateExtensionsUtils.getSubjectKeyIdentifier(caCertificate).getSki());
         validCertificateRef.setResponderId(responderId);
 
         assertFalse(certificateTokenRefMatcher.match(certificateToken, validCertificateRef));

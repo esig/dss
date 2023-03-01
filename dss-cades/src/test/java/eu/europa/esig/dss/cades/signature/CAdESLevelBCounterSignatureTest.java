@@ -27,12 +27,13 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -60,7 +61,7 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 	public void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-		documentToSign = new InMemoryDocument("Hello World".getBytes(), "test.text", MimeType.TEXT);
+		documentToSign = new InMemoryDocument("Hello World".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		signingDate = new Date();
 	}
 
@@ -151,7 +152,7 @@ public class CAdESLevelBCounterSignatureTest extends AbstractCAdESCounterSignatu
 				counterSigFound = true;
 			} else {
 				assertNotNull(signatureWrapper.getMimeType());
-				assertEquals(MimeType.TEXT, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
+				assertEquals(MimeTypeEnum.TEXT, MimeType.fromMimeTypeString(signatureWrapper.getMimeType()));
 				masterSigFound = true;
 			}
 		}

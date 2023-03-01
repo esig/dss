@@ -25,12 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Callable;
 
 /**
  * Implementation of native java DataLoader using the java.net.URL class.
@@ -40,87 +35,26 @@ public class NativeHTTPDataLoader implements DataLoader {
 
 	private static final long serialVersionUID = 4075489539157157286L;
 
-	/**
-	 * Available HTTPMethods
-	 */
-	protected enum HttpMethod {
-		/** GET method */
-		GET,
-		/** POST method */
-		POST
-	}
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
+	private static final Logger LOG = LoggerFactory.getLogger(NativeHTTPDataLoader.class);
 
 	/** Max inputStream size */
-	private long maxInputSize;
+	private int maxInputSize;
 
 	/**
-	 * Timeout of the full request processing time (send and retrieve data).
+	 * Timeout on the connection establishment with a remote resource.
 	 */
-	private long timeout = 0;
+	private int connectTimeout = 0;
+
+	/**
+	 * Timeout on the response reading from a remote resource.
+	 */
+	private int readTimeout = 0;
 
 	/**
 	 * Default constructor instantiating object with null values
 	 */
 	public NativeHTTPDataLoader() {
-	}
-
-	/**
-	 * Execute the request
-	 *
-	 * @param url {@link String}
-	 * @param method {@link HttpMethod}
-	 * @param content request content
-	 * @param refresh if enforce the refresh
-	 * @return response binaries
-	 */
-	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
-		NativeDataLoaderCall task = new NativeDataLoaderCall(url, content, refresh, maxInputSize);
-
-		ExecutorService executorService = Executors.newSingleThreadExecutor();
-		try {
-			Future<byte[]> result = executorService.submit(task);
-			return timeout > 0 ? result.get(timeout, TimeUnit.MILLISECONDS) : result.get();
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new DSSExternalResourceException(e);
-		} catch (ExecutionException | TimeoutException e) {
-			throw new DSSExternalResourceException(e);
-		} finally {
-			executorService.shutdown();
-		}
-
-	}
-
-	@Override
-	public DataAndUrl get(List<String> urlStrings) {
-		for (final String urlString : urlStrings) {
-			try {
-				final byte[] bytes = get(urlString);
-				if (bytes != null) {
-					return new DataAndUrl(urlString, bytes);
-				}
-			} catch (Exception e) {
-				LOGGER.warn("Impossible to obtain data using {}", urlString, e);
-			}
-		}
-		throw new DSSExternalResourceException(String.format("No data have been obtained from urls : %s", urlStrings));
-	}
-
-	@Override
-	public byte[] get(String url) {
-		return get(url, false);
-	}
-
-	@Override
-	public byte[] get(String url, boolean refresh) {
-		return request(url, HttpMethod.GET, null, !refresh);
-	}
-
-	@Override
-	public byte[] post(String url, byte[] content) {
-		return request(url, HttpMethod.POST, content, false);
+		// empty
 	}
 
 	@Override
@@ -133,7 +67,7 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @return maximum InputStream size
 	 */
-	public long getMaxInputSize() {
+	public int getMaxInputSize() {
 		return maxInputSize;
 	}
 
@@ -142,26 +76,142 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *
 	 * @param maxInputSize maximum InputStream size
 	 */
-	public void setMaxInputSize(long maxInputSize) {
+	public void setMaxInputSize(int maxInputSize) {
 		this.maxInputSize = maxInputSize;
-	}
-
-	/**
-	 * Gets timeout value
-	 *
-	 * @return timeout value
-	 */
-	public long getTimeout() {
-		return timeout;
 	}
 
 	/**
 	 * Sets timeout value
 	 *
 	 * @param timeout timeout value
+	 * @deprecated since DSS 5.12. See {@code #setConnectTimeout} and {@code #setReadTimeout}
 	 */
-	public void setTimeout(long timeout) {
-		this.timeout = timeout;
+	@Deprecated
+	public void setTimeout(int timeout) {
+		this.connectTimeout = timeout;
+		this.readTimeout = timeout;
+	}
+
+	/**
+	 * Gets the timeout value on connection establishment with a remote resource
+	 *
+	 * @return connection timeout value
+	 */
+	public int getConnectTimeout() {
+		return connectTimeout;
+	}
+
+	/**
+	 * Sets the timeout to establish a connection with a remote resource (in milliseconds).
+	 * Zero (0) value is used for no timeout.
+	 * Default: 0 (no timeout)
+	 *
+	 * @param connectTimeout connection timeout value (in milliseconds)
+	 */
+	public void setConnectTimeout(int connectTimeout) {
+		this.connectTimeout = connectTimeout;
+	}
+
+	/**
+	 * Gets the timeout value on response reading from a remote resource
+	 *
+	 * @return read timeout value
+	 */
+	public int getReadTimeout() {
+		return readTimeout;
+	}
+
+	/**
+	 * Sets the timeout to read a response from a remote resource (in milliseconds).
+	 * Zero (0) value is used for no timeout.
+	 * Default: 0 (no timeout)
+	 *
+	 * @param readTimeout read timeout value (in milliseconds)
+	 */
+	public void setReadTimeout(int readTimeout) {
+		this.readTimeout = readTimeout;
+	}
+
+	/**
+	 * Execute the request
+	 *
+	 * @param url {@link String}
+	 * @param method {@link HttpMethod}
+	 * @param content request content
+	 * @param refresh if enforce the refresh
+	 * @return response binaries
+	 */
+	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
+		try {
+			Callable<byte[]> task = createNativeDataLoaderCall(url, method, content, refresh);
+			return task.call();
+		} catch (DSSExternalResourceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new DSSExternalResourceException(e);
+		}
+	}
+
+	/**
+	 * This method creates a task call to be executed by NativeHTTPDataLoader
+	 *
+	 * @param url {@link String} URL to call
+	 * @param method {@link HttpMethod} of the request
+	 * @param content byte array containing a body of the request, when required
+	 * @param refresh defined if the cache should be used
+	 * @return {@link Callable} task
+	 */
+	protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
+		return new NativeDataLoaderCall(url, content, !refresh, maxInputSize, connectTimeout, readTimeout);
+	}
+
+	@Override
+	public DataAndUrl get(List<String> urlStrings) {
+		for (final String urlString : urlStrings) {
+			try {
+				final byte[] bytes = get(urlString);
+				if (bytes != null) {
+					return new DataAndUrl(urlString, bytes);
+				}
+			} catch (Exception e) {
+				LOG.warn("Impossible to obtain data using {}", urlString, e);
+			}
+		}
+		throw new DSSExternalResourceException(String.format("No data have been obtained from urls : %s", urlStrings));
+	}
+
+	@Override
+	public byte[] get(String url) {
+		return get(url, false);
+	}
+
+	/**
+	 * Executes a GET request to the provided URL, with a forced cache {@code refresh} when defined
+	 *
+	 * @param url
+	 *            to access
+	 * @param refresh
+	 *            if true indicates that the data should be refreshed
+	 * @return binaries of the extracted data object
+	 */
+	@Override
+	public byte[] get(String url, boolean refresh) {
+		return request(url, HttpMethod.GET, null, refresh);
+	}
+
+	@Override
+	public byte[] post(String url, byte[] content) {
+		return request(url, HttpMethod.POST, content, true);
+	}
+
+	/**
+	 * Available HTTPMethods
+	 */
+	protected enum HttpMethod {
+		/** GET method */
+		GET,
+		/** POST method */
+		POST
 	}
 
 }

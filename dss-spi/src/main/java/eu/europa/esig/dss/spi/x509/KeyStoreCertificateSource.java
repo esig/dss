@@ -27,24 +27,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Implements a CertificateSource using a KeyStore (PKCS12, JKS,...).
- * 
- * Note: PKCS12 + JDK7 don't allow trust store
  *
  */
 @SuppressWarnings("serial")
@@ -95,7 +91,7 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	 *             if the file not exists
 	 */
 	public KeyStoreCertificateSource(final File ksFile, final String ksType, final String ksPassword) throws IOException {
-		this(new FileInputStream(ksFile), ksType, ksPassword);
+		this(Files.newInputStream(ksFile.toPath()), ksType, ksPassword);
 	}
 
 	/**
@@ -118,8 +114,22 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 			final char[] password = (ksPassword == null) ? null : ksPassword.toCharArray();
 			keyStore.load(is, password);
 			passwordProtection = new PasswordProtection(password);
+			extractCertificates();
 		} catch (GeneralSecurityException | IOException e) {
 			throw new DSSException("Unable to initialize the keystore", e);
+		}
+	}
+
+	private void extractCertificates() {
+		try {
+			Enumeration<String> aliases = keyStore.aliases();
+			while (aliases.hasMoreElements()) {
+				Certificate certificate = keyStore.getCertificate(getKey(aliases.nextElement()));
+				CertificateToken certificateToken = DSSUtils.loadCertificate(certificate.getEncoded());
+				super.addCertificate(certificateToken);
+			}
+		} catch (GeneralSecurityException e) {
+			throw new DSSException("Unable to retrieve certificates from the keystore", e);
 		}
 	}
 
@@ -146,24 +156,6 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	}
 
 	/**
-	 * This method returns all certificates from the keystore
-	 */
-	@Override
-	public List<CertificateToken> getCertificates() {
-		List<CertificateToken> list = new ArrayList<>();
-		try {
-			Enumeration<String> aliases = keyStore.aliases();
-			while (aliases.hasMoreElements()) {
-				Certificate certificate = keyStore.getCertificate(getKey(aliases.nextElement()));
-				list.add(DSSUtils.loadCertificate(certificate.getEncoded()));
-			}
-		} catch (GeneralSecurityException e) {
-			throw new DSSException("Unable to retrieve certificates from the keystore", e);
-		}
-		return Collections.unmodifiableList(list);
-	}
-
-	/**
 	 * This method allows to add a list of certificates to the keystore
 	 * 
 	 * @param certificates
@@ -184,9 +176,16 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	public void addCertificateToKeyStore(CertificateToken certificateToken) {
 		try {
 			keyStore.setCertificateEntry(getKey(certificateToken.getDSSIdAsString()), certificateToken.getCertificate());
+			super.addCertificate(certificateToken);
+			LOG.debug("Certificate '{}' successfully added to the keystore", certificateToken);
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to add certificate to the keystore", e);
 		}
+	}
+
+	@Override
+	public CertificateToken addCertificate(CertificateToken certificateToAdd) {
+		throw new UnsupportedOperationException("Use addCertificateToKeyStore(CertificateToken) method to add a certificate to keyStore!");
 	}
 
 	/**
@@ -198,8 +197,10 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 	public void deleteCertificateFromKeyStore(String alias) {
 		try {
 			if (keyStore.containsAlias(alias)) {
+				CertificateToken certificate = getCertificate(alias);
+				removeCertificate(certificate);
 				keyStore.deleteEntry(alias);
-				LOG.info("Certificate '{}' successfuly removed from the keystore", alias);
+				LOG.debug("Certificate '{}' successfully removed from the keystore", alias);
 			} else {
 				LOG.warn("Certificate '{}' not found in the keystore", alias);
 			}
@@ -218,6 +219,8 @@ public class KeyStoreCertificateSource extends CommonCertificateSource {
 				String alias = aliases.nextElement();
 				deleteCertificateFromKeyStore(alias);
 			}
+			reset();
+			LOG.debug("Keystore has been successfully cleared");
 		} catch (GeneralSecurityException e) {
 			throw new DSSException("Unable to clear certificates from the keystore", e);
 		}

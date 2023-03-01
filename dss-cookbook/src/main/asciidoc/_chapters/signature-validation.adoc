@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[SignatureValidation]]
 == Signature Validation
@@ -200,6 +200,7 @@ For a description of available for configuration constraints within the XML vali
 The validation policy allows defining different behavior for various token types or signature formats. The following groups are considered:
 
 * `ContainerConstraints` - defines rules for processing of ASiC containers validation;
+* `PDFAConstraints` - contains checks to verify compliance of a PDF document to PDF/A specification (optional, see <<pdfa>> for more details);
 * `SignatureConstraints` - defines rules for signature basic building blocks processing and the related certificate chain;
 * `CounterSignatureConstraints` - allows defining custom rules for counter signature processing;
 * `Timestamp` - defines rules for timestamp validation;
@@ -248,6 +249,7 @@ Cryptographic constraints define a list of acceptable cryptographic algorithms a
 * `AcceptableDigestAlgo` - defines a list of acceptable digest algorithms. All tokens and signatures using other algorithms will be rejected.
 * `AlgoExpirationDate` - defines expiration dates for the algorithms. The algorithm is rejected when it is used after the defined date. If the algorithm expiration date is not defined, or set to null, the algorithm is treated as reliable for an unlimited time.
 
+[[defaultXmlPolicy]]
 ==== The default XML policy
 
 The default XML validation policy is present below.
@@ -538,6 +540,7 @@ The interface `SignaturePolicyValidator` is used to validate a signature policy 
 
 ==== PAdES
 
+[[ShadowAttackDetection]]
 ===== Shadow attack detection
 
 "Shadow attack" is a class of attacks on a signed PDF document that constitutes a change of a visual content of a document after the signature has been made. Due to a structure of PDF document, the signature stays cryptographically valid even after the content's modification has been taken place. There is no known algorithm to detect the malicious change with 100% guarantee. For more information, please refer to https://pdf-insecurity.org/[the website].
@@ -553,9 +556,10 @@ The verification of points introduced above may be configured within an instance
 [source,java,indent=0]
 .PdfDifferencesFinder customization
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[tags=visual-change-finder]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESModificationDetection.java[tags=visual-change-finder]
 ----
 
+[[ObjectModificationDetection]]
 ===== Object modification detection
 
 As an additional tool to detect malicious changes within a PDF document, an object modification detection has been introduced in DSS 5.10. The util detects all changes occurred within a PDF document after a concerned signature's or a timestamp's revision.
@@ -580,10 +584,22 @@ An example of a `PdfObjectModificationsFinder` customization is provided below:
 [source,java,indent=0]
 .PdfObjectModificationsFinder customization
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESDisableVisualComparison.java[tags=object-modifications]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESModificationDetection.java[tags=object-modifications]
+----
+
+[[DisablingPdfComparison]]
+===== Disabling PDF comparison security checks
+
+The aforementioned security checks may be disabled in favor of performance on signature validation. For this you will need to define the following configuration within `IPdfObjFactory` provided to the used `PDFDocumentValidator`:
+
+[source,java,indent=0]
+.Disabling PDF comparison checks
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESSkipModificationDetection.java[tags=demo]
 ----
 
 ===== Password-protected documents
+
 PDF files can be protected using a password. DSS does not support creation of password-protected PDFs, however it is able to sign, extend, as well as validate existing password-protected documents, if a proper password has been provided.
 
 To sign or extend a password-protected document, a password string shall be provided within `PAdESSignatureParameters`:
@@ -602,6 +618,42 @@ To validate a password-protected PDF, a password string shall be provided within
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignProtectedPdfPadesBLevelTest.java[tags=validate]
 ----
 
+[[pdfa]]
+==== PDF/A
 
+Since version `5.12` DSS provides a possibility to validate conformance of a PDF document against the PDF/A specification. The verification process is conducted by a https://verapdf.org/[VeraPDF] library.
 
+NOTE: DSS does not claim compliance with the PDF/A specification for created or extended PDF documents with services provided in DSS. The PDF/A verification feature is provided exclusively for validation purposes.
 
+The PDF/A validation is present in a dedicated `dss-pdfa` module that makes the inclusion of PDF/A validation process optional and does not interfere with the default PAdES validation.
+
+In order to include PDF/A validation to your project, the `dss-pdfa` module shall be defined within `pom.xml` file of the project as a dependency:
+
+[source,xml,indent=0]
+.PDF/A module inclusion
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-pdfa</artifactId>
+</dependency>
+----
+
+NOTE: PDF/A module does not replace `dss-pades-pdfbox` or `dss-pades-openpdf` implementation. If required, `dss-pdfa` has to be included in addition to the chosen implementation.
+
+The module `dss-pdfa` implements its own `DocumentValidator`, as well as `DocumentValidatorFactory`. In order to perform PDF/A validation on a PDF document, the class `PDFADocumentValidator` has to be used:
+
+[source,java,indent=0]
+.PDFADocumentValidator validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=pdfa]
+----
+
+To load the `PDFADocumentValidator` instead of default PDF validator using `SignedDocumentValidator.fromDocument(DSSDocument)` method, the new class shall be defined within `eu.europa.esig.dss.validation.DocumentValidatorFactory` file in the directory `src/main/java/resources/META-INF/services/`, as following:
+
+[source,xml,indent=0]
+.Enforce PDF/A validator in "src/main/java/resources/META-INF/services/eu.europa.esig.dss.validation.DocumentValidatorFactory" file
+----
+eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory
+----
+
+It is also possible to enforce verification of a PDF/A profile and its validity during the signature validation process using the customized XML validation policy (see <<validationPolicy>>). See <<PdfaConstraints>> for more details.

@@ -43,7 +43,8 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
-import eu.europa.esig.dss.validation.process.bbb.fc.FormatChecking;
+import eu.europa.esig.dss.validation.process.bbb.fc.SignatureFormatChecking;
+import eu.europa.esig.dss.validation.process.bbb.fc.TimestampFormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
 import eu.europa.esig.dss.validation.process.bbb.sav.AbstractAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
@@ -189,11 +190,16 @@ public class BasicBuildingBlocks {
 
 	private XmlFC executeFormatChecking() {
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-			FormatChecking fc = new FormatChecking(i18nProvider, diagnosticData, (SignatureWrapper) token, context, policy);
+			SignatureFormatChecking fc = new SignatureFormatChecking(i18nProvider, diagnosticData, (SignatureWrapper) token, context, policy);
 			return fc.execute();
-		} else {
-			return null;
+		} else if (Context.TIMESTAMP.equals(context)) {
+			TimestampFormatChecking fc = new TimestampFormatChecking(i18nProvider, diagnosticData, (TimestampWrapper) token, context, policy);
+			XmlFC xmlFC = fc.execute();
+			if (Utils.isCollectionNotEmpty(xmlFC.getConstraint())) {
+				return xmlFC;
+			}
 		}
+		return null;
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {

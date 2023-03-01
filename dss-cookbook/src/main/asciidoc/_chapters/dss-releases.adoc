@@ -2,7 +2,7 @@
 :sectnumlevels: 5
 :sourcetestdir: ../../../test/java
 :samplesdir: ../_samples
-:imagesdir: images/
+:imagesdir: ../images/
 
 [[DSSUpgrades]]
 == DSS upgrades and change history
@@ -12,6 +12,43 @@
 .Release notes
 |===
 |Version           |Release date             |Features
+
+|v5.12.RC1         |February 2023          a|Main new features / improvements :
+
+* PAdES : signature creation with external CMS provider;
+* PAdES : added PDF/A validation support;
+* PAdES : spoofing attack detection;
+* PAdES : improved performance and memory consumption on signature validation;
+* PAdES : VRI dictionary made optional;
+* XAdES : less memory consuming message-imprint computation;
+* JAdES : added support of EdDSA algorithms;
+* Validation : improved RFC 5280 conformance;
+* Validation : return INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE if no acceptable revocation found;
+* Validation policy : improved handling of expired cryptographic algorithms;
+* DataLoader : removed default SSL-protocol definition;
+* DataLoader : added an option of pre-emptive basic authentication;
+* SignatureTokenConnection : possibility to filter keys;
+* REST/SOAP services : added a setter of default validation policy;
+* REST/SOAP services : added a signing method with a provided SignatureAlgorithm;
+* Simple report : added information about trust anchors;
+* DSS Standalone : signing of multiple document;
+* DSS Standalone : extension of signed documents;
+* DSS Standalone : validation of documents;
+* Dependencies update (BouncyCastle, HttpClient5, etc.);
+* Documentation improvement (F.A.Q. section, offline support, etc.);
+* Java 19 support.
+
+|v5.11             |February 2023          a|Bug fixes :
+
+* PAdES : unable to extend a document with /DSS dictionary before a timestamp;
+* PAdES : improved code to preserve PDF/A documents validity;
+* PAdES : fixed text auto-fitting function in certain configurations;
+* XAdES : improved handling of custom DSSReference configurations;
+* XAdES : fixed rare issue with inability to create ENVELOPED signature;
+* Fixed extension of not AdES signatures with a revoked certificate;
+* TLValidationJob : fixed unexpected exception and thread stuck during the refresh;
+* NativeHTTPDataLoader : threads can get stuck;
+* JdbcCacheConnector : improved code to allow some database implementations.
 
 |v5.11.1           |November 2022            a|Main new features / improvements :
 
@@ -247,13 +284,13 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.11.1 using <<BomModule>>.
+The following example shows how to switch to DSS version 5.12.RC1 using <<BomModule>>.
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.11.1</dss.version>
+    <dss.version>5.12.RC1</dss.version>
     ...
 </properties>
 
@@ -280,7 +317,256 @@ This chapter covers the most significant changes in DSS code occurred between di
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
-.Code changes from version 5.10/5.10.1/5.10.2 to 5.11
+.Code changes from version 5.11 to 5.12
+|===
+|Title                               |v5.11                            |v5.12
+|Diagnostic Data: ByteRange     a|[source,xml]
+----
+<SignatureByteRange>0 * * *</SignatureByteRange>
+----
+                                                                     a|[source,xml]
+----
+<SignatureByteRange valid="true">0 * * *</SignatureByteRange>
+----
+
+|Diagnostic Data: PDFSignatureDictionary     a|[source,xml]
+----
+<PDFSignatureDictionary>
+...
+</PDFSignatureDictionary>
+----
+                                                                     a|[source,xml]
+----
+<PDFSignatureDictionary consistent="true">
+...
+</PDFSignatureDictionary>
+----
+
+|Diagnostic Data: Certificate extensions     a|[source,xml]
+----
+<Certificate>
+    ...
+    <AuthorityInformationAccessUrls>
+        <aiaUrl>http://certs.eid.belgium.be/belgiumrs4.crt</aiaUrl>
+    </AuthorityInformationAccessUrls>
+    <CRLDistributionPoints>
+        <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+    </CRLDistributionPoints>
+    <OCSPAccessUrls>
+        <ocspServerUrl>http://ocsp.eid.belgium.be/2</ocspServerUrl>
+    </OCSPAccessUrls>
+    ...
+</Certificate>
+----
+                                                                     a|[source,xml]
+----
+<Certificate>
+    ...
+    <CertificateExtensions>
+        ...
+        <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+            <caIssuersUrl>http://certs.eid.belgium.be/belgiumrs4.crt</caIssuersUrl>
+            <ocspUrl>http://ocsp.eid.belgium.be/2</ocspUrl>
+        </AuthorityInformationAccess>
+        <CRLDistributionPoints OID="2.5.29.31" critical="false">
+            <crlUrl>http://crl.eid.belgium.be/eidc201631.crl</crlUrl>
+        </CRLDistributionPoints>
+        ...
+    </CertificateExtensions>
+    ...
+</Certificate>
+----
+
+|PDFSignatureService #digest     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
+----
+                                                                     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
+byte[] digest = messageDigest.getValue();
+----
+
+|PDFSignatureService: permission dictionary alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnForbiddenSignatureCreation(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(new ProtectedDocumentExceptionOnStatusAlert());
+pdfObjectFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PDFSignatureService: signature field position alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert);
+pdfSignatureService.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert());
+pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PAdESSignatureParameters #setIncludeVRIDictionary     a|
+
+VRI dictionary is created by default
+
+                                                                     a|[source,java]
+----
+PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+...
+signatureParameters.setIncludeVRIDictionary(true);
+----
+
+|PdfDocumentReader #checkDocumentPermissions     a|[source,java]
+----
+PdfDocumentReader reader = ...
+reader.checkDocumentPermissions();
+----
+                                                                     a|[source,java]
+----
+PdfDocumentReader reader = ...
+SignatureFieldParameters signatureFieldParameters = ...
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.checkDocumentPermissions(reader, signatureFieldParameters);
+----
+
+|MimeType namespace     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeType;
+----
+
+|MimeType enumerations     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+
+MimeType.PDF;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+
+MimeTypeEnum.PDF;
+----
+
+|Password protection variable (replaced to `char[]` across modules)     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", "password");
+----
+                                                                     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
+----
+
+|NativeHTTPDataLoader configuration     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setTimeout(1000);
+----
+                                                                     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setConnectTimeout(1000);
+dataLoader.setReadTimeout(1000);
+----
+
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader password implementation                           a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword);
+commonsDataLoader.setSslTruststorePassword(trustStorePassword);
+commonsDataLoader.addAuthentication(host, port, scheme, login, password);
+----
+                                                                     a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword.toCharArray());
+commonsDataLoader.setSslTruststorePassword(trustStorePassword.toCharArray());
+commonsDataLoader.addAuthentication(host, port, scheme, login, password.toCharArray());
+----
+
+|CommonsDataLoader #get                           a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url, false);
+----
+                                                                     a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url);
+// or use alternative implementation for caching, e.g. FileCacheDataLoader
+----
+
+|TimestampToken #isSignatureValid     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isSignatureValid();
+----
+                                                                     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isValid();
+----
+
+|Certificate extensions extraction     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+// and other method to extract certificate extensions
+----
+                                                                     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+// and so on
+----
+
+|===
+
+[cols="2,5,5"]
+.Code changes from version 5.10/5.10.1 to 5.11
 |===
 |Title                               |v5.10                            |v5.11
 |ASiC container: set signature name     a|[source,java]
@@ -509,6 +795,187 @@ OID semanticsIdentifier = xmlCertificate.getQcStatements().getSemanticsIdentifie
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 5.11 to 5.12
+|===
+|Title                                |v5.11                           |v5.12
+|ByteRange consistency checks         |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ByteRange Level="FAIL" />
+    <ByteRangeCollision Level="WARN" />
+    <!-- ByteRangeAllDocument Level="WARN" -->
+    ...
+</BasicSignatureConstraints>
+----
+|PdfSignatureDictionary consistency check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+...
+<PdfSignatureDictionary Level="FAIL" />
+...
+</BasicSignatureConstraints>
+----
+|PDF/A checks (see <<PdfaConstraints>>)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<PDFAConstraints>
+    <AcceptablePDFAProfiles Level="WARN">
+        <Id>PDF/A-2A</Id>
+        <Id>PDF/A-2B</Id>
+        <Id>PDF/A-2U</Id>
+    </AcceptablePDFAProfiles>
+    <PDFACompliant Level="WARN" />
+</PDFAConstraints>
+----
+|Forbidden extensions check                     |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
+    ...
+</SigningCertificate>
+----
+|CA certificate BasicConstraints check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
+----
+|KeyUsage for CA certificates                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <KeyUsage Level="FAIL">
+        <Id>keyCertSign</Id>
+    </KeyUsage>
+    ...
+</CACertificate>
+----
+|Extended key usage for timestamp certificates              a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="WARN">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+                                                            a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="FAIL">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+|Certificate Policy Tree                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <PolicyTree Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|Name Constraints                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|ResponderId for OCSP response                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
+----
+|Expiration of cryptographic suites              a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Format="yyyy">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+                                                            a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+
+|===
+
+[cols="2,5,5"]
 .Policy changes from version 5.10 to 5.11
 |===
 |Title                                |v5.10                           |v5.11
@@ -644,6 +1111,68 @@ not present
 </SignedAttributesConstraints>
 ----
 
+|Qualified certificate check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <Qualification />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <PolicyQualificationIds /> <!-- pre eIDAS -->
+    <QcCompliance /> <!-- post eIDAS -->
+    ...
+</SignedAttributesConstraints>
+----
+
+|QSCD/SSCD check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <SupportedByQSCD />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QcSSCD />
+    ...
+</SignedAttributesConstraints>
+----
+
+|QcStatements attributes presence           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QCStatementIds />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <!-- Choose the corresponding QcStatement -->
+    <QcCompliance />
+    <MinQcEuLimitValue />
+    <QcSSCD />
+    <QcEuPDSLocation />
+    <QcType />
+    <QcLegislationCountryCodes />
+    <SemanticsIdentifierForNaturalPerson />
+    <SemanticsIdentifierForLegalPerson />
+    <PSD2QcTypeRolesOfPSP />
+    <!-- etc -->
+    ...
+</SignedAttributesConstraints>
+----
+
 |===
 
 === Frequently asked questions and implementation issues
@@ -654,20 +1183,37 @@ This chapter covers the most frequently asked questions and issues occurring in 
 .Possible problems and solutions
 |===
 |Version                    |Description                                   |Solution
-|v5.9                       |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
+
+|v5.12                      |Performance downgrade on TLValidationJob/certificates loading       a|Starting from version 1.71 cryptographic library BouncyCastle enforces a secure validation of imported RSA keys. In order to get back to the original behavior (secure validation skipped), the following system property should be added before executing methods requiring certificate creation (such as TLValidationJob):
+
+[source,java]
+----
+System.setProperty("org.bouncycastle.rsa.max_mr_tests", "0");
+----
+
+The property is available since BouncyCastle 1.73.
+
+|v5.9 and higher            |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
                                                                             *Since DSS 5.10 a support of AdES extended signature profiles* for (XAdES and CAdES) has been added as per ETSI standards.
 
-|v5.8 and higher            |PAdES : performance downgrade                a|[source,java]
-----
-pdfSignatureService.setMaximalPagesAmountForVisualComparison(0); // skip validation
-----
-Please note that some changes have been made within verson 5.11 (see <<MigrationGuide>>).
+|v5.8 and higher            |PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
 
-|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use predicates. For example, to filter TLs from Germany and Romania:
-[source,java]
+|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>.
+
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country]
 ----
+
+Starting from DSS `5.11` you may use a `TLPredicateFactory` class to facilitate predicate creation:
+
+[source,java,indent=0]
+.Example to filter Germany and Romania Trusted Lists with TLPredicateFactory
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country-5.11]
+----
+
 |v5.2 and higher            |XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +
                                                                             We do not recommend to use Xalan in production.
                                                                             To use Xalan, you will need to remove security attributes:
@@ -679,6 +1225,10 @@ TransformerFactoryBuilder.getSecureTransformerBuilder()
 .removeAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET));
 ----
 
+|v5.2 and higher            |Error: "SECURITY : unable to set attribute ..."             a|The error is more likely caused by a use of deprecated Xalan or Xerces dependency. Please see the previous answer for resolution.
+
+|all versions              a|Maven build fails       a| Please verify whether you need to build DSS. See <<HowToStart>> for more details about DSS integration. If you need to build DSS, please use one of the quick profiles (see <<MavenBuildProfiles>> for more information).
+
 |all versions              a|Build fails when using `quick` profile       a| * DSS 5.9 and lower: +
                                                                              Build the following modules using `mvn clean install` (without any profile):
                                                                              ** `dss-utils`;
@@ -686,23 +1236,82 @@ TransformerFactoryBuilder.getSecureTransformerBuilder()
                                                                              ** `dss-test`;
                                                                              ** `dss-pades`;
                                                                              ** `dss-asic-common` _(since DSS 5.8)._
-                                                                             * DSS 5.10:
+                                                                             * DSS 5.10 and after:
                                                                              Use `quick-init` profile for the first build of DSS.
 
+|all versions              a|Unable to access DSS Maven repository       a|If the error occurs, more likely DSS-team is already aware about the issue. +
+                                                                           You need to try to connect again in a few hours.
+
+|all versions              a|DSS produces invalid signature       a|Please verify that you provide *the same signature parameter values* within methods _#getDataToSign_ and _#signDocument_. Specifically please pay attention to the `Date` provided within `parameters.bLevel().setSigningDate(date)` method (shall be the same). For more information please see <<SignatureCreationInDSS>>.
+
+|all versions              a|When validating a signature I receive `INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND` indication       a|The result means the validator was not able to reach a trust anchor when validating the certificate chain of the signature. More likely the issue is caused by the fact you have *not configured a trusted certificate source* within the used `CertificateVerifier`. To do it, you need to add trust anchors to the instance of CertificateVerifier you use within DocumentValidator:
+
+[source,java,indent=0]
+.Trusted certificate source configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/XAdES132OnlyTest.java[tags=trustAnchors]
+----
+
+It is also possible to configure trusted certificate source automatically using EU LOTL. See <<tlValidationJob>> for more details.
+
 |all versions              a|Revocation data is missing on LT-level extension       a|Verify whether the trust anchors and CRL/OCSP sources are configured appropriately. You need to provide them to the used CertificateVerifier:
+
 [source,java,indent=0]
 .CertificateVerifier configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLTTest.java[tags=certificate-verifier]
 ----
 
-|all versions              a|Unable to access DSS Maven repository       a|If the error occurs, more likely DSS-team is already aware about the issue. +
-                                                                           You need to try to connect again in a few hours.
+|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R22>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
+
+|all versions              a|I receive error _"Unable to build a certificate chain until a trusted list"_ while signature is validated as `TOTAL_PASSED`     a|During the validation DSS performs two processes: AdES validation as per ETSI EN 319 102-1 (cf. <<R09>>) and qualification determination as per ETSI TS 119 615 (cf. <<R14>>). While `TOTAL_PASSED` indication is a final result of AdES validation process, the aforementioned error message is returned by a signature qualification determination process, meaning the corresponding Trusted List has not reached the trust anchor for the certificate chain. Please note, that the qualification can be determined only for signatures with trusted certificates coming from a Trusted List. To configure a trusted certificate source using a EU LOTL or an alternative Trusted List, please see <<tlValidationJob>> chapter for more details.
+
+|all versions              a|Error "Document format not recognized/handled"     a|DSS loads the relevant `DocumentValidator` using a `ServiceLoader` searching accross all available implementations. Please ensure the corresponding module supporting validation of particular signature module has been added to a list of dependencies within `pom.xml` file of your project (e.g. `dss-xades` for XML/XAdES signatures). For more information about available modules please see <<CoreModules>> section.
+
+|all versions              a|`NO_CERTIFICATE_CHAIN_FOUND` is returned on LOTL validation     a|Please ensure a trusted keystore provided to the validation has been configured with end-entity certificates defined in the https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[Official Journal of the European Commission (OJEU)]. A pre-configured EU OJ keystore you may find within dss-demonstrations https://github.com/esig/dss-demonstrations/blob/master/dss-demo-webapp/src/main/resources/keystore.p12[repository] with a password defined in https://github.com/esig/dss-demonstrations/blob/master/dss-demo-webapp/src/main/resources/dss.properties[properties] file. For more information please see <<CompleteConfigurationOfEuLOTL>>.
+
+|all versions              a|DSS successfully validates an expired timestamp created with a trusted certificate     a|DSS performs validation according to ETSI EN 319 102-1 standard (cf. <<R13>>). According to the algorithm, the validation of certificate chain stops when reaching a trust anchor provided as an input to the validation process. Thus, the AdES validation process automatically results to a valid "X.509 certificate" building block for signatures or timestamps created with a trusted end-entity certificate. If you extract a trusted certificate source from a LOTL/TL, then you may try to filter extracted certificates using <<LotlTlPredicates>>.
+
+|all versions              a|I have a problem when signing using Nexu. Can you help me?     a|While the community version of Nexu is used within _dss-demonstrations_ web-application, Nexu is not part of DSS package, therefore DSS support does not extend to the Nexu project. We do  our best to help users in case of any issues, but DSS does not have liability whatsoever over open-source version of Nexu.
+
+|all versions              a|Does DSS provide a qualified signature validation service?       a|No, DSS is not a qualified signature validation service. However, DSS provides a possibility to create one based on its core code by configuring <<validationPolicy>> and other corresponding constraints. Please also note that https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/home[DSS Demonstration Webapp] merely provides a live demonstration of available functionalities within DSS framework, but not an end-to-end signature creation or validation tool.
+
+|all versions              a|Parallel signature breaks existing enveloped XAdES signature     a|If the existing XAdES signature contains _"http://www.w3.org/2000/09/xmldsig#enveloped-signature"_ transform, then the parallel signing is not allowed. To be able to create parallel enveloped signatures, you should use another transform such as XPath or XPath Filter 2.0 transform. By default, DSS already uses XPath Transform 2.0 for enveloped signatures, thus allowing parallel signing.
+
+|all versions              a|When I move enveloped XAdES signature to another XML (e.g. to a SOAP envelope), it becomes invalid       a|Enveloped XAdES signature covers the whole content of a parent XML document. Therefore, a change of the signature's envelope may result to a signature invalidity. To avoid it, create signature within the target XML document or use another signature packaging (e.g. enveloping).
+
+|all versions              a|XAdES signature became invalid after pretty-printing while I use canonicalization       a|Canonicalization does not normalize whitespace and new line characters occurring between XML nodes. Therefore pretty-printing should be avoided after signature creation. To create a pretty-printed signature with DSS, you may use the following signature parameter:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBPropertiesTest.java[tags=prettyPrint]
+----
 
 |all versions              a|PAdES validation without sending the document       a|PAdES format *requires a complete document* to perform a signature validation. You cannot validate a PDF signature as a DETACHED XAdES or CAdES. +
-                                                                                   The only possible way to perform the *cryptographic signature validation* is to extract the embedded CMS signature and the covered range as a detached document. But the validation result will not be able to conclude it as a valid PAdES nor CAdES.
+                                                                                   The only possible way to perform the *cryptographic signature validation* is to extract the embedded CMS signature and the covered range as a detached document. However the validation result will not be able to conclude it as a valid PAdES nor CAdES Baseline.
 
-|all versions              a|When validating a PDF with embedded CAdES-BASELINE signature the returned format is PDF_NOT_ETSI       a|PAdES-BASELINE format establishes some limitations on the embedded CMS signature, which are not compliant with CAdES-BASELINE signatures. Therefore, *it is not possible* to have a valid PAdES-BASELINE profile with embedded CAdES-BASELINE signature. For more information about supported CMS please see <<R03>>.
+|all versions              a|When validating a PDF with embedded `CAdES-BASELINE` signature the returned format is `PDF_NOT_ETSI`       a|`PAdES-BASELINE` format establishes some limitations on the embedded CMS signature, which are not compliant with `CAdES-BASELINE` signatures. Therefore, *it is not possible* to have a valid `PAdES-BASELINE` profile with embedded `CAdES-BASELINE` signature. For more information about supported CMS please see <<R03>>.
+
+|all versions              a|How to add multiple visual signature fields on PDF signing?       a|This functionality is not supported by DSS. Adding multiple signature fields associated with a signle signature value contradicts ISO 32000-1 and therefore not recomended for interoperability reasons. The only valid choice is to sign a document multiple times.
+
+|all versions              a|DSS returns `SIG_CRYPTO_FAILURE` for a PDF signature while Adobe validates the signature succesfully       a|DSS performs a PDF signature validation according to ETSI EN 319 142-1 (cf. <<R03>>) and ISO 32000-1 (cf. <<R06>>), enforcing the defined rules, while other PDF-readers may ease some requirements concerning the structure of a PDF document or a CMS signature. Please verify our https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[Jira] for similar issues or create a new one to request a document verification unless you do not find a similar case.
+
+|all versions              a|DSS successfully validates a PDF signature, while another PDF reader complains that the document's content has been modified.       a|Validation of document modifications is not standardized, therefore the produced results may differ between different validation tools. DSS does it best to detect malisious modifications occurred after signature revision (see <<ShadowAttackDetection>> and <<ObjectModificationDetection>> for more detail). Regardless of the obtained result, an error or a warning received after visual document content comparison should only be considered as a hint, and it is always recommended to manually verify the differencies between signed and final document revisions in order to decide whether the change is acceptable or not.
+
+|all versions              a|DSS breaks PDF/A conformance on a signature creation       a|DSS does not claim compliance of produced documents to a PDF/A format. The goal of DSS is to ensure conformance to AdES signature format for created signatures. We do our best to keep conformity of PDF/A documents after signing, but we do not take any liability on this matter.
+
+|all versions              a|A signature-time-stamp embedded within CMS of the second PDF signature does not provide a POE for the first PDF signature      a|DSS recognizes timestamps as per ETSI EN 319 142-1 (cf. <<R03>>). The standard defines the following timestamps to be related to a signature: a signature-time-stamp embedded within signature's CMS Signed Data and a document timestamp covering the signature in its ByteRange explicitly. All other POE or timestamps covering a signature in indirect way are not considered as a POE during the AdES signature validation process.
+
+|all versions              a|DSS produces an error "The algorithm *** is no longer considered reliable" and/or returns `INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE` indication.        a|DSS aligns its validation policy according to the latest available edition of the ETSI TS 119 312 (cf. <<R20>>). The standard provides a prospective validity of the cryptographic suites that may change based on evolution of the modern cryptography. Therefore, it is always advisable to use the up-to-date version of DSS aligned with the latest edition of the specification, as well as be aware of changes in the standard. Should you need to update the cryptographic constraints within your own validation policy, please refer to the section <<defaultXmlPolicy>> providing an up-to-date validation constraints (see `<Cryptographic>` element for cryptographic algorithms policy) and instructions how to use a modified <<validationPolicy>>. When using a default validation policy, the DSS version upgrade is sufficient.
+
+|all versions              a|I receive an error "Received fatal alert: protocol_version" on GET/POST request or during TL Validation Job      a|The error means the SSL protocol used to establish the connection by the client is not supported by the server or vice versa. Before version `5.11.1` (included) DSS enforced SSL protocol `TLSv1.2` for all connections by default. Starting from version `5.12` DSS does not set the default protocol version, thus using the protocol defined within JDK or system properties used by signing application. Therefore, it is advisable to use the up-to-date version of JDK ensuring the support of newest protocols. In case an explicit configuration is required, the following property may be used to enforce a specific version of SSL protocol and/or a list of supported protocols, e.g. for `TLSv1.3`:
+
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=data-loader-tls-v3]
+----
+
+|all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===
 

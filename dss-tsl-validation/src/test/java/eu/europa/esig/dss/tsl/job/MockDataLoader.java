@@ -53,6 +53,7 @@ public class MockDataLoader implements DataLoader {
 	}
 
 	@Override
+	@Deprecated
 	public byte[] get(String url, boolean refresh) {
 		// TODO Auto-generated method stub
 		return null;

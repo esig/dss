@@ -35,6 +35,7 @@ public class TLExpirationDetection implements AlertDetector<TLInfo> {
 	 * Default constructor
 	 */
 	public TLExpirationDetection() {
+		// empty
 	}
 
 	@Override

@@ -57,7 +57,6 @@ public class OnlineCRLSourceTest {
 	@BeforeAll
 	public static void init() {
 		dataLoader = new CommonsDataLoader();
-		dataLoader.setTimeoutConnection(60000);
 
 		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
 		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
@@ -70,6 +69,7 @@ public class OnlineCRLSourceTest {
 
 	@BeforeEach
 	public void beforeEach() {
+		dataLoader.setTimeoutResponse(60000);
 		onlineCRLSource = new OnlineCRLSource(dataLoader);
 	}
 	
@@ -89,6 +89,7 @@ public class OnlineCRLSourceTest {
 
 		revocationToken = onlineCRLSource.getRevocationToken(ed25519goodCa, ed25519RootCa);
 		assertNotNull(revocationToken);
+		assertTrue(revocationToken.isSignatureIntact());
 		assertTrue(revocationToken.isValid());
 		assertEquals(SignatureAlgorithm.ED25519, revocationToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, revocationToken.getSignatureValidity());
@@ -114,14 +115,12 @@ public class OnlineCRLSourceTest {
 	
 	@Test
 	public void timeoutTest() {
-		dataLoader.setTimeoutConnection(1);
+		dataLoader.setTimeoutResponse(1);
 		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodUser, goodCa, Arrays.asList(wrong_url, alternative_url));
 		assertNull(revocationToken);
 		
 		revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Arrays.asList(wrong_url, alternative_url));
 		assertNull(revocationToken);
-
-		dataLoader.setTimeoutConnection(60000);
 	}
 
 	@Test

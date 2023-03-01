@@ -33,6 +33,7 @@ public class TradeNamePredicate implements Predicate<String> {
 	 * Default constructor instantiating OfficialRegistrationIdentifierPredicate
 	 */
 	public TradeNamePredicate() {
+		// empty
 	}
 
 	@Override

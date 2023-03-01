@@ -23,14 +23,17 @@ package eu.europa.esig.dss.service.x509.aia;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+import eu.europa.esig.dss.spi.client.jdbc.query.SqlQuery;
+import eu.europa.esig.dss.spi.client.jdbc.query.SqlSelectQuery;
+import eu.europa.esig.dss.spi.client.jdbc.record.SqlRecord;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.aia.RepositoryAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,75 +53,54 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     /**
      * Used in the init method to check if the table exists
      */
-    private static final String SQL_INIT_CHECK_EXISTENCE = "SELECT COUNT(*) FROM AIA_CERTIFICATES";
+    private static final SqlQuery SQL_INIT_CHECK_EXISTENCE = SqlQuery.createQuery("SELECT COUNT(*) FROM AIA_CERTIFICATES");
 
     /**
      * Used in the init method to create the table, if not existing:
      * ID (char40 = unique cert+aia Id), AIA url key (char40 = SHA1 length) and DATA (blob)
      */
-    private static final String SQL_INIT_CREATE_TABLE = "CREATE TABLE AIA_CERTIFICATES (ID CHAR(40), AIA CHAR(40), DATA BLOB)";
-
-    /**
-     * Used in the find method to select a certificate via the ID
-     */
-    private static final String SQL_FIND_QUERY = "SELECT * FROM AIA_CERTIFICATES WHERE AIA = ?";
-
-    /**
-     * Used in the find method when selecting a certificate via the ID to get
-     * the ID (char40) from the resultset
-     */
-    private static final String SQL_FIND_QUERY_ID = "ID";
-
-    /**
-     * Used in the find method when selecting a certificate via the AIA key to get
-     * the ID (char40) from the resultset
-     */
-    private static final String SQL_FIND_QUERY_AIA = "AIA";
-
-    /**
-     * Used in the find method when selecting the certificate via the ID to get
-     * the DATA (blob) from the resultset
-     */
-    private static final String SQL_FIND_QUERY_DATA = "DATA";
-
-    /**
-     * Used via the find method to insert a new record
-     */
-    private static final String SQL_FIND_INSERT = "INSERT INTO AIA_CERTIFICATES (ID, AIA, DATA) VALUES (?, ?, ?)";
-
-    /**
-     * Used via the find method to remove an existing record by the id
-     */
-    private static final String SQL_FIND_REMOVE = "DELETE FROM AIA_CERTIFICATES WHERE AIA = ?";
+    private static final SqlQuery SQL_INIT_CREATE_TABLE = SqlQuery.createQuery("CREATE TABLE AIA_CERTIFICATES (ID CHAR(40), AIA CHAR(40), DATA BLOB)");
 
     /**
      * Used to drop the cache table
      */
-    private static final String SQL_DROP_TABLE = "DROP TABLE AIA_CERTIFICATES";
+    private static final SqlQuery SQL_DROP_TABLE = SqlQuery.createQuery("DROP TABLE AIA_CERTIFICATES");
 
     /**
-     * Extracts all unique AIA keys from the table
+     * Used via the find method to insert a new record
      */
-    private static final String SQL_DISTINCT_AIA_KEYS_QUERY = "SELECT DISTINCT AIA FROM AIA_CERTIFICATES";
+    private static final SqlQuery SQL_FIND_INSERT = SqlQuery.createQuery("INSERT INTO AIA_CERTIFICATES (ID, AIA, DATA) VALUES (?, ?, ?)");
 
     /**
-     * A list of requests to extract the certificates by
+     * Used via the find method to remove an existing record by the id
      */
-    private static List<JdbcCacheConnector.JdbcResultRequest> findCertificatesRequests;
+    private static final SqlQuery SQL_FIND_REMOVE = SqlQuery.createQuery("DELETE FROM AIA_CERTIFICATES WHERE AIA = ?");
 
     /**
-     * A list of requests to extract AIA keys
+     * Requests to extract AIA certificates
      */
-    private static List<JdbcCacheConnector.JdbcResultRequest> findAIAKeysRequests;
+    private static final SqlSelectQuery SQL_FIND_QUERY = new SqlSelectQuery("SELECT * FROM AIA_CERTIFICATES WHERE AIA = ?") {
+        @Override
+        public SqlAIAResponse getRecord(ResultSet rs) throws SQLException {
+            SqlAIAResponse response = new SqlAIAResponse();
+            response.id = rs.getString("ID");
+            response.aiaKey = rs.getString("AIA");
+            response.certificateBinary = rs.getBytes("DATA");
+            return response;
+        }
+    };
 
-    static {
-        findCertificatesRequests = new ArrayList<>();
-        findCertificatesRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_AIA, String.class));
-        findCertificatesRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_DATA, byte[].class));
-
-        findAIAKeysRequests = new ArrayList<>();
-        findAIAKeysRequests.add(new JdbcCacheConnector.JdbcResultRequest(SQL_FIND_QUERY_AIA, String.class));
-    }
+    /**
+     * Requests to extract AIA keys
+     */
+    private static final SqlSelectQuery SQL_DISTINCT_AIA_KEYS_QUERY = new SqlSelectQuery("SELECT DISTINCT AIA FROM AIA_CERTIFICATES") {
+        @Override
+        public SqlAIAResponse getRecord(ResultSet rs) throws SQLException {
+            SqlAIAResponse response = new SqlAIAResponse();
+            response.aiaKey = rs.getString("AIA");
+            return response;
+        }
+    };
 
     /**
      * Connection to database
@@ -141,18 +123,81 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
         this.jdbcCacheConnector = jdbcCacheConnector;
     }
 
+    /**
+     * Returns CREATE_TABLE sql query
+     *
+     * @return {@link SqlQuery}
+     */
+    protected SqlQuery getCreateTableQuery() {
+        return SQL_INIT_CREATE_TABLE;
+    }
+
+    /**
+     * Returns an sql query to check table existence
+     *
+     * @return {@link SqlQuery}
+     */
+    protected SqlQuery getTableExistenceQuery() {
+        return SQL_INIT_CHECK_EXISTENCE;
+    }
+
+    /**
+     * Returns an sql query to remove a table from DB
+     *
+     * @return {@link SqlQuery}
+     */
+    protected SqlQuery getDeleteTableQuery() {
+        return SQL_DROP_TABLE;
+    }
+
+    /**
+     * Returns an SQL query to insert a new CRL to a table
+     *
+     * @return {@link SqlQuery}
+     */
+    protected SqlQuery getInsertCertificateTokenEntryQuery() {
+        return SQL_FIND_INSERT;
+    }
+
+    /**
+     * Returns an sql query to remove a record from DB
+     *
+     * @return {@link SqlQuery}
+     */
+    protected SqlQuery getRemoveCertificateTokenEntryQuery() {
+        return SQL_FIND_REMOVE;
+    }
+
+    /**
+     * Returns an SQL query to extract AIA certificates from a table
+     *
+     * @return {@link SqlSelectQuery}
+     */
+    protected SqlSelectQuery getAIACertificatesExtractQuery() {
+        return SQL_FIND_QUERY;
+    }
+
+    /**
+     * Returns an SQL query to extract stored AIA keys in a table
+     *
+     * @return {@link SqlSelectQuery}
+     */
+    protected SqlSelectQuery getAIAKeysExtractQuery() {
+        return SQL_DISTINCT_AIA_KEYS_QUERY;
+    }
+
     @Override
     protected Set<CertificateToken> findCertificates(final String key) {
-        Collection<JdbcCacheConnector.JdbcResultRecord> records = jdbcCacheConnector.select(
-                SQL_FIND_QUERY, findCertificatesRequests, key);
+        Collection<SqlRecord> records = jdbcCacheConnector.select(getAIACertificatesExtractQuery(), key);
         return buildCertificatesFromResult(records);
     }
 
-    private Set<CertificateToken> buildCertificatesFromResult(Collection<JdbcCacheConnector.JdbcResultRecord> records) {
+    private Set<CertificateToken> buildCertificatesFromResult(Collection<SqlRecord> records) {
         try {
             Set<CertificateToken> certificateTokens = new LinkedHashSet<>();
-            for (JdbcCacheConnector.JdbcResultRecord resultRecord : records) {
-                byte[] binaries = (byte[]) resultRecord.get(SQL_FIND_QUERY_DATA);
+            for (SqlRecord resultRecord : records) {
+                final SqlAIAResponse aiaResponse = (SqlAIAResponse) resultRecord;
+                byte[] binaries = aiaResponse.certificateBinary;
                 if (Utils.isArrayNotEmpty(binaries)) {
                     CertificateToken certificateToken = DSSUtils.loadCertificate(binaries);
                     if (certificateToken != null) {
@@ -172,7 +217,7 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     protected void insertCertificates(final String aiaUrl, final Collection<CertificateToken> certificateTokens) {
         if (Utils.isCollectionNotEmpty(certificateTokens)) {
             for (CertificateToken certificate : certificateTokens) {
-                jdbcCacheConnector.execute(SQL_FIND_INSERT, getUniqueCertificateAiaId(certificate, aiaUrl),
+                jdbcCacheConnector.execute(getInsertCertificateTokenEntryQuery(), getUniqueCertificateAiaId(certificate, aiaUrl),
                         getAiaUrlIdentifier(aiaUrl), certificate.getEncoded());
                 LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificate.getDSSIdAsString());
             }
@@ -189,14 +234,14 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
 
     @Override
     protected void removeCertificates(String aiaKey) {
-        jdbcCacheConnector.execute(SQL_FIND_REMOVE, aiaKey);
+        jdbcCacheConnector.execute(getRemoveCertificateTokenEntryQuery(), aiaKey);
         LOG.debug("Certificate tokens with AIA key '{}' successfully removed from DB", aiaKey);
     }
 
     @Override
     protected List<String> getExistingAIAKeys() {
-        Collection<JdbcCacheConnector.JdbcResultRecord> result = jdbcCacheConnector.select(SQL_DISTINCT_AIA_KEYS_QUERY, findAIAKeysRequests);
-        return result.stream().map(r -> (String) r.get(SQL_FIND_QUERY_AIA)).collect(Collectors.toList());
+        Collection<SqlRecord> result = jdbcCacheConnector.select(getAIAKeysExtractQuery());
+        return result.stream().map(r -> ((SqlAIAResponse) r).aiaKey).collect(Collectors.toList());
     }
 
     /**
@@ -221,11 +266,11 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
      * @return TRUE if the table is created, FALSE otherwise
      */
     public boolean isTableExists() {
-        return jdbcCacheConnector.tableQuery(SQL_INIT_CHECK_EXISTENCE);
+        return jdbcCacheConnector.tableQuery(getTableExistenceQuery());
     }
 
     private void createTable() throws SQLException {
-        jdbcCacheConnector.executeThrowable(SQL_INIT_CREATE_TABLE);
+        jdbcCacheConnector.executeThrowable(getCreateTableQuery());
     }
 
     /**
@@ -245,7 +290,30 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
     }
 
     private void dropTable() throws SQLException {
-        jdbcCacheConnector.executeThrowable(SQL_DROP_TABLE);
+        jdbcCacheConnector.executeThrowable(getDeleteTableQuery());
+    }
+
+    /**
+     * Represents an AIA record extracted from the SQL database table
+     */
+    protected static class SqlAIAResponse implements SqlRecord {
+
+        /** ID of the record */
+        protected String id;
+
+        /** AIA internal key */
+        protected String aiaKey;
+
+        /** Certificate binaries */
+        protected byte[] certificateBinary;
+
+        /**
+         * Default constructor
+         */
+        protected SqlAIAResponse() {
+            // empty
+        }
+
     }
 
 }

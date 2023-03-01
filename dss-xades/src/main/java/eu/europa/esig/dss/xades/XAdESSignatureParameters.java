@@ -25,8 +25,6 @@ import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
@@ -225,9 +223,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedInfoCanonicalizationMethod(final String signedInfoCanonicalizationMethod) {
-		if (Utils.isStringEmpty(signedInfoCanonicalizationMethod)) {
-			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
-		}
+		assertCanonicalizationNotEmpty(signedInfoCanonicalizationMethod);
 		this.signedInfoCanonicalizationMethod = signedInfoCanonicalizationMethod;
 	}
 
@@ -247,9 +243,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 *            the canonicalization algorithm to be used when dealing with SignedInfo.
 	 */
 	public void setSignedPropertiesCanonicalizationMethod(final String signedPropertiesCanonicalizationMethod) {
-		if (Utils.isStringEmpty(signedPropertiesCanonicalizationMethod)) {
-			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
-		}
+		assertCanonicalizationNotEmpty(signedPropertiesCanonicalizationMethod);
 		this.signedPropertiesCanonicalizationMethod = signedPropertiesCanonicalizationMethod;
 	}
 	
@@ -268,10 +262,14 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @param keyInfoCanonicalizationMethod - name of the canonicalization algorithm for dealing with KeyInfo.
 	 */
 	public void setKeyInfoCanonicalizationMethod(final String keyInfoCanonicalizationMethod) {
-		if (Utils.isStringEmpty(keyInfoCanonicalizationMethod)) {
+		assertCanonicalizationNotEmpty(keyInfoCanonicalizationMethod);
+		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
+	}
+
+	private static void assertCanonicalizationNotEmpty(String canonicalizationMethod) {
+		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			throw new IllegalArgumentException("Canonicalization cannot be empty! See EN 319 132-1: 3.1.2 Signature Generation.");
 		}
-		this.keyInfoCanonicalizationMethod = keyInfoCanonicalizationMethod;
 	}
 	
 	/**
@@ -373,22 +371,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	public void setRootDocument(Document rootDocument) {
 		this.rootDocument = rootDocument;
-	}
-
-	/**
-	 * The ID of xades:SignedProperties is contained in the signed content of the
-	 * xades Signature. We must create this ID in a deterministic way.
-	 *
-	 * @return the unique ID for the current signature
-	 */
-	public String getDeterministicId() {
-		String deterministicId = getContext().getDeterministicId();
-		if (deterministicId == null) {
-			final TokenIdentifier identifier = (getSigningCertificate() == null ? null : getSigningCertificate().getDSSId());
-			deterministicId = DSSUtils.getDeterministicId(bLevel().getSigningDate(), identifier);
-			getContext().setDeterministicId(deterministicId);
-		}
-		return deterministicId;
 	}
 
 	/**

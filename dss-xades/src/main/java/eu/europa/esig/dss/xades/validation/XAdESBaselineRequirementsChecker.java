@@ -448,7 +448,8 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      */
     public boolean hasExtendedCProfile() {
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
-        boolean allSelfSigned = certificateSources.isAllSelfSigned();
+        boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
+        boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
 
         Element signatureElement = signature.getSignatureElement();
         XAdESPaths xadesPaths = signature.getXAdESPaths();

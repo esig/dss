@@ -1,0 +1,23 @@
+[source,http,options="nowrap"]
+----
+HTTP/1.1 200 OK
+Date: Mon, 06 Feb 2023 07:49:53 GMT
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Security-Policy: default-src 'self' http://localhost:9795 'unsafe-inline' data:;
+Server: ESIG-DSS
+Content-Type: application/json
+Transfer-Encoding: chunked
+Keep-Alive: timeout=20
+Connection: keep-alive
+Content-Length: 408
+
+{
+  "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
+  "value" : "VjpLuMMBXB42o9U2JBEwAAjxom5GFZf+QE4D1X9inifaoDnYBk4qr/9G9rZT0ofCnO08CrIHm82BjQHX7X5KaCRFJpLpUlH+QOPPCyTQHhv+XvXciopz/H444iTBxPJhE0qR9hqY0B7Vgb4DtfAim85RqwMQlGlUTn8lfsqT8WDqHm9tenh4/xL/OMuL1V0aQsN8h4+hfds1RWY2PHuE9nBat2dBeG3EPGevDEMdPxpUSSNUx2mb8KJDyBM3YosUlcVuVqqJYyDZgBkSua8aD0jES+EIB7KMFGKyGk21gW9hdUTS6AoaVCIMEJAeHjClDDNEzCDXsZwSbFljDlM94w=="
+}
+----

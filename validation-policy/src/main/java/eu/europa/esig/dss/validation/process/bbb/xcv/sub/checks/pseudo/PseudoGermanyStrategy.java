@@ -39,6 +39,7 @@ public class PseudoGermanyStrategy implements PseudoStrategy {
 	 * Default constructor
 	 */
 	public PseudoGermanyStrategy() {
+		// empty
 	}
 
 	@Override

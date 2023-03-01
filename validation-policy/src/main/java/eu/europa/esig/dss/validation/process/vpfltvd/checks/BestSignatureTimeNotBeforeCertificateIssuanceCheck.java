@@ -37,9 +37,10 @@ import java.util.Date;
  * certificate, the process shall return the indication FAILED with the
  * sub-indication NOT_YET_VALID. Otherwise, the process shall return the
  * indication and sub-indication which was returned by previous step.
- * 
- * {@code currentIndication} and {@code currentSubIndication} shall be null when
+ * NOTE: {@code currentIndication} and {@code currentSubIndication} shall be null when
  * return of original result is not required
+ *
+ * @param <T> implementation of the block's conclusion
  */
 public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

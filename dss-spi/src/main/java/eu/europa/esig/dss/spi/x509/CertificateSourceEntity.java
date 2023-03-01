@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.model.identifier.EntityIdentifier;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 
 /**
  * This class re-groups equivalent certificates.
@@ -60,6 +59,11 @@ class CertificateSourceEntity implements Serializable {
 	 */
 	private final Set<CertificateToken> equivalentCertificates = new HashSet<>();
 
+	/**
+	 * Default constructor
+	 *
+	 * @param initialCert {@link CertificateToken} to instantiate certificate source intity with
+	 */
 	CertificateSourceEntity(CertificateToken initialCert) {
 		identifier = initialCert.getEntityKey();
 		ski = DSSASN1Utils.computeSkiFromCert(initialCert);
@@ -77,6 +81,18 @@ class CertificateSourceEntity implements Serializable {
 				LOG.warn("Token {} is skipped", token.getAbbreviation());
 			} else {
 				equivalentCertificates.add(token);
+			}
+		}
+	}
+
+	void removeEquivalentCertificate(CertificateToken token) {
+		if (equivalentCertificates.contains(token)) {
+			if (equivalentCertificates.size() == 1) {
+				LOG.warn("Only one token found in the pool. Empty pool is not allowed. " +
+						"Removing of token {} is skipped.", token.getAbbreviation());
+			} else {
+				LOG.trace("Removing certificate from the pool : {}", token.getAbbreviation());
+				equivalentCertificates.remove(token);
 			}
 		}
 	}

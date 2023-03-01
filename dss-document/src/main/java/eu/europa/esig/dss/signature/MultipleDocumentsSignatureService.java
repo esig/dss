@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import java.io.Serializable;
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -31,10 +28,15 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * This interface {@code MultipleDocumentsSignatureService} provides operations for the signature creation and for its
  * extension.
  *
+ * @param <SP> implementation of signature parameters corresponding to the supported signature format
+ * @param <TP> implementation of timestamp parameters corresponding to the supported document format
  */
 public interface MultipleDocumentsSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters> extends Serializable {
 

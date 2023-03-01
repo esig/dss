@@ -37,6 +37,7 @@ public class LogOJUrlChangeAlertHandler implements AlertHandler<LOTLInfo> {
 	 * Default constructor
 	 */
 	public LogOJUrlChangeAlertHandler() {
+		// empty
 	}
 
 	@Override

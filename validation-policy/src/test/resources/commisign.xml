@@ -66,13 +66,6 @@
          <SerialNumber>18</SerialNumber>
          <CommonName>C - 2</CommonName>
          <OrganizationName>European Commission</OrganizationName>
-         <AuthorityInformationAccessUrls>
-            <aiaUrl>http://hide.eu/info/aia/RootCA.crt</aiaUrl>
-         </AuthorityInformationAccessUrls>
-         <CRLDistributionPoints>
-            <crlUrl>http://hide.eu/info/crl/RootCA.arl</crlUrl>
-         </CRLDistributionPoints>
-         <OCSPAccessUrls/>
          <Sources>
          	<Source>TRUSTED_LIST</Source>
          </Sources>
@@ -81,12 +74,6 @@
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</EntityKey>
-         <KeyUsageBits>
-            <KeyUsage>keyCertSign</KeyUsage>
-            <KeyUsage>crlSign</KeyUsage>
-         </KeyUsageBits>
-         <ExtendedKeyUsages/>
-         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -100,10 +87,23 @@
          </CertificateChain>
          <Trusted>true</Trusted>
          <SelfSigned>false</SelfSigned>
-         <CertificatePolicies>
-            <certificatePolicy Description="normalized-certificate-policy">0.4.0.2042.1.1</certificatePolicy>
-            <certificatePolicy cpsUrl="https://hide.eu/info/cp/">1.3.130.2.1.1</certificatePolicy>
-         </CertificatePolicies>
+         <CertificateExtensions>
+            <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+            <KeyUsages OID="2.5.29.15" critical="true">
+               <keyUsageBit>keyCertSign</keyUsageBit>
+               <keyUsageBit>crlSign</keyUsageBit>
+            </KeyUsages>
+            <CertificatePolicies OID="2.5.29.32" critical="true">
+               <certificatePolicy Description="normalized-certificate-policy">0.4.0.2042.1.1</certificatePolicy>
+               <certificatePolicy cpsUrl="https://hide.eu/info/cp/">1.3.130.2.1.1</certificatePolicy>
+            </CertificatePolicies>
+            <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+               <caIssuersUrl>http://hide.eu/info/aia/RootCA.crt</caIssuersUrl>
+            </AuthorityInformationAccess>
+            <CRLDistributionPoints OID="2.5.29.31" critical="false">
+               <crlUrl>http://hide.eu/info/crl/RootCA.arl</crlUrl>
+            </CRLDistributionPoints>
+         </CertificateExtensions>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
@@ -131,9 +131,6 @@
          <IssuerDistinguishedName Format="RFC2253">CN=C - 2,O=European Commission</IssuerDistinguishedName>
          <SerialNumber>1195</SerialNumber>
          <CommonName>ocsp2-C-prod</CommonName>
-         <AuthorityInformationAccessUrls/>
-         <CRLDistributionPoints/>
-         <OCSPAccessUrls/>
          <Sources>
          	<Source>OCSP_RESPONSE</Source>
          </Sources>
@@ -142,13 +139,6 @@
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E3A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8</EntityKey>
-         <KeyUsageBits>
-            <KeyUsage>digitalSignature</KeyUsage>
-         </KeyUsageBits>
-         <ExtendedKeyUsages>
-            <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-         </ExtendedKeyUsages>
-         <IdPkixOcspNoCheck>true</IdPkixOcspNoCheck>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -162,7 +152,15 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <CertificatePolicies/>
+         <CertificateExtensions>
+            <KeyUsages OID="2.5.29.15" critical="true">
+               <keyUsageBit>digitalSignature</keyUsageBit>
+            </KeyUsages>
+            <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+               <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+            <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+         </CertificateExtensions>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
@@ -192,9 +190,6 @@
          <IssuerDistinguishedName Format="RFC2253">CN=European Commission Root CA - 2</IssuerDistinguishedName>
          <SerialNumber>1</SerialNumber>
          <CommonName>European Commission Root CA - 2</CommonName>
-         <AuthorityInformationAccessUrls/>
-         <CRLDistributionPoints/>
-         <OCSPAccessUrls/>
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
@@ -203,12 +198,6 @@
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA</EntityKey>
-         <KeyUsageBits>
-            <KeyUsage>keyCertSign</KeyUsage>
-            <KeyUsage>crlSign</KeyUsage>
-         </KeyUsageBits>
-         <ExtendedKeyUsages/>
-         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -218,9 +207,16 @@
          </BasicSignature>
          <Trusted>false</Trusted>
          <SelfSigned>true</SelfSigned>
-         <CertificatePolicies>
-            <certificatePolicy>2.5.29.32.0</certificatePolicy>
-         </CertificatePolicies>
+         <CertificateExtensions>
+            <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+            <KeyUsages OID="2.5.29.15" critical="true">
+               <keyUsageBit>keyCertSign</keyUsageBit>
+               <keyUsageBit>crlSign</keyUsageBit>
+            </KeyUsages>
+            <CertificatePolicies OID="2.5.29.32" critical="true">
+               <certificatePolicy>2.5.29.32.0</certificatePolicy>
+            </CertificatePolicies>
+         </CertificateExtensions>
          <TrustedServiceProviders/>
          <Revocations/>
          <DigestAlgoAndValue>
@@ -237,15 +233,6 @@
          <CommonName>R A</CommonName>
          <OrganizationName>European Commission</OrganizationName>
          <Email>A.R@ext.ec.europa.eu</Email>
-         <AuthorityInformationAccessUrls>
-            <aiaUrl>http://hide.eu/info/aia/onlineCA.crt</aiaUrl>
-         </AuthorityInformationAccessUrls>
-         <CRLDistributionPoints>
-            <crlUrl>http://hide.eu/info/crl/onlineCA.crl</crlUrl>
-         </CRLDistributionPoints>
-         <OCSPAccessUrls>
-            <ocspServerUrl>http://hide.eu/ocsp</ocspServerUrl>
-         </OCSPAccessUrls>
          <Sources>
          	<Source>UNKNOWN</Source>
          </Sources>
@@ -254,14 +241,6 @@
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CA</EntityKey>
-         <KeyUsageBits>
-            <KeyUsage>nonRepudiation</KeyUsage>
-            <KeyUsage>digitalSignature</KeyUsage>
-         </KeyUsageBits>
-         <ExtendedKeyUsages>
-            <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-         </ExtendedKeyUsages>
-         <IdPkixOcspNoCheck>false</IdPkixOcspNoCheck>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -275,7 +254,22 @@
          </CertificateChain>
          <Trusted>false</Trusted>
          <SelfSigned>false</SelfSigned>
-         <CertificatePolicies/>
+         <CertificateExtensions>
+            <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+               <caIssuersUrl>http://hide.eu/info/aia/onlineCA.crt</caIssuersUrl>
+               <ocspUrl>http://hide.eu/ocsp</ocspUrl>
+            </AuthorityInformationAccess>
+            <CRLDistributionPoints OID="2.5.29.31" critical="false">
+               <crlUrl>http://hide.eu/info/crl/onlineCA.crl</crlUrl>
+            </CRLDistributionPoints>
+            <KeyUsages OID="2.5.29.15" critical="true">
+               <keyUsageBit>nonRepudiation</keyUsageBit>
+               <keyUsageBit>digitalSignature</keyUsageBit>
+            </KeyUsages>
+            <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+               <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+            </ExtendedKeyUsages>
+         </CertificateExtensions>
          <TrustedServiceProviders>
                 <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
@@ -323,6 +317,18 @@
             <ChainItem Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8"/>
             <ChainItem Certificate="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672"/>
          </CertificateChain>
+         <FoundCertificates>
+            <RelatedCertificate Certificate="C-43A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8">
+               <Origin>BASIC_OCSP_RESP</Origin>
+               <CertificateRef>
+                  <Origin>SIGNING_CERTIFICATE</Origin>
+                  <DigestAlgoAndValue>
+                     <DigestMethod>SHA256</DigestMethod>
+                     <DigestValue>ewC5U78HlNMPIzbA5GGnuwtGlOE=</DigestValue>
+                  </DigestAlgoAndValue>
+               </CertificateRef>
+            </RelatedCertificate>
+         </FoundCertificates>
          <DigestAlgoAndValue>
             <DigestMethod>SHA1</DigestMethod>
             <DigestValue>6Gy3VRznvktjj8L+mKoO68KKjVY=</DigestValue>

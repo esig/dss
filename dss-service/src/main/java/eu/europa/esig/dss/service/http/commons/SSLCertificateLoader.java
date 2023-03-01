@@ -28,12 +28,15 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpResponseInterceptor;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http.protocol.HttpCoreContext;
 import org.slf4j.Logger;
@@ -68,6 +71,7 @@ public class SSLCertificateLoader implements Serializable {
 	 * Default constructor with null CommonsDataLoader
 	 */
 	public SSLCertificateLoader() {
+		// empty
 	}
 
 	/**
@@ -104,25 +108,26 @@ public class SSLCertificateLoader implements Serializable {
 
     private Certificate[] httpGetCertificates(final String url) throws DSSException {
     	HttpGet httpRequest = null;
-		CloseableHttpResponse httpResponse = null;
 		CloseableHttpClient client = null;
 		
+		final CommonsDataLoader dataLoader = getCommonsDataLoader();
 		try {
-			httpRequest = getCommonsDataLoader().getHttpRequest(url);
+			httpRequest = dataLoader.getHttpRequest(url);
 			client = getHttpClient(url);
 
-			final HttpHost targetHost = getCommonsDataLoader().getHttpHost(httpRequest);
-			final HttpContext localContext = getCommonsDataLoader().getHttpContext();
-			httpResponse = client.execute(targetHost, httpRequest, localContext);
+			final HttpHost targetHost = dataLoader.getHttpHost(httpRequest);
+			final HttpContext localContext = dataLoader.getHttpContext(targetHost);
+			final NoSenseHttpClientResponseHandler httpClientResponseHandler = new NoSenseHttpClientResponseHandler();
+			client.execute(targetHost, httpRequest, localContext, httpClientResponseHandler);
 
 			return readCertificates(localContext);
 
 		} catch (Exception e) {
-			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
+			throw new DSSExternalResourceException(String.format("Unable to process GET call for url [%s]. " +
+					"Reason : [%s]", url, DSSUtils.getExceptionMessage(e)), e);
 		
 		} finally {
-			getCommonsDataLoader().closeQuietly(httpRequest, httpResponse, client);
-		
+			dataLoader.closeQuietly(httpRequest, client);
 		}
     }
     
@@ -167,5 +172,23 @@ public class SSLCertificateLoader implements Serializable {
 
 		};
 	}
+
+	/**
+	 * This class consumes the {@code ClassicHttpResponse} but does not process or return any content.
+	 * It is used to quickly process a response without a need to extract any data.
+	 */
+	private static class NoSenseHttpClientResponseHandler implements HttpClientResponseHandler<byte[]> {
+
+		@Override
+		public byte[] handleResponse(ClassicHttpResponse classicHttpResponse) throws HttpException, IOException {
+			if (classicHttpResponse != null) {
+				EntityUtils.consumeQuietly(classicHttpResponse.getEntity());
+				Utils.closeQuietly(classicHttpResponse);
+			}
+			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
+
+	}
+
 
 }

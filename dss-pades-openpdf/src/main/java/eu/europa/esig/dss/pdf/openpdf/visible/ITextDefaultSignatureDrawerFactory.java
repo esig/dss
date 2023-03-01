@@ -33,6 +33,7 @@ public class ITextDefaultSignatureDrawerFactory implements ITextSignatureDrawerF
 	 * Default constructor
 	 */
 	public ITextDefaultSignatureDrawerFactory() {
+		// empty
 	}
 
 	@Override

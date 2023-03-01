@@ -37,8 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestExtension {
 
-    private static final String SELF_SIGNED_TSA = "self-signed-tsa";
-
     private CertificateVerifier certificateVerifier;
     private XAdESService service;
 
@@ -66,7 +64,7 @@ public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestE
     @Override
     protected TSPSource getUsedTSPSourceAtSignatureTime() {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(getSigningCert().getNotAfter());
         calendar.add(Calendar.MONTH, -6);
         Date tstTime = calendar.getTime();
         return getOnlineTSPSourceByNameAndTime(SELF_SIGNED_TSA, tstTime);

@@ -67,6 +67,7 @@ public class POEExtraction {
 	 * Default constructor initializing an empty map
 	 */
 	public POEExtraction() {
+		// empty
 	}
 
 	/**
@@ -82,7 +83,7 @@ public class POEExtraction {
 		for (SignatureWrapper signature : diagnosticData.getAllSignatures()) {
 			addPOE(signature.getId(), controlTimePoe);
 		}
-		for (TimestampWrapper timestamp : diagnosticData.getTimestampSet()) {
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			addPOE(timestamp.getId(), controlTimePoe);
 		}
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {

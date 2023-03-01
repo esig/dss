@@ -60,5 +60,4 @@ public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceU
     protected String getMRAEnactedTrustServiceLegalIdentifier() {
         return "QCForESig";
     }
-
 }

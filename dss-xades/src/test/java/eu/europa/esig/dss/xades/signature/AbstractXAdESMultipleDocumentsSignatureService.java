@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.MimeType;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -30,7 +31,7 @@ public abstract class AbstractXAdESMultipleDocumentsSignatureService extends Abs
 
 	@Override
 	protected MimeType getExpectedMime() {
-		return MimeType.XML;
+		return MimeTypeEnum.XML;
 	}
 
 	@Override

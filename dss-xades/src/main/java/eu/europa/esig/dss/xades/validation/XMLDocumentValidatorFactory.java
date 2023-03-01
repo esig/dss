@@ -33,6 +33,7 @@ public class XMLDocumentValidatorFactory implements DocumentValidatorFactory {
 	 * Default constructor
 	 */
 	public XMLDocumentValidatorFactory() {
+		// empty
 	}
 
 	@Override

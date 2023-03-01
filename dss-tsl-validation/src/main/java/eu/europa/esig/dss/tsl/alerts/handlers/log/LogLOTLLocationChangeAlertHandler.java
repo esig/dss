@@ -40,6 +40,7 @@ public class LogLOTLLocationChangeAlertHandler implements AlertHandler<LOTLInfo>
 	 * Default constructor
 	 */
 	public LogLOTLLocationChangeAlertHandler() {
+		// empty
 	}
 
 	@Override

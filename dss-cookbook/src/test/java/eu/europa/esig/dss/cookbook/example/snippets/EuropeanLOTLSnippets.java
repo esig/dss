@@ -224,4 +224,15 @@ public class EuropeanLOTLSnippets {
 	}
 	// end::complete-european-lotl-config[]
 
+	public CommonsDataLoader dataLoaderWithTLSv3() {
+		// tag::data-loader-tls-v3[]
+		CommonsDataLoader dataLoader = new CommonsDataLoader();
+		// enforce TLSv1.3 as a default SSL protocol
+		dataLoader.setSslProtocol("TLSv1.3");
+		// add supported SSL protocols (to be used by the server you establish connection with)
+		dataLoader.setSupportedSSLProtocols(new String[] { "TLSv1.2", "TLSv1.3" });
+		// end::data-loader-tls-v3[]
+		return dataLoader;
+	}
+
 }

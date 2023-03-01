@@ -38,7 +38,7 @@ public class ProxyProperties implements Serializable {
 	/** The user to use */
 	private String user;
 	/** The password to use */
-	private String password;
+	private char[] password;
 	/** The host connection scheme */
 	private String scheme;
 	/** Defines a list of hosts (URLs) to be excluded from the proxy configuration */
@@ -48,6 +48,7 @@ public class ProxyProperties implements Serializable {
 	 * Default constructor with null values
 	 */
 	public ProxyProperties() {
+		// empty
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class ProxyProperties implements Serializable {
 	 * 
 	 * @return the proxy password
 	 */
-	public String getPassword() {
+	public char[] getPassword() {
 		return password;
 	}
 
@@ -121,8 +122,20 @@ public class ProxyProperties implements Serializable {
 	 * 
 	 * @param password
 	 *            the password to use
+	 * @deprecated since DSS 5.12. Use {@code #setPassword(char[] password)}
 	 */
+	@Deprecated
 	public void setPassword(String password) {
+		this.password = password != null ? password.toCharArray() : null;
+	}
+
+	/**
+	 * Set the proxy password
+	 *
+	 * @param password
+	 *            the password to use
+	 */
+	public void setPassword(char[] password) {
 		this.password = password;
 	}
 

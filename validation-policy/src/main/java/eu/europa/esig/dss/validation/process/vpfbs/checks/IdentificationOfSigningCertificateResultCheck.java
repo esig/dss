@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the identification of the signing certificate (as per clause 5.2.3) succeeded
  *
+ * @param <T> implementation of the block's conclusion
  */
 public class IdentificationOfSigningCertificateResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

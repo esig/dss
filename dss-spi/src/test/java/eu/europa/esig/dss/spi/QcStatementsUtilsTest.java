@@ -23,10 +23,10 @@ package eu.europa.esig.dss.spi;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.SemanticsIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.PSD2QcType;
-import eu.europa.esig.dss.model.x509.QCLimitValue;
-import eu.europa.esig.dss.model.x509.QcStatements;
-import eu.europa.esig.dss.model.x509.RoleOfPSP;
+import eu.europa.esig.dss.model.x509.extension.PSD2QcType;
+import eu.europa.esig.dss.model.x509.extension.QCLimitValue;
+import eu.europa.esig.dss.model.x509.extension.QcStatements;
+import eu.europa.esig.dss.model.x509.extension.RoleOfPSP;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERSequence;
@@ -58,8 +58,18 @@ public class QcStatementsUtilsTest {
         assertNull(qcStatements.getQcSemanticsIdentifier());
         assertNull(qcStatements.getQcLimitValue());
         assertNull(qcStatements.getQcEuRetentionPeriod());
+
         assertEquals(2, qcStatements.getQcEuPDS().size());
+        assertEquals("https://www.ica.cz/Zpravy-pro-uzivatele", qcStatements.getQcEuPDS().get(0).getUrl());
+        assertEquals("cs", qcStatements.getQcEuPDS().get(0).getLanguage());
+        assertEquals("https://www.ica.cz/PDS", qcStatements.getQcEuPDS().get(1).getUrl());
+        assertEquals("en", qcStatements.getQcEuPDS().get(1).getLanguage());
+
         assertEquals(1, qcStatements.getQcTypes().size());
+        assertEquals(QCTypeEnum.QCT_WEB, qcStatements.getQcTypes().get(0));
+        assertEquals("0.4.0.1862.1.6.3", qcStatements.getQcTypes().get(0).getOid());
+        assertEquals("qc-type-web", qcStatements.getQcTypes().get(0).getDescription());
+
         assertTrue(qcStatements.getQcTypes().contains(QCTypeEnum.QCT_WEB));
         PSD2QcType psd2QcType = qcStatements.getPsd2QcType();
         assertNotNull(psd2QcType);
@@ -123,15 +133,24 @@ public class QcStatementsUtilsTest {
 
         PSD2QcType psd2QcType = qcStatements.getPsd2QcType();
         assertNotNull(psd2QcType);
+
         List<RoleOfPSP> rolesOfPSP = psd2QcType.getRolesOfPSP();
-        assertNotNull(rolesOfPSP);
+        assertEquals(4, rolesOfPSP.size());
         for (RoleOfPSP roleOfPSP : rolesOfPSP) {
             assertNotNull(roleOfPSP);
             assertNotNull(roleOfPSP.getPspOid());
+
+            assertNotNull(roleOfPSP.getPspOid().getOid());
+            assertTrue(roleOfPSP.getPspOid().getOid().contains("0.4.0.19495.1."));
+
+            assertNotNull(roleOfPSP.getPspOid().getDescription());
+            assertTrue(roleOfPSP.getPspOid().getDescription().contains("psp-"));
+
             assertNotNull(roleOfPSP.getPspName());
+            assertTrue(roleOfPSP.getPspName().contains("PSP_"));
         }
-        assertNotNull(psd2QcType.getNcaName());
-        assertNotNull(psd2QcType.getNcaId());
+        assertEquals("Czech National Bank", psd2QcType.getNcaName());
+        assertEquals("CZ-CNB", psd2QcType.getNcaId());
     }
 
     @Test

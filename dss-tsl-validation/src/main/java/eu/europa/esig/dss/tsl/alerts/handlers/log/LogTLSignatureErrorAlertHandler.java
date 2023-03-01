@@ -37,6 +37,7 @@ public class LogTLSignatureErrorAlertHandler implements AlertHandler<TLInfo> {
 	 * Default constructor
 	 */
 	public LogTLSignatureErrorAlertHandler() {
+		// empty
 	}
 
 	@Override

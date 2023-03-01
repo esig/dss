@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -45,6 +36,14 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
 	
@@ -97,6 +96,7 @@ public class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
 
 		params = new PAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		params.setIncludeVRIDictionary(true); // include VRI for testing
 		DSSDocument ltaDocument = service.extendDocument(doubleSignedDocument, params);
 
 		validator = SignedDocumentValidator.fromDocument(ltaDocument);

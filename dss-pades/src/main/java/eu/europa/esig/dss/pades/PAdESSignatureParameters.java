@@ -99,7 +99,7 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	/**
 	 * Password used to encrypt a PDF
 	 */
-	private String passwordProtection;
+	private char[] passwordProtection;
 
 	/**
 	 * The time-zone used for signature creation
@@ -107,6 +107,14 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 * Default: TimeZone.getDefault()
 	 */
 	private TimeZone signingTimeZone = TimeZone.getDefault();
+
+	/**
+	 * Defines whether the VRI dictionary should be included to a PAdES signature on extension within
+	 * its LT-level revision (DSS-revision)
+	 *
+	 * Default: FALSE (VRI dictionary is not included)
+	 */
+	private boolean includeVRIDictionary;
 
 	/**
 	 * Default constructor instantiating object with default parameters
@@ -298,17 +306,28 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 		this.permission = permission;
 	}
 
-	@Override
-	public String getPasswordProtection() {
-		return passwordProtection;
-	}
-
 	/**
 	 * Sets a password string
 	 * 
 	 * @param passwordProtection {@link String} password to set
+	 * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(passwordProtection.toCharArray())}
 	 */
+	@Deprecated
 	public void setPasswordProtection(String passwordProtection) {
+		this.passwordProtection = passwordProtection != null ? passwordProtection.toCharArray() : null;
+	}
+
+	@Override
+	public char[] getPasswordProtection() {
+		return passwordProtection;
+	}
+
+	/**
+	 * Sets password to the document
+	 *
+	 * @param passwordProtection char array representing a password of the document
+	 */
+	public void setPasswordProtection(char[] passwordProtection) {
 		this.passwordProtection = passwordProtection;
 	}
 
@@ -336,6 +355,27 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	 */
 	public TimeZone getSigningTimeZone() {
 		return signingTimeZone;
+	}
+
+	/**
+	 * Returns whether the VRI dictionary should be included to the PAdES Signature on extension within
+	 * LT-level revision (DSS revision)
+	 *
+	 * @return whether the corresponding VRI dictionary should be included on signature extension
+	 */
+	public boolean isIncludeVRIDictionary() {
+		return includeVRIDictionary;
+	}
+
+	/**
+	 * Sets whether corresponding VRI dictionary should be included to the PAdES signature on extension to LT-level
+	 *
+	 * Default: FALSE (VRI dictionary is not included to PAdES signature)
+	 *
+	 * @param includeVRIDictionary whether corresponding VRI dictionary should be included to the PAdES signature on extension
+	 */
+	public void setIncludeVRIDictionary(boolean includeVRIDictionary) {
+		this.includeVRIDictionary = includeVRIDictionary;
 	}
 
 	@Override

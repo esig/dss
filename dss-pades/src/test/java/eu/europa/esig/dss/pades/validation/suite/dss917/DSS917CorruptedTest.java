@@ -20,17 +20,21 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.dss917;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 
@@ -52,6 +56,39 @@ public class DSS917CorruptedTest extends AbstractPAdESTestValidation {
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		assertFalse(allSignatures.get(0).isBLevelTechnicallyValid());
 		assertTrue(allSignatures.get(1).isBLevelTechnicallyValid());
+	}
+
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		int validByteRangeSigCounter = 0;
+		int invalidByteRangeSigCounter = 0;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
+			assertNotNull(pdfRevision);
+			assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
+
+			if (pdfRevision.isSignatureByteRangeValid()) {
+				assertTrue(pdfRevision.isPdfSignatureDictionaryConsistent());
+				++validByteRangeSigCounter;
+			} else {
+				assertFalse(pdfRevision.isPdfSignatureDictionaryConsistent());
+				++invalidByteRangeSigCounter;
+			}
+
+			assertFalse(signatureWrapper.arePdfModificationsDetected());
+			assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+		}
+		assertEquals(1, validByteRangeSigCounter);
+		assertEquals(1, invalidByteRangeSigCounter);
+	}
+
+	@Override
+	protected void checkByteRange(PDFRevisionWrapper pdfRevision) {
+		// skip
+	}
+
+	protected void checkPdfSignatureDictionary(XmlPDFSignatureDictionary pdfSignatureDictionary) {
+		// skip
 	}
 
 }

@@ -553,6 +553,8 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		jsonWebAlgorithms.put("PS256", RSA_SSA_PSS_SHA256_MGF1);
 		jsonWebAlgorithms.put("PS384", RSA_SSA_PSS_SHA384_MGF1);
 		jsonWebAlgorithms.put("PS512", RSA_SSA_PSS_SHA512_MGF1);
+
+		jsonWebAlgorithms.put("EdDSA", ED25519);
 	
 		return jsonWebAlgorithms;
 	}
@@ -563,6 +565,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 			jsonWebAlgorithms.put(entry.getValue(), entry.getKey());
 			ensurePlainECDSA(jsonWebAlgorithms, entry.getValue(), entry.getKey());
 		}
+		jsonWebAlgorithms.put(SignatureAlgorithm.ED448, "EdDSA");
 		return jsonWebAlgorithms;
 	}
 
