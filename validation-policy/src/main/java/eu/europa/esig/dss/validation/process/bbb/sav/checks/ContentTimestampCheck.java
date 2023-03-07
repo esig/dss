@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Checks if a content timestamp is present
  */
-public class ContentTimestampCheck extends ChainItem<XmlSAV> {
+public class ContentTimeStampCheck extends ChainItem<XmlSAV> {
 
 	/** The signature to check */
 	private final SignatureWrapper signature;
@@ -48,7 +48,7 @@ public class ContentTimestampCheck extends ChainItem<XmlSAV> {
 	 * @param signature {@link SignatureWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public ContentTimestampCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+	public ContentTimeStampCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
 								 LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
@@ -57,13 +57,11 @@ public class ContentTimestampCheck extends ChainItem<XmlSAV> {
 	@Override
 	protected boolean process() {
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
-
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (timestampWrapper.getType().isContentTimestamp()) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
