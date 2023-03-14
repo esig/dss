@@ -40,14 +40,16 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
-import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AcceptableBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
@@ -55,6 +57,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.MessageImprintDige
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
+import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -90,6 +93,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	/** The POE container */
 	private final POEExtraction poe = new POEExtraction();
 
+	/** Current validation context */
+	private Context context;
+
 	/**
 	 * Default constructor
 	 *
@@ -123,10 +129,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	@Override
 	protected void initChain() {
 
-		Context currentContext = Context.SIGNATURE;
-		if (signature.isCounterSignature()) {
-			currentContext = Context.COUNTER_SIGNATURE;
-		}
+		context = signature.isCounterSignature() ? Context.COUNTER_SIGNATURE : Context.SIGNATURE;
 
 		/*
 		 * 5.6.3.4
@@ -164,10 +167,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 */
 		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
 		result.setProofOfExistence(validationProcessLongTermData.getProofOfExistence());
-
-		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
-			return;
-		}
 
 		/*
 		 * NOTE 5: Steps 4) and 5) below are not part of the validation process per se,
@@ -242,6 +241,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 									timestampValidation.getConclusion(), poe, currentTime, policy, Context.TIMESTAMP);
 							XmlPSV psvResult = psv.execute();
 							bbbTsp.setPSV(psvResult);
+
+							latestConclusion = psvResult.getConclusion();
+
 							enrichBBBWithPSVConclusion(bbbTsp, psvResult);
 
 							item = item.setNextItem(pastTimestampValidation(newestTimestamp, psvResult));
@@ -268,14 +270,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * - If no specific constraints mandating the validity of the attribute are specified in the
 					 * validation constraints, the SVA shall ignore the attribute and shall continue with step 5 using
 					 * the next timestamp attribute.
+					 * - Otherwise, the process shall fail with the returned indication/sub-indication and associated
+					 * explanations.
 					 */
-				}
-				
-				/*
-				 * - Otherwise, the process shall fail with the returned indication/sub-indication and associated
-				 * explanations.
-				 */
-				else { // timestampValidation is null
+
+				} else { // timestampValidation is null
 					result.setConclusion(latestConclusion);
 					break;
 				}
@@ -288,6 +287,23 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			
 		}
 
+		/*
+		 * Performs optional checks allowing to fail validation process in case of a missing timestamp
+		 */
+		item = item.setNextItem(tLevelTimeStamp());
+
+		item = item.setNextItem(ltaLevelTimeStamp());
+
+		/*
+		 * Return successful indication
+		 */
+		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
+			return;
+		}
+
+		/*
+		 * best-signature-time definition
+		 */
 		POE bestSignatureTime = poe.getLowestPOE(signature.getId());
 		result.setProofOfExistence(toXmlProofOfExistence(bestSignatureTime));
 
@@ -306,7 +322,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 */
 		XmlBasicBuildingBlocks sigBBB = bbbs.get(signature.getId());
 		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs,
-				validationProcessLongTermData.getConclusion(), poe, currentTime, policy, currentContext);
+				validationProcessLongTermData.getConclusion(), poe, currentTime, policy, context);
 		XmlPSV psvResult = psv.execute();
 		sigBBB.setPSV(psvResult);
 		enrichBBBWithPSVConclusion(sigBBB, psvResult);
@@ -330,7 +346,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * not be rechecked.
 		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step.
 		 */
-		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), currentContext));
+		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), context));
 
 		/*
 		 * 9) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation
@@ -358,7 +374,15 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private ChainItem<XmlValidationProcessArchivalData> timestampBasicSignatureValidationAcceptable(
 			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
 		return new AcceptableBasicTimestampValidationCheck(i18nProvider, result, timestampWrapper,
-				timestampValidationResult, getWarnLevelConstraint());
+				timestampValidationResult, getTimestampValidationConstraintLevel());
+	}
+
+	private LevelConstraint getTimestampValidationConstraintLevel() {
+		LevelConstraint constraint = policy.getTimeStampValidationConstraint(context);
+		if (constraint == null) {
+			constraint = getWarnLevelConstraint();
+		}
+		return constraint;
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampBasicSignatureValidationConclusive(
@@ -368,7 +392,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {
-		return new PastTimestampValidationCheck(i18nProvider, result, timestamp, xmlPSV, getWarnLevelConstraint());
+		return new PastTimestampValidationCheck(i18nProvider, result, timestamp, xmlPSV, getTimestampValidationConstraintLevel());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> messageImprintDigestAlgorithm(
@@ -379,6 +403,16 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampMessageImprint(TimestampWrapper timestampWrapper) {
 		return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessArchivalData> tLevelTimeStamp() {
+		LevelConstraint constraint = policy.getTLevelTimeStampConstraint(context);
+		return new TLevelTimeStampCheck(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private ChainItem<XmlValidationProcessArchivalData> ltaLevelTimeStamp() {
+		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
+		return new LTALevelTimeStampCheck(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
@@ -434,9 +468,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType()) ||
-				XmlBlockType.TST_PSV.equals(constraint.getBlockType())) {
-			// skip validation for TSTs
+		if ((XmlBlockType.TST_BBB.equals(constraint.getBlockType()) || XmlBlockType.TST_PSV.equals(constraint.getBlockType())) &&
+				policy.getTimeStampValidationConstraint(context) == null) {
+			// skip propagating of validation messages for TSTs in default processing
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

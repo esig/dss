@@ -14,7 +14,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  * This class verifies a presence of a time-stamp token in a signature of the given time-stamp type
  *
  */
-public abstract class AbstractTimeStampCheck extends ChainItem<XmlSAV> {
+public abstract class AbstractTimeStampTypeCheck extends ChainItem<XmlSAV> {
 
     /** The signature to check */
     private final SignatureWrapper signature;
@@ -27,8 +27,8 @@ public abstract class AbstractTimeStampCheck extends ChainItem<XmlSAV> {
      * @param signature {@link SignatureWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public AbstractTimeStampCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
-                                  LevelConstraint constraint) {
+    public AbstractTimeStampTypeCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+                                      LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.signature = signature;
     }

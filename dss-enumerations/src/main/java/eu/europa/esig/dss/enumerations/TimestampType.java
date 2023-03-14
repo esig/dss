@@ -130,7 +130,7 @@ public enum TimestampType {
 	 * Must be in the order: Content - Signature - ValidationData - Archival
 	 * 
 	 * @param timestampType {@link TimestampType} to compare with
-	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
+	 * @return TRUE if this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
 	 */
 	public int compare(TimestampType timestampType) {
 		return order.compareTo(timestampType.order);

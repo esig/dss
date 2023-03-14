@@ -11,7 +11,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * Checks if an archive-time-stamp attribute is present
  *
  */
-public class ArchiveTimeStampCheck extends AbstractTimeStampCheck {
+public class ArchiveTimeStampCheck extends AbstractTimeStampTypeCheck {
 
     /**
      * Default constructor

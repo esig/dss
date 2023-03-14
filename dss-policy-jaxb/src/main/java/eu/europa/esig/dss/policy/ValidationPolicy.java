@@ -1063,6 +1063,33 @@ public interface ValidationPolicy {
 	LevelConstraint getDocumentTimeStampConstraint(Context context);
 
 	/**
+	 * Returns whether the time-stamp is valid (passed either basic signature validation process or past signature validation).
+	 * If TimeStampValidation element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if TimeStampValidation element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimeStampValidationConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: signature-time-stamp or document timestamp
+	 * If TLevelTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if TLevelTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTLevelTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: archive-time-stamp or document timestamp covering the validation data
+	 * If LTALevelTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if LTALevelTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getLTALevelTimeStampConstraint(Context context);
+
+	/**
 	 * Returns SignatureFormat constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}

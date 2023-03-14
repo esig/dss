@@ -11,7 +11,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * Checks if a signature-time-stamp attribute is present
  *
  */
-public class SignatureTimeStampCheck extends AbstractTimeStampCheck {
+public class SignatureTimeStampCheck extends AbstractTimeStampTypeCheck {
 
     /**
      * Default constructor

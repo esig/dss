@@ -11,7 +11,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * Checks if a validation-data-refs-only-time-stamp attribute is present
  *
  */
-public class ValidationDataRefsOnlyTimeStampCheck extends AbstractTimeStampCheck {
+public class ValidationDataRefsOnlyTimeStampCheck extends AbstractTimeStampTypeCheck {
 
     /**
      * Default constructor

@@ -11,7 +11,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
  * Checks if a document-time-stamp is present
  *
  */
-public class DocumentTimeStampCheck extends AbstractTimeStampCheck {
+public class DocumentTimeStampCheck extends AbstractTimeStampTypeCheck {
 
     /**
      * Default constructor

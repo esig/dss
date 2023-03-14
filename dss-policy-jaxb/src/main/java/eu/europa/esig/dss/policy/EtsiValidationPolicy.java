@@ -329,6 +329,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTimeStampValidationConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getTimeStampValidation();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLevelTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getTLevelTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getLTALevelTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getLTALevelTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
 	public ValueConstraint getContentHintsConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {

@@ -64,6 +64,7 @@ public class ValidationProcessUtils {
 	 * Empty constructor
 	 */
 	private ValidationProcessUtils() {
+		// empty
 	}
 	
 	/**
@@ -449,7 +450,6 @@ public class ValidationProcessUtils {
 				throw new IllegalArgumentException("Unsupported context " + context);
 		}
 	}
-
 
 	/**
 	 * Returns the message tag for the given subContext
