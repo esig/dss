@@ -278,20 +278,6 @@ public class TimestampToken extends Token {
 	public TimestampOCSPSource getOCSPSource() {
 		return ocspSource;
 	}
-	
-	/**
-	 * Indicated if the signature is intact and the message-imprint matches the computed message-imprint.
-	 *
-	 * NOTE: The method isSignedBy(CertificateToken) must be called before calling the method.
-	 *       See {@code TimestampToken.isSignatureIntact()} for more details
-	 *
-	 * @return TRUE if the signature is cryptographically intact and message-imprint matches, FALSE otherwise
-	 * @deprecated since DSS 5.12. Use {@code #isValid} method instead.
-	 */
-	@Deprecated
-	public boolean isSignatureValid() {
-		return isValid();
-	}
 
 	/**
 	 * Indicated if the signature is intact and the message-imprint matches the computed message-imprint.

@@ -53,17 +53,6 @@ public class PdfSignatureCache implements Serializable {
     }
 
     /**
-     * Gets digest of the ByteRange
-     *
-     * @return byte array representing digest value
-     * @deprecated since 5.12. Use {@code byte[] digest = getMessageDigest().getValue()}
-     */
-    @Deprecated
-    public byte[] getDigest() {
-        return getMessageDigest().getValue();
-    }
-
-    /**
      * Gets message-digest computed in the prepared PDF revision ByteRange
      *
      * @return {@link DSSMessageDigest}

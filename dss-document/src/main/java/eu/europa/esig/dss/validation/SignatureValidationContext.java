@@ -1025,21 +1025,6 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	@Deprecated
-	public boolean checkAllCertificatesValid() {
-		TokenStatus status = new TokenStatus();
-		for (CertificateToken certificateToken : processedCertificates) {
-			checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()), status);
-		}
-		boolean success = status.isEmpty();
-		if (!success) {
-			status.setMessage("Revoked/Suspended certificate(s) detected.");
-			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
-		}
-		return success;
-	}
-
-	@Override
 	public boolean checkCertificateNotRevoked(CertificateToken certificateToken) {
 		TokenStatus status = new TokenStatus();
 		checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()), status);

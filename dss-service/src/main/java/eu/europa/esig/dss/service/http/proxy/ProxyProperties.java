@@ -119,18 +119,6 @@ public class ProxyProperties implements Serializable {
 
 	/**
 	 * Set the proxy password
-	 * 
-	 * @param password
-	 *            the password to use
-	 * @deprecated since DSS 5.12. Use {@code #setPassword(char[] password)}
-	 */
-	@Deprecated
-	public void setPassword(String password) {
-		this.password = password != null ? password.toCharArray() : null;
-	}
-
-	/**
-	 * Set the proxy password
 	 *
 	 * @param password
 	 *            the password to use

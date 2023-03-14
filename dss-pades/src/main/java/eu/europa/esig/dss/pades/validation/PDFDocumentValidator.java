@@ -108,17 +108,6 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
     /**
      * Specify the used password for the encrypted document
      *
-     * @param pwd the used password
-     * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(pwd.toCharArray())}
-     */
-    @Deprecated
-    public void setPasswordProtection(String pwd) {
-        this.passwordProtection = pwd != null ? pwd.toCharArray(): null;
-    }
-
-    /**
-     * Specify the used password for the encrypted document
-     *
      * @param passwordProtection the used password
      */
     public void setPasswordProtection(char[] passwordProtection) {

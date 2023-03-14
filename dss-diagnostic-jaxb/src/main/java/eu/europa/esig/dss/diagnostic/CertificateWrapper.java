@@ -675,17 +675,6 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * Returns the Authority Information Access URLs
 	 *
 	 * @return a list of {@link String}s
-	 * @deprecated since DSS 5.12. Use {@code #getCAIssuersAccessUrls} method instead.
-	 */
-	@Deprecated
-	public List<String> getAuthorityInformationAccessUrls() {
-		return getCAIssuersAccessUrls();
-	}
-
-	/**
-	 * Returns the Authority Information Access URLs
-	 *
-	 * @return a list of {@link String}s
 	 */
 	public List<String> getCAIssuersAccessUrls() {
 		XmlAuthorityInformationAccess authorityInformationAccess = getXmlAuthorityInformationAccess();

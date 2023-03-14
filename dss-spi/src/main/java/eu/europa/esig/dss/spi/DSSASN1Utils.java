@@ -27,13 +27,6 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
-import eu.europa.esig.dss.model.x509.extension.AuthorityKeyIdentifier;
-import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
-import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
-import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
-import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
-import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
-import eu.europa.esig.dss.model.x509.extension.ValidityAssuredShortTerm;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
@@ -49,13 +42,11 @@ import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERBitString;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -71,19 +62,11 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
-import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.CRLDistPoint;
-import org.bouncycastle.asn1.x509.DistributionPoint;
-import org.bouncycastle.asn1.x509.DistributionPointName;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.Time;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -545,128 +528,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Indicates if the revocation data should be checked for an OCSP signing certificate.<br>
-	 * http://www.ietf.org/rfc/rfc2560.txt?number=2560<br>
-	 * A CA may specify that an OCSP client can trust a responder for the lifetime of the responder's certificate. The
-	 * CA does so by including the extension id-pkix-ocsp-nocheck. This SHOULD be a non-critical extension. The value of
-	 * the extension should be NULL.
-	 *
-	 * @param token
-	 *            the certificate to be checked
-	 * @return true if the certificate has the id_pkix_ocsp_nocheck extension
-	 * @deprecated since DSS 5.12. Use {@code CertificateExtensionsUtils.hasOcspNoCheckExtension(token)}
-	 */
-	@Deprecated
-	public static boolean hasIdPkixOcspNoCheckExtension(CertificateToken token) {
-		OCSPNoCheck ocspNoCheck = CertificateExtensionsUtils.getOcspNoCheck(token);
-		return ocspNoCheck != null && ocspNoCheck.isOcspNoCheck();
-	}
-
-	/**
-	 * This extension indicates that the validity of the certificate is assured because
-	 * the certificate is a "short-term certificate". That is, the time as indicated in
-	 * the certificate attribute from notBefore through notAfter, inclusive, is shorter
-	 * than the maximum time to process a revocation request as specified by
-	 * the certificate practice statement or certificate policy.
-	 *
-	 * @param token
-	 *            the certificate to be checked
-	 * @return true if the certificate has the id-etsi-ext-valassured-ST-certs extension
-	 * @deprecated since DSS 5.12. Use {@code CertificateExtensionsUtils.hasValAssuredShortTermCertsExtension(token)}
-	 */
-	@Deprecated
-	public static boolean hasValAssuredShortTermCertsExtension(CertificateToken token) {
-		ValidityAssuredShortTerm valAssuredSTCerts = CertificateExtensionsUtils.getValAssuredSTCerts(token);
-		return valAssuredSTCerts != null && valAssuredSTCerts.isValAssuredSTCerts();
-	}
-
-	/**
-	 * Retrieves a list of {@code CertificatePolicy}s from a certificate token
-	 *
-	 * @param certToken {@link CertificateToken}
-	 * @return a list of {@code CertificatePolicy}s
-	 * @deprecated since DSS 5.12. Use
-	 * 		{@code
-	 * 				CertificatePolicies certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(certToken);
-	 * 				List<CertificatePolicy> result = certificatePolicies != null ? certificatePolicies.getPolicyList() : Collections.emptyList();
-	 * 		}
-	 */
-	@Deprecated
-	public static List<CertificatePolicy> getCertificatePolicies(final CertificateToken certToken) {
-		CertificatePolicies certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(certToken);
-		return certificatePolicies != null ? certificatePolicies.getPolicyList() : Collections.emptyList();
-	}
-
-	/**
-	 * This method returns authority key identifier as binaries from the certificate
-	 * extension (SHA-1 of the public key of the issuer certificate).
-	 *
-	 * @param certificateToken the {@code CertificateToken}
-	 * @return authority key identifier bytes from the given certificate (can be
-	 *         null if the certificate is self-signed)
-	 * @deprecated since DSS 5.12. Use
-	 * 		{@code
-	 * 				AuthorityKeyIdentifier authorityKeyIdentifier = CertificateExtensionsUtils.getAuthorityKeyIdentifier(certificateToken);
-	 * 				byte[] aki = authorityKeyIdentifier != null ? authorityKeyIdentifier.getKeyIdentifier() : null;
-	 * 		}
-	 */
-	@Deprecated
-	public static byte[] getAuthorityKeyIdentifier(CertificateToken certificateToken) {
-		AuthorityKeyIdentifier authorityKeyIdentifier = CertificateExtensionsUtils.getAuthorityKeyIdentifier(certificateToken);
-		return authorityKeyIdentifier != null ? authorityKeyIdentifier.getKeyIdentifier() : null;
-	}
-
-	/**
-	 * This method returns the Subject Key Identifier (SKI) bytes from the
-	 * certificate extension (SHA-1 of the public key of the current certificate).
-	 *
-	 * @param certificateToken
-	 *                         the {@code CertificateToken}
-	 * @return ski bytes from the given certificate or null if missing
-	 * @deprecated since DSS 5.12. Use
-	 * 			{@code
-	 * 					SubjectKeyIdentifier subjectKeyIdentifier = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken);
-	 * 					byte[] ski = subjectKeyIdentifier != null ? subjectKeyIdentifier.getSki() : null;
-	 * 			}
-	 */
-	@Deprecated
-	public static byte[] getSki(final CertificateToken certificateToken) {
-		return getSki(certificateToken, false);
-	}
-
-	/**
-	 * This method returns SKI bytes from certificate.
-	 *
-	 * @param certificateToken
-	 *            {@code CertificateToken}
-	 * @param computeIfMissing
-	 *            if the extension is missing and computeIfMissing = true, it will compute the SKI value from the Public
-	 *            Key
-	 * @return ski bytes from the given certificate
-	 * @deprecated since DSS 5.12. Use
-	 * 			{@code
-	 * 					byte[] ski = null;
-	 * 					SubjectKeyIdentifier subjectKeyIdentifier = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken);
-	 * 					if (subjectKeyIdentifier != null) {
-	 * 						ski = subjectKeyIdentifier.getSki();
-	 *      			} else if (computeIfMissing) {
-	 * 						ski = computeSkiFromCert(certificateToken);
-	 *      			}
-	 * 			}
-	 */
-	@Deprecated
-	public static byte[] getSki(final CertificateToken certificateToken, boolean computeIfMissing) {
-		SubjectKeyIdentifier subjectKeyIdentifier = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken);
-		if (subjectKeyIdentifier != null) {
-			return subjectKeyIdentifier.getSki();
-		} else if (computeIfMissing) {
-			// If extension not present, we compute it from the certificate public key
-			return computeSkiFromCert(certificateToken);
-		}
-		return null;
-	}
-
-	/**
 	 * Computes SHA-1 hash of the {@code certificateToken}'s public key
 	 * 
 	 * @param certificateToken
@@ -703,162 +564,6 @@ public final class DSSASN1Utils {
 	public static boolean isSkiEqual(final byte[] ski, final CertificateToken certificateToken) {
 		byte[] certSki = computeSkiFromCert(certificateToken);
         return Arrays.equals(certSki, ski);
-	}
-
-	/**
-	 * Gives back the CA URIs meta-data found within the given certificate.
-	 *
-	 * @param certificate
-	 *            the certificate token.
-	 * @return a list of CA URIs, or empty list if the extension is not present.
-	 * @deprecated since DSS 5.12. Use {@code CertificateExtensionsUtils.getCAIssuersAccessUrls(certificate)}
-	 */
-	@Deprecated
-	public static List<String> getCAAccessLocations(final CertificateToken certificate) {
-		return CertificateExtensionsUtils.getCAIssuersAccessUrls(certificate);
-	}
-
-	/**
-	 * Gives back the OCSP URIs meta-data found within the given X509 cert.
-	 *
-	 * @param certificate
-	 *            the cert token.
-	 * @return a list of OCSP URIs, or empty list if the extension is not present.
-	 * @deprecated since DSS 5.12. Use {@code CertificateExtensionsUtils.getOCSPAccessUrls(certificate)}
-	 */
-	@Deprecated
-	public static List<String> getOCSPAccessLocations(final CertificateToken certificate) {
-		return getAccessLocations(certificate, X509ObjectIdentifiers.id_ad_ocsp);
-	}
-
-	private static List<String> getAccessLocations(final CertificateToken certificate, ASN1ObjectIdentifier aiaType) {
-		List<String> locationsUrls = new ArrayList<>();
-		final byte[] authInfoAccessExtensionValue = certificate.getCertificate().getExtensionValue(Extension.authorityInfoAccess.getId());
-		if (null == authInfoAccessExtensionValue) {
-			return locationsUrls;
-		}
-
-		try {
-			ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(authInfoAccessExtensionValue);
-			if (asn1Sequence == null || asn1Sequence.size() == 0) {
-				LOG.warn("Empty ASN1Sequence for AuthorityInformationAccess");
-				return locationsUrls;
-			}
-			AuthorityInformationAccess authorityInformationAccess = AuthorityInformationAccess.getInstance(asn1Sequence);
-			AccessDescription[] accessDescriptions = authorityInformationAccess.getAccessDescriptions();
-			for (AccessDescription accessDescription : accessDescriptions) {
-				if (aiaType.equals(accessDescription.getAccessMethod())) {
-					GeneralName gn = accessDescription.getAccessLocation();
-					String location = parseGn(gn);
-					if (location != null) {
-						locationsUrls.add(location);
-					}
-				}
-			}
-		} catch (Exception e) {
-			LOG.warn("Unable to parse authorityInfoAccess", e);
-		}
-		return locationsUrls;
-	}
-
-	/**
-	 * Gives back the {@code List} of CRL URI meta-data found within the given X509 certificate.
-	 *
-	 * @param certificateToken
-	 *            the cert token certificate
-	 * @return the {@code List} of CRL URI, or empty list if the extension is not present
-	 * @deprecated since DSS 5.12. Use {@code CertificateExtensionsUtils.getCRLAccessUrls(certificateToken)}
-	 */
-	@Deprecated
-	public static List<String> getCrlUrls(final CertificateToken certificateToken) {
-		final List<String> urls = new ArrayList<>();
-
-		final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(Extension.cRLDistributionPoints.getId());
-		if (crlDistributionPointsBytes != null) {
-			try {
-				final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
-				final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
-				final DistributionPoint[] distributionPoints = distPoint.getDistributionPoints();
-				for (final DistributionPoint distributionPoint : distributionPoints) {
-
-					final DistributionPointName distributionPointName = distributionPoint.getDistributionPoint();
-					if (DistributionPointName.FULL_NAME != distributionPointName.getType()) {
-						continue;
-					}
-					final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
-					final GeneralName[] names = generalNames.getNames();
-					for (final GeneralName name : names) {
-						String location = parseGn(name);
-						if (location != null) {
-							urls.add(location);
-						}
-					}
-				}
-			} catch (Exception e) {
-				LOG.warn("Unable to parse cRLDistributionPoints", e);
-			}
-		}
-
-		return urls;
-	}
-
-	private static String parseGn(GeneralName gn) {
-		try {
-			if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
-				ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getBaseObject();
-				return str.getString();
-			}
-		} catch (Exception e) {
-			LOG.warn("Unable to parse GN '{}'", gn, e);
-		}
-		return null;
-	}
-
-	/**
-	 * Indicates that a X509Certificates corresponding private key is used by an authority to sign OCSP-Responses.<br>
-	 * <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280</a> <br>
-	 * <a href="http://tools.ietf.org/pdf/rfc6960.pdf">RFC 6960</a> 4.2.2.2<br>
-	 * {iso(1) identified-organization(3) dod(6) internet(1) security(5) mechanisms(5) pkix(7) keyPurpose(3)
-	 * ocspSigning(9)}<br>
-	 * OID: 1.3.6.1.5.5.7.3.9
-	 *
-	 * @param certToken
-	 *            the certificate token
-	 * @return true if the certificate has the id_kp_OCSPSigning ExtendedKeyUsage
-	 * @deprecated since DSS 5.12. Use
-	 * 			{@code
-	 * 					ExtendedKeyUsages extendedKeyUsage = CertificateExtensionsUtils.getExtendedKeyUsage(certToken);
-	 * 					boolean extendedKeyUsagePresent = extendedKeyUsage != null && extendedKeyUsage.getOids().contains(KeyPurposeId.id_kp_OCSPSigning.getId());
-	 * 			}
-	 */
-	@Deprecated
-	public static boolean isOCSPSigning(CertificateToken certToken) {
-		return isExtendedKeyUsagePresent(certToken, KeyPurposeId.id_kp_OCSPSigning.toOID());
-	}
-
-	/**
-	 * Checks if the keyUsage with {@code oid} is present in the certificate token
-	 *
-	 * @param certToken {@link CertificateToken}
-	 * @param oid {@link ASN1ObjectIdentifier}
-	 * @return TRUE if the certificate token contains a keyUsage with the given OID, FALSE otherwise
-	 * @deprecated since DSS 5.12. Use
-	 * 			{@code
-	 * 					ExtendedKeyUsages extendedKeyUsage = CertificateExtensionsUtils.getExtendedKeyUsage(certToken);
-	 * 					boolean extendedKeyUsagePresent = extendedKeyUsage != null && extendedKeyUsage.getOids().contains(oid.getId());
-	 * 			}
-	 */
-	@Deprecated
-	public static boolean isExtendedKeyUsagePresent(CertificateToken certToken, ASN1ObjectIdentifier oid) {
-		try {
-			List<String> keyPurposes = certToken.getCertificate().getExtendedKeyUsage();
-			if ((keyPurposes != null) && keyPurposes.contains(oid.getId())) {
-				return true;
-			}
-		} catch (CertificateParsingException e) {
-			LOG.warn("Unable to retrieve ExtendedKeyUsage from certificate", e);
-		}
-		return false;
 	}
 
 	/**
@@ -1523,23 +1228,6 @@ public final class DSSASN1Utils {
 		certRef.setCertDigest(new Digest(digestAlgo, otherCertId.getCertHash()));
 		certRef.setCertificateIdentifier(toSignerIdentifier(otherCertId.getIssuerSerial()));
 		return certRef;
-	}
-
-	/**
-	 * Returns a list of subject alternative names
-	 *
-	 * @param certToken {@link CertificateToken}
-	 * @return a list of {@link String}s
-	 * @deprecated since DSS 5.12. Use
-	 * 			{@code
-	 * 					SubjectAlternativeNames subjectAlternativeNames = CertificateExtensionsUtils.getSubjectAlternativeNames(certToken);
-	 * 					List<String> result = subjectAlternativeNames != null ? subjectAlternativeNames.getNames() : Collections.emptyList();
-	 * 			}
-	 */
-	@Deprecated
-	public static List<String> getSubjectAlternativeNames(CertificateToken certToken) {
-		SubjectAlternativeNames subjectAlternativeNames = CertificateExtensionsUtils.getSubjectAlternativeNames(certToken);
-		return subjectAlternativeNames != null ? subjectAlternativeNames.getNames() : Collections.emptyList();
 	}
 
 	/**

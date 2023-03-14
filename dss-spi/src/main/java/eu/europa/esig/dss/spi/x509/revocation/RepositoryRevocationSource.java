@@ -79,30 +79,6 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
 	 * @return list of {@link String} revocation keys
 	 */
 	protected abstract List<String> initRevocationTokenKeys(CertificateToken certificateToken);
-	
-	/**
-	 * Finds a RevocationToken in the cache
-	 *
-	 * @param key
-	 *            the key {@link String}
-	 * @param certificateToken
-	 *            {@link CertificateToken}
-	 * @param issuerCertToken
-	 *            {@link CertificateToken}
-	 * @return
-	 * 		  {@link RevocationToken} object
-	 * @deprecated since 5.12. Use {@code findRevocations(final String key, final CertificateToken certificateToken,
-	 * 													  final CertificateToken issuerCertToken)} method.
-	 */
-	@Deprecated
-	protected RevocationToken<R> findRevocation(final String key, final CertificateToken certificateToken,
-												final CertificateToken issuerCertToken) {
-		Collection<RevocationToken<R>> revocationTokens = findRevocations(key, certificateToken, issuerCertToken);
-		if (Utils.isCollectionNotEmpty(revocationTokens)) {
-			return getLatestRevocationData(revocationTokens);
-		}
-		return null;
-	}
 
 	/**
 	 * Finds a list of RevocationTokens in the cache for the given {@code certificateToken}

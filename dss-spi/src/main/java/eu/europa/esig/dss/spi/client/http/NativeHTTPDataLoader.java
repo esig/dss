@@ -81,18 +81,6 @@ public class NativeHTTPDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Sets timeout value
-	 *
-	 * @param timeout timeout value
-	 * @deprecated since DSS 5.12. See {@code #setConnectTimeout} and {@code #setReadTimeout}
-	 */
-	@Deprecated
-	public void setTimeout(int timeout) {
-		this.connectTimeout = timeout;
-		this.readTimeout = timeout;
-	}
-
-	/**
 	 * Gets the timeout value on connection establishment with a remote resource
 	 *
 	 * @return connection timeout value
@@ -194,7 +182,6 @@ public class NativeHTTPDataLoader implements DataLoader {
 	 *            if true indicates that the data should be refreshed
 	 * @return binaries of the extracted data object
 	 */
-	@Override
 	public byte[] get(String url, boolean refresh) {
 		return request(url, HttpMethod.GET, null, refresh);
 	}

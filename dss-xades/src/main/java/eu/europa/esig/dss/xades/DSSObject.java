@@ -109,17 +109,6 @@ public class DSSObject implements Serializable {
     /**
      * Sets the value for the "MimeType" attribute
      *
-     * @param mimeType {@link MimeType}
-     * @deprecated since DSS 5.12. Use {@code #setMimeType(MimeType.getMimeTypeString())}
-     */
-    @Deprecated
-    public void setMimeType(MimeType mimeType) {
-        setMimeType(mimeType.getMimeTypeString());
-    }
-
-    /**
-     * Sets the value for the "MimeType" attribute
-     *
      * @param mimeType {@link String}
      */
     public void setMimeType(String mimeType) {

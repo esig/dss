@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pdf;
 
-import eu.europa.esig.dss.alert.StatusAlert;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -158,62 +157,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	/**
-	 * Sets alert on a signature field overlap with existing fields or/and
-	 * annotations
-	 * 
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 * 
-	 * @param alertOnSignatureFieldOverlap {@link StatusAlert} to execute
-	 * @deprecated since DSS 5.12. Use {@code
-	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
-	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOutsidePageDimensions);
-	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
-	 * 			}
-	 */
-	@Deprecated
-	public void setAlertOnSignatureFieldOverlap(StatusAlert alertOnSignatureFieldOverlap) {
-		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap)!");
-		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(alertOnSignatureFieldOverlap);
-	}
-
-	/**
-	 * Sets a behavior to follow when a new signature field is created outside the page's dimensions
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 *
-	 * @param alertOnSignatureFieldOutsidePageDimensions {@link StatusAlert} to execute
-	 * @deprecated since DSS 5.12. Use {@code
-	 * 				PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
-	 *				pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
-	 *			    pdfObjFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
-	 * 			}
-	 */
-	@Deprecated
-	public void setAlertOnSignatureFieldOutsidePageDimensions(StatusAlert alertOnSignatureFieldOutsidePageDimensions) {
-		LOG.warn("Use of deprecated method setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions)!");
-		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(alertOnSignatureFieldOutsidePageDimensions);
-	}
-
-	/**
-	 * Sets a behavior to follow when creating a new signature in a document that forbids creation of new signatures
-	 *
-	 * Default : ProtectedDocumentExceptionOnStatusAlert -
-	 *                 throws the {@code eu.europa.esig.dss.pades.exception.ProtectedDocumentException} exception
-	 *
-	 * @param alertOnForbiddenSignatureCreation {@link StatusAlert} to execute
-	 * @deprecated since DSS 5.12. Use {@code
-	 * 				PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
-	 *				pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
-	 *			    pdfObjFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
-	 * 			}
-	 */
-	@Deprecated
-	public void setAlertOnForbiddenSignatureCreation(StatusAlert alertOnForbiddenSignatureCreation) {
-		LOG.warn("Use of deprecated method setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation)!");
-		pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(alertOnForbiddenSignatureCreation);
-	}
-
-	/**
 	 * Returns a SignatureDrawer initialized from a provided
 	 * {@code signatureDrawerFactory}
 	 * 
@@ -236,12 +179,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
 		return resourcesHandlerBuilder.createResourcesHandler();
-	}
-
-	@Override
-	@Deprecated
-	public byte[] digest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
-		return messageDigest(toSignDocument, parameters).getValue();
 	}
 
 	@Override
@@ -323,12 +260,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		} else {
 			return PAdESConstants.SIGNATURE_TYPE;
 		}
-	}
-
-	@Override
-	@Deprecated
-	public List<PdfRevision> getRevisions(DSSDocument document, String pwd) {
-		return getRevisions(document, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override
@@ -450,13 +381,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	@Deprecated
-	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
-										final String pwd) {
-		return addDssDictionary(document, validationDataForInclusion, pwd != null ? pwd.toCharArray() : null);
-	}
-
-	@Override
 	public DSSDocument addDssDictionary(final DSSDocument document, final PdfValidationDataContainer validationDataForInclusion,
 										final char[] pwd) {
 		return addDssDictionary(document, validationDataForInclusion, pwd, false);
@@ -468,21 +392,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	@Override
-	@Deprecated
-	public List<String> getAvailableSignatureFields(final DSSDocument document, final String pwd) {
-		return getAvailableSignatureFields(document, pwd != null ? pwd.toCharArray() : null);
-	}
-
-	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		return addNewSignatureField(document, parameters, (char[]) null);
-	}
-
-	@Override
-	@Deprecated
-	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
-											final String pwd) {
-		return addNewSignatureField(document, parameters, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	/**
@@ -715,12 +626,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox) {
 		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
-	}
-
-	@Override
-	@Deprecated
-	public void analyzePdfModifications(DSSDocument document, List<AdvancedSignature> signatures, String pwd) {
-		analyzePdfModifications(document, signatures, pwd != null ? pwd.toCharArray() : null);
 	}
 
 	@Override

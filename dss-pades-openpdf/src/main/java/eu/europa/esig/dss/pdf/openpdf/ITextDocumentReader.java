@@ -318,13 +318,6 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	@Deprecated
-	public void checkDocumentPermissions() {
-		PdfPermissionsChecker permissionsChecker = new PdfPermissionsChecker();
-		permissionsChecker.checkDocumentPermissions(this, new SignatureFieldParameters());
-	}
-
-	@Override
 	public boolean isEncrypted() {
 		return pdfReader.isEncrypted();
 	}

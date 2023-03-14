@@ -89,22 +89,6 @@ public class PAdESExtensionService {
 
     /**
      * This method adds a DSS dictionary revision to the given {@code document} protected by a {@code passwordProtection}
-     * with the required validation data if needed.
-     *
-     * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)
-     *
-     * @param document {@link DSSDocument} to extend
-     * @param passwordProtection {@link String} a password protection for the PDF document, when present
-     * @return {@link DSSDocument} extended document
-     * @deprecated since DSS 5.12. Use {@code #incorporateValidationData(document, passwordProtection.toCharArray())}
-     */
-    @Deprecated
-    public DSSDocument incorporateValidationData(DSSDocument document, String passwordProtection) {
-        return incorporateValidationData(document, passwordProtection != null ? passwordProtection.toCharArray() : null);
-    }
-
-    /**
-     * This method adds a DSS dictionary revision to the given {@code document} protected by a {@code passwordProtection}
      * with the required validation data if needed, without VRI dictionary created.
      *
      * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)

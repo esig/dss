@@ -989,17 +989,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns timestamps
-	 * 
-	 * @return a set of TimestampWrapper
-	 * @deprecated since 5.12. Use {@code Set<TimestampWrapper> timestampSet = new LinkedHashSet<>(getTimestampList());}
-	 */
-	@Deprecated
-	public Set<TimestampWrapper> getTimestampSet() {
-		return new LinkedHashSet<>(getTimestampList());
-	}
-
-	/**
 	 * This method returns all revocation data
 	 * 
 	 * @return a set of revocation data
