@@ -12747,7 +12747,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.WARN);
-		validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTimeStampValidation(constraint);
+		validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);
@@ -12829,7 +12829,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
-		validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTimeStampValidation(constraint);
+		validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);

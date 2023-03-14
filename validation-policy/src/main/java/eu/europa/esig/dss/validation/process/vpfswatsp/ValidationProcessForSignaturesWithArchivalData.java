@@ -378,7 +378,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private LevelConstraint getTimestampValidationConstraintLevel() {
-		LevelConstraint constraint = policy.getTimeStampValidationConstraint(context);
+		LevelConstraint constraint = policy.getTimestampValidConstraint();
 		if (constraint == null) {
 			constraint = getWarnLevelConstraint();
 		}
@@ -469,7 +469,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
 		if ((XmlBlockType.TST_BBB.equals(constraint.getBlockType()) || XmlBlockType.TST_PSV.equals(constraint.getBlockType())) &&
-				policy.getTimeStampValidationConstraint(context) == null) {
+				policy.getTimestampValidConstraint() == null) {
 			// skip propagating of validation messages for TSTs in default processing
 		} else {
 			super.collectMessages(conclusion, constraint);

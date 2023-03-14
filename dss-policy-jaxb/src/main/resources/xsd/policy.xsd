@@ -351,11 +351,6 @@
 					<xsd:documentation>Checks the presence of a document timestamp (PAdES only)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TimeStampValidation" type="LevelConstraint" minOccurs="0">
-				<xsd:annotation>
-					<xsd:documentation>Checks if "5.4 Time-stamp Validation Block" or the corresponding "Past Signature Validation" as per clause 5.6.2.4 for each time-stamp token returns a PASSED indication</xsd:documentation>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="TLevelTimeStamp" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if at least one valid T-Level timestamp is present (e.g. a signature-time-stamp or a document timestamp), passing the complete validation process</xsd:documentation>
@@ -391,7 +386,12 @@
 			</xsd:element>
 			<xsd:element name="Coherence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the timestamps ordering (archival timestamp is not before a content-timestamp,...)</xsd:documentation>
+					<xsd:documentation>Checks the timestamps ordering (archival timestamp is not before a content-timestamp, etc.)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TimestampValid" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if "5.4 Time-stamp Validation Block" or the corresponding "Past Signature Validation" as per clause 5.6.2.4 for each time-stamp token returns a PASSED indication</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">

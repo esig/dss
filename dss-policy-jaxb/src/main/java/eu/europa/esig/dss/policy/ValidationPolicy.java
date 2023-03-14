@@ -975,6 +975,14 @@ public interface ValidationPolicy {
 	TimeConstraint getTimestampDelayConstraint();
 
 	/**
+	 * Returns whether the time-stamp is valid (passed either basic signature validation process or past signature validation).
+	 * If TimestampValid element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if TimestampValid element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampValidConstraint();
+
+	/**
 	 * Indicates if the timestamp's TSTInfo.tsa field is present
 	 *
 	 * @return {@code LevelConstraint} if TSAGeneralNamePresent for a given context element is present
@@ -1061,15 +1069,6 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if DocumentTimeStamp element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getDocumentTimeStampConstraint(Context context);
-
-	/**
-	 * Returns whether the time-stamp is valid (passed either basic signature validation process or past signature validation).
-	 * If TimeStampValidation element is absent within the constraint file then null is returned.
-	 *
-	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if TimeStampValidation element is present in the constraint file, null otherwise.
-	 */
-	LevelConstraint getTimeStampValidationConstraint(Context context);
 
 	/**
 	 * Indicates if the presence of unsigned property: signature-time-stamp or document timestamp

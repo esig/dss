@@ -329,15 +329,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getTimeStampValidationConstraint(Context context) {
-		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
-		if (unsignedAttributeConstraints != null) {
-			return unsignedAttributeConstraints.getTimeStampValidation();
-		}
-		return null;
-	}
-
-	@Override
 	public LevelConstraint getTLevelTimeStampConstraint(Context context) {
 		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
 		if (unsignedAttributeConstraints != null) {
@@ -1157,6 +1148,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
 			return timestampConstraints.getTimestampDelay();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampValidConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTimestampValid();
 		}
 		return null;
 	}

@@ -1827,6 +1827,106 @@ Default: not executed
 </UnsignedAttributes>
 ----
 
+* `SignatureTimeStamp` - this constraint checks whether the `signature-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `signature-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SignatureTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <SignatureTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ValidationDataTimeStamp` - this constraint checks whether the `validation-data-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `validation-data-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ValidationDataTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ValidationDataTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ValidationDataRefsOnlyTimeStamp` - this constraint checks whether the `validation-data-refs-only-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `validation-data-refs-only-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ValidationDataRefsOnlyTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ValidationDataRefsOnlyTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ArchiveTimeStamp` - this constraint checks whether the `archive-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `archive-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ArchiveTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ArchiveTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `DocumentTimeStamp` - this constraint checks whether the `document-time-stamp` is present within the structure of the PDF document. If the signature does not contain `document-time-stamp`, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of DocumentTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <DocumentTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `TLevelTimeStamp` - this constraint checks whether the signature contains at least one valid T-level timestamp (i.e. `signature-time-stamp` or `document-time-stamp`), passing either "5.4 Time-stamp Validation Block" or "5.6.2.4 Past Signature Validation" process. If the signature does not contain a valid T-level timestamp, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TLevelTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <TLevelTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `LTALevelTimeStamp` - this constraint checks whether the signature contains at least one valid LTA-level timestamp (i.e. `archive-time-stamp` or `document-time-stamp` covering LT-level), passing either "5.4 Time-stamp Validation Block" or "5.6.2.4 Past Signature Validation" process. If the signature does not contain a valid LTA-level timestamp, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of LTALevelTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <LTALevelTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
 ===== Timestamp constraints
 
 The `<Timestamp>` block defines rules for checking timestamp applicability rules. The `<Timestamp>` element shall be a child of `ConstraintsParameters`:
@@ -1895,6 +1995,20 @@ Default: `WARN` (`DAYS=0`)
 <Timestamp>
     ...
     <Coherence	Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `TimestampValid` - this constraint checks whether the time-stamp within a signature is valid (passed either "5.4 Time-stamp Validation Block" or the corresponding "Past Signature Validation" as per clause 5.6.2.4). The check is performed on every time-stamp within a signature. The check is executed during the "5.6.3 Validation Process for Signatures providing Long Term Availability and Integrity of Validation Material". If the signature's time-stamp is invalid, the check will fail.
+
+Default: executed but no validation message returned (no constraint)
+
+[source,xml,indent=0]
+.Example of TimestampValid usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <TimestampValid Level="WARN" />
     ...
 </Timestamp>
 ----
@@ -2375,19 +2489,27 @@ This table defines the correspondence between the enforced validation policy con
                                   |CertifiedRoles                  |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentTimeStampMessageImprint  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-|UnsignedAttributesConstraints    |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.9+|TimestampConstraints          |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.8+|UnsignedAttributesConstraints |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |SignatureTimeStamp              |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ValidationDataTimeStamp         |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ValidationDataRefsOnlyTimeStamp |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ArchiveTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |DocumentTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |TLevelTimeStamp                 |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |LTALevelTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.10+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                   |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
                                   |Coherence                       |LevelConstraint                   |INDETERMINATE         |TIMESTAMP_ORDER_FAILURE
+                                  |TimestampValid                  |LevelConstraint                   |Indication from timestamp |SubIndication from timestamp
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
                                   |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
 .6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |OCSPResponderIdMatch             |LevelConstraint                   |INDETERMINATE        |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE

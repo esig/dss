@@ -14,6 +14,8 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimeStampCheck;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +29,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
         xmlFoundTimestamp.setTimestamp(xmlTimestamp);
-        sig.setFoundTimestamps(List.of(xmlFoundTimestamp));
+        sig.setFoundTimestamps(Collections.singletonList(xmlFoundTimestamp));
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
@@ -48,7 +50,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.SIGNATURE_TIMESTAMP);
         xmlFoundTimestamp.setTimestamp(xmlTimestamp);
-        sig.setFoundTimestamps(List.of(xmlFoundTimestamp));
+        sig.setFoundTimestamps(Collections.singletonList(xmlFoundTimestamp));
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
@@ -69,7 +71,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
         xmlFoundTimestamp.setTimestamp(xmlTimestamp);
-        sig.setFoundTimestamps(List.of(xmlFoundTimestamp));
+        sig.setFoundTimestamps(Collections.singletonList(xmlFoundTimestamp));
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
@@ -90,7 +92,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
         xmlFoundTimestamp.setTimestamp(xmlTimestamp);
-        sig.setFoundTimestamps(List.of(xmlFoundTimestamp));
+        sig.setFoundTimestamps(Collections.singletonList(xmlFoundTimestamp));
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
@@ -118,7 +120,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
         xmlTimestampTwo.setType(TimestampType.SIGNATURE_TIMESTAMP);
         xmlFoundTimestampTwo.setTimestamp(xmlTimestampTwo);
 
-        sig.setFoundTimestamps(List.of(xmlFoundTimestampOne, xmlFoundTimestampTwo));
+        sig.setFoundTimestamps(Arrays.asList(xmlFoundTimestampOne, xmlFoundTimestampTwo));
 
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
