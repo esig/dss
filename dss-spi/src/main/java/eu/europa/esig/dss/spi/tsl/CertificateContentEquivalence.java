@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+
 import java.io.Serializable;
 
 /**
@@ -29,6 +31,9 @@ import java.io.Serializable;
 public class CertificateContentEquivalence implements Serializable {
 
 	private static final long serialVersionUID = 6732042479139934031L;
+
+	/** Defines the context of the certificate content equivalence (i.e. QcCompliance, QcType, etc.) */
+	private MRAEquivalenceContext context;
 
 	/** Defines rules to trigger the equivalence translation */
 	private Condition condition;
@@ -41,6 +46,24 @@ public class CertificateContentEquivalence implements Serializable {
 	 */
 	public CertificateContentEquivalence() {
 		// empty
+	}
+
+	/**
+	 * Get ths certificate content equivalence context
+	 *
+	 * @return {@link MRAEquivalenceContext}
+	 */
+	public MRAEquivalenceContext getContext() {
+		return context;
+	}
+
+	/**
+	 * Sets the context of the certificate content equivalence (i.e. QcCompliance, QcType, etc.)
+	 *
+	 * @param context {@link MRAEquivalenceContext}
+	 */
+	public void setContext(MRAEquivalenceContext context) {
+		this.context = context;
 	}
 
 	/**

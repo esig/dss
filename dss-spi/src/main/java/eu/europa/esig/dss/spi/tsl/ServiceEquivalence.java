@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 
 import java.io.Serializable;
@@ -52,7 +51,7 @@ public class ServiceEquivalence implements Serializable {
 	private Map<List<String>, List<String>> statusEquivalence;
 
 	/** CertificateContentReferencesEquivalenceList */
-	private Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences;
+	private List<CertificateContentEquivalence> certificateContentEquivalences;
 
 	/** QualifierEquivalenceList equivalencies */
 	private Map<String, String> qualifierEquivalence;
@@ -155,22 +154,20 @@ public class ServiceEquivalence implements Serializable {
 	}
 
 	/**
-	 * Gets a map of CertificateContentReferencesEquivalenceList equivalences
+	 * Gets a list of CertificateContentReferencesEquivalenceList equivalences
 	 *
-	 * @return a map between {@link MRAEquivalenceContext} type and {@code CertificateContentEquivalence} value
+	 * @return a list of {@code CertificateContentEquivalence} values
 	 */
-	public Map<MRAEquivalenceContext, CertificateContentEquivalence> getCertificateContentEquivalences() {
+	public List<CertificateContentEquivalence> getCertificateContentEquivalences() {
 		return certificateContentEquivalences;
 	}
 
 	/**
-	 * Sets a map of CertificateContentReferencesEquivalenceList equivalences
+	 * Sets a list of CertificateContentReferencesEquivalenceList equivalences
 	 *
-	 * @param certificateContentEquivalences a map between {@link MRAEquivalenceContext} type and
-	 *                                       {@code CertificateContentEquivalence} value
+	 * @param certificateContentEquivalences a list of {@code CertificateContentEquivalence} values
 	 */
-	public void setCertificateContentEquivalences(
-			Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences) {
+	public void setCertificateContentEquivalences(List<CertificateContentEquivalence> certificateContentEquivalences) {
 		this.certificateContentEquivalences = certificateContentEquivalences;
 	}
 

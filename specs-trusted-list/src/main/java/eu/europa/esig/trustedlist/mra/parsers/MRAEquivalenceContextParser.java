@@ -21,12 +21,26 @@
 package eu.europa.esig.trustedlist.mra.parsers;
 
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class MRAEquivalenceContextParser {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MRAEquivalenceContextParser.class);
+
+	/**
+	 * Default constructor
+	 */
 	private MRAEquivalenceContextParser() {
+		// empty
 	}
 
+	/**
+	 * Parses the {@code String} and returns a {@code MRAEquivalenceContext}
+	 *
+	 * @param v {@link String}
+	 * @return {@link MRAEquivalenceContext}
+	 */
 	public static MRAEquivalenceContext parse(String v) {
 		if (v != null) {
 			for (MRAEquivalenceContext m : MRAEquivalenceContext.values()) {
@@ -35,9 +49,16 @@ public final class MRAEquivalenceContextParser {
 				}
 			}
 		}
+		LOG.warn("Unknown MRAEquivalenceContext URI : {}", v);
 		return null;
 	}
 
+	/**
+	 * Returns a string representation of {@code String}
+	 *
+	 * @param m {@link MRAEquivalenceContext}
+	 * @return {@link String}
+	 */
 	public static String print(MRAEquivalenceContext m) {
 		if (m != null) {
 			return m.getUri();
