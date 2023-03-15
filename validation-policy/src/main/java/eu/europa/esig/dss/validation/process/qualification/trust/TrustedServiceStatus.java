@@ -30,6 +30,7 @@ public final class TrustedServiceStatus {
 	 * Empty constructor
 	 */
 	private TrustedServiceStatus() {
+		// empty
 	}
 
 	/* Previous status */
