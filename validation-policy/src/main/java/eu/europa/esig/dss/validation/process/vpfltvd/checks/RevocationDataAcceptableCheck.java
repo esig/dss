@@ -76,7 +76,7 @@ public class RevocationDataAcceptableCheck<T extends XmlConstraintsConclusion> e
 
 	@Override
 	protected String buildAdditionalInfo() {
-		return i18nProvider.getMessage(MessageTag.REVOCATION_ID, revocationId);
+		return i18nProvider.getMessage(MessageTag.TOKEN_ID, revocationId);
 	}
 
 	@Override

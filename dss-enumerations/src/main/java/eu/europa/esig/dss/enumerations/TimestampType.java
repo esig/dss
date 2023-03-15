@@ -26,7 +26,7 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum TimestampType {
 	
-	/** CAdES: id-aa-ets-contentTimestamp */
+	/** CAdES: id-aa-ets-contentTimestamp, JAdES: adoTst */
 	CONTENT_TIMESTAMP(0, false),
 
 	/** XAdES: AllDataObjectsTimestamp */
@@ -35,22 +35,22 @@ public enum TimestampType {
 	/** XAdES: IndividualDataObjectsTimeStamp */
 	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(0, false),
 
-	/** CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp */
+	/** CAdES/PAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp, JAdES: sigTst */
 	SIGNATURE_TIMESTAMP(1, true),
 
 	/** PAdES: /VRI/TS */
 	VRI_TIMESTAMP(1, true),
 
-	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp */
+	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp, JAdES: rfsTst */
 	VALIDATION_DATA_REFSONLY_TIMESTAMP(2, false),
 
-	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp */
+	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp, JAdES: sigRTst */
 	VALIDATION_DATA_TIMESTAMP(2, true),
 
 	/** PAdES-LTV "document timestamp" */
 	DOCUMENT_TIMESTAMP(3, true),
 
-	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp */
+	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, JAdES: arcTst */
 	ARCHIVE_TIMESTAMP(3, true);
 	
 	/**
@@ -130,7 +130,7 @@ public enum TimestampType {
 	 * Must be in the order: Content - Signature - ValidationData - Archival
 	 * 
 	 * @param timestampType {@link TimestampType} to compare with
-	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
+	 * @return TRUE if this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
 	 */
 	public int compare(TimestampType timestampType) {
 		return order.compareTo(timestampType.order);

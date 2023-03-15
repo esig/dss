@@ -305,12 +305,12 @@
 			</xsd:element>
 			<xsd:element name="ContentTimeStamp" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the presence of a content-timestamp attribute</xsd:documentation>
+					<xsd:documentation>Checks the presence of a content-time-stamp attribute</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="ContentTimeStampMessageImprint" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the message imprint validity for present content-timestamps</xsd:documentation>
+					<xsd:documentation>Checks the message imprint validity for present content-time-stamp attributes</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -324,6 +324,41 @@
 			<xsd:element name="CounterSignature" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of a counter-signature attribute</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="SignatureTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a signature-time-stamp attribute (CAdES/PAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp, JAdES: sigTst)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ValidationDataTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a validation data time-stamp attribute (CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp, JAdES: sigRTst)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ValidationDataRefsOnlyTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a validation data references only time-stamp attribute (CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp, JAdES: rfsTst)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ArchiveTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of an archive time-stamp attribute (CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, JAdES: arcTst)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="DocumentTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks the presence of a document timestamp (PAdES only)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TLevelTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if at least one valid T-Level timestamp is present (e.g. a signature-time-stamp or a document timestamp), passing the complete validation process</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="LTALevelTimeStamp" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if at least one valid LTA-Level timestamp is present (e.g. an archive-time-stamp or a document timestamp covering the validation data), passing the complete validation process</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -351,7 +386,12 @@
 			</xsd:element>
 			<xsd:element name="Coherence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the timestamps ordering (archival timestamp is not before a content-timestamp,...)</xsd:documentation>
+					<xsd:documentation>Checks the timestamps ordering (archival timestamp is not before a content-timestamp, etc.)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="TimestampValid" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if "5.4 Time-stamp Validation Block" or the corresponding "Past Signature Validation" as per clause 5.6.2.4 for each time-stamp token returns a PASSED indication</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">

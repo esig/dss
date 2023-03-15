@@ -276,12 +276,72 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public LevelConstraint getCounterSignatureConstraint(Context context) {
-		SignatureConstraints signatureConstraints = getSignatureConstraintsByContext(context);
-		if (signatureConstraints != null) {
-			UnsignedAttributesConstraints unsignedAttributeConstraints = signatureConstraints.getUnsignedAttributes();
-			if (unsignedAttributeConstraints != null) {
-				return unsignedAttributeConstraints.getCounterSignature();
-			}
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getCounterSignature();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getSignatureTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getSignatureTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getValidationDataTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getValidationDataTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getValidationDataRefsOnlyTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getValidationDataRefsOnlyTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getArchiveTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getArchiveTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getDocumentTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getDocumentTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTLevelTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getTLevelTimeStamp();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getLTALevelTimeStampConstraint(Context context) {
+		UnsignedAttributesConstraints unsignedAttributeConstraints = getUnsignedAttributeConstraints(context);
+		if (unsignedAttributeConstraints != null) {
+			return unsignedAttributeConstraints.getLTALevelTimeStamp();
 		}
 		return null;
 	}
@@ -1093,6 +1153,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTimestampValidConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getTimestampValid();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getTimestampTSAGeneralNamePresent() {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {
@@ -1129,7 +1198,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getContentTimestampConstraint(Context context) {
+	public LevelConstraint getContentTimeStampConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getContentTimeStamp();
@@ -1138,7 +1207,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelConstraint getContentTimestampMessageImprintConstraint(Context context) {
+	public LevelConstraint getContentTimeStampMessageImprintConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
 		if (signedAttributeConstraints != null) {
 			return signedAttributeConstraints.getContentTimeStampMessageImprint();
@@ -1220,6 +1289,27 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		default:
 			LOG.warn("Unsupported context {}", context);
 			break;
+		}
+		return null;
+	}
+
+	private UnsignedAttributesConstraints getUnsignedAttributeConstraints(Context context) {
+		switch (context) {
+			case SIGNATURE:
+				SignatureConstraints mainSignature = getSignatureConstraints();
+				if (mainSignature != null) {
+					return mainSignature.getUnsignedAttributes();
+				}
+				break;
+			case COUNTER_SIGNATURE:
+				SignatureConstraints counterSignature = getCounterSignatureConstraints();
+				if (counterSignature != null) {
+					return counterSignature.getUnsignedAttributes();
+				}
+				break;
+			default:
+				LOG.warn("Unsupported context {}", context);
+				break;
 		}
 		return null;
 	}
