@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>container-timestamped.sce</DocumentName>
+    <ValidationDate>2023-03-17T07:35:01Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/ASiCManifest001.xml</Filename>
+                <SignatureFilename>META-INF/timestamp001.tst</SignatureFilename>
+                <Entries>
+                    <Entry>test.text</Entry>
+                    <Entry>test2.text</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>test.text</ContentFile>
+            <ContentFile>test2.text</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures/>
+    <UsedCertificates>
+        <Certificate Id="C-80790EAB422E1FEEF0AF52EAE7588F7831F93F5B69B2AA4A07207AE297120AED">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ee-root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ee-root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ee-root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ee-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1000</SerialNumber>
+            <CommonName>ee-root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-01-13T16:03:24Z</NotAfter>
+            <NotBefore>2022-01-13T16:03:24Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A1CC40DD45FB7434BB70AE03B9642487D3B7F93098F8AB88D5922E6A2823D9CC</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>hmO5ygDLzKXi5yF3Y6/4GDFK7f0=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gHkOq0IuH+7wr1Lq51iPeDH5P1tpsqpKByB64pcSCu0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-98654B4494C5133FC8CF50E446AEB58E467FB07F0F7C7F60CA02BC20A47DC07C">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ee-good-tsa</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ee-good-tsa</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ee-root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ee-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1200</SerialNumber>
+            <CommonName>ee-good-tsa</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_STORE</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2023-12-13T16:03:25Z</NotAfter>
+            <NotBefore>2022-02-13T16:03:25Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C30AE6FD7CDF3935DCE9616001248733FEAC9BC046615DAC8FFFD25CDE2700CE</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-80790EAB422E1FEEF0AF52EAE7588F7831F93F5B69B2AA4A07207AE297120AED"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-80790EAB422E1FEEF0AF52EAE7588F7831F93F5B69B2AA4A07207AE297120AED"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>HW1jHIQBJ4TYs2X9v7gCtUd0+vQ=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/ee-root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/ee-root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustedServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mGVLRJTFEz/Iz1DkRq61jkZ/sH8PfH9gygK8IKR9wHw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <UsedTimestamps>
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-06BE363732B698DB72F65B24FA41CC7BE2A88D5E4DE251519426BCC0EC5AE8BB">
+            <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
+            <ProductionTime>2023-03-17T07:35:00Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest001.xml">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SOdRr8lMJ/9e57Cyj+Q7+lpjFRfru7KICykhYsjlfPs=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <DigestMatcher type="MANIFEST_ENTRY" name="test2.text">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fQyRxzXujPt5VCeLE/TAlctes0Qm9qfrsP9ksQSZ5FY=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-98654B4494C5133FC8CF50E446AEB58E467FB07F0F7C7F60CA02BC20A47DC07C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-98654B4494C5133FC8CF50E446AEB58E467FB07F0F7C7F60CA02BC20A47DC07C"/>
+                <ChainItem Certificate="C-80790EAB422E1FEEF0AF52EAE7588F7831F93F5B69B2AA4A07207AE297120AED"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=ee-root-ca</IssuerName>
+                    <SerialNumber>1200</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-80790EAB422E1FEEF0AF52EAE7588F7831F93F5B69B2AA4A07207AE297120AED">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-98654B4494C5133FC8CF50E446AEB58E467FB07F0F7C7F60CA02BC20A47DC07C">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>mGVLRJTFEz/Iz1DkRq61jkZ/sH8PfH9gygK8IKR9wHw=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-CABF3D9FF4B308CB6D9ABD29325C50A59A65EE65F2375D49231CCDF5008100EA" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-6CB0859E65696E651FDF82EE04B244FF49B3CA5A17211C5EBDDD558C6673733E" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-BDBCAD7F1A9516E2186A897B99EB6A461A53796092D7382EA4180BEA8F41866F" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-CABF3D9FF4B308CB6D9ABD29325C50A59A65EE65F2375D49231CCDF5008100EA">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCManifest001.xml</Name>
+                    <Description>Manifest document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-6CB0859E65696E651FDF82EE04B244FF49B3CA5A17211C5EBDDD558C6673733E">
+                    <Scope>FULL</Scope>
+                    <Name>test.text</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-BDBCAD7F1A9516E2186A897B99EB6A461A53796092D7382EA4180BEA8F41866F">
+                    <Scope>FULL</Scope>
+                    <Name>test2.text</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Br42NzK2mNty9lsk+kHMe+KojV5N4lFRlCa8wOxa6Ls=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-CABF3D9FF4B308CB6D9ABD29325C50A59A65EE65F2375D49231CCDF5008100EA">
+            <ReferencedName>META-INF/ASiCManifest001.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SOdRr8lMJ/9e57Cyj+Q7+lpjFRfru7KICykhYsjlfPs=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-6CB0859E65696E651FDF82EE04B244FF49B3CA5A17211C5EBDDD558C6673733E">
+            <ReferencedName>test.text</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-BDBCAD7F1A9516E2186A897B99EB6A461A53796092D7382EA4180BEA8F41866F">
+            <ReferencedName>test2.text</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fQyRxzXujPt5VCeLE/TAlctes0Qm9qfrsP9ksQSZ5FY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

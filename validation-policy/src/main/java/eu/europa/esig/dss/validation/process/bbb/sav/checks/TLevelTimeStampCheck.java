@@ -12,6 +12,9 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Verifies if there is at least one valid T-level timestamp
+ */
 public class TLevelTimeStampCheck extends AbstractTimeStampPresentCheck {
 
     /** The signature to check */

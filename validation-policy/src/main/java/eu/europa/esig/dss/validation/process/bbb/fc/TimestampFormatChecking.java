@@ -70,13 +70,12 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
         }
 
         // ASiC (only for a detached container timestamp)
-        // TODO: to be implemented container timestamp check
-//        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()
-//                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
-//
-//            item = getASiCContainerValidationChain(item);
-//
-//        }
+        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()
+                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+
+            item = getASiCContainerValidationChain(item);
+
+        }
 
     }
 
