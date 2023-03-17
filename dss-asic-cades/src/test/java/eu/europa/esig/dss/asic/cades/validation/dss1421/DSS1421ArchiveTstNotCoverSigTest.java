@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -58,7 +59,8 @@ public class DSS1421ArchiveTstNotCoverSigTest extends AbstractASiCWithCAdESTestV
 			CertificateWrapper timestampSigningCertificate = timestamp.getSigningCertificate();
 			assertNotNull(timestampSigningCertificate);
 			assertTrue(Utils.isCollectionNotEmpty(timestamp.getCertificateChain()));
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+			if (TimestampType.CONTAINER_TIMESTAMP.equals(timestamp.getType())) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
 				assertTrue(timestamp.isMessageImprintDataFound());
 				assertFalse(timestamp.isMessageImprintDataIntact());
 				

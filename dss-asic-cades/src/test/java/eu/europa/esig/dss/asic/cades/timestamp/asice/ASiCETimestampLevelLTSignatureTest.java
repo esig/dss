@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -134,7 +135,9 @@ public class ASiCETimestampLevelLTSignatureTest extends AbstractASiCEWithCAdESMu
                 assertEquals(0, timestampWrapper.getTimestampedTimestamps().size());
                 sigTstFound = true;
 
-            } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+            } else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+                assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
+
                 assertEquals(4, timestampWrapper.getTimestampedSignedData().size()); // signedDocs + ArchiveManifest + signatureManifest
                 assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
                 assertEquals(1, timestampWrapper.getTimestampedTimestamps().size()); // signature time-stamp

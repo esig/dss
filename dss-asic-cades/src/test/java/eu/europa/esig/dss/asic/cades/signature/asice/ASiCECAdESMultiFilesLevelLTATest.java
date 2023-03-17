@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -78,7 +79,8 @@ public class ASiCECAdESMultiFilesLevelLTATest extends AbstractASiCEWithCAdESMult
                 assertEquals(0, timestamp.getTimestampScopes().size());
                 assertEquals(3, timestamp.getTimestampedSignedData().size()); // two signed docs + manifest
                 sigTstFound = true;
-            } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
+            } else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestamp.getType())) {
+                assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
                 assertEquals(5, timestamp.getTimestampScopes().size()); // two signed docs + two manifests + signature
                 assertEquals(4, timestamp.getTimestampedSignedData().size()); // signature is not listed separately
                 assertEquals(1, timestamp.getTimestampedSignatures().size());

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -140,7 +141,8 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 	private void assertArchiveTimestampFound(DiagnosticData diagnosticData) {
 		boolean archiveTimestampFound = false;
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			if (timestamp.getType().isArchivalTimestamp()) {
+			if (timestamp.getType().isContainerTimestamp()) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
 				archiveTimestampFound = true;
 			}
 		}

@@ -228,7 +228,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         boolean validArcTstFound = false;
         for (TimestampToken timestampToken : timestampTokens) {
             if (ArchiveTimestampType.CAdES_V3.equals(timestampToken.getArchiveTimestampType()) ||
-                    ArchiveTimestampType.CAdES_DETACHED.equals(timestampToken.getArchiveTimestampType())) {
+                    timestampToken.getTimeStampType().isContainerTimestamp()) {
                 validArcTstFound = true;
                 break;
             }

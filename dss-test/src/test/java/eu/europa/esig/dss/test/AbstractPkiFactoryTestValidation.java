@@ -874,6 +874,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			boolean foundSignatureTimeStamp = false;
 			boolean foundArchiveTimeStamp = false;
 			boolean foundDocTimeStamp = false;
+			boolean foundContainerTimeStamp = false;
 	
 			if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
 				for (String timestampId : timestampIdList) {
@@ -888,6 +889,9 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						case DOCUMENT_TIMESTAMP:
 							foundDocTimeStamp = true;
 							break;
+						case CONTAINER_TIMESTAMP:
+							foundContainerTimeStamp = true;
+							break;
 						default:
 							break;
 						}
@@ -899,7 +903,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			}
 	
 			if (isBaselineLTA(signatureWrapper.getSignatureFormat())) {
-				assertTrue(foundArchiveTimeStamp || foundDocTimeStamp);
+				assertTrue(foundArchiveTimeStamp || foundDocTimeStamp || foundContainerTimeStamp);
 			}
 
 			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
@@ -956,7 +960,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
 
 				if (timestampWrapper.getType().isContentTimestamp() || timestampWrapper.getType().isArchivalTimestamp() ||
-						timestampWrapper.getType().isDocumentTimestamp()) {
+						timestampWrapper.getType().isDocumentTimestamp() || timestampWrapper.getType().isContainerTimestamp()) {
 					assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
 				} else {
 					assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));

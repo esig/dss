@@ -44,6 +44,9 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 	/** A list of package.zip embedded documents, when applicable */
 	private List<DSSDocument> archiveDocuments;
 
+	/** Defines the archive timestamp type */
+	private ArchiveTimestampType archiveTimestampType;
+
 	/**
 	 * Default constructor
 	 *
@@ -93,14 +96,23 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 		this.archiveDocuments = archiveDocuments;
 	}
 
+	/**
+	 * Sets the archive timestamp type
+	 *
+	 * @param archiveTimestampType {@link ArchiveTimestampType}
+	 */
+	public void setArchiveTimestampType(ArchiveTimestampType archiveTimestampType) {
+		this.archiveTimestampType = archiveTimestampType;
+	}
+
 	@Override
 	protected TimestampToken createTimestampToken() {
 		TimestampToken timestamp = super.createTimestampToken();
 		if (manifestFile != null) {
 			timestamp.setManifestFile(manifestFile);
 		}
-		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampType)) {
-			timestamp.setArchiveTimestampType(ArchiveTimestampType.CAdES_DETACHED);
+		if (archiveTimestampType != null) {
+			timestamp.setArchiveTimestampType(archiveTimestampType);
 		}
 		return timestamp;
 	}

@@ -28,6 +28,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -129,7 +130,8 @@ public class ASiCeExtensionWithCAdESBToLTAWithExpiredUserTest extends AbstractAS
             for (TimestampWrapper timestampWrapper : timestampList) {
                 if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
                     ++signatureTstCounter;
-                } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+                } else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+                    assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
                     ++archiveTstCounter;
                 }
             }

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -90,7 +91,8 @@ public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 		for (TimestampWrapper timestamp : timestampList) {
-			if (timestamp.getType().isArchivalTimestamp()) {
+			if (timestamp.getType().isContainerTimestamp()) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
 				XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
 				assertNotNull(messageImprint);
 				assertNotNull(messageImprint.getName());

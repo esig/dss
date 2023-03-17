@@ -47,6 +47,9 @@ public enum TimestampType {
 	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp, JAdES: sigRTst */
 	VALIDATION_DATA_TIMESTAMP(2, true),
 
+	/** ASiC detached timestamp */
+	CONTAINER_TIMESTAMP(3, true),
+
 	/** PAdES-LTV "document timestamp" */
 	DOCUMENT_TIMESTAMP(3, true),
 
@@ -63,9 +66,17 @@ public enum TimestampType {
 	 */
 	private final Integer order;
 	
-	/* TRUE if the timestamp covers a Signature */
+	/**
+	 * Defines if the timestamp covers a Signature
+	 */
 	private final boolean coversSignature;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param order defines the expected order of the timestamp type
+	 * @param coversSignature defines if the timestamp covers the signature
+	 */
 	TimestampType(int order, boolean coversSignature) {
 		this.order = order;
 		this.coversSignature = coversSignature;
@@ -96,6 +107,15 @@ public enum TimestampType {
 	 */
 	public boolean isValidationDataTimestamp() {
 		return 2 == order;
+	}
+
+	/**
+	 * Checks if the timestamp type is a container timestamp (used for ASiC)
+	 *
+	 * @return TRUE if the type is a container timestamp, FALSE otherwise
+	 */
+	public boolean isContainerTimestamp() {
+		return CONTAINER_TIMESTAMP == this;
 	}
 
 	/**

@@ -422,6 +422,8 @@ public class ValidationProcessUtils {
 			return MessageTag.TST_TYPE_VD_TST;
 		} else if (timestampType.isDocumentTimestamp()) {
 			return MessageTag.TST_TYPE_DOC_TST;
+		} else if (timestampType.isContainerTimestamp()) {
+			return MessageTag.TST_TYPE_CONTAINER_TST;
 		} else if (timestampType.isArchivalTimestamp()) {
 			return MessageTag.TST_TYPE_ARCHIVE_TST;
 		} else {

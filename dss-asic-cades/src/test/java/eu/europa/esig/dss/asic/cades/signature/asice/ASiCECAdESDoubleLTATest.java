@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -152,7 +153,9 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
         }
         boolean extendedTstFound = false;
         for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
-            if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+            if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+                assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
+
                 List<RelatedRevocationWrapper> revocationData = timestampWrapper.foundRevocations().getRelatedRevocationData();
                 if (Utils.isCollectionNotEmpty(revocationData)) {
                     assertDoesNotContainRevocation(revocationDataIds, revocationData);

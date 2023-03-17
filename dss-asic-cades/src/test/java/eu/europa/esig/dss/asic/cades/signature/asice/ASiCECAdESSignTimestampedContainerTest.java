@@ -86,7 +86,7 @@ public class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTe
         assertEquals(1, timestampList.size());
 
         TimestampWrapper timestampWrapper = timestampList.get(0);
-        assertEquals(TimestampType.CONTENT_TIMESTAMP, timestampWrapper.getType());
+        assertEquals(TimestampType.CONTAINER_TIMESTAMP, timestampWrapper.getType());
         assertNull(timestampWrapper.getArchiveTimestampType());
         assertEquals(2, timestampWrapper.getDigestMatchers().size());
 

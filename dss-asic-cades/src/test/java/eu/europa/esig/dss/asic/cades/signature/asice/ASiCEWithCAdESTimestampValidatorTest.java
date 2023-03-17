@@ -112,7 +112,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		
 		ASiCWithCAdESTimestampValidator asicWithCAdESTimestampValidator = new ASiCWithCAdESTimestampValidator(
-				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP);
+				archiveTimestamp, TimestampType.CONTAINER_TIMESTAMP);
 		asicWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
 		asicWithCAdESTimestampValidator.setManifestFile(manifestFile);
 		asicWithCAdESTimestampValidator.setOriginalDocuments(documentsToSign);

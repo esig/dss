@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -105,7 +106,9 @@ public class DSS2049Test extends PKIFactoryAccess {
 			for (RelatedRevocationWrapper revocation : relatedRevocationData) {
 				assertFalse(signedDataRevocationIds.contains(revocation.getId()));
 			}
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+			if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
+
 				List<String> timestampedCertificateIds = timestampWrapper.getTimestampedCertificates()
 						.stream().map(c -> c.getId()).collect(Collectors.toList());
 				assertTrue(timestampedCertificateIds.containsAll(signedDataCertificateIds));

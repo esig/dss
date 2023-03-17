@@ -591,6 +591,7 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	public List<TimestampWrapper> getALevelTimestamps() {
 		List<TimestampWrapper> timestamps = new ArrayList<>(getArchiveTimestamps());
 		timestamps.addAll(getDocumentTimestamps(true));
+		timestamps.addAll(getContainerTimestamps());
 		return timestamps;
 	}
 
@@ -677,6 +678,15 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	 */
 	public List<TimestampWrapper> getDocumentTimestamps() {
 		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
+	}
+
+	/**
+	 * Returns all container detached timestamps (used for ASiC containers)
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
+	public List<TimestampWrapper> getContainerTimestamps() {
+		return getTimestampListByType(TimestampType.CONTAINER_TIMESTAMP);
 	}
 
 	/**
