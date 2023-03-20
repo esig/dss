@@ -50,6 +50,7 @@ public class ListCertificateSource implements Serializable {
 	 * Default constructor
 	 */
 	public ListCertificateSource() {
+		// empty
 	}
 	
 	/**

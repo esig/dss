@@ -1066,6 +1066,7 @@
 			<xs:choice>
 				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
 				<xs:element name="SerialInfo" type="SignerInfo" /> <!-- OCSP -->
+				<xs:element name="X509Url" type="xs:string" /> <!-- JAdES -->
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>	
@@ -1109,7 +1110,8 @@
 			<xs:enumeration value="SIGNING_CERTIFICATE" />
 			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
 			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
-			<xs:enumeration value="KEY_IDENTIFIER" />
+			<xs:enumeration value="KEY_IDENTIFIER" /> <!-- JWS/JAdES only -->
+			<xs:enumeration value="X509_URL" /> <!-- JWS/JAdES only -->
 		</xs:restriction>
 	</xs:simpleType>
 	

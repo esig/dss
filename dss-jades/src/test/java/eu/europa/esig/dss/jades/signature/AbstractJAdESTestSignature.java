@@ -210,13 +210,18 @@ public abstract class AbstractJAdESTestSignature
 
 			List<CertificateRefWrapper> references = signingCertificates.get(0).getReferences();
 			List<RelatedCertificateWrapper> kidCerts = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
+			List<RelatedCertificateWrapper> x5uCerts = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.X509_URL);
+
+			int signCertRefs = 1 + (Utils.isCollectionNotEmpty(kidCerts) ? 1 : 0) + (Utils.isCollectionNotEmpty(x5uCerts) ? 1 : 0);
+			assertEquals(signCertRefs, references.size());
 
 			if (getSignatureParameters().isIncludeKeyIdentifier()) {
-				assertEquals(2, references.size());
 				assertEquals(1, kidCerts.size());
+			} else if (Utils.isStringNotEmpty(getSignatureParameters().getX509Url())) {
+				assertTrue(Utils.isCollectionNotEmpty(x5uCerts));
 			} else {
-				assertEquals(1, references.size());
 				assertEquals(0, kidCerts.size());
+				assertEquals(0, x5uCerts.size());
 			}
 
 			for (CertificateRefWrapper certificateRef : references) {

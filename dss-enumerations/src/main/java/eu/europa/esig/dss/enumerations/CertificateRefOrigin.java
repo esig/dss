@@ -45,4 +45,9 @@ public enum CertificateRefOrigin {
 	 */
 	KEY_IDENTIFIER,
 
+	/**
+	 * Used as a hint to identify the resource containing the signing certificate or certificate chain (used in JAdES)
+	 */
+	X509_URL;
+
 }

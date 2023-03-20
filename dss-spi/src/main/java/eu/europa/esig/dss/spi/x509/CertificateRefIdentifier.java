@@ -73,7 +73,11 @@ public class CertificateRefIdentifier extends Identifier {
 				return new Digest(DIGEST_ALGO, DSSUtils.digest(DIGEST_ALGO, responderId.getX500Principal().getEncoded()));
 			}
 		}
-		throw new DSSException("One of [certDigest, publicKeyDigest, issuerInfo] must be defined for a CertificateRef!");
+		String x509Url = certificateRef.getX509Url();
+		if (x509Url != null) {
+			return new Digest(DIGEST_ALGO, DSSUtils.digest(DIGEST_ALGO, x509Url.getBytes()));
+		}
+		throw new DSSException("One of [certDigest, publicKeyDigest, issuerInfo, x509Uri] must be defined for a CertificateRef!");
 	}
 
 }

@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBDoNotIncludeCertificateChain extends AbstractJAdESTestSignature {
+public class JAdESLevelBDoNotIncludeCertificateChainTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
@@ -80,7 +80,7 @@ public class JAdESLevelBDoNotIncludeCertificateChain extends AbstractJAdESTestSi
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
 			DiagnosticData diagnosticData) {
 		AdvancedSignature advancedSignature = advancedSignatures.get(0);
-		assertEquals(0, advancedSignature.getCertificates().size());
+		assertEquals(1, advancedSignature.getCertificates().size());
 		
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 

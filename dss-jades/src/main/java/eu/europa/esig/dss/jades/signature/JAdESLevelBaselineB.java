@@ -196,7 +196,10 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.5 The x5u (X.509 URL) header parameter
 	 */
 	protected void incorporateSigningCertificateUri() {
-		// not supported
+		String x509Url = parameters.getX509Url();
+		if (Utils.isStringNotEmpty(x509Url)) {
+			addHeader(HeaderParameterNames.X509_URL, x509Url);
+		}
 	}
 	
 	/**

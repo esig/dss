@@ -1009,11 +1009,20 @@ public abstract class DiagnosticDataBuilder {
 														   TokenCertificateSource certificateSource) {
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
 		xmlFoundCertificates.getRelatedCertificates().addAll(getXmlRelatedCertificates(certificateSource));
-		xmlFoundCertificates.getRelatedCertificates().addAll(getXmlRelatedCertificateForOrphanReferences(certificateSource));
+		List<XmlRelatedCertificate> xmlRelatedCertificatesForOrphanReferences = getXmlRelatedCertificateForOrphanReferences(certificateSource);
+		for (XmlRelatedCertificate xmlRelatedCertificate : xmlRelatedCertificatesForOrphanReferences) {
+			if (!containsCertificate(xmlFoundCertificates.getRelatedCertificates(), xmlRelatedCertificate)) {
+				xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
+			}
+		}
 		CertificateToken signingCertificate = signingCertificateMap.get(tokenIdentifier.asXmlId());
 		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificates(certificateSource, signingCertificate));
 		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificateRefs(certificateSource, signingCertificate));
 		return xmlFoundCertificates;
+	}
+
+	private boolean containsCertificate(Collection<XmlRelatedCertificate> certificates, XmlRelatedCertificate xmlRelatedCertificate) {
+		return certificates.stream().anyMatch(c -> xmlRelatedCertificate.getCertificate().getId().equals(c.getCertificate().getId()));
 	}
 
 	private List<XmlRelatedCertificate> getXmlRelatedCertificates(TokenCertificateSource certificateSource) {
@@ -1028,7 +1037,7 @@ public abstract class DiagnosticDataBuilder {
 
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.KEY_INFO,
 					signatureCertificateSource.getKeyInfoCertificates(), certificateSource);
-			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.SIGNED_DATA,
+ 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.SIGNED_DATA,
 					signatureCertificateSource.getSignedDataCertificates(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.CERTIFICATE_VALUES,
 					signatureCertificateSource.getCertificateValues(), certificateSource);
@@ -1145,12 +1154,15 @@ public abstract class DiagnosticDataBuilder {
 		Digest refDigest = ref.getCertDigest();
 		ResponderId responderId = ref.getResponderId();
 		if (refDigest != null) {
-			certificateRef
-					.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
+			certificateRef.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(refDigest.getAlgorithm(), refDigest.getValue()));
 		} else if (signerIdentifier != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(signerIdentifier));
 		} else if (responderId != null) {
 			certificateRef.setSerialInfo(getXmlSignerInfo(responderId));
+		}
+		String x509Url = ref.getX509Url();
+		if (x509Url != null) {
+			certificateRef.setX509Url(getCleanedUrl(x509Url));
 		}
 		certificateRef.setOrigin(origin);
 		return certificateRef;
@@ -1291,7 +1303,7 @@ public abstract class DiagnosticDataBuilder {
 		List<CertificateRef> orphanCertificateRefs = certificateSource.getOrphanCertificateRefs();
 		for (CertificateRef orphanCertificateRef : orphanCertificateRefs) {
 			// create orphan if certificate is not present
-			if (getUsedCertificateByCertificateRef(orphanCertificateRef) == null) {
+			if (Utils.isCollectionEmpty(getUsedCertificatesByCertificateRef(orphanCertificateRef))) {
 				orphanCertificates.add(createXmlOrphanCertificateFromRef(certificateSource, orphanCertificateRef, signingCertificate));
 			}
 		}
@@ -1333,9 +1345,11 @@ public abstract class DiagnosticDataBuilder {
 	protected List<XmlRelatedCertificate> getXmlRelatedCertificateForOrphanReferences(TokenCertificateSource certificateSource) {
 		List<XmlRelatedCertificate> relatedCertificates = new ArrayList<>();
 		for (CertificateRef certificateRef : certificateSource.getOrphanCertificateRefs()) {
-			CertificateToken certificateToken = getUsedCertificateByCertificateRef(certificateRef);
-			if (certificateToken != null) {
-				populateXmlRelatedCertificatesList(relatedCertificates, certificateSource, certificateToken, certificateRef);
+			Collection<CertificateToken> certificateTokens = getUsedCertificatesByCertificateRef(certificateRef);
+			if (Utils.isCollectionNotEmpty(certificateTokens)) {
+				for (CertificateToken certificateToken : certificateTokens) {
+					populateXmlRelatedCertificatesList(relatedCertificates, certificateSource, certificateToken, certificateRef);
+				}
 			}
 		}
 		return relatedCertificates;
@@ -1345,16 +1359,19 @@ public abstract class DiagnosticDataBuilder {
 	 * Returns used certificate by the {@code certificateRef}
 	 *
 	 * @param certificateRef {@link CertificateRef}
-	 * @return {@link CertificateToken}
+	 * @return a collection of {@link CertificateToken}s
 	 */
-	protected CertificateToken getUsedCertificateByCertificateRef(CertificateRef certificateRef) {
-		CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+	protected Collection<CertificateToken> getUsedCertificatesByCertificateRef(CertificateRef certificateRef) {
+		final CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
+		final Set<CertificateToken> tokensFromRefs = allCertificateSources.findTokensFromRefs(certificateRef);
+
+		final Set<CertificateToken> certificates = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
-			if (matcher.match(certificateToken, certificateRef)) {
-				return certificateToken;
+			if (tokensFromRefs.contains(certificateToken) || matcher.match(certificateToken, certificateRef)) {
+				certificates.add(certificateToken);
 			}
 		}
-		return null;
+		return certificates;
 	}
 
 	/**

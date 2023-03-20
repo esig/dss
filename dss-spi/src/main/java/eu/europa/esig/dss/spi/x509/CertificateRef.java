@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This class represents a Certificate Reference entry extracted from a signature
@@ -42,6 +43,9 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	/** ResponderId in case of OCSP response */
 	private ResponderId responderId;
+
+	/** Identifies the location URI of the X.509 public key certificate */
+	private String x509Url;
 	
 	/** An unique identifier of the reference */
 	private Identifier identifier;
@@ -108,6 +112,24 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 	}
 	
 	/**
+	 * Gets the X.509 Public Key Certificate location URL
+	 *
+	 * @return {@link String}
+	 */
+	public String getX509Url() {
+		return x509Url;
+	}
+
+	/**
+	 * Sets the X.509 Public Key Certificate location URL
+	 *
+	 * @param x509Url {@link String}
+	 */
+	public void setX509Url(String x509Url) {
+		this.x509Url = x509Url;
+	}
+
+	/**
 	 * Returns the certificate reference identifier
 	 *
 	 * @return {@link Identifier}
@@ -131,36 +153,30 @@ public class CertificateRef implements IdentifierBasedObject, Serializable {
 
 	@Override
 	public String toString() {
-		return "CertificateRef [certDigest=" + certDigest + ", signerIdentifier=" + signerIdentifier + "]";
+		return "CertificateRef [certDigest=" + certDigest + ", signerIdentifier=" + signerIdentifier +
+				", responderId=" + responderId + ", x509Uri='" + x509Url + "\']";
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CertificateRef)) return false;
+
+		CertificateRef that = (CertificateRef) o;
+
+		if (!Objects.equals(certDigest, that.certDigest)) return false;
+		if (!Objects.equals(signerIdentifier, that.signerIdentifier))
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CertificateRef other = (CertificateRef) obj;
-		if (getDSSId() == null) {
-			if (other.getDSSId() != null) {
-				return false;
-			}
-		} else if (!getDSSId().equals(other.getDSSId())) {
-			return false;
-		}
-		return true;
+		if (!Objects.equals(responderId, that.responderId)) return false;
+		return Objects.equals(x509Url, that.x509Url);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getDSSId() == null) ? 0 : getDSSId().hashCode());
+		int result = certDigest != null ? certDigest.hashCode() : 0;
+		result = 31 * result + (signerIdentifier != null ? signerIdentifier.hashCode() : 0);
+		result = 31 * result + (responderId != null ? responderId.hashCode() : 0);
+		result = 31 * result + (x509Url != null ? x509Url.hashCode() : 0);
 		return result;
 	}
 
