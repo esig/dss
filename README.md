@@ -102,7 +102,7 @@ The code of the demonstration can be found on https://ec.europa.eu/digital-build
 
 # Licenses
 
-The DSS project is delivered under the terms of the Lesser General Public License (LPGL), version 2.1 
+The DSS project is delivered under the terms of the Lesser General Public License (LGPL), version 2.1 
 
 [![License (LGPL version 2.1)](https://img.shields.io/badge/license-GNU%20LGPL%20version%202.1-blue.svg?style=flat-square)](https://opensource.org/licenses/LGPL-2.1)
 
