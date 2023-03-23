@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="SI-TSL_1" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>55</TSLSequenceNumber>
+        <TSLSequenceNumber>61</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">Republic of Slovenia, Ministry of Public Administration, Public Sector Inspectorate</Name>
@@ -105,9 +105,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-06-28T15:10:33Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-03-15T10:05:18Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2022-12-28T16:10:33Z</dateTime>
+            <dateTime>2023-09-15T09:05:18Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://www.tl.gov.si/SI_TL.xml</URI>
@@ -3221,9 +3221,28 @@
 <X509SKI>SKsb5KOLhJM=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2017-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-02-14T17:00:37Z</StatusStartingTime>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">HALCOM CA TS 4</Name>
+<Name xml:lang="sl">HALCOM CA TS 4</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>EMAILADDRESS=ca@halcom.si, CN=Halcom CA TS 4, OU=TSA, OID.2.5.4.97=VATSI-43353126, O=Halcom d.d., C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SKsb5KOLhJM=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-06-30T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
                 </TSPService>
                 <TSPService>
                     <ServiceInformation>
@@ -3603,7 +3622,7 @@
                             </DigitalId>
                         </ServiceDigitalIdentity>
                         <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2017-06-29T22:00:00Z</StatusStartingTime>
+                        <StatusStartingTime>2023-02-03T01:00:36Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
 <AdditionalServiceInformation>
@@ -3715,7 +3734,7 @@
         <ns5:CriteriaList assert="atLeastOne">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
-                    <ns4:Identifier>1.3.6.1.4.1.7597.2.</ns4:Identifier>
+                    <ns4:Identifier>1.3.6.1.4.1.7597.2</ns4:Identifier>
                 </ns5:PolicyIdentifier>
             </ns5:PolicySet>
             <ns5:Description/>
@@ -3725,6 +3744,144 @@
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">ACNLB SubCA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=ACNLB SubCA, OID.2.5.4.97=VATSI-91132550, O=NLB d.d., C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>RU+8a+pK6os=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-06-29T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.11</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.12</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.13</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.14</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.15</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.1.5.16</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.7597.2.</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
                 </TSPService>
                 <TSPService>
                     <ServiceInformation>
@@ -3826,8 +3983,8 @@
 <X509SKI>P73Njt++0WtlRD9g7OpCLjBwH2g=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-02-09T18:00:18Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
 <AdditionalServiceInformation>
@@ -4032,6 +4189,225 @@
                         </ServiceInformationExtensions>
                     </ServiceInformation>
                     <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">POŠTArCA</Name>
+<Name xml:lang="sl">POŠTArCA</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=POSTArCA, O=POSTA, C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>P73Njt++0WtlRD9g7OpCLjBwH2g=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.3.2.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.2.1.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.3.1.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.1.1.2</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.4.2.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.3.1.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.2.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.1.2.2</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.1.2.2</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.3.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.2.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.3.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.4.1.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.4.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.4.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.3.4.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.4.2.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.3.2.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.2.1.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.3.1.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.1.1.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.3.1.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.2.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.2.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.1.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.1.2.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.1.3.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>1.3.6.1.4.1.15284.1.1.2.3.2.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
                         <ServiceHistoryInstance>
                             <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
                             <ServiceName>
@@ -5260,8 +5636,8 @@
 <X509SKI>Qj5j9uUaq08=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2017-06-29T22:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-02-14T17:02:04Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
 <AdditionalServiceInformation>
@@ -5341,6 +5717,103 @@
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">SIMoD-CA-Restricted</Name>
+<Name xml:lang="sl">SIMoD-CA-Restricted</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=simod-ca-restricted, OU=simod-pki, O=mors, C=si</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>Qj5j9uUaq08=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-06-29T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>0.4.0.194112.1.0</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>0.4.0.194112.1.2</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>0.4.0.194112.1.1</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:PolicySet>
+                    <ns5:PolicyIdentifier>
+                        <ns4:Identifier>0.4.0.194112.1.3</ns4:Identifier>
+                    </ns5:PolicyIdentifier>
+                </ns5:PolicySet>
+                <ns5:Description/>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
                 </TSPService>
                 <TSPService>
                     <ServiceInformation>
@@ -5771,9 +6244,28 @@
 <X509SKI>QnNpp8HsQ1w=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2017-07-05T00:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-02-14T17:02:51Z</StatusStartingTime>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">EIUS TSA</Name>
+<Name xml:lang="sl">EIUS TS</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>EMAILADDRESS=pisarna@eius.si, CN=EIUS TS 1, OU=TSA, OID.2.5.4.97=VATSI-41887204, O=EIUS d.o.o., C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>QnNpp8HsQ1w=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-07-05T00:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
                 </TSPService>
                 <TSPService>
                     <ServiceInformation>
@@ -6162,12 +6654,12 @@
         <TrustServiceProvider>
             <TSPInformation>
                 <TSPName>
-                    <Name xml:lang="en">SETCCE d.o.o.</Name>
-                    <Name xml:lang="sl">SETCCE d.o.o.</Name>
+                    <Name xml:lang="en">SETCCE D.O.O.</Name>
+                    <Name xml:lang="sl">SETCCE D.O.O.</Name>
                 </TSPName>
                 <TSPTradeName>
-                    <Name xml:lang="en">SETCCE d.o.o.</Name>
-                    <Name xml:lang="sl">SETCCE d.o.o.</Name>
+                    <Name xml:lang="en">SETCCE D.O.O.</Name>
+                    <Name xml:lang="sl">SETCCE D.O.O.</Name>
                     <Name xml:lang="en">VATSI-39705684</Name>
                     <Name xml:lang="sl">SI-39705684</Name>
                 </TSPTradeName>
@@ -6216,8 +6708,8 @@
 <X509SKI>TMr8yehZnYE=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2021-03-01T01:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-03-16T01:00:32Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
 <AdditionalServiceInformation>
@@ -6231,8 +6723,138 @@
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/QESValidation/Q</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">SETCCE ePero®START Qualifield Validation Service</Name>
+<Name xml:lang="sl">SETCCE ePero®START Qualifield Validation Service</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>T=validation, OID.2.5.4.13=validation, ST=Slovenija, EMAILADDRESS=epero@setcce.com, L=Ljubljana, SERIALNUMBER=123456789, CN=ePero START Validation, OU=e-seal certificates, OID.2.5.4.97=VATSI-39705684, OID.1.3.6.1.4.1.5939.2.3=39705684, O=SETCCE d.o.o., C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>TMr8yehZnYE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2021-03-01T01:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/PSES/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="sl"> BetrSign® Kvalificirana storitev za potrjevanje veljavnosti</Name>
+                            <Name xml:lang="en"> BetrSign® Qualifield Validation Service</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>ST=Slovenija, T=BetrSign signing, OID.2.5.4.13=BetrSign signing, L=Ljubljana, SERIALNUMBER=0000004, CN=BetrSign, OU=e-seal certificates, OID.2.5.4.97=VATSI-39705684, OID.1.3.6.1.4.1.5939.2.3=39705684, O=SETCCE D.O.O., C=SI</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>RMle65sOalo=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-03-16T01:01:12Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/PSES/Q</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="sl"> BetrSign® Kvalificirana storitev za potrjevanje veljavnosti</Name>
+<Name xml:lang="en"> BetrSign® Qualifield Validation Service</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>ST=Slovenija, T=BetrSign signing, OID.2.5.4.13=BetrSign signing, L=Ljubljana, SERIALNUMBER=0000004, CN=BetrSign, OU=e-seal certificates, OID.2.5.4.97=VATSI-39705684, OID.1.3.6.1.4.1.5939.2.3=39705684, O=SETCCE D.O.O., C=SI</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>RMle65sOalo=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2023-03-16T01:00:37Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="false">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="false">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/QESValidation/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="sl"> BetrSign® Kvalificirana storitev za potrjevanje veljavnosti</Name>
+                            <Name xml:lang="en">BetrSign® Qualifield Validation Service</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>ST=Slovenija, T=BetrSign signing, OID.2.5.4.13=BetrSign signing, L=Ljubljana, SERIALNUMBER=0000004, CN=BetrSign, OU=e-seal certificates, OID.2.5.4.97=VATSI-39705684, OID.1.3.6.1.4.1.5939.2.3=39705684, O=SETCCE D.O.O., C=SI</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>RMle65sOalo=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-03-16T01:00:07Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
                 </TSPService>
             </TSPServices>
         </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-0cd5272628022510d191e5ce6fe637ba"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>OXPuOGaA3JkS55eFPbD+PFoXAWx050EkyQnVrJWFFfc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-0cd5272628022510d191e5ce6fe637ba"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>TX91OUpnH4aUj2T7iL1uOUjDmrTvs+ostj4E6lfD+b0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-0cd5272628022510d191e5ce6fe637ba">ra963At3wZRJJIA/t/UyKEi0bZuuqXoeMsfV0YJaSYXM+CfbRU0+iaV27eeVecCu9HksZyOmKKDNXbRjHwTvBgC1zZhV6uzTu2BZKai6jhcu+2ZM4lcwc64Hn17JkeHrs1r20pM3A3D2y2PJ6yhJI0Kr7p3aPxVOY/iDvu5tvDoroUlKJbl+kp7m5QVW0CR3bfZXkd59suQyaeMx/t8p+0R48rmFxT9MLmD0o4XkzRjT/Csh5kp1LDo18V+2yUoZYz9wAQlRP3qYWNTWRJ4IoWuh3irCNhC95Kd0lfmn2vJqNHtw4q6RdbVCsej5iJKW2tkHY5hP0V037qly4FJASw==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIELDCCAxSgAwIBAgIIJm/G0duCQBwwDQYJKoZIhvcNAQELBQAwgasxCzAJBgNVBAYTAlNJMVwwWgYDVQQKE1NSZXB1YmxpYyBvZiBTbG92ZW5pYSwgTWluaXN0cnkgb2YgUHVibGljIEFkbWluaXN0cmF0aW9uLCBQdWJsaWMgU2VjdG9yIEluc3BlY3RvcmF0ZTEZMBcGA1UEAwwQRHJhZ2FuIFBldHJvdmnEhzEPMA0GA1UEKhMGRHJhZ2FuMRIwEAYDVQQEDAlQZXRyb3ZpxIcwHhcNMjEwODAzMTAwODAwWhcNMjUwMjAzMTAwODAwWjCBqzELMAkGA1UEBhMCU0kxXDBaBgNVBAoTU1JlcHVibGljIG9mIFNsb3ZlbmlhLCBNaW5pc3RyeSBvZiBQdWJsaWMgQWRtaW5pc3RyYXRpb24sIFB1YmxpYyBTZWN0b3IgSW5zcGVjdG9yYXRlMRkwFwYDVQQDDBBEcmFnYW4gUGV0cm92acSHMQ8wDQYDVQQqEwZEcmFnYW4xEjAQBgNVBAQMCVBldHJvdmnEhzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAO4ydLU1DabrA+gy76h/LA91IIRnPKSp6c4f39QKSID0L83p5pbDDj8UFVN4uk4SYyoJXmpQ2qwQ++QzIGnwdz6FZvLBQ3tq+lQ/uLPvyjdnYW/MIS0S5G4dMKLiSoF2d7pazs1vfthzikwBUJKOQiUqHlbqPuBeyzrJ67whSc4t+Hf1OUi9vzDuxPkeGyTspt2WDA8KRnDidp8dX2zLKXBynfIsKQ1dEit3jQ/D7zRTdejvNuGiOu+EK+GQ7/cNhKUNVsis3OorxSzjiGir5gQubZfRbDxdRV1k854OZv7/y/AkN2u0UcJuvS7TGyLG7y8kJ4if33fR/xHJWvXsIncCAwEAAaNSMFAwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUU9fNbjU9qqvvnf3BFgdDXQZWnpAwDgYDVR0PAQH/BAQDAgbAMBEGA1UdJQQKMAgGBgQAkTcDADANBgkqhkiG9w0BAQsFAAOCAQEAcqUl0UwhTAaa1bnUCtBkOfjjQtpHAqoDmcauf+PNi71BXHWeokkXsBaNjv0jxr13vywMnv1RQMCYVVNd/JWQ35TBvYt3EQz58N9Nb7Umw/aIrovyw5eXiJK5j0fIib1iIIBU41lTdtPTlw9pl7Yi86FjqrV8t7TIHipHX1ZmUxHTLgGe6p1nIImBkdCUyQ9evy/40hfj6Icl2/7BxYr7hOb6EJ+Xb7e/mAXmrOsx0G84r6GyGRN9oyG7KwY3T0ZNJ5r75YDa30GD7LSGxSpaK+RXaRqac6mNCbCndo1BPzcXYFFV2QqDHaw7rK9pPEnEv0Y9hJcI/Cd1HvIyDj7qFQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-0cd5272628022510d191e5ce6fe637ba"><xades:SignedProperties Id="xades-id-0cd5272628022510d191e5ce6fe637ba"><xades:SignedSignatureProperties><xades:SigningTime>2022-06-28T15:42:00Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>CL0UL+vrryN51oW5kpsAPdKNsXOAT3jF0mhDc9jEQsuNs41x2ddOsNgbxaxEr8UL6izambFS+fmuZoB6l3l+sw==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>2.5.4.4=#0c09506574726f7669c487,2.5.4.42=#130644726167616e,CN=Dragan Petrović,O=Republic of Slovenia\, Ministry of Public Administration\, Public Sector Inspectorate,C=SI</ds:X509IssuerName><ds:X509SerialNumber>2769650900489355292</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-286d3b800db7ec31f4e6fe81e8b75df8"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>wj8qPRpnjvJBDjbg7EhI8vBImI/ZVKycPQ9bqLiDJA0=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-286d3b800db7ec31f4e6fe81e8b75df8"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>xu8YHTaKLJY3PijoLwdQ9ZxRLjnxb6IBSEVdQmXRTbo=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-286d3b800db7ec31f4e6fe81e8b75df8">MFKZJL90y07NhPJqUC/7WfADqvsnBosNv4hTUNJbhunKV2FmMAFNcsLxq0lbR+AUvk0aThCpt9WdKeIAludn/Y1Pjm57aTfcM9izXieJQKboK7Hdt44TS2mNWDMhtSpnGD3FlsYTCRSoJlLFI18TCwfmHaIq6R4HpYMj/EydfEWjPn9nHMtHJ0Cvgyxbb76AY3N8RZprhNWl3cagIBgiPsUylQVOnYsUC/W40xfODS48NVXnUyZ51cGMhDA2Geu1gheKCm2WJ0m8IqGYcKdu8/zEj65U4BRBLnxzHy4s3xzVYNOhzvXhmPvvFPFfuo54vKgqOSRDgmnwxp69n19+jQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIEHDCCAwSgAwIBAgIIIPgujXDNWpswDQYJKoZIhvcNAQELBQAwgaMxCzAJBgNVBAYTAlNJMVwwWgYDVQQKE1NSZXB1YmxpYyBvZiBTbG92ZW5pYSwgTWluaXN0cnkgb2YgUHVibGljIEFkbWluaXN0cmF0aW9uLCBQdWJsaWMgU2VjdG9yIEluc3BlY3RvcmF0ZTEVMBMGA1UEAxMMTWlsYW4gUGlybWFuMQ4wDAYDVQQqEwVNaWxhbjEPMA0GA1UEBBMGUGlybWFuMB4XDTIxMDkwMjA3MzkwMFoXDTI0MTIwMjA3MzkwMFowgaMxCzAJBgNVBAYTAlNJMVwwWgYDVQQKE1NSZXB1YmxpYyBvZiBTbG92ZW5pYSwgTWluaXN0cnkgb2YgUHVibGljIEFkbWluaXN0cmF0aW9uLCBQdWJsaWMgU2VjdG9yIEluc3BlY3RvcmF0ZTEVMBMGA1UEAxMMTWlsYW4gUGlybWFuMQ4wDAYDVQQqEwVNaWxhbjEPMA0GA1UEBBMGUGlybWFuMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjVp/fDyO1TgCbqOnENXhit/mqWMc6ubARxOI5OupzqUvpH4ljHJfTh1xunB9kmZNBmk2e6iMw+dxgvxW7IVlXM5ggbnSkyqnGcH/2JDHe8yXuL/4dVjYWPGVnRa5xanDMHvCcIFKplR/E3HbQq/CkebTHVrYkCarZvStBfakRt5D2KJYHbc3IuA4F/XJFak4y/9qMjDj2VrszD7WeTP6jFR7/duFZkgmYQSXevdmasqVrOobInFS1lz+lp2AUOyDQzLntKqsB+L0O9cQpA9u9yJ/e1BWwpDLlZxrXH0MQJsIz1Ca/BoZ0PuZ/uVFEmCxAHn1F0Id+zbvhIF7VeD4vwIDAQABo1IwUDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBQ1ZsTWq83s14aYSlBzTVb2YXuwQzAOBgNVHQ8BAf8EBAMCBsAwEQYDVR0lBAowCAYGBACRNwMAMA0GCSqGSIb3DQEBCwUAA4IBAQCKbTtnsVlgJ5wg8Gidizg79J60KtytZS8Vxbqa04GsjGfsY4Ub4dJFohme67e1dfqUQzy2JGsR8MxYDAvT595R6kcg66XGAjD2QL5Lvo/V9X/GyyrbNLgOVs2OX/3h1oWtwChiBWq2846lIkBbWuUm8RuJhuO0ETxn30EgVAHhi/7QufqtdnzHtr2j0a+gVUO3yfnL8OncBRHjsHTiVd7y8Shvtyw6CM3n9Ys7Dq4dn0lyp943w1jQ9rBA24eSEsRcOCf0UY5ZQkcjsgllSerQ+XWxJJG8lemkgYeiHhXWgYWsnZGpFmavLLFvQN5LLs6XQR87MnazaCERVLqgEPUD</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-286d3b800db7ec31f4e6fe81e8b75df8"><xades:SignedProperties Id="xades-id-286d3b800db7ec31f4e6fe81e8b75df8"><xades:SignedSignatureProperties><xades:SigningTime>2023-03-15T10:12:55Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>M018arcHq+Xm35pEwByXsWUJjhQfS6huoxwnnEY2+XECZ1MuChZdd5M675cKBVIewHNc/Vv3chVqmRqY+U267w==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>2.5.4.4=#13065069726d616e,2.5.4.42=#13054d696c616e,CN=Milan Pirman,O=Republic of Slovenia\, Ministry of Public Administration\, Public Sector Inspectorate,C=SI</ds:X509IssuerName><ds:X509SerialNumber>2375699988455709339</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

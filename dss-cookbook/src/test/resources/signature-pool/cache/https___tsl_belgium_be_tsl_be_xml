@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="BE-TL-001" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>63</TSLSequenceNumber>
+        <TSLSequenceNumber>64</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">FPS Economy, SMEs, Self-employed and Energy - Quality and Safety</Name>
@@ -106,9 +106,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-09-08T00:00:54Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-02-21T01:00:09Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2023-03-08T01:00:54Z</dateTime>
+            <dateTime>2023-08-21T00:00:09Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://tsl.belgium.be/tsl-be.xml</URI>
@@ -5548,5 +5548,55 @@
                 </TSPService>
             </TSPServices>
         </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Dioss Smart Solutions</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">VATBE-0478640659</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Honderdweg 21</StreetAddress>
+                            <Locality>Wetteren</Locality>
+                            <PostalCode>9230</PostalCode>
+                            <CountryName>BE</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:tuvi@dioss.com</URI>
+                        <URI xml:lang="en">https://smartsolutions.dioss.com/en/</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://smartsolutions.dioss.com/en/products/tuvi/practice-statement/</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/EDS/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Tuvi</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIGQTCCBCmgAwIBAgIUb+5WRU1Hho0bBEUZ1IKyMki2X9IwDQYJKoZIhvcNAQELBQAwczELMAkGA1UEBhMCQkUxGTAXBgNVBGEMEE5UUkJFLTA1Mzc2OTgzMTgxIDAeBgNVBAoMF1F1b1ZhZGlzIFRydXN0bGluayBCVkJBMScwJQYDVQQDDB5RdW9WYWRpcyBCZWxnaXVtIElzc3VpbmcgQ0EgRzIwHhcNMjIwMjA3MTUzOTI0WhcNMjUwMjA3MTU0OTAwWjBtMQswCQYDVQQGEwJCRTEbMBkGA1UEYQwSTlRSQkUtMDQ3OC42NDAuNjU5MSEwHwYDVQQKDBhEaW9zcyBTbWFydCBTb2x1dGlvbnMgTlYxHjAcBgNVBAMMFURpb3NzIFNtYXJ0IFNvbHV0aW9uczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL1PkX5WDp6bkxSRSXAoidlJbrDVYoOUUJBKxeWqOyg0Va97FRLn05l2svnPF984V8hiHvnDiqqBi41xIfYXZ92DoP2ux3SGV0clMU7xIo4aZcvfgu8OdmUxgKIj3SX1pVO2SdlXQzkZEBbmHb9n1rmJ601jN74aTjCek5tOZB+iK6ErgFrtfsFNOnFFUtEu5nEGNCVYZM6doXWmhy86PehAyaIblGgBvg20y0oQ/cxA/yGqaswY7xLQ8bAg5XCdZ83PpktDflHvfUF/OwwQDHnsg0sn7yHpOGK1e0x3jO+Q2ERwUZMw2KVq3oau9AZNzjpwGykWr8IoXqWzqDfSaN0CAwEAAaOCAdEwggHNMB8GA1UdIwQYMBaAFIfJvDGXEnpzu37APUVRtAEllVGrMHcGCCsGAQUFBwEBBGswaTA4BggrBgEFBQcwAoYsaHR0cDovL3RydXN0LnF1b3ZhZGlzZ2xvYmFsLmNvbS9xdmJlY2FnMi5jcnQwLQYIKwYBBQUHMAGGIWh0dHA6Ly91dy5vY3NwLnF1b3ZhZGlzZ2xvYmFsLmNvbTBZBgNVHSAEUjBQMEQGCisGAQQBvlgBgiwwNjA0BggrBgEFBQcCARYoaHR0cDovL3d3dy5xdW92YWRpc2dsb2JhbC5jb20vcmVwb3NpdG9yeTAIBgYEAI96AQIwHwYDVR0lBBgwFgYIKwYBBQUHAwQGCisGAQQBgjcKAwwwOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5xdW92YWRpc2dsb2JhbC5jb20vcXZiZWNhZzIuY3JsMB0GA1UdDgQWBBToEx0jYD7/h2o3fStv67jwySGGwDAOBgNVHQ8BAf8EBAMCBkAwEwYKKoZIhvcvAQEJAgQFMAMCAQEwNAYKKoZIhvcvAQEJAQQmMCQCAQGGH2h0dHA6Ly90cy5xdW92YWRpc2dsb2JhbC5jb20vYmUwDQYJKoZIhvcNAQELBQADggIBACBl79Euo1qFVUriQJ4GyD2RVHMCrsI27agyIf+fJPVPZzZYJwondI1r7ZO4ZZ3hI06zMfkL1KZvSgU+UePgMkasEakufxmLNeVjjL/khAGLyu56sWjxnZK/HQAaHozLsjmYm+skhtaGrSSYXI+BDDe12j+TLdn4Sg+t6El7yJeFAlNBWE3wl8szbrcVx4Vrpirq+q8UPW/Rrm9mRUmOQvJ8tU2ggzg7BWOnxBAIjdP0HoSQIw/XGE83PuzD5h4aS5T98kq0J/pN9guD5cC8ol4EV5DDMPBGFMi/qt+mcD61ZimrHEX5tSYkfMrRwEUHsk02S/FVDQkkDSCUaV07hR2Rw+A7MbJGV5SyunwzfpbiW/JPi6YHQxIRe5rZm6FIMDWFW7z98qU5TC0CI85hKWYcI2TujQLFku0UEMixbkh7WWkZTxRdZy8Aj1t8nhnK68ih10eZ8NS55N+Q/8slJjT8y0OTFzn/R7HnLyCGSgNnQrHBsegjIMxb+GXqLZZFF5F8TtZg4EtJpSl+3VhzQBENU9CZ0MfzICaiigptRqaJyN3/u/4gS2Ui4WjG4FSYbzqMR5KSs99RFmGeJyKC0VuwWkHAcaNuOFQbnSSZa6L621ifAZDX1omsELHjlR1+cJyB7kx/swBK9rvcCOjhrUAMwoa/ju6f8PBGnoiskyeT</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Dioss Smart Solutions, O=Dioss Smart Solutions NV, OID.2.5.4.97=NTRBE-0478.640.659, C=BE</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>6BMdI2A+/4dqN30rb+u48MkhhsA=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-02-22T01:00:42Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-a2a66251199cc7b8266fb4938f9abdd0"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Ri3BUhNmN3Eni1SB07voEDe2+GXreDwOU3EEoyGOmCk=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-a2a66251199cc7b8266fb4938f9abdd0"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>L+vX5h6gXVlJ4cWl76pfjcEFzXIqvK5vFxkLAEeOZfE=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-a2a66251199cc7b8266fb4938f9abdd0">LVII/fXW7hhxKXcKiYGgUYdh6emLtqBHY50q3vyymV0q/pshjKP26rt/dPeV14jgqwCtLz4wWTNxjYJ74d7sIEiW1UNT9NVFLXKKjSg812yUG74Ut0r+E8rdWBcohrgqNT4jfiwevoS6RSvHt0kxuijIGYZsYJlYoVshudWiN1buM9NBDp0um8fNr+LoQsnnialAK5mnw3yn8M6PXrxumKV6V1cSuIXKxFWGl2Sqhcc4CbaPzxesMNnI2cS8s+3eZdrIh7AYhRWQwWEWaurp3/hn1NkX/VE1nBr9YsQ0afN8AgPdXSYeNLnuGREMLkGLicdtwvK0JWynMX93uraPPQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIID3zCCAsegAwIBAgIJAJH6V+OXuB7aMA0GCSqGSIb3DQEBBQUAMIGHMS0wKwYDVQQDEyRCZWxnaWFuIFRydXN0ZWQgTGlzdCBTY2hlbWUgT3BlcmF0b3IxSTBHBgNVBAoTQEZQUyBFY29ub215LCBTTUVzLCBTZWxmLWVtcGxveWVkIGFuZCBFbmVyZ3kgLSBRdWFsaXR5IGFuZCBTYWZldHkxCzAJBgNVBAYTAkJFMB4XDTE0MDIxOTEzMzc0MFoXDTI0MTAxNDEzMzc0MFowgYcxLTArBgNVBAMTJEJlbGdpYW4gVHJ1c3RlZCBMaXN0IFNjaGVtZSBPcGVyYXRvcjFJMEcGA1UEChNARlBTIEVjb25vbXksIFNNRXMsIFNlbGYtZW1wbG95ZWQgYW5kIEVuZXJneSAtIFF1YWxpdHkgYW5kIFNhZmV0eTELMAkGA1UEBhMCQkUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDAgEFkoDPTYDvGk+/IPnGSPm58NRE7mpzLHk8lxpYnTAtbMhn7FWru9GlNi+blYYNOEmzN2E5KO9+7AAAMmx2x8zmEMwc3oUQ7E0WN5Gl+Y+7n6NtX50D/4Sbw4IjVvwwRRru8Coj5vq5Hz3JKTgft8teEpwb5vSFZh6+o9irdX342RJU4AtG78sxZvzIqpa3WsddMf5XDyjnGK3dRgkDuOaBxWEexuUiN4LvO+MacwoaxEqLhEZ6TALGWS2WmNEW3OlUdf7nc0Tz/lnyQsuFn01c4pg56hjyxLtpjyHwNwbTDx+cjBpBveOT9Nb6UfKFHknC5AfrIOWnFLXUmyKD/AgMBAAGjTDBKMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgbAMB0GA1UdDgQWBBRf745pXfv0l1rxBwgOUhlQqteQUTARBgNVHSUECjAIBgYEAJE3AwAwDQYJKoZIhvcNAQEFBQADggEBABSri/BFtWHsvDgFri/fPFXJaQ9a5U1HgfOrg0pcVacnC2ezhZ3Ita1d+nWlaHfUBx2L7pp41G23TZE9Efcb/8RPuYDDcIv2TSKV/hIxthk+IP6avZ6cEuWL3iXhqusRM313QgH8G67EPDmTy9hX0t/3KnBQZ6gmb9SpTnG44pQ8LOfLvpzaT2Z1etBsXp0JED7P0OPJq459S3huIYoM3NTNaU8dLGAYJUR7D2fcvDySvt8xIjO7HtzHer79Uq4bNn8uRRHgKJ2LMBK0LvoVBX0PekQFSXi06xpPA9SjmozZ76dW0fK7uPUOFoXB9LtsZCFsMRjTL9+KhPyhSam2iy8=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-a2a66251199cc7b8266fb4938f9abdd0"><xades:SignedProperties Id="xades-id-a2a66251199cc7b8266fb4938f9abdd0"><xades:SignedSignatureProperties><xades:SigningTime>2022-09-08T12:58:24Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>RQBeOnD1KzUkikvtsATvRygZ0oxzzHJeMzMvcgIvQ3Ahm7pqnT0KEQmpEF1DoDiwtgJok5l9vtOy0uMSYQlQ1Q==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=BE,O=FPS Economy\, SMEs\, Self-employed and Energy - Quality and Safety,CN=Belgian Trusted List Scheme Operator</ds:X509IssuerName><ds:X509SerialNumber>10518816514691833562</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-ef8ccd25390a035110b53123e17ee01a"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>n/czGrXhsnumcbfUviLs24RRhtmRMdbg4IHAHsTSDbY=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-ef8ccd25390a035110b53123e17ee01a"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>EB6WVnUEzbfYFsAnJqWqhCBcdMB0XyPQK6UtzyJziuc=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-ef8ccd25390a035110b53123e17ee01a">AYrEhFzguGkoINaOC3HkNSL9Ziyckd5jb9icEvgKB0namJNaNmE4ahP82/rGKoVTbgNlL0Etar2JiS5LwXrgrdS6OlrwnkR6VKcQDeHiI38ftZ711HBR8nfdgQrC5go179O0l461juuQhn4B9OA4tdFMYzSEz16HTtRM5ixTGY3z2ENhKjkCGql9t22Wwd6bsfat7ksbw3/Pz+38IvP8ZDVaHg/mlPt9qkQh6tnkDAiU3cXl4Mu1WeMws8LyraT57G46UzgrLh869LiN/NVjviCLXVKiT5J852/VhXidbJijt9ejfxMlKlNT9GTQMS/aPYzmffSnTrVH3JaUDiCj3g==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIID3zCCAsegAwIBAgIJAK7RpgGHETKPMA0GCSqGSIb3DQEBBQUAMIGHMS0wKwYDVQQDEyRCZWxnaWFuIFRydXN0ZWQgTGlzdCBTY2hlbWUgT3BlcmF0b3IxSTBHBgNVBAoTQEZQUyBFY29ub215LCBTTUVzLCBTZWxmLWVtcGxveWVkIGFuZCBFbmVyZ3kgLSBRdWFsaXR5IGFuZCBTYWZldHkxCzAJBgNVBAYTAkJFMB4XDTE0MDIxOTEzMzc1MloXDTI1MDIxMTEzMzc1MlowgYcxLTArBgNVBAMTJEJlbGdpYW4gVHJ1c3RlZCBMaXN0IFNjaGVtZSBPcGVyYXRvcjFJMEcGA1UEChNARlBTIEVjb25vbXksIFNNRXMsIFNlbGYtZW1wbG95ZWQgYW5kIEVuZXJneSAtIFF1YWxpdHkgYW5kIFNhZmV0eTELMAkGA1UEBhMCQkUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDAgEFkoDPTYDvGk+/IPnGSPm58NRE7mpzLHk8lxpYnTAtbMhn7FWru9GlNi+blYYNOEmzN2E5KO9+7AAAMmx2x8zmEMwc3oUQ7E0WN5Gl+Y+7n6NtX50D/4Sbw4IjVvwwRRru8Coj5vq5Hz3JKTgft8teEpwb5vSFZh6+o9irdX342RJU4AtG78sxZvzIqpa3WsddMf5XDyjnGK3dRgkDuOaBxWEexuUiN4LvO+MacwoaxEqLhEZ6TALGWS2WmNEW3OlUdf7nc0Tz/lnyQsuFn01c4pg56hjyxLtpjyHwNwbTDx+cjBpBveOT9Nb6UfKFHknC5AfrIOWnFLXUmyKD/AgMBAAGjTDBKMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgbAMB0GA1UdDgQWBBRf745pXfv0l1rxBwgOUhlQqteQUTARBgNVHSUECjAIBgYEAJE3AwAwDQYJKoZIhvcNAQEFBQADggEBABabI8rU/pW4uiTHk47X838qntx6FJ5iDCs+iaED142+yju/wQVU4J8rjS4UqsdO8wOM4sfyLjMLRRsK60saZ5o2u+tLIj0QrFRytTD1WIuPZxpBjQU8Zj/+aLkr4bQmyqgJ4XzJZ9BMvi3Yv18jQxJSjvGpXaWpUNLNnhENTuzKv8f/0vBn2Inmpg7cwgj2q8qhZ/3r1ZmHETSDmEdjV4ovYruAKX58jwwnRdgacTtgQpB88+zZDtAp3FVJxR9nefCdvjV2nuN++UgA2v8d2u9c8c7ObGd7dL6O9rQCfvBWbw6/h9nkXSJSAjKXS1uvnABtq3fQabHwxNc8rIQPkLk=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-ef8ccd25390a035110b53123e17ee01a"><xades:SignedProperties Id="xades-id-ef8ccd25390a035110b53123e17ee01a"><xades:SignedSignatureProperties><xades:SigningTime>2023-02-21T10:41:22Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>UKcJnOWpOMLT4Mv5rcxxV/eBRxiN3sbvoM7K9UQnbl9v7pkUiZXRdkiEYaYxwA8eMLzkQ0y8HwIV9o8+x6m5sg==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=BE,O=FPS Economy\, SMEs\, Self-employed and Energy - Quality and Safety,CN=Belgian Trusted List Scheme Operator</ds:X509IssuerName><ds:X509SerialNumber>12597032158223217295</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="TrustServiceStatusList-1" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>132</TSLSequenceNumber>
+        <TSLSequenceNumber>136</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">National Bank of Poland</Name>
@@ -109,9 +109,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-09-20T07:04:56Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-03-22T10:19:45Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2022-12-20T08:04:56Z</dateTime>
+            <dateTime>2023-06-22T09:19:45Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://www.nccert.pl/tsl/PL_TSL.xml</URI>
@@ -4823,6 +4823,21 @@
                         </ServiceSupplyPoints>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
 <ns5:Qualifications>
     <ns5:QualificationElement>
         <ns5:Qualifiers>
@@ -4852,16 +4867,12 @@
 </ns5:Qualifications>
                             </Extension>
                             <Extension Critical="true">
-<AdditionalServiceInformation>
-    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-</AdditionalServiceInformation>
-                            </Extension>
-                            <Extension Critical="true">
 <ns5:Qualifications>
     <ns5:QualificationElement>
         <ns5:Qualifiers>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert"/>
         </ns5:Qualifiers>
         <ns5:CriteriaList assert="all">
             <ns5:KeyUsage>
@@ -4913,16 +4924,6 @@
         </ns5:CriteriaList>
     </ns5:QualificationElement>
 </ns5:Qualifications>
-                            </Extension>
-                            <Extension Critical="true">
-<AdditionalServiceInformation>
-    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
-</AdditionalServiceInformation>
-                            </Extension>
-                            <Extension Critical="true">
-<AdditionalServiceInformation>
-    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</URI>
-</AdditionalServiceInformation>
                             </Extension>
                             <Extension Critical="true">
 <ns5:Qualifications>
@@ -8663,17 +8664,6 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
         </ns5:Qualifiers>
         <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.1</ns4:Identifier>
@@ -9167,6 +9157,11 @@
 </AdditionalServiceInformation>
                             </Extension>
                             <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
 <ns5:Qualifications>
     <ns5:QualificationElement>
         <ns5:Qualifiers>
@@ -9174,18 +9169,7 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert"/>
         </ns5:Qualifiers>
-        <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
+        <ns5:CriteriaList assert="all">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.11</ns4:Identifier>
@@ -9197,11 +9181,6 @@
 </ns5:Qualifications>
                             </Extension>
                             <Extension Critical="true">
-<AdditionalServiceInformation>
-    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
-</AdditionalServiceInformation>
-                            </Extension>
-                            <Extension Critical="true">
 <ns5:Qualifications>
     <ns5:QualificationElement>
         <ns5:Qualifiers>
@@ -9209,18 +9188,7 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
         </ns5:Qualifiers>
-        <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
+        <ns5:CriteriaList assert="all">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.12.1</ns4:Identifier>
@@ -9239,18 +9207,7 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
         </ns5:Qualifiers>
-        <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
+        <ns5:CriteriaList assert="all">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.12.2</ns4:Identifier>
@@ -9269,18 +9226,7 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
         </ns5:Qualifiers>
-        <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
+        <ns5:CriteriaList assert="all">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.13.1</ns4:Identifier>
@@ -9299,18 +9245,7 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESeal"/>
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
         </ns5:Qualifiers>
-        <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
+        <ns5:CriteriaList assert="all">
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.13.2</ns4:Identifier>
@@ -9355,17 +9290,6 @@
                 <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
             </ns5:Qualifiers>
             <ns5:CriteriaList assert="atLeastOne">
-                <ns5:KeyUsage>
-                    <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-                </ns5:KeyUsage>
                 <ns5:PolicySet>
                     <ns5:PolicyIdentifier>
                         <ns4:Identifier>1.2.616.1.113527.2.4.1.12.1</ns4:Identifier>
@@ -9425,17 +9349,6 @@
             <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
         </ns5:Qualifiers>
         <ns5:CriteriaList assert="atLeastOne">
-            <ns5:KeyUsage>
-                <ns5:KeyUsageBit name="crlSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="dataEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="decipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="digitalSignature">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="encipherOnly">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyAgreement">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyCertSign">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="keyEncipherment">false</ns5:KeyUsageBit>
-                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
-            </ns5:KeyUsage>
             <ns5:PolicySet>
                 <ns5:PolicyIdentifier>
                     <ns4:Identifier>1.2.616.1.113527.2.4.1.12.1</ns4:Identifier>
@@ -9554,6 +9467,27 @@
                         </ServiceInformationExtensions>
                     </ServiceInformation>
                 </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/EDS/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Qualified Electronic Registered Delivery Service</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>OID.2.5.4.97=VATPL-5170359458, CN=Qualified Electronic Registered Delivery Service, O=Asseco Data Systems S.A., C=PL</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>JLX9SMdH2gmuCs9NBz6y5KA4HbI=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-03-22T11:30:35Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
             </TSPServices>
         </TrustServiceProvider>
         <TrustServiceProvider>
@@ -9581,6 +9515,7 @@
                         </PostalAddress>
                     </PostalAddresses>
                     <ElectronicAddress>
+                        <URI xml:lang="en">mailto:kontakt@doreczeniaelektroniczne.pl</URI>
                         <URI xml:lang="en">https://doreczeniaelektroniczne.pl/</URI>
                     </ElectronicAddress>
                 </TSPAddress>
@@ -9690,4 +9625,4 @@
             </TSPServices>
         </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-685c1fe73e05dcaa07823b93134c0636"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>mcwtO2E8h1XvcLAFZY6GiV9tOZl/FIbiDgfEmxZ2hp4=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-685c1fe73e05dcaa07823b93134c0636"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Jrd++db5wMhvCV2+nQou+bv2MyRaBZ/voRqdWAm75dA=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-685c1fe73e05dcaa07823b93134c0636">WUJNgsO8th8YLghLgeZa2VZaMLsQPpzsnx1Ti16/dfedRgFvBBwai7caXq/B8vhpajPI/ebzvAtgfdd4pJqZjVbjd5jWX/aE/wR5IEJ3XzlvDeHx04sBUds9Nzk7JWMUVaYXtQnXXccMYpsgO+m+46hEtyHDTAWQJwzC7WnLy6C6amge0wcApYcwURbdcBHG0/clshyQlmcov+KmKUBPji3opZzGTlag0jg9n5y+reyoKOQcQ2HKoCQN181dhNpga4FGRL0bOXJr0wl8SnqMe8yZ23Nyk7m9b5t3/YQ76rPHGHqdrUA7yAbTuBRJtBudq79yUyZVjtfqFDZUHWGwKg==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDaTCCAlGgAwIBAgIJANYIzUuXA+96MA0GCSqGSIb3DQEBCwUAME0xCzAJBgNVBAYTAlBMMSAwHgYDVQQKExdOYXRpb25hbCBCYW5rIG9mIFBvbGFuZDEcMBoGA1UEAxMTUG9saXNoIFRTTCBPcGVyYXRvcjAeFw0yMDA3MDYwOTAyNTBaFw0yNTA3MDUwOTAyNTBaME0xCzAJBgNVBAYTAlBMMSAwHgYDVQQKExdOYXRpb25hbCBCYW5rIG9mIFBvbGFuZDEcMBoGA1UEAxMTUG9saXNoIFRTTCBPcGVyYXRvcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMsyEHQSiCpsATgk5+uUw7NlBZeI+BtBYUwqnpwAKmnnVTlhGKqPwCNFw4e1PnDewRpirF3skiBTJ7Ab3UT8caWtLp3njeaecWw4nIe+uISFTS4qudGNMP2KNs2X4DWojzTA//La65OAWfCsYFCGuNLU+sEjbITU/TEGq7ijtXwbtpJt2hSJMGmibDJCj/aSuls+TxzlEBazmjDFeqLBgNE+woScReVGAI2j+DfBFFUQMllrIN96rtCN7yDKE4mjxdV8ZY4XOB+ABb+XBLPThtfZaGf8JfCMIH5fQGCZW1vCTj0K9J6Q5OagUVkC6n3EhmbfX8ZjDRka0FSVtzO/QB0CAwEAAaNMMEowCwYDVR0PBAQDAgeAMBEGA1UdJQQKMAgGBgQAkTcDADAJBgNVHRMEAjAAMB0GA1UdDgQWBBSuieMJHlsW0lxpUa5zD0aKL6xEZTANBgkqhkiG9w0BAQsFAAOCAQEAEUu17bXCPpepjBb7QvMA28GMWQe4Up06tIvZQ4pZ0FRBE3hmbe44A+/3kh17hjd1EMb0ZaPVPl/EkZLqYsDWw8jH1H6ITIM4rW9WJs0VGAXJrX5S50TpvaRCJ0ndlVTPaG2EYKM0XeITX0DL5n1dDPUtfoFCq/KOdOSQJ207/XhiMzOpNTpvf7nOEmn1JBC0DU227UQFxtTjkkBLGLzg+j5EXumk5fZm/cGnKjRT5yi50UXyFTshxv4C906b3hBQkAHu8Unxr3Xfh/cueAku2jKi6270xnA6liDB8vzi7XDe4DfWqJmr8tUnKgqsBl7louMhiV/pqRmuBULnpYhvPg==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-685c1fe73e05dcaa07823b93134c0636"><xades:SignedProperties Id="xades-id-685c1fe73e05dcaa07823b93134c0636"><xades:SignedSignatureProperties><xades:SigningTime>2022-09-20T07:25:24Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>m66dkxAQIl95AfvLOfUVN86X1u7s1Buk+us9eVir8F4h83QdAOWS80zA+bWWXHoQeTgLmGxMJl/1xEldNqjfjg==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Polish TSL Operator,O=National Bank of Poland,C=PL</ds:X509IssuerName><ds:X509SerialNumber>15422802648470122362</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-bb23903f48ea4841d5125ae97db7f7e9"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>OTHl8DJZrcA9yv1kjbujgK646BJ4OqsZrm0lhX7+deg=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-bb23903f48ea4841d5125ae97db7f7e9"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>QPsQx94nTMLLCM7b2VAQBSh4jXj8NnN+aSEOMs3Ad1U=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-bb23903f48ea4841d5125ae97db7f7e9">nYd6o6BZan6rFkgCkY71xUGhCoWOHAQ79wKrkzRGxFNdRoTDrOWIEJCmZquwEKj0NtUUkBtb0gcuEi88C6WNSpRajvmo/uTtK5TDDeO3a52M9h1nuBL4gz0T+IAQT3NaYQuO3t1eFDe4uTyHZSBuPhf5nUA9B9xvH+DFQORThQrdKOft1OupMy7XrgXbcsKA1BrIr1vhz2WMxSbCMHd4XoL9gMgBkXWbdfii0hM9MgEgFaIcn20YGQpkDmHrhFoEYW61Skh1gu5f3xXmJl86eCiuImLc6CfzEJM0QeF9eLRRsb3DzDxBt7WtuyTt8K8RkhCiELaK2m1m2XsHcsguyA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDaTCCAlGgAwIBAgIJANYIzUuXA+96MA0GCSqGSIb3DQEBCwUAME0xCzAJBgNVBAYTAlBMMSAwHgYDVQQKExdOYXRpb25hbCBCYW5rIG9mIFBvbGFuZDEcMBoGA1UEAxMTUG9saXNoIFRTTCBPcGVyYXRvcjAeFw0yMDA3MDYwOTAyNTBaFw0yNTA3MDUwOTAyNTBaME0xCzAJBgNVBAYTAlBMMSAwHgYDVQQKExdOYXRpb25hbCBCYW5rIG9mIFBvbGFuZDEcMBoGA1UEAxMTUG9saXNoIFRTTCBPcGVyYXRvcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMsyEHQSiCpsATgk5+uUw7NlBZeI+BtBYUwqnpwAKmnnVTlhGKqPwCNFw4e1PnDewRpirF3skiBTJ7Ab3UT8caWtLp3njeaecWw4nIe+uISFTS4qudGNMP2KNs2X4DWojzTA//La65OAWfCsYFCGuNLU+sEjbITU/TEGq7ijtXwbtpJt2hSJMGmibDJCj/aSuls+TxzlEBazmjDFeqLBgNE+woScReVGAI2j+DfBFFUQMllrIN96rtCN7yDKE4mjxdV8ZY4XOB+ABb+XBLPThtfZaGf8JfCMIH5fQGCZW1vCTj0K9J6Q5OagUVkC6n3EhmbfX8ZjDRka0FSVtzO/QB0CAwEAAaNMMEowCwYDVR0PBAQDAgeAMBEGA1UdJQQKMAgGBgQAkTcDADAJBgNVHRMEAjAAMB0GA1UdDgQWBBSuieMJHlsW0lxpUa5zD0aKL6xEZTANBgkqhkiG9w0BAQsFAAOCAQEAEUu17bXCPpepjBb7QvMA28GMWQe4Up06tIvZQ4pZ0FRBE3hmbe44A+/3kh17hjd1EMb0ZaPVPl/EkZLqYsDWw8jH1H6ITIM4rW9WJs0VGAXJrX5S50TpvaRCJ0ndlVTPaG2EYKM0XeITX0DL5n1dDPUtfoFCq/KOdOSQJ207/XhiMzOpNTpvf7nOEmn1JBC0DU227UQFxtTjkkBLGLzg+j5EXumk5fZm/cGnKjRT5yi50UXyFTshxv4C906b3hBQkAHu8Unxr3Xfh/cueAku2jKi6270xnA6liDB8vzi7XDe4DfWqJmr8tUnKgqsBl7louMhiV/pqRmuBULnpYhvPg==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-bb23903f48ea4841d5125ae97db7f7e9"><xades:SignedProperties Id="xades-id-bb23903f48ea4841d5125ae97db7f7e9"><xades:SignedSignatureProperties><xades:SigningTime>2023-03-22T10:49:08Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>m66dkxAQIl95AfvLOfUVN86X1u7s1Buk+us9eVir8F4h83QdAOWS80zA+bWWXHoQeTgLmGxMJl/1xEldNqjfjg==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Polish TSL Operator,O=National Bank of Poland,C=PL</ds:X509IssuerName><ds:X509SerialNumber>15422802648470122362</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

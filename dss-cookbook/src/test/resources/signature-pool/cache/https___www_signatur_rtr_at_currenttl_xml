@@ -2,7 +2,7 @@
 <TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" TSLTag="http://uri.etsi.org/19612/TSLTag">
 	<SchemeInformation>
 		<TSLVersionIdentifier>5</TSLVersionIdentifier>
-		<TSLSequenceNumber>56</TSLSequenceNumber>
+		<TSLSequenceNumber>57</TSLSequenceNumber>
 		<TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
 		<SchemeOperatorName>
 			<Name xml:lang="en">Rundfunk und Telekom Regulierungs-GmbH</Name>
@@ -107,9 +107,9 @@
 				</AdditionalInformation>
 			</OtherTSLPointer>
 		</PointersToOtherTSL>
-		<ListIssueDateTime>2022-08-11T11:51:27Z</ListIssueDateTime>
+		<ListIssueDateTime>2022-11-23T15:14:22Z</ListIssueDateTime>
 		<NextUpdate>
-			<dateTime>2023-02-11T12:51:27Z</dateTime>
+			<dateTime>2023-05-23T14:14:22Z</dateTime>
 		</NextUpdate>
 		<DistributionPoints>
 			<URI>https://www.signatur.rtr.at/currenttl.xml</URI>
@@ -1478,6 +1478,64 @@
 						</ServiceDigitalIdentity>
 						<ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
 						<StatusStartingTime>2022-08-11T11:53:46Z</StatusStartingTime>
+					</ServiceInformation>
+				</TSPService>
+				<TSPService>
+					<ServiceInformation>
+						<ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+						<ServiceName>
+							<Name xml:lang="en">a-sign-premium-enc-05</Name>
+							<Name xml:lang="de">a-sign-premium-enc-05</Name>
+						</ServiceName>
+						<ServiceDigitalIdentity>
+							<DigitalId>
+								<X509Certificate>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</X509Certificate>
+							</DigitalId>
+							<DigitalId>
+								<X509SubjectName>CN=a-sign-Premium-Enc-05, OU=a-sign-Premium-Enc-05, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+							</DigitalId>
+							<DigitalId>
+								<X509SKI>Q7B7sqrh3+g=</X509SKI>
+							</DigitalId>
+						</ServiceDigitalIdentity>
+						<ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+						<StatusStartingTime>2022-11-23T15:18:00Z</StatusStartingTime>
+						<ServiceInformationExtensions>
+							<Extension Critical="true">
+								<AdditionalServiceInformation>
+									<URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+								</AdditionalServiceInformation>
+							</Extension>
+						</ServiceInformationExtensions>
+					</ServiceInformation>
+				</TSPService>
+				<TSPService>
+					<ServiceInformation>
+						<ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+						<ServiceName>
+							<Name xml:lang="en">a-sign-premium-enc-07</Name>
+							<Name xml:lang="de">a-sign-premium-enc-07</Name>
+						</ServiceName>
+						<ServiceDigitalIdentity>
+							<DigitalId>
+								<X509Certificate>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</X509Certificate>
+							</DigitalId>
+							<DigitalId>
+								<X509SubjectName>CN=a-sign-Premium-Enc-07, OU=a-sign-Premium-Enc-07, O=A-Trust Ges. f. Sicherheitssysteme im elektr. Datenverkehr GmbH, C=AT</X509SubjectName>
+							</DigitalId>
+							<DigitalId>
+								<X509SKI>SqIMD71uiVQ=</X509SKI>
+							</DigitalId>
+						</ServiceDigitalIdentity>
+						<ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+						<StatusStartingTime>2022-11-23T15:26:42Z</StatusStartingTime>
+						<ServiceInformationExtensions>
+							<Extension Critical="true">
+								<AdditionalServiceInformation>
+									<URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+								</AdditionalServiceInformation>
+							</Extension>
+						</ServiceInformationExtensions>
 					</ServiceInformation>
 				</TSPService>
 			</TSPServices>
@@ -3293,14 +3351,14 @@
 				</TSPService>
 			</TSPServices>
 		</TrustServiceProvider>
-	</TrustServiceProviderList><dsig:Signature Id="Signature-dc45f0a4-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-dc45f0a4-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="Reference-dc45f0a4-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>Qi0cL+/rUCA8oWE//H2DZQU4cT6xn5/mYvX4V+nVQs8=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-dc45f0a4-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-dc45f0a4-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>mQT7JC6Mm2ijPnB8Fi4q8zGq6i4oIwX6HXp+UcIWE5Y=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-dc45f0a4-1">cpdkzI59pUVgoGTj1abZjMGWLW+Engz4WB6jCvCLOzIX29Ho4OrCPO3ChsdE/WCz
-uvxiDhKNTVdfrGY+obSGIo6s+zsS0aTRdA5+mN1XgNnMixbTPN9Z+omaFh+eOfW8
-gB6xM0jVOI5o9Vii1VzobNY5dXX8Xul86M1TDVeP2+Mwp3mtvur+cxVXOMGCUN3Z
-TXbj2rm0nejUXteSIG3/t03WvcbmwSu7Nsb0O0d24YCZx5dYFngfJLt11XhpJULg
-BK+RE19oJDB88VKxc56ehdPbOVMVs4BRk7WRwUAiPdnrpP3+aiYsXzRcjrxZscLo
-/WifvZ4/zcUFyNsp19G3NiVfCjcB5AN2JeOMtjxN8QJUlSgtbJKgcucrShqR4n/o
-csJztVuWVxjq/krbyc+LL8r3jtpcOkjcWRP10S9pnwIG2sJDZ2Ww6Tq46ZQ9zs10
-HDSPMQuVSvjKt5iASFZET39QyFh+sU0ypaz8s9EU+sLCUT2tckdFD5Qtamy/VwCO</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIF5TCCA82gAwIBAgIJAJzqELfj2cW5MA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNV
+	</TrustServiceProviderList><dsig:Signature Id="Signature-126d2198-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-126d2198-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="Reference-126d2198-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>HzUVnNdNCcHxZgruc8sz3ox8bto7yD4pTjC8PySpY0E=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-126d2198-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-126d2198-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>i4648+v9isV4sCmZSWpJgPk3dMHGAuaQ3bB1yvJCBUs=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-126d2198-1">ozepmUxpfP/dBwCkVOGRnuB+csldhIO4FAwlyNryGZZEQomH7y/9n1FRV+5hYK9v
+iNkdK81wBJz8Get3en+xC6J+4OSr+AzHkeP299KyUZw7IZArA8nGSq+aPTr6h/6X
+xXNREe/hKsaJm8jDymhSi5zbBOpd2mSrs0CvnvoPNwjoEtYjIGs6z12tlH5ydc8t
+gnbFVe8iEYX206zcKvlIYA74QySmjEjMcHI2OmxL5nZooOHraibpZiM7UTae41O8
+PCwVrYEdM2o+5dCnLWBNrPJT3n7u/hgHTxKCUWI5FypIWm9aM+cV1TxgbscXfuxH
+jeB8G0KslpJ2NnSQZU2yGWhuUVghoePY6VHFUrlz5ml4+eV0+D82qmf5xjrQdmsG
+XCfg30vI12NdqT4iaoVg1VN7R9AoXYNi4lv8MNdFBVdXb7DqFPHXe05rN3utDOA1
+LB1vHBtr2dv8iE+PaYCLfKDsU1dMhp/BWDYTAgG4t5Q2GKko0qt7qzXgz0M+IM5F</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIF5TCCA82gAwIBAgIJAJzqELfj2cW5MA0GCSqGSIb3DQEBCwUAMFcxCzAJBgNV
 BAYTAkFUMS8wLQYDVQQKDCZSdW5kZnVuayB1bmQgVGVsZWtvbSBSZWd1bGllcnVu
 Z3MtR21iSDEXMBUGA1UEAwwOUlRSIFNlcnZpY2VzIDQwHhcNMjAxMDIxMTIzOTMw
 WhcNMjQxMDIxMTIzOTMwWjCBiDELMAkGA1UEBhMCQVQxLzAtBgNVBAoMJlJ1bmRm
@@ -3331,5 +3389,5 @@ ccB/TwAp59zr37tFOdZeeQlsLVu7V1IUHbwF7zEOuBZGGo+bbI6nX6R2GNHgEAJ+
 +CowFMADv9ZwnR0gx2p2/U3rDOQFR7T1nDtdSkTAtsTT9U0w2uCbm0tqICqgAyAw
 +HGbg59oBGRzJwFrbqH/hTJEsY6g6FfplaDhJf8J6HVAGOmfmwkWMgQpy9/d0VVe
 D8sJpoTMCn8+gF6GUDDn86LsDCKeb0+nbaLtxfTeJKhQ1dHL84EXCOvK1SvFspS+
-fBy8taueakRycO8WoMtw1infObLeSi3p+A==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-dc45f0a4-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-dc45f0a4-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-dc45f0a4-1"><xades:SignedSignatureProperties><xades:SigningTime>2022-08-11T14:31:10Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>eMdCsnfQ5+Dd1mYhWp304o2xFCiUgjVUwZFkfpDs1zM=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=RTR Services 4,O=Rundfunk und Telekom Regulierungs-GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>11306868196454811065</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-dc45f0a4-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
+fBy8taueakRycO8WoMtw1infObLeSi3p+A==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-126d2198-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-126d2198-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-126d2198-1"><xades:SignedSignatureProperties><xades:SigningTime>2022-11-23T15:59:55Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>eMdCsnfQ5+Dd1mYhWp304o2xFCiUgjVUwZFkfpDs1zM=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=RTR Services 4,O=Rundfunk und Telekom Regulierungs-GmbH,C=AT</dsig:X509IssuerName><dsig:X509SerialNumber>11306868196454811065</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-126d2198-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
 </TrustServiceStatusList>
