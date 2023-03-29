@@ -144,8 +144,7 @@ public class EuropeanLOTLSnippets {
 	public LOTLSource europeanLOTL() {
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setUrl(LOTL_URL);
-//		lotlSource.setCertificateSource(officialJournalContentKeyStore());
-		lotlSource.setCertificateSource(new CommonCertificateSource());
+		lotlSource.setCertificateSource(officialJournalContentKeyStore());
 		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(OJ_URL));
 		lotlSource.setPivotSupport(true);
 		return lotlSource;
