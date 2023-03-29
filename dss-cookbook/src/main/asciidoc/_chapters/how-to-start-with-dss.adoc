@@ -419,3 +419,5 @@ dss-standalone-app:: Standalone application which allows signing a document with
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
 dss-demo-webapp:: Demonstration web application which presents basic DSS functionalities.
 dss-demo-bundle:: Packaging module for dss-demo-webapp.
+dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
+dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].
