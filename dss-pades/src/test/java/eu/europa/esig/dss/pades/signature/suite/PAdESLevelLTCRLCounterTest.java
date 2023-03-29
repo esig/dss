@@ -74,7 +74,8 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(signingTime);
         calendar.add(Calendar.SECOND, -1);
-        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+        // ensure the same time is used for TSA and revocation data
+        service.setTspSource(getOnlineTSPSourceByNameAndTime(GOOD_TSA, calendar.getTime()));
     }
 
     @Override

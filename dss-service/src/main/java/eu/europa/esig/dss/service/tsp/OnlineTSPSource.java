@@ -155,7 +155,7 @@ public class OnlineTSPSource implements TSPSource {
 				LOG.trace("Timestamp digest value    : {}", Utils.toHex(digest));
 			}
 
-			// Setup the time stamp request
+			// Set up the time stamp request
 			final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
 			tsqGenerator.setCertReq(true);
 			if (policyOid != null) {
@@ -200,6 +200,7 @@ public class OnlineTSPSource implements TSPSource {
 								"(TSP Status : %s / %s)", statusString, failInfo));
 			}
 			return new TimestampBinary(DSSASN1Utils.getDEREncoded(timeStampToken));
+
 		} catch (TSPException e) {
 			throw new DSSExternalResourceException(String.format("Invalid TSP response : %s", e.getMessage()), e);
 		} catch (IOException e) {

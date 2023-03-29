@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -41,6 +33,15 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSignature {
 
@@ -60,7 +61,10 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new PAdESService(getOfflineCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+
+		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
+		service.setTspSource(tspSource);
 	}
 
 	@Override

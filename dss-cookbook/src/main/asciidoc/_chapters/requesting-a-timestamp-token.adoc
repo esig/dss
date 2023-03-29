@@ -39,3 +39,14 @@ Sometimes timestamping servers may encounter interruptions (e.g. restart, config
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/CompositeTSPSourceTest.java[tags=demo]
 ----
+
+[[KeyStoreTSPSource]]
+==== KeyStore TSP source
+
+Starting from version `5.13` DSS provides a `KeyStoreTSPSource` implementation allowing to create timestamps using a local key store. The implementation is provided mainly for test purposes and creation of local timestamps.
+
+[source,java,indent=0]
+.Configuration of a KeyStoreTSPSource
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/KeyStoreTSPSourceTest.java[tags=demo]
+----

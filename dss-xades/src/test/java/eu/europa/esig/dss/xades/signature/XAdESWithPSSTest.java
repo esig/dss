@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -39,12 +31,16 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESWithPSSTest extends AbstractXAdESTestSignature {
 
@@ -64,39 +60,31 @@ public class XAdESWithPSSTest extends AbstractXAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getPSSGoodTsa());
 	}
 
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		InMemoryDocument doc = new InMemoryDocument(byteArray);
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
 
-		SignedDocumentValidator validator = getValidator(doc);
-
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-		
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for(SignatureWrapper wrapper: allSignatures) {
+		for (SignatureWrapper wrapper: allSignatures) {
 			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
 		}
 		
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-		for(CertificateWrapper wrapper: usedCertificates) {
+		for (CertificateWrapper wrapper: usedCertificates) {
 			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
 		}
 		
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
-		for(RevocationWrapper wrapper : allRevocationData) {
+		for (RevocationWrapper wrapper : allRevocationData) {
 			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
 		}
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		for(TimestampWrapper wrapper : timestampList) {
+		for (TimestampWrapper wrapper : timestampList) {
 			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
 		}
 	}

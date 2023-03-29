@@ -207,7 +207,6 @@ NOTE: Please ensure that you build modules that you really need. Ignore build fa
 
 To build the DSS Web Application the following modules are required:
 
-* `dss-mock-tsa`;
 * `dss-demo-webapp`;
 * `dss-demo-bundle`.
 
@@ -241,7 +240,6 @@ mvn clean install -P run-integration-test
 
 In order to build the standalone application, the following modules are required:
 
-* `dss-mock-tsa`;
 * `dss-standalone-app`;
 * `dss-standalone-package`.
 
@@ -413,7 +411,6 @@ The modules contain common interfaces, used in other DSS modules, as well as uni
 This chapter provides an overview on modules available within https://github.com/esig/dss-demonstrations[demonstrations project].
 
 [horizontal]
-dss-mock-tsa:: Timestamping source which generates fake timestamps from a self-signed certificate.
 sscd-mocca-adapter:: Adapter for the MOCCA connection.
 dss-standalone-app:: Standalone application which allows signing a document with different formats and tokens (JavaFX).
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
@@ -421,3 +418,5 @@ dss-demo-webapp:: Demonstration web application which presents basic DSS functio
 dss-demo-bundle:: Packaging module for dss-demo-webapp.
 dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
 dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].
+
+NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyStoreTSPSource>>.

@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CommonTrustedCertificateSourceTest {
 
@@ -38,7 +37,7 @@ public class CommonTrustedCertificateSourceTest {
 	public void importKeyStore() throws IOException {
 		CommonTrustedCertificateSource ctcs = new CommonTrustedCertificateSource();
 
-		KeyStoreCertificateSource keyStore = new KeyStoreCertificateSource("src/test/resources/keystore.jks", "JKS", "dss-password");
+		KeyStoreCertificateSource keyStore = new KeyStoreCertificateSource("src/test/resources/keystore.jks", "JKS", "dss-password".toCharArray());
 		ctcs.importAsTrusted(keyStore);
 
 		List<CertificateToken> certificates = ctcs.getCertificates();

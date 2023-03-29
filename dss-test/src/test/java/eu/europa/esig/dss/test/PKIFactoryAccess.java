@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.test;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
@@ -42,6 +43,7 @@ import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
@@ -64,7 +66,7 @@ import java.util.Properties;
 public abstract class PKIFactoryAccess {
 
 	private static final String PKI_FACTORY_HOST;
-	private static final String PKI_FACTORY_KEYSTORE_PASSWORD;
+	private static final char[] PKI_FACTORY_KEYSTORE_PASSWORD;
 	
 	private static final JdbcDataSource dataSource;
 
@@ -74,7 +76,7 @@ public abstract class PKIFactoryAccess {
 			props.load(is);
 
 			PKI_FACTORY_HOST = props.getProperty("pki.factory.host");
-			PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password");
+			PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password").toCharArray();
 			
 			dataSource = new JdbcDataSource();
 			dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
@@ -249,12 +251,12 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected AbstractKeyStoreTokenConnection getToken() {
-		return new KeyStoreSignatureTokenConnection(getKeystoreContent(getKeystoreName()), KEYSTORE_TYPE,
-				new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD.toCharArray()));
+		byte[] keystoreContent = getKeystoreContent(getKeystoreFilename(getSigningAlias()));
+		return new KeyStoreSignatureTokenConnection(keystoreContent, KEYSTORE_TYPE, new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD));
 	}
 
-	protected String getKeystoreName() {
-		return DSSUtils.encodeURI(getSigningAlias() + ".p12");
+	protected String getKeystoreFilename(String name) {
+		return DSSUtils.encodeURI(name + ".p12");
 	}
 
 	private byte[] getKeystoreContent(String keystoreName) {
@@ -270,15 +272,19 @@ public abstract class PKIFactoryAccess {
 	}
 	
 	private KeyStoreCertificateSource getTrustAnchors() {
-		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("trust-anchors.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+		return getKeyStoreCertificateSource("trust-anchors.jks");
 	}
 
 	protected KeyStoreCertificateSource getSHA3PKITrustAnchors() {
-		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("sha3-pki.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+		return getKeyStoreCertificateSource("sha3-pki.jks");
 	}
 	
 	protected KeyStoreCertificateSource getBelgiumTrustAnchors() {
-		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent("belgium.jks")), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
+		return getKeyStoreCertificateSource("belgium.jks");
+	}
+
+	private KeyStoreCertificateSource getKeyStoreCertificateSource(String keyStoreName) {
+		return new KeyStoreCertificateSource(new ByteArrayInputStream(getKeystoreContent(keyStoreName)), TRUSTSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD);
 	}
 	
 	protected DataLoader getFileCacheDataLoader() {
@@ -304,58 +310,95 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected TSPSource getGoodTsa() {
-		return getOnlineTSPSource(GOOD_TSA);
+		return getKeyStoreTSPSourceByName(GOOD_TSA);
 	}
 
 	protected TSPSource getPSSGoodTsa() {
-		return getOnlineTSPSource(PSS_GOOD_TSA);
+		return getKeyStoreTSPSourceByNameWithPss(PSS_GOOD_TSA);
 	}
 	
 	protected TSPSource getRSASSAPSSGoodTsa() {
-		return getOnlineTSPSource(RSASSA_PSS_GOOD_TSA);
+		return getKeyStoreTSPSourceByNameWithPss(RSASSA_PSS_GOOD_TSA);
 	}
 
 	protected TSPSource getSHA3GoodTsa() {
-		return getOnlineTSPSource(SHA3_GOOD_TSA);
+		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(SHA3_GOOD_TSA);
+		tspSource.setTstDigestAlgorithm(DigestAlgorithm.SHA3_256);
+		return tspSource;
 	}
 
 	protected TSPSource getRevokedTsa() {
-		return getOnlineTSPSource(REVOKED_TSA);
+		return getKeyStoreTSPSourceByName(REVOKED_TSA);
 	}
 
 	protected TSPSource getFailGoodTsa() {
-		return getOnlineTSPSource(FAIL_GOOD_TSA);
+		return getOnlineTSPSourceByName(FAIL_GOOD_TSA);
 	}
 
 	protected TSPSource getError500GoodTsa() {
-		return getOnlineTSPSource(ERROR500_GOOD_TSA);
+		return getOnlineTSPSourceByName(ERROR500_GOOD_TSA);
 	}
 
 	protected TSPSource getAlternateGoodTsa() {
-		return getOnlineTSPSource(EE_GOOD_TSA);
+		return getKeyStoreTSPSourceByName(EE_GOOD_TSA);
 	}
 
 	protected TSPSource getGoodTsaCrossCertification() {
-		return getOnlineTSPSource(GOOD_TSA_CROSS_CERTIF);
+		return getKeyStoreTSPSourceByName(GOOD_TSA_CROSS_CERTIF);
 	}
 	
 	protected TSPSource getSelfSignedTsa() {
-		return getOnlineTSPSource(SELF_SIGNED_TSA);
-	}
-
-	private OnlineTSPSource getOnlineTSPSource(String tsaName) {
-		return getTSPSourceByUrl(getTsaUrl(tsaName));
+		return getKeyStoreTSPSourceByName(SELF_SIGNED_TSA);
 	}
 	
 	protected TSPSource getGoodTsaByTime(Date date) {
-		return getOnlineTSPSourceByNameAndTime(GOOD_TSA, date);
+		return getKeyStoreTSPSourceByNameAndTime(GOOD_TSA, date);
+	}
+
+	protected KeyStoreTSPSource getKeyStoreTSPSourceByNameWithPss(String tsaName) {
+		KeyStoreTSPSource keyStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
+		keyStoreTSPSource.setEnablePSS(true);
+		return keyStoreTSPSource;
 	}
 	
+	protected KeyStoreTSPSource getKeyStoreTSPSourceByNameAndTime(String tsaName, Date date) {
+		KeyStoreTSPSource keyStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
+		keyStoreTSPSource.setProductionTime(date);
+		return keyStoreTSPSource;
+	}
+	
+	protected KeyStoreTSPSource getKeyStoreTSPSourceByName(String tsaName) {
+		byte[] keystoreContent = getKeystoreContent(getKeystoreFilename(tsaName));
+		return new KeyStoreTSPSource(keystoreContent, KEYSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD,
+				tsaName, PKI_FACTORY_KEYSTORE_PASSWORD);
+	}
+
+	protected OnlineTSPSource getOnlineTSPSourceByName(String tsaName) {
+		return getOnlineTSPSourceByUrl(getTsaUrl(tsaName));
+	}
+
 	protected OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
-		return getTSPSourceByUrl(getTsaUrl(tsaName, date));
+		return getOnlineTSPSourceByUrl(getTsaUrl(tsaName, date));
 	}
-	
-	private OnlineTSPSource getTSPSourceByUrl(String tsaUrl) {
+
+	private String getTsaUrl(String tsaName) {
+		return getTsaUrl(tsaName, null);
+	}
+
+	private String getTsaUrl(String tsaName, Date date) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(PKI_FACTORY_HOST);
+		sb.append(TSA_ROOT_PATH);
+		if (date != null) {
+			String dateString = DSSUtils.formatDateWithCustomFormat(date, DEFAULT_TSA_DATE_FORMAT);
+			sb.append(dateString);
+			sb.append('/');
+		}
+		sb.append(tsaName);
+		return sb.toString();
+	}
+
+	private OnlineTSPSource getOnlineTSPSourceByUrl(String tsaUrl) {
 		OnlineTSPSource tspSource = new OnlineTSPSource(tsaUrl);
 		TimestampDataLoader dataLoader = new TimestampDataLoader();
 		dataLoader.setTimeoutConnection(TIMEOUT_MS);
@@ -363,15 +406,6 @@ public abstract class PKIFactoryAccess {
 		dataLoader.setProxyConfig(getProxyConfig());
 		tspSource.setDataLoader(dataLoader);
 		return tspSource;
-	}
-
-	private String getTsaUrl(String tsaName) {
-		return PKI_FACTORY_HOST + TSA_ROOT_PATH + tsaName;
-	}
-
-	private String getTsaUrl(String tsaName, Date date) {
-		String dateString = DSSUtils.formatDateWithCustomFormat(date, DEFAULT_TSA_DATE_FORMAT);
-		return PKI_FACTORY_HOST + TSA_ROOT_PATH + dateString + "/" + tsaName;
 	}
 	
 	protected CertificateToken getCertificate(String certificateId) {

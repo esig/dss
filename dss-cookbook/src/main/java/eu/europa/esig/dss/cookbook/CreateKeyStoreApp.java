@@ -124,8 +124,8 @@ public class CreateKeyStoreApp {
 	}
 
 	/* Not defined as constant (sonar check) */
-	private static String getKeystorePassword() {
-		return "dss-password";
+	private static char[] getKeystorePassword() {
+		return "dss-password".toCharArray();
 	}
 
 }

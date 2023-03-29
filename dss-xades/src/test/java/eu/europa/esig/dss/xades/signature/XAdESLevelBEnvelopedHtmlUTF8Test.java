@@ -20,22 +20,22 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
 
 public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature {
 
@@ -46,7 +46,10 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 	@BeforeEach
 	public void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
-		service.setTspSource(getAlternateGoodTsa());
+
+		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(EE_GOOD_TSA);
+		tspSource.setAcceptedDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
+		service.setTspSource(tspSource);
 
 		documentToSign = new FileDocument(new File("src/test/resources/htmlUTF8.html"));
 

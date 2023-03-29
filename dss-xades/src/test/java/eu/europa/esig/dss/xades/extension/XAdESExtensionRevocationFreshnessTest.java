@@ -163,14 +163,15 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void throwExceptionWithDelayTest() throws Exception {
+	public void throwExceptionWithDelayTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
 		certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
 
 		XAdESService service = new XAdESService(certificateVerifier);
-        service.setTspSource(getAlternateGoodTsa());
+		// ensure the time is synchronized between the TSP and revocation data
+        service.setTspSource(getOnlineTSPSourceByName(EE_GOOD_TSA));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		

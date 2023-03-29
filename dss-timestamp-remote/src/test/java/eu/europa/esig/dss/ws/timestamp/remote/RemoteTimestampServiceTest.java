@@ -20,21 +20,6 @@
  */
 package eu.europa.esig.dss.ws.timestamp.remote;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -56,6 +41,19 @@ import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	
@@ -70,8 +68,8 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	@Test
 	public void simpleTest() {
 		byte[] contentToBeTimestamped = "Hello World!".getBytes();
-		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, contentToBeTimestamped);
-		TimestampResponseDTO timestampResponse = timestampService.getTimestampResponse(DigestAlgorithm.SHA1, digestValue);
+		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA512, contentToBeTimestamped);
+		TimestampResponseDTO timestampResponse = timestampService.getTimestampResponse(DigestAlgorithm.SHA512, digestValue);
 		assertNotNull(timestampResponse);
 		assertTrue(Utils.isArrayNotEmpty(timestampResponse.getBinaries()));
 	}
@@ -81,7 +79,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
-		DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+		DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -94,7 +92,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		TimestampResponseDTO timeStampResponse = timestampService.getTimestampResponse(digestAlgorithm, digest);
 		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBinaries(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
-		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));
+		signatureParameters.setContentTimestamps(Collections.singletonList(timestampToken));
 		
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		
@@ -124,9 +122,9 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	public void noTSPSourceDefinedTest() {
 		RemoteTimestampService remoteTimestampService = new RemoteTimestampService();
 		byte[] contentToBeTimestamped = "Hello World!".getBytes();
-		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA1, contentToBeTimestamped);
+		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA512, contentToBeTimestamped);
 		Exception exception = assertThrows(NullPointerException.class,
-				() -> remoteTimestampService.getTimestampResponse(DigestAlgorithm.SHA1, digestValue));
+				() -> remoteTimestampService.getTimestampResponse(DigestAlgorithm.SHA512, digestValue));
 		assertEquals("TSPSource must be not null!", exception.getMessage());
 	}
 

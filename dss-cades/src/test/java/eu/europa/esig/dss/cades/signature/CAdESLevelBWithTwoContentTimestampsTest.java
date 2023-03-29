@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.Arrays;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -35,8 +30,12 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+import java.util.Date;
 
 public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSignature {
 
@@ -48,7 +47,8 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		TSPSource tspSource = getGoodTsa();
+		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		tspSource.setAcceptedDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
 
 		TimestampBinary timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));
 		TimestampToken contentTimestamp1 = new TimestampToken(timeStampResponse1.getBytes(), TimestampType.CONTENT_TIMESTAMP);

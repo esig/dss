@@ -1091,7 +1091,7 @@ public class TLValidationJobTest {
 	@Test
 	public void wrongPivotKeystoreTest() throws IOException {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
-		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
+		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password".toCharArray()));
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
@@ -1226,7 +1226,7 @@ public class TLValidationJobTest {
 	@Test
 	public void lotlCorruptedKeystoreTest() throws IOException {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_original.xml");
-		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password"));
+		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password".toCharArray()));
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();

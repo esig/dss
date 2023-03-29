@@ -317,6 +317,19 @@ This chapter covers the most significant changes in DSS code occurred between di
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 5.12 to 5.13
+|===
+|Title                               |v5.12                            |v5.13
+|KeyStoreCertificateSource password     a|[source,java]
+----
+KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(file, "PKCS12", "password");
+----
+                                                                     a|[source,java]
+KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(file, "PKCS12", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.11 to 5.12
 |===
 |Title                               |v5.11                            |v5.12

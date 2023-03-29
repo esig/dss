@@ -82,7 +82,7 @@ public class XmlNotAdESExtensionTToLTARevokedUserAndRevokedTSPTest extends Abstr
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotBefore());
         calendar.add(Calendar.MONTH, 6);
-        return getOnlineTSPSourceByNameAndTime(REVOKED_TSA, calendar.getTime());
+        return getKeyStoreTSPSourceByNameAndTime(REVOKED_TSA, calendar.getTime());
     }
 
     @Override

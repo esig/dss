@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -37,12 +29,16 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
 
@@ -65,16 +61,9 @@ public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
 	}
 
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		InMemoryDocument doc = new InMemoryDocument(byteArray);
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
 
-		SignedDocumentValidator validator = getValidator(doc);
-
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-		
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for(CertificateWrapper wrapper: usedCertificates) {
 			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
