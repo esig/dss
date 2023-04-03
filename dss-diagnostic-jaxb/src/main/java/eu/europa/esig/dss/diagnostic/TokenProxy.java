@@ -126,9 +126,10 @@ public interface TokenProxy {
 	List<CertificateRefWrapper> getSigningCertificateReferences();
 
 	/**
-	 * Returns the public key binaries of the signing certificate
+	 * Returns the public key binaries linked to a private key used to create the signature,
+	 * when a signing-certificate is not available.
 	 *
-	 * @return public key of the signing certificate
+	 * @return public key of the signer
 	 */
 	byte[] getSigningCertificatePublicKey();
 
