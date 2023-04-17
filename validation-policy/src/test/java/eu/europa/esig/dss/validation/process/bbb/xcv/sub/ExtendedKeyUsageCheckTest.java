@@ -49,7 +49,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
         xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription(ExtendedKeyUsage.TIMESTAMPING.getDescription());
-        xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOID);
+        xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOID);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -74,7 +74,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
         xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
         xmlOID.setDescription(ExtendedKeyUsage.TIMESTAMPING.getDescription());
-        xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOID);
+        xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOID);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
@@ -100,11 +100,11 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
 
         XmlOID xmlOIDOne = new XmlOID();
         xmlOIDOne.setDescription(ExtendedKeyUsage.OCSP_SIGNING.getDescription());
-        xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOIDOne);
+        xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOIDOne);
 
         XmlOID xmlOIDTwo = new XmlOID();
         xmlOIDTwo.setDescription(ExtendedKeyUsage.TSL_SIGNING.getDescription());
-        xmlExtendedKeyUsages.getExtendedKeyUsagesOid().add(xmlOIDTwo);
+        xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOIDTwo);
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);

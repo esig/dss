@@ -406,8 +406,8 @@
                     <keyUsageBit>nonRepudiation</keyUsageBit>
                 </KeyUsages>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://onsitecrl.trustwise.com/DigitalSignCertificadoraDigitalQualifiedCertificateG3/ca.crt</caIssuersUrl>
@@ -488,7 +488,7 @@
                     <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.3.5</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>https://www.universign.eu/cacert/universign_tsa_ca.cer</caIssuersUrl>
@@ -549,7 +549,7 @@
                     <certificatePolicy>1.3.6.1.4.1.8024.1.300</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
@@ -603,7 +603,7 @@
                     <certificatePolicy>2.16.840.1.113733.1.7.23.2</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
@@ -653,9 +653,9 @@
                     <certificatePolicy>2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                    <extendedKeyUsageOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://trust.quovadisglobal.com/qventca1g3.crt</caIssuersUrl>
@@ -711,9 +711,9 @@
                     <keyUsageBit>nonRepudiation</keyUsageBit>
                 </KeyUsages>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                    <extendedKeyUsageOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://trust.quovadisglobal.com/qvbecag2.crt</caIssuersUrl>
@@ -844,7 +844,7 @@
                     <keyUsageBit>nonRepudiation</keyUsageBit>
                 </KeyUsages>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <ocspUrl>http://aia.sk.ee/CA</ocspUrl>

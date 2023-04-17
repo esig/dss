@@ -187,7 +187,7 @@
                     <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <CRLDistributionPoints OID="2.5.29.31" critical="false">
                     <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
@@ -262,7 +262,7 @@
                     <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <CRLDistributionPoints OID="2.5.29.31" critical="false">
                     <crlUrl>http://crl.universign.eu/universign_tsa_root_2015.crl</crlUrl>
@@ -337,7 +337,7 @@
                     <certificatePolicy>1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <CRLDistributionPoints OID="2.5.29.31" critical="false">
                     <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>

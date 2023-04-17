@@ -1537,7 +1537,7 @@ public abstract class DiagnosticDataBuilder {
 	private XmlExtendedKeyUsages getXmlExtendedKeyUsages(ExtendedKeyUsages extendedKeyUsages) {
 		final XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
 		fillXmlCertificateExtension(xmlExtendedKeyUsages, extendedKeyUsages);
-		xmlExtendedKeyUsages.getExtendedKeyUsagesOid().addAll(getXmlOids(extendedKeyUsages.getOids()));
+		xmlExtendedKeyUsages.getExtendedKeyUsageOid().addAll(getXmlOids(extendedKeyUsages.getOids()));
 		return xmlExtendedKeyUsages;
 	}
 

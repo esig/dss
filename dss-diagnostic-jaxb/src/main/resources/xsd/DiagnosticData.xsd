@@ -503,7 +503,7 @@
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
 				<xs:sequence>
-					<xs:element name="extendedKeyUsagesOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="extendedKeyUsageOid" type="OID" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

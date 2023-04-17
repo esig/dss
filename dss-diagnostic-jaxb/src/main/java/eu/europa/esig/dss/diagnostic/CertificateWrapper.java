@@ -338,7 +338,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public boolean isIdKpOCSPSigning() {
 		XmlExtendedKeyUsages extendedKeyUsage = getXmlExtendedKeyUsages();
 		if (extendedKeyUsage != null) {
-			for (XmlOID xmlOID : extendedKeyUsage.getExtendedKeyUsagesOid()) {
+			for (XmlOID xmlOID : extendedKeyUsage.getExtendedKeyUsageOid()) {
 				if (ExtendedKeyUsage.OCSP_SIGNING.getOid().equals(xmlOID.getValue())) {
 					return true;
 				}
@@ -368,7 +368,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlOID> getExtendedKeyUsages() {
 		XmlExtendedKeyUsages extendedKeyUsage = getXmlExtendedKeyUsages();
-		return extendedKeyUsage != null ? extendedKeyUsage.getExtendedKeyUsagesOid() : Collections.emptyList();
+		return extendedKeyUsage != null ? extendedKeyUsage.getExtendedKeyUsageOid() : Collections.emptyList();
 	}
 
 	private XmlExtendedKeyUsages getXmlExtendedKeyUsages() {
