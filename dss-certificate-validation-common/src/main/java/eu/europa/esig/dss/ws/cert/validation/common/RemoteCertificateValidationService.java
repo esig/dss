@@ -130,8 +130,14 @@ public class RemoteCertificateValidationService {
 			throw new IllegalInputException(String.format("Unable to load the validation policy : %s", e.getMessage()), e);
 		}
 	}
-	
-	private CertificateValidator initValidator(CertificateToValidateDTO certificateToValidate) {
+
+	/**
+	 * Instantiates a {@code CertificateValidator} based on the request data DTO
+	 *
+	 * @param certificateToValidate {@link CertificateToValidateDTO} representing the request data
+	 * @return {@link CertificateValidator}
+	 */
+	protected CertificateValidator initValidator(CertificateToValidateDTO certificateToValidate) {
 		CertificateSource adjunctCertSource = getAdjunctCertificateSource(certificateToValidate.getCertificateChain());
 		
 		CertificateVerifier usedCertificateVerifier;
