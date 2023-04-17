@@ -187,6 +187,8 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate(ValidationPolicy validationPolicy) {
+		assertConfigurationValid();
+
 		final XmlDiagnosticData diagnosticData = getDiagnosticData();
 
 		CertificateProcessExecutor executor = provideProcessExecutorInstance();
@@ -196,6 +198,14 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		executor.setLocale(locale);
 		executor.setCurrentTime(getValidationTime());
 		return executor.execute();
+	}
+
+	/**
+	 * Checks if the Validator configuration is valid
+	 */
+	protected void assertConfigurationValid() {
+		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
+		Objects.requireNonNull(token, "Certificate token is not provided to the validator");
 	}
 
 	/**
