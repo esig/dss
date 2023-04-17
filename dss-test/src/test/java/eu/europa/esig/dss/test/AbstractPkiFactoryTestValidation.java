@@ -800,7 +800,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					assertTrue(xmlCertificateExtension instanceof XmlExtendedKeyUsages);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlExtendedKeyUsages xmlExtendedKeyUsages = (XmlExtendedKeyUsages) xmlCertificateExtension;
-					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsagesOid()));
+					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsageOid()));
 				} else if (CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlAuthorityInformationAccess);
 					assertFalse(xmlCertificateExtension.isCritical());

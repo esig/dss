@@ -117,7 +117,7 @@
                     <certificatePolicy>1.3.158.36061701.0.0.1.10.5.0.1</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="tslSigning">0.4.0.2231.3.0</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="tslSigning">0.4.0.2231.3.0</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</caIssuersUrl>

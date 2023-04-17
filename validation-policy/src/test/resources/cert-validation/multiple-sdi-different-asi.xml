@@ -49,8 +49,8 @@
                     <keyUsageBit>nonRepudiation</keyUsageBit>
                 </KeyUsages>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid>1.2.840.113583.1.1.5</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid>1.2.840.113583.1.1.5</extendedKeyUsageOid>
+                    <extendedKeyUsageOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://secure.globalsign.com/cacert/gsqca1sha2g4.crt</caIssuersUrl>
@@ -162,7 +162,7 @@
                     <certificatePolicy cpsUrl="https://www.globalsign.com/repository/">1.3.6.1.4.1.4146.1.95</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
@@ -306,8 +306,8 @@
                     <certificatePolicy cpsUrl="https://www.globalsign.com/repository/">1.3.6.1.4.1.4146.1.40.35</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid>1.2.840.113583.1.1.5</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                    <extendedKeyUsageOid>1.2.840.113583.1.1.5</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://secure.globalsign.com/cacert/gsaatlsha2g4.crt</caIssuersUrl>

@@ -45,7 +45,7 @@
                     <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</caIssuersUrl>
