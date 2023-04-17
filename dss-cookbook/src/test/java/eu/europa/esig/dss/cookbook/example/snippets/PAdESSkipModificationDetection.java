@@ -55,13 +55,13 @@ public class PAdESSkipModificationDetection {
 
         // Configure DefaultPdfDifferencesFinder responsible for visual document comparison
         DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
-        // NOTE: To skip the visual comparison '0' value should be ser
+        // NOTE: To skip the visual comparison '0' value should be set
         pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
         pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
 
         // Configure DefaultPdfObjectModificationsFinder responsible for object comparison between PDF revisions
         DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
-        // NOTE: To skip the visual comparison '0' value should be ser
+        // NOTE: To skip the visual comparison '0' value should be set
         pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(0);
         pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
 
