@@ -75,7 +75,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlVTS result = new XmlVTS();
-        POEExistsAtOrBeforeControlTimeCheck peabctc = new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result,
+        POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
                 new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
         peabctc.execute();
 
@@ -112,7 +112,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlVTS result = new XmlVTS();
-        POEExistsAtOrBeforeControlTimeCheck peabctc = new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result,
+        POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
                 new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
         peabctc.execute();
 
@@ -149,7 +149,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlVTS result = new XmlVTS();
-        POEExistsAtOrBeforeControlTimeCheck peabctc = new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result,
+        POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
                 new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
         peabctc.execute();
 
@@ -186,7 +186,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlVTS result = new XmlVTS();
-        POEExistsAtOrBeforeControlTimeCheck peabctc = new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result,
+        POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
                 new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
         peabctc.execute();
 
@@ -223,7 +223,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlVTS result = new XmlVTS();
-        POEExistsAtOrBeforeControlTimeCheck peabctc = new POEExistsAtOrBeforeControlTimeCheck(i18nProvider, result,
+        POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
                 new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
         peabctc.execute();
 
