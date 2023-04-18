@@ -784,8 +784,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					assertEquals(new HashSet<>(xmlCertificatePolicies.getCertificatePolicy()).size(),
 							xmlCertificatePolicies.getCertificatePolicy().size());
 					for (XmlCertificatePolicy certificatePolicy : xmlCertificatePolicies.getCertificatePolicy()) {
-						assertNotNull(certificatePolicy.getValue());
-						assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
+						assertTrue(Utils.isStringNotEmpty(certificatePolicy.getValue()) || Utils.isStringNotEmpty(certificatePolicy.getCpsUrl()));
+						if (Utils.isStringNotEmpty(certificatePolicy.getValue())) {
+							assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
+						}
 					}
 				} else if (CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlNameConstraints);
