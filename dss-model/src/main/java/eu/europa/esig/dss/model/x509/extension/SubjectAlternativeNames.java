@@ -46,7 +46,7 @@ public class SubjectAlternativeNames extends CertificateExtension {
     private static final long serialVersionUID = 1164359049003917189L;
 
     /** List of subject alternative names */
-    private List<String> names;
+    private List<GeneralName> names;
 
     /**
      * Default constructor
@@ -58,18 +58,18 @@ public class SubjectAlternativeNames extends CertificateExtension {
     /**
      * Returns a list of subject alternative names
      *
-     * @return list of {@link String}s
+     * @return list of {@link GeneralName}s
      */
-    public List<String> getNames() {
+    public List<GeneralName> getGeneralNames() {
         return names;
     }
 
     /**
      * Sets a list of subject alternative names
      *
-     * @param names list of {@link String}s
+     * @param names list of {@link GeneralName}s
      */
-    public void setNames(List<String> names) {
+    public void setGeneralNames(List<GeneralName> names) {
         this.names = names;
     }
 

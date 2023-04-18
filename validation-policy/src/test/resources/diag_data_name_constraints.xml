@@ -233,6 +233,9 @@
                     <QcTypes/>
                     <QcCClegislation/>
                 </QcStatements>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName type="directoryName">C=SK,L=Bratislava,2.5.4.5=#534b2d353033343932130e4e54523837,OU=rep,O=Mini,CN=SR</subjectAlternativeName>
+                </SubjectAlternativeNames>
             </CertificateExtensions>
             <TrustedServiceProviders />
             <Revocations>

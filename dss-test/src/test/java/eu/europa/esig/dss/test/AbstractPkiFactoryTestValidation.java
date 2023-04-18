@@ -57,6 +57,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
@@ -791,9 +793,26 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					XmlNameConstraints xmlNameConstraints = (XmlNameConstraints) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlNameConstraints.getPermittedSubtrees()) ||
 							Utils.isCollectionNotEmpty(xmlNameConstraints.getExcludedSubtrees()));
+					for (XmlGeneralSubtree xmlGeneralSubtree : xmlNameConstraints.getPermittedSubtrees()) {
+						assertNotNull(xmlGeneralSubtree.getType());
+						assertNotNull(xmlGeneralSubtree.getValue());
+						assertEquals(0, xmlGeneralSubtree.getMinimum().intValue());
+						assertNull(xmlGeneralSubtree.getMaximum());
+					}
+					for (XmlGeneralSubtree xmlGeneralSubtree : xmlNameConstraints.getExcludedSubtrees()) {
+						assertNotNull(xmlGeneralSubtree.getType());
+						assertNotNull(xmlGeneralSubtree.getValue());
+						assertEquals(0, xmlGeneralSubtree.getMinimum().intValue());
+						assertNull(xmlGeneralSubtree.getMaximum());
+					}
 				} else if (CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlSubjectAlternativeNames);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlSubjectAlternativeNames xmlSubjectAlternativeNames = (XmlSubjectAlternativeNames) xmlCertificateExtension;
+					for (XmlGeneralName xmlGeneralName : xmlSubjectAlternativeNames.getSubjectAlternativeName()) {
+						assertNotNull(xmlGeneralName.getType());
+						assertNotNull(xmlGeneralName.getValue());
+					}
 				} else if (CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlExtendedKeyUsages);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));

@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
@@ -156,7 +157,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 *
 	 * @return a list of {@link String}s
 	 */
-	public List<String> getSubjectAlternativeNames() {
+	public List<XmlGeneralName> getSubjectAlternativeNames() {
 		XmlSubjectAlternativeNames subjectAlternativeNames = getXmlSubjectAlternativeNames();
 		return subjectAlternativeNames != null ? subjectAlternativeNames.getSubjectAlternativeName() : Collections.emptyList();
 	}

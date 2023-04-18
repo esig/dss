@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.spi;
 
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
+import eu.europa.esig.dss.enumerations.GeneralNameType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.extension.AuthorityInformationAccess;
 import eu.europa.esig.dss.model.x509.extension.AuthorityKeyIdentifier;
@@ -29,6 +30,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
@@ -209,16 +211,60 @@ public class CertificateExtensionUtilsTest {
 
         SubjectAlternativeNames subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
         assertNotNull(subjectAlternativeNamesExtension);
-        List<String> subjectAlternativeNames = subjectAlternativeNamesExtension.getNames();
+        List<GeneralName> subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
         assertNotNull(subjectAlternativeNames);
         assertEquals(1, Utils.collectionSize(subjectAlternativeNames));
+        assertEquals(GeneralNameType.DNS_NAME, subjectAlternativeNames.get(0).getGeneralNameType());
+        assertEquals("creditas.cz", subjectAlternativeNames.get(0).getValue());
 
-        CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(certificate);
+        cert = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
+        assertNotNull(cert);
+
+        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
         assertNotNull(subjectAlternativeNamesExtension);
-        subjectAlternativeNames = subjectAlternativeNamesExtension.getNames();
+        subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
         assertNotNull(subjectAlternativeNames);
         assertEquals(0, Utils.collectionSize(subjectAlternativeNames));
+
+        cert = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIFbTCCA1WgAwIBAgIIZuEvyPq8dbwwDQYJKoZIhvcNAQELBQAwSDELMAkGA1UEBhMCRVMxEjAQBgNVBAcTCUJhcmNlbG9uYTEMMAoGA1UEChMDVVBDMRcwFQYDVQQDDA40LjIuMS4xMF8wNF9DQTAeFw0yMzAzMjkyMjUyMDBaFw0yNDAzMjkyMjUyMDBaMEkxCzAJBgNVBAYTAkVTMRIwEAYDVQQHEwlCYXJjZWxvbmExDDAKBgNVBAoTA1VQQzEYMBYGA1UEAwwPNC4yLjEuMTBfMDRfRUUyMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAuyY+QqQLt/4v3tfaOY0ICo8xLXL2/u2Vxpn5AvoM0U8m/D7sgSTJ0IXiXuOnwoWk+CDABi9VWDYZaj6xHFuTw+zZwHlX8OjjalHD/eWoV8Y0e1XEdqoW3pBxEbZ+QfvxdLyR+hkWSAFIDC18v/U441FaqjL6CejIcqh5Ke+fYxhtVRIt2PUfLRg2NWzmzY4nUkzD5cN0Q/StK7CraGQcyWfzOTbJVTYx+2GZLxNhfkceZoHhwNTqHN+UNng+/JymOgjZon9IQOuo3ItChAMGY+e1pt/DA2kppvgobEYkbnAp/Vtg2nammQKqXmOTMW10uHIBmVEeqK60cDmPbFIr5wsviOtnVrlMQ3qA3m2GkLdDYV4x5bZucCS8nlL2R4mwh2JFn5O4PJLXBA5yrL7Q3ZGfGjtus1tF65gjNV6/jyuo81t56tnclVqYlo1yIrZ4mSjRE4pWwtWaGjZ2EUb94RUCafFozAfgYtPDJMm6c38yVWpiCLukbRqXKc03fuJCUkvJiSxe6QrEGcui7cW8K6YXvwF6hH+Gif28vkpF5/nxgG+xemJ9DKHmcCD+/oDL+yWoz9IFKTUXj5bvwaQkscK2RlCCIZRTHn1I4CnwOLZgI+hpJORulYPuSmRgT2sYJJYJLutO1efv5O0vXkeTIX5m7g/rtaZtAAHljdU/TDkCAwEAAaNaMFgwVgYDVR0RBE8wTaRLMEkxCzAJBgNVBAYTAkVTMRIwEAYDVQQHEwlCYXJjZWxvbmExDDAKBgNVBAoTA1VQQzEYMBYGA1UEAwwPNC4yLjEuMTBfMDRfRUUyMA0GCSqGSIb3DQEBCwUAA4ICAQCgnxjBJfGH/xbBcVGSAHx3fGvkSOptpzCuSLTJXS4xPM/Ow4iE5a8FTaoxBrxUa9wR40intTBhVCT0t9i9aFJY7LYi+bhs/1Ul26k6Ch2KcCQdlWHRpngS4va9BFkYbjDok2g2cHzTByL2mOEOGb7n75rgDr0ftuXwmLu6tJeuzGCy/MhhS9kFSj+Semc7QZtRkAxhUrlTcJmMdGAg2/JHsFIm3fcJX+khjTf13aQfDH95UGYr1DDqOXBe/xmAWf0vpmdU7FPMo9flcYx+l+6hMwQlyk1n6xmtdWDvnhwCWxqKihS7PS7mAmJ6W4yiVJjDFbZ1jKfEqdYgyqMYXf9x7kAI1S3Ci0JZg7E227ilF9nNrAEBZLZJE5HL190tRPvbsU5Lsk+tMrBdunYn2h0HqhMdwLY9rEGiD/KguG6uCkCbfi+W0GtxMS7SiXiL6DPw8Nb4WyH+JyRT2vP05RSRnpq201dD+dkyqQAz3FXZyhtn5WHcSStmz3wqwEw9fASumWO/CzOprqSb7XIToH9f7/8BekAhWBVi2c+yNX3JOXxJGOQwht3Fsc2Yc/pxMBaX+TzblRsA7jkIRsmiS+GQYiOXEzRypCGus2rQIhZOBcn/keJdIFbGEyaJg0/p96bdO01krcd5xAO3w2xpSc4ZWTjFFGFmIYCiXFGwW7OaXg==");
+        assertNotNull(cert);
+
+        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
+        assertNotNull(subjectAlternativeNamesExtension);
+        subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
+        assertNotNull(subjectAlternativeNames);
+        assertEquals(1, Utils.collectionSize(subjectAlternativeNames));
+        assertEquals(GeneralNameType.DIRECTORY_NAME, subjectAlternativeNames.get(0).getGeneralNameType());
+        assertEquals("CN=4.2.1.10_04_EE2,O=UPC,L=Barcelona,C=ES", subjectAlternativeNames.get(0).getValue());
+
+        cert = DSSUtils.loadCertificateFromBase64EncodedString(
+                "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=");
+        assertNotNull(cert);
+
+        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
+        assertNotNull(subjectAlternativeNamesExtension);
+        subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
+        assertNotNull(subjectAlternativeNames);
+        assertEquals(2, Utils.collectionSize(subjectAlternativeNames));
+        assertEquals(GeneralNameType.RFC822_NAME, subjectAlternativeNames.get(0).getGeneralNameType());
+        assertEquals("bWlndWVsYW5nZWwubmFmcmlhQHNlYXAubWluaGFwLmVz", Utils.toBase64(subjectAlternativeNames.get(0).getValue().getBytes()));
+        assertEquals(GeneralNameType.DIRECTORY_NAME, subjectAlternativeNames.get(1).getGeneralNameType());
+        assertEquals("1.3.6.1.4.1.5734.1.1=#0c0c4d494755454c20414e47454c,1.3.6.1.4.1.5734.1.2=#0c064e4146524941,1.3.6.1.4.1.5734.1.3=#0c094c4153204845524153,1.3.6.1.4.1.5734.1.4=#0c09373238373432363858", subjectAlternativeNames.get(1).getValue());
+
+        cert = DSSUtils.loadCertificateFromBase64EncodedString(
+                "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");
+        assertNotNull(cert);
+
+        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
+        assertNotNull(subjectAlternativeNamesExtension);
+        subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
+        assertNotNull(subjectAlternativeNames);
+        assertEquals(2, Utils.collectionSize(subjectAlternativeNames));
+        assertEquals(GeneralNameType.OTHER_NAME, subjectAlternativeNames.get(0).getGeneralNameType());
+        assertEquals("#a022060a2b060104018237140203a0140c12636f6e74616374406164722e676f762e726f", subjectAlternativeNames.get(0).getValue());
+        assertEquals(GeneralNameType.RFC822_NAME, subjectAlternativeNames.get(1).getGeneralNameType());
+        assertEquals("Y29udGFjdEBhZHIuZ292LnJv", Utils.toBase64(subjectAlternativeNames.get(1).getValue().getBytes()));
     }
 
     @Test
