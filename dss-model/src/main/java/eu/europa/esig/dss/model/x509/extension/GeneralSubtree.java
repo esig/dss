@@ -20,23 +20,21 @@
  */
 package eu.europa.esig.dss.model.x509.extension;
 
-import eu.europa.esig.dss.enumerations.GeneralNameType;
-
-import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * Represents a general subtree element (see "4.2.1.10. Name Constraints" of RFC 5280)
  *
  */
-public class GeneralSubtree implements Serializable {
+public class GeneralSubtree extends GeneralName {
 
     private static final long serialVersionUID = 4297563579116497603L;
 
-    /** Represents the type of the GeneralName */
-    private GeneralNameType generalNameType;
+    /** MUST be 0 */
+    private BigInteger minimum;
 
-    /** String representation of the GeneralName value */
-    private String value;
+    /** MUST be absent */
+    private BigInteger maximum;
 
     /**
      * Default constructor
@@ -46,39 +44,39 @@ public class GeneralSubtree implements Serializable {
     }
 
     /**
-     * Gets the type of GeneralName
+     * Gets the minimum constraint value
      *
-     * @return {@link GeneralNameType}
+     * @return {@link BigInteger}
      */
-    public GeneralNameType getGeneralNameType() {
-        return generalNameType;
+    public BigInteger getMinimum() {
+        return minimum;
     }
 
     /**
-     * Sets the type of the GeneralName
+     * Sets the minimum constraint value
      *
-     * @param generalNameType {@link GeneralNameType}
+     * @param minimum {@link BigInteger}
      */
-    public void setGeneralNameType(GeneralNameType generalNameType) {
-        this.generalNameType = generalNameType;
+    public void setMinimum(BigInteger minimum) {
+        this.minimum = minimum;
     }
 
     /**
-     * Gets the string representation of the GeneralName value
+     * Gets the maximum constraint value
      *
-     * @return {@link String}
+     * @return {@link BigInteger}
      */
-    public String getValue() {
-        return value;
+    public BigInteger getMaximum() {
+        return maximum;
     }
 
     /**
-     * Sets the string representation of the GeneralName value
+     * Sets the maximum constraint value
      *
-     * @param value {@link String}
+     * @param maximum {@link BigInteger}
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setMaximum(BigInteger maximum) {
+        this.maximum = maximum;
     }
 
 }

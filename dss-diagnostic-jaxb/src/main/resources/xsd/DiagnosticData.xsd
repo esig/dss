@@ -523,7 +523,7 @@
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
 				<xs:sequence>
-					<xs:element name="subjectAlternativeName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="subjectAlternativeName" type="GeneralName" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -567,6 +567,15 @@
 	</xs:complexType>
 
 	<xs:complexType name="GeneralSubtree">
+		<xs:complexContent>
+			<xs:extension base="GeneralName">
+				<xs:attribute name="minimum" type="xs:integer" use="optional" />
+				<xs:attribute name="maximum" type="xs:integer" use="optional" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GeneralName">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="type" type="GeneralNameType" use="optional" />

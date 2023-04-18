@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
@@ -84,6 +85,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
@@ -134,6 +136,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Contains a common code for DiagnosticData building
@@ -1580,8 +1583,23 @@ public abstract class DiagnosticDataBuilder {
 	private XmlSubjectAlternativeNames getXmlSubjectAlternativeNames(SubjectAlternativeNames subjectAlternativeNames) {
 		final XmlSubjectAlternativeNames xmlSubjectAlternativeNames = new XmlSubjectAlternativeNames();
 		fillXmlCertificateExtension(xmlSubjectAlternativeNames, subjectAlternativeNames);
-		xmlSubjectAlternativeNames.getSubjectAlternativeName().addAll(subjectAlternativeNames.getNames());
+		xmlSubjectAlternativeNames.getSubjectAlternativeName().addAll(getXmlGeneralNames(subjectAlternativeNames.getGeneralNames()));
 		return xmlSubjectAlternativeNames;
+	}
+
+	private List<XmlGeneralName> getXmlGeneralNames(List<GeneralName> generalNames) {
+		List<XmlGeneralName> result = new ArrayList<>();
+		for (GeneralName generalName : generalNames) {
+			result.add(getXmlGeneralName(generalName));
+		}
+		return result;
+	}
+
+	private XmlGeneralName getXmlGeneralName(GeneralName generalName) {
+		XmlGeneralName xmlGeneralName = new XmlGeneralName();
+		xmlGeneralName.setType(generalName.getGeneralNameType());
+		xmlGeneralName.setValue(generalName.getValue());
+		return xmlGeneralName;
 	}
 
 	private XmlBasicConstraints getXmlBasicConstraints(BasicConstraints basicConstraints) {
@@ -1639,6 +1657,8 @@ public abstract class DiagnosticDataBuilder {
 		XmlGeneralSubtree xmlGeneralSubtree = new XmlGeneralSubtree();
 		xmlGeneralSubtree.setType(generalSubtree.getGeneralNameType());
 		xmlGeneralSubtree.setValue(generalSubtree.getValue());
+		xmlGeneralSubtree.setMinimum(generalSubtree.getMinimum());
+		xmlGeneralSubtree.setMaximum(generalSubtree.getMaximum());
 		return xmlGeneralSubtree;
 	}
 

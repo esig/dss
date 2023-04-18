@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
@@ -1497,8 +1498,10 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
         subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test2,OU=permittedSubtree1,O=Test Certificates,C=US");
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test2,OU=permittedSubtree1,O=Test Certificates,C=US"));
         signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
 
         XmlChainItem xmlChainItemOne = new XmlChainItem();
@@ -1550,8 +1553,10 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
         subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree2,O=Test Certificates,C=US");
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree2,O=Test Certificates,C=US"));
         signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
 
         XmlChainItem xmlChainItemOne = new XmlChainItem();
@@ -1603,8 +1608,10 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
         subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree2,O=Test Certificates,C=US");
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree2,O=Test Certificates,C=US"));
         signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
 
         XmlChainItem xmlChainItemOne = new XmlChainItem();
@@ -1656,8 +1663,120 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
         subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
-        subjectAlternativeNames.getSubjectAlternativeName().add("CN=Valid DN nameConstraints EE Certificate Test1,OU=excludedSubtree1,O=Test Certificates,C=US");
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=excludedSubtree1,O=Test Certificates,C=US"));
+        signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
+
+        XmlChainItem xmlChainItemOne = new XmlChainItem();
+        xmlChainItemOne.setCertificate(caCertificate);
+        XmlChainItem xmlChainItemTwo = new XmlChainItem();
+        xmlChainItemTwo.setCertificate(rootCertificate);
+        signCertificate.setCertificateChain(Arrays.asList(xmlChainItemOne, xmlChainItemTwo));
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlSubXCV result = new XmlSubXCV();
+        CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
+                new CertificateWrapper(signCertificate), constraint);
+        cncc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    public void permittedSubtreesSubAltNameWithNotRDNValid() {
+        XmlCertificate rootCertificate = new XmlCertificate();
+        rootCertificate.setSelfSigned(true);
+
+        XmlNameConstraints nameConstraints = new XmlNameConstraints();
+        nameConstraints.setOID(CertificateExtensionEnum.NAME_CONSTRAINTS.getOid());
+
+        XmlGeneralSubtree xmlGeneralSubtree = new XmlGeneralSubtree();
+        xmlGeneralSubtree.setType(GeneralNameType.DIRECTORY_NAME);
+        xmlGeneralSubtree.setValue("C=US,O=Test Certificates,OU=permittedSubtree1");
+        nameConstraints.getPermittedSubtrees().add(xmlGeneralSubtree);
+        rootCertificate.getCertificateExtensions().add(nameConstraints);
+
+        XmlCertificate caCertificate = new XmlCertificate();
+        caCertificate.getCertificateExtensions().add(nameConstraints);
+
+        XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
+        xmlDistinguishedName.setFormat("RFC2253");
+        xmlDistinguishedName.setValue("CON=Valid DN nameConstraints CA Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
+        caCertificate.getSubjectDistinguishedName().add(xmlDistinguishedName);
+
+        XmlCertificate signCertificate = new XmlCertificate();
+        xmlDistinguishedName = new XmlDistinguishedName();
+        xmlDistinguishedName.setFormat("RFC2253");
+        xmlDistinguishedName.setValue("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
+        signCertificate.getSubjectDistinguishedName().add(xmlDistinguishedName);
+
+        XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
+        subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.RFC822_NAME,
+                "endentity@test.com"));
+        signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
+
+        XmlChainItem xmlChainItemOne = new XmlChainItem();
+        xmlChainItemOne.setCertificate(caCertificate);
+        XmlChainItem xmlChainItemTwo = new XmlChainItem();
+        xmlChainItemTwo.setCertificate(rootCertificate);
+        signCertificate.setCertificateChain(Arrays.asList(xmlChainItemOne, xmlChainItemTwo));
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlSubXCV result = new XmlSubXCV();
+        CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
+                new CertificateWrapper(signCertificate), constraint);
+        cncc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    public void permittedSubtreesSubAltNameWithNotRDNInvalidType() {
+        XmlCertificate rootCertificate = new XmlCertificate();
+        rootCertificate.setSelfSigned(true);
+
+        XmlNameConstraints nameConstraints = new XmlNameConstraints();
+        nameConstraints.setOID(CertificateExtensionEnum.NAME_CONSTRAINTS.getOid());
+
+        XmlGeneralSubtree xmlGeneralSubtree = new XmlGeneralSubtree();
+        xmlGeneralSubtree.setType(GeneralNameType.DIRECTORY_NAME);
+        xmlGeneralSubtree.setValue("C=US,O=Test Certificates,OU=permittedSubtree1");
+        nameConstraints.getPermittedSubtrees().add(xmlGeneralSubtree);
+        rootCertificate.getCertificateExtensions().add(nameConstraints);
+
+        XmlCertificate caCertificate = new XmlCertificate();
+        caCertificate.getCertificateExtensions().add(nameConstraints);
+
+        XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
+        xmlDistinguishedName.setFormat("RFC2253");
+        xmlDistinguishedName.setValue("CON=Valid DN nameConstraints CA Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
+        caCertificate.getSubjectDistinguishedName().add(xmlDistinguishedName);
+
+        XmlCertificate signCertificate = new XmlCertificate();
+        xmlDistinguishedName = new XmlDistinguishedName();
+        xmlDistinguishedName.setFormat("RFC2253");
+        xmlDistinguishedName.setValue("CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US");
+        signCertificate.getSubjectDistinguishedName().add(xmlDistinguishedName);
+
+        XmlSubjectAlternativeNames subjectAlternativeNames = new XmlSubjectAlternativeNames();
+        subjectAlternativeNames.setOID(CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid());
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.OTHER_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree1,O=Test Certificates,C=US"));
+        subjectAlternativeNames.getSubjectAlternativeName().add(getXmlGeneralName(GeneralNameType.DIRECTORY_NAME,
+                "CN=Valid DN nameConstraints EE Certificate Test1,OU=permittedSubtree2,O=Test Certificates,C=US"));
         signCertificate.getCertificateExtensions().add(subjectAlternativeNames);
 
         XmlChainItem xmlChainItemOne = new XmlChainItem();
@@ -1965,6 +2084,13 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
         assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
+    private XmlGeneralName getXmlGeneralName(GeneralNameType type, String value) {
+        XmlGeneralName xmlGeneralName = new XmlGeneralName();
+        xmlGeneralName.setType(type);
+        xmlGeneralName.setValue(value);
+        return xmlGeneralName;
     }
 
 }
