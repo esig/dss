@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -139,6 +140,13 @@ public class SignPdfPadesBTest extends CookbookTools {
 			signaturePolicy.setSpuri("http://spuri.test");
 			parameters.bLevel().setSignaturePolicy(signaturePolicy);
 			// end::policy[]
+
+			// tag::docmdp[]
+			// import eu.europa.esig.dss.enumerations.CertificationPermission;
+
+			// Set the certification signature dictionary
+			parameters.setPermission(CertificationPermission.NO_CHANGE_PERMITTED);
+			// end::docmdp[]
 
 			testFinalDocument(signedDocument);
 
