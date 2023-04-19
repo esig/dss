@@ -35,14 +35,39 @@ public class ValidateXMLERTest {
         xmlerUtils = XMLEvidenceRecordUtils.getInstance();
     }
 
-    public byte[] computeParent(byte[] input_1, byte[] input_2) throws IOException, NoSuchAlgorithmException {
+
+    @Test
+    public void testXMLER() throws JAXBException, XMLStreamException, IOException, SAXException {
+        marshallUnmarshall(new File("src/test/resources/ER_01.xml"));
+    }
+
+    @Test
+    public void testVerifyER()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
+        boolean isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/ER_01.xml"));
+        assertEquals(isValid,true);
+
+        isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/ER_47.xml"));
+        assertEquals(isValid,true);
+    }
+
+    private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
+        XMLEvidenceRecordFacade facade = XMLEvidenceRecordFacade.newFacade();
+
+        EvidenceRecordType evidenceRecordType = facade.unmarshall(file);
+        assertNotNull(evidenceRecordType);
+
+        String marshall = facade.marshall(evidenceRecordType, true);
+        assertNotNull(marshall);
+    }
+
+    public byte[] computeParent(List<byte[]> list) throws IOException, NoSuchAlgorithmException {
+        // If the list contains only one element, its parent is itself.
+        if(list.size() == 1){
+            return list.get(0);
+        }
         byte[] result;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        List<byte[]> list = new ArrayList<byte[]>();
-
-        list.add(input_1);
-        list.add(input_2);
         list.sort(new ByteArrayComparator());
 
         try(ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -59,38 +84,26 @@ public class ValidateXMLERTest {
         return result;
     }
 
-    public byte[] getHashTreeRoot(List<byte[]> hashList) throws IOException, NoSuchAlgorithmException {
 
-        byte[] hashParent = hashList.get(0);
-        hashList.remove(0);
-
-        for(byte[] hashNode : hashList){
-            hashParent = computeParent(hashParent,hashNode);
+    public byte[] getHashTreeRoot(HashTreeType hashTree) throws IOException, NoSuchAlgorithmException {
+        System.out.println("=====Begin HashTree Root computation====");
+        // A hashTree object has a list of Digest Sequences.
+        // Each Digest Sequence corresponds to a set of node in the reduced hash tree.
+        List<HashTreeType.Sequence> sequenceList = hashTree.getSequence();
+        byte[] lastParent = null;
+        for(HashTreeType.Sequence sequence : sequenceList){
+            List<byte[]> hashList = sequence.getDigestValue();
+            if(lastParent != null) {
+                hashList.add(lastParent);
+            }
+            lastParent = computeParent(hashList);
         }
 
-        return hashParent;
+        System.out.println("=====End HashTree Root computation====");
+
+        return lastParent;
     }
 
-    private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
-        XMLEvidenceRecordFacade facade = XMLEvidenceRecordFacade.newFacade();
-
-        EvidenceRecordType evidenceRecordType = facade.unmarshall(file);
-        assertNotNull(evidenceRecordType);
-
-        String marshall = facade.marshall(evidenceRecordType, true);
-        assertNotNull(marshall);
-    }
-
-    @Test
-    public void testXMLER() throws JAXBException, XMLStreamException, IOException, SAXException {
-        marshallUnmarshall(new File("src/test/resources/ER_01.xml"));
-    }
-
-    @Test
-    public void testVerifyER()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
-        boolean isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/ER_01.xml"));
-        assertEquals(isValid,true);
-    }
 
     public boolean verifyERArchiveTimeStampMessageImprint(File xmlER) throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
         XMLEvidenceRecordFacade facade = XMLEvidenceRecordFacade.newFacade();
@@ -106,26 +119,18 @@ public class ValidateXMLERTest {
         // The messageImprint value of an RFC3161 timestamp in an ArchiveTimeStamp object must be match the value of the root of the corresponding reduced hash tree.
         for(ArchiveTimeStampSequenceType.ArchiveTimeStampChain ATSC : ATSCList){
             List<ArchiveTimeStampType> ATSList = ATSC.getArchiveTimeStamp();
+            // For each ArchiveTimeStamp object, the value root of the encapsulated reduced hash tree must match the value of the encapsulated RFC 3161 timestamp message imprint
             for(ArchiveTimeStampType ATS : ATSList){
+
                 HashTreeType hashTree = ATS.getHashTree();
-                List<HashTreeType.Sequence> sequenceList = hashTree.getSequence();
-                List<byte[]> list = new ArrayList<byte[]>();
-                for(HashTreeType.Sequence sequence : sequenceList){
-                    List<byte[]> hashList = sequence.getDigestValue();
-                    // We consider only a binary tree, as such there is always only one element in this hashList.
-                    // If the tree is not a binary tree, everything breaks.
-                    byte[] hash0 = hashList.get(0);
-                    list.add(hash0);
-                }
-                System.out.println("=====Begin HashTree Root computation====");
-                byte[] hashTreeRoot = getHashTreeRoot(list);
-                System.out.println("=====End HashTree Root computation====");
+                byte[] hashTreeRoot = getHashTreeRoot(hashTree);
 
                 String timeStampValue = (String) ATS.getTimeStamp().getTimeStampToken().getContent().get(0);
                 TimestampBinary timestampBinary = new TimestampBinary(Base64.getDecoder().decode(timeStampValue));
                 TimestampToken timestampToken = new TimestampToken(Base64.getDecoder().decode(timeStampValue), TimestampType.ARCHIVE_TIMESTAMP);
                 byte[] messageImprint = timestampToken.getMessageImprint().getValue();
                 System.out.println("Timestamp messageImprint value is: "+ Base64.getEncoder().encodeToString(messageImprint));
+
                 assertArrayEquals(hashTreeRoot,messageImprint);
 
                 if (!Arrays.equals(messageImprint, hashTreeRoot)){
@@ -136,8 +141,6 @@ public class ValidateXMLERTest {
         return true;
     }
     public class ByteArrayComparator implements Comparator<byte[]> {
-
-
 
         public int compare(byte[] left, byte[] right) {
 
