@@ -170,8 +170,9 @@ For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-unio
 |[[R21]]    R21 |Internet RFC 7515: JSON Web Signature (JWS)                                    |RFC 7515                   |
 |[[R22]]    R22 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280        |
 |[[R23]]    R23 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP      |RFC 6960                   |
-|[[R24]]    R24 |COMMON PKI SPECIFICATIONS FOR INTEROPERABLE APPLICATIONS FROM T7 & TELETRUST   |Common PKI v2.0            | v2.0
+|[[R24]]    R24 |Common PKI Specifications for Interoperable Applications from T7 & TeleTrusT   |Common PKI v2.0            |v2.0
 |[[R25]]    R25 |Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 5: QCStatements                |ETSI EN 319 412-5          | V2.3.1
+|[[R26]]    R26 |Document management - Portable document format - Part 2: PDF 2.0               |ISO 32000-2	            |2
 
 |=======================
 
