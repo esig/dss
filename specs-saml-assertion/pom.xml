@@ -54,6 +54,7 @@
 				<configuration>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 					<schemaIncludes>
+						<schemaInclude>saml-schema-metadata-2.0.xsd</schemaInclude>
 						<schemaInclude>saml-schema-assertion-2.0.xsd</schemaInclude>
 						<schemaInclude>saml-schema-dce-2.0.xsd</schemaInclude>
 						<schemaInclude>saml-schema-ecp-2.0.xsd</schemaInclude>
@@ -61,6 +62,7 @@
 						<schemaInclude>saml-schema-x500-2.0.xsd</schemaInclude>
 						<schemaInclude>saml-schema-xacml-2.0.xsd</schemaInclude>
 						<schemaInclude>saml-schema-authn-context-2.0.xsd</schemaInclude>
+						<schemaInclude>sstc-saml-metadata-algsupport-v1.0.xsd</schemaInclude>
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>
 					<bindingIncludes>
