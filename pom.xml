@@ -169,6 +169,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
+		<module>specs-xmlers</module>
     </modules>
 
 	<build>
