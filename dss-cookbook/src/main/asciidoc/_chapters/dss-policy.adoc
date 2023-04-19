@@ -670,7 +670,7 @@ Default: not executed
 </BasicSignatureConstraints>
 ----
 
-======= Certificate Constraints
+====== Certificate Constraints
 
 The block of `CertificateConstraints` type verifies the applicability rules for the corresponding certificate. The `CertificateConstraints` may be defined for a signing-certificate or for a CA certificate, using `<SigningCertificate>` and `<CACertificate>` within the `<BasicSignatureConstraints>`, respectively.
 
