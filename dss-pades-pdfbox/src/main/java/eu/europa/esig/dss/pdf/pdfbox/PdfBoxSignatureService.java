@@ -370,12 +370,14 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		transformParameters.setInt(COSName.P, accessPermissions);
 		transformParameters.setName(COSName.V, PAdESConstants.VERSION_DEFAULT);
 		transformParameters.setNeedToBeUpdated(true);
+		transformParameters.setDirect(true);
 
 		COSDictionary referenceDict = new COSDictionary();
 		referenceDict.setItem(COSName.TYPE, COSName.getPDFName(PAdESConstants.SIG_REF_NAME));
 		referenceDict.setItem(PAdESConstants.TRANSFORM_METHOD_NAME, COSName.DOCMDP);
 		referenceDict.setItem(PAdESConstants.TRANSFORM_PARAMS_NAME, transformParameters);
 		referenceDict.setNeedToBeUpdated(true);
+		referenceDict.setDirect(true);
 
 		COSArray referenceArray = new COSArray();
 		referenceArray.add(referenceDict);
