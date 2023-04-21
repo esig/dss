@@ -37,12 +37,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This check verifies the validity of the certificate in regard to "Name constraint"
@@ -88,7 +90,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
          * path MUST fall. This variable includes a set for each name
          * type, and the initial value is initial-permitted-subtrees.
          */
-        Set<Map<String, String>> permittedSubtrees = null;
+        Set<XmlGeneralName> permittedSubtrees = null;
         /*
          * (c) excluded_subtrees:  a set of root names for each name type
          * (e.g., X.500 distinguished names, email addresses, or IP
@@ -97,7 +99,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
          * fall. This variable includes a set for each name type, and
          * the initial value is initial-excluded-subtrees.
          */
-        Set<Map<String, String>> excludedSubtrees = null;
+        Set<XmlGeneralName> excludedSubtrees = null;
 
         /*
          * 6.1.3. Basic Certificate Processing
@@ -117,15 +119,17 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              */
             // perform validation only for the current certificate to support flexible validation policy
             if (i == 0) {
-                final Map<String, String> certDN = toDNMap(cert.getCertificateDN());
-                final List<Map<String, String>> subAltNames = getSubjectAlternativeNamesDNList(cert.getSubjectAlternativeNames());
+                final String certDN = cert.getCertificateDN();
+                final List<XmlGeneralName> subAltNames = cert.getSubjectAlternativeNames();
 
                 if (permittedSubtrees != null) {
-                    if (!isWithinDNSubtrees(certDN, permittedSubtrees)) {
+                    Set<XmlGeneralName> dnGeneralNames = getSubtreesOfType(permittedSubtrees, GeneralNameType.DIRECTORY_NAME);
+                    if (Utils.isCollectionNotEmpty(dnGeneralNames) && !isWithinDNSubtrees(certDN, dnGeneralNames)) {
                         return false;
                     }
-                    for (Map<String, String> subAltName : subAltNames) {
-                        if (!isWithinDNSubtrees(subAltName, permittedSubtrees)) {
+                    for (XmlGeneralName subAltName : subAltNames) {
+                        Set<XmlGeneralName> subtreesOfType = getSubtreesOfType(permittedSubtrees, subAltName.getType());
+                        if (Utils.isCollectionNotEmpty(subtreesOfType) && !isWithinSubtrees(subAltName, subtreesOfType)) {
                             return false;
                         }
                     }
@@ -140,11 +144,13 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
                  * within any of the excluded_subtrees for that name type.
                  */
                 if (excludedSubtrees != null) {
-                    if (isWithinDNSubtrees(certDN, excludedSubtrees)) {
+                    Set<XmlGeneralName> dnGeneralNames = getSubtreesOfType(excludedSubtrees, GeneralNameType.DIRECTORY_NAME);
+                    if (Utils.isCollectionNotEmpty(dnGeneralNames) && isWithinDNSubtrees(certDN, excludedSubtrees)) {
                         return false;
                     }
-                    for (Map<String, String> subAltName : subAltNames) {
-                        if (isWithinDNSubtrees(subAltName, excludedSubtrees)) {
+                    for (XmlGeneralName subAltName : subAltNames) {
+                        Set<XmlGeneralName> subtreesOfType = getSubtreesOfType(excludedSubtrees, subAltName.getType());
+                        if (Utils.isCollectionNotEmpty(subtreesOfType) && isWithinSubtrees(subAltName, excludedSubtrees)) {
                             return false;
                         }
                     }
@@ -157,8 +163,8 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              * certificate, modify the permitted_subtrees and
              * excluded_subtrees state variables as follows:
              */
-            final Set<Map<String, String>> certPermittedSubtrees = toGeneralSubtreeMapSet(cert.getPermittedSubtrees());
-            final Set<Map<String, String>> certExcludedSubtrees = toGeneralSubtreeMapSet(cert.getExcludedSubtrees());
+            final Set<XmlGeneralName> certPermittedSubtrees = toXmlGeneralNameSet(cert.getPermittedSubtrees());
+            final Set<XmlGeneralName> certExcludedSubtrees = toXmlGeneralNameSet(cert.getExcludedSubtrees());
             /*
              * (1) If permittedSubtrees is present in the certificate, set
              * the permitted_subtrees state variable to the intersection
@@ -172,7 +178,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              */
             if (Utils.isCollectionNotEmpty(certPermittedSubtrees)) {
                 if (permittedSubtrees != null) {
-                    permittedSubtrees = intersect(permittedSubtrees, certPermittedSubtrees);
+                    permittedSubtrees = intersectNew(permittedSubtrees, certPermittedSubtrees);
                 } else {
                     permittedSubtrees = certPermittedSubtrees;
                 }
@@ -190,7 +196,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              */
             if (Utils.isCollectionNotEmpty(certExcludedSubtrees)) {
                 if (excludedSubtrees != null) {
-                    excludedSubtrees = union(excludedSubtrees, certExcludedSubtrees);
+                    excludedSubtrees = unionNew(excludedSubtrees, certExcludedSubtrees);
                 } else {
                     excludedSubtrees = certExcludedSubtrees;
                 }
@@ -249,104 +255,137 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         return null;
     }
 
-    private List<Map<String, String>> getSubjectAlternativeNamesDNList(List<XmlGeneralName> subjectAlternativeNames) {
-        List<Map<String, String>> result = new ArrayList<>();
-        for (XmlGeneralName generalName : subjectAlternativeNames) {
-            if (GeneralNameType.DIRECTORY_NAME.equals(generalName.getType())) {
-                result.add(toDNMap(generalName.getValue()));
-            } else if (LOG.isDebugEnabled()) {
-                LOG.debug("The GeneralName of type '{}' is skipped.", generalName.getType());
-            }
-        }
-        return result;
+    private Set<XmlGeneralName> getSubtreesOfType(Set<XmlGeneralName> subtrees, GeneralNameType generalNameType) {
+        return subtrees.stream().filter(n -> generalNameType.equals(n.getType())).collect(Collectors.toSet());
     }
 
-    private boolean isWithinDNSubtrees(Map<String, String> certDN, Set<Map<String, String>> permittedSubtrees) {
-        for (Map<String, String> permittedSubtree : permittedSubtrees) {
-            if (isWithinDNSubtree(certDN, permittedSubtree)) {
+    private boolean isWithinSubtrees(XmlGeneralName generalName, Set<XmlGeneralName> permittedSubtrees) {
+        for (XmlGeneralName permittedSubtree : permittedSubtrees) {
+            if (isWithinSubtree(generalName, permittedSubtree)) {
                 return true;
             }
         }
         return false;
     }
 
-    private Set<Map<String, String>> toGeneralSubtreeMapSet(List<XmlGeneralSubtree> generalSubtrees) {
-        Set<Map<String, String>> result = new HashSet<>();
-        for (XmlGeneralSubtree xmlGeneralSubtree : generalSubtrees) {
-            if (GeneralNameType.DIRECTORY_NAME == xmlGeneralSubtree.getType()) {
-                if (xmlGeneralSubtree.getMinimum() != null && xmlGeneralSubtree.getMinimum().intValue() != 0) {
-                    LOG.warn("'Minimum' field of GeneralSubtree is not supported! The value is skipped.");
+    private boolean isWithinDNSubtrees(String certDN, Set<XmlGeneralName> permittedSubtrees) {
+        for (XmlGeneralName permittedSubtree : permittedSubtrees) {
+            if (isWithinDNSubtree(certDN, permittedSubtree.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<XmlGeneralName> toXmlGeneralNameSet(Collection<XmlGeneralSubtree> generalSubtrees) {
+        if (Utils.isCollectionEmpty(generalSubtrees)) {
+            return Collections.emptySet();
+        }
+        return generalSubtrees.stream().map(n -> (XmlGeneralName) n).collect(Collectors.toSet());
+    }
+
+    private Set<XmlGeneralName> intersectNew(Collection<XmlGeneralName> originalSet, Collection<XmlGeneralName> currentSet) {
+        final Set<XmlGeneralName> result = new HashSet<>();
+        for (XmlGeneralName currentGeneralName : currentSet) {
+            boolean predecessorFound = false;
+            for (XmlGeneralName originalGeneralName : originalSet) {
+                if (currentGeneralName.getType().equals(originalGeneralName.getType())) {
+                    if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
+                        result.add(currentGeneralName);
+                    } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
+                        result.add(originalGeneralName);
+                    }
                 }
-                if (xmlGeneralSubtree.getMaximum() != null) {
-                    LOG.warn("'Maximum' field of GeneralSubtree is not supported! The value is skipped.");
-                }
-                Map<String, String> dnMap = toDNMap(xmlGeneralSubtree.getValue());
-                if (Utils.isMapNotEmpty(dnMap)) {
-                    result.add(dnMap);
-                } else {
-                    LOG.warn("Unable to build a DN map for general subtree with value '{}'", xmlGeneralSubtree.getValue());
+            }
+            if (!predecessorFound) {
+                result.add(currentGeneralName);
+            }
+        }
+        return result;
+    }
+
+    private Set<XmlGeneralName> unionNew(Collection<XmlGeneralName> originalSet, Collection<XmlGeneralName> currentSet) {
+        final Set<XmlGeneralName> result = new HashSet<>();
+        for (XmlGeneralName currentGeneralName : currentSet) {
+            if (Utils.isCollectionNotEmpty(originalSet)) {
+                for (XmlGeneralName originalGeneralName : originalSet) {
+                    if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
+                        result.add(currentGeneralName);
+                    } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
+                        result.add(originalGeneralName);
+                    } else {
+                        result.add(currentGeneralName);
+                        result.add(originalGeneralName);
+                    }
                 }
             } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("The general name type '{}' is not supported and skipped!", xmlGeneralSubtree.getType().getLabel());
-                }
+                result.add(currentGeneralName);
             }
         }
         return result;
     }
 
-    private Set<Map<String, String>> intersect(Set<Map<String, String>> originalSet, Set<Map<String, String>> currentSet) {
-        final Set<Map<String, String>> result = new HashSet<>();
-        for (Map<String, String> currentMap : currentSet) {
-            for (Map<String, String> originalMap : originalSet) {
-                if (isWithinDNSubtree(originalMap, currentMap)) {
-                    result.add(currentMap);
-                } else if (isWithinDNSubtree(currentMap, originalMap)) {
-                    result.add(originalMap);
-                }
-            }
-            if (originalSet.contains(currentMap)) {
-                result.add(currentMap);
-            }
+    private boolean isWithinSubtree(XmlGeneralName generalName, XmlGeneralName subtreeGeneralName) {
+        if (Utils.isStringEmpty(generalName.getValue()) || Utils.isStringEmpty(subtreeGeneralName.getValue())) {
+            return false;
         }
-        return result;
+        if (subtreeGeneralName.getValue().length() > generalName.getValue().length()) {
+            return false;
+        }
+
+        switch (generalName.getType()) {
+            case UNIFORM_RESOURCE_IDENTIFIER:
+                return isWithinURISubtree(generalName.getValue(), subtreeGeneralName.getValue());
+            case RFC822_NAME:
+                return isWithinEmailSubtree(generalName.getValue(), subtreeGeneralName.getValue());
+            case DNS_NAME:
+                return isWithinDNSSubtree(generalName.getValue(), subtreeGeneralName.getValue());
+            case DIRECTORY_NAME:
+                return isWithinDNSubtree(generalName.getValue(), subtreeGeneralName.getValue());
+            case IP_ADDRESS:
+            case OTHER_NAME:
+            case X400_ADDRESS:
+            case EDI_PARTY_NAME:
+            case REGISTERED_ID:
+                LOG.warn("The NameConstraint of type '{}' is not supported. Full comparison is executed.", generalName.getType());
+                return isWithinOtherNameSubtree(generalName.getValue(), subtreeGeneralName.getValue());
+        }
+        return false;
     }
 
-    private boolean isWithinDNSubtree(Map<String, String> dn, Map<String, String> subtree) {
-        if (subtree.size() < 1) {
-            return false;
+    private boolean isWithinURISubtree(String value, String subtree) {
+        if (subtree.startsWith(".")) {
+            return value.toLowerCase().endsWith(subtree.toLowerCase());
         }
-        if (subtree.size() > dn.size()) {
-            return false;
+        return subtree.equalsIgnoreCase(value);
+    }
+
+    private boolean isWithinEmailSubtree(String value, String subtree) {
+        if (subtree.indexOf('@') != -1) {
+            return value.equalsIgnoreCase(subtree);
         }
-        for (Map.Entry<String, String> entry : subtree.entrySet()) {
+        return value.toLowerCase().endsWith(subtree.toLowerCase());
+    }
+
+    private boolean isWithinDNSSubtree(String value, String subtree) {
+        return value.toLowerCase().endsWith(subtree.toLowerCase());
+    }
+
+    private boolean isWithinDNSubtree(String value, String subtree) {
+        Map<String, String> dnMap = toDNMap(value);
+        Map<String, String> subtreeMap = toDNMap(subtree);
+        for (Map.Entry<String, String> entry : subtreeMap.entrySet()) {
             String subtreeKey = entry.getKey();
             String subtreeValue = entry.getValue();
-            if (!dn.containsKey(subtreeKey) || !subtreeValue.equals(dn.get(subtreeKey))) {
+            if (!dnMap.containsKey(subtreeKey) || !subtreeValue.equals(dnMap.get(subtreeKey))) {
                 return false;
             }
         }
         return true;
     }
 
-    private Set<Map<String, String>> union(Set<Map<String, String>> originalSet, Set<Map<String, String>> currentSet) {
-        final Set<Map<String, String>> result = new HashSet<>();
-        for (Map<String, String> currentMap : currentSet) {
-            for (Map<String, String> originalMap : originalSet) {
-                if (isWithinDNSubtree(originalMap, currentMap)) {
-                    result.add(currentMap);
-                } else if (isWithinDNSubtree(currentMap, originalMap)) {
-                    result.add(originalMap);
-                } else {
-                    result.add(currentMap);
-                    result.add(originalMap);
-                }
-            }
-            if (originalSet.contains(currentMap)) {
-                result.add(currentMap);
-            }
-        }
-        return result;
+    private boolean isWithinOtherNameSubtree(String value, String subtree) {
+        return subtree.equals(value);
     }
 
     @Override
