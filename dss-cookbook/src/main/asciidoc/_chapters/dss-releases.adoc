@@ -941,6 +941,29 @@ not enforced
     ...
 </SigningCertificate>
 ----
+|Supported Critical Extensions                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <SupportedCriticalExtensions Level="WARN">
+        <Id>2.5.29.15</Id>
+        <Id>2.5.29.32</Id>
+        <Id>2.5.29.17</Id>
+        <Id>2.5.29.19</Id>
+        <Id>2.5.29.30</Id>
+        <Id>2.5.29.36</Id>
+        <Id>2.5.29.37</Id>
+        <Id>2.5.29.31</Id>
+        <Id>2.5.29.54</Id>
+        <Id>1.3.6.1.5.5.7.1.3</Id>
+    </SupportedCriticalExtensions>
+    ...
+</SigningCertificate>
+----
 |ResponderId for OCSP response                     |
 ----
 not enforced
