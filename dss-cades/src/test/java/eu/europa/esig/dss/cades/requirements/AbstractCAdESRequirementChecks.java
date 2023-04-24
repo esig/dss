@@ -24,27 +24,35 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.AbstractCAdESTestSignature;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
+import eu.europa.esig.dss.crl.CRLBinary;
+import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -87,8 +95,8 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
 			assertEquals(1, signerInfosAsn1.size());
 
 			SignerInfo signerInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
-			
-			checkSignedDataCertificatesPresent(signedData);
+
+			checkSignedData(signedData);
 			checkContentTypePresent(signerInfo);
 			checkMessageDigestPresent(signerInfo);
 			checkSigningTimePresent(signerInfo);
@@ -108,11 +116,19 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
 	}
 
 	/**
+	 * SignedData shall be present in B/T/LT/LTA
+	 */
+	protected void checkSignedData(SignedData signedData) throws Exception {
+		checkSignedDataCertificatesPresent(signedData);
+	}
+
+	/**
 	 * SignedData.certificates shall be present in B/T/LT/LTA
 	 */
 	protected void checkSignedDataCertificatesPresent(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
 		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+		assertTrue(certificates.size() > 0);
 
 		for (int i = 0; i < certificates.size(); i++) {
 			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
@@ -120,6 +136,41 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
 			CertificateToken certificate = DSSASN1Utils.getCertificate(certificateHolder);
 			certificate.getCertificate().checkValidity();
 		}
+	}
+
+	/**
+	 * SignedData.crls shall be present in LT/LTA
+	 */
+	protected void checkSignedDataRevocationDataPresent(SignedData signedData) throws Exception {
+		ASN1Set crls = signedData.getCRLs();
+		logger.info("CRLs (" + crls.size() + ") : " + crls);
+		assertTrue(crls.size() > 1);
+
+		boolean crlFound = false;
+		boolean ocspFound = false;
+		for (int i = 0; i < crls.size(); i++) {
+			ASN1Primitive asn1Primitive = (crls.getObjectAt(i)).toASN1Primitive();
+			if (asn1Primitive instanceof ASN1Sequence) {
+				CRLBinary crlBinary = CRLUtils.buildCRLBinary(asn1Primitive.getEncoded());
+				assertNotNull(crlBinary);
+				crlFound = true;
+			} else if (asn1Primitive instanceof ASN1TaggedObject) {
+				ASN1TaggedObject asn1TaggedObject = ASN1TaggedObject.getInstance(asn1Primitive);
+				if (asn1TaggedObject.getTagNo() == 1) {
+					OtherRevocationInfoFormat infoFormat = OtherRevocationInfoFormat.getInstance(asn1TaggedObject, false);
+					assertEquals(CMSObjectIdentifiers.id_ri_ocsp_response, infoFormat.getInfoFormat());
+
+					ASN1Sequence asn1Sequence = (ASN1Sequence) infoFormat.getInfo();
+					assertEquals(2, asn1Sequence.size());
+
+					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(asn1Sequence);
+					assertNotNull(ocspResp);
+					ocspFound = true;
+				}
+			}
+		}
+		assertTrue(crlFound, "CRL is not found!");
+		assertTrue(ocspFound, "OCSP is not found!");
 	}
 
 	/**

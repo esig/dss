@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.cades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import org.bouncycastle.asn1.cms.SignerInfo;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.OID;
+import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.cms.SignerInfo;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class CAdESBaselineLTATest extends AbstractCAdESRequirementChecks {
 
@@ -37,6 +37,12 @@ public class CAdESBaselineLTATest extends AbstractCAdESRequirementChecks {
 		CAdESSignatureParameters signatureParameters = super.getSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		return signatureParameters;
+	}
+
+	@Override
+	protected void checkSignedData(SignedData signedData) throws Exception {
+		super.checkSignedData(signedData);
+		checkSignedDataRevocationDataPresent(signedData);
 	}
 
 	@Override

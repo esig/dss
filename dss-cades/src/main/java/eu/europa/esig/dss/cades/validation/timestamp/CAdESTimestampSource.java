@@ -62,7 +62,6 @@ import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.CMSAttributes;
-import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CrlListID;
@@ -378,14 +377,10 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	 */
 	private boolean isOCSPResponsePresent(OCSPResponseBinary binary, List<DEROctetString> crlsHashList,
 										  DigestAlgorithm digestAlgorithm) {
-		if (CMSObjectIdentifiers.id_ri_ocsp_response.equals(binary.getAsn1ObjectIdentifier())) {
-			return isOCSPDigestValueMatch(binary.getBinaries(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm) ||
-					isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
-		} else if (OCSPObjectIdentifiers.id_pkix_ocsp_basic.equals(binary.getAsn1ObjectIdentifier())) {
-			return isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm) ||
-					isOCSPDigestValueMatch(binary.getBinaries(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
+		if (OCSPObjectIdentifiers.id_pkix_ocsp_basic.equals(binary.getAsn1ObjectIdentifier())) {
+			return isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
 		} else  {
-			LOG.warn("Unsupported OCSP response type '{}'!", binary.getAsn1ObjectIdentifier().getId());
+			// CMSObjectIdentifiers.id_ri_ocsp_response case
 			return isOCSPDigestValueMatch(binary.getBinaries(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm) ||
 					isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
 		}
