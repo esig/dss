@@ -59,6 +59,7 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
 		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
+		completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 
 		PAdESService service = new PAdESService(completeCertificateVerifier);
 		service.setTspSource(getCompositeTsa());
