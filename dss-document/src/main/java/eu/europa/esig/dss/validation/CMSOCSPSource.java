@@ -152,6 +152,7 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 				if (otherRevocationInfoMatch.size() == 4) {
 					basicOCSPResp = DSSRevocationUtils.getBasicOcspResp(otherRevocationInfoMatch);
 				} else {
+					// NOTE: the expected encoding
 					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(otherRevocationInfoMatch);
 					basicOCSPResp = DSSRevocationUtils.fromRespToBasic(ocspResp);
 				}
