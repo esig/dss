@@ -971,6 +971,9 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
 		assertNull(simpleReport.getCertificateSubIndication(certId));
+		assertEquals(0, simpleReport.getX509ValidationErrors(certId).size());
+		assertEquals(0, simpleReport.getX509ValidationWarnings(certId).size());
+		assertEquals(2, simpleReport.getX509ValidationInfo(certId).size());
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
 	}
@@ -1000,9 +1003,12 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
 		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getCertificateSubIndication(certId));
+		assertEquals(3, simpleReport.getX509ValidationErrors(certId).size());
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_ISCGKU_ANS_CERT)));
+		assertEquals(0, simpleReport.getX509ValidationWarnings(certId).size());
+		assertEquals(1, simpleReport.getX509ValidationInfo(certId).size());
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_ANS)));
 	}
 

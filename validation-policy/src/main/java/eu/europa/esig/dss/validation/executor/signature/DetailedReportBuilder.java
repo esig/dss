@@ -88,7 +88,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	 * @param policy {@link ValidationPolicy}
 	 * @param validationLevel {@link ValidationLevel} the target highest level
 	 * @param diagnosticData {@link DiagnosticData}
-	 * @param includeSemantics defines if the smeantics shall be included
+	 * @param includeSemantics defines if the semantics shall be included
 	 */
 	public DetailedReportBuilder(I18nProvider i18nProvider, Date currentTime, ValidationPolicy policy, 
 			ValidationLevel validationLevel, DiagnosticData diagnosticData, boolean includeSemantics) {

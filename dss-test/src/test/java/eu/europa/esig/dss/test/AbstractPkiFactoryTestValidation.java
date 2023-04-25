@@ -2228,15 +2228,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 								infoMessages.add((String) typedData.getValue());
 							}
 						}
-						assertEquals(errorMessages.size(), conclusion.getErrors().size());
+						assertEquals(errorMessages.size(), conclusion.getErrors().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getErrors()) {
 							assertTrue(errorMessages.contains(message.getValue()));
 						}
-						assertEquals(warningMessages.size(), conclusion.getWarnings().size());
+						assertEquals(warningMessages.size(), conclusion.getWarnings().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getWarnings()) {
 							assertTrue(warningMessages.contains(message.getValue()));
 						}
-						assertEquals(infoMessages.size(), conclusion.getInfos().size());
+						assertEquals(infoMessages.size(), conclusion.getInfos().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getInfos()) {
 							assertTrue(infoMessages.contains(message.getValue()));
 						}
