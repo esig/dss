@@ -29,6 +29,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -112,7 +113,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		if (currentCertificate.isTrusted() || currentCertificate.isTrustedChain()) {
+		if (currentCertificate.isTrusted() || currentCertificate.isTrustedChain() || !prospectiveCertificateChainCheckEnforced()) {
 
 			item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier());
 
@@ -167,6 +168,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVResult) {
 		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint());
+	}
+
+	private boolean prospectiveCertificateChainCheckEnforced() {
+		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
+		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
 	@Override
