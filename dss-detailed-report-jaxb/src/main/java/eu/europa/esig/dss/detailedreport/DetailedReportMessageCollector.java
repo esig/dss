@@ -205,17 +205,17 @@ public class DetailedReportMessageCollector {
 		}
 		XmlTLAnalysis tlAnalysisById = detailedReport.getTLAnalysisById(tokenId);
 		if (tlAnalysisById != null) {
-			return getMessages(type, tlAnalysisById.getConclusion());
+			return collectTLAnalysisValidation(type, tlAnalysisById);
 		}
 		XmlBasicBuildingBlocks bbbById = detailedReport.getBasicBuildingBlockById(tokenId);
 		if (bbbById != null) {
-			return getMessages(type, bbbById.getConclusion());
+			return collectBBBValidation(type, bbbById);
 		}
 		// supported only for certificate validation
 		if (detailedReport.isCertificateValidation()) {
 			XmlConclusion certXCVConclusion = detailedReport.getCertificateXCVConclusion(tokenId);
 			if (certXCVConclusion != null) {
-				return getMessages(type, certXCVConclusion);
+				return collectXmlConclusionValidation(type, certXCVConclusion);
 			}
 		}
 		return Collections.emptyList();
@@ -261,7 +261,28 @@ public class DetailedReportMessageCollector {
 		if (psv == null || psv.getConclusion() == null || !Indication.PASSED.equals(psv.getConclusion().getIndication())) {
 			conclusion.getErrors().addAll(validationProcessTimestamps.getConclusion().getErrors());
 		}
-		return getMessages(type, conclusion);
+
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, conclusion));
+		return result;
+	}
+
+	private List<Message> collectTLAnalysisValidation(MessageType type, XmlTLAnalysis tlAnalysisById) {
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, tlAnalysisById.getConclusion()));
+		return result;
+	}
+
+	private List<Message> collectBBBValidation(MessageType type, XmlBasicBuildingBlocks bbbById) {
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, bbbById.getConclusion()));
+		return result;
+	}
+
+	private List<Message> collectXmlConclusionValidation(MessageType type, XmlConclusion xmlConclusion) {
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, xmlConclusion));
+		return result;
 	}
 
 	private List<Message> collectSignatureQualification(MessageType type, XmlSignature xmlSignature) {
@@ -271,14 +292,16 @@ public class DetailedReportMessageCollector {
 	}
 
 	private List<Message> collectTimestampQualification(MessageType type, XmlTimestamp xmlTimestamp) {
-		return getMessages(type, xmlTimestamp.getValidationTimestampQualification());
+		List<Message> result = new ArrayList<>();
+		addMessages(result, getMessages(type, xmlTimestamp.getValidationTimestampQualification()));
+		return result;
 	}
 
 	private List<Message> collectCertificateQualification(MessageType type, XmlCertificate xmlCertificate) {
 		List<Message> result = new ArrayList<>();
-		result.addAll(collectCertificateQualificationAtIssuanceTime(type, xmlCertificate));
-		result.addAll(collectCertificateQualificationAtBestSignatureTime(type, xmlCertificate));
-		result.addAll(collectCertificateQualificationAtValidationTime(type, xmlCertificate));
+		addMessages(result, collectCertificateQualificationAtIssuanceTime(type, xmlCertificate));
+		addMessages(result, collectCertificateQualificationAtBestSignatureTime(type, xmlCertificate));
+		addMessages(result, collectCertificateQualificationAtValidationTime(type, xmlCertificate));
 		return result;
 	}
 
