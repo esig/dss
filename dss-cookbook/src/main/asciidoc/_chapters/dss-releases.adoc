@@ -57,7 +57,7 @@ Bug fixes / issues :
 * Documentation improvement (F.A.Q. section, offline support, etc.);
 * Java 19 support.
 
-|v5.11             |February 2023          a|Bug fixes :
+|v5.12.RC1         |February 2023          a|Bug fixes :
 
 * PAdES : unable to extend a document with /DSS dictionary before a timestamp;
 * PAdES : improved code to preserve PDF/A documents validity;
