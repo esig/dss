@@ -56,6 +56,7 @@ import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
@@ -71,6 +72,7 @@ import org.bouncycastle.asn1.esf.OcspResponsesID;
 import org.bouncycastle.asn1.esf.RevocationValues;
 import org.bouncycastle.asn1.ess.OtherCertID;
 import org.bouncycastle.asn1.ocsp.BasicOCSPResponse;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.CertificateList;
@@ -353,13 +355,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 			CMSOCSPSource cmsOCSPSource = (CMSOCSPSource) signatureOCSPSource;
 			for (EncapsulatedRevocationTokenIdentifier<OCSP> token : cmsOCSPSource.getCMSSignedDataRevocationBinaries()) {
 				OCSPResponseBinary binary = (OCSPResponseBinary) token;
-				// Compute DERTaggedObject with the same algorithm how it was created
-				// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
-				OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(binary.getAsn1ObjectIdentifier(),
-						DSSASN1Utils.toASN1Primitive(binary.getBasicOCSPRespContent()));
-				// false value specifies an implicit encoding method
-				DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
-				if (isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList)) {
+				if (isOCSPResponsePresent(binary, crlsHashList, digestAlgorithm)) {
 					ocspBinaries.add(binary);
 				} else {
 					LOG.warn("The OCSP Token with id [{}] was not included to the message imprint of timestamp "
@@ -369,6 +365,36 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 			}
 		}
 		return ocspBinaries;
+	}
+
+	/**
+	 * This method tries the best option to verify the digest of an OCSP response, if it fails, tries the alternative encoding
+	 *
+	 * @param binary {@link OCSPResponseBinary} OCSP response to verify digest
+	 * @param crlsHashList a list of {@link DEROctetString}s representing the timestamped revocation data
+	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for digest computation
+	 * @return TRUE if OCSP response is found within {@code crlsHashList}, FALSE otherwise
+	 */
+	private boolean isOCSPResponsePresent(OCSPResponseBinary binary, List<DEROctetString> crlsHashList,
+										  DigestAlgorithm digestAlgorithm) {
+		if (OCSPObjectIdentifiers.id_pkix_ocsp_basic.equals(binary.getAsn1ObjectIdentifier())) {
+			return isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
+		} else  {
+			// CMSObjectIdentifiers.id_ri_ocsp_response case
+			return isOCSPDigestValueMatch(binary.getBinaries(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm) ||
+					isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
+		}
+	}
+
+	private boolean isOCSPDigestValueMatch(byte[] binaries, ASN1ObjectIdentifier objectIdentifier,
+										   List<DEROctetString> crlsHashList, DigestAlgorithm digestAlgorithm) {
+		// Compute DERTaggedObject with the same algorithm how it was created
+		// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
+		OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(
+				objectIdentifier, DSSASN1Utils.toASN1Primitive(binaries));
+		// false value specifies an implicit encoding method
+		DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
+		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList);
 	}
 	
 	private List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
