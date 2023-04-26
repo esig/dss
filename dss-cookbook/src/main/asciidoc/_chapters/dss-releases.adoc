@@ -13,7 +13,26 @@
 |===
 |Version           |Release date             |Features
 
-|v5.12.RC1         |February 2023          a|Main new features / improvements :
+|v5.12             |April 2023              a|Main new features / improvements :
+
+* Enforced check on unsupported critical certificate extensions;
+* Add support for SAML metadata XSD;
+* WebApp : add a property to define a custom trusted certificate source;
+* WebApp : minor improvements;
+* Removed redundant xml-apis and commons-codec dependencies declaration;
+* Dependencies update (Apache Santuario, PdfBox, etc.).
+
+Bug fixes / issues :
+
+* CAdES : OCSP responses incorporation for CAdES-BASELINE-LT profile;
+* PAdES : ensure DocMDP is created as a direct object;
+* SubjectAlternativeName certificate extension extraction;
+* Skipping ProspectiveCertificateChain always results to PASSED;
+* Unknown MRA equivalence URI caused an error;
+* DSS Standalone : minor fixes;
+* Cookbook minor improvements.
+
+|v5.12.RC1         |February 2023           a|Main new features / improvements :
 
 * PAdES : signature creation with external CMS provider;
 * PAdES : added PDF/A validation support;
@@ -284,13 +303,13 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.12.RC1 using <<BomModule>>.
+The following example shows how to switch to DSS version 5.12 using <<BomModule>>.
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.12.RC1</dss.version>
+    <dss.version>5.12</dss.version>
     ...
 </properties>
 
