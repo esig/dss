@@ -19,7 +19,7 @@ The latest version of DSS framework has the following minimal requirements:
 
 The release is published on Maven Central repository : 
 
-https://central.sonatype.dev/namespace/eu.europa.ec.joinup.sd-dss
+https://central.sonatype.com/search?q=eu.europa.ec.joinup.sd-dss
 
 <pre>
 &lt;!-- Add dss-bom for easy integration --&gt;
