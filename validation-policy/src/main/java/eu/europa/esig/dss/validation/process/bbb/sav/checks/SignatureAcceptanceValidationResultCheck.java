@@ -34,6 +34,7 @@ import java.util.List;
 
 /**
  * Checks if the signature validation result is acceptable
+ *
  * @param <T> {@code XmlConstraintsConclusion}
  */
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {

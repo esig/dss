@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
@@ -156,7 +157,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 *
 	 * @return a list of {@link String}s
 	 */
-	public List<String> getSubjectAlternativeNames() {
+	public List<XmlGeneralName> getSubjectAlternativeNames() {
 		XmlSubjectAlternativeNames subjectAlternativeNames = getXmlSubjectAlternativeNames();
 		return subjectAlternativeNames != null ? subjectAlternativeNames.getSubjectAlternativeName() : Collections.emptyList();
 	}
@@ -338,7 +339,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	public boolean isIdKpOCSPSigning() {
 		XmlExtendedKeyUsages extendedKeyUsage = getXmlExtendedKeyUsages();
 		if (extendedKeyUsage != null) {
-			for (XmlOID xmlOID : extendedKeyUsage.getExtendedKeyUsagesOid()) {
+			for (XmlOID xmlOID : extendedKeyUsage.getExtendedKeyUsageOid()) {
 				if (ExtendedKeyUsage.OCSP_SIGNING.getOid().equals(xmlOID.getValue())) {
 					return true;
 				}
@@ -368,7 +369,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlOID> getExtendedKeyUsages() {
 		XmlExtendedKeyUsages extendedKeyUsage = getXmlExtendedKeyUsages();
-		return extendedKeyUsage != null ? extendedKeyUsage.getExtendedKeyUsagesOid() : Collections.emptyList();
+		return extendedKeyUsage != null ? extendedKeyUsage.getExtendedKeyUsageOid() : Collections.emptyList();
 	}
 
 	private XmlExtendedKeyUsages getXmlExtendedKeyUsages() {

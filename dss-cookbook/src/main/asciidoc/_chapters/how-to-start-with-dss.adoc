@@ -41,7 +41,7 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>5.12.RC1</version>
+        <version>5.12</version>
     </dependency>
     ...
 </dependencies>
@@ -86,7 +86,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.12.RC1</version>
+            <version>5.12</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -419,3 +419,5 @@ dss-standalone-app:: Standalone application which allows signing a document with
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
 dss-demo-webapp:: Demonstration web application which presents basic DSS functionalities.
 dss-demo-bundle:: Packaging module for dss-demo-webapp.
+dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
+dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].

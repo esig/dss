@@ -42,6 +42,7 @@ import eu.europa.esig.dss.model.x509.extension.NameConstraints;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.QcStatements;
+import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
 import eu.europa.esig.dss.model.x509.extension.ValidityAssuredShortTerm;
@@ -55,11 +56,13 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.RFC4519Style;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
-import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
@@ -309,28 +312,70 @@ public class CertificateExtensionsUtils {
             final SubjectAlternativeNames subjectAlternateNames = new SubjectAlternativeNames();
             subjectAlternateNames.setOctets(certificateToken.getCertificate().getExtensionValue(subjectAlternateNames.getOid()));
 
-            final List<String> result = new ArrayList<>();
+            final List<GeneralName> result = new ArrayList<>();
             Collection<List<?>> subjectAlternativeNames = certificateToken.getCertificate().getSubjectAlternativeNames();
             if (Utils.isCollectionNotEmpty(subjectAlternativeNames)) {
-                for (List<?> list : subjectAlternativeNames) {
-                    // type + value
-                    if (Utils.collectionSize(list) == 2) {
-                        Object value = list.get(1);
-                        if (value instanceof String) {
-                            result.add((String) value);
-                        } else {
-                            LOG.trace("Ignored value : {}", value);
-                        }
+                for (List<?> gn : subjectAlternativeNames) {
+                    GeneralName generalName = getGeneralName(gn);
+                    if (generalName != null) {
+                        result.add(generalName);
                     }
                 }
             }
-            subjectAlternateNames.setNames(result);
+            subjectAlternateNames.setGeneralNames(result);
             subjectAlternateNames.checkCritical(certificateToken);
             return subjectAlternateNames;
 
         } catch (Exception e) {
             LOG.warn("Unable to extract SubjectAlternativeNames", e);
             return null;
+        }
+    }
+
+    private static GeneralName getGeneralName(List<?> gn) {
+        if (Utils.collectionSize(gn) == 2) {
+            try {
+                if (!(gn.get(0) instanceof Integer)) {
+                    LOG.warn("Unable to load the alternative name. Reason : Invalid encoding!");
+                    return null;
+                }
+                final GeneralName generalName = new GeneralName();
+                GeneralNameType type = GeneralNameType.fromIndex((Integer) gn.get(0));
+                generalName.setGeneralNameType(type);
+
+                Object value = gn.get(1);
+                if (value instanceof String) {
+                    String strValue = (String) value;
+                    if (GeneralNameType.DIRECTORY_NAME.equals(type)) {
+                        strValue = toRFC2253RDN(strValue);
+                    }
+                    generalName.setValue(strValue);
+                } else if (value instanceof byte[]) {
+                    generalName.setValue("#" + Utils.toHex((byte[]) value));
+                } else {
+                    LOG.warn("Unable to load the alternative name. Reason : Unsupported value type!");
+                    return null;
+                }
+                return generalName;
+
+            } catch (Exception e) {
+                LOG.warn("Unable to load the alternative name. Reason : {}", e.getMessage(), e);
+            }
+        } else {
+            LOG.warn("Unable to load the alternative name. Reason : Invalid sequence length!");
+        }
+        return null;
+    }
+
+    private static String toRFC2253RDN(String value) {
+        try {
+            // RFC4519Style is the default style used in BouncyCastle
+            RDN[] rdns = RFC4519Style.INSTANCE.fromString(value);
+            X500Principal x500Principal = new X500Principal(DSSASN1Utils.getDEREncoded(new X500Name(rdns)));
+            return new X500PrincipalHelper(x500Principal).getRFC2253();
+        } catch (Exception e) {
+            LOG.warn("Unable to build RDN! Reason: {}", e.getMessage(), e);
+            return value;
         }
     }
 
@@ -374,7 +419,7 @@ public class CertificateExtensionsUtils {
         final List<String> locationsUrls = new ArrayList<>();
         for (AccessDescription accessDescription : accessDescriptions) {
             if (aiaOid.equals(accessDescription.getAccessMethod())) {
-                GeneralName gn = accessDescription.getAccessLocation();
+                org.bouncycastle.asn1.x509.GeneralName gn = accessDescription.getAccessLocation();
                 String location = parseGn(gn);
                 if (location != null) {
                     locationsUrls.add(location);
@@ -491,8 +536,8 @@ public class CertificateExtensionsUtils {
                     }
 
                     final GeneralNames generalNames = (GeneralNames) distributionPointName.getName();
-                    final GeneralName[] names = generalNames.getNames();
-                    for (final GeneralName name : names) {
+                    final org.bouncycastle.asn1.x509.GeneralName[] names = generalNames.getNames();
+                    for (final org.bouncycastle.asn1.x509.GeneralName name : names) {
                         String location = parseGn(name);
                         if (location != null) {
                             urls.add(location);
@@ -511,9 +556,9 @@ public class CertificateExtensionsUtils {
         return null;
     }
 
-    private static String parseGn(GeneralName gn) {
+    private static String parseGn(org.bouncycastle.asn1.x509.GeneralName gn) {
         try {
-            if (GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
+            if (org.bouncycastle.asn1.x509.GeneralName.uniformResourceIdentifier == gn.getTagNo()) {
                 ASN1String str = (ASN1String) ((DERTaggedObject) gn.toASN1Primitive()).getBaseObject();
                 return str.getString();
             }
@@ -589,9 +634,11 @@ public class CertificateExtensionsUtils {
         for (org.bouncycastle.asn1.x509.GeneralSubtree bcGeneralSubtree : generalSubtrees) {
             final GeneralSubtree generalSubtree = new GeneralSubtree();
 
-            GeneralName generalName = bcGeneralSubtree.getBase();
+            org.bouncycastle.asn1.x509.GeneralName generalName = bcGeneralSubtree.getBase();
             GeneralNameType generalNameType = GeneralNameType.fromIndex(generalName.getTagNo());
             generalSubtree.setGeneralNameType(generalNameType);
+            generalSubtree.setMinimum(bcGeneralSubtree.getMinimum());
+            generalSubtree.setMaximum(bcGeneralSubtree.getMaximum());
 
             if (GeneralNameType.DIRECTORY_NAME.equals(generalNameType)) {
                 X500Principal x500Principal = new X500Principal(DSSASN1Utils.getDEREncoded(generalName.getName()));

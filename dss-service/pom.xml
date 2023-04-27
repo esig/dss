@@ -6,7 +6,7 @@
     <parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.12.RC1</version>
+		<version>5.12</version>
     </parent>
 
     <artifactId>dss-service</artifactId>
@@ -33,18 +33,7 @@
 <!--				<groupId>commons-logging</groupId> -->
 <!--			</exclusion> -->
 <!--		</exclusions> -->
-        	<exclusions>
-        		<exclusion>
-        			<groupId>commons-codec</groupId>
-        			<artifactId>commons-codec</artifactId> <!-- Synchronize with santuario version (1/2) -->
-        		</exclusion>
-        	</exclusions>
         </dependency>
-        <dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commons-codec.version}</version> <!-- Synchronize with santuario version (2/2) -->
-		</dependency>
 		
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

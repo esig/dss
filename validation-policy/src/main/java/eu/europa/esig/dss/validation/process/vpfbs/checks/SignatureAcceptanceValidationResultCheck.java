@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies if the format Signature Acceptance Validation process as per clause 5.2.8 succeeded
  *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class SignatureAcceptanceValidationResultCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

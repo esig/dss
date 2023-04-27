@@ -125,7 +125,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     protected DSSDocument createZZTL() {
-        Document tlDocument = DomUtils.buildDOM(ORIGINAL_TL);
+        Document tlDocument = DomUtils.buildDOM(getOriginalTL());
         Element lotlCertElement = DomUtils.getElement(tlDocument.getDocumentElement(),
                 "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer/tl:ServiceDigitalIdentities/tl:ServiceDigitalIdentity/tl:DigitalId/tl:X509Certificate");
         Text firstChild = (Text) lotlCertElement.getFirstChild();
@@ -186,7 +186,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     protected DSSDocument createZZLOTL() {
-        Document lotlDocument = DomUtils.buildDOM(ORIGINAL_LOTL);
+        Document lotlDocument = DomUtils.buildDOM(getOriginalLOTL());
 
         NodeList tslPointers = DomUtils.getNodeList(lotlDocument.getDocumentElement(), "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer");
         assertEquals(44, tslPointers.getLength());
@@ -218,6 +218,14 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedLOTL = service.signDocument(lotlToSign, signatureParameters, signatureValue);
         return signedLOTL;
+    }
+
+    protected DSSDocument getOriginalTL() {
+        return ORIGINAL_TL;
+    }
+
+    protected DSSDocument getOriginalLOTL() {
+        return ORIGINAL_LOTL;
     }
 
     protected void configureMRAInformationElement(Document document, Element mraInformation) {

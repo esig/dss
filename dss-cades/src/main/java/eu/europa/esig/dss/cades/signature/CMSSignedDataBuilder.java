@@ -40,7 +40,6 @@ import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
-import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
@@ -316,27 +315,24 @@ public class CMSSignedDataBuilder {
 			}
 		}
 
-		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
-		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreBasic.getMatches(null));
+		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreOcsp.getMatches(null));
 		final Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 		for (final OCSPToken ocspToken : ocspTokens) {
-			final BasicOCSPResp basicOCSPResp = ocspToken.getBasicOCSPResp();
-			if (basicOCSPResp != null) {
-				ASN1Primitive ocspResponseASN1Primitive = DSSASN1Utils.toASN1Primitive(DSSASN1Utils.getEncoded(basicOCSPResp));
-				if (!newOtherRevocationInfoFormatStore.contains(ocspResponseASN1Primitive)) {
-					newOtherRevocationInfoFormatStore.add(ocspResponseASN1Primitive);
-				}
+			ASN1Primitive ocspResponseASN1Primitive = DSSASN1Utils.toASN1Primitive(ocspToken.getEncoded());
+			if (!newOtherRevocationInfoFormatStore.contains(ocspResponseASN1Primitive)) {
+				newOtherRevocationInfoFormatStore.add(ocspResponseASN1Primitive);
 			}
 		}
-		otherRevocationInfoFormatStoreBasic = new CollectionStore(newOtherRevocationInfoFormatStore);
 
-		for (Object ocsp : otherRevocationInfoFormatStoreBasic.getMatches(null)) {
-			newCrlsStore.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
-		}
-
-		Store otherRevocationInfoFormatStoreOcsp = cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response);
+		otherRevocationInfoFormatStoreOcsp = new CollectionStore(newOtherRevocationInfoFormatStore);
 		for (Object ocsp : otherRevocationInfoFormatStoreOcsp.getMatches(null)) {
 			newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
+		}
+
+		Store otherRevocationInfoFormatStoreBasic = cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic);
+		for (Object ocsp : otherRevocationInfoFormatStoreBasic.getMatches(null)) {
+			newCrlsStore.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
 		}
 
 		crlsStore = new CollectionStore(newCrlsStore);

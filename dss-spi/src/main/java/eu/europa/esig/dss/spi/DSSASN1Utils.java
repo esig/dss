@@ -1533,13 +1533,20 @@ public final class DSSASN1Utils {
 	 * @deprecated since DSS 5.12. Use
 	 * 			{@code
 	 * 					SubjectAlternativeNames subjectAlternativeNames = CertificateExtensionsUtils.getSubjectAlternativeNames(certToken);
-	 * 					List<String> result = subjectAlternativeNames != null ? subjectAlternativeNames.getNames() : Collections.emptyList();
+	 * 					List<eu.europa.esig.dss.model.x509.extension.GeneralName> result = subjectAlternativeNames != null ? subjectAlternativeNames.getGeneralNames() : Collections.emptyList();
 	 * 			}
 	 */
 	@Deprecated
 	public static List<String> getSubjectAlternativeNames(CertificateToken certToken) {
 		SubjectAlternativeNames subjectAlternativeNames = CertificateExtensionsUtils.getSubjectAlternativeNames(certToken);
-		return subjectAlternativeNames != null ? subjectAlternativeNames.getNames() : Collections.emptyList();
+		if (subjectAlternativeNames != null && Utils.isCollectionNotEmpty(subjectAlternativeNames.getGeneralNames())) {
+			List<String> result = new ArrayList<>();
+			for (eu.europa.esig.dss.model.x509.extension.GeneralName generalName : subjectAlternativeNames.getGeneralNames()) {
+				result.add(generalName.getValue());
+			}
+			return result;
+		}
+		return Collections.emptyList();
 	}
 
 	/**

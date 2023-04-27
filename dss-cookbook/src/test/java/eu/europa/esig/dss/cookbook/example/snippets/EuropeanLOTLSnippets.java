@@ -30,7 +30,6 @@ import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
 import eu.europa.esig.dss.tsl.alerts.TLAlert;
@@ -144,8 +143,7 @@ public class EuropeanLOTLSnippets {
 	public LOTLSource europeanLOTL() {
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setUrl(LOTL_URL);
-//		lotlSource.setCertificateSource(officialJournalContentKeyStore());
-		lotlSource.setCertificateSource(new CommonCertificateSource());
+		lotlSource.setCertificateSource(officialJournalContentKeyStore());
 		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(OJ_URL));
 		lotlSource.setPivotSupport(true);
 		return lotlSource;

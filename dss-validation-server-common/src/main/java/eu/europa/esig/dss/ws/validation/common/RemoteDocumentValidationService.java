@@ -151,7 +151,13 @@ public class RemoteDocumentValidationService {
 		}
 	}
 
-	private SignedDocumentValidator initValidator(DataToValidateDTO dataToValidate) {
+	/**
+	 * Instantiates a {@code SignedDocumentValidator} based on the request data DTO
+	 *
+	 * @param dataToValidate {@link DataToValidateDTO} representing the request data
+	 * @return {@link SignedDocumentValidator}
+	 */
+	protected SignedDocumentValidator initValidator(DataToValidateDTO dataToValidate) {
 		DSSDocument signedDocument = RemoteDocumentConverter.toDSSDocument(dataToValidate.getSignedDocument());
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
 		if (Utils.isCollectionNotEmpty(dataToValidate.getOriginalDocuments())) {

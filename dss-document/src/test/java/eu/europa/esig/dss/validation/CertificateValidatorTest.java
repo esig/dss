@@ -339,4 +339,14 @@ public class CertificateValidatorTest {
 		assertEquals("OU=excludedSubtree1,OU=permittedSubtree1,O=Test Certificates,C=US", certificateWrapper.getExcludedSubtrees().get(0).getValue());
 	}
 
+	@Test
+	public void nullConfigurationTest() {
+		Exception exception = assertThrows(NullPointerException.class, () -> CertificateValidator.fromCertificate(null));
+		assertEquals("The certificate is missing", exception.getMessage());
+
+		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
+		exception = assertThrows(NullPointerException.class, () -> certificateValidator.validate());
+		assertEquals("CertificateVerifier is not defined", exception.getMessage());
+	}
+
 }

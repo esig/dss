@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleCertificateReport ValidationTime="2023-03-29T15:06:14Z" xmlns="http://dss.esig.europa.eu/validation/simple-certificate-report">
+    <ValidationPolicy>
+        <PolicyName>Certificate policy TL based</PolicyName>
+        <PolicyDescription>Validates electronic certificates and indicates its qualification status at issuance and validation time.
+            All certificates and their related chains are validated against the EU Member State Trusted Lists (this includes
+            target certificate and certificates used to validate certificate validity status services - CRLs, OCSP).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <Chain>
+        <ChainItem>
+            <id>C-96DB5CFA7ABACEB5C97C131CBBFB341DDD8E64FE68B587558AA8F082AB2670F2</id>
+            <subject>
+                <commonName>good-user</commonName>
+                <organizationName>Nowina Solutions</organizationName>
+                <organizationUnit>PKI-TEST</organizationUnit>
+                <country>LU</country>
+            </subject>
+            <issuerId>C-FCBFEBCB6B78113DFD4C6CCFCBC2B1482992DF4C48E9DE1B3B7F16F33332BFCB</issuerId>
+            <notBefore>2022-02-13T16:03:37Z</notBefore>
+            <notAfter>2023-12-13T16:03:37Z</notAfter>
+            <keyUsages>
+                <keyUsage>nonRepudiation</keyUsage>
+            </keyUsages>
+            <ocspUrls>
+                <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
+            </ocspUrls>
+            <aiaUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</aiaUrl>
+            </aiaUrls>
+            <qualificationAtIssuance>N/A</qualificationAtIssuance>
+            <qualificationAtValidation>N/A</qualificationAtValidation>
+            <revocation/>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>CERTIFICATE_CHAIN_GENERAL_FAILURE</SubIndication>
+            <X509ValidationDetails>
+                <Error Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Error>
+                <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+                <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+            </X509ValidationDetails>
+        </ChainItem>
+        <ChainItem>
+            <id>C-FCBFEBCB6B78113DFD4C6CCFCBC2B1482992DF4C48E9DE1B3B7F16F33332BFCB</id>
+            <subject>
+                <commonName>good-ca</commonName>
+                <organizationName>Nowina Solutions</organizationName>
+                <organizationUnit>PKI-TEST</organizationUnit>
+                <country>LU</country>
+            </subject>
+            <issuerId>C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813</issuerId>
+            <notBefore>2022-02-13T16:03:36Z</notBefore>
+            <notAfter>2023-12-13T16:03:36Z</notAfter>
+            <keyUsages>
+                <keyUsage>keyCertSign</keyUsage>
+                <keyUsage>crlSign</keyUsage>
+            </keyUsages>
+            <crlUrls>
+                <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+            </crlUrls>
+            <aiaUrls>
+                <aiaUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</aiaUrl>
+            </aiaUrls>
+            <revocation/>
+            <Indication>INDETERMINATE</Indication>
+            <SubIndication>CERTIFICATE_CHAIN_GENERAL_FAILURE</SubIndication>
+            <X509ValidationDetails>
+                <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+            </X509ValidationDetails>
+        </ChainItem>
+        <ChainItem>
+            <id>C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813</id>
+            <subject>
+                <commonName>root-ca</commonName>
+                <organizationName>Nowina Solutions</organizationName>
+                <organizationUnit>PKI-TEST</organizationUnit>
+                <country>LU</country>
+            </subject>
+            <notBefore>2022-01-13T16:03:35Z</notBefore>
+            <notAfter>2024-01-13T16:03:35Z</notAfter>
+            <keyUsages>
+                <keyUsage>keyCertSign</keyUsage>
+                <keyUsage>crlSign</keyUsage>
+            </keyUsages>
+            <revocation/>
+            <trustAnchors/>
+            <Indication>PASSED</Indication>
+        </ChainItem>
+    </Chain>
+</SimpleCertificateReport>

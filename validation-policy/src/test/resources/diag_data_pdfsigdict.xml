@@ -200,8 +200,8 @@
                     <certificatePolicy cpsUrl="http://publicacao.certificadodigital.com.br/repositorio/dpc/declaracao-rfb.pdf">2.16.76.1.2.3.10</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsagesOid>
-                    <extendedKeyUsagesOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://www.certificadodigital.com.br/cadeias/serasarfbv2.p7b</caIssuersUrl>
@@ -310,7 +310,7 @@
                     <certificatePolicy cpsUrl="http://icp-brasil.certisign.com.br/repositorio/dpc/AC_Certisign_Tempo/DPC_AC_Certisign_Tempo.pdf">2.16.76.1.2.303.6</certificatePolicy>
                 </CertificatePolicies>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://icp-brasil.certisign.com.br/repositorio/certificados/AC_Certisign_Tempo.p7c</caIssuersUrl>
@@ -471,7 +471,7 @@
                     <keyUsageBit>keyEncipherment</keyUsageBit>
                 </KeyUsages>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="false">
-                    <extendedKeyUsagesOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsagesOid>
+                    <extendedKeyUsageOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?cACertificate?base?objectClass=certificationAuthority</caIssuersUrl>

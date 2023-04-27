@@ -21,12 +21,26 @@
 package eu.europa.esig.trustedlist.mra.parsers;
 
 import eu.europa.esig.dss.enumerations.MRAStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class MRAStatusParser {
 
+	private static final Logger LOG = LoggerFactory.getLogger(MRAStatusParser.class);
+
+	/**
+	 * Default constructor
+	 */
 	private MRAStatusParser() {
+		// empty
 	}
 
+	/**
+	 * Parses the {@code String} and returns a {@code MRAStatus}
+	 *
+	 * @param v {@link String}
+	 * @return {@link MRAStatus}
+	 */
 	public static MRAStatus parse(String v) {
 		if (v != null) {
 			for (MRAStatus m : MRAStatus.values()) {
@@ -35,9 +49,16 @@ public final class MRAStatusParser {
 				}
 			}
 		}
+		LOG.warn("Unknown MRAStatus URI : {}", v);
 		return null;
 	}
 
+	/**
+	 * Returns a string representation of {@code String}
+	 *
+	 * @param m {@link MRAStatus}
+	 * @return {@link String}
+	 */
 	public static String print(MRAStatus m) {
 		if (m != null) {
 			return m.getUri();

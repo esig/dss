@@ -571,8 +571,8 @@ public class XmlTrustedServiceProviderBuilder {
     }
 
     private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
-        Map<MRAEquivalenceContext, CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
-        if (Utils.isMapEmpty(certificateContentEquivalences)) {
+        List<CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
+        if (Utils.isCollectionEmpty(certificateContentEquivalences)) {
             LOG.debug("No MRA equivalence is defined for certificate content.");
             return;
         }
@@ -595,19 +595,16 @@ public class XmlTrustedServiceProviderBuilder {
             xmlCertificate.getCertificateExtensions().add(qcStatements);
         }
 
-        for (Map.Entry<MRAEquivalenceContext, CertificateContentEquivalence> equivalence : certificateContentEquivalences.entrySet()) {
-            MRAEquivalenceContext equivalenceContext = equivalence.getKey();
-            CertificateContentEquivalence certificateContentEquivalence = equivalence.getValue();
-
-            Condition condition = certificateContentEquivalence.getCondition();
-            if (condition.check(certToken)) {
+        for (CertificateContentEquivalence certificateContentEquivalence : certificateContentEquivalences) {
+            final MRAEquivalenceContext equivalenceContext = certificateContentEquivalence.getContext();
+            final Condition condition = certificateContentEquivalence.getCondition();
+            if (equivalenceContext != null && condition.check(certToken)) {
                 LOG.info("MRA condition match ({})", equivalenceContext);
                 if (qcStatements.getMRACertificateMapping() == null) {
                     qcStatements.setMRACertificateMapping(getXmlMRACertificateMapping(qcStatements, serviceEquivalence));
                     qcStatements.setEnactedMRA(true);
                 }
-
-                QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
+                final QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
                 switch (equivalenceContext) {
                     case QC_COMPLIANCE:
                         replaceCompliance(qcStatements, contentReplacement);
@@ -619,7 +616,7 @@ public class XmlTrustedServiceProviderBuilder {
                         replaceQSCD(qcStatements, contentReplacement);
                         break;
                     default:
-                        LOG.warn("Unsupported equivalence context {}", equivalence.getKey());
+                        LOG.warn("Unsupported equivalence context {}", equivalenceContext);
                         break;
                 }
             }
@@ -718,7 +715,7 @@ public class XmlTrustedServiceProviderBuilder {
                 isQcSSCD = false;
             }
         }
-        qcStatements.getQcSSCD().setPresent(isQcSSCD);
+        qcStatements.setQcSSCD(qcStatementsBuilder.buildXmlQcSSCD(isQcSSCD));
     }
 
 }

@@ -20,15 +20,7 @@
  */
 package eu.europa.esig.dss.simplecertificatereport;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.xml.transform.Result;
-import javax.xml.transform.sax.SAXResult;
-
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -37,7 +29,13 @@ import org.apache.fop.apps.MimeConstants;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.SAXResult;
+import java.io.File;
+import java.io.FileOutputStream;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PDFGenerationTest {
 
@@ -64,6 +62,11 @@ public class PDFGenerationTest {
 	@Test
 	public void generateSimpleCertificateReport2() throws Exception {
 		createAndValidate("simple-cert-report2.xml");
+	}
+
+	@Test
+	public void generateSimpleCertificateReport3() throws Exception {
+		createAndValidate("simple-cert-report3.xml");
 	}
 	
 	private void createAndValidate(String filename) throws Exception {

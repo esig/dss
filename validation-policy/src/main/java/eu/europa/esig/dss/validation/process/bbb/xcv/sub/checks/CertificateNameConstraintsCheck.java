@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.enumerations.GeneralNameType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -42,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This check verifies the validity of the certificate in regard to "Name constraint"
@@ -118,8 +118,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
             // perform validation only for the current certificate to support flexible validation policy
             if (i == 0) {
                 final Map<String, String> certDN = toDNMap(cert.getCertificateDN());
-                final List<Map<String, String>> subAltNames = cert.getSubjectAlternativeNames().stream()
-                        .map(this::toDNMap).collect(Collectors.toList());
+                final List<Map<String, String>> subAltNames = getSubjectAlternativeNamesDNList(cert.getSubjectAlternativeNames());
 
                 if (permittedSubtrees != null) {
                     if (!isWithinDNSubtrees(certDN, permittedSubtrees)) {
@@ -250,6 +249,18 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         return null;
     }
 
+    private List<Map<String, String>> getSubjectAlternativeNamesDNList(List<XmlGeneralName> subjectAlternativeNames) {
+        List<Map<String, String>> result = new ArrayList<>();
+        for (XmlGeneralName generalName : subjectAlternativeNames) {
+            if (GeneralNameType.DIRECTORY_NAME.equals(generalName.getType())) {
+                result.add(toDNMap(generalName.getValue()));
+            } else if (LOG.isDebugEnabled()) {
+                LOG.debug("The GeneralName of type '{}' is skipped.", generalName.getType());
+            }
+        }
+        return result;
+    }
+
     private boolean isWithinDNSubtrees(Map<String, String> certDN, Set<Map<String, String>> permittedSubtrees) {
         for (Map<String, String> permittedSubtree : permittedSubtrees) {
             if (isWithinDNSubtree(certDN, permittedSubtree)) {
@@ -263,6 +274,12 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         Set<Map<String, String>> result = new HashSet<>();
         for (XmlGeneralSubtree xmlGeneralSubtree : generalSubtrees) {
             if (GeneralNameType.DIRECTORY_NAME == xmlGeneralSubtree.getType()) {
+                if (xmlGeneralSubtree.getMinimum() != null && xmlGeneralSubtree.getMinimum().intValue() != 0) {
+                    LOG.warn("'Minimum' field of GeneralSubtree is not supported! The value is skipped.");
+                }
+                if (xmlGeneralSubtree.getMaximum() != null) {
+                    LOG.warn("'Maximum' field of GeneralSubtree is not supported! The value is skipped.");
+                }
                 Map<String, String> dnMap = toDNMap(xmlGeneralSubtree.getValue());
                 if (Utils.isMapNotEmpty(dnMap)) {
                     result.add(dnMap);

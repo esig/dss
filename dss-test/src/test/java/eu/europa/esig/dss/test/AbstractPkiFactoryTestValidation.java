@@ -57,6 +57,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
@@ -782,8 +784,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					assertEquals(new HashSet<>(xmlCertificatePolicies.getCertificatePolicy()).size(),
 							xmlCertificatePolicies.getCertificatePolicy().size());
 					for (XmlCertificatePolicy certificatePolicy : xmlCertificatePolicies.getCertificatePolicy()) {
-						assertNotNull(certificatePolicy.getValue());
-						assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
+						assertTrue(Utils.isStringNotEmpty(certificatePolicy.getValue()) || Utils.isStringNotEmpty(certificatePolicy.getCpsUrl()));
+						if (Utils.isStringNotEmpty(certificatePolicy.getValue())) {
+							assertTrue(DSSUtils.isOidCode(certificatePolicy.getValue()));
+						}
 					}
 				} else if (CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlNameConstraints);
@@ -791,14 +795,31 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					XmlNameConstraints xmlNameConstraints = (XmlNameConstraints) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlNameConstraints.getPermittedSubtrees()) ||
 							Utils.isCollectionNotEmpty(xmlNameConstraints.getExcludedSubtrees()));
+					for (XmlGeneralSubtree xmlGeneralSubtree : xmlNameConstraints.getPermittedSubtrees()) {
+						assertNotNull(xmlGeneralSubtree.getType());
+						assertNotNull(xmlGeneralSubtree.getValue());
+						assertEquals(0, xmlGeneralSubtree.getMinimum().intValue());
+						assertNull(xmlGeneralSubtree.getMaximum());
+					}
+					for (XmlGeneralSubtree xmlGeneralSubtree : xmlNameConstraints.getExcludedSubtrees()) {
+						assertNotNull(xmlGeneralSubtree.getType());
+						assertNotNull(xmlGeneralSubtree.getValue());
+						assertEquals(0, xmlGeneralSubtree.getMinimum().intValue());
+						assertNull(xmlGeneralSubtree.getMaximum());
+					}
 				} else if (CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlSubjectAlternativeNames);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+					XmlSubjectAlternativeNames xmlSubjectAlternativeNames = (XmlSubjectAlternativeNames) xmlCertificateExtension;
+					for (XmlGeneralName xmlGeneralName : xmlSubjectAlternativeNames.getSubjectAlternativeName()) {
+						assertNotNull(xmlGeneralName.getType());
+						assertNotNull(xmlGeneralName.getValue());
+					}
 				} else if (CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlExtendedKeyUsages);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlExtendedKeyUsages xmlExtendedKeyUsages = (XmlExtendedKeyUsages) xmlCertificateExtension;
-					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsagesOid()));
+					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsageOid()));
 				} else if (CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid().equals(xmlCertificateExtension.getOID())) {
 					assertTrue(xmlCertificateExtension instanceof XmlAuthorityInformationAccess);
 					assertFalse(xmlCertificateExtension.isCritical());
@@ -2203,15 +2224,15 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 								infoMessages.add((String) typedData.getValue());
 							}
 						}
-						assertEquals(errorMessages.size(), conclusion.getErrors().size());
+						assertEquals(errorMessages.size(), conclusion.getErrors().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getErrors()) {
 							assertTrue(errorMessages.contains(message.getValue()));
 						}
-						assertEquals(warningMessages.size(), conclusion.getWarnings().size());
+						assertEquals(warningMessages.size(), conclusion.getWarnings().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getWarnings()) {
 							assertTrue(warningMessages.contains(message.getValue()));
 						}
-						assertEquals(infoMessages.size(), conclusion.getInfos().size());
+						assertEquals(infoMessages.size(), conclusion.getInfos().stream().map(XmlMessage::getValue).collect(Collectors.toSet()).size());
 						for (XmlMessage message : conclusion.getInfos()) {
 							assertTrue(infoMessages.contains(message.getValue()));
 						}

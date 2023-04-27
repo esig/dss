@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.simplecertificatereport;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SimpleCertificateReportFacadeTest {
 
@@ -38,6 +37,11 @@ public class SimpleCertificateReportFacadeTest {
 	@Test
 	public void test2() throws Exception {
 		createAndValidate("simple-cert-report2.xml");
+	}
+
+	@Test
+	public void test3() throws Exception {
+		createAndValidate("simple-cert-report3.xml");
 	}
 	
 	private void createAndValidate(String filename) throws Exception {

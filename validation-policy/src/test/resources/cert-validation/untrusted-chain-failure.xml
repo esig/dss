@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2023-04-24T00:00:00Z</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="C-309A112E14D2702A6A17037F3DD4B7A8C436FC02A5292217CD98AC48F9D346C1">
+            <SubjectDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ca11,o=upc,l=barcelona,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=4.2.1.9_07_CA11,O=UPC,L=Barcelona,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ca,o=upc,l=barcelona,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=4.2.1.9_07_CA,O=UPC,L=Barcelona,C=ES</IssuerDistinguishedName>
+            <SerialNumber>7485179700396604198</SerialNumber>
+            <CommonName>4.2.1.9_07_CA11</CommonName>
+            <Locality>Barcelona</Locality>
+            <CountryName>ES</CountryName>
+            <OrganizationName>UPC</OrganizationName>
+            <Sources>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2033-03-21T22:39:00Z</NotAfter>
+            <NotBefore>2023-03-24T23:32:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E8AAF600FF0FCFF0255D9DF31CC119C2652AD7A3260BDDCF0440921D8681E4BD</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-581C37427097BB8221218F9AEBF0396A9878380FD217B9852968902307228029"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-581C37427097BB8221218F9AEBF0396A9878380FD217B9852968902307228029"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>ICCSqdbQ3q0jpD7J0y/zMDuYuKc=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <OtherExtension OID="2.16.840.1.113730.1.1" critical="false">
+                    <octets>BAQDAgAH</octets>
+                </OtherExtension>
+                <OtherExtension OID="2.16.840.1.113730.1.13" critical="false">
+                    <octets>BBEWD3hjYSBjZXJ0aWZpY2F0ZQ==</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MJoRLhTScCpqFwN/PdS3qMQ2/AKlKSIXzZisSPnTRsE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3E82BCE56A90B50E81C7C1325A4B1243B44FBC6539AAF26B85D794CCEB97040B">
+            <SubjectDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ee11,o=upc,l=barcelona,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=4.2.1.9_07_EE11,O=UPC,L=Barcelona,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ca11,o=upc,l=barcelona,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=4.2.1.9_07_CA11,O=UPC,L=Barcelona,C=ES</IssuerDistinguishedName>
+            <SerialNumber>7123336616921417720</SerialNumber>
+            <CommonName>4.2.1.9_07_EE11</CommonName>
+            <Locality>Barcelona</Locality>
+            <CountryName>ES</CountryName>
+            <OrganizationName>UPC</OrganizationName>
+            <Sources>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2024-03-24T23:34:00Z</NotAfter>
+            <NotBefore>2023-03-24T23:34:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BA0D61EBAD62F183E7526901FCD02259DB4D9D86955AA593C5CCAA46C6A3FCF3</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-309A112E14D2702A6A17037F3DD4B7A8C436FC02A5292217CD98AC48F9D346C1"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-309A112E14D2702A6A17037F3DD4B7A8C436FC02A5292217CD98AC48F9D346C1"/>
+                <ChainItem Certificate="C-581C37427097BB8221218F9AEBF0396A9878380FD217B9852968902307228029"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <TrustedServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PoK85WqQtQ6Bx8EyWksSQ7RPvGU5qvJrhdeUzOuXBAs=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-581C37427097BB8221218F9AEBF0396A9878380FD217B9852968902307228029">
+            <SubjectDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ca,o=upc,l=barcelona,c=es</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=4.2.1.9_07_CA,O=UPC,L=Barcelona,C=ES</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=4.2.1.9_07_ca,o=upc,l=barcelona,c=es</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=4.2.1.9_07_CA,O=UPC,L=Barcelona,C=ES</IssuerDistinguishedName>
+            <SerialNumber>6852669180720616045</SerialNumber>
+            <CommonName>4.2.1.9_07_CA</CommonName>
+            <Locality>Barcelona</Locality>
+            <CountryName>ES</CountryName>
+            <OrganizationName>UPC</OrganizationName>
+            <Sources>
+                <Source>OTHER</Source>
+            </Sources>
+            <NotAfter>2033-03-21T22:39:00Z</NotAfter>
+            <NotBefore>2023-03-21T22:39:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-18246E5A08304F8265811947B7D1E528AF4A5A7BC7F2A4E0DF7AEA9D1FA30CC4</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>uVdfoe6yGHtHT5B6r1wWM4Up+Gk=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="1" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <OtherExtension OID="2.16.840.1.113730.1.1" critical="false">
+                    <octets>BAQDAgAH</octets>
+                </OtherExtension>
+                <OtherExtension OID="2.16.840.1.113730.1.13" critical="false">
+                    <octets>BBEWD3hjYSBjZXJ0aWZpY2F0ZQ==</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>WBw3QnCXu4IhIY+a6/A5aph4OA/SF7mFKWiQIwcigCk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <TrustedLists/>
+</DiagnosticData>

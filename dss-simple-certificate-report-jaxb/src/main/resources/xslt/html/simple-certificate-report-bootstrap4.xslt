@@ -558,8 +558,15 @@
    		
 			<ul>
         		<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
-   				
-				<xsl:apply-templates select="dss:trustAnchor"/>
+
+				<xsl:choose>
+					<xsl:when test="count(dss:trustAnchor) &gt; 0" >
+						<xsl:apply-templates select="dss:trustAnchor"/>
+					</xsl:when>
+					<xsl:otherwise>
+						Trusted store
+					</xsl:otherwise>
+				</xsl:choose>
 			</ul>
 		</dd>
 	</xsl:template>
