@@ -59,7 +59,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	/**
 	 * This field contains the reference to arbitrary certificate source, can contain a trust store, 
-	 * or the any intermediate certificates.
+	 * or any intermediate certificates.
 	 */
 	private ListCertificateSource adjunctCertSources = new ListCertificateSource();
 

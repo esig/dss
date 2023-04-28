@@ -79,7 +79,6 @@ public interface CertificateVerifier {
 
 	/**
 	 * Creates a strategy used to fetch OCSP or CRL for certificate validation.
-	 *
 	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyFactory} used to create a strategy
 	 * 					 to extract OCSP token first and CRL after
 	 *
@@ -98,10 +97,9 @@ public interface CertificateVerifier {
 	/**
 	 * Sets {@code RevocationDataVerifier} used to validate acceptance of
 	 * the retrieved (from offline or online sources) revocation data.
-	 *
 	 * This class is used to verify revocation data extracted from the validating document itself,
 	 * as well the revocation data retrieved from remote sources during the validation process.
-	 *
+	 * <p>
 	 * NOTE: It is not recommended to use the same instance of {@code RevocationDataVerifier}
 	 *       within different {@code CertificateVerifier}s, as it may lead to concurrency issues during the execution
 	 *       in multi-threaded environments.
@@ -123,9 +121,8 @@ public interface CertificateVerifier {
 	/**
 	 * Sets whether a revocation data still have to be returned to the validation process,
 	 * in case validation of obtained revocation data has failed (i.e. both for OCSP and CRL).
-	 *
 	 * Default: FALSE (invalid revocation data not returned)
-	 *
+	 * <p>
 	 * NOTE: Revocation fallback is enforced to TRUE (return even invalid revocation data, when no valid found)
 	 *       on signature validation
 	 *
@@ -216,6 +213,7 @@ public interface CertificateVerifier {
 
 	/**
 	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 * Default : {@code DigestAlgorithm.SHA256}
 	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
 	 */
@@ -231,7 +229,6 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
 	 * augmentation).
-	 * 
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnInvalidTimestamp defines a behaviour in case of invalid
@@ -249,7 +246,6 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on missing revocation data (LT/LTA
 	 * augmentation).
-	 * 
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnMissingRevocationData defines a behaviour in case of missing
@@ -268,7 +264,6 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revoked certificates (LT/LTA
 	 * augmentation).
-	 * 
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnRevokedCertificate defines a behaviour in case of revoked
@@ -286,7 +281,6 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revocation data issued after a
 	 * control time.
-	 * 
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnNoRevocationAfterBestSignatureTime defines a behaviour in case
@@ -306,7 +300,6 @@ public interface CertificateVerifier {
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).
-	 * 
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnUncoveredPOE defines a behaviour in case of uncovered POE
@@ -323,7 +316,6 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on expired signature
 	 * (if the signing certificate or its POE(s) has been expired).
-	 *
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnUncoveredPOE defines a behaviour in case of an expired signature
@@ -340,7 +332,8 @@ public interface CertificateVerifier {
 
 	/**
 	 * This method allows enabling of revocation checking for untrusted certificate
-	 * chains (default : false)
+	 * chains.
+	 * Default : FALSE (revocation data is not checked for untrusted certificate chains)
 	 * 
 	 * @param enable
 	 *               true if revocation checking is allowed for untrusted
@@ -360,6 +353,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows enabling of POE extraction from timestamps coming
 	 * from untrusted certificate chains.
+	 * Default : FALSE (timestamps created with untrusted certificate chains are not considered as POE)
 	 *
 	 * @param enable
 	 *               true if POE extraction is allowed for timestamps from untrusted
