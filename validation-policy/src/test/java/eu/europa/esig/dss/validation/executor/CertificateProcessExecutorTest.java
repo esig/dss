@@ -918,7 +918,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
 		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certId)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();

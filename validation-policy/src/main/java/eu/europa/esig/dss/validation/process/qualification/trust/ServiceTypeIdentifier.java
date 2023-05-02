@@ -358,4 +358,19 @@ public enum ServiceTypeIdentifier {
 		return TSA_QTST.getUri().equals(serviceTypeIdentifier);
 	}
 
+	/**
+	 * This method returns a corresponding {@code ServiceTypeIdentifier} by the given {@code uri}
+	 *
+	 * @param uri {@link String} to get {@code ServiceTypeIdentifier} for
+	 * @return {@link ServiceTypeIdentifier}
+	 */
+	public static ServiceTypeIdentifier fromUri(String uri) {
+		for (ServiceTypeIdentifier sti : values()) {
+			if (sti.getUri().equals(uri)) {
+				return sti;
+			}
+		}
+		return null;
+	}
+
 }

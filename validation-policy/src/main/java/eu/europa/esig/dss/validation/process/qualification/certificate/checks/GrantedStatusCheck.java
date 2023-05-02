@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -29,8 +30,14 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Verifies if the certificate has TrustedServices with a 'granted' status
@@ -59,7 +66,8 @@ public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends Chai
 
 	@Override
 	protected boolean process() {
-		return Utils.isCollectionNotEmpty(trustServicesAtTime);
+		TrustedServiceFilter filterByGranted = TrustedServicesFilterFactory.createFilterByGranted();
+		return Utils.isCollectionNotEmpty(filterByGranted.filter(trustServicesAtTime));
 	}
 
 	@Override
@@ -70,6 +78,24 @@ public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends Chai
 	@Override
 	protected MessageTag getErrorMessageTag() {
 		return MessageTag.QUAL_HAS_GRANTED_ANS;
+	}
+
+	@Override
+	protected XmlMessage buildErrorMessage() {
+		Collection<String> statusList = getStatusList();
+		MessageTag errorTag = Utils.collectionSize(statusList) == 1 ? MessageTag.QUAL_HAS_GRANTED_ANS : MessageTag.QUAL_HAS_GRANTED_ANS_2;
+		String argument = Utils.collectionSize(statusList) == 1 ? statusList.iterator().next() : statusList.toString();
+		return buildXmlMessage(errorTag, argument);
+	}
+
+	private Collection<String> getStatusList() {
+		Set<String> identifiers = new HashSet<>();
+		for (TrustedServiceWrapper trustedService : trustServicesAtTime) {
+			String status = trustedService.getStatus();
+			TrustedServiceStatus tss = TrustedServiceStatus.fromUri(status);
+			identifiers.add(tss != null ? tss.getShortName() : status);
+		}
+		return identifiers;
 	}
 
 	@Override

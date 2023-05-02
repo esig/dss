@@ -168,17 +168,14 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
 				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
-				filter = TrustedServicesFilterFactory.createFilterByCaQc();
-				List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
-	
 				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-						signingCertificate, caqcServices);
+						signingCertificate, acceptableServices);
 				XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 				result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 				qualificationAtIssuanceTime = certQualAtIssuanceResult.getCertificateQualification();
 	
 				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
-						signingCertificate, caqcServices);
+						signingCertificate, acceptableServices);
 				XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 				result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
 				qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
