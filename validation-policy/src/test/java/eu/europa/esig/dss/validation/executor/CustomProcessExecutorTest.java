@@ -10048,7 +10048,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
-	public void mraAfterCertIssuanceTestTest() throws Exception {
+	public void mraAfterCertIssuanceTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/mra/diag-data-mra-qesig.xml"));
 		assertNotNull(xmlDiagnosticData);
