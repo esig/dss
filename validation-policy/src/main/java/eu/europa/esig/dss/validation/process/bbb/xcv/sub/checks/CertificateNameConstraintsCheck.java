@@ -32,11 +32,13 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This check verifies the validity of the certificate in regard to "Name constraint"
@@ -90,7 +91,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
          * path MUST fall. This variable includes a set for each name
          * type, and the initial value is initial-permitted-subtrees.
          */
-        Set<XmlGeneralName> permittedSubtrees = null;
+        Map<GeneralNameType, Set<XmlGeneralName>> permittedSubtrees = null;
         /*
          * (c) excluded_subtrees:  a set of root names for each name type
          * (e.g., X.500 distinguished names, email addresses, or IP
@@ -99,7 +100,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
          * fall. This variable includes a set for each name type, and
          * the initial value is initial-excluded-subtrees.
          */
-        Set<XmlGeneralName> excludedSubtrees = null;
+        Map<GeneralNameType, Set<XmlGeneralName>> excludedSubtrees = null;
 
         /*
          * 6.1.3. Basic Certificate Processing
@@ -121,15 +122,25 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
             if (i == 0) {
                 final String certDN = cert.getCertificateDN();
                 final List<XmlGeneralName> subAltNames = cert.getSubjectAlternativeNames();
+                /*
+                 * Legacy implementations exist where an electronic mail address is
+                 * embedded in the subject distinguished name in an attribute of type
+                 * emailAddress (Section 4.1.2.6). When constraints are imposed on the
+                 * alternative name, the rfc822Name constraint MUST be applied to the
+                 * attribute of type emailAddress in the subject distinguished name.
+                 */
+                if (!containsRFC822SubjectAlternativeName(subAltNames)) {
+                    subAltNames.addAll(getEmailAddressDNIfPresent(certDN));
+                }
 
                 if (permittedSubtrees != null) {
-                    Set<XmlGeneralName> dnGeneralNames = getSubtreesOfType(permittedSubtrees, GeneralNameType.DIRECTORY_NAME);
-                    if (Utils.isCollectionNotEmpty(dnGeneralNames) && !isWithinDNSubtrees(certDN, dnGeneralNames)) {
+                    Set<XmlGeneralName> dnGeneralNames = permittedSubtrees.get(GeneralNameType.DIRECTORY_NAME);
+                    if (dnGeneralNames != null && !isWithinDNSubtrees(certDN, dnGeneralNames)) {
                         return false;
                     }
                     for (XmlGeneralName subAltName : subAltNames) {
-                        Set<XmlGeneralName> subtreesOfType = getSubtreesOfType(permittedSubtrees, subAltName.getType());
-                        if (Utils.isCollectionNotEmpty(subtreesOfType) && !isWithinSubtrees(subAltName, subtreesOfType)) {
+                        Set<XmlGeneralName> subtreesOfType = permittedSubtrees.get(subAltName.getType());
+                        if (subtreesOfType != null && !isWithinSubtrees(subAltName, subtreesOfType)) {
                             return false;
                         }
                     }
@@ -144,13 +155,13 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
                  * within any of the excluded_subtrees for that name type.
                  */
                 if (excludedSubtrees != null) {
-                    Set<XmlGeneralName> dnGeneralNames = getSubtreesOfType(excludedSubtrees, GeneralNameType.DIRECTORY_NAME);
-                    if (Utils.isCollectionNotEmpty(dnGeneralNames) && isWithinDNSubtrees(certDN, excludedSubtrees)) {
+                    Set<XmlGeneralName> dnGeneralNames = excludedSubtrees.get(GeneralNameType.DIRECTORY_NAME);
+                    if (dnGeneralNames != null && isWithinDNSubtrees(certDN, dnGeneralNames)) {
                         return false;
                     }
                     for (XmlGeneralName subAltName : subAltNames) {
-                        Set<XmlGeneralName> subtreesOfType = getSubtreesOfType(excludedSubtrees, subAltName.getType());
-                        if (Utils.isCollectionNotEmpty(subtreesOfType) && isWithinSubtrees(subAltName, excludedSubtrees)) {
+                        Set<XmlGeneralName> subtreesOfType = excludedSubtrees.get(subAltName.getType());
+                        if (subtreesOfType != null && isWithinSubtrees(subAltName, subtreesOfType)) {
                             return false;
                         }
                     }
@@ -163,8 +174,8 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              * certificate, modify the permitted_subtrees and
              * excluded_subtrees state variables as follows:
              */
-            final Set<XmlGeneralName> certPermittedSubtrees = toXmlGeneralNameSet(cert.getPermittedSubtrees());
-            final Set<XmlGeneralName> certExcludedSubtrees = toXmlGeneralNameSet(cert.getExcludedSubtrees());
+            final Map<GeneralNameType, Set<XmlGeneralName>> certPermittedSubtrees = toXmlGeneralNameMap(cert.getPermittedSubtrees());
+            final Map<GeneralNameType, Set<XmlGeneralName>> certExcludedSubtrees = toXmlGeneralNameMap(cert.getExcludedSubtrees());
             /*
              * (1) If permittedSubtrees is present in the certificate, set
              * the permitted_subtrees state variable to the intersection
@@ -176,7 +187,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              * foo.example.com. And the intersection of example.com and
              * example.net is the empty set.
              */
-            if (Utils.isCollectionNotEmpty(certPermittedSubtrees)) {
+            if (certPermittedSubtrees != null) {
                 if (permittedSubtrees != null) {
                     permittedSubtrees = intersectNew(permittedSubtrees, certPermittedSubtrees);
                 } else {
@@ -194,7 +205,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
              * example.com.  And the union of example.com and example.net
              * is both name spaces.
              */
-            if (Utils.isCollectionNotEmpty(certExcludedSubtrees)) {
+            if (certExcludedSubtrees != null) {
                 if (excludedSubtrees != null) {
                     excludedSubtrees = unionNew(excludedSubtrees, certExcludedSubtrees);
                 } else {
@@ -206,6 +217,27 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         return true;
     }
 
+    private boolean containsRFC822SubjectAlternativeName(List<XmlGeneralName> subAltNames) {
+        return Utils.isCollectionNotEmpty(subAltNames) && 
+                subAltNames.stream().anyMatch(n -> GeneralNameType.RFC822_NAME.equals(n.getType()));
+    }
+    
+    private Set<XmlGeneralName> getEmailAddressDNIfPresent(String certDN) {
+        Map<String, Set<String>> dnMap = toDNMap(certDN);
+        Set<String> emailAddressValues = dnMap.get("1.2.840.113549.1.9.1"); // emailAddress
+
+        Set<XmlGeneralName> result = new HashSet<>();
+        if (emailAddressValues != null) {
+            for (String emailAddress : emailAddressValues) {
+                XmlGeneralName xmlGeneralName = new XmlGeneralName();
+                xmlGeneralName.setType(GeneralNameType.RFC822_NAME);
+                xmlGeneralName.setValue(emailAddress);
+                result.add(xmlGeneralName);
+            }
+        }
+        return result;
+    }
+
     /**
      * This method builds a DN map based on RFC 2253 encoded string
      * NOTE: see {@code sun.security.x509.X500Name.parseRFC2253DN(String dnString)}
@@ -213,11 +245,11 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
      * @param rfc2253EncodedString {@link String} to parse
      * @return map
      */
-    private Map<String, String> toDNMap(String rfc2253EncodedString) {
+    private Map<String, Set<String>> toDNMap(String rfc2253EncodedString) {
         if (Utils.isStringEmpty(rfc2253EncodedString)) {
             return Collections.emptyMap();
         }
-        final Map<String, String> result = new HashMap<>();
+        final Map<String, Set<String>> result = new HashMap<>();
         String nextStr;
         Map.Entry<String, String> rdn;
         int nextEnd = rfc2253EncodedString.indexOf(',');
@@ -228,7 +260,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
                 nextStr = rfc2253EncodedString.substring(dnOffset, nextEnd);
                 rdn = getRDN(nextStr);
                 if (rdn != null) {
-                    result.put(rdn.getKey(), rdn.getValue());
+                    enrichMap(result, rdn.getKey(), rdn.getValue());
                 }
                 dnOffset = nextEnd + 1;
             }
@@ -239,9 +271,14 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         String substring = rfc2253EncodedString.substring(dnOffset);
         rdn = getRDN(substring);
         if (rdn != null) {
-            result.put(rdn.getKey(), rdn.getValue());
+            enrichMap(result, rdn.getKey(), rdn.getValue());
         }
         return result;
+    }
+
+    private void enrichMap(Map<String, Set<String>> dnMap, String rdnKey, String rdnValue) {
+        Set<String> values = dnMap.computeIfAbsent(rdnKey, k -> new HashSet<>());
+        values.add(rdnValue);
     }
 
     private Map.Entry<String, String> getRDN(String str) {
@@ -255,10 +292,6 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         return null;
     }
 
-    private Set<XmlGeneralName> getSubtreesOfType(Set<XmlGeneralName> subtrees, GeneralNameType generalNameType) {
-        return subtrees.stream().filter(n -> generalNameType.equals(n.getType())).collect(Collectors.toSet());
-    }
-
     private boolean isWithinSubtrees(XmlGeneralName generalName, Set<XmlGeneralName> permittedSubtrees) {
         for (XmlGeneralName permittedSubtree : permittedSubtrees) {
             if (isWithinSubtree(generalName, permittedSubtree)) {
@@ -269,6 +302,9 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
     }
 
     private boolean isWithinDNSubtrees(String certDN, Set<XmlGeneralName> permittedSubtrees) {
+        if (Utils.isStringEmpty(certDN) && Utils.isCollectionEmpty(permittedSubtrees)) {
+            return true;
+        }
         for (XmlGeneralName permittedSubtree : permittedSubtrees) {
             if (isWithinDNSubtree(certDN, permittedSubtree.getValue())) {
                 return true;
@@ -277,51 +313,85 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         return false;
     }
 
-    private Set<XmlGeneralName> toXmlGeneralNameSet(Collection<XmlGeneralSubtree> generalSubtrees) {
+    private Map<GeneralNameType, Set<XmlGeneralName>> toXmlGeneralNameMap(Collection<XmlGeneralSubtree> generalSubtrees) {
         if (Utils.isCollectionEmpty(generalSubtrees)) {
-            return Collections.emptySet();
+            return null;
         }
-        return generalSubtrees.stream().map(n -> (XmlGeneralName) n).collect(Collectors.toSet());
-    }
-
-    private Set<XmlGeneralName> intersectNew(Collection<XmlGeneralName> originalSet, Collection<XmlGeneralName> currentSet) {
-        final Set<XmlGeneralName> result = new HashSet<>();
-        for (XmlGeneralName currentGeneralName : currentSet) {
-            boolean predecessorFound = false;
-            for (XmlGeneralName originalGeneralName : originalSet) {
-                if (currentGeneralName.getType().equals(originalGeneralName.getType())) {
-                    if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
-                        result.add(currentGeneralName);
-                    } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
-                        result.add(originalGeneralName);
-                    }
-                }
-            }
-            if (!predecessorFound) {
-                result.add(currentGeneralName);
-            }
+        Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        for (XmlGeneralSubtree generalSubtree : generalSubtrees) {
+            Set<XmlGeneralName> values = result.computeIfAbsent(generalSubtree.getType(), k -> new HashSet<>());
+            values.add(generalSubtree);
         }
         return result;
     }
 
-    private Set<XmlGeneralName> unionNew(Collection<XmlGeneralName> originalSet, Collection<XmlGeneralName> currentSet) {
-        final Set<XmlGeneralName> result = new HashSet<>();
-        for (XmlGeneralName currentGeneralName : currentSet) {
-            if (Utils.isCollectionNotEmpty(originalSet)) {
-                for (XmlGeneralName originalGeneralName : originalSet) {
-                    if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
-                        result.add(currentGeneralName);
-                    } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
-                        result.add(originalGeneralName);
-                    } else {
-                        result.add(currentGeneralName);
-                        result.add(originalGeneralName);
+    private Map<GeneralNameType, Set<XmlGeneralName>> intersectNew(Map<GeneralNameType, Set<XmlGeneralName>> originalConstraints,
+                                                                   Map<GeneralNameType, Set<XmlGeneralName>> currentConstraints) {
+        final Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> currentEntry : currentConstraints.entrySet()) {
+            final GeneralNameType type = currentEntry.getKey();
+            final Set<XmlGeneralName> currentGeneralNames = currentEntry.getValue();
+            final Set<XmlGeneralName> intersection = result.computeIfAbsent(type, k -> new HashSet<>());
+
+            Set<XmlGeneralName> originalSubtrees = originalConstraints.get(type);
+            if (Utils.isCollectionNotEmpty(originalSubtrees)) {
+                for (XmlGeneralName currentGeneralName : currentGeneralNames) {
+                    for (XmlGeneralName originalGeneralName : originalSubtrees) {
+                        if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
+                            intersection.add(originalGeneralName);
+                        } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
+                            intersection.add(currentGeneralName);
+                        }
                     }
                 }
             } else {
-                result.add(currentGeneralName);
+                intersection.addAll(currentGeneralNames);
             }
         }
+
+        for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> originalEntry : originalConstraints.entrySet()) {
+            if (!result.containsKey(originalEntry.getKey())) {
+                final Set<XmlGeneralName> intersection = result.computeIfAbsent(originalEntry.getKey(), k -> new HashSet<>());
+                intersection.addAll(originalEntry.getValue());
+            }
+        }
+
+        return result;
+    }
+
+    private Map<GeneralNameType, Set<XmlGeneralName>> unionNew(Map<GeneralNameType, Set<XmlGeneralName>> originalConstraints, Map<GeneralNameType, Set<XmlGeneralName>> currentConstraints) {
+        final Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> currentEntry : currentConstraints.entrySet()) {
+            final GeneralNameType type = currentEntry.getKey();
+            final Set<XmlGeneralName> currentGeneralNames = currentEntry.getValue();
+            final Set<XmlGeneralName> union = result.computeIfAbsent(type, k -> new HashSet<>());
+
+            Set<XmlGeneralName> originalSubtrees = originalConstraints.get(type);
+            if (Utils.isCollectionNotEmpty(originalSubtrees)) {
+                for (XmlGeneralName currentGeneralName : currentGeneralNames) {
+                    for (XmlGeneralName originalGeneralName : originalSubtrees) {
+                        if (isWithinSubtree(originalGeneralName, currentGeneralName)) {
+                            union.add(currentGeneralName);
+                        } else if (isWithinSubtree(currentGeneralName, originalGeneralName)) {
+                            union.add(originalGeneralName);
+                        } else {
+                            union.add(currentGeneralName);
+                            union.add(originalGeneralName);
+                        }
+                    }
+                }
+            } else {
+                union.addAll(currentGeneralNames);
+            }
+        }
+
+        for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> originalEntry : originalConstraints.entrySet()) {
+            if (!result.containsKey(originalEntry.getKey())) {
+                final Set<XmlGeneralName> union = result.computeIfAbsent(originalEntry.getKey(), k -> new HashSet<>());
+                union.addAll(originalEntry.getValue());
+            }
+        }
+
         return result;
     }
 
@@ -329,7 +399,8 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         if (Utils.isStringEmpty(generalName.getValue()) || Utils.isStringEmpty(subtreeGeneralName.getValue())) {
             return false;
         }
-        if (subtreeGeneralName.getValue().length() > generalName.getValue().length()) {
+        if (!GeneralNameType.IP_ADDRESS.equals(generalName.getType()) &&
+                subtreeGeneralName.getValue().length() > generalName.getValue().length()) {
             return false;
         }
 
@@ -343,6 +414,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
             case DIRECTORY_NAME:
                 return isWithinDNSubtree(generalName.getValue(), subtreeGeneralName.getValue());
             case IP_ADDRESS:
+                return isWithinIPAddressSubtree(generalName.getValue(), subtreeGeneralName.getValue());
             case OTHER_NAME:
             case X400_ADDRESS:
             case EDI_PARTY_NAME:
@@ -354,34 +426,98 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
     }
 
     private boolean isWithinURISubtree(String value, String subtree) {
-        if (subtree.startsWith(".")) {
-            return value.toLowerCase().endsWith(subtree.toLowerCase());
+        String domainNameSubtree = ValidationProcessUtils.getDomainName(subtree);
+        String domainNameValue = ValidationProcessUtils.getDomainName(value);
+        return isWithinDomain(domainNameValue, domainNameSubtree);
+    }
+
+    private boolean isWithinDomain(String value, String domain) {
+        if (domain.startsWith(".")) {
+            return value.toLowerCase().endsWith(domain.toLowerCase());
         }
-        return subtree.equalsIgnoreCase(value);
+        return domain.equalsIgnoreCase(value);
     }
 
     private boolean isWithinEmailSubtree(String value, String subtree) {
-        if (subtree.indexOf('@') != -1) {
+        if (isEmail(subtree)) {
             return value.equalsIgnoreCase(subtree);
         }
-        return value.toLowerCase().endsWith(subtree.toLowerCase());
+        if (isEmail(value)) {
+            value = getDomainNameFromEmail(value);
+        }
+        return isWithinDomain(value, subtree);
+    }
+
+    private boolean isEmail(String str) {
+        return str.indexOf('@') != -1;
+    }
+
+    private String getDomainNameFromEmail(String email) {
+        return email.substring(email.indexOf('@') + 1);
     }
 
     private boolean isWithinDNSSubtree(String value, String subtree) {
-        return value.toLowerCase().endsWith(subtree.toLowerCase());
+        String[] valueArray = value.split("\\.");
+        String[] subTreeArray = subtree.split("\\.");
+        int diff = valueArray.length - subTreeArray.length;
+        if (diff == 0) {
+            return Arrays.equals(subTreeArray, valueArray);
+        } else if (diff > 0) {
+            for (int i = subTreeArray.length - 1; i > -1; i--) {
+                if (!subTreeArray[i].equals(valueArray[i + diff])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean isWithinDNSubtree(String value, String subtree) {
-        Map<String, String> dnMap = toDNMap(value);
-        Map<String, String> subtreeMap = toDNMap(subtree);
-        for (Map.Entry<String, String> entry : subtreeMap.entrySet()) {
+        Map<String, Set<String>> dnMap = toDNMap(value);
+        Map<String, Set<String>> subtreeMap = toDNMap(subtree);
+        for (Map.Entry<String, Set<String>> entry : subtreeMap.entrySet()) {
             String subtreeKey = entry.getKey();
-            String subtreeValue = entry.getValue();
-            if (!dnMap.containsKey(subtreeKey) || !subtreeValue.equals(dnMap.get(subtreeKey))) {
+            Set<String> subtreeValues = entry.getValue();
+            if (!dnMap.containsKey(subtreeKey) || !dnMap.get(subtreeKey).containsAll(subtreeValues)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean isWithinIPAddressSubtree(String value, String subtree) {
+        byte[] ipAddress = toByteArrayIPAddress(value);
+        byte[] constraint = toByteArrayIPAddress(subtree);
+
+        int length = ipAddress.length;
+        if (length != (constraint.length / 2)) {
+            return false;
+        }
+
+        byte[] subnetMask = Utils.subarray(constraint, length, constraint.length);
+        byte[] constraintSubnetAddress = new byte[length];
+        byte[] ipSubnetAddress = new byte[length];
+
+        // the resulting IP address by applying the subnet mask
+        for (int i = 0; i < length; i++) {
+            constraintSubnetAddress[i] = (byte)(constraint[i] & subnetMask[i]);
+            ipSubnetAddress[i] = (byte)(ipAddress[i] & subnetMask[i]);
+        }
+
+        return Arrays.equals(constraintSubnetAddress, ipSubnetAddress);
+    }
+
+    private byte[] toByteArrayIPAddress(String ipAddress) {
+        // consider internal hex-encoded values
+        if (ipAddress.startsWith("#")) {
+            ipAddress = ipAddress.replace("#", "");
+            if (Utils.isHexEncoded(ipAddress)) {
+                return Utils.fromHex(ipAddress);
+            }
+        }
+        LOG.debug("Incorrectly encoded IP Address value: {}", ipAddress);
+        return ipAddress.getBytes();
     }
 
     private boolean isWithinOtherNameSubtree(String value, String subtree) {

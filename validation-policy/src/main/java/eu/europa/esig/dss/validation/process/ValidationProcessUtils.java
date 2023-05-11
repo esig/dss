@@ -483,4 +483,17 @@ public class ValidationProcessUtils {
 		return URN_OID_PREFIX + oid;
 	}
 
+	/**
+	 * This method returns a domain name for any given valid URI
+	 *
+	 * @param uri {@link String} representing URI
+	 * @return {@link String} representing the extracted domain name, if applicable
+	 */
+	public static String getDomainName(String uri) {
+		if (uri == null) {
+			return null;
+		}
+		return uri.replaceAll("^.*://|www\\.|[?=:#/].*", "");
+	}
+
 }

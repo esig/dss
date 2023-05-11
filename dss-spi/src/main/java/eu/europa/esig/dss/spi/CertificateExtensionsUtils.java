@@ -76,8 +76,6 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.security.cert.CertificateParsingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -678,11 +676,7 @@ public class CertificateExtensionsUtils {
 
                 case IP_ADDRESS:
                     byte[] octets = DEROctetString.getInstance(generalNameValue).getOctets();
-                    try {
-                        return InetAddress.getByAddress(octets).getHostAddress();
-                    } catch (UnknownHostException e) {
-                        return toHexEncoded(octets);
-                    }
+                    return toHexEncoded(octets);
 
                 case REGISTERED_ID:
                     return ASN1ObjectIdentifier.getInstance(generalNameValue).getId();
