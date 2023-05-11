@@ -159,7 +159,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public List<XmlGeneralName> getSubjectAlternativeNames() {
 		XmlSubjectAlternativeNames subjectAlternativeNames = getXmlSubjectAlternativeNames();
-		return subjectAlternativeNames != null ? subjectAlternativeNames.getSubjectAlternativeName() : Collections.emptyList();
+		return subjectAlternativeNames != null ? subjectAlternativeNames.getSubjectAlternativeName() : new ArrayList<>();
 	}
 
 	private XmlSubjectAlternativeNames getXmlSubjectAlternativeNames() {
