@@ -293,6 +293,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 		xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512", ECDSA_SHA512);
 		xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160", ECDSA_RIPEMD160);
 
+		xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519", ED25519);
+		xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#eddsa-ed448", ED448);
+
 		xmlAlgorithms.put("http://www.w3.org/2000/09/xmldsig#dsa-sha1", DSA_SHA1);
 		xmlAlgorithms.put("http://www.w3.org/2009/xmldsig11#dsa-sha256", DSA_SHA256);
 		// Following algorithms are not in ETSI TS 102 176-1 V2.0.0:

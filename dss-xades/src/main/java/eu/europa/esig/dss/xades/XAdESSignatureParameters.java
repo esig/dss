@@ -620,6 +620,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
 	 */
 	public void setTokenReferencesDigestAlgorithm(DigestAlgorithm tokenReferencesDigestAlgorithm) {
+		Objects.requireNonNull(tokenReferencesDigestAlgorithm, "TokenReferencesDigestAlgorithm cannot be null!");
 		this.tokenReferencesDigestAlgorithm = tokenReferencesDigestAlgorithm;
 	}
 

@@ -1314,4 +1314,19 @@ public final class DSSXMLUtils {
 		parentDom.appendChild(digestValueDom);
 	}
 
+	/**
+	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 *
+	 * @param params {@link XAdESSignatureParameters}
+	 * @return {@link DigestAlgorithm}
+	 */
+	public static DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		if (digestAlgorithm == null || digestAlgorithm.getUri() == null) {
+			throw new IllegalArgumentException(String.format("The Reference DigestAlgorithm '%s' is not supported for XAdES creation! " +
+					"Define another algorithm within #setReferenceDigestAlgorithm method.", digestAlgorithm));
+		}
+		return digestAlgorithm;
+	}
+
 }

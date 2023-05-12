@@ -697,7 +697,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transforms.appendChild(transform);
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signedPropertiesCanonicalizationMethod);
 
-		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
+		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, getNodeToCanonicalize(signedPropertiesDom));
@@ -740,7 +740,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transforms.appendChild(transform);
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), keyInfoCanonicalizationMethod);
 		
-		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
+		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 		
 		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(keyInfoCanonicalizationMethod, getNodeToCanonicalize(keyInfoDom));

@@ -84,7 +84,7 @@ public class ReferenceBuilder {
 		Objects.requireNonNull(xadesSignatureParameters, "Signature parameters shall be provided!");
 		this.documents = documents;
 		this.signatureParameters = xadesSignatureParameters;
-		this.digestAlgorithm = getReferenceDigestAlgorithmOrDefault(xadesSignatureParameters);
+		this.digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(xadesSignatureParameters);
 		this.referenceIdProvider = referenceIdProvider;
 	}
 
@@ -264,10 +264,6 @@ public class ReferenceBuilder {
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;
-	}
-
-	private DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
-		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
 	}
 
 }

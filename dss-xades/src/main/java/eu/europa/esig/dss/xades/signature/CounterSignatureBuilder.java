@@ -121,7 +121,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 
 		byte[] signatureElementBinaries = DSSXMLUtils.serializeNode(xadesSignature.getSignatureElement());
 		reference.setContents(new InMemoryDocument(signatureElementBinaries));
-		reference.setDigestMethodAlgorithm(getReferenceDigestAlgorithmOrDefault(parameters));
+		reference.setDigestMethodAlgorithm(DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(parameters));
 		reference.setType(xadesPaths.getCounterSignatureUri());
 
 		String signatureValueId = xadesSignature.getSignatureValueId();
