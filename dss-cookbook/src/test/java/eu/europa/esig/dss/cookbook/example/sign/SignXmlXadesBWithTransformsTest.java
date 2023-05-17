@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
+import eu.europa.esig.dss.model.CommonObjectIdentifier;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -38,7 +39,9 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -57,6 +60,7 @@ import javax.xml.crypto.dsig.XMLSignature;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SignXmlXadesBWithTransformsTest extends CookbookTools {
@@ -118,6 +122,56 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			// end::demoReference[]
 
 			// end::demo[]
+
+			// tag::demoDataObjectFormat[]
+			// import eu.europa.esig.dss.model.CommonObjectIdentifier;
+			// import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
+
+			List<DSSDataObjectFormat> dataObjectFormatList = new ArrayList<>();
+			// Initialize a custom DataObjectFormat identifying the signed data object
+			DSSDataObjectFormat dataObjectFormat = new DSSDataObjectFormat();
+			// Provide a reference to the signed data object
+			dataObjectFormat.setObjectReference("#r-" + toSignDocument.getName());
+			// Define description of the data object
+			dataObjectFormat.setDescription("This describes the signed data object");
+			// Define the MimeType of the data object
+			dataObjectFormat.setMimeType(toSignDocument.getMimeType().getMimeTypeString());
+			// Set the encoding of the data object
+			dataObjectFormat.setEncoding("http://www.w3.org/2000/09/xmldsig#base64");
+
+			// Create an object identifier for the data object
+			CommonObjectIdentifier objectIdentifier = new CommonObjectIdentifier();
+			// Set OID or URI of the document
+			objectIdentifier.setUri("http://nowina.lu/sample");
+			// Provide reference(s) to the document
+			objectIdentifier.setDocumentationReferences("http://nowina.lu/docs/sample.xml");
+			// Set the created ObjectIdentifier
+			dataObjectFormat.setObjectIdentifier(objectIdentifier);
+
+			// Add the created DSSDataObjectFormat to a list and set the signature parameters
+			dataObjectFormatList.add(dataObjectFormat);
+			parameters.setDataObjectFormatList(dataObjectFormatList);
+			// end::demoDataObjectFormat[]
+
+			DSSDocument objectContent = toSignDocument;
+			// tag::demoObjects[]
+			// import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+			// import eu.europa.esig.dss.xades.DSSObject;
+
+			// Create a DSSObject representing a ds:Object element structure
+			DSSObject object = new DSSObject();
+			// Provide a content of a DSSDocument format
+			object.setContent(objectContent);
+			// Set the identifier
+			object.setId("o-id-object");
+			// Set the MimeType
+			object.setMimeType(MimeTypeEnum.XML.getMimeTypeString());
+			// Set the encoding
+			object.setEncodingAlgorithm("http://www.w3.org/2000/09/xmldsig#base64");
+
+			// Set the object to the signature parameters
+			parameters.setObjects(Collections.singletonList(object));
+			// end::demoObjects[]
 			
 			parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 			parameters.setSigningCertificate(privateKey.getCertificate());

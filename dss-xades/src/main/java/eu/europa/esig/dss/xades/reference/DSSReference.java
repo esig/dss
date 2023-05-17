@@ -59,6 +59,7 @@ public class DSSReference implements Serializable {
 	 * The default constructor
 	 */
 	public DSSReference() {
+		// empty
 	}
 
 	/**

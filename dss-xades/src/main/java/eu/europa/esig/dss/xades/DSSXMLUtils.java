@@ -28,14 +28,20 @@ import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.model.CommitmentQualifier;
+import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -80,6 +86,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -1258,7 +1265,7 @@ public final class DSSXMLUtils {
 	 */
 	public static void incorporateTransforms(final Element parentElement, List<DSSTransform> transforms, DSSNamespace namespace) {
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			Document documentDom = parentElement.getOwnerDocument();
+			final Document documentDom = parentElement.getOwnerDocument();
 			final Element transformsDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.TRANSFORMS);
 			parentElement.appendChild(transformsDom);
 			for (final DSSTransform dssTransform : transforms) {
@@ -1284,7 +1291,7 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace} to use
 	 */
 	public static void incorporateDigestMethod(final Element parentElement, DigestAlgorithm digestAlgorithm, DSSNamespace namespace) {
-		Document documentDom = parentElement.getOwnerDocument();
+		final Document documentDom = parentElement.getOwnerDocument();
 		final Element digestMethodDom = DomUtils.addElement(documentDom, parentElement, namespace, XMLDSigElement.DIGEST_METHOD);
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
 	}
@@ -1306,7 +1313,7 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace}
 	 */
 	public static void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes, DSSNamespace namespace) {
-		Document documentDom = parentDom.getOwnerDocument();
+		final Document documentDom = parentDom.getOwnerDocument();
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.DIGEST_VALUE);
 
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -171,6 +172,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
+	 * List of custom xades:DataObjectFormat elements incorporated within xades:SignedDataObjectProperties element of the signature
+	 */
+	private List<DSSDataObjectFormat> dataObjectFormatList;
+
+	/**
 	 * Default constructor instantiating object with null values
 	 */
 	public XAdESSignatureParameters() {
@@ -310,6 +316,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets a list of references to be incorporated into the signature
+	 * NOTE: This method overwrites a default behavior on ds:Reference's creation. It should be used only by experienced users.
 	 *
 	 * @param references a list of {@link DSSReference}s
 	 */
@@ -622,6 +629,26 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public void setTokenReferencesDigestAlgorithm(DigestAlgorithm tokenReferencesDigestAlgorithm) {
 		Objects.requireNonNull(tokenReferencesDigestAlgorithm, "TokenReferencesDigestAlgorithm cannot be null!");
 		this.tokenReferencesDigestAlgorithm = tokenReferencesDigestAlgorithm;
+	}
+
+	/**
+	 * Gets a list of custom xades:DataObjectFormat elements
+	 *
+	 * @return list of {@link DSSDataObjectFormat}s
+	 */
+	public List<DSSDataObjectFormat> getDataObjectFormatList() {
+		return dataObjectFormatList;
+	}
+
+	/**
+	 * Sets a list of custom xades:DataObjectFormat elements to be incorporated within
+	 * xades:SignedDataObjectProperties element of the signature.
+	 * NOTE: this method overwrites default behavior on xades:DataObjectFormat creation. It should be used only by experienced users.
+	 *
+	 * @param dataObjectFormatList list of {@link DSSDataObjectFormat}s
+	 */
+	public void setDataObjectFormatList(List<DSSDataObjectFormat> dataObjectFormatList) {
+		this.dataObjectFormatList = dataObjectFormatList;
 	}
 
 	@Override

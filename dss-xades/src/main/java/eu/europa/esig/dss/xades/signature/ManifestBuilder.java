@@ -187,4 +187,13 @@ public class ManifestBuilder {
 		return DomUtils.createDssDocumentFromDomDocument(documentDom, manifestId);
 	}
 
+	/**
+	 * Returns a list of {@code DSSReference}s
+	 *
+	 * @return list of {@link DSSReference}s
+	 */
+	public List<DSSReference> getManifestReferences() {
+		return references;
+	}
+
 }
