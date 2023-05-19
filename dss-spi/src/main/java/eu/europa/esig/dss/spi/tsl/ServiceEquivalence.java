@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.spi.tsl;
 
 import eu.europa.esig.dss.enumerations.MRAStatus;
+import eu.europa.esig.dss.spi.util.BaseTimeDependent;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ import java.util.Map;
  * This class represents a wrapper for TrustServiceEquivalenceInformation element from MRA scheme
  *
  */
-public class ServiceEquivalence implements Serializable {
+public class ServiceEquivalence extends BaseTimeDependent {
 
 	private static final long serialVersionUID = 7729236073848705753L;
 
@@ -40,9 +40,6 @@ public class ServiceEquivalence implements Serializable {
 
 	/** TrustServiceEquivalenceStatus */
 	private MRAStatus status;
-
-	/** TrustServiceEquivalenceStatusStartingTime */
-	private Date startDate;
 
 	/** AdditionalServiceInformation equivalencies */
 	private Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence;
@@ -57,10 +54,18 @@ public class ServiceEquivalence implements Serializable {
 	private Map<String, String> qualifierEquivalence;
 
 	/**
-	 * Default constructor instantiating object with null values
+	 * Default constructor instantiating object with values from the builder
+	 *
+	 * @param builder {@link ServiceEquivalenceBuilder}
 	 */
-	public ServiceEquivalence() {
-		// empty
+	public ServiceEquivalence(ServiceEquivalenceBuilder builder) {
+		super(builder.startDate, builder.endDate);
+		this.legalInfoIdentifier = builder.legalInfoIdentifier;
+		this.status = builder.status;
+		this.typeAsiEquivalence = builder.typeAsiEquivalence;
+		this.statusEquivalence = builder.statusEquivalence;
+		this.certificateContentEquivalences = builder.certificateContentEquivalences;
+		this.qualifierEquivalence = builder.qualifierEquivalence;
 	}
 
 	/**
@@ -97,24 +102,6 @@ public class ServiceEquivalence implements Serializable {
 	 */
 	public void setStatus(MRAStatus status) {
 		this.status = status;
-	}
-
-	/**
-	 * Gets TrustServiceEquivalenceStatusStartingTime value
-	 *
-	 * @return {@link Date}
-	 */
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	/**
-	 * Sets TrustServiceEquivalenceStatusStartingTime value
-	 *
-	 * @param startDate {@link Date}
-	 */
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
 	}
 
 	/**
@@ -187,6 +174,157 @@ public class ServiceEquivalence implements Serializable {
 	 */
 	public void setQualifierEquivalence(Map<String, String> qualifierEquivalence) {
 		this.qualifierEquivalence = qualifierEquivalence;
+	}
+
+	/**
+	 * Builder class used to build a {@code ServiceEquivalence} object
+	 */
+	public static final class ServiceEquivalenceBuilder {
+
+		/**
+		 * TrustServiceLegalIdentifier
+		 */
+		private String legalInfoIdentifier;
+
+		/**
+		 * TrustServiceEquivalenceStatus
+		 */
+		private MRAStatus status;
+
+		/**
+		 * TrustServiceEquivalenceStatusStartingTime
+		 */
+		private Date startDate;
+
+		/**
+		 * The start date of the next TrustServiceEquivalenceHistoryInstance or TrustServiceEquivalenceInformationType
+		 */
+		private Date endDate;
+
+		/**
+		 * AdditionalServiceInformation equivalencies
+		 */
+		private Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence;
+
+		/**
+		 * TrustServiceTSLStatusEquivalenceList equivalencies
+		 */
+		private Map<List<String>, List<String>> statusEquivalence;
+
+		/**
+		 * CertificateContentReferencesEquivalenceList
+		 */
+		private List<CertificateContentEquivalence> certificateContentEquivalences;
+
+		/**
+		 * QualifierEquivalenceList equivalencies
+		 */
+		private Map<String, String> qualifierEquivalence;
+
+		/**
+		 * Default constructor instantiating object with null values
+		 */
+		public ServiceEquivalenceBuilder() {
+			// empty
+		}
+
+		/**
+		 * Builds the {@code ServiceEquivalence} object
+		 *
+		 * @return {@link ServiceEquivalence}
+		 */
+		public ServiceEquivalence build() {
+			return new ServiceEquivalence(this);
+		}
+
+		/**
+		 * Sets TrustServiceLegalIdentifier value
+		 *
+		 * @param legalInfoIdentifier {@link String}
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setLegalInfoIdentifier(String legalInfoIdentifier) {
+			this.legalInfoIdentifier = legalInfoIdentifier;
+			return this;
+		}
+
+		/**
+		 * Sets TrustServiceEquivalenceStatus value
+		 *
+		 * @param status {@link MRAStatus}
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setStatus(MRAStatus status) {
+			this.status = status;
+			return this;
+		}
+
+		/**
+		 * Sets TrustServiceEquivalenceStatusStartingTime value
+		 *
+		 * @param startDate {@link Date}
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setStartDate(Date startDate) {
+			this.startDate = startDate;
+			return this;
+		}
+
+		/**
+		 * Sets the endDate (equivalent to the starting date of the following service equivalence) value
+		 *
+		 * @param endDate {@link Date}
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setEndDate(Date endDate) {
+			this.endDate = endDate;
+			return this;
+		}
+
+		/**
+		 * Sets a map of AdditionalServiceInformation equivalences between pointed and pointing parties
+		 *
+		 * @param typeAsiEquivalence a map between {@link ServiceTypeASi} for pointed and {@link ServiceTypeASi} for pointing parties
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setTypeAsiEquivalence(Map<ServiceTypeASi, ServiceTypeASi> typeAsiEquivalence) {
+			this.typeAsiEquivalence = typeAsiEquivalence;
+			return this;
+		}
+
+		/**
+		 * Sets a map of TrustServiceTSLStatusEquivalenceList equivalences between pointed and pointing parties
+		 *
+		 * @param statusEquivalence a map between list of {@link String} for pointed and pointing parties
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setStatusEquivalence(Map<List<String>, List<String>> statusEquivalence) {
+			this.statusEquivalence = statusEquivalence;
+			return this;
+		}
+
+		/**
+		 * Sets a list of CertificateContentReferencesEquivalenceList equivalences
+		 *
+		 * @param certificateContentEquivalences a list of {@code CertificateContentEquivalence} values
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setCertificateContentEquivalences(List<CertificateContentEquivalence> certificateContentEquivalences) {
+			this.certificateContentEquivalences = certificateContentEquivalences;
+			return this;
+		}
+
+		/**
+		 * Sets a map of QualifierEquivalenceList equivalences between pointed and pointing parties
+		 *
+		 * @param qualifierEquivalence a map between {@code String} for pointed and pointing parties
+		 * @return this {@link ServiceEquivalenceBuilder}
+		 */
+		public ServiceEquivalenceBuilder setQualifierEquivalence(Map<String, String> qualifierEquivalence) {
+			this.qualifierEquivalence = qualifierEquivalence;
+			return this;
+		}
+
 	}
 
 }

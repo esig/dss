@@ -175,6 +175,7 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 		 * Default constructor
 		 */
 		public TrustServiceStatusAndInformationExtensionsBuilder() {
+			// empty
 		}
 
 		/**

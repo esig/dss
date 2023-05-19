@@ -612,6 +612,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 						if (mraTrustServiceMapping != null) {
 							wrapper.setMraTrustServiceLegalIdentifier(mraTrustServiceMapping.getTrustServiceLegalIdentifier());
 							wrapper.setMraTrustServiceEquivalenceStatusStartingTime(mraTrustServiceMapping.getEquivalenceStatusStartingTime());
+							wrapper.setMraTrustServiceEquivalenceStatusEndingTime(mraTrustServiceMapping.getEquivalenceStatusEndingTime());
 							XmlOriginalThirdCountryTrustedServiceMapping originalThirdCountryMapping = mraTrustServiceMapping.getOriginalThirdCountryMapping();
 							if (originalThirdCountryMapping != null) {
 								wrapper.setOriginalTCType(originalThirdCountryMapping.getServiceType());

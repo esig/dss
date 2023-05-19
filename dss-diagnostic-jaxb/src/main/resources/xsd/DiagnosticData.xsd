@@ -1516,6 +1516,7 @@
 		<xs:sequence>
 			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
 			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
+			<xs:element name="EquivalenceStatusEndingTime" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
 		</xs:sequence>
 	</xs:complexType>

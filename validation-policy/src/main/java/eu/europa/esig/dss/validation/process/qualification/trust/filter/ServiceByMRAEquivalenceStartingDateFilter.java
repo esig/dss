@@ -49,7 +49,8 @@ public class ServiceByMRAEquivalenceStartingDateFilter extends AbstractTrustedSe
             return false;
         }
 
-        return !date.before(startDate);
+        Date endDate = service.getMraTrustServiceEquivalenceStatusEndingTime();
+        return !date.before(startDate) && (endDate == null || !date.after(endDate));
     }
 
 }
