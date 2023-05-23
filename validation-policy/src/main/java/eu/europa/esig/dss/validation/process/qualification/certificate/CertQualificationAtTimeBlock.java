@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.Ce
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsAbleToSelectOneTrustService;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.IsNoQualificationConflictDetectedCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.MRACertificateEquivalenceApplied;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QSCDCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QualifiedCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustServiceCheck;
@@ -161,6 +162,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			filteredServices = filterByMRAEnacted.filter(filteredServices);
 
 			item = firstItem = hasMraEnactedTrustService(filteredServices);
+
+			item = item.setNextItem(mraCertificateEquivalenceApplied());
 
 		} else {
 			item = firstItem = hasTrustServiceAtTime(filteredServices);
@@ -301,6 +304,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 	private ChainItem<XmlValidationCertificateQualification> hasMraEnactedTrustService(List<TrustedServiceWrapper> trustServices) {
 		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, trustServices, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationCertificateQualification> mraCertificateEquivalenceApplied() {
+		return new MRACertificateEquivalenceApplied<>(i18nProvider, result, signingCertificate, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustedServiceWrapper> trustServices) {

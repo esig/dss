@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCRLDistributionPoints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateContentEquivalence;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -903,6 +904,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns if the MRA has been enacted
+	 *
+	 * @return TRUE if the MRA has been enacted, FALSE otherwise
+	 */
+	public boolean isEnactedMRA() {
+		XmlQcStatements xmlQcStatements = getXmlQcStatements();
+		if (xmlQcStatements != null) {
+			return xmlQcStatements.isEnactedMRA() != null && xmlQcStatements.isEnactedMRA();
+		}
+		return false;
+	}
+
+	/**
 	 * This method returns a name of a Trusted Service used to apply translation for the certificate QcStatements
 	 * based on the defined Mutual Recognition Agreement scheme
 	 *
@@ -910,10 +924,25 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 */
 	public String getMRAEnactedTrustServiceLegalIdentifier() {
 		XmlQcStatements xmlQcStatements = getXmlQcStatements();
-		if (xmlQcStatements != null && xmlQcStatements.getMRACertificateMapping() != null) {
-			return xmlQcStatements.getMRACertificateMapping().getEnactedTrustServiceLegalIdentifier();
+		if (xmlQcStatements != null && xmlQcStatements.getMRACertificateMapping() != null &&
+				xmlQcStatements.getMRACertificateMapping().getTrustServiceEquivalenceInformation() != null) {
+			return xmlQcStatements.getMRACertificateMapping().getTrustServiceEquivalenceInformation().getTrustServiceLegalIdentifier();
 		}
 		return null;
+	}
+
+	/**
+	 * Returns a {@code XmlCertificateContentEquivalence} list corresponding to the matching MRA information
+	 *
+	 * @return a list of {@link XmlCertificateContentEquivalence}s
+	 */
+	public List<XmlCertificateContentEquivalence> getMRACertificateContentEquivalenceList() {
+		XmlQcStatements xmlQcStatements = getXmlQcStatements();
+		if (xmlQcStatements != null && xmlQcStatements.getMRACertificateMapping() != null &&
+				xmlQcStatements.getMRACertificateMapping().getTrustServiceEquivalenceInformation() != null) {
+			return xmlQcStatements.getMRACertificateMapping().getTrustServiceEquivalenceInformation().getCertificateContentEquivalenceList();
+		}
+		return Collections.emptyList();
 	}
 
 	private XmlOriginalThirdCountryQcStatementsMapping getOriginalThirdCountryMapping() {
