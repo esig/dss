@@ -49,6 +49,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -448,6 +449,21 @@ public abstract class DiagnosticDataBuilder {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Builds a list of {@code XmlOrphanTokens}
+	 *
+	 * @return {@link XmlOrphanTokens}
+	 */
+	protected XmlOrphanTokens buildXmlOrphanTokens() {
+		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
+			XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
+			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
+			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
+			return xmlOrphanTokens;
+		}
+		return null;
 	}
 
 	private Collection<XmlTrustedList> buildXmlTrustedLists(ListCertificateSource trustedCertificateSources) {
