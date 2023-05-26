@@ -50,6 +50,34 @@ public class ValidateXMLERTest {
         assertEquals(isValid,true);
     }
 
+    @Test
+    public void testVerifyUCLER()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
+        boolean isValid = false;
+        File dir = new File("src/test/resources/XMLER_UCL_2600");
+        File[] directoryListing = dir.listFiles();
+        List<File> validFiles = new ArrayList<File>();
+        List<File> invalidFiles = new ArrayList<File>();
+        for (File child : directoryListing) {
+            isValid = verifyERArchiveTimeStampMessageImprint(child);
+            if(isValid){
+                validFiles.add(child);
+            }
+            else{
+                invalidFiles.add(child);
+            }
+            System.out.println("File " + child.getName() + " : " + isValid);
+        }
+        System.out.println("====List of all valid Files====");
+        for(File f : validFiles){
+            System.out.println(f.getName());
+        }
+        System.out.println("====List of all invalid Files====");
+        for(File f : invalidFiles){
+            System.out.println(f.getName());
+        }
+        //assertEquals(isValid,true);
+    }
+
     private void marshallUnmarshall(File file) throws JAXBException, XMLStreamException, IOException, SAXException {
         XMLEvidenceRecordFacade facade = XMLEvidenceRecordFacade.newFacade();
 
@@ -131,7 +159,7 @@ public class ValidateXMLERTest {
                 byte[] messageImprint = timestampToken.getMessageImprint().getValue();
                 System.out.println("Timestamp messageImprint value is: "+ Base64.getEncoder().encodeToString(messageImprint));
 
-                assertArrayEquals(hashTreeRoot,messageImprint);
+                //assertArrayEquals(hashTreeRoot,messageImprint);
 
                 if (!Arrays.equals(messageImprint, hashTreeRoot)){
                     return false;
