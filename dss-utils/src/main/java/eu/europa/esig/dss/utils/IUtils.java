@@ -309,7 +309,7 @@ public interface IUtils {
 	 * Checks if the string is base64-encoded
 	 *
 	 * @param base64String {@link String}
-	 * @return TRUE if he string is base64-encoded, FALSE otherwise
+	 * @return TRUE if the String is base64-encoded, FALSE otherwise
 	 */
 	boolean isBase64Encoded(String base64String);
 

@@ -497,7 +497,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 						return timestampToken;
 
 					} catch (Exception e) {
-						LOG.warn("Unable to parse timestamp '{}'", tstBase64, e);
+						LOG.warn("Unable to parse timestamp '{}'. Reason : {}", tstBase64, e.getMessage(), e);
 					}
 				}
 

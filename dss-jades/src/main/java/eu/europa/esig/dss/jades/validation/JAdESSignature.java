@@ -243,28 +243,33 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
-		Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
-		if (Utils.isMapNotEmpty(sigPStMap)) {
-			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+		try {
+			Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
+			if (Utils.isMapNotEmpty(sigPStMap)) {
+				SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 
-			String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
-			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
-				DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
-				signaturePolicyStore.setSignaturePolicyContent(policyContent);
+				String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
+				if (Utils.isStringNotEmpty(sigPolDocBase64)) {
+					DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+					signaturePolicyStore.setSignaturePolicyContent(policyContent);
+				}
+
+				String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
+				if (Utils.isStringNotEmpty(sigPolLocalURI)) {
+					signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
+				}
+
+				Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+				if (spDSpec != null) {
+					SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+					signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+				}
+
+				return signaturePolicyStore;
 			}
 
-			String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
-			if (Utils.isStringNotEmpty(sigPolLocalURI)) {
-				signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
-			}
-
-			Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
-			if (spDSpec != null) {
-				SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
-				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
-			}
-
-			return signaturePolicyStore;
+		} catch (Exception e) {
+			LOG.warn("Cannot read signature policy store : {}", e.getMessage(), e);
 		}
 		return null;
 	}

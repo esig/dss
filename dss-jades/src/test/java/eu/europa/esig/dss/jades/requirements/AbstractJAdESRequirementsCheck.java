@@ -157,6 +157,7 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		for (Object certObject : x5c) {
 			assertNotNull(certObject);
 			assertTrue(certObject instanceof String);
+			assertTrue(Utils.isBase64Encoded((String) certObject));
 			CertificateToken certificateToken = DSSUtils.loadCertificateFromBase64EncodedString((String) certObject);
 			assertNotNull(certificateToken);
 		}

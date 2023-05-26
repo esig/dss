@@ -221,14 +221,20 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	}
 	
 	private Digest getDigest(String digestHeaderValue) {
-		String[] valueParts = digestHeaderValue.split("=");
-		if (valueParts.length == 2) {
-			DigestAlgorithm digestAlgorithm = DigestAlgorithm.forHttpHeader(valueParts[0]);
-			byte[] digestValue = Utils.fromBase64(valueParts[1]);
-			return new Digest(digestAlgorithm, digestValue);
+		try {
+			String[] valueParts = digestHeaderValue.split("=");
+			if (valueParts.length == 2) {
+				DigestAlgorithm digestAlgorithm = DigestAlgorithm.forHttpHeader(valueParts[0]);
+				byte[] digestValue = Utils.fromBase64(valueParts[1]);
+				return new Digest(digestAlgorithm, digestValue);
+			}
+			LOG.warn("Not conformant value of 'Digest' header : '{}'!", digestHeaderValue);
+			return null;
+
+		} catch (Exception e) {
+			LOG.warn("Unable to extract Digest HTTP Header value. Reason : {}", e.getMessage(), e);
+			return null;
 		}
-		LOG.warn("Not conformant value of 'Digest' header : '{}'!", digestHeaderValue);
-		return null;
 	}
 
 }

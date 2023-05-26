@@ -146,13 +146,18 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static byte[] getDigestValue(Element dataObjectReference) {
-		Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPaths.DIGEST_VALUE_PATH);
-		if (digestValueElement != null) {
-			try {
-				return Utils.fromBase64(digestValueElement.getTextContent());
-			} catch (Exception e) {
-				LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
+		try {
+			Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPaths.DIGEST_VALUE_PATH);
+			if (digestValueElement != null) {
+				String digest = digestValueElement.getTextContent();
+				if (Utils.isBase64Encoded(digest)) {
+					return Utils.fromBase64(digestValueElement.getTextContent());
+				} else {
+					LOG.warn("The manifest entry digest value is not base64-encoded!");
+				}
 			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
 		}
 		return null;
 	}

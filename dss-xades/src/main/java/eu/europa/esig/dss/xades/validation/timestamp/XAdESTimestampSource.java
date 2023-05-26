@@ -306,8 +306,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	private TimestampToken createTimestampToken(final Element encapsulatedTimeStamp, TimestampType timestampType,
 			List<TimestampedReference> references) {
 		try {
-			return new TimestampToken(Utils.fromBase64(encapsulatedTimeStamp.getTextContent()), timestampType,
-					references);
+			String base64EncodedTimestamp = encapsulatedTimeStamp.getTextContent();
+			return new TimestampToken(Utils.fromBase64(base64EncodedTimestamp), timestampType, references);
+
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
 				LOG.warn("Unable to build timestamp token from binaries '{}'! Reason : {}",
@@ -315,8 +316,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			} else {
 				LOG.warn("Unable to build timestamp token! Reason : {}", e.getMessage(), e);
 			}
-			return null;
 		}
+		return null;
 	}
 
 	@Override

@@ -94,7 +94,12 @@ public final class XAdESRevocationRefExtractionUtils {
 
 			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
 			if (responderIdByKey != null) {
-				ski = Utils.fromBase64(responderIdByKey.getTextContent());
+				String base64EncodedResponderId = responderIdByKey.getTextContent();
+				if (Utils.isBase64Encoded(base64EncodedResponderId)) {
+					ski = Utils.fromBase64(base64EncodedResponderId);
+				} else {
+					LOG.warn("OCSP ResponderId value is not represented by a base64-encoded string!");
+				}
 			}
 		} else {
 			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
