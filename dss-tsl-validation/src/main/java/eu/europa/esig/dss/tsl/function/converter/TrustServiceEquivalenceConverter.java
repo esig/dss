@@ -25,6 +25,7 @@ import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.QCStatementOids;
 import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
 import eu.europa.esig.dss.spi.tsl.ServiceTypeASi;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.utils.Utils;
@@ -34,6 +35,8 @@ import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentReferenceEquivalenc
 import eu.europa.esig.trustedlist.jaxb.mra.CertificateContentReferencesEquivalenceListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QualifierEquivalenceListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QualifierEquivalenceType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceHistoryInstanceType;
+import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceHistoryType;
 import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceInformationType;
 import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLQualificationExtensionEquivalenceListType;
 import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceTSLStatusEquivalenceListType;
@@ -47,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +60,7 @@ import java.util.function.Function;
  * This class is used to extract MRA equivalence scheme for a Trusted List
  *
  */
-public class TrustServiceEquivalenceConverter implements Function<TrustServiceEquivalenceInformationType, ServiceEquivalence> {
+public class TrustServiceEquivalenceConverter implements Function<TrustServiceEquivalenceInformationType, MutableTimeDependentValues<ServiceEquivalence>> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceEquivalenceConverter.class);
 
@@ -71,22 +75,45 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 	}
 
 	@Override
-	public ServiceEquivalence apply(TrustServiceEquivalenceInformationType t) {
-		ServiceEquivalence result = new ServiceEquivalence();
-		result.setLegalInfoIdentifier(t.getTrustServiceLegalIdentifier());
-		result.setStartDate(t.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime());
-		result.setStatus(t.getTrustServiceEquivalenceStatus());
+	public MutableTimeDependentValues<ServiceEquivalence> apply(TrustServiceEquivalenceInformationType t) {
+		final MutableTimeDependentValues<ServiceEquivalence> result = new MutableTimeDependentValues<>();
 
-		fillTypeASiEquivalence(t, result);
-		fillStatusEquivalence(t, result);
-		fillCertificateEquivalence(t, result);
-		fillQualifierEquivalence(t, result);
+		ServiceEquivalence serviceEquivalence = new ServiceEquivalence.ServiceEquivalenceBuilder()
+				.setLegalInfoIdentifier(t.getTrustServiceLegalIdentifier())
+				.setStartDate(t.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime())
+				.setStatus(t.getTrustServiceEquivalenceStatus())
+				.setTypeAsiEquivalence(getTypeASiEquivalence(t.getTrustServiceTSLTypeEquivalenceList()))
+				.setStatusEquivalence(getStatusEquivalence(t.getTrustServiceTSLStatusEquivalenceList()))
+				.setCertificateContentEquivalences(getCertificateEquivalence(t.getCertificateContentReferencesEquivalenceList()))
+				.setQualifierEquivalence(getQualifierEquivalence(t.getTrustServiceTSLQualificationExtensionEquivalenceList()))
+				.build();
+		result.addOldest(serviceEquivalence);
+
+		Date oldestStartDate = serviceEquivalence.getStartDate();
+
+		// TODO : review lists nesting
+		for (TrustServiceEquivalenceHistoryType trustServiceEquivalenceHistory : t.getTrustServiceEquivalenceHistory()) {
+			for (TrustServiceEquivalenceHistoryInstanceType h : trustServiceEquivalenceHistory.getTrustServiceEquivalenceHistoryInstance()) {
+				ServiceEquivalence historyServiceEquivalence = new ServiceEquivalence.ServiceEquivalenceBuilder()
+						.setLegalInfoIdentifier(serviceEquivalence.getLegalInfoIdentifier())
+						.setStartDate(h.getTrustServiceEquivalenceStatusStartingTime().toGregorianCalendar().getTime())
+						.setEndDate(oldestStartDate)
+						.setStatus(h.getTrustServiceEquivalenceStatus())
+						.setTypeAsiEquivalence(getTypeASiEquivalence(h.getTrustServiceTSLTypeEquivalenceList()))
+						.setStatusEquivalence(getStatusEquivalence(h.getTrustServiceTSLStatusEquivalenceList()))
+						.setCertificateContentEquivalences(getCertificateEquivalence(h.getCertificateContentReferencesEquivalenceList()))
+						.setQualifierEquivalence(getQualifierEquivalence(h.getTrustServiceTSLQualificationExtensionEquivalenceList()))
+						.build();
+				result.addOldest(historyServiceEquivalence);
+
+				oldestStartDate = historyServiceEquivalence.getStartDate();
+			}
+		}
 
 		return result;
 	}
 
-	private void fillTypeASiEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		TrustServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList = t.getTrustServiceTSLTypeEquivalenceList();
+	private Map<ServiceTypeASi, ServiceTypeASi> getTypeASiEquivalence(TrustServiceTSLTypeEquivalenceListType serviceTSLTypeEquivalenceList) {
 		if (serviceTSLTypeEquivalenceList != null) {
 			TrustServiceTSLTypeListType expected = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointedParty();
 			TrustServiceTSLTypeListType substitute = serviceTSLTypeEquivalenceList.getTrustServiceTSLTypeListPointingParty();
@@ -102,8 +129,9 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 					typeAsiEquivalence.put(staExpected, staSubstitute);
 				}
 			}
-			result.setTypeAsiEquivalence(typeAsiEquivalence);
+			return typeAsiEquivalence;
 		}
+		return null;
 	}
 
 	private ServiceTypeASi getServiceTypeASi(TrustServiceTSLTypeType expectedTypeASI) {
@@ -116,9 +144,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		return sta;
 	}
 
-	private void fillStatusEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList = t.getTrustServiceTSLStatusEquivalenceList();
-
+	private Map<List<String>, List<String>> getStatusEquivalence(TrustServiceTSLStatusEquivalenceListType serviceTSLStatusEquivalenceList) {
 		Map<List<String>, List<String>> statusEquivalenceMap = new HashMap<>();
 		TrustServiceTSLStatusEquivalenceType validEquivalences = serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusValidEquivalence();
 		extractEquivalences(validEquivalences, statusEquivalenceMap);
@@ -126,7 +152,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		TrustServiceTSLStatusEquivalenceType invalidEquivalences = serviceTSLStatusEquivalenceList.getTrustServiceTSLStatusInvalidEquivalence();
 		extractEquivalences(invalidEquivalences, statusEquivalenceMap);
 
-		result.setStatusEquivalence(statusEquivalenceMap);
+		return statusEquivalenceMap;
 	}
 
 	private void extractEquivalences(TrustServiceTSLStatusEquivalenceType statusEquivalence, Map<List<String>, List<String>> statusEquivalenceMap) {
@@ -141,8 +167,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		}
 	}
 
-	private void fillCertificateEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		CertificateContentReferencesEquivalenceListType certificateContentEquivalenceList = t.getCertificateContentReferencesEquivalenceList();
+	private List<CertificateContentEquivalence> getCertificateEquivalence(CertificateContentReferencesEquivalenceListType certificateContentEquivalenceList) {
 		if (certificateContentEquivalenceList != null
 				&& Utils.isCollectionNotEmpty(certificateContentEquivalenceList.getCertificateContentReferenceEquivalence())) {
 
@@ -159,8 +184,9 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 
 				certificateContentEquivalences.add(equiv);
 			}
-			result.setCertificateContentEquivalences(certificateContentEquivalences);
+			return certificateContentEquivalences;
 		}
+		return null;
 	}
 
 	private QCStatementOids getQCStatementOids(Condition condition) {
@@ -267,9 +293,7 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 		}
 	}
 
-	private void fillQualifierEquivalence(TrustServiceEquivalenceInformationType t, ServiceEquivalence result) {
-		TrustServiceTSLQualificationExtensionEquivalenceListType qualificationExtensionEquivalenceListType = t
-				.getTrustServiceTSLQualificationExtensionEquivalenceList();
+	private Map<String, String> getQualifierEquivalence(TrustServiceTSLQualificationExtensionEquivalenceListType qualificationExtensionEquivalenceListType) {
 		if (qualificationExtensionEquivalenceListType != null
 				&& Utils.isCollectionNotEmpty(qualificationExtensionEquivalenceListType.getQualifierEquivalenceList())) {
 
@@ -283,8 +307,9 @@ public class TrustServiceEquivalenceConverter implements Function<TrustServiceEq
 					qualifierEquivalenceMap.put(qualifierExpected.getUri(), qualifierSubstitute.getUri());
 				}
 			}
-			result.setQualifierEquivalence(qualifierEquivalenceMap);
+			return qualifierEquivalenceMap;
 		}
+		return null;
 	}
 
 }

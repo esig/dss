@@ -110,6 +110,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -9959,7 +9960,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10019,7 +10020,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
-	public void mraAfterCertIssuanceTestTest() throws Exception {
+	public void mraAfterCertIssuanceTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/mra/diag-data-mra-qesig.xml"));
 		assertNotNull(xmlDiagnosticData);
@@ -10040,7 +10041,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10117,7 +10118,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESEAL, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(2, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10195,7 +10196,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESEAL, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(2, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10378,6 +10379,58 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, validationSignatureQualification.getConclusion().getIndication());
 		assertTrue(checkMessageValuePresence(convert(validationSignatureQualification.getConclusion().getInfos()),
 				i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V2)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void mraCertEquivalenceRuleNotAppliedTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/mra/diag-data-mra-qesig-cert-rule-not-applied.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_HAS_METS_HCCECBA_ANS_2, MRAEquivalenceContext.QC_COMPLIANCE.getUri())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+
+		for (XmlValidationCertificateQualification certificateQualification : validationSignatureQualification.getValidationCertificateQualification()) {
+			assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, certificateQualification.getCertificateQualification());
+
+			boolean mraCertContentEquivalenceCheckFound = false;
+			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
+				if (MessageTag.QUAL_HAS_METS_HCCECBA.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_METS_HCCECBA_ANS_2.getId(), constraint.getWarning().getKey());
+					mraCertContentEquivalenceCheckFound = true;
+				} else {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+			}
+			assertTrue(mraCertContentEquivalenceCheckFound);
+		}
 
 		checkReports(reports);
 	}

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
+package eu.europa.esig.dss.validation.process.qualification.certificate;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.QCType;
@@ -37,6 +37,7 @@ public final class QCTypeIdentifiers {
 	 * Empty constructor
 	 */
 	private QCTypeIdentifiers() {
+		// empty
 	}
 
 	/**

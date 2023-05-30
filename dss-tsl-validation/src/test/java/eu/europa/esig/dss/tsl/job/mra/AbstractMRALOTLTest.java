@@ -468,6 +468,25 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             }
         }
 
+        Element trustServiceEquivalenceHistoryElement = DomUtils.getElement(mraInformation,
+                "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceEquivalenceHistory/mra:TrustServiceEquivalenceHistoryInstance");
+        if (trustServiceEquivalenceHistoryElement != null) {
+            String trustServiceEquivalenceHistoryStatus = getTrustServiceEquivalenceHistoryStatus();
+            if (Utils.isStringNotEmpty(trustServiceEquivalenceHistoryStatus)) {
+                Element trustServiceEquivalenceStatusElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement,
+                        "./mra:TrustServiceEquivalenceStatus");
+                setText(trustServiceEquivalenceStatusElement, trustServiceEquivalenceHistoryStatus);
+            }
+
+            Date trustServiceEquivalenceHistoryStatusStartingTime = getTrustServiceEquivalenceHistoryStatusStartingTime();
+            if (trustServiceEquivalenceHistoryStatusStartingTime != null) {
+                String timeString = DSSUtils.formatDateToRFC(trustServiceEquivalenceHistoryStatusStartingTime);
+                Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement,
+                        "./mra:TrustServiceEquivalenceStatusStartingTime");
+                setText(trustServiceEquivalenceStatusStartingTimeElement, timeString);
+            }
+        }
+
     }
 
     protected String getTrustServiceLegalIdentifier() {
@@ -494,7 +513,15 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         return null;
     }
 
+    protected String getTrustServiceEquivalenceHistoryStatus() {
+        return null;
+    }
+
     protected Date getTrustServiceEquivalenceStatusStartingTime() {
+        return null;
+    }
+
+    protected Date getTrustServiceEquivalenceHistoryStatusStartingTime() {
         return null;
     }
 
@@ -866,7 +893,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
                 if (getTrustServiceTSLTypeListPointingPartyAdditionalServiceInformation() != null) {
                     assertEquals(getTrustServiceTSLTypeListPointingPartyAdditionalServiceInformation(), trustedServiceWrapper.getAdditionalServiceInfos().iterator().next());
                 }
-                if (getTrustServiceEquivalenceStatusStartingTime() != null) {
+                if (getTrustServiceEquivalenceStatusStartingTime() != null && Utils.collectionSize(trustedServices) == 1) {
                     assertEquals(DSSUtils.formatDateToRFC(getTrustServiceEquivalenceStatusStartingTime()),
                             DSSUtils.formatDateToRFC(trustedServiceWrapper.getMraTrustServiceEquivalenceStatusStartingTime()));
                 }

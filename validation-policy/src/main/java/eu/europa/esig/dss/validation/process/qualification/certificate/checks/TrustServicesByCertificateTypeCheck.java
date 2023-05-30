@@ -1,0 +1,63 @@
+package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ChainItem;
+
+import java.util.List;
+
+/**
+ * Checks if a trust service corresponding to the certificate type has been found
+ *
+ */
+public class TrustServicesByCertificateTypeCheck extends ChainItem<XmlValidationCertificateQualification> {
+
+    /** List of {@code TrustedServiceWrapper}s at control time */
+    private final List<TrustedServiceWrapper> trustServices;
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlValidationCertificateQualification}
+     * @param trustServices list of {@link TrustedServiceWrapper}s
+     * @param constraint {@link LevelConstraint}
+     */
+    public TrustServicesByCertificateTypeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+                     List<TrustedServiceWrapper> trustServices, LevelConstraint constraint) {
+        super(i18nProvider, result, constraint);
+        this.trustServices = trustServices;
+    }
+
+    @Override
+    protected boolean process() {
+        return Utils.isCollectionNotEmpty(trustServices);
+    }
+
+    @Override
+    protected MessageTag getMessageTag() {
+        return MessageTag.QUAL_HAS_TS_CERT_TYPE;
+    }
+
+    @Override
+    protected MessageTag getErrorMessageTag() {
+        return MessageTag.QUAL_HAS_TS_CERT_TYPE_ANS;
+    }
+
+    @Override
+    protected Indication getFailedIndicationForConclusion() {
+        return Indication.FAILED;
+    }
+
+    @Override
+    protected SubIndication getFailedSubIndicationForConclusion() {
+        return null;
+    }
+
+}
