@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -29,36 +30,42 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Checks whether there are CA/QC TrustedServices at control time
+ * Checks whether there are CA/QC TrustedServices
  *
  */
 public class CaQcCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** List of {@code TrustedServiceWrapper}s at control time */
-	private final List<TrustedServiceWrapper> trustServicesAtTime;
+	private final List<TrustedServiceWrapper> trustServices;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
-	 * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
+	 * @param trustServices list of {@link TrustedServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public CaQcCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-					 List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+					 List<TrustedServiceWrapper> trustServices, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
-
-		this.trustServicesAtTime = trustServicesAtTime;
+		this.trustServices = trustServices;
 	}
 
 	@Override
 	protected boolean process() {
-		return Utils.isCollectionNotEmpty(trustServicesAtTime);
+		TrustedServiceFilter filterByCaQc = TrustedServicesFilterFactory.createFilterByCaQc();
+		return Utils.isCollectionNotEmpty(filterByCaQc.filter(trustServices));
 	}
 
 	@Override
@@ -67,8 +74,21 @@ public class CaQcCheck extends ChainItem<XmlValidationCertificateQualification> 
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_CAQC_ANS;
+	protected XmlMessage buildErrorMessage() {
+		Collection<String> stiList = getStis();
+		MessageTag errorTag = Utils.collectionSize(stiList) == 1 ? MessageTag.QUAL_HAS_CAQC_ANS : MessageTag.QUAL_HAS_CAQC_ANS_2;
+		String argument = Utils.collectionSize(stiList) == 1 ? stiList.iterator().next() : stiList.toString();
+		return buildXmlMessage(errorTag, argument);
+	}
+	
+	private Collection<String> getStis() {
+		Set<String> identifiers = new HashSet<>();
+		for (TrustedServiceWrapper trustedService : trustServices) {
+			String type = trustedService.getType();
+			ServiceTypeIdentifier sti = ServiceTypeIdentifier.fromUri(type);
+			identifiers.add(sti != null ? sti.getShortName() : type);
+		}
+		return identifiers;
 	}
 
 	@Override

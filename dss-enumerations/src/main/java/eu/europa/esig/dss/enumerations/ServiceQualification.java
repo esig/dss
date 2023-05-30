@@ -61,7 +61,7 @@ public enum ServiceQualification {
      * identified by the applicable list of criteria, when they are claimed or stated as being qualified, do not have
      * their private key residing in an SSCD
      */
-   QC_NO_SSCD("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"),
+    QC_NO_SSCD("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"),
 
     /**
      * QCNoQSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"): to indicate that all certificates
