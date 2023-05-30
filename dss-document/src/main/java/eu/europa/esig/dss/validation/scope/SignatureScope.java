@@ -140,8 +140,14 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 		if (dssId != null) {
 			return dssId;
 		}
-		String uniqueString = name + dataDigest.toString();
-		dssId = new DataIdentifier(uniqueString.getBytes());
+		StringBuilder sb = new StringBuilder();
+		if (name != null) {
+			sb.append(name);
+		}
+		if (dataDigest != null) {
+			sb.append(dataDigest);
+		}
+		dssId = new DataIdentifier(sb.toString().getBytes());
 		return dssId;
 	}
 	
