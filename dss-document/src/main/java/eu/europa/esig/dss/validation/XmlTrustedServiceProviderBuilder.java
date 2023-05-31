@@ -713,7 +713,7 @@ public class XmlTrustedServiceProviderBuilder {
     private boolean checkQcStatementsEquivalence(XmlQcStatements qcStatementsOne, XmlQcStatements qcStatementsTwo) {
         if (qcStatementsOne == null && qcStatementsTwo == null) {
             return true;
-        } else if ((qcStatementsOne == null) != (qcStatementsTwo == null)) {
+        } else if (qcStatementsOne == null || qcStatementsTwo == null) {
             return false;
         }
 
