@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateContentEquivalence;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRACertificateMapping;
@@ -30,13 +31,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceEquivalenceInformation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
-import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -52,6 +53,7 @@ import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
 import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -61,8 +63,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -285,51 +290,60 @@ public class XmlTrustedServiceProviderBuilder {
                 TrustServiceStatusAndInformationExtensions serviceInfoStatusCopy =
                         new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder(serviceInfoStatus)
                                 .setAdditionalServiceInfoUris(Collections.singletonList(aSI)).build();
-                result.add(getXmlTrustedServiceForMRA(serviceInfoStatusCopy, certToken, trustAnchor, mra));
+                result.addAll(getXmlTrustedServicesForMRA(serviceInfoStatusCopy, certToken, trustAnchor, mra));
             }
             return result;
 
         } else {
-            return Collections.singletonList(getXmlTrustedServiceForMRA(serviceInfoStatus, certToken, trustAnchor, mra));
+            return getXmlTrustedServicesForMRA(serviceInfoStatus, certToken, trustAnchor, mra);
         }
     }
 
-    private XmlTrustedService getXmlTrustedServiceForMRA(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+    private List<XmlTrustedService> getXmlTrustedServicesForMRA(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
                                                          CertificateToken certToken, CertificateToken trustAnchor, MRA mra) {
-        XmlMRATrustServiceMapping xmlMRATrustServiceMapping = null;
-        List<ServiceEquivalence> mraEquivalences = getMRAServiceEquivalences(serviceInfoStatus, mra);
+        List<MutableTimeDependentValues<ServiceEquivalence>> mraEquivalences = getMRAServiceEquivalences(serviceInfoStatus, certToken, mra);
         boolean enactedMra = Utils.isCollectionNotEmpty(mraEquivalences);
         if (enactedMra) {
             if (mraEquivalences.size() == 1) {
-                ServiceEquivalence serviceEquivalence = mraEquivalences.iterator().next();
+                MutableTimeDependentValues<ServiceEquivalence> serviceEquivalenceValues = mraEquivalences.iterator().next();
                 LOG.info("MRA equivalence is applied for a Trusted Service : '{}'",
-                        serviceEquivalence.getLegalInfoIdentifier());
+                        serviceEquivalenceValues.getLatest().getLegalInfoIdentifier());
 
-                // shall be computed before translation
-                xmlMRATrustServiceMapping = getXmlMRATrustServiceMapping(serviceInfoStatus, serviceEquivalence, certToken);
-                serviceInfoStatus = translate(serviceInfoStatus, certToken, serviceEquivalence);
+                List<XmlTrustedService> result = new ArrayList<>();
+
+                List<ServiceEquivalence> serviceEquivalenceList = serviceEquivalenceValues.getAfter(certToken.getNotBefore());
+                for (ServiceEquivalence serviceEquivalence : serviceEquivalenceList) {
+                    // shall be computed before translation
+                    TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
+
+                    XmlTrustedService xmlTrustedService = getXmlTrustedService(equivalent, certToken, trustAnchor);
+                    xmlTrustedService.setMRATrustServiceMapping(getXmlMRATrustServiceMapping(serviceInfoStatus, certToken, serviceEquivalence));
+                    xmlTrustedService.setEnactedMRA(serviceEquivalence.getStatus().isEnacted());
+                    result.add(xmlTrustedService);
+                }
+                translateCertificate(certToken, serviceEquivalenceList);
+
+                return result;
 
             } else {
-                LOG.warn("More than one MRA equivalence found for a Trusted Service!");
+                LOG.warn("More than one MRA equivalence found for a Trusted Service! MRA rules are not applied!");
             }
         }
 
-        XmlTrustedService xmlTrustedService = getXmlTrustedService(serviceInfoStatus, certToken, trustAnchor);
-        xmlTrustedService.setMRATrustServiceMapping(xmlMRATrustServiceMapping);
-        if (xmlMRATrustServiceMapping != null) {
-            xmlTrustedService.setEnactedMRA(true);
-        }
-        return xmlTrustedService;
+        return Collections.singletonList(getXmlTrustedService(serviceInfoStatus, certToken, trustAnchor));
     }
 
-    private List<ServiceEquivalence> getMRAServiceEquivalences(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
-                                                               MRA mra) {
+    private List<MutableTimeDependentValues<ServiceEquivalence>> getMRAServiceEquivalences(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+                                                               CertificateToken certToken, MRA mra) {
         LOG.debug("MRA");
-        final List<ServiceEquivalence> equivalences = new ArrayList<>();
-        for (ServiceEquivalence serviceEquivalence : mra.getServiceEquivalence()) {
-            if (MRAStatus.ENACTED == serviceEquivalence.getStatus()
-                    && check(serviceInfoStatus, serviceEquivalence)) {
-                equivalences.add(serviceEquivalence);
+        final List<MutableTimeDependentValues<ServiceEquivalence>> equivalences = new ArrayList<>();
+        for (MutableTimeDependentValues<ServiceEquivalence> serviceEquivalenceList : mra.getServiceEquivalence()) {
+            // filter TrustServices that can be potentially applied to the validation
+            for (ServiceEquivalence serviceEquivalence : serviceEquivalenceList.getAfter(certToken.getNotBefore())) {
+                if (check(serviceInfoStatus, serviceEquivalence)) {
+                    equivalences.add(serviceEquivalenceList);
+                    break;
+                }
             }
         }
         return equivalences;
@@ -422,10 +436,11 @@ public class XmlTrustedServiceProviderBuilder {
     }
 
     private XmlMRATrustServiceMapping getXmlMRATrustServiceMapping(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
-                                                                   ServiceEquivalence serviceEquivalence, CertificateToken certToken) {
+                                                                   CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
         XmlMRATrustServiceMapping mraTrustServiceMapping = new XmlMRATrustServiceMapping();
         mraTrustServiceMapping.setTrustServiceLegalIdentifier(serviceEquivalence.getLegalInfoIdentifier());
         mraTrustServiceMapping.setEquivalenceStatusStartingTime(serviceEquivalence.getStartDate());
+        mraTrustServiceMapping.setEquivalenceStatusEndingTime(serviceEquivalence.getEndDate());
         mraTrustServiceMapping.setOriginalThirdCountryMapping(getXmlOriginalThirdCountryTrustedServiceMapping(serviceInfoStatus, certToken));
         return mraTrustServiceMapping;
     }
@@ -449,28 +464,45 @@ public class XmlTrustedServiceProviderBuilder {
         return originalThirdCountryMapping;
     }
 
-    private TrustServiceStatusAndInformationExtensions translate(
-            TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken,
-            ServiceEquivalence serviceEquivalence) {
-        TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
+    private void translateCertificate(CertificateToken certToken, List<ServiceEquivalence> serviceEquivalenceList) {
+        // See PRO-4.3.4-03B (apply first enacted serviceEquivalence. NOTE: list inverted)
+        XmlQcStatements qcStatements = null;
+        for (ServiceEquivalence serviceEquivalence : serviceEquivalenceList) {
+            if (serviceEquivalence.getStatus().isEnacted() && check(certToken, serviceEquivalence)) {
+                XmlQcStatements currentQcStatement = applyCertContentEquivalence(certToken, serviceEquivalence);
+                if (qcStatements == null) {
+                    qcStatements = currentQcStatement;
 
-        if (check(certToken, serviceEquivalence)) {
-            LOG.info("MRA equivalence is applied for a certificate with Id '{}' : '{}'",
-                    certToken.getDSSIdAsString(), serviceEquivalence.getLegalInfoIdentifier());
-            overrideCertContent(certToken, serviceEquivalence);
+                } else if (!checkQcStatementsEquivalence(qcStatements, currentQcStatement)) {
+                    LOG.warn("Enacted MRA equivalences with legal identifier '{}' lead to different certificate " +
+                            "content results for a certificate with id '{}'! The equivalence is not applied.",
+                            serviceEquivalence.getLegalInfoIdentifier(), certToken.getDSSIdAsString());
+                    return;
+                }
 
-        } else {
-            LOG.debug("MRA equivalence was not applied for a certificate with Id '{}' : '{}'",
-                    certToken.getDSSIdAsString(), serviceEquivalence.getLegalInfoIdentifier());
+            } else {
+                LOG.debug("MRA equivalence was not applied for a certificate with Id '{}' : '{}'",
+                        certToken.getDSSIdAsString(), serviceEquivalence.getLegalInfoIdentifier());
+            }
         }
 
-        return equivalent;
+        if (qcStatements != null) {
+            LOG.info("MRA equivalence is applied for a certificate with Id '{}' : '{}'",
+                    certToken.getDSSIdAsString(), serviceEquivalenceList.iterator().next().getLegalInfoIdentifier());
+
+            // update QcStatements certificate content
+            XmlCertificate xmlCertificate = xmlCertsMap.get(certToken.getDSSIdAsString());
+            setQcStatements(xmlCertificate, qcStatements);
+        }
     }
 
     private boolean check(CertificateToken certificateToken, ServiceEquivalence serviceEquivalence) {
         // check if a certificate has been issued at or after the starting time of the service equivalence
         Date certIssuance = certificateToken.getNotBefore();
         if (certIssuance.before(serviceEquivalence.getStartDate())) {
+            return false;
+        }
+        if (serviceEquivalence.getEndDate() != null && certIssuance.after(serviceEquivalence.getEndDate())) {
             return false;
         }
         if (!checkCertTypeAsiEquivalence(certificateToken, serviceEquivalence.getTypeAsiEquivalence())) {
@@ -570,12 +602,13 @@ public class XmlTrustedServiceProviderBuilder {
         return result;
     }
 
-    private void overrideCertContent(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
+    private XmlQcStatements applyCertContentEquivalence(CertificateToken certToken, ServiceEquivalence serviceEquivalence) {
         List<CertificateContentEquivalence> certificateContentEquivalences = serviceEquivalence.getCertificateContentEquivalences();
         if (Utils.isCollectionEmpty(certificateContentEquivalences)) {
             LOG.debug("No MRA equivalence is defined for certificate content.");
-            return;
+            return null;
         }
+        assertCertificateContentEquivalenceListIsConsistent(certificateContentEquivalences);
 
         XmlCertificate xmlCertificate = xmlCertsMap.get(certToken.getDSSIdAsString());
         if (xmlCertificate == null) {
@@ -584,51 +617,136 @@ public class XmlTrustedServiceProviderBuilder {
         }
 
         // Overwrite with information from MRA
-        XmlQcStatements qcStatements = null;
-        for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
-            if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(certificateExtension.getOID())) {
-                qcStatements = (XmlQcStatements) certificateExtension;
-            }
-        }
-        if (qcStatements == null) {
-            qcStatements = new XmlQcStatements();
-            xmlCertificate.getCertificateExtensions().add(qcStatements);
-        }
+        XmlQcStatements qcStatements = getQcStatements(xmlCertificate);
+        qcStatements.setEnactedMRA(true);
+
+        XmlMRACertificateMapping xmlMRACertificateMapping = getXmlMRACertificateMapping(qcStatements, serviceEquivalence);
+        qcStatements.setMRACertificateMapping(xmlMRACertificateMapping);
+
+        XmlTrustServiceEquivalenceInformation trustServiceEquivalenceInformation = xmlMRACertificateMapping.getTrustServiceEquivalenceInformation();
 
         for (CertificateContentEquivalence certificateContentEquivalence : certificateContentEquivalences) {
             final MRAEquivalenceContext equivalenceContext = certificateContentEquivalence.getContext();
-            final Condition condition = certificateContentEquivalence.getCondition();
-            if (equivalenceContext != null && condition.check(certToken)) {
-                LOG.info("MRA condition match ({})", equivalenceContext);
-                if (qcStatements.getMRACertificateMapping() == null) {
-                    qcStatements.setMRACertificateMapping(getXmlMRACertificateMapping(qcStatements, serviceEquivalence));
-                    qcStatements.setEnactedMRA(true);
+
+            if (equivalenceContext != null) {
+                final XmlCertificateContentEquivalence xmlCertificateContentEquivalence = new XmlCertificateContentEquivalence();
+                xmlCertificateContentEquivalence.setUri(equivalenceContext.getUri());
+
+                final Condition condition = certificateContentEquivalence.getCondition();
+                if (condition.check(certToken)) {
+                    LOG.info("MRA condition match ({})", equivalenceContext);
+
+                    final QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
+                    switch (equivalenceContext) {
+                        case QC_COMPLIANCE:
+                            replaceCompliance(qcStatements, contentReplacement);
+                            xmlCertificateContentEquivalence.setEnacted(true);
+                            break;
+                        case QC_TYPE:
+                            replaceType(qcStatements, contentReplacement);
+                            xmlCertificateContentEquivalence.setEnacted(true);
+                            break;
+                        case QC_QSCD:
+                            replaceQSCD(qcStatements, contentReplacement);
+                            xmlCertificateContentEquivalence.setEnacted(true);
+                            break;
+                        default:
+                            LOG.warn("Unsupported equivalence context {}", equivalenceContext);
+                            break;
+                    }
                 }
-                final QCStatementOids contentReplacement = certificateContentEquivalence.getContentReplacement();
-                switch (equivalenceContext) {
-                    case QC_COMPLIANCE:
-                        replaceCompliance(qcStatements, contentReplacement);
-                        break;
-                    case QC_TYPE:
-                        replaceType(qcStatements, contentReplacement);
-                        break;
-                    case QC_QSCD:
-                        replaceQSCD(qcStatements, contentReplacement);
-                        break;
-                    default:
-                        LOG.warn("Unsupported equivalence context {}", equivalenceContext);
-                        break;
-                }
+
+                trustServiceEquivalenceInformation.getCertificateContentEquivalenceList().add(xmlCertificateContentEquivalence);
             }
         }
+
+        return qcStatements;
+    }
+
+    private void assertCertificateContentEquivalenceListIsConsistent(List<CertificateContentEquivalence> certificateContentEquivalences) {
+        Set<MRAEquivalenceContext> processedValues = new HashSet<>();
+        for (CertificateContentEquivalence certificateContentEquivalence : certificateContentEquivalences) {
+            MRAEquivalenceContext context = certificateContentEquivalence.getContext();
+            if (processedValues.contains(context)) {
+                LOG.warn("The MRA certificate content reference equivalence contains more than one element " +
+                        "with '{}' context!", context.getUri());
+            }
+            processedValues.add(context);
+        }
+    }
+
+    /**
+     * This method returns a deep copy of {@code XmlCertificate}'s {@code XmlQcStatements} extension, when present.
+     * Empty object otherwise.
+     *
+     * @param xmlCertificate {@link XmlCertificate}
+     * @return {@link XmlQcStatements}
+     */
+    private XmlQcStatements getQcStatements(XmlCertificate xmlCertificate) {
+        for (XmlCertificateExtension certificateExtension : xmlCertificate.getCertificateExtensions()) {
+            if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(certificateExtension.getOID())) {
+                return qcStatementsBuilder.copy((XmlQcStatements) certificateExtension);
+            }
+        }
+        return new XmlQcStatements();
+    }
+
+    /**
+     * This method sets new {@code XmlQcStatements} certificate extension to the given {@code XmlCertificate}.
+     * The method replaces {@code XmlQcStatements} certificate extension, when present.
+     *
+     * @param xmlCertificate {@link XmlCertificate}
+     * @param xmlQcStatements {@link XmlQcStatements}
+     */
+    private void setQcStatements(XmlCertificate xmlCertificate, XmlQcStatements xmlQcStatements) {
+        Iterator<XmlCertificateExtension> it = xmlCertificate.getCertificateExtensions().iterator();
+        while (it.hasNext()) {
+            XmlCertificateExtension certificateExtension = it.next();
+            if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(certificateExtension.getOID())) {
+                it.remove();
+                break;
+            }
+        }
+        xmlCertificate.getCertificateExtensions().add(xmlQcStatements);
+    }
+
+    private boolean checkQcStatementsEquivalence(XmlQcStatements qcStatementsOne, XmlQcStatements qcStatementsTwo) {
+        if (qcStatementsOne == null && qcStatementsTwo == null) {
+            return true;
+        } else if ((qcStatementsOne == null) != (qcStatementsTwo == null)) {
+            return false;
+        }
+
+        if (Utils.isTrue(qcStatementsOne.isEnactedMRA()) != Utils.isTrue(qcStatementsTwo.isEnactedMRA())) {
+            return false;
+        }
+        if ((qcStatementsOne.getQcCompliance() != null && qcStatementsOne.getQcCompliance().isPresent()) !=
+                (qcStatementsTwo.getQcCompliance() != null && qcStatementsTwo.getQcCompliance().isPresent())) {
+            return false;
+        }
+        if (!qcStatementsOne.getQcTypes().stream().map(XmlOID::getValue).collect(Collectors.toSet()).equals(
+                qcStatementsTwo.getQcTypes().stream().map(XmlOID::getValue).collect(Collectors.toSet()))) {
+            return false;
+        }
+        if ((qcStatementsOne.getQcSSCD() != null && qcStatementsOne.getQcSSCD().isPresent()) !=
+                (qcStatementsTwo.getQcSSCD() != null && qcStatementsTwo.getQcSSCD().isPresent())) {
+            return false;
+        }
+        return true;
     }
 
     private XmlMRACertificateMapping getXmlMRACertificateMapping(XmlQcStatements qcStatements,
                                                                  ServiceEquivalence serviceEquivalence) {
-        XmlMRACertificateMapping xmlMRACertificateMapping = new XmlMRACertificateMapping();
-        xmlMRACertificateMapping.setEnactedTrustServiceLegalIdentifier(serviceEquivalence.getLegalInfoIdentifier());
+        final XmlMRACertificateMapping xmlMRACertificateMapping = new XmlMRACertificateMapping();
+        xmlMRACertificateMapping.setTrustServiceEquivalenceInformation(getXmlTrustServiceEquivalenceInformation(serviceEquivalence));
         xmlMRACertificateMapping.setOriginalThirdCountryMapping(getXmlOriginalThirdCountryQcStatementsMapping(qcStatements));
         return xmlMRACertificateMapping;
+    }
+
+    private XmlTrustServiceEquivalenceInformation getXmlTrustServiceEquivalenceInformation(ServiceEquivalence serviceEquivalence) {
+        final XmlTrustServiceEquivalenceInformation xmlTrustServiceEquivalenceInformation = new XmlTrustServiceEquivalenceInformation();
+        xmlTrustServiceEquivalenceInformation.setTrustServiceLegalIdentifier(serviceEquivalence.getLegalInfoIdentifier());
+        return xmlTrustServiceEquivalenceInformation;
     }
 
     private XmlOriginalThirdCountryQcStatementsMapping getXmlOriginalThirdCountryQcStatementsMapping(XmlQcStatements qcStatements) {

@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @param <T> implementation of the block's conclusion
  */
-public class RelatedToMraEnactedTrustedServiceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
+public class RelatedToMraEnactedTrustServiceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** List of {@code TrustedServiceWrapper}s at control time */
     private final List<TrustedServiceWrapper> trustServicesAtTime;
@@ -50,8 +50,8 @@ public class RelatedToMraEnactedTrustedServiceCheck<T extends XmlConstraintsConc
      * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
      * @param constraint {@link LevelConstraint}
      */
-    public RelatedToMraEnactedTrustedServiceCheck(I18nProvider i18nProvider, T result,
-                                                  List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+    public RelatedToMraEnactedTrustServiceCheck(I18nProvider i18nProvider, T result,
+                                                List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;
     }

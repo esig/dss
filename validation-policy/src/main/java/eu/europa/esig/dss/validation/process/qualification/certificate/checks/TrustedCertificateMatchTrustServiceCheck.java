@@ -39,7 +39,7 @@ import java.util.List;
  * Checks if the ServiceDigitalIdentifier of the TrustedService matches the TrustedService name
  *
  */
-public class TrustedCertificateMatchTrustedServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
+public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** Trusted Service to check */
 	private final TrustedServiceWrapper trustService;
@@ -55,9 +55,9 @@ public class TrustedCertificateMatchTrustedServiceCheck extends ChainItem<XmlVal
 	 * @param trustService {@link TrustedServiceWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public TrustedCertificateMatchTrustedServiceCheck(I18nProvider i18nProvider,
-													  XmlValidationCertificateQualification result,
-													  TrustedServiceWrapper trustService, LevelConstraint constraint) {
+	public TrustedCertificateMatchTrustServiceCheck(I18nProvider i18nProvider,
+													XmlValidationCertificateQualification result,
+													TrustedServiceWrapper trustService, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;

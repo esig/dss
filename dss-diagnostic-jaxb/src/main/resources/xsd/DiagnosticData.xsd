@@ -678,8 +678,15 @@
 
 	<xs:complexType name="MRACertificateMapping">
 		<xs:sequence>
-			<xs:element name="EnactedTrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="TrustServiceEquivalenceInformation" type="TrustServiceEquivalenceInformation" />
 			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryQcStatementsMapping" /> <!-- Values before MRA -->
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TrustServiceEquivalenceInformation">
+		<xs:sequence>
+			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="CertificateContentEquivalenceList" type="CertificateContentEquivalenceList" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -760,6 +767,17 @@
 			<xs:element name="amount" type="xs:int" />
 			<xs:element name="exponent" type="xs:int" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CertificateContentEquivalenceList">
+		<xs:sequence>
+			<xs:element name="CertificateContentEquivalence" type="CertificateContentEquivalence" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CertificateContentEquivalence">
+		<xs:attribute name="uri" type="xs:string" use="required" />
+		<xs:attribute name="enacted" type="xs:boolean" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="CertificatePolicy">
@@ -1516,6 +1534,7 @@
 		<xs:sequence>
 			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
 			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
+			<xs:element name="EquivalenceStatusEndingTime" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
 		</xs:sequence>
 	</xs:complexType>

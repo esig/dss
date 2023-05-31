@@ -79,6 +79,9 @@ public class TrustedServiceWrapper {
 	/** The date when the status for the current MRA Trust Service equivalence has been started */
 	private Date mraTrustServiceEquivalenceStatusStartingTime;
 
+	/** The date when the status for the current MRA Trust Service equivalence has been ended (if applicable) */
+	private Date mraTrustServiceEquivalenceStatusEndingTime;
+
 	/** Original third-country status before applied MRA */
 	private String originalTCStatus;
 
@@ -377,6 +380,24 @@ public class TrustedServiceWrapper {
 	 */
 	public void setMraTrustServiceEquivalenceStatusStartingTime(Date mraTrustServiceEquivalenceStatusStartingTime) {
 		this.mraTrustServiceEquivalenceStatusStartingTime = mraTrustServiceEquivalenceStatusStartingTime;
+	}
+
+	/**
+	 * Gets the Trust Service equivalence status ending time defined within MRA
+	 *
+	 * @return {@link Date}
+	 */
+	public Date getMraTrustServiceEquivalenceStatusEndingTime() {
+		return mraTrustServiceEquivalenceStatusEndingTime;
+	}
+
+	/**
+	 * Sets the Trust Service equivalence status ending time defined within MRA
+	 *
+	 * @param mraTrustServiceEquivalenceStatusEndingTime {@link Date}
+	 */
+	public void setMraTrustServiceEquivalenceStatusEndingTime(Date mraTrustServiceEquivalenceStatusEndingTime) {
+		this.mraTrustServiceEquivalenceStatusEndingTime = mraTrustServiceEquivalenceStatusEndingTime;
 	}
 
 	/**

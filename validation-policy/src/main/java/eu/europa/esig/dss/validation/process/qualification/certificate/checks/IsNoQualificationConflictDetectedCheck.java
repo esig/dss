@@ -37,7 +37,7 @@ import java.util.Set;
  * based on a use of different TrustedServices
  *
  */
-public class IsNoQualificationConflictDetected extends ChainItem<XmlValidationCertificateQualification> {
+public class IsNoQualificationConflictDetectedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** Set of obtained {@code CertificateQualification}s from various TrustedServices */
 	private final Set<CertificateQualification> certificateQualificationsAtTime;
@@ -50,8 +50,8 @@ public class IsNoQualificationConflictDetected extends ChainItem<XmlValidationCe
 	 * @param certificateQualificationsAtTime set of {@link CertificateQualification}s
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public IsNoQualificationConflictDetected(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-					Set<CertificateQualification> certificateQualificationsAtTime, LevelConstraint constraint) {
+	public IsNoQualificationConflictDetectedCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
+												  Set<CertificateQualification> certificateQualificationsAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificateQualificationsAtTime = certificateQualificationsAtTime;
 	}
