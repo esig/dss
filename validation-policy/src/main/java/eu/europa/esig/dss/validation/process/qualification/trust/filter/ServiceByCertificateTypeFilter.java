@@ -55,7 +55,7 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustedServiceWrapper service) {
 		Date issuance = certificate.getNotBefore();
 
 		if (EIDASUtils.isPostEIDAS(issuance)) {

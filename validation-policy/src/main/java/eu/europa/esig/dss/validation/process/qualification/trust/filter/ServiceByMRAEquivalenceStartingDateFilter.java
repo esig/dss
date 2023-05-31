@@ -43,7 +43,7 @@ public class ServiceByMRAEquivalenceStartingDateFilter extends AbstractTrustedSe
     }
 
     @Override
-    boolean isAcceptable(TrustedServiceWrapper service) {
+    protected boolean isAcceptable(TrustedServiceWrapper service) {
         Date startDate = service.getMraTrustServiceEquivalenceStatusStartingTime();
         if (startDate == null || date == null) {
             return false;

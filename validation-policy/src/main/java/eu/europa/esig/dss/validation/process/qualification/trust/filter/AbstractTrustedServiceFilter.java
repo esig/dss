@@ -35,6 +35,7 @@ public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilt
 	 * Default constructor
 	 */
 	protected AbstractTrustedServiceFilter() {
+		// empty
 	}
 
 	@Override
@@ -54,6 +55,6 @@ public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilt
 	 * @param service {@link TrustedServiceWrapper} to check
 	 * @return TRUE if the {@code service} is acceptable, FALSE otherwise
 	 */
-	abstract boolean isAcceptable(TrustedServiceWrapper service);
+	protected abstract boolean isAcceptable(TrustedServiceWrapper service);
 
 }
