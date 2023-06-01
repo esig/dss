@@ -13,70 +13,72 @@
 |===
 |Version           |Release date             |Features
 
-|v5.12             |April 2023              a|Main new features / improvements :
+|v5.12.1           |June 2023               a|Main new features / improvements :
 
-* Enforced check on unsupported critical certificate extensions;
-* Add support for SAML metadata XSD;
-* WebApp : add a property to define a custom trusted certificate source;
-* WebApp : minor improvements;
-* Removed redundant xml-apis and commons-codec dependencies declaration;
-* Dependencies update (Apache Santuario, PdfBox, etc.).
-
-Bug fixes / issues :
-
-* CAdES : OCSP responses incorporation for CAdES-BASELINE-LT profile;
-* PAdES : ensure DocMDP is created as a direct object;
-* SubjectAlternativeName certificate extension extraction;
-* Skipping ProspectiveCertificateChain always results to PASSED;
-* Unknown MRA equivalence URI caused an error;
-* DSS Standalone : minor fixes;
-* Cookbook minor improvements.
-
-|v5.12.RC1         |February 2023           a|Main new features / improvements :
-
-* PAdES : signature creation with external CMS provider;
-* PAdES : added PDF/A validation support;
-* PAdES : spoofing attack detection;
-* PAdES : improved performance and memory consumption on signature validation;
-* PAdES : VRI dictionary made optional;
-* XAdES : less memory consuming message-imprint computation;
-* JAdES : added support of EdDSA algorithms;
-* Validation : improved RFC 5280 conformance;
-* Validation : return INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE if no acceptable revocation found;
-* Validation policy : improved handling of expired cryptographic algorithms;
-* DataLoader : removed default SSL-protocol definition;
-* DataLoader : added an option of pre-emptive basic authentication;
-* SignatureTokenConnection : possibility to filter keys;
-* REST/SOAP services : added a setter of default validation policy;
-* REST/SOAP services : added a signing method with a provided SignatureAlgorithm;
-* Simple report : added information about trust anchors;
-* DSS Standalone : signing of multiple document;
-* DSS Standalone : extension of signed documents;
-* DSS Standalone : validation of documents;
-* Dependencies update (BouncyCastle, HttpClient5, etc.);
-* Documentation improvement (F.A.Q. section, offline support, etc.);
-* Java 19 support.
-
-|v5.12.RC1         |February 2023          a|Bug fixes :
-
-* PAdES : unable to extend a document with /DSS dictionary before a timestamp;
-* PAdES : improved code to preserve PDF/A documents validity;
-* PAdES : fixed text auto-fitting function in certain configurations;
-* XAdES : improved handling of custom DSSReference configurations;
-* XAdES : fixed rare issue with inability to create ENVELOPED signature;
-* Fixed extension of not AdES signatures with a revoked certificate;
-* TLValidationJob : fixed unexpected exception and thread stuck during the refresh;
-* NativeHTTPDataLoader : threads can get stuck;
-* JdbcCacheConnector : improved code to allow some database implementations.
-
-|v5.11.1           |November 2022            a|Main new features / improvements :
-
-* Maven Central integration;
-* Update vulnerable dependencies.
+                                            * Improved Trust Service validation and qualification status reporting;
+                                            * Improved MRA processing;
+                                            * Dependencies update;
+                                            * Demos : improved eSig validation tests.
 
 Bug fixes :
 
-* Fixed URN OID extraction from an XML Trusted List.
+                                            * Fixed Diagnostic Data unmarshalling on certificate validation;
+                                            * Fixed NullPointerException on unknown Digest Algorithm;
+                                            * WebApp : fixed OCSP load with disabled JDBC source.
+
+|v5.12             |April 2023              a|Main new features / improvements :
+
+                                            * PAdES : signature creation with external CMS provider;
+                                            * PAdES : added PDF/A validation support;
+                                            * PAdES : spoofing attack detection;
+                                            * PAdES : improved performance and memory consumption on signature validation;
+                                            * PAdES : VRI dictionary made optional;
+                                            * XAdES : less memory consuming message-imprint computation;
+                                            * JAdES : added support of EdDSA algorithms;
+                                            * Validation : improved RFC 5280 conformance;
+                                            * Validation : return INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE if no acceptable revocation found;
+                                            * Validation policy : improved handling of expired cryptographic algorithms;
+                                            * DataLoader : removed default SSL-protocol definition;
+                                            * DataLoader : added an option of pre-emptive basic authentication;
+                                            * SignatureTokenConnection : possibility to filter keys;
+                                            * REST/SOAP services : added a setter of default validation policy;
+                                            * REST/SOAP services : added a signing method with a provided SignatureAlgorithm;
+                                            * Simple report : added information about trust anchors;
+                                            * Add support for SAML metadata XSD;
+                                            * Removed redundant xml-apis and commons-codec dependencies declaration;
+                                            * DSS Standalone : signing of multiple document;
+                                            * DSS Standalone : extension of signed documents;
+                                            * DSS Standalone : validation of documents;
+                                            * WebApp : add a property to define a custom trusted certificate source;
+                                            * Dependencies update (BouncyCastle, HttpClient5, Apache Santuario, PdfBox, etc.);
+                                            * Documentation improvement (F.A.Q. section, offline support, etc.);
+                                            * Java 19 support.
+
+|v5.12             |April 2023              a|Bug fixes :
+
+                                            * PAdES : unable to extend a document with /DSS dictionary before a timestamp;
+                                            * PAdES : improved code to preserve PDF/A documents validity;
+                                            * PAdES : fixed text auto-fitting function in certain configurations;
+                                            * PAdES : ensure DocMDP is created as a direct object;
+                                            * CAdES : OCSP responses incorporation for CAdES-BASELINE-LT profile;
+                                            * XAdES : improved handling of custom DSSReference configurations;
+                                            * XAdES : fixed rare issue with inability to create ENVELOPED signature;
+                                            * Fixed extension of not AdES signatures with a revoked certificate;
+                                            * TLValidationJob : fixed unexpected exception and thread stuck during the refresh;
+                                            * NativeHTTPDataLoader : threads can get stuck;
+                                            * JdbcCacheConnector : improved code to allow some database implementations;
+                                            * SubjectAlternativeName certificate extension extraction;
+                                            * Skipping ProspectiveCertificateChain always results to PASSED;
+                                            * Unknown MRA equivalence URI caused an error.
+
+|v5.11.1           |November 2022            a|Main new features / improvements :
+
+                                            * Maven Central integration;
+                                            * Update vulnerable dependencies.
+
+Bug fixes :
+
+                                            * Fixed URN OID extraction from an XML Trusted List.
 
 |v5.11             |October 2022              a|Main new features / improvements :
 
@@ -303,13 +305,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The following example shows how to switch to DSS version 5.12 using <<BomModule>>.
+The example below shows how to switch to DSS version `5.12.1` using <<BomModule>>:
+
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.12</dss.version>
+    <dss.version>5.12.1</dss.version>
     ...
 </properties>
 

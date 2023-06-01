@@ -310,7 +310,7 @@ As you can see, it is easy to add another implementation of the `SignatureTokenC
 
 ==== Key management
 
-Since DSS 5.12, the framework offers a functionality of filtering key entries to be accessed from a `SignatureTokenConnection` interface. The filtering is done within `SignatureTokenConnection#getKeys` method with a help of `DSSKeyEntryPredicate` interface. Unless the predicate is configured, DSS will return all available keys by default.
+Since DSS `5.12`, the framework offers a functionality of filtering key entries to be accessed from a `SignatureTokenConnection` interface. The filtering is done within `SignatureTokenConnection#getKeys` method with a help of `DSSKeyEntryPredicate` interface. Unless the predicate is configured, DSS will return all available keys by default.
 
 An example of a basic usage of the `DSSKeyEntryPredicate` implementation is provided below:
 
