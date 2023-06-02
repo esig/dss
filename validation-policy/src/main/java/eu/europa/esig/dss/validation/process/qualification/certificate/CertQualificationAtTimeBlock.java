@@ -233,7 +233,9 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		TrustedServiceWrapper selectedTrustService = !filteredServices.isEmpty() ? filteredServices.get(0) : null;
 
 		// 7. Trusted certificate matches the trust service properties ?
-		item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
+		if (selectedTrustService != null) {
+			item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
+		}
 
 		// Keep only CA/QC and granted for further status determination
 		if (!caqcServices.contains(selectedTrustService) || !grantedServices.contains(selectedTrustService)) {

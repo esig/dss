@@ -67,8 +67,7 @@ public enum TrustedServiceStatus {
 	DEPRECATED_BY_NATIONAL_LAW("deprecated by national law", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedbynationallaw", true, false),
 
 	/** After eIDAS 'deprecatedatnationallevel' status */
-	DEPRECATED_AT_NATIONAL_LEVEL("deprecated at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel", true, false),
-	;
+	DEPRECATED_AT_NATIONAL_LEVEL("deprecated at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel", true, false);
 
 	/** Identifier label */
 	private final String shortName;
