@@ -1438,12 +1438,20 @@ public class CommonsDataLoader implements DataLoader {
 
 				@Override
 				protected HttpHost determineProxy(HttpHost host, HttpContext context) throws HttpException {
-					String hostname = (host != null ? host.getHostName() : null);
+					String hostname = (host != null ? host.getHostName().toLowerCase() : null);
 					if (hostname != null) {
 						for (String h : excludedHosts) {
-							if (Utils.areStringsEqualIgnoreCase(hostname, h)) {
+							String hostnamePattern = h.toLowerCase();
+							if (hostname.equals(hostnamePattern)) {
 								// bypass proxy for that hostname
 								return null;
+							}
+							if (hostnamePattern.startsWith("*")) {
+								String matchingEnd = hostnamePattern.substring(1).toLowerCase();
+								if( hostname.endsWith(matchingEnd)) {
+									// pattern matches, bypass proxy for that hostname
+									return null;
+								}
 							}
 						}
 					}
