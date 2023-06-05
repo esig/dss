@@ -44,7 +44,8 @@ public class TrustedServiceStatusPreEIDASConsistency implements TrustedServiceCo
         Date startDate = trustedService.getStartDate();
         if (EIDASUtils.isPreEIDAS(startDate)) {
             String status = trustedService.getStatus();
-            return !TrustedServiceStatus.GRANTED.equals(status) && !TrustedServiceStatus.WITHDRAWN.equals(status);
+            return !TrustedServiceStatus.GRANTED.getUri().equals(status) &&
+                    !TrustedServiceStatus.WITHDRAWN.getUri().equals(status);
         }
         return true;
     }

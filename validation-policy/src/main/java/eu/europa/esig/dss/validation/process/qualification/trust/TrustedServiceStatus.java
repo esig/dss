@@ -24,76 +24,153 @@ package eu.europa.esig.dss.validation.process.qualification.trust;
  * ETSI TS 119 612 V2.2.1
  *
  */
-public final class TrustedServiceStatus {
-
-	/**
-	 * Empty constructor
-	 */
-	private TrustedServiceStatus() {
-		// empty
-	}
+public enum TrustedServiceStatus {
 
 	/* Previous status */
 
 	/** Before eIDAS 'undersupervision' status */
-	public static final String UNDER_SUPERVISION = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision";
+	UNDER_SUPERVISION("under supervision", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision", false, true),
 
 	/** Before eIDAS 'supervisionincessation' status */
-	public static final String SUPERVISION_OF_SERVICE_IN_CESSATION = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation";
+	SUPERVISION_OF_SERVICE_IN_CESSATION("supervision in cessation", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation", false, true),
 
 	/** Before eIDAS 'supervisionceased' status */
-	public static final String SUPERVISION_CEASED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased";
+	SUPERVISION_CEASED("supervision ceased", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased", false, false),
 
 	/** Before eIDAS 'supervisionrevoked' status */
-	public static final String SUPERVISION_REVOKED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionrevoked";
+	SUPERVISION_REVOKED("supervision revoked", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionrevoked", false, false),
 
 	/** Before eIDAS 'accredited' status */
-	public static final String ACCREDITED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited";
+	ACCREDITED("accredited", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited", false, true),
 
 	/** Before eIDAS 'accreditationceased' status */
-	public static final String ACCREDITATION_CEASED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased";
+	ACCREDITATION_CEASED("accreditation ceased", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased", false, false),
 
 	/** Before eIDAS 'accreditationrevoked' status */
-	public static final String ACCREDITATION_REVOKED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationrevoked";
+	ACCREDITATION_REVOKED("accreditation revoked", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationrevoked", false, false),
 
 	/* New status : eIDAS */
 
 	/** After eIDAS 'granted' status */
-	public static final String GRANTED = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted";
+	GRANTED("granted", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted", true, true),
 
 	/** After eIDAS 'withdrawn' status */
-	public static final String WITHDRAWN = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn";
+	WITHDRAWN("withdrawn", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn", true, false),
 
 	/** After eIDAS 'setbynationallaw' status */
-	public static final String SET_BY_NATIONAL_LAW = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw";
+	SET_BY_NATIONAL_LAW("set by national law", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw", true, false),
 
 	/** After eIDAS 'recognisedatnationallevel' status */
-	public static final String RECONIZED_AT_NATIONAL_LEVEL = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel";
+	RECONIZED_AT_NATIONAL_LEVEL("recognised at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel", true, false),
 
 	/** After eIDAS 'deprecatedbynationallaw' status */
-	public static final String DEPRECATED_BY_NATIONAL_LAW = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedbynationallaw";
+	DEPRECATED_BY_NATIONAL_LAW("deprecated by national law", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedbynationallaw", true, false),
 
 	/** After eIDAS 'deprecatedatnationallevel' status */
-	public static final String DEPRECATED_AT_NATIONAL_LEVEL = "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel";
+	DEPRECATED_AT_NATIONAL_LEVEL("deprecated at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel", true, false);
+
+	/** Identifier label */
+	private final String shortName;
+
+	/** Identifier URI */
+	private final String uri;
+
+	/** Whether the status is applicable after eIDAS (otherwise before) */
+	private final boolean postEidas;
+
+	/** Whether the status is valid (before or after eIDAS) */
+	private final boolean valid;
+
+	/**
+	 * Empty constructor
+	 */
+	TrustedServiceStatus(String shortName, String uri, boolean postEidas, boolean valid) {
+		this.shortName = shortName;
+		this.uri = uri;
+		this.postEidas = postEidas;
+		this.valid = valid;
+	}
+
+	/**
+	 * Gets the user-friendly label
+	 *
+	 * @return {@link String}
+	 */
+	public String getShortName() {
+		return shortName;
+	}
+
+	/**
+	 * Gets the URI
+	 *
+	 * @return {@link String}
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * Whether the status is related to pre-eIDAS.
+	 *
+	 * @return TRUE if the status is related to pre-eIDAS, FALSE otherwise
+	 */
+	public boolean isPreEidas() {
+		return !isPostEidas();
+	}
+
+	/**
+	 * Whether the status is related to post-eIDAS.
+	 *
+	 * @return TRUE if the status is related to post-eIDAS, FALSE otherwise
+	 */
+	public boolean isPostEidas() {
+		return postEidas;
+	}
+
+	/**
+	 * Whether the status identifies a valid trust service
+	 *
+	 * @return whether the status identifies a valid trust service
+	 */
+	public boolean isValid() {
+		return valid;
+	}
 
 	/**
 	 * Gets whether the given {@code status} is acceptable before eIDAS
 	 *
-	 * @param status {@link String} identifier
+	 * @param uri {@link String} identifying the trust service status
 	 * @return TRUE if the status is acceptable before eIDAS, FALSE otherwise
 	 */
-	public static boolean isAcceptableStatusBeforeEIDAS(String status) {
-		return UNDER_SUPERVISION.equals(status) || SUPERVISION_OF_SERVICE_IN_CESSATION.equals(status) || ACCREDITED.equals(status);
+	public static boolean isAcceptableStatusBeforeEIDAS(String uri) {
+		TrustedServiceStatus tss = fromUri(uri);
+		return tss != null && tss.isPreEidas() && tss.isValid();
 	}
 
 	/**
 	 * Gets whether the given {@code status} is acceptable after eIDAS
 	 *
-	 * @param status {@link String} identifier
+	 * @param uri {@link String} identifying the trust service status
 	 * @return TRUE if the status is acceptable after eIDAS, FALSE otherwise
 	 */
-	public static boolean isAcceptableStatusAfterEIDAS(String status) {
-		return GRANTED.equals(status);
+	public static boolean isAcceptableStatusAfterEIDAS(String uri) {
+		TrustedServiceStatus tss = fromUri(uri);
+		return tss != null && tss.isPostEidas() && tss.isValid();
+	}
+
+	/**
+	 * This method returns a corresponding {@code TrustedServiceStatus} by the given {@code uri}
+	 *
+	 * @param uri {@link String} to get {@code TrustedServiceStatus} for
+	 * @return {@link TrustedServiceStatus}
+	 */
+	public static TrustedServiceStatus fromUri(String uri) {
+		for (TrustedServiceStatus status : values()) {
+			if (status.getUri().equals(uri)) {
+				return status;
+			}
+		}
+		return null;
 	}
 
 }

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustedServiceCheck;
+import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
@@ -234,7 +234,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasMraEnactedTrustedService(List<TrustedServiceWrapper> services) {
-		return new RelatedToMraEnactedTrustedServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {

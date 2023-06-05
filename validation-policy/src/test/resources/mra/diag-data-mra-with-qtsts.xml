@@ -221,7 +221,14 @@
                     </QcCClegislation>
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                     <MRACertificateMapping>
-                        <EnactedTrustServiceLegalIdentifier>PKCForAdESeal</EnactedTrustServiceLegalIdentifier>
+                        <TrustServiceEquivalenceInformation>
+                            <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                            <CertificateContentEquivalenceList>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcCompliance" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcType" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcQSCD" enacted="true"/>
+                            </CertificateContentEquivalenceList>
+                        </TrustServiceEquivalenceInformation>
                         <OriginalThirdCountryMapping>
                             <QcCompliance present="true"/>
                             <QcSSCD present="false"/>
@@ -411,7 +418,14 @@
                     <QcCClegislation/>
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                     <MRACertificateMapping>
-                        <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                        <TrustServiceEquivalenceInformation>
+                            <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                            <CertificateContentEquivalenceList>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcCompliance" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcType" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcQSCD" enacted="true"/>
+                            </CertificateContentEquivalenceList>
+                        </TrustServiceEquivalenceInformation>
                         <OriginalThirdCountryMapping>
                             <QcCompliance present="true"/>
                             <QcSSCD present="true"/>
@@ -670,7 +684,14 @@
                     <QcCClegislation/>
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                     <MRACertificateMapping>
-                        <EnactedTrustServiceLegalIdentifier>PKCForAdESig</EnactedTrustServiceLegalIdentifier>
+                        <TrustServiceEquivalenceInformation>
+                            <TrustServiceLegalIdentifier>PKCForAdESeal</TrustServiceLegalIdentifier>
+                            <CertificateContentEquivalenceList>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcCompliance" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcType" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcQSCD" enacted="true"/>
+                            </CertificateContentEquivalenceList>
+                        </TrustServiceEquivalenceInformation>
                         <OriginalThirdCountryMapping>
                             <QcCompliance present="true"/>
                             <QcSSCD present="true"/>

@@ -196,7 +196,7 @@ Samples:
 [[RestPAdESWithExternalCMS]]
 ===== PAdES with external CMS signing
 
-Since version 5.12, DSS provides functionality for a PAdES signature creation using an external CMS signature provider (see <<PAdESWithExternalCMS>> for more details).
+Since version `5.12`, DSS provides functionality for a PAdES signature creation using an external CMS signature provider (see <<PAdESWithExternalCMS>> for more details).
 
 Those services are also exposed in the corresponding REST/SOAP interfaces (see below).
 

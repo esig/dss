@@ -294,7 +294,9 @@
                     </QcTypes>
                     <QcCClegislation/>
                     <MRACertificateMapping>
-                        <EnactedTrustServiceLegalIdentifier>QCForESig</EnactedTrustServiceLegalIdentifier>
+                        <TrustServiceEquivalenceInformation>
+                            <TrustServiceLegalIdentifier>QCForESig</TrustServiceLegalIdentifier>
+                        </TrustServiceEquivalenceInformation>
                         <OriginalThirdCountryMapping>
                             <QcCompliance present="true"/>
                             <QcSSCD present="true"/>

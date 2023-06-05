@@ -37,7 +37,7 @@ public class CaQcServiceFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustedServiceWrapper service) {
 		return ServiceTypeIdentifier.isCaQc(service.getType());
 	}
 

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
@@ -467,6 +468,26 @@ public class ValidationProcessUtils {
 				throw new IllegalArgumentException("Unsupported subContext " + subContext);
 		}
 	}
+
+	/**
+	 * Returns a {@code MessageTag} corresponding to the given {@code ValidationTime} type
+	 *
+	 * @param validationTime {@link ValidationTime}
+	 * @return {@link MessageTag}
+	 */
+	public static MessageTag getValidationTimeMessageTag(ValidationTime validationTime) {
+		switch (validationTime) {
+			case BEST_SIGNATURE_TIME:
+				return MessageTag.VT_BEST_SIGNATURE_TIME;
+			case CERTIFICATE_ISSUANCE_TIME:
+				return MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
+			case VALIDATION_TIME:
+				return MessageTag.VT_VALIDATION_TIME;
+			default:
+				throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
+		}
+	}
+
 	/**
 	 * Transforms the given OID to a URN format as per RFC 3061
 	 * e.g. "1.2.3" to "urn:oid:1.2.3"

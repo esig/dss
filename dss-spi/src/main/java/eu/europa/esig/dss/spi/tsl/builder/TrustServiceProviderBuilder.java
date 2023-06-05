@@ -67,6 +67,7 @@ public class TrustServiceProviderBuilder {
 	 * Default constructor
 	 */
 	public TrustServiceProviderBuilder() {
+		// empty
 	}
 
 	/**

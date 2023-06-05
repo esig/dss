@@ -58,7 +58,7 @@ public class ServiceByCountryFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustedServiceWrapper service) {
 		for (String countryCode : countryCodes) {
 			if (Utils.areStringsEqualIgnoreCase(countryCode, service.getCountryCode())) {
 				return true;

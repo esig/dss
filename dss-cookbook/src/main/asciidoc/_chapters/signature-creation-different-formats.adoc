@@ -210,7 +210,7 @@ NOTE: The 'Native PDFBox Drawer' implementation supports only one of the followi
 
 Instead of computing a signature value, some signature creation providers implement a service returning a CMS or CAdES signature, enveloping the signed attributes and the user provided message-digest. This architecture may benefit the end-user, as only one request to the external server is required and there is no need to additionally request a signing-certificate or a certificate chain prior the signing.
 
-This design is also suitable for a PAdES signature creation, as the obtained CMS signature may be embedded into PDF with a prepared signature revision. Starting from the version 5.12, DSS exposes a few classes providing a possibility for users to benefit from the aforementioned architecture in order to create PAdES signatures.
+This design is also suitable for a PAdES signature creation, as the obtained CMS signature may be embedded into PDF with a prepared signature revision. Starting from the version `5.12`, DSS exposes a few classes providing a possibility for users to benefit from the aforementioned architecture in order to create PAdES signatures.
 
 The scheme below demonstrates the mechanism of PAdES creation using an external CMS provider:
 

@@ -310,7 +310,14 @@
                     </QcTypes>
                     <QcCClegislation/>
                     <MRACertificateMapping>
-                        <EnactedTrustServiceLegalIdentifier>QCForESig</EnactedTrustServiceLegalIdentifier>
+                        <TrustServiceEquivalenceInformation>
+                            <TrustServiceLegalIdentifier>QCForESig</TrustServiceLegalIdentifier>
+                            <CertificateContentEquivalenceList>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcCompliance" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcType" enacted="true"/>
+                                <CertificateContentEquivalence uri="http://ec.europa.eu/tools/lotl/mra/QcQSCD" enacted="true"/>
+                            </CertificateContentEquivalenceList>
+                        </TrustServiceEquivalenceInformation>
                         <OriginalThirdCountryMapping>
                             <QcCompliance present="true"/>
                             <QcSSCD present="true"/>

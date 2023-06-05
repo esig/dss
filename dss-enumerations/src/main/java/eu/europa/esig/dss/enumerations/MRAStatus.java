@@ -33,7 +33,6 @@ public enum MRAStatus implements UriBasedEnum {
 	/** Used to denote an invalid status */
 	REPEALED("http://ec.europa.eu/tools/lotl/mra/repealed");
 
-
 	/** Identifies URI of the MRA status */
 	private final String uri;
 
@@ -49,6 +48,15 @@ public enum MRAStatus implements UriBasedEnum {
 	@Override
 	public String getUri() {
 		return this.uri;
+	}
+
+	/**
+	 * Returns whether the MRA Status corresponds to the enacted Trust Service equivalence schema
+	 *
+	 * @return TRUE if the Trust Service equivalence schema is enacted, FALSE otherwise
+	 */
+	public boolean isEnacted() {
+		return ENACTED == this;
 	}
 
 }

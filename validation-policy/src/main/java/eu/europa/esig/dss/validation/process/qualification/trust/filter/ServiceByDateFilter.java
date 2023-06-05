@@ -43,7 +43,7 @@ public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustedServiceWrapper service) {
 		Date startDate = service.getStartDate();
 		Date endDate = service.getEndDate();
 

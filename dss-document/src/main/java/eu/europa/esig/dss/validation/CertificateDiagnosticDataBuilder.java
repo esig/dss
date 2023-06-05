@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -39,6 +40,20 @@ public class CertificateDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 */
 	public CertificateDiagnosticDataBuilder() {
 		// empty
+	}
+
+	/**
+	 * Builds {@code XmlDiagnosticData}
+	 *
+	 * @return {@link XmlDiagnosticData}
+	 */
+	@Override
+	public XmlDiagnosticData build() {
+		XmlDiagnosticData diagnosticData = super.build();
+
+		diagnosticData.setOrphanTokens(buildXmlOrphanTokens());
+
+		return diagnosticData;
 	}
 
 	@Override
