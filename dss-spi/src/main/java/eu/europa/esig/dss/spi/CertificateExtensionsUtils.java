@@ -50,6 +50,7 @@ import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1String;
@@ -675,7 +676,7 @@ public class CertificateExtensionsUtils {
                     return new X500PrincipalHelper(x500Principal).getRFC2253();
 
                 case IP_ADDRESS:
-                    byte[] octets = DEROctetString.getInstance(generalNameValue).getOctets();
+                    byte[] octets = ASN1OctetString.getInstance(generalNameValue).getOctets();
                     return toHexEncoded(octets);
 
                 case REGISTERED_ID:
