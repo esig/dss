@@ -514,7 +514,7 @@ public class ValidationProcessUtils {
 		if (uri == null) {
 			return null;
 		}
-		return uri.replaceAll("^.*://|www\\.|[?=:#/].*", "");
+		return uri.replaceAll("(^.*://)|(www\\.)|([?=:#/].*)", "");
 	}
 
 }
