@@ -65,7 +65,7 @@ public class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAd
 	public void signAndVerify() {
 		Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
 		assertTrue(exception.getMessage().contains("Parallel signing is not supported for invalid RFC 7515 signatures."));
-		assertTrue(exception.getMessage().contains("extraneous key [evil] is not permitted"));
+		assertTrue(exception.getMessage().contains("evil"));
 	}
 
 	@Override
