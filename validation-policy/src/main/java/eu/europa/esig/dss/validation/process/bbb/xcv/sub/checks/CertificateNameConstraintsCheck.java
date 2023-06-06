@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -317,7 +318,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
         if (Utils.isCollectionEmpty(generalSubtrees)) {
             return null;
         }
-        Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        Map<GeneralNameType, Set<XmlGeneralName>> result = new EnumMap<>(GeneralNameType.class);
         for (XmlGeneralSubtree generalSubtree : generalSubtrees) {
             Set<XmlGeneralName> values = result.computeIfAbsent(generalSubtree.getType(), k -> new HashSet<>());
             values.add(generalSubtree);
@@ -327,7 +328,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
 
     private Map<GeneralNameType, Set<XmlGeneralName>> intersectNew(Map<GeneralNameType, Set<XmlGeneralName>> originalConstraints,
                                                                    Map<GeneralNameType, Set<XmlGeneralName>> currentConstraints) {
-        final Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        Map<GeneralNameType, Set<XmlGeneralName>> result = new EnumMap<>(GeneralNameType.class);
         for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> currentEntry : currentConstraints.entrySet()) {
             final GeneralNameType type = currentEntry.getKey();
             final Set<XmlGeneralName> currentGeneralNames = currentEntry.getValue();
@@ -360,7 +361,7 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
     }
 
     private Map<GeneralNameType, Set<XmlGeneralName>> unionNew(Map<GeneralNameType, Set<XmlGeneralName>> originalConstraints, Map<GeneralNameType, Set<XmlGeneralName>> currentConstraints) {
-        final Map<GeneralNameType, Set<XmlGeneralName>> result = new HashMap<>();
+        Map<GeneralNameType, Set<XmlGeneralName>> result = new EnumMap<>(GeneralNameType.class);
         for (Map.Entry<GeneralNameType, Set<XmlGeneralName>> currentEntry : currentConstraints.entrySet()) {
             final GeneralNameType type = currentEntry.getKey();
             final Set<XmlGeneralName> currentGeneralNames = currentEntry.getValue();
