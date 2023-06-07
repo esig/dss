@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -33,6 +34,8 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,32 +106,10 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // DataObjectFormat (Cardinality >= 0)
-        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, xadesPaths.getDataObjectFormat());
+        NodeList dataObjectFormatList = getDataObjectFormatList(signatureElement, xadesPaths);
         for (int ii = 0; ii < dataObjectFormatList.getLength(); ii++) {
             Element dataObjectFormat = (Element) dataObjectFormatList.item(ii);
-            // DataObjectFormat/Description (Cardinality 0 or 1)
-            if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentDescription()) > 1) {
-                LOG.warn("Only one DataObjectFormat/Description may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
-                return false;
-            }
-            // DataObjectFormat/ObjectIdentifier (Cardinality 0 or 1)
-            if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentObjectIdentifier()) > 1) {
-                LOG.warn("Only one DataObjectFormat/ObjectIdentifier may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
-                return false;
-            }
-            // DataObjectFormat/MimeType (Cardinality == 1)
-            if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentMimeType()) != 1) {
-                LOG.warn("DataObjectFormat/MimeType shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
-                return false;
-            }
-            // DataObjectFormat/Encoding (Cardinality 0 or 1)
-            if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentEncoding()) > 1) {
-                LOG.warn("Only one DataObjectFormat/Encoding may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
-                return false;
-            }
-            // DataObjectFormat's ObjectReference attribute (Cardinality == 1)
-            if (!dataObjectFormat.hasAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName())) {
-                LOG.warn("DataObjectFormat's ObjectReference attribute shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
+            if (!isValidXAdESBaselineDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
                 return false;
             }
         }
@@ -218,7 +199,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 }
             }
         }
-        // Additional requirement (i)
+        // Additional requirement (k)
         List<Reference> references = signature.getReferences();
         for (Reference reference : references) {
             if ((DomUtils.startsFromHash(reference.getURI()) || DomUtils.isXPointerQuery(reference.getURI())) &&
@@ -355,6 +336,13 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         // CommitmentTypeIndication (Cardinality >= 0)
         // DataObjectFormat (Cardinality >= 0)
+        NodeList dataObjectFormatList = getDataObjectFormatList(signatureElement, xadesPaths);
+        for (int ii = 0; ii < dataObjectFormatList.getLength(); ii++) {
+            Element dataObjectFormat = (Element) dataObjectFormatList.item(ii);
+            if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
+                return false;
+            }
+        }
         // SignatureProductionPlace/SignatureProductionPlaceV2 (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlacePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSignatureProductionPlaceV2Path()) > 1) {
@@ -518,6 +506,129 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     private boolean isSigningCertificatePresent(Element signatureElement, XAdESPaths xadesPaths) {
         return getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) == 1;
+    }
+
+    private NodeList getDataObjectFormatList(Element signatureElement, XAdESPaths xadesPaths) {
+        return DomUtils.getNodeList(signatureElement, xadesPaths.getDataObjectFormat());
+    }
+
+    private boolean isValidXAdESDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPaths xadesPaths) {
+        // 5.2.4 The DataObjectFormat qualifying property
+        Element signatureElement = signature.getSignatureElement();
+        // This qualifying property shall contain at least one of the following elements: Description, ObjectIdentifier and MimeType.
+        if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentDescription()) != 1 &&
+                getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentObjectIdentifier()) != 1 &&
+                getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentMimeType()) != 1) {
+            LOG.warn("At least one of the following elements: Description, ObjectIdentifier and MimeType " +
+                    "shall be present within DataObjectFormat element for XAdES signature!");
+            return false;
+        }
+        /*
+         * The ObjectReference attribute shall reference the ds:Reference child of the ds:SignedInfo or a signed
+         * ds:Manifest element referencing the signed data object qualified by this qualifying property.
+         */
+        String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
+        if (Utils.isStringEmpty(objectReference)) {
+            LOG.warn("DataObjectFormat's ObjectReference attribute shall be present for XAdES signature (cardinality == 1)!");
+            return false;
+        }
+        if (!DomUtils.isElementReference(objectReference)) {
+            LOG.warn("DataObjectFormat's ObjectReference attribute shall refer to an element within the document!");
+            return false;
+        }
+        String id = DomUtils.getId(objectReference);
+        Reference matchingReference = getMatchingReference(id, signature.getReferences(), signatureElement);
+        if (matchingReference == null) {
+            LOG.warn("DataObjectFormat's ObjectReference attribute shall refer to a signed data object within the document!");
+            return false;
+        }
+        /*
+         * If the DataObjectFormat qualifying property references a ds:Reference that in turn references a ds:Object
+         * within the XAdES signature, and if this ds:Object element has the MimeType or (and) the Encoding attribute(s),
+         * then DataObjectFormat's children MimeType and Encoding shall have exactly the same values, if they are
+         * present.
+         */
+        if (!isDataObjectFormatValuesCompliant(dataObjectFormat, matchingReference, signatureElement, xadesPaths)) {
+            return false;
+        }
+        return true;
+    }
+
+    private Reference getMatchingReference(String id, List<Reference> references, Element signatureElement) {
+        for (Reference reference : references) {
+            if (id.equals(reference.getId())) {
+                return reference;
+            }
+            if (reference.getURI() != null) {
+                Element manifestElement = DSSXMLUtils.getManifestById(signatureElement, DomUtils.getId(reference.getURI()));
+                if (manifestElement != null) {
+                    try {
+                        Manifest manifest = DSSXMLUtils.initManifest(manifestElement);
+                        List<Reference> manifestReferences = DSSXMLUtils.extractReferences(manifest);
+                        Reference matchingReference = getMatchingReference(id, manifestReferences, signatureElement);
+                        if (matchingReference != null) {
+                            return matchingReference;
+                        }
+                    } catch (XMLSecurityException e) {
+                        LOG.debug("Unable to instantiate the Manifest : {}", e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isDataObjectFormatValuesCompliant(Element dataObjectFormat, Reference reference, Element signatureElement, XAdESPaths xadesPaths) {
+        Element dataObjectFormatMimeType = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentMimeType());
+        if (dataObjectFormatMimeType != null) {
+            Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getURI());
+            if (object != null) {
+                String objectMimeType = object.getAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName());
+                if (Utils.isStringNotEmpty(objectMimeType) && !objectMimeType.equals(dataObjectFormatMimeType.getTextContent())) {
+                    LOG.warn("DataObjectFormat's MimeType attribute shall have the same value as the corresponding signed ds:Object element, when present!");
+                    return false;
+                }
+            }
+        }
+        Element dataObjectFormatEncoding = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentEncoding());
+        if (dataObjectFormatEncoding != null) {
+            Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getURI());
+            if (object != null) {
+                String objectEncoding = object.getAttribute(XMLDSigAttribute.ENCODING.getAttributeName());
+                if (Utils.isStringNotEmpty(objectEncoding) && !objectEncoding.equals(dataObjectFormatEncoding.getTextContent())) {
+                    LOG.warn("DataObjectFormat's Encoding attribute shall have the same value as the corresponding signed ds:Object element, when present!");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidXAdESBaselineDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPaths xadesPaths) {
+        if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
+            return false;
+        }
+        // DataObjectFormat/Description (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentDescription()) > 1) {
+            LOG.warn("Only one DataObjectFormat/Description may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // DataObjectFormat/ObjectIdentifier (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentObjectIdentifier()) > 1) {
+            LOG.warn("Only one DataObjectFormat/ObjectIdentifier may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+            return false;
+        }
+        // DataObjectFormat/MimeType (Cardinality == 1)
+        if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentMimeType()) != 1) {
+            LOG.warn("DataObjectFormat/MimeType shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+        }
+        // DataObjectFormat/Encoding (Cardinality 0 or 1)
+        if (getNumberOfOccurrences(dataObjectFormat, xadesPaths.getCurrentEncoding()) > 1) {
+            LOG.warn("Only one DataObjectFormat/Encoding may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
+            return false;
+        }
+        return true;
     }
 
     private boolean isSigningCertificateSignedInKeyInfo() {

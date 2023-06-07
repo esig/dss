@@ -1115,7 +1115,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			dataObjectFormats = new DataObjectFormatBuilder().setReferences(params.getReferences()).build();
 		}
 		for (final DSSDataObjectFormat dataObjectFormat : dataObjectFormats) {
-			assertDataObjectFormatNotNull(dataObjectFormat);
+			assertDataObjectFormatValid(dataObjectFormat);
 
 			// create xades:DataObjectFormat
 			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(),
@@ -1157,17 +1157,23 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 
 	/**
-	 * This method verifies if the object contains at least one of the mandatory elements:
-	 * Description, ObjectIdentifier or MimeType
+	 * This method verifies if the DataObjectFormat is conformant to the XAdES specification
 	 *
 	 * @param dataObjectFormat {@link DSSDataObjectFormat} to check
 	 */
-	private void assertDataObjectFormatNotNull(DSSDataObjectFormat dataObjectFormat) {
+	private void assertDataObjectFormatValid(DSSDataObjectFormat dataObjectFormat) {
 		Objects.requireNonNull(dataObjectFormat, "DataObjectFormat cannot be null!");
 		if (dataObjectFormat.getDescription() == null && dataObjectFormat.getObjectIdentifier() == null
 				&& dataObjectFormat.getMimeType() == null) {
 			throw new IllegalArgumentException("At least one of the Description, ObjectIdentifier or MimeType " +
 					"shall be defined for a DataObjectFormat object!");
+		}
+		if (dataObjectFormat.getObjectReference() == null) {
+			throw new IllegalArgumentException("ObjectReference attribute of DataObjectFormat shall be present!");
+		}
+		if (!DomUtils.isElementReference(dataObjectFormat.getObjectReference())) {
+			throw new IllegalArgumentException("ObjectReference attribute of DataObjectFormat " +
+					"shall define a reference to an element within signature (i.e. shall begin with '#')!");
 		}
 	}
 

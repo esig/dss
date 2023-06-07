@@ -911,6 +911,65 @@ public final class DSSXMLUtils {
 	public static boolean isSameDocumentReference(String referenceUri) {
 		return Utils.EMPTY_STRING.equals(referenceUri) || DomUtils.startsFromHash(referenceUri);
 	}
+
+	/**
+	 * Gets ds:Object by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Object from
+	 * @param id {@link String} object Id
+	 * @return {@link Element} Object element
+	 */
+	public static Element getObjectById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, objectById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Object element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets ds:Manifest by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Manifest from
+	 * @param id {@link String} manifest Id
+	 * @return {@link Element} Manifest element
+	 */
+	public static Element getManifestById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, manifestById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Manifest element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Initializes a Manifest object from the provided ds:Manifest element
+	 *
+	 * @param manifestElement {@link Element} ds:Manifest element
+	 * @return {@link Manifest} object
+	 * @throws XMLSecurityException if en error occurs in an attempt to initialize the Manifest object
+	 */
+	public static Manifest initManifest(Element manifestElement) throws XMLSecurityException {
+		return new Manifest(manifestElement, "");
+	}
 	
 	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present

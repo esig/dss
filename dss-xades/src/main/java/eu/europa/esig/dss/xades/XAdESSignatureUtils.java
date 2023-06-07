@@ -116,7 +116,7 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToObject() || Utils.isStringEmpty(reference.getType())) {
 				String objectId = DomUtils.getId(reference.getURI());
-				Node objectById = signature.getObjectById(objectId);
+				Node objectById = DSSXMLUtils.getObjectById(signature.getSignatureElement(), objectId);
 				if (objectById != null && objectById.hasChildNodes()) {
 					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
 					if (bytes != null) {
@@ -134,7 +134,7 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToManifest() || Utils.isStringEmpty(reference.getType())) {
 				String manifestId = DomUtils.getId(reference.getURI());
-				Node manifestById = signature.getManifestById(manifestId);
+				Node manifestById = DSSXMLUtils.getManifestById(signature.getSignatureElement(), manifestId);
 				if (manifestById != null) {
 					byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
 					if (bytes != null) {

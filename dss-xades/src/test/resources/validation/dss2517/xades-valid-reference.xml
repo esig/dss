@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><TEST>
+    <TEXT>Valid DataObjectFormat demo file.</TEXT>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01">
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference Id="xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01-ref0" URI="">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>uhTdq9wEvojbI8PkhcNzIn7caMM7dEThr8Gt2aEyhLU=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01-signedprops">
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>P8aQotSi54yFTlMXHtkydFcgiBDiYL+l7jhg5lUkwBI=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01-sigvalue">
+VG3KNPP3JWGctsB6wWrDXmUmRBgUBl61wdKIxj6nnTauEyKP/HY2uSYZiXlDStYgWEsd2gb/FCYQ&#13;
+yVS+i0eI4eu6uBoKmQyzhFxywkdhuNsi7YeJWGVM5k/ehGt3Ef/EWDPPaDmGVbY31Vm1UZDL2k5Z&#13;
+ZYU2VaKmm8hlbL558ZArUuI5Rkl1X2BJ+f6zj6U2Sock+cIoZnfi7P6rtELJrY6aql2jylHFVjqF&#13;
+FBjr7l9kClPsWHErN2LFLPb08QtGmTKLcf3UDCUyg5pPChdePQDM1Onv/vRzFkt+28aVIXILqbPs&#13;
+jdH63KyUdZhnAZpF3Gzg2HZGmjSt33aScYTJOQ==
+</ds:SignatureValue>
+<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIIezCCBmOgAwIBAgIQQcPlWqE35g6RpnpO7DkKmjANBgkqhkiG9w0BAQsFADCBujELMAkGA1UE&#13;
+BhMCSVQxGTAXBgNVBAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFsaXMgUy5wLkEu&#13;
+MRowGAYDVQRhDBFWQVRJVC0wMzM1ODUyMDk2NzEpMCcGA1UECwwgUXVhbGlmaWVkIFRydXN0IFNl&#13;
+cnZpY2UgUHJvdmlkZXIxMDAuBgNVBAMMJ0FjdGFsaXMgRVUgUXVhbGlmaWVkIENlcnRpZmljYXRl&#13;
+cyBDQSBHMTAeFw0yMTA2MjUwOTMwNDJaFw0yMzEwMjEwODQ1NDJaMIIBBTELMAkGA1UEBhMCSVQx&#13;
+GzAZBgNVBAoMEkNvbXBFZCBTZXJ2aXppIFNybDEaMBgGA1UEYQwRVkFUSVQtMDE4OTUwMzA5OTUx&#13;
+FjAUBgNVBAsMDUNvbnNlcnZhemlvbmUxITAfBgNVBAsMGEZhdHR1cmF6aW9uZSBFbGV0dHJvbmlj&#13;
+YTETMBEGA1UEBAwKQmF1ZGl6em9uZTEQMA4GA1UEKgwHUm9iZXJ0bzEfMB0GA1UEBRMWVElOSVQt&#13;
+QkRaUlJUNjJDMDREOTY5VzEbMBkGA1UEAwwSUm9iZXJ0byBCYXVkaXp6b25lMR0wGwYDVQQuExRX&#13;
+U1JFRi00ODMzMTc2NjY1NTcxNDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMMR2w5G&#13;
+AtFFrAV7Oo92R9IElYUY4Xu48M4Sg+OhPmjUGavON/cNnyaaMnTlusBTRVv/8NB9BFSQcFHInvSz&#13;
+dYVZiDr8HjomaGYO5TNh7eFLaLiGbj4NUt9tZnRtrosaG+mVTq1jbqA21PRwGPm477NWCTv2lG+m&#13;
+1Rufksr5yh/3GhMAXnloQaZiI7DSqcJV6Owu8lfDgfdn1W/N80LaRcAt/eMPrs/wS+KP+dccY5zQ&#13;
+p1r8TNMx0yuEL53cFgjqIsAmz3WMRtK8a3BFRccX7LxtVAXsdoCMTYw8viOQfGJdtk0gi+OCdF4f&#13;
+ciV3tQlcwA4HOCwQdd6cxTuyxxb9noECAwEAAaOCAy0wggMpMB8GA1UdIwQYMBaAFNi3AfGWc5bS&#13;
+aTpBPC5FOR9ugf6eMIGFBggrBgEFBQcBAQR5MHcwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jYWNlcnQu&#13;
+YWN0YWxpcy5pdC9jZXJ0cy9hY3RhbGlzLWVpZGFzLWcxMDgGCCsGAQUFBzABhixodHRwOi8vb2Nz&#13;
+cDA4LmFjdGFsaXMuaXQvdmEvYWN0YWxpcy1laWRhcy1nMTAaBgNVHRIEEzARgQ9pbmZvQGFjdGFs&#13;
+aXMuaXQwggEnBgNVHSAEggEeMIIBGjAJBgcEAIvsQAECMIIBAwYGK4EfCgIBMIH4MEQGCCsGAQUF&#13;
+BwIBFjhodHRwczovL3d3dy5hY3RhbGlzLml0L3JlcG9zaXRvcnkvYWN0YWxpcy1xdWFsaWYtY3Bz&#13;
+LnBkZjCBrwYIKwYBBQUHAgIwgaIMgZ9JbCBwcmVzZW50ZSBjZXJ0aWZpY2F0byDDqCB2YWxpZG8g&#13;
+c29sbyBwZXIgZmlybWUgYXBwb3N0ZSBjb24gcHJvY2VkdXJhIGF1dG9tYXRpY2EuIFRoZSBjZXJ0&#13;
+aWZpY2F0ZSBtYXkgb25seSBiZSB1c2VkIGZvciB1bmF0dGVuZGVkL2F1dG9tYXRpYyBkaWdpdGFs&#13;
+IHNpZ25hdHVyZS4wBgYEK0wQBjCBxQYIKwYBBQUHAQMEgbgwgbUwCAYGBACORgEBMAsGBgQAjkYB&#13;
+AwIBFDAIBgYEAI5GAQQwgZEGBgQAjkYBBTCBhjBBFjtodHRwczovL3d3dy5hY3RhbGlzLml0L3Jl&#13;
+cG9zaXRvcnkvYWN0YWxpcy1xdWFsaWYtcGRzLWl0LnBkZhMCaXQwQRY7aHR0cHM6Ly93d3cuYWN0&#13;
+YWxpcy5pdC9yZXBvc2l0b3J5L2FjdGFsaXMtcXVhbGlmLXBkcy1lbi5wZGYTAmVuMEAGA1UdHwQ5&#13;
+MDcwNaAzoDGGL2h0dHA6Ly9jcmwwOC5hY3RhbGlzLml0L3ZhL2FjdGFsaXMtZWlkYXMtZzEvY3Js&#13;
+MB0GA1UdDgQWBBQjyF8+dnWfLBD4ZstZyKM43PGlrTAOBgNVHQ8BAf8EBAMCBkAwDQYJKoZIhvcN&#13;
+AQELBQADggIBAI/rcloVukDw7OZTAKjT7N3FS3G1zm5Rvbs9kEE92k9jPsyaaRimmdoTEnjW48Bm&#13;
+xl9PGQoGsG7AJIzf9cKhBzTgZ4f4iLn5i1Q9QjP+q9Rgf67RoXiSRyq0KzHfjLLCgOh/Ugst1dzK&#13;
+EpSbIUBOopQiHobDf4Me91Zt2+ZPjzMOvhNRnj0MgTy3WWbLlnGiCb5CfLfX4Qs/4cEpKGn4livN&#13;
+fZllbo0z4aecXDK1Qz1EnMsv28jEdVwoxE1/ZS7Wp5MFwAMMTOAf3eb59LjiJMwYjKRYpN5nWfyo&#13;
+Rm4Vysrijrz/5ggZMO0tDS/9vRXlPGDgk3u1wqbXB7yuxFKpO1qy3j92hRtJvOdJ2Box1s3Pj+U5&#13;
+LBG31rQXnhBhgFvsaI726DLR7rqIm6U53ZOwH5DlYCxSxw+UPF+8lPgPrX/eb16gP0cNWt75w/m8&#13;
+vsXoXR7HHM6W9ywz495tu1wr7paiymb130YhfGrTa+unRm7kf1mbIfTlRzNCEJ8F/mKus+9mnjS3&#13;
+rNQbKuZZrrb/hSoOkZ6OynFsFz2y5wZgYk53gi35RghkYSPPQX6n82ox0agA78AudbrHvRu0Pa9h&#13;
+m1eDC4r7kbyST0OI0mk3/MMwzsBdHadPJiJ/YLRsBSkKRePi7hWIEvDah3eIA07FrBhTn08uDov6&#13;
+t0WFmMms2mSC
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+<ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#" Target="#xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01"><xades:SignedProperties Id="xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01-signedprops"><xades:SignedSignatureProperties><xades:SigningTime>2021-07-21T14:53:42.727+07:00</xades:SigningTime><xades:SigningCertificateV2><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>gqv95JpSd/+OvGAked+vmk0qVhOwoHDD54LDL5eHFVA=</ds:DigestValue></xades:CertDigest><xades:IssuerSerialV2>MIHVMIHApIG9MIG6MQswCQYDVQQGEwJJVDEZMBcGA1UEBwwQUG9udGUgU2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xGjAYBgNVBGEMEVZBVElULTAzMzU4NTIwOTY3MSkwJwYDVQQLDCBRdWFsaWZpZWQgVHJ1c3QgU2VydmljZSBQcm92aWRlcjEwMC4GA1UEAwwnQWN0YWxpcyBFVSBRdWFsaWZpZWQgQ2VydGlmaWNhdGVzIENBIEcxAhBBw+VaoTfmDpGmek7sOQqa</xades:IssuerSerialV2></xades:Cert></xades:SigningCertificateV2></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xmldsig-9998fccf-7f22-4548-b3bd-8044f8c93f01-ref0"><xades:MimeType>text/plain</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object>
+</ds:Signature></TEST>

@@ -1068,7 +1068,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						Element manifestElement = getManifestById(uri);
+						Element manifestElement = DSSXMLUtils.getManifestById(signatureElement, uri);
 						found = found && (disableXSWProtection || (manifestElement != null));
 						if (manifestElement != null) {
 							validation.getDependentValidations().addAll(getManifestReferences(manifestElement));
@@ -1219,35 +1219,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private boolean findObjectById(String uri) {
-		return getObjectById(uri) != null;
-	}
-
-	/**
-	 * Gets ds:Object by its Id
-	 *
-	 * @param id {@link String} object Id
-	 * @return {@link Node}
-	 */
-	public Node getObjectById(String id) {
-		if (Utils.isStringNotBlank(id)) {
-			String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
-			return DomUtils.getNode(signatureElement, objectById);
-		}
-		return null;
-	}
-
-	/**
-	 * Gets ds:Manifest by its Id
-	 *
-	 * @param id {@link String} manifest Id
-	 * @return {@link Element} Manifest
-	 */
-	public Element getManifestById(String id) {
-		if (Utils.isStringNotBlank(id)) {
-			String manifestById = XMLDSigPaths.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
-			return DomUtils.getElement(signatureElement, manifestById);
-		}
-		return null;
+		return DSSXMLUtils.getObjectById(signatureElement, uri) != null;
 	}
 
 	private ReferenceValidation notFound(DigestMatcherType type) {

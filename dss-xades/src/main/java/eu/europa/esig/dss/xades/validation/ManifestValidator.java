@@ -102,7 +102,7 @@ public class ManifestValidator {
 
 	private static Manifest initManifest(final Element manifestElement) {
 		try {
-			return new Manifest(manifestElement, "");
+			return DSSXMLUtils.initManifest(manifestElement);
 		} catch (XMLSecurityException e) {
 			throw new DSSException(
 					String.format("Unable to instantiate a ManifestValidator. Reason : %s", e.getMessage()), e);

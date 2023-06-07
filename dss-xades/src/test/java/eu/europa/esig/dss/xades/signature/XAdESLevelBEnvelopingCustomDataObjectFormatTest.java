@@ -70,7 +70,6 @@ public class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAd
 
         DSSDataObjectFormat dof1 = new DSSDataObjectFormat();
 
-        dof1.setObjectReference("#r-" + documentToSign.getName());
         dof1.setMimeType(MimeTypeEnum.XML.getMimeTypeString());
         dof1.setEncoding("http://www.w3.org/2000/09/xmldsig#base64");
         dof1.setDescription("This is a sample XML signed document");
@@ -81,6 +80,17 @@ public class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAd
         dof1.setObjectIdentifier(objectIdentifier);
 
         signatureParameters.setDataObjectFormatList(Collections.singletonList(dof1));
+
+        exception = assertThrows(IllegalArgumentException.class, super::sign);
+        assertEquals("ObjectReference attribute of DataObjectFormat shall be present!", exception.getMessage());
+
+        dof1.setObjectReference("r-" + documentToSign.getName());
+
+        exception = assertThrows(IllegalArgumentException.class, super::sign);
+        assertEquals("ObjectReference attribute of DataObjectFormat shall define a reference to an element " +
+                "within signature (i.e. shall begin with '#')!", exception.getMessage());
+
+        dof1.setObjectReference("#r-" + documentToSign.getName());
 
         return super.sign();
     }
