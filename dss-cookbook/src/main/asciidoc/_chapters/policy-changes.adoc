@@ -1,0 +1,460 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: ../images/
+
+[[ValidationPolicyChanges]]
+=== Validation policy migration guide
+
+This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
+
+[cols="2,5,5"]
+.Policy changes from version 5.12 to 5.13
+|===
+|Title                                |v5.12                           |v5.13
+|Trust Service checks                a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <TrustedServiceTypeIdentifier Level="WARN">
+        <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
+    </TrustedServiceTypeIdentifier>
+    <TrustedServiceStatus Level="FAIL">
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
+    </TrustedServiceStatus>
+    ...
+</BasicSignatureConstraints>
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <TrustServiceTypeIdentifier Level="WARN">
+        <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
+    </TrustServiceTypeIdentifier>
+    <TrustServiceStatus Level="FAIL">
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
+        <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
+    </TrustServiceStatus>
+    ...
+</BasicSignatureConstraints>
+----
+
+|PdfSignatureDictionary consistency check          |
+----
+not present
+----
+
+|===
+
+[cols="2,5,5"]
+.Policy changes from version 5.11 to 5.12
+|===
+|Title                                |v5.11                           |v5.12
+|ByteRange consistency checks         |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ByteRange Level="FAIL" />
+    <ByteRangeCollision Level="WARN" />
+    <!-- ByteRangeAllDocument Level="WARN" -->
+    ...
+</BasicSignatureConstraints>
+----
+|PdfSignatureDictionary consistency check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<BasicSignatureConstraints>
+...
+<PdfSignatureDictionary Level="FAIL" />
+...
+</BasicSignatureConstraints>
+----
+|PDF/A checks (see <<PdfaConstraints>>)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<PDFAConstraints>
+    <AcceptablePDFAProfiles Level="WARN">
+        <Id>PDF/A-2A</Id>
+        <Id>PDF/A-2B</Id>
+        <Id>PDF/A-2U</Id>
+    </AcceptablePDFAProfiles>
+    <PDFACompliant Level="WARN" />
+</PDFAConstraints>
+----
+|Forbidden extensions check                     |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <ForbiddenExtensions Level="FAIL">
+        <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+    </ForbiddenExtensions>
+    ...
+</SigningCertificate>
+----
+|CA certificate BasicConstraints check          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <CA Level="FAIL" />
+    <MaxPathLength Level="FAIL" />
+    ...
+</CACertificate>
+----
+|KeyUsage for CA certificates                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<CACertificate>
+    ...
+    <KeyUsage Level="FAIL">
+        <Id>keyCertSign</Id>
+    </KeyUsage>
+    ...
+</CACertificate>
+----
+|Extended key usage for timestamp certificates              a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="WARN">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+                                                            a|[source,xml]
+----
+<Timestamp>
+    <SigningCertificate>
+        ...
+        <ExtendedKeyUsage Level="FAIL">
+            <Id>timeStamping</Id>
+        </ExtendedKeyUsage>
+        ...
+    </SigningCertificate>
+</Timestamp>
+----
+|Certificate Policy Tree                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <PolicyTree Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|Name Constraints                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+|Supported Critical Extensions                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <SupportedCriticalExtensions Level="WARN">
+        <Id>2.5.29.15</Id>
+        <Id>2.5.29.32</Id>
+        <Id>2.5.29.17</Id>
+        <Id>2.5.29.19</Id>
+        <Id>2.5.29.30</Id>
+        <Id>2.5.29.36</Id>
+        <Id>2.5.29.37</Id>
+        <Id>2.5.29.31</Id>
+        <Id>2.5.29.54</Id>
+        <Id>1.3.6.1.5.5.7.1.3</Id>
+    </SupportedCriticalExtensions>
+    ...
+</SigningCertificate>
+----
+|ResponderId for OCSP response                     |
+----
+not enforced
+----
+                                                            a|[source,xml]
+----
+<Revocation>
+    ...
+    <OCSPResponderIdMatch Level="FAIL" />
+    ...
+</Revocation>
+----
+|Expiration of cryptographic suites              a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Format="yyyy">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+                                                            a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        <!-- Digest algorithms -->
+        <Algo Date="2005">MD5</Algo>
+        <Algo Date="2009">SHA1</Algo>
+        <Algo Date="2026">SHA224</Algo>
+        ...
+        <!-- Encryption algorithms -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+
+|===
+
+[cols="2,5,5"]
+.Policy changes from version 5.10 to 5.11
+|===
+|Title                                |v5.10                           |v5.11
+|JWA Elliptic Curve Key Size (see RFC 7518)          |
+----
+not present
+----
+                                                            a|[source,xml]
+----
+<SignedAttributes>
+    ...
+    <EllipticCurveKeySize Level="WARN" />
+    ...
+</SignedAttributes>
+----
+
+|===
+
+.Policy changes from version 5.9 to 5.10
+|===
+|Title                                |v5.9                            |v5.10
+|Revocation freshness +
+(time constraint enforced)           a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <RevocationDataFreshness Level="FAIL" />
+    ...
+</CertificateConstraints>
+
+...
+
+<RevocationConstraints>
+    ...
+	<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+    ...
+</RevocationConstraints>
+----
+                                                            a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />
+    ...
+</CertificateConstraints>
+----
+
+|Revocation freshness +
+(no time constraint)           a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <RevocationDataFreshness Level="FAIL" />
+    ...
+</CertificateConstraints>
+
+...
+
+<RevocationConstraints>
+    ...
+	<!--<RevocationFreshness />-->
+    ...
+</RevocationConstraints>
+----
+                                                            a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <RevocationFreshnessNextUpdate Level="FAIL" />
+    ...
+</CertificateConstraints>
+----
+
+|Signing-certificate reference certificate chain           a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <SemanticsIdentifierForNaturalPerson />
+    <SemanticsIdentifierForLegalPerson />
+    ...
+</CertificateConstraints>
+----
+                                                            a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <SemanticsIdentifier>
+        <Id>0.4.0.194121.1.1</Id> // for natural person
+        <Id>0.4.0.194121.1.2</Id> // for legal person
+    </SemanticsIdentifier>
+    ...
+</CertificateConstraints>
+----
+
+|===
+
+[cols="2,5,5"]
+.Policy changes from version 5.8 to 5.9
+|===
+|Title                      |v5.8                            |v5.9
+|Revocation nextUpdate check           a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <RevocationDataNextUpdatePresent />
+    ...
+</CertificateConstraints>
+----
+                                                            a|[source,xml]
+----
+<CertificateConstraints>
+    ...
+    <CRLNextUpdatePresent />
+    <OCSPNextUpdatePresent />
+    ...
+</CertificateConstraints>
+----
+
+|Signing-certificate reference certificate chain           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <AllCertDigestsMatch />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <SigningCertificateRefersCertificateChain />
+    ...
+</SignedAttributesConstraints>
+----
+
+|Qualified certificate check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <Qualification />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <PolicyQualificationIds /> <!-- pre eIDAS -->
+    <QcCompliance /> <!-- post eIDAS -->
+    ...
+</SignedAttributesConstraints>
+----
+
+|QSCD/SSCD check           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <SupportedByQSCD />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QcSSCD />
+    ...
+</SignedAttributesConstraints>
+----
+
+|QcStatements attributes presence           a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <QCStatementIds />
+    ...
+</SignedAttributesConstraints>
+----
+                                                            a|[source,xml]
+----
+<SignedAttributesConstraints>
+    ...
+    <!-- Choose the corresponding QcStatement -->
+    <QcCompliance />
+    <MinQcEuLimitValue />
+    <QcSSCD />
+    <QcEuPDSLocation />
+    <QcType />
+    <QcLegislationCountryCodes />
+    <SemanticsIdentifierForNaturalPerson />
+    <SemanticsIdentifierForLegalPerson />
+    <PSD2QcTypeRolesOfPSP />
+    <!-- etc -->
+    ...
+</SignedAttributesConstraints>
+----
+
+|===

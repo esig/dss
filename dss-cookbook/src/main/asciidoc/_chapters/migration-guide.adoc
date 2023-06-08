@@ -1,0 +1,458 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: ../images/
+
+[[MigrationGuide]]
+=== Migration guide
+
+This chapter covers the most significant changes in DSS code occurred between different versions, requiring review and possible changes from code implementors.
+
+For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
+
+For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
+
+[cols="2,5,5"]
+.Code changes from version 5.12 to 5.13
+|===
+|Title                               |v5.12                            |v5.13
+|KeyStoreCertificateSource password a|[source,java]
+----
+KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(file, "PKCS12", "password");
+----
+                                                                     a|[source,java]
+KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(file, "PKCS12", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
+
+|Trust Services naming              a|[source,java]
+----
+1) List<TrustedServiceWrapper> trustServices = certificateWrapper.getTrustedServices();
+2) public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilter {}
+...
+etc
+----
+                                                                     a|[source,java]
+1)
+List<TrustServiceWrapper> trustServices = certificateWrapper.getTrustServices();
+2)
+public abstract class AbstractTrustServiceFilter implements TrustServiceFilter {}
+...
+etc
+
+|===
+
+[cols="2,5,5"]
+.Code changes from version 5.11 to 5.12
+|===
+|Title                               |v5.11                            |v5.12
+|PDFSignatureService #digest        a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+byte[] digest = pdfSignatureService.digest(toSignDocument, parameters);
+----
+                                                                     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+MessageDigest messageDigest = pdfSignatureService.messageDigest(toSignDocument, parameters);
+byte[] digest = messageDigest.getValue();
+----
+
+|PDFSignatureService: permission dictionary alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnForbiddenSignatureCreation(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.setAlertOnForbiddenSignatureCreation(new ProtectedDocumentExceptionOnStatusAlert());
+pdfObjectFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PDFSignatureService: signature field position alert     a|[source,java]
+----
+PDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert);
+pdfSignatureService.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert);
+----
+                                                                     a|[source,java]
+----
+PAdESService padesService = ...
+
+IPdfObjFactory pdfObjectFactory = new ServiceLoaderPdfObjFactory();
+PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new ExceptionOnStatusAlert());
+pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+
+service.setPdfObjFactory(pdfObjectFactory);
+----
+
+|PAdESSignatureParameters #setIncludeVRIDictionary     a|
+
+VRI dictionary is created by default
+
+                                                                     a|[source,java]
+----
+PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+...
+signatureParameters.setIncludeVRIDictionary(true);
+----
+
+|PdfDocumentReader #checkDocumentPermissions     a|[source,java]
+----
+PdfDocumentReader reader = ...
+reader.checkDocumentPermissions();
+----
+                                                                     a|[source,java]
+----
+PdfDocumentReader reader = ...
+SignatureFieldParameters signatureFieldParameters = ...
+PdfPermissionsChecker pdfPermissionsChecker = new PdfPermissionsChecker();
+pdfPermissionsChecker.checkDocumentPermissions(reader, signatureFieldParameters);
+----
+
+|MimeType namespace     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeType;
+----
+
+|MimeType enumerations     a|[source,java]
+----
+import eu.europa.esig.dss.model.MimeType;
+
+MimeType.PDF;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+
+MimeTypeEnum.PDF;
+----
+
+|Password protection variable (replaced to `char[]` across modules)     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", "password");
+----
+                                                                     a|[source,java]
+----
+UserCredentials userCredentials = new UserCredentials("username", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
+----
+
+|NativeHTTPDataLoader configuration     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setTimeout(1000);
+----
+                                                                     a|[source,java]
+----
+NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
+dataLoader.setConnectTimeout(1000);
+dataLoader.setReadTimeout(1000);
+----
+
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader set accepted HTTP status                          a|[source,java]
+----
+commonsDataLoader.setAcceptedHttpStatus(acceptedHttpStatus);
+----
+                                                                     a|[source,java]
+----
+CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
+httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
+commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
+----
+
+|CommonsDataLoader password implementation                           a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword);
+commonsDataLoader.setSslTruststorePassword(trustStorePassword);
+commonsDataLoader.addAuthentication(host, port, scheme, login, password);
+----
+                                                                     a|[source,java]
+----
+commonsDataLoader.setSslKeystorePassword(keyStorePassword.toCharArray());
+commonsDataLoader.setSslTruststorePassword(trustStorePassword.toCharArray());
+commonsDataLoader.addAuthentication(host, port, scheme, login, password.toCharArray());
+----
+
+|CommonsDataLoader #get                           a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url, false);
+----
+                                                                     a|[source,java]
+----
+byte[] content = commonsDataLoader.get(url);
+// or use alternative implementation for caching, e.g. FileCacheDataLoader
+----
+
+|TimestampToken #isSignatureValid     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isSignatureValid();
+----
+                                                                     a|[source,java]
+----
+TimestampToken timestamp = ...
+timestamp.isValid();
+----
+
+|Certificate extensions extraction     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = DSSASN1Utils.getOCSPAccessLocations(certificateToken);
+List<String> crlUrls = DSSASN1Utils.getCrlUrls(certificateToken);
+// and other method to extract certificate extensions
+----
+                                                                     a|[source,java]
+----
+CertificateToken certificateToken = ...
+List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+// and so on
+----
+
+|===
+
+[cols="2,5,5"]
+.Code changes from version 5.10/5.10.1 to 5.11
+|===
+|Title                               |v5.10                            |v5.11
+|ASiC container: set signature name     a|[source,java]
+----
+ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
+...
+signatureParameters.aSiC().setSignatureFileName("signaturesAAA.xml");
+----
+                                                                     a|[source,java]
+----
+SimpleASiCWithCAdESFilenameFactory asicFilenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+asicFilenameFactory.setSignatureFilename("signaturesAAA.xml");
+ASiCWithXAdESService/ASiCWithCAdESService.setAsicFilenameFactory(asicFilenameFactory);
+----
+_See <<asicFilenameFactory>> for more details._
+
+
+|Font subset configuration in PDF     a|[source,java]
+----
+NativePdfBoxVisibleSignatureDrawer nativePdfBoxDrawer = new NativePdfBoxVisibleSignatureDrawer();
+nativePdfBoxDrawer.setEmbedFontSubset(true);
+...
+----
+                                                                     a|[source,java]
+----
+DSSFileFont font = // create font
+font.setEmbedFontSubset(true);
+...
+SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+textParameters.setFont(font);
+----
+
+|RevocationDataLoadingStrategy     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategy(new OCSPFirstRevocationDataLoadingStrategy());
+...
+----
+                                                                     a|[source,java]
+----
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
+...
+----
+
+|Accepted DigestAlgorithms for OnlineOCSPSource
+
+NOTE: list changed from excluding to including
+
+a|[source,java]
+----
+OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+ocspSource.setDigestAlgorithmsForExclusion(Arrays.asList(DigestAlgorithm.SHA1));
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setOcspSource(ocspSource);
+----
+                                                                     a|[source,java]
+----
+RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+
+List<DigestAlgorithm> digestAlgorithmList = Arrays.asList(DigestAlgorithm.values());
+digestAlgorithmList.remove(DigestAlgorithm.SHA1);
+
+revocationDataVerifier.setAcceptableDigestAlgorithms(digestAlgorithmList);
+
+CertificateVerifier cv = new CommonCertificateVerifier();
+cv.setRevocationDataVerifier(revocationDataVerifier);
+----
+
+|Disable visual comparison
+
+a|[source,java]
+----
+AbstractPDFSignatureService pdfSignatureService = ...
+pdfSignatureService.setMaximalPagesAmountForVisualComparison(0);
+...
+class MockPdfObjFactory extends PdfBoxNativeObjectFactory {
+@Override
+public PDFSignatureService newPAdESSignatureService() {
+return pdfSignatureService;
+}
+...
+}
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(new MockPdfObjFactory());
+----
+                                                                     a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+DefaultPdfDifferencesFinder pdfDifferencesFinder = new DefaultPdfDifferencesFinder();
+pdfDifferencesFinder.setMaximalPagesAmountForVisualComparison(0);
+pdfObjFactory.setPdfDifferencesFinder(pdfDifferencesFinder);
+PDFDocumentValidator validator = ...
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
+|===
+
+[cols="2,5,5"]
+.Code changes from version 5.9 to 5.10
+|===
+|Title                               |v5.9                            |v5.10
+|ASiC container extraction     a|[source,java]
+----
+ASiCExtractResult extractedResult = asicContainerExtractor.extract();
+----
+                                                                     a|[source,java]
+----
+ASiCContent extractedResult = asicContainerExtractor.extract();
+----
+
+|HttpClient5 transition     a|[source,java]
+----
+import org.apache.http.*
+----
+                                                                     a|[source,java]
+----
+import org.apache.hc.client5.http.*
+import org.apache.hc.core5.http.*
+----
+
+|FileCacheDataLoader     a|[source,java]
+----
+fileCacheDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+----
+                                                                     a|[source,java]
+----
+fileCacheDataLoader.setCacheExpirationTime(-1); // negative value means cache never expires
+----
+
+|DiagnosticData: PDF signature field name
+a|[source,java]
+----
+List<String> fieldNames = xmlPDFRevision.getSignatureFieldName();
+String name = fieldNames.get(i);
+----
+                                                            a|[source,java]
+----
+List<PDFSignatureField> signatureFields = xmlPDFRevision.getPDFSignatureField();
+String name = signatureFields.get(i).getName();
+----
+
+|===
+
+[cols="2,5,5"]
+.Code changes from version 5.8 to 5.9
+|===
+|Title                      |v5.8                            |v5.9
+|AIA data loader           a|[source,java]
+----
+certificateVerifier.setDataLoader(dataLoader);
+----
+                                                            a|[source,java]
+----
+AIASource aiaSource = new DefaultAIASource(dataLoader);
+certificateVerifier.setAIASource(aiaSource);
+----
+
+|Signature Policy Provider           a|[source,java]
+----
+certificateVerifier.setDataLoader(dataLoader);
+----
+                                                            a|[source,java]
+----
+SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
+signaturePolicyProvider.setDataLoader(dataLoader);
+documentValidator.setSignaturePolicyProvider(signaturePolicyProvider);
+----
+
+|JDBC dataSource
+a|[source,java]
+----
+JdbcRevocationSource.setDataSource(dataSource);
+----
+                                                            a|[source,java]
+----
+JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
+jdbcRevocationSource.setJdbcCacheConnector(jdbcCacheConnector);
+----
+
+|DiagnosticData: Signature policy
+a|[source,java]
+----
+String notice = xmlPolicy.getNotice();
+Boolean zeroHash = xmlPolicy.isZeroHash();
+XmlDigestAlgoAndValue digestAlgoAndValue = xmlPolicy.getDigestAlgoAndValue();
+Boolean status = xmlPolicy.isStatus();
+Boolean digestAlgorithmsEqual = xmlPolicy.isDigestAlgorithmsEqual();
+----
+                                                            a|[source,java]
+----
+XmlUserNotice notice = xmlPolicy.getUserNotice();
+Boolean zeroHash = xmlPolicy.getDigestAlgoAndValue().isZeroHash();
+XmlPolicyDigestAlgoAndValue digestAlgoAndValue = xmlPolicy.getDigestAlgoAndValue();
+Boolean status = xmlPolicy.getDigestAlgoAndValue().isMatch();
+Boolean digestAlgorithmsEqual = xmlPolicy.getDigestAlgoAndValue().isDigestAlgorithmsEqual();
+----
+
+|DiagnosticData: QCStatements
+a|[source,java]
+----
+XmlPSD2Info psd2Info = xmlCertificate.getPSD2Info();
+List<XmlOID> qcStatementIds = xmlCertificate.getQCStatementIds();
+List<XmlOID> qcTypes = xmlCertificate.getQCTypes();
+QCLimitValue qcLimitValue = xmlCertificate.getQCLimitValue();
+OID semanticsIdentifier = xmlCertificate.getSemanticsIdentifier();
+----
+                                                            a|[source,java]
+----
+XmlPSD2Info psd2Info = xmlCertificate.getQcStatements().getPSD2Info();
+QcCompliance qcCompliance = xmlCertificate.getQcStatements().getQcCompliance();
+BigInteger qcEuRetentionPeriod = xmlCertificate.getQcStatements().getQcEuRetentionPeriod();
+QcEuPDS qcEuPDS = xmlCertificate.getQcStatements().getQcEuPDS();
+List<XmlOID> qcTypes = xmlCertificate.getQcStatements().getQCTypes();
+QcEuLimitValue qcLimitValue = xmlCertificate.getQcStatements().getQcEuLimitValue();
+QCLimitValue qcLimitValue = xmlCertificate.getQcStatements().getQCLimitValue();
+OID semanticsIdentifier = xmlCertificate.getQcStatements().getSemanticsIdentifier();
+----
+
+|===
