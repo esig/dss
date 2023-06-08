@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
@@ -30,13 +30,13 @@ import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import java.util.List;
 
 /**
- * Gets certificate usage type based on the information extracted from a TrustedService
+ * Gets certificate usage type based on the information extracted from a TrustService
  *
  */
 class TypeByTL implements TypeStrategy {
 
 	/** Trusted Service to get certificate usage type from */
-	private final TrustedServiceWrapper trustedService;
+	private final TrustServiceWrapper trustService;
 
 	/** Certificate qualified status */
 	private final CertificateQualifiedStatus qualified;
@@ -47,13 +47,13 @@ class TypeByTL implements TypeStrategy {
 	/**
 	 * Default constructor
 	 *
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus}
 	 * @param typeInCert {@link TypeStrategy}
 	 */
-	public TypeByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified,
+	public TypeByTL(TrustServiceWrapper trustService, CertificateQualifiedStatus qualified,
 					TypeStrategy typeInCert) {
-		this.trustedService = trustedService;
+		this.trustService = trustService;
 		this.qualified = qualified;
 		this.typeInCert = typeInCert;
 	}
@@ -64,15 +64,15 @@ class TypeByTL implements TypeStrategy {
 		// overrules are only applicable when the certificate is qualified (cert + TL)
 		if (CertificateQualifiedStatus.isQC(qualified)) {
 
-			if (trustedService == null) {
+			if (trustService == null) {
 				return CertificateType.UNKNOWN;
 			}
 
-			if (EIDASUtils.isPreEIDAS(trustedService.getStartDate())) {
+			if (EIDASUtils.isPreEIDAS(trustService.getStartDate())) {
 				return CertificateType.ESIGN;
 			}
 
-			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
+			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifiers());
 
 			if (Utils.collectionSize(usageQualifiers) > 1) {
 				return CertificateType.UNKNOWN;

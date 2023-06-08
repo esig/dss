@@ -171,7 +171,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-A26003903DC891EA9E589518CA10A0F8CEBE953C012EA07CDE6D10EFB08245A8">
                     <Status>GOOD</Status>
@@ -223,7 +223,7 @@
                     <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8B71EB9A4A60D7426907D86676EAF4148BFEF53976E34AE9572356A8762E182E">
                     <Status>GOOD</Status>

@@ -637,35 +637,35 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceTypeIdentifier usage (with WARN validation level)
+.Example of TrustServiceTypeIdentifier usage (with WARN validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceTypeIdentifier Level="WARN">
+    <TrustServiceTypeIdentifier Level="WARN">
         <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
-    </TrustedServiceTypeIdentifier>
+    </TrustServiceTypeIdentifier>
     ...
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceStatus usage (with FAIL validation level)
+.Example of TrustServiceStatus usage (with FAIL validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceStatus Level="FAIL">
+    <TrustServiceStatus Level="FAIL">
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-    </TrustedServiceStatus>
+    </TrustServiceStatus>
     ...
 </BasicSignatureConstraints>
 ----
@@ -2407,8 +2407,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustedServiceTypeIdentifier    |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |TrustedServiceStatus            |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint

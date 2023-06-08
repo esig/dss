@@ -167,7 +167,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-19BA47A2C5725AC75C20C83CF18E64D6AC41C2422FC136EA8D98EAD5DABF8800">
                     <Status>GOOD</Status>
@@ -220,7 +220,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ORyV+fwaaFjg+ZCH4k2G1ny1BbK7GZxrjIhZPinYzL8=</DigestValue>
@@ -265,7 +265,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>YEqPsid3fEC4xytU1DWoHz99YdHGYStUMxive1mjnHg=</DigestValue>
@@ -313,7 +313,7 @@
                     <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-61F1015AA4EF6CA3E96D97BC82DB1801B2C3CC11EE640845FB33277170728EFE">
                     <Status>GOOD</Status>

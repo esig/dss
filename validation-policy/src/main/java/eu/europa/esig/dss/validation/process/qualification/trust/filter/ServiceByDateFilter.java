@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
 import java.util.Date;
 
 /**
- * This filter is used to filter TrustedServices that have been valid at the given time
+ * This filter is used to filter TrustServices that have been valid at the given time
  *
  */
-public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
+public class ServiceByDateFilter extends AbstractTrustServiceFilter {
 
 	/** Time to filter by */
 	private final Date date;
@@ -36,14 +36,14 @@ public class ServiceByDateFilter extends AbstractTrustedServiceFilter {
 	/**
 	 * Default constructor
 	 *
-	 * @param date {@link Date} to filter TrustedServices valid at the time
+	 * @param date {@link Date} to filter TrustServices valid at the time
 	 */
 	public ServiceByDateFilter(Date date) {
 		this.date = date;
 	}
 
 	@Override
-	protected boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustServiceWrapper service) {
 		Date startDate = service.getStartDate();
 		Date endDate = service.getEndDate();
 

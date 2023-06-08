@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
 import java.util.Date;
 
@@ -28,7 +28,7 @@ import java.util.Date;
  * This class fitlers Trusted Services by the related MRA equivalence starting date
  *
  */
-public class ServiceByMRAEquivalenceStartingDateFilter extends AbstractTrustedServiceFilter {
+public class ServiceByMRAEquivalenceStartingDateFilter extends AbstractTrustServiceFilter {
 
     /** Time to filter by */
     private final Date date;
@@ -36,14 +36,14 @@ public class ServiceByMRAEquivalenceStartingDateFilter extends AbstractTrustedSe
     /**
      * Default constructor
      *
-     * @param date {@link Date} to filter TrustedServices with a valid MRA equivalence starting time
+     * @param date {@link Date} to filter TrustServices with a valid MRA equivalence starting time
      */
     public ServiceByMRAEquivalenceStartingDateFilter(Date date) {
         this.date = date;
     }
 
     @Override
-    protected boolean isAcceptable(TrustedServiceWrapper service) {
+    protected boolean isAcceptable(TrustServiceWrapper service) {
         Date startDate = service.getMraTrustServiceEquivalenceStatusStartingTime();
         if (startDate == null || date == null) {
             return false;

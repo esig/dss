@@ -29,12 +29,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlMRACertificateMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceEquivalenceInformation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
@@ -71,12 +71,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This class is used to build a {@code XmlTrustedServiceProvider} object instance
+ * This class is used to build a {@code XmlTrustServiceProvider} object instance
  *
  */
-public class XmlTrustedServiceProviderBuilder {
+public class XmlTrustServiceProviderBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XmlTrustedServiceProviderBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XmlTrustServiceProviderBuilder.class);
 
     /**
      * The map of certificates identifiers and their corresponding XML representations
@@ -105,7 +105,7 @@ public class XmlTrustedServiceProviderBuilder {
      * @param xmlTrustedListsMap a map of trusted list identifiers and corresponding XML representations
      * @param tlInfoMap a map of trusted list identifiers and corresponding {@link TLInfo}s
      */
-    public XmlTrustedServiceProviderBuilder(final Map<String, XmlCertificate> xmlCertsMap,
+    public XmlTrustServiceProviderBuilder(final Map<String, XmlCertificate> xmlCertsMap,
                                             final Map<String, XmlTrustedList> xmlTrustedListsMap,
                                             final Map<String, TLInfo> tlInfoMap) {
         this.xmlCertsMap = xmlCertsMap;
@@ -114,15 +114,15 @@ public class XmlTrustedServiceProviderBuilder {
     }
 
     /**
-     * This method builds a list of {@link XmlTrustedServiceProvider}s corresponding to the given {@code CertificateToken}
+     * This method builds a list of {@link XmlTrustServiceProvider}s corresponding to the given {@code CertificateToken}
      *
-     * @param certificateToken {@link CertificateToken} to get a list of {@link XmlTrustedServiceProvider}s
+     * @param certificateToken {@link CertificateToken} to get a list of {@link XmlTrustServiceProvider}s
      * @param relatedTrustServices a map of trust anchor {@link CertificateToken}s and their corresponding trusted services
-     * @return a list of {@link XmlTrustedServiceProvider}s
+     * @return a list of {@link XmlTrustServiceProvider}s
      */
-    public List<XmlTrustedServiceProvider> build(CertificateToken certificateToken,
+    public List<XmlTrustServiceProvider> build(CertificateToken certificateToken,
                                                  Map<CertificateToken, List<TrustProperties>> relatedTrustServices) {
-        List<XmlTrustedServiceProvider> result = new ArrayList<>();
+        List<XmlTrustServiceProvider> result = new ArrayList<>();
         for (Map.Entry<CertificateToken, List<TrustProperties>> entry : relatedTrustServices.entrySet()) {
             CertificateToken trustedCert = entry.getKey();
             List<TrustProperties> services = entry.getValue();
@@ -134,7 +134,7 @@ public class XmlTrustedServiceProviderBuilder {
 
                 List<TrustProperties> trustServices = servicesByProvider.getValue();
                 if (Utils.isCollectionNotEmpty(trustServices)) {
-                    result.add(getXmlTrustedServiceProvider(certificateToken, trustServices, trustedCert));
+                    result.add(getXmlTrustServiceProvider(certificateToken, trustServices, trustedCert));
                 }
             }
 
@@ -155,11 +155,11 @@ public class XmlTrustedServiceProviderBuilder {
         return servicesByProviders;
     }
 
-    private XmlTrustedServiceProvider getXmlTrustedServiceProvider(CertificateToken certificateToken, List<TrustProperties> trustServices,
+    private XmlTrustServiceProvider getXmlTrustServiceProvider(CertificateToken certificateToken, List<TrustProperties> trustServices,
                                                                    CertificateToken trustAnchor) {
         TrustProperties trustProperties = trustServices.iterator().next();
 
-        XmlTrustedServiceProvider result = new XmlTrustedServiceProvider();
+        XmlTrustServiceProvider result = new XmlTrustServiceProvider();
         if (trustProperties.getLOTLIdentifier() != null) {
             result.setLOTL(xmlTrustedListsMap.get(trustProperties.getLOTLIdentifier().asXmlId()));
         }
@@ -171,7 +171,7 @@ public class XmlTrustedServiceProviderBuilder {
         result.setTSPTradeNames(getLangAndValues(tsp.getTradeNames()));
         result.setTSPRegistrationIdentifiers(tsp.getRegistrationIdentifiers());
 
-        result.setTrustedServices(buildXmlTrustedServicesList(certificateToken, trustServices, trustAnchor));
+        result.setTrustServices(buildXmlTrustServicesList(certificateToken, trustServices, trustAnchor));
 
         return result;
     }
@@ -193,9 +193,9 @@ public class XmlTrustedServiceProviderBuilder {
         return null;
     }
 
-    private List<XmlTrustedService> buildXmlTrustedServicesList(CertificateToken certToken, List<TrustProperties> trustServices,
+    private List<XmlTrustService> buildXmlTrustServicesList(CertificateToken certToken, List<TrustProperties> trustServices,
                                                                 CertificateToken trustAnchor) {
-        List<XmlTrustedService> result = new ArrayList<>();
+        List<XmlTrustService> result = new ArrayList<>();
 
         for (TrustProperties trustProperties : trustServices) {
             TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService =
@@ -206,9 +206,9 @@ public class XmlTrustedServiceProviderBuilder {
                 for (TrustServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
                     MRA mra = getMRA(trustProperties);
                     if (mra != null) {
-                        result.addAll(buildXmlTrustedServicesWithMRA(serviceInfoStatus, certToken, trustAnchor, mra));
+                        result.addAll(buildXmlTrustServicesWithMRA(serviceInfoStatus, certToken, trustAnchor, mra));
                     } else {
-                        result.add(getXmlTrustedService(serviceInfoStatus, certToken, trustAnchor));
+                        result.add(getXmlTrustService(serviceInfoStatus, certToken, trustAnchor));
                     }
                 }
             }
@@ -227,35 +227,35 @@ public class XmlTrustedServiceProviderBuilder {
         return null;
     }
 
-    private XmlTrustedService getXmlTrustedService(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+    private XmlTrustService getXmlTrustService(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
                                                    CertificateToken certToken, CertificateToken trustAnchor) {
-        XmlTrustedService trustedService = new XmlTrustedService();
+        XmlTrustService trustService = new XmlTrustService();
 
-        trustedService.setServiceDigitalIdentifier(xmlCertsMap.get(trustAnchor.getDSSIdAsString()));
-        trustedService.setServiceNames(getLangAndValues(serviceInfoStatus.getNames()));
-        trustedService.setServiceType(serviceInfoStatus.getType());
-        trustedService.setStatus(serviceInfoStatus.getStatus());
-        trustedService.setStartDate(serviceInfoStatus.getStartDate());
-        trustedService.setEndDate(serviceInfoStatus.getEndDate());
+        trustService.setServiceDigitalIdentifier(xmlCertsMap.get(trustAnchor.getDSSIdAsString()));
+        trustService.setServiceNames(getLangAndValues(serviceInfoStatus.getNames()));
+        trustService.setServiceType(serviceInfoStatus.getType());
+        trustService.setStatus(serviceInfoStatus.getStatus());
+        trustService.setStartDate(serviceInfoStatus.getStartDate());
+        trustService.setEndDate(serviceInfoStatus.getEndDate());
 
         List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
         if (Utils.isCollectionNotEmpty(qualifiers)) {
-            trustedService.setCapturedQualifiers(qualifiers);
+            trustService.setCapturedQualifiers(qualifiers);
         }
 
         List<String> additionalServiceInfoUris = serviceInfoStatus.getAdditionalServiceInfoUris();
         if (Utils.isCollectionNotEmpty(additionalServiceInfoUris)) {
-            trustedService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
+            trustService.setAdditionalServiceInfoUris(additionalServiceInfoUris);
         }
 
         List<String> serviceSupplyPoints = serviceInfoStatus.getServiceSupplyPoints();
         if (Utils.isCollectionNotEmpty(serviceSupplyPoints)) {
-            trustedService.setServiceSupplyPoints(serviceSupplyPoints);
+            trustService.setServiceSupplyPoints(serviceSupplyPoints);
         }
 
-        trustedService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
+        trustService.setExpiredCertsRevocationInfo(serviceInfoStatus.getExpiredCertsRevocationInfo());
 
-        return trustedService;
+        return trustService;
     }
 
     /**
@@ -281,25 +281,25 @@ public class XmlTrustedServiceProviderBuilder {
         return list;
     }
 
-    private List<XmlTrustedService> buildXmlTrustedServicesWithMRA(
+    private List<XmlTrustService> buildXmlTrustServicesWithMRA(
             TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken,
             CertificateToken trustAnchor, MRA mra) {
         if (Utils.isCollectionNotEmpty(serviceInfoStatus.getAdditionalServiceInfoUris())) {
-            List<XmlTrustedService> result = new ArrayList<>();
+            List<XmlTrustService> result = new ArrayList<>();
             for (String aSI : serviceInfoStatus.getAdditionalServiceInfoUris()) {
                 TrustServiceStatusAndInformationExtensions serviceInfoStatusCopy =
                         new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder(serviceInfoStatus)
                                 .setAdditionalServiceInfoUris(Collections.singletonList(aSI)).build();
-                result.addAll(getXmlTrustedServicesForMRA(serviceInfoStatusCopy, certToken, trustAnchor, mra));
+                result.addAll(getXmlTrustServicesForMRA(serviceInfoStatusCopy, certToken, trustAnchor, mra));
             }
             return result;
 
         } else {
-            return getXmlTrustedServicesForMRA(serviceInfoStatus, certToken, trustAnchor, mra);
+            return getXmlTrustServicesForMRA(serviceInfoStatus, certToken, trustAnchor, mra);
         }
     }
 
-    private List<XmlTrustedService> getXmlTrustedServicesForMRA(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+    private List<XmlTrustService> getXmlTrustServicesForMRA(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
                                                          CertificateToken certToken, CertificateToken trustAnchor, MRA mra) {
         List<MutableTimeDependentValues<ServiceEquivalence>> mraEquivalences = getMRAServiceEquivalences(serviceInfoStatus, certToken, mra);
         boolean enactedMra = Utils.isCollectionNotEmpty(mraEquivalences);
@@ -309,17 +309,17 @@ public class XmlTrustedServiceProviderBuilder {
                 LOG.info("MRA equivalence is applied for a Trusted Service : '{}'",
                         serviceEquivalenceValues.getLatest().getLegalInfoIdentifier());
 
-                List<XmlTrustedService> result = new ArrayList<>();
+                List<XmlTrustService> result = new ArrayList<>();
 
                 List<ServiceEquivalence> serviceEquivalenceList = serviceEquivalenceValues.getAfter(certToken.getNotBefore());
                 for (ServiceEquivalence serviceEquivalence : serviceEquivalenceList) {
                     // shall be computed before translation
                     TrustServiceStatusAndInformationExtensions equivalent = getEquivalent(serviceInfoStatus, serviceEquivalence);
 
-                    XmlTrustedService xmlTrustedService = getXmlTrustedService(equivalent, certToken, trustAnchor);
-                    xmlTrustedService.setMRATrustServiceMapping(getXmlMRATrustServiceMapping(serviceInfoStatus, certToken, serviceEquivalence));
-                    xmlTrustedService.setEnactedMRA(serviceEquivalence.getStatus().isEnacted());
-                    result.add(xmlTrustedService);
+                    XmlTrustService xmlTrustService = getXmlTrustService(equivalent, certToken, trustAnchor);
+                    xmlTrustService.setMRATrustServiceMapping(getXmlMRATrustServiceMapping(serviceInfoStatus, certToken, serviceEquivalence));
+                    xmlTrustService.setEnactedMRA(serviceEquivalence.getStatus().isEnacted());
+                    result.add(xmlTrustService);
                 }
                 translateCertificate(certToken, serviceEquivalenceList);
 
@@ -330,7 +330,7 @@ public class XmlTrustedServiceProviderBuilder {
             }
         }
 
-        return Collections.singletonList(getXmlTrustedService(serviceInfoStatus, certToken, trustAnchor));
+        return Collections.singletonList(getXmlTrustService(serviceInfoStatus, certToken, trustAnchor));
     }
 
     private List<MutableTimeDependentValues<ServiceEquivalence>> getMRAServiceEquivalences(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
@@ -441,13 +441,13 @@ public class XmlTrustedServiceProviderBuilder {
         mraTrustServiceMapping.setTrustServiceLegalIdentifier(serviceEquivalence.getLegalInfoIdentifier());
         mraTrustServiceMapping.setEquivalenceStatusStartingTime(serviceEquivalence.getStartDate());
         mraTrustServiceMapping.setEquivalenceStatusEndingTime(serviceEquivalence.getEndDate());
-        mraTrustServiceMapping.setOriginalThirdCountryMapping(getXmlOriginalThirdCountryTrustedServiceMapping(serviceInfoStatus, certToken));
+        mraTrustServiceMapping.setOriginalThirdCountryMapping(getXmlOriginalThirdCountryTrustServiceMapping(serviceInfoStatus, certToken));
         return mraTrustServiceMapping;
     }
 
-    private XmlOriginalThirdCountryTrustedServiceMapping getXmlOriginalThirdCountryTrustedServiceMapping(
+    private XmlOriginalThirdCountryTrustServiceMapping getXmlOriginalThirdCountryTrustServiceMapping(
             TrustServiceStatusAndInformationExtensions serviceInfoStatus, CertificateToken certToken) {
-        XmlOriginalThirdCountryTrustedServiceMapping originalThirdCountryMapping = new XmlOriginalThirdCountryTrustedServiceMapping();
+        XmlOriginalThirdCountryTrustServiceMapping originalThirdCountryMapping = new XmlOriginalThirdCountryTrustServiceMapping();
         originalThirdCountryMapping.setServiceType(serviceInfoStatus.getType());
         originalThirdCountryMapping.setStatus(serviceInfoStatus.getStatus());
 

@@ -141,7 +141,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-0FA79CC60142B82ACF2560ACDE6DEF146C5359C53B5C42AC6630CCCB688040A9">
                     <Status>GOOD</Status>
@@ -191,7 +191,7 @@
                     <crlUrl>http://crl.igc-g3.certinomis.com/RACINE_G3/crl/AC_Racine_G3-crl-1.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>+SlWGOenUtEHQjw9Ph/+DYlPFDaaGI5zPu42iE6nOFM=</DigestValue>
@@ -244,7 +244,7 @@
                     <crlUrl>http://www.certinomis.com/crl/acg3-PRIME.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>+jAc4AHe7Wf30BO7IreZU6lpulMIgWkkKBcUedPuzzo=</DigestValue>

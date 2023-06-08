@@ -432,10 +432,10 @@
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
 
-					<xs:element name="TrustedServiceProviders" minOccurs="0">
+					<xs:element name="TrustServiceProviders" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="TrustServiceProvider" type="TrustServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -1436,7 +1436,7 @@
 		<xs:attribute name="mra" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedServiceProvider">
+	<xs:complexType name="TrustServiceProvider">
 		<xs:sequence>
 			<xs:element name="TSPNames">
 				<xs:complexType>
@@ -1460,10 +1460,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedServices">
+			<xs:element name="TrustServices">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="TrustService" type="TrustService" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1472,7 +1472,7 @@
 		<xs:attribute name="LOTL" type="xs:IDREF" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedService">
+	<xs:complexType name="TrustService">
 		<xs:sequence>
 			<xs:element name="ServiceNames">
 				<xs:complexType>
@@ -1535,11 +1535,11 @@
 			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
 			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
 			<xs:element name="EquivalenceStatusEndingTime" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
+			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustServiceMapping" /> <!-- Information in TL before MRA applied -->
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="OriginalThirdCountryTrustedServiceMapping">
+	<xs:complexType name="OriginalThirdCountryTrustServiceMapping">
 		<xs:sequence>
 			<xs:element name="ServiceType" type="xs:string" minOccurs="0" />
 			<xs:element name="Status" type="xs:string" minOccurs="0" />

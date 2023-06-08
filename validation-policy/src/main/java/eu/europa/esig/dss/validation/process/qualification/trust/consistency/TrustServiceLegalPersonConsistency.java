@@ -20,34 +20,25 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
+import eu.europa.esig.dss.enumerations.ServiceQualification;
 
-import java.util.Date;
+import java.util.List;
 
 /**
- * Verifies status of a trusted service created before eIDAS
- *
+ * A Trusted Service can not have QCForESig and QCForLegalPerson qualifiers for the same certificate.
  */
-public class TrustedServiceStatusPreEIDASConsistency implements TrustedServiceCondition {
+class TrustServiceLegalPersonConsistency implements TrustServiceCondition {
 
-    /**
-     * Default constructor
-     */
-    public TrustedServiceStatusPreEIDASConsistency() {
-        // empty
-    }
+	@Override
+	public boolean isConsistent(TrustServiceWrapper trustService) {
 
-    @Override
-    public boolean isConsistent(TrustedServiceWrapper trustedService) {
-        Date startDate = trustedService.getStartDate();
-        if (EIDASUtils.isPreEIDAS(startDate)) {
-            String status = trustedService.getStatus();
-            return !TrustedServiceStatus.GRANTED.getUri().equals(status) &&
-                    !TrustedServiceStatus.WITHDRAWN.getUri().equals(status);
-        }
-        return true;
-    }
+		List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+
+		boolean qcForLegalPerson = ServiceQualification.isQcForLegalPerson(capturedQualifiers);
+		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);
+
+		return (!(qcForLegalPerson && qcForEsig));
+	}
 
 }

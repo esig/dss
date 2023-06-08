@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.Set;
  * PT)
  *
  */
-public class ServiceByCountryFilter extends AbstractTrustedServiceFilter {
+public class ServiceByCountryFilter extends AbstractTrustServiceFilter {
 
 
 	/** Country codes to filter by */
@@ -58,7 +58,7 @@ public class ServiceByCountryFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	protected boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustServiceWrapper service) {
 		for (String countryCode : countryCodes) {
 			if (Utils.areStringsEqualIgnoreCase(countryCode, service.getCountryCode())) {
 				return true;

@@ -29,7 +29,7 @@ import java.util.List;
  * Wraps an extracted information from a Trusted Service
  *
  */
-public class TrustedServiceWrapper {
+public class TrustServiceWrapper {
 
 	/** Corresponding Trusted List */
 	private XmlTrustedList trustedList;
@@ -257,7 +257,7 @@ public class TrustedServiceWrapper {
 	}
 
 	/**
-	 * Gets TrustedService start validity date
+	 * Gets TrustService start validity date
 	 *
 	 * @return {@link Date}
 	 */
@@ -266,7 +266,7 @@ public class TrustedServiceWrapper {
 	}
 
 	/**
-	 * Sets TrustedService start validity date
+	 * Sets TrustService start validity date
 	 *
 	 * @param startDate {@link Date}
 	 */
@@ -275,7 +275,7 @@ public class TrustedServiceWrapper {
 	}
 
 	/**
-	 * Gets TrustedService end validity date
+	 * Gets TrustService end validity date
 	 *
 	 * @return {@link Date}
 	 */
@@ -284,7 +284,7 @@ public class TrustedServiceWrapper {
 	}
 
 	/**
-	 * Sets TrustedService end validity date
+	 * Sets TrustService end validity date
 	 *
 	 * @param endDate {@link Date}
 	 */

@@ -18,29 +18,24 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
+package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.enumerations.ServiceQualification;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
 import java.util.List;
 
 /**
- * A Trusted service can not have QCStatement and NotQualified qualifiers for the same certificate.
+ * Used to filter acceptable Trust Services to be used during qualification determination process
+ *
  */
-class TrustedServiceQCStatementConsistency implements TrustedServiceCondition {
+public interface TrustServiceFilter {
 
-	@Override
-	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
-
-		boolean qcStatement = ServiceQualification.isQcStatement(capturedQualifiers);
-		boolean notQualified = ServiceQualification.isNotQualified(capturedQualifiers);
-
-		if (qcStatement) {
-			return !notQualified;
-		}
-		return true;
-	}
+	/**
+	 * Filters a list of {@code TrustServiceWrapper}s
+	 *
+	 * @param trustServices a list of {@link TrustServiceWrapper}s to filter
+	 * @return filtered list of {@link TrustServiceWrapper}s
+	 */
+	List<TrustServiceWrapper> filter(List<TrustServiceWrapper> trustServices);
 
 }

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.timestamp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -39,20 +39,20 @@ import java.util.List;
 public class QTSTCheck extends ChainItem<XmlValidationTimestampQualification> {
 
 	/**
-	 * List of TrustedServices declaring QTST status for the certificate
+	 * List of TrustServices declaring QTST status for the certificate
 	 */
-	private final List<TrustedServiceWrapper> trustServicesAtTime;
+	private final List<TrustServiceWrapper> trustServicesAtTime;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationTimestampQualification}
-	 * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
+	 * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public QTSTCheck(I18nProvider i18nProvider, XmlValidationTimestampQualification result,
-					 List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+					 List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustServicesAtTime = trustServicesAtTime;

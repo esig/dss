@@ -163,7 +163,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1CC343320B734D6C0D9A05B412E79F231C6E47637CE421C5633CBA753099780C">
 	                <Status>GOOD</Status>
@@ -211,7 +211,7 @@
                     <certificatePolicy>2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>38a8ae9e59632b08951d55b3409d43bf88dfbb06</DigestValue>
@@ -256,7 +256,7 @@
                     <certificatePolicy>1.3.6.1.4.1.36203.1.1.4</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>e03bce66e83caa3cf14a9ab6f81b88f67d2e7490</DigestValue>
@@ -308,7 +308,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
 	            <CertificateRevocation Revocation="R-F952A9D82EC371D8DF1CE76CA4AB9DECB773AC290B13D9A04E7157CE13924EB5">
 	                <Status>GOOD</Status>

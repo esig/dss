@@ -158,8 +158,8 @@
                     <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Ministero della Difesa</TSPName>
                         <TSPName lang="it">Ministero della Difesa</TSPName>
@@ -171,18 +171,18 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
                             <ServiceNames>
                                 <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-07-13T15:00:00Z</StartDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>FtsTBJKyMLIJLkDdf1d+PLMFPWoQv74wL0XylXZ1teg=</DigestValue>
@@ -229,7 +229,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>JoFFDMGqwUq522MCjSm35vQvFPVEInPSIdAdM5vjHrc=</DigestValue>
@@ -283,8 +283,8 @@
                     <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Ministero della Difesa</TSPName>
                         <TSPName lang="it">Ministero della Difesa</TSPName>
@@ -296,18 +296,18 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
                             <ServiceNames>
                                 <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
                             </ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2017-07-13T15:00:00Z</StartDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>V0dfYTIgSjvofmT0Q8vejf5pqWVFXTtk/4woySj+Q6Q=</DigestValue>
@@ -354,7 +354,7 @@
                     <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-35EEDE23A4037BEE57D7877078BCA2F962F9A855F0C89B7A7B322E7AD6B4A6FE">
                     <Status>GOOD</Status>
@@ -418,8 +418,8 @@
                     <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Ministero della Difesa</TSPName>
                         <TSPName lang="it">Ministero della Difesa</TSPName>
@@ -431,8 +431,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
                             <ServiceNames>
                                 <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
                             </ServiceNames>
@@ -441,10 +441,10 @@
                             <StartDate>2017-07-13T15:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-AAC95B6D5F0DABE4A746027AFF9F38073E9AE6DCD25B808AAFF013697662B4C8">
                     <Status>GOOD</Status>
@@ -495,7 +495,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>3wQBlxl8in9tYSB8QvWAmOZzDzNXCMSue1p4VwsnOUo=</DigestValue>
@@ -545,7 +545,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-80F9E9633B6342A66B072E8F163CE4293BB9D4D0209B8772956CD1AA12F7C730">
                     <Status>GOOD</Status>

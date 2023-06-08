@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -39,19 +39,19 @@ import java.util.List;
  */
 public class RelatedToMraEnactedTrustServiceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-    /** List of {@code TrustedServiceWrapper}s at control time */
-    private final List<TrustedServiceWrapper> trustServicesAtTime;
+    /** List of {@code TrustServiceWrapper}s at control time */
+    private final List<TrustServiceWrapper> trustServicesAtTime;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
-     * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
+     * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
      * @param constraint {@link LevelConstraint}
      */
     public RelatedToMraEnactedTrustServiceCheck(I18nProvider i18nProvider, T result,
-                                                List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+                                                List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;
     }

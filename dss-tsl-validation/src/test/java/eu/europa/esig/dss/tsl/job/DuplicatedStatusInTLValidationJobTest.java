@@ -108,7 +108,7 @@ public class DuplicatedStatusInTLValidationJobTest {
 		CertificateWrapper certificateWrapper = diagnosticData.getUsedCertificateById(C1.getDSSIdAsString());
 		assertNotNull(certificateWrapper);
 		assertEquals(1, certificateWrapper.getTrustServiceProviders().size());
-		assertEquals(5, certificateWrapper.getTrustedServices().size());
+		assertEquals(5, certificateWrapper.getTrustServices().size());
 	}
 
 	private TrustedListsCertificateSource getSynchronizedTLSource() {

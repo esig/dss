@@ -829,19 +829,31 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	@Deprecated
 	public MultiValuesConstraint getTrustedServiceStatusConstraint(Context context) {
+		return getTrustServiceStatusConstraint(context);
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustServiceStatusConstraint(Context context) {
 		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
 		if (sigConstraints != null) {
-			return sigConstraints.getTrustedServiceStatus();
+			return sigConstraints.getTrustServiceStatus();
 		}
 		return null;
 	}
 
 	@Override
+	@Deprecated
 	public MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context) {
+		return getTrustServiceTypeIdentifierConstraint(context);
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context) {
 		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
 		if (sigConstraints != null) {
-			return sigConstraints.getTrustedServiceTypeIdentifier();
+			return sigConstraints.getTrustServiceTypeIdentifier();
 		}
 		return null;
 	}

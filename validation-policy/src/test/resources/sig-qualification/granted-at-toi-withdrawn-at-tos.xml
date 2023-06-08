@@ -129,8 +129,8 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>
                         <TSPName lang="en">TSP-7.1 Name</TSPName>
                     </TSPNames>
@@ -138,8 +138,8 @@
                         <TSPTradeName lang="en">TSP-7.1 Trade name</TSPTradeName>
                     </TSPTradeNames>
                     <TSPRegistrationIdentifiers/>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-7.1.2 Name</ServiceName>
                             </ServiceNames>
@@ -149,8 +149,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-7.1.2 Name Old</ServiceName>
                             </ServiceNames>
@@ -161,10 +161,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-B81EBDC8CE3C8CA9562C23B30388A2FD4A2C2975291520BA983D7158B139C55D">
                     <Status>GOOD</Status>
@@ -211,8 +211,8 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EBECEB08E8A5E37F0D537BBB7FD96EBE6548B87017CF65A5A8826FCBFA852FFD" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>
                         <TSPName lang="en">TSP-7.1 Name</TSPName>
                     </TSPNames>
@@ -220,8 +220,8 @@
                         <TSPTradeName lang="en">TSP-7.1 Trade name</TSPTradeName>
                     </TSPTradeNames>
                     <TSPRegistrationIdentifiers/>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-7.1.2 Name</ServiceName>
                             </ServiceNames>
@@ -231,8 +231,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-5E4A6FEF29AC8FF9A1753FDD67D59AF6D283E7E121D822CA2713FC0703DC7787">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-7.1.2 Name Old</ServiceName>
                             </ServiceNames>
@@ -243,10 +243,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>Xkpv7ymsj/mhdT/dZ9Wa9tKD5+Eh2CLKJxP8BwPcd4c=</DigestValue>

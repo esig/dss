@@ -189,7 +189,7 @@
                     <crlUrl>http://qca.crl.certum.pl/qca_2017.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-C6CCE3DE29054602EB4D937163EB4F8E4083F31408AFDA37A9C82E32D4F60F46">
                     <Status>GOOD</Status>
@@ -242,7 +242,7 @@
                     <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-C6CCE3DE29054602EB4D937163EB4F8E4083F31408AFDA37A9C82E32D4F60F46">
                     <Status>GOOD</Status>

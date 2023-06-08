@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -33,24 +33,24 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.List;
 
 /**
- * Checks if there are consistent by QSCD TrustedServices issues the certificate in question at control time
+ * Checks if there are consistent by QSCD TrustServices issues the certificate in question at control time
  *
  */
 public class CertificateIssuedByConsistentByQSCDTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
     /** List of consistent Trusted Services issued the certificate at control time */
-    private final List<TrustedServiceWrapper> trustServicesAtTime;
+    private final List<TrustServiceWrapper> trustServicesAtTime;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationCertificateQualification}
-     * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}
+     * @param trustServicesAtTime a list of {@link TrustServiceWrapper}
      * @param constraint {@link LevelConstraint}
      */
     public CertificateIssuedByConsistentByQSCDTrustServiceCheck(I18nProvider i18nProvider,
-                XmlValidationCertificateQualification result, List<TrustedServiceWrapper> trustServicesAtTime,
+                XmlValidationCertificateQualification result, List<TrustServiceWrapper> trustServicesAtTime,
                 LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
 

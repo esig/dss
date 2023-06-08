@@ -532,8 +532,30 @@ public interface ValidationPolicy {
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
 	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
 	 */
+	@Deprecated
 	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service type identifier constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service status constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
+	 */
+	@Deprecated
+	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns trusted service status constraint
@@ -542,7 +564,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
 	 *                                 the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
+	MultiValuesConstraint getTrustServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise

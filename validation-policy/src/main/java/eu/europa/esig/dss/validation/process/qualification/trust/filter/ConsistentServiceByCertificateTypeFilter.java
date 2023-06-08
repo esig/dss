@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
+import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustServiceChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Filters TrustedServices by qualifier and additional service information consistency
+ * Filters TrustServices by qualifier and additional service information consistency
  *
  */
-public class ConsistentServiceByCertificateTypeFilter implements TrustedServiceFilter {
+public class ConsistentServiceByCertificateTypeFilter implements TrustServiceFilter {
 
     /**
      * Default constructor
@@ -40,12 +40,12 @@ public class ConsistentServiceByCertificateTypeFilter implements TrustedServiceF
     }
 
     @Override
-    public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
-        List<TrustedServiceWrapper> result = new ArrayList<>();
-        for (TrustedServiceWrapper service : trustedServices) {
-            if (TrustedServiceChecker.isLegalPersonConsistent(service) && TrustedServiceChecker.isUsageConsistent(service) &&
-                    TrustedServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(service) &&
-                    TrustedServiceChecker.isPreEIDASQualifierAndAdditionalServiceInfoConsistent(service)) {
+    public List<TrustServiceWrapper> filter(List<TrustServiceWrapper> trustServices) {
+        List<TrustServiceWrapper> result = new ArrayList<>();
+        for (TrustServiceWrapper service : trustServices) {
+            if (TrustServiceChecker.isLegalPersonConsistent(service) && TrustServiceChecker.isUsageConsistent(service) &&
+                    TrustServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(service) &&
+                    TrustServiceChecker.isPreEIDASQualifierAndAdditionalServiceInfoConsistent(service)) {
                 result.add(service);
             }
         }

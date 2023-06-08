@@ -129,7 +129,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
                     <Status>GOOD</Status>
@@ -186,7 +186,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
                     <Status>GOOD</Status>
@@ -243,7 +243,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -296,7 +296,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

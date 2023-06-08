@@ -140,7 +140,7 @@ public class CertificateDiagnosticDataBuilderTest {
 		List<XmlCertificate> usedCertificatesDD = dd.getUsedCertificates();
 		boolean trusted = false;
 		for (XmlCertificate xmlCertificate : usedCertificatesDD) {
-			assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustedServiceProviders()));
+			assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
 			
 			if (xmlCertificate.isTrusted()) {
 				trusted = true;
@@ -220,9 +220,9 @@ public class CertificateDiagnosticDataBuilderTest {
 		boolean trusted = false;
 		for (XmlCertificate xmlCertificate : usedCertificatesDD) {
 			if (!xmlCertificate.isSelfSigned()) {
-				assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustedServiceProviders()));
-				assertEquals(1, xmlCertificate.getTrustedServiceProviders().size());
-				assertEquals(2, xmlCertificate.getTrustedServiceProviders().get(0).getTrustedServices().size());
+				assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
+				assertEquals(1, xmlCertificate.getTrustServiceProviders().size());
+				assertEquals(2, xmlCertificate.getTrustServiceProviders().get(0).getTrustServices().size());
 				if (xmlCertificate.isTrusted()) {
 					trusted = true;
 				}

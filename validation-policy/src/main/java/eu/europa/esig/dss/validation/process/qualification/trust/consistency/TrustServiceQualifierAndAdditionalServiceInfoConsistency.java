@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
@@ -33,7 +33,7 @@ import java.util.Map;
  * This class verifies consistency of the qualifiers and AdditionalServiceInformation within a Trusted Service
  *
  */
-class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements TrustedServiceCondition {
+class TrustServiceQualifierAndAdditionalServiceInfoConsistency implements TrustServiceCondition {
 
 	/** The correspondence map */
 	private static final Map<ServiceQualification, AdditionalServiceInformation> CORRESPONDENCE_MAP_QUALIFIER_ASI;
@@ -47,15 +47,15 @@ class TrustedServiceQualifierAndAdditionalServiceInfoConsistency implements Trus
 	}
 
 	@Override
-	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-		List<String> asis = trustedService.getAdditionalServiceInfos();
-		List<String> qualifiers = ServiceQualification.getUsageQualifiers(trustedService.getCapturedQualifiers());
+	public boolean isConsistent(TrustServiceWrapper trustService) {
+		List<String> asis = trustService.getAdditionalServiceInfos();
+		List<String> qualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifiers());
 		return isQualifierInAdditionServiceInfos(qualifiers, asis);
 	}
 
 	private boolean isQualifierInAdditionServiceInfos(List<String> qualifiers, List<String> asis) {
 		if (Utils.collectionSize(asis) >= 1) {
-			// Cannot have more than 1 usage (>1 is covered in TrustedServiceUsageConsistency)
+			// Cannot have more than 1 usage (>1 is covered in TrustServiceUsageConsistency)
 			if (Utils.collectionSize(qualifiers) == 1) {
 				String currentUsage = qualifiers.get(0);
 				ServiceQualification serviceQualification = ServiceQualification.getByUri(currentUsage);

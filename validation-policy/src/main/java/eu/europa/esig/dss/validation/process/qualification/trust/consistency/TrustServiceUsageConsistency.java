@@ -20,32 +20,31 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
- * A Trusted Service can not have QSCDStatusAsInCert and QSCD qualifiers for the same certificate.
+ * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.
  * 
  */
-class TrustedServiceQSCDStatusAsInCertConsistency implements TrustedServiceCondition {
+class TrustServiceUsageConsistency implements TrustServiceCondition {
 
 	@Override
-	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
+	public boolean isConsistent(TrustServiceWrapper trustService) {
 
-		boolean asInCert = ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers) ||
-				ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers);
+		List<String> capturedQualifiers = trustService.getCapturedQualifiers();
 
-		boolean qcsd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
-				ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers);
+		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);
+		boolean qcForEseal = ServiceQualification.isQcForEseal(capturedQualifiers);
+		boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
 
-		if (asInCert) {
-			return !qcsd;
-		}
+		boolean noneOfThem = !(qcForEsig || qcForEseal || qcForWSA);
+		boolean onlyOneOfThem = Stream.of(qcForEsig, qcForEseal, qcForWSA).filter(b -> b).count() == 1;
 
-		return true;
+		return noneOfThem || onlyOneOfThem;
 	}
 
 }

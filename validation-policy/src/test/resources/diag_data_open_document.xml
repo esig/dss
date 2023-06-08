@@ -271,7 +271,7 @@
                     <crlUrl>http://fdi.sinpe.fi.cr/repositorio/CA.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-703A8E4F71886016871680FB6455D83A8E920EF349BE0A669D85D31F0B4232A8">
                     <Status>GOOD</Status>
@@ -336,7 +336,7 @@
                     <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
                     <Status>GOOD</Status>
@@ -401,7 +401,7 @@
                     <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA%20SELLADO%20DE%20TIEMPO%20-%20COSTA%20RICA%20v2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-B63353136519CC56A8D37FFB0742B56BA2FF31DCBC2EFE37FE5FF918275205AF">
                     <Status>GOOD</Status>
@@ -455,7 +455,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>glPC290kSqLLATxUEAx+dHw/lpk/S2qT0HSVpYm+jWw=</DigestValue>
@@ -516,7 +516,7 @@
                     <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20POLITICA.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E24E4D9A635DDD44A4070669E11C0BF6A77CEBAE54FCBBBC9E03DCC4D20908F5">
                     <Status>GOOD</Status>
@@ -565,7 +565,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>/Z6nMJSOwlh1/TxKd4gV9X8iYfc5vomN1yD6LgfvfEI=</DigestValue>
@@ -624,7 +624,7 @@
                     <crlUrl>http://www.micit.go.cr/firmadigital/repositorio/CA%20RAIZ%20NACIONAL%20-%20COSTA%20RICA%20v2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E68A20C997866C3846D0BCF24B60EDE3DC832C65AC8123EB24C69F6C7DD969C4">
                     <Status>GOOD</Status>

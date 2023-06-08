@@ -56,7 +56,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
@@ -97,8 +97,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
@@ -9941,8 +9941,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -9999,8 +9999,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10032,17 +10032,17 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				} else {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10055,8 +10055,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(xmlDiagnosticData);
 
 		XmlCertificate xmlSigningCertificate = xmlDiagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
-		XmlTrustedService trustedService = xmlSigningCertificate.getTrustedServiceProviders().get(0).getTrustedServices().get(0);
-		trustedService.getMRATrustServiceMapping().setEquivalenceStatusStartingTime(new Date());
+		XmlTrustService trustService = xmlSigningCertificate.getTrustServiceProviders().get(0).getTrustServices().get(0);
+		trustService.getMRATrustServiceMapping().setEquivalenceStatusStartingTime(new Date());
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);
@@ -10080,8 +10080,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10113,17 +10113,17 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				} else {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10170,8 +10170,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10194,14 +10194,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				}
 				assertEquals(XmlStatus.OK, constraint.getStatus());
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10250,8 +10250,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10274,17 +10274,17 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				} else {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10321,8 +10321,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10382,8 +10382,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -13659,8 +13659,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		// for eSig only when type or QcStatement is defined
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
-		List<XmlTrustedServiceProvider> trustedServices = signingCertificate.getTrustedServiceProviders();
-		String tlId = trustedServices.get(0).getTL().getId();
+		List<XmlTrustServiceProvider> trustServices = signingCertificate.getTrustServiceProviders();
+		String tlId = trustServices.get(0).getTL().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -13690,14 +13690,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 					break;
 				}
 			}
-			assertFalse(mraTrustedServiceCheckFound);
+			assertFalse(mraTrustServiceCheckFound);
 		}
 	}
 

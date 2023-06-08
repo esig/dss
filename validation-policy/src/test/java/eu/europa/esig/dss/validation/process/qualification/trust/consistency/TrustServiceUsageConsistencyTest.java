@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import org.junit.jupiter.api.Test;
 
@@ -29,34 +29,35 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustedServiceLegalPersonConsistencyTest {
+public class TrustServiceUsageConsistencyTest {
 
-	private TrustedServiceCondition condition = new TrustedServiceLegalPersonConsistency();
+	private TrustServiceCondition condition = new TrustServiceUsageConsistency();
 
 	@Test
-	public void testEmpty() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void testNoUsage() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testLegalOnly() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
-		assertTrue(condition.isConsistent(service));
-	}
-
-	@Test
-	public void testESigOnly() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void testForEsigUsage() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testConflict() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
+	public void testForEsigAndEsealsUsage() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
+		assertFalse(condition.isConsistent(service));
+	}
+
+	@Test
+	public void testForEsigAndEsealsAndWsaUsage() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(
+				ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri(), ServiceQualification.QC_FOR_WSA.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

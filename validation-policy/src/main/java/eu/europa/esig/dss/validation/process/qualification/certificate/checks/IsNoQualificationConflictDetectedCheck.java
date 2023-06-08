@@ -34,12 +34,12 @@ import java.util.Set;
 
 /**
  * Verifies if there is no conflict in certificate qualification determination result
- * based on a use of different TrustedServices
+ * based on a use of different TrustServices
  *
  */
 public class IsNoQualificationConflictDetectedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	/** Set of obtained {@code CertificateQualification}s from various TrustedServices */
+	/** Set of obtained {@code CertificateQualification}s from various TrustServices */
 	private final Set<CertificateQualification> certificateQualificationsAtTime;
 
 	/**

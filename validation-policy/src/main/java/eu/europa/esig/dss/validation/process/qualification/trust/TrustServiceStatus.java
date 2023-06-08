@@ -24,7 +24,7 @@ package eu.europa.esig.dss.validation.process.qualification.trust;
  * ETSI TS 119 612 V2.2.1
  *
  */
-public enum TrustedServiceStatus {
+public enum TrustServiceStatus {
 
 	/* Previous status */
 
@@ -84,7 +84,7 @@ public enum TrustedServiceStatus {
 	/**
 	 * Empty constructor
 	 */
-	TrustedServiceStatus(String shortName, String uri, boolean postEidas, boolean valid) {
+	TrustServiceStatus(String shortName, String uri, boolean postEidas, boolean valid) {
 		this.shortName = shortName;
 		this.uri = uri;
 		this.postEidas = postEidas;
@@ -143,7 +143,7 @@ public enum TrustedServiceStatus {
 	 * @return TRUE if the status is acceptable before eIDAS, FALSE otherwise
 	 */
 	public static boolean isAcceptableStatusBeforeEIDAS(String uri) {
-		TrustedServiceStatus tss = fromUri(uri);
+		TrustServiceStatus tss = fromUri(uri);
 		return tss != null && tss.isPreEidas() && tss.isValid();
 	}
 
@@ -154,18 +154,18 @@ public enum TrustedServiceStatus {
 	 * @return TRUE if the status is acceptable after eIDAS, FALSE otherwise
 	 */
 	public static boolean isAcceptableStatusAfterEIDAS(String uri) {
-		TrustedServiceStatus tss = fromUri(uri);
+		TrustServiceStatus tss = fromUri(uri);
 		return tss != null && tss.isPostEidas() && tss.isValid();
 	}
 
 	/**
-	 * This method returns a corresponding {@code TrustedServiceStatus} by the given {@code uri}
+	 * This method returns a corresponding {@code TrustServiceStatus} by the given {@code uri}
 	 *
-	 * @param uri {@link String} to get {@code TrustedServiceStatus} for
-	 * @return {@link TrustedServiceStatus}
+	 * @param uri {@link String} to get {@code TrustServiceStatus} for
+	 * @return {@link TrustServiceStatus}
 	 */
-	public static TrustedServiceStatus fromUri(String uri) {
-		for (TrustedServiceStatus status : values()) {
+	public static TrustServiceStatus fromUri(String uri) {
+		for (TrustServiceStatus status : values()) {
 			if (status.getUri().equals(uri)) {
 				return status;
 			}

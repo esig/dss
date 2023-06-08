@@ -29,8 +29,8 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -365,19 +365,19 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlTrustAnchors getXmlTrustAnchors(String certId) {
-		List<XmlTrustedServiceProvider> xmlTrustedServiceProviders = filterByCertificateId(certId);
-		if (Utils.isCollectionNotEmpty(xmlTrustedServiceProviders)) {
+		List<XmlTrustServiceProvider> xmlTrustServiceProviders = filterByCertificateId(certId);
+		if (Utils.isCollectionNotEmpty(xmlTrustServiceProviders)) {
 			final XmlTrustAnchors xmlTrustAnchors = new XmlTrustAnchors();
-			for (XmlTrustedServiceProvider trustedServiceProvider : xmlTrustedServiceProviders) {
+			for (XmlTrustServiceProvider trustServiceProvider : xmlTrustServiceProviders) {
 				final XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
-				trustAnchor.setCountryCode(trustedServiceProvider.getTL().getCountryCode());
-				trustAnchor.setTSLType(trustedServiceProvider.getTL().getTSLType());
-				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustedServiceProvider.getTSPNames()));
-				List<String> tspRegistrationIdentifiers = trustedServiceProvider.getTSPRegistrationIdentifiers();
+				trustAnchor.setCountryCode(trustServiceProvider.getTL().getCountryCode());
+				trustAnchor.setTSLType(trustServiceProvider.getTL().getTSLType());
+				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustServiceProvider.getTSPNames()));
+				List<String> tspRegistrationIdentifiers = trustServiceProvider.getTSPRegistrationIdentifiers();
 				if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
 					trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
 				}
-				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustedServiceProvider));
+				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustServiceProvider));
 				xmlTrustAnchors.getTrustAnchor().add(trustAnchor);
 			}
 			return xmlTrustAnchors;
@@ -385,10 +385,10 @@ public class SimpleReportBuilder {
 		return null;
 	}
 
-	private Set<String> getUniqueServiceNames(XmlTrustedServiceProvider trustedServiceProvider) {
+	private Set<String> getUniqueServiceNames(XmlTrustServiceProvider trustServiceProvider) {
 		Set<String> result = new HashSet<>();
-		for (XmlTrustedService xmlTrustedService : trustedServiceProvider.getTrustedServices()) {
-			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
+		for (XmlTrustService xmlTrustService : trustServiceProvider.getTrustServices()) {
+			result.add(getEnOrFirst(xmlTrustService.getServiceNames()));
 		}
 		return result;
 	}
@@ -405,20 +405,20 @@ public class SimpleReportBuilder {
 		return null;
 	}
 
-	private List<XmlTrustedServiceProvider> filterByCertificateId(String certId) {
+	private List<XmlTrustServiceProvider> filterByCertificateId(String certId) {
 		CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
-		List<XmlTrustedServiceProvider> result = new ArrayList<>();
-		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : certificate.getTrustServiceProviders()) {
-			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+		List<XmlTrustServiceProvider> result = new ArrayList<>();
+		for (XmlTrustServiceProvider xmlTrustServiceProvider : certificate.getTrustServiceProviders()) {
+			List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
 			boolean foundCertId = false;
-			for (XmlTrustedService xmlTrustedService : trustedServices) {
-				if (Utils.areStringsEqual(certId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
+			for (XmlTrustService xmlTrustService : trustServices) {
+				if (Utils.areStringsEqual(certId, xmlTrustService.getServiceDigitalIdentifier().getId())) {
 					foundCertId = true;
 					break;
 				}
 			}
 			if (foundCertId) {
-				result.add(xmlTrustedServiceProvider);
+				result.add(xmlTrustServiceProvider);
 			}
 		}
 		return result;

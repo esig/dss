@@ -164,7 +164,7 @@
                 </CRLDistributionPoints>
                 <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>CO+aCSm9S5Ob2ywIeldZMb2f/acwxnXDOfnZVzADH5I=</DigestValue>
@@ -237,7 +237,7 @@
                     <subjectAlternativeName type="directoryName">C=SK,L=Bratislava,2.5.4.5=#534b2d353033343932130e4e54523837,OU=rep,O=Mini,CN=SR</subjectAlternativeName>
                 </SubjectAlternativeNames>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-256CEE0ACEF44437E2E9BA0F29B7E7D1D9D3313ED33B5FE220E4F49A04A8435D">
                     <Status>GOOD</Status>
@@ -290,7 +290,7 @@
                     <certificatePolicy cpsUrl="https://snca.gov.sk/cps/cps_snca.pdf">1.3.158.42156424.0.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>caawz363k8ala/tKZ6bmHojWrUGASl3jnrikQ7Zlgew=</DigestValue>
@@ -355,7 +355,7 @@
                     <crlUrl>http://cdp2.snca.gov.sk/snca4/crl/snca4.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>tZzh2WEuQEOhdc3RFxXZkVXNneuudlzc+RgUDXwJxhw=</DigestValue>
@@ -412,7 +412,7 @@
                     <octets>BIIBLjCCASowOwYIKwYBBQUHMAWGL2h0dHA6Ly9lcC5uYnVzci5zay9rY2EvY2VydHMva2NhMy9rY2FuYnVzcjMucDdjMHoGCCsGAQUFBzAFhm5sZGFwOi8vZXAubmJ1c3Iuc2svY249S0NBIE5CVSBTUiAzLG91PVNJQkVQLG89TmFyb2RueSBiZXpwZWNub3N0bnkgdXJhZCxsPUJyYXRpc2xhdmEsYz1TSz9jYUNlcnRpZmljYXRlO2JpbmFyeTBvBggrBgEFBQcwBYZjbGRhcDovLy9jbj1LQ0EgTkJVIFNSIDMsb3U9U0lCRVAsbz1OYXJvZG55IGJlenBlY25vc3RueSB1cmFkLGw9QnJhdGlzbGF2YSxjPVNLP2NhQ2VydGlmaWNhdGU7YmluYXJ5</octets>
                 </OtherExtension>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
@@ -484,7 +484,7 @@
                     <octets>BDswOTAXBg0rgR6RmYQFAAAAAQICBgYEAIswAQEwHgYNK4EekZmEBQAAAAECAgYNK4EekZmEBQAAAAECAg==</octets>
                 </OtherExtension>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>8jC+yyex7iLrS4PoS1SJBK8uVaUp8G1bMVpCp/mvXhs=</DigestValue>

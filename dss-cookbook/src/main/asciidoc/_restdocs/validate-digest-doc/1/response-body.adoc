@@ -179,7 +179,7 @@
       "SelfSigned" : false,
       "certificatePolicy" : [ ],
       "QcStatements" : null,
-      "TrustedServiceProvider" : null,
+      "TrustServiceProvider" : null,
       "CertificateRevocation" : null,
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {
@@ -250,7 +250,7 @@
       "SelfSigned" : false,
       "certificatePolicy" : [ ],
       "QcStatements" : null,
-      "TrustedServiceProvider" : [ ],
+      "TrustServiceProvider" : [ ],
       "CertificateRevocation" : null,
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {

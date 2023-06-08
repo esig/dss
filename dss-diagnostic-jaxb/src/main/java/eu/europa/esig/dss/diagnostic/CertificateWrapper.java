@@ -43,14 +43,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustedServiceMapping;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
@@ -410,13 +410,13 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return {@link Date} expiredCertsRevocationInfo extension
 	 */
 	public Date getCertificateTSPServiceExpiredCertsRevocationInfo() {
-		List<XmlTrustedServiceProvider> trustedServiceProviders = certificate.getTrustedServiceProviders();
-		if (trustedServiceProviders != null) {
-			for (XmlTrustedServiceProvider trustedServiceProvider : trustedServiceProviders) {
-				List<XmlTrustedService> trustedServices = trustedServiceProvider.getTrustedServices();
-				for (XmlTrustedService xmlTrustedService : trustedServices) {
-					if (xmlTrustedService.getExpiredCertsRevocationInfo() != null) {
-						return xmlTrustedService.getExpiredCertsRevocationInfo(); // TODO improve
+		List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+		if (trustServiceProviders != null) {
+			for (XmlTrustServiceProvider trustServiceProvider : trustServiceProviders) {
+				List<XmlTrustService> trustServices = trustServiceProvider.getTrustServices();
+				for (XmlTrustService xmlTrustService : trustServices) {
+					if (xmlTrustService.getExpiredCertsRevocationInfo() != null) {
+						return xmlTrustService.getExpiredCertsRevocationInfo(); // TODO improve
 					}
 				}
 			}
@@ -566,55 +566,77 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the Trusted List has been reached, FALSE otherwise
 	 */
 	public boolean isTrustedListReached() {
-		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
+		List<XmlTrustServiceProvider> tsps = certificate.getTrustServiceProviders();
 		return tsps != null && !tsps.isEmpty();
 	}
 
 	/**
-	 * Returns a list of {@code XmlTrustedServiceProvider}s
+	 * Returns a list of {@code XmlTrustServiceProvider}s
 	 *
-	 * @return a list of {@link XmlTrustedServiceProvider}s
+	 * @return a list of {@link XmlTrustServiceProvider}s
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceProviders} method instead.
 	 */
-	public List<XmlTrustedServiceProvider> getTrustServiceProviders() {
-		return certificate.getTrustedServiceProviders();
+	@Deprecated
+	public List<XmlTrustServiceProvider> getTrustedServiceProviders() {
+		return getTrustServiceProviders();
 	}
 
 	/**
-	 * Returns a list of {@code TrustedServiceWrapper}s
+	 * Returns a list of {@code XmlTrustServiceProvider}s
 	 *
-	 * @return a list of {@link TrustedServiceWrapper}s
+	 * @return a list of {@link XmlTrustServiceProvider}s
 	 */
-	public List<TrustedServiceWrapper> getTrustedServices() {
-		List<TrustedServiceWrapper> result = new ArrayList<>();
-		List<XmlTrustedServiceProvider> tsps = certificate.getTrustedServiceProviders();
+	public List<XmlTrustServiceProvider> getTrustServiceProviders() {
+		return certificate.getTrustServiceProviders();
+	}
+
+	/**
+	 * Returns a list of {@code TrustServiceWrapper}s
+	 *
+	 * @return a list of {@link TrustServiceWrapper}s
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServices} method instead.
+	 */
+	@Deprecated
+	public List<TrustServiceWrapper> getTrustedServices() {
+		return getTrustServices();
+	}
+
+	/**
+	 * Returns a list of {@code TrustServiceWrapper}s
+	 *
+	 * @return a list of {@link TrustServiceWrapper}s
+	 */
+	public List<TrustServiceWrapper> getTrustServices() {
+		List<TrustServiceWrapper> result = new ArrayList<>();
+		List<XmlTrustServiceProvider> tsps = certificate.getTrustServiceProviders();
 		if (tsps != null) {
-			for (XmlTrustedServiceProvider tsp : tsps) {
+			for (XmlTrustServiceProvider tsp : tsps) {
 				List<String> tspNames = getValues(tsp.getTSPNames());
 				List<String> tspTradeNames = getValues(tsp.getTSPTradeNames());
-				List<XmlTrustedService> trustedServices = tsp.getTrustedServices();
-				if (trustedServices != null) {
-					for (XmlTrustedService trustedService : trustedServices) {
-						TrustedServiceWrapper wrapper = new TrustedServiceWrapper();
+				List<XmlTrustService> trustServices = tsp.getTrustServices();
+				if (trustServices != null) {
+					for (XmlTrustService trustService : trustServices) {
+						TrustServiceWrapper wrapper = new TrustServiceWrapper();
 						wrapper.setTrustedList(tsp.getTL());
 						wrapper.setListOfTrustedLists(tsp.getLOTL());
 						wrapper.setTspNames(tspNames);
 						wrapper.setTspTradeNames(tspTradeNames);
-						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustedService.getServiceDigitalIdentifier()));
-						wrapper.setServiceNames(getValues(trustedService.getServiceNames()));
-						wrapper.setStatus(trustedService.getStatus());
-						wrapper.setType(trustedService.getServiceType());
-						wrapper.setStartDate(trustedService.getStartDate());
-						wrapper.setEndDate(trustedService.getEndDate());
-						wrapper.setCapturedQualifiers(new ArrayList<>(trustedService.getCapturedQualifiers()));
-						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustedService.getAdditionalServiceInfoUris()));
-						wrapper.setEnactedMRA(trustedService.isEnactedMRA());
+						wrapper.setServiceDigitalIdentifier(new CertificateWrapper(trustService.getServiceDigitalIdentifier()));
+						wrapper.setServiceNames(getValues(trustService.getServiceNames()));
+						wrapper.setStatus(trustService.getStatus());
+						wrapper.setType(trustService.getServiceType());
+						wrapper.setStartDate(trustService.getStartDate());
+						wrapper.setEndDate(trustService.getEndDate());
+						wrapper.setCapturedQualifiers(new ArrayList<>(trustService.getCapturedQualifiers()));
+						wrapper.setAdditionalServiceInfos(new ArrayList<>(trustService.getAdditionalServiceInfoUris()));
+						wrapper.setEnactedMRA(trustService.isEnactedMRA());
 
-						XmlMRATrustServiceMapping mraTrustServiceMapping = trustedService.getMRATrustServiceMapping();
+						XmlMRATrustServiceMapping mraTrustServiceMapping = trustService.getMRATrustServiceMapping();
 						if (mraTrustServiceMapping != null) {
 							wrapper.setMraTrustServiceLegalIdentifier(mraTrustServiceMapping.getTrustServiceLegalIdentifier());
 							wrapper.setMraTrustServiceEquivalenceStatusStartingTime(mraTrustServiceMapping.getEquivalenceStatusStartingTime());
 							wrapper.setMraTrustServiceEquivalenceStatusEndingTime(mraTrustServiceMapping.getEquivalenceStatusEndingTime());
-							XmlOriginalThirdCountryTrustedServiceMapping originalThirdCountryMapping = mraTrustServiceMapping.getOriginalThirdCountryMapping();
+							XmlOriginalThirdCountryTrustServiceMapping originalThirdCountryMapping = mraTrustServiceMapping.getOriginalThirdCountryMapping();
 							if (originalThirdCountryMapping != null) {
 								wrapper.setOriginalTCType(originalThirdCountryMapping.getServiceType());
 								wrapper.setOriginalTCStatus(originalThirdCountryMapping.getStatus());

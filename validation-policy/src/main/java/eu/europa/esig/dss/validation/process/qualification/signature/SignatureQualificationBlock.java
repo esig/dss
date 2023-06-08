@@ -26,7 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -47,8 +47,8 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCD
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,7 +120,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			List<TrustServiceWrapper> originalTSPs = signingCertificate.getTrustServices();
 			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
@@ -165,8 +165,8 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
 				// 1. filter by service for CAQC
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
-				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+				TrustServiceFilter filter = TrustServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
 				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 						signingCertificate, acceptableServices);

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
@@ -54,28 +54,28 @@ public final class TypeStrategyFactory {
 	/**
 	 * Creates a {@code TypeStrategy} from a Trusted Service
 	 *
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus}
 	 * @param typeInCert {@link TypeStrategy}
 	 * @return {@link TypeStrategy}
 	 */
-	public static TypeStrategy createTypeFromTL(TrustedServiceWrapper trustedService,
+	public static TypeStrategy createTypeFromTL(TrustServiceWrapper trustService,
 												CertificateQualifiedStatus qualified, TypeStrategy typeInCert) {
-		return new TypeByTL(trustedService, qualified, typeInCert);
+		return new TypeByTL(trustService, qualified, typeInCert);
 	}
 
 	/**
 	 * Creates a {@code TypeStrategy} from a certificate and Trusted Service
 	 *
 	 * @param signingCertificate {@link CertificateWrapper}
-	 * @param caQcTrustedService {@link TrustedServiceWrapper}
+	 * @param caQcTrustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus}
 	 * @return {@link TypeStrategy}
 	 */
-	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustedServiceWrapper caQcTrustedService,
+	public static TypeStrategy createTypeFromCertAndTL(CertificateWrapper signingCertificate, TrustServiceWrapper caQcTrustService,
 			CertificateQualifiedStatus qualified) {
 		TypeStrategy typeFromCert = createTypeFromCert(signingCertificate);
-		return createTypeFromTL(caQcTrustedService, qualified, typeFromCert);
+		return createTypeFromTL(caQcTrustService, qualified, typeFromCert);
 	}
 
 }

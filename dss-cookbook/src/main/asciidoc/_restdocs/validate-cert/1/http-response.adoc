@@ -81,7 +81,7 @@ Content-Length: 7511
       "SelfSigned" : false,
       "certificatePolicy" : [ ],
       "QcStatements" : null,
-      "TrustedServiceProvider" : [ ],
+      "TrustServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {

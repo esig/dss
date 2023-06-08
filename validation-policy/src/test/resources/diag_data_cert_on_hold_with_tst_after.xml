@@ -175,7 +175,7 @@
                     <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>YoSgO6+uhhow46JaAwQoMG9+tSvQuld6HZYqgJqDDJ4=</DigestValue>
@@ -218,7 +218,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>bGHaw6Le8DFQa+A20qb+QBmU+9E9+cjUZlmSdMRG7Jg=</DigestValue>
@@ -276,7 +276,7 @@
                     <crlUrl>http://crl3.netlock.hu/index.cgi?crl=gold</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>fOHbfRbpv+gGkyFKPXxiY6okeJ45kBfmnt5IAuz29xE=</DigestValue>
@@ -324,7 +324,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>nerWLOolyJl1vWQwMB+KKUhKKdkFkuQ/NCK2N0yNbrQ=</DigestValue>
@@ -371,7 +371,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>rldB7as17Vsw/c7qKoKcucVBRS91tJfyNd/Gpy2UjU4=</DigestValue>
@@ -440,7 +440,7 @@
                     <crlUrl>http://crl3.netlock.hu/index.cgi?crl=qtrustscd</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-94C4F5E33BEC167E48FC8D5FD9775594469528ED66BC8F6ED6F07F5FF2E7264E">
                     <Status>GOOD</Status>
@@ -516,7 +516,7 @@
                     <crlUrl>http://crl3.netlock.hu/index.cgi?crl=cqlca</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-FB6207D6602E4A7DE29FC73C5E80A3490273E71724BD6670054857B96D37EBE7">
                     <Status>GOOD</Status>

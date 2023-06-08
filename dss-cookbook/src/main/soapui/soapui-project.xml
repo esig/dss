@@ -184,7 +184,7 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
-                            <xs:element form="qualified" maxOccurs="unbounded" name="TrustedServiceProvider" type="ns3:TrustedServiceProviderType"/>
+                            <xs:element form="qualified" maxOccurs="unbounded" name="TrustServiceProvider" type="ns3:TrustServiceProviderType"/>
                             <xs:element form="qualified" name="Revocation" type="ns3:RevocationType"/>
                             <xs:element form="qualified" minOccurs="0" name="Info" type="ns3:InfoType"/>
                           </xs:sequence>
@@ -606,7 +606,7 @@
                             </xs:sequence>
                           </xs:complexType>
                         </xs:element>
-                        <xs:element maxOccurs="unbounded" name="TrustedServiceProvider" type="tns:TrustedServiceProviderType"/>
+                        <xs:element maxOccurs="unbounded" name="TrustServiceProvider" type="tns:TrustServiceProviderType"/>
                         <xs:element name="Revocation" type="tns:RevocationType"/>
                         <xs:element minOccurs="0" name="Info" type="tns:InfoType"/>
                       </xs:sequence>
@@ -727,7 +727,7 @@
           </xs:extension>
         </xs:simpleContent>
       </xs:complexType>
-      <xs:complexType name="TrustedServiceProviderType">
+      <xs:complexType name="TrustServiceProviderType">
         <xs:sequence>
           <xs:element name="TSPName" type="xs:string"/>
           <xs:element name="TSPServiceName" type="xs:string"/>
@@ -4199,10 +4199,10 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element minOccurs="0" name="TrustedServiceProviders">
+              <xs:element minOccurs="0" name="TrustServiceProviders">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustedServiceProvider" type="tns:TrustedServiceProvider"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustServiceProvider" type="tns:TrustServiceProvider"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -4240,21 +4240,21 @@
           </xs:extension>
         </xs:simpleContent>
       </xs:complexType>
-      <xs:complexType name="TrustedServiceProvider">
+      <xs:complexType name="TrustServiceProvider">
         <xs:sequence>
           <xs:element name="TSPName" type="xs:string"/>
           <xs:element minOccurs="0" name="TSPRegistrationIdentifier" type="xs:string"/>
           <xs:element name="CountryCode" type="xs:string"/>
-          <xs:element name="TrustedServices">
+          <xs:element name="TrustServices">
             <xs:complexType>
               <xs:sequence>
-                <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustedService" type="tns:TrustedService"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustService" type="tns:TrustService"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="TrustedService">
+      <xs:complexType name="TrustService">
         <xs:sequence>
           <xs:element name="ServiceDigitalIdentifier" type="xs:IDREF"/>
           <xs:element name="ServiceName" type="xs:string"/>

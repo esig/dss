@@ -105,12 +105,12 @@
                     <ocspUrl>http://www.openlimit.ol/CRYPTOMODULE/OCSP</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -118,8 +118,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -127,10 +127,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
@@ -178,12 +178,12 @@
                     <ocspUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -192,8 +192,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -202,10 +202,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-c01fc833d83eaf08f4031a1915a72be6602a63587c5b65227d37461e35019532a089b92ca229216ae9b9f8bd39a8b3ef699a47371a5222f18b4a39995cca222b">
                     <Status>GOOD</Status>
@@ -258,12 +258,12 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -271,8 +271,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -280,10 +280,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-24abe927f4c70fb2371fa5463a31acbda662e791d0aa081bbbbad36b2bf52b2b05cec01ec463a560fe91afd35a34ef0013b00a1ae3c683d6221da519f914f596">
                     <Status>GOOD</Status>
@@ -339,12 +339,12 @@
                     <ocspUrl>http://www.openlimit.ol:88/CRYPTOMODULE/OCSP</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-0013AA239E312832FED38D6561B49CB57FFD4E32D3BBE78747AA0709BD6F556B">
                     <TSPNames><TSPName lang="en">OpenLimit Test-CA</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202620438</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -352,8 +352,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F145A9DAD28DF97225EAB290FB6097166A7EB7F69E09F1ABADF98F70708042BD">
                             <ServiceNames><ServiceName lang="en">OpenLimit CryptoModule 2019 XCA CHAIN ROOT</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -361,10 +361,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-f4703e9ef1a4f93a57eb9cd2e63738870838fbb59f6de9c07d4adabe2255b7290522d1b953212894552cc55819e3ace59011930fca14e38f65c67fc15e4adca9">
                     <Status>GOOD</Status>

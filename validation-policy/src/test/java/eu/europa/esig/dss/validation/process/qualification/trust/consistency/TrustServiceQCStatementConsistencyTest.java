@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import org.junit.jupiter.api.Test;
 
@@ -29,34 +29,34 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustedServiceQSCDConsistencyTest {
+public class TrustServiceQCStatementConsistencyTest {
 
-	private TrustedServiceCondition condition = new TrustedServiceQSCDConsistency();
+	private TrustServiceCondition condition = new TrustServiceQCStatementConsistency();
 
 	@Test
-	public void testNoInfo() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void testEmpty() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testQSCD() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri()));
+	public void testQCStatementOnly() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testNoQSCD() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri()));
+	public void testNoQualifiedOnly() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri(), ServiceQualification.QC_WITH_QSCD.getUri()));
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED.getUri(), ServiceQualification.QC_STATEMENT.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

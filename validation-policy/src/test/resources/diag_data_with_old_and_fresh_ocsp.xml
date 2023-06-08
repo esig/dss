@@ -263,7 +263,7 @@
                     <ocspUrl>http://aia.sk.ee/CA</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>VytsB7DNSEhmHwmXhJinqpasQ6qI0Mgrd2DUBGpwK2Y=</DigestValue>
@@ -320,7 +320,7 @@
                     <crlUrl>http://commissign.pki.ec.europa.eu/info/crl/onlineCA.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-14DEC8F5B4B8746F3B4E5133774B2C279F2B155D11EB3D702B28772D348B7C41">
                     <Status>GOOD</Status>

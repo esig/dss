@@ -309,17 +309,17 @@
 	    </jaxb:property>
     </jaxb:bindings>
     
-    <jaxb:bindings node="//xs:complexType[@name='TrustedService']//xs:attribute[@name='ServiceDigitalIdentifier']">
+    <jaxb:bindings node="//xs:complexType[@name='TrustService']//xs:attribute[@name='ServiceDigitalIdentifier']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate" />
         </jaxb:property>
     </jaxb:bindings>
-    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='TL']">
+    <jaxb:bindings node="//xs:complexType[@name='TrustServiceProvider']//xs:attribute[@name='TL']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
         </jaxb:property>
     </jaxb:bindings>
-    <jaxb:bindings node="//xs:complexType[@name='TrustedServiceProvider']//xs:attribute[@name='LOTL']">
+    <jaxb:bindings node="//xs:complexType[@name='TrustServiceProvider']//xs:attribute[@name='LOTL']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList" />
         </jaxb:property>

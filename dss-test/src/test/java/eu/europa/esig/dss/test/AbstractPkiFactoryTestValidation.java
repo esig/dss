@@ -514,7 +514,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkStructureValidation(diagnosticData);
 		checkTokens(diagnosticData);
 		checkCounterSignatures(diagnosticData);
-		checkTrustedServices(diagnosticData);
+		checkTrustServices(diagnosticData);
 		checkContainerInfo(diagnosticData);
 		checkPDFAInfo(diagnosticData);
 
@@ -1284,7 +1284,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	protected void checkTrustedServices(DiagnosticData diagnosticData) {
+	protected void checkTrustServices(DiagnosticData diagnosticData) {
 		// not implemented by default
 	}
 

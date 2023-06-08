@@ -45,12 +45,12 @@
                     <crlUrl>http://rdc.f.hr/Root/fRootCA.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -59,15 +59,15 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-12-06T23:00:00Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
@@ -75,17 +75,17 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-12-06T23:00:00Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
@@ -140,12 +140,12 @@
                     <crlUrl>ldap://rdc-ldap2.f.hr/cn=f%20RDC%202015,o=f%20a,c=HR?certificateRevocationList%3Bbinary</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -160,8 +160,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
@@ -169,10 +169,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>
         <Certificate Id="C-A1E2D4CA9C521332369FA3224F0B7282AD2596E8A7416CBC0DF087E05D8F5502">
@@ -231,12 +231,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-59DBC56C0EBAC2D3BCFA7859C2457C19FF2F033D33FFC4B989F24432A16E2F72" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">f a</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATHR-11111111111</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - QC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -251,8 +251,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-857BFCE43B1BB4601FF4543B46D3FB2E213BF9B4FEEB6F13BE9EF45C04FF6F8B">
                             <ServiceNames><ServiceName lang="en">f RDC 2015 Digital Certificate Registry - NQC</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
@@ -261,10 +261,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-a1e2d4ca9c521332369fa3224f0b7282ad2596e8a7416cbc0df087e05d8f5502ee61c3ce61699e2ba6898ae5d8dce78dc246bf1a07590adf78c44e00f59d4fab">
                     <Status>GOOD</Status>

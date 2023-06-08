@@ -120,7 +120,7 @@
                     <certificatePolicy cpsUrl="http://docs.universign.eu/">1.3.6.1.4.1.15819.5.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>T2AHZm4cKaIBsUXef5u+Fg4Qs8YHQ3c6LoOOrA/E15o=</DigestValue>
@@ -171,7 +171,7 @@
                     <crlUrl>http://crl.universign.eu/tsa_root.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-8BA8AE7751FC8DAA65F113239BCCC2A5E1AD41A95D7600F25721A42B7F6527DC">
                     <Status>GOOD</Status>
@@ -305,7 +305,7 @@
                     <crlUrl>http://crl.luxtrust.lu/LTGRCA.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>24eUF+wUJOTlejyR7IBMXeTG/ec8yCgc0vW67XbdZUg=</DigestValue>
@@ -370,7 +370,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-07D5870CD192DF6D2F9054CDF3D47CE6D5DA164AB112EEDD70A1F78E1955B3D0">
                     <Status>UNKNOWN</Status>

@@ -18,27 +18,43 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
+package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.enumerations.ServiceQualification;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A Trusted Service can not have QCForESig and QCForLegalPerson qualifiers for the same certificate.
+ * Abstract filter defining the main logic of filters
+ *
  */
-class TrustedServiceLegalPersonConsistency implements TrustedServiceCondition {
+public abstract class AbstractTrustServiceFilter implements TrustServiceFilter {
+
+	/**
+	 * Default constructor
+	 */
+	protected AbstractTrustServiceFilter() {
+		// empty
+	}
 
 	@Override
-	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-
-		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
-
-		boolean qcForLegalPerson = ServiceQualification.isQcForLegalPerson(capturedQualifiers);
-		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);
-
-		return (!(qcForLegalPerson && qcForEsig));
+	public List<TrustServiceWrapper> filter(List<TrustServiceWrapper> originServices) {
+		List<TrustServiceWrapper> result = new ArrayList<>();
+		for (TrustServiceWrapper service : originServices) {
+			if (isAcceptable(service)) {
+				result.add(service);
+			}
+		}
+		return result;
 	}
+
+	/**
+	 * Checks whether the {@code service} is acceptable
+	 *
+	 * @param service {@link TrustServiceWrapper} to check
+	 * @return TRUE if the {@code service} is acceptable, FALSE otherwise
+	 */
+	protected abstract boolean isAcceptable(TrustServiceWrapper service);
 
 }

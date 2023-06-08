@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -33,25 +33,25 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.List;
 
 /**
- * Checks whether the validator was able to select one TrustedService
- * (in condition that there is no conflict with other TrustedServices)
+ * Checks whether the validator was able to select one TrustService
+ * (in condition that there is no conflict with other TrustServices)
  *
  */
 public class IsAbleToSelectOneTrustService extends ChainItem<XmlValidationCertificateQualification> {
 
-	/** List of selected TrustedServices */
-	private final List<TrustedServiceWrapper> trustServicesAtTime;
+	/** List of selected TrustServices */
+	private final List<TrustServiceWrapper> trustServicesAtTime;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
-	 * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}s
+	 * @param trustServicesAtTime a list of {@link TrustServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public IsAbleToSelectOneTrustService(I18nProvider i18nProvider, XmlValidationCertificateQualification result, 
-			List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+			List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustServicesAtTime = trustServicesAtTime;

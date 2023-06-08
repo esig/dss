@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ public class ServiceByMRAEnactedFilterTest {
     public void enactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setEnactedMRA(true);
 
         assertEquals(1, filter.filter(Collections.singletonList(service)).size());
@@ -52,7 +52,7 @@ public class ServiceByMRAEnactedFilterTest {
     public void notEnactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setEnactedMRA(false);
 
         assertEquals(0, filter.filter(Collections.singletonList(service)).size());
@@ -62,7 +62,7 @@ public class ServiceByMRAEnactedFilterTest {
     public void noEnactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setEnactedMRA(null);
 
         assertEquals(0, filter.filter(Collections.singletonList(service)).size());

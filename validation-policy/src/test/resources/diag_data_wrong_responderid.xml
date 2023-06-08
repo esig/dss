@@ -183,7 +183,7 @@
                     <crlUrl>http://proxy.fineid.fi/arl/vrkroot2a.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>Oag1sUtrYxP3eDccectDTdUYyP0yW3Sdm+Zp3/IDhOg=</DigestValue>
@@ -242,7 +242,7 @@
                     <caIssuersUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</caIssuersUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>nm7isQI61S67qC4GQICfgJxkrsgBuqrdQzwaB6lp/ow=</DigestValue>
@@ -304,7 +304,7 @@
                     <crlUrl>http://proxy.fineid.fi/crl/vrkcqc3c.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">
                     <Status>GOOD</Status>

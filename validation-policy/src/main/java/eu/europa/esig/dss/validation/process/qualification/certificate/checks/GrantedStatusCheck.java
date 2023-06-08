@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -30,9 +30,9 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,25 +40,25 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Verifies if the certificate has TrustedServices with a 'granted' status
+ * Verifies if the certificate has TrustServices with a 'granted' status
  *
  * @param <T> {@link XmlConstraintsConclusion}
  */
 public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	/** List of {@link TrustedServiceWrapper}s with a 'granted status' */
-	private final List<TrustedServiceWrapper> trustServicesAtTime;
+	/** List of {@link TrustServiceWrapper}s with a 'granted status' */
+	private final List<TrustServiceWrapper> trustServicesAtTime;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlConstraintsConclusion}
-	 * @param trustServicesAtTime a list of {@link TrustedServiceWrapper}s
+	 * @param trustServicesAtTime a list of {@link TrustServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public GrantedStatusCheck(I18nProvider i18nProvider, T result, 
-			List<TrustedServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+			List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustServicesAtTime = trustServicesAtTime;
@@ -66,7 +66,7 @@ public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends Chai
 
 	@Override
 	protected boolean process() {
-		TrustedServiceFilter filterByGranted = TrustedServicesFilterFactory.createFilterByGranted();
+		TrustServiceFilter filterByGranted = TrustServicesFilterFactory.createFilterByGranted();
 		return Utils.isCollectionNotEmpty(filterByGranted.filter(trustServicesAtTime));
 	}
 
@@ -90,9 +90,9 @@ public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends Chai
 
 	private Collection<String> getStatusList() {
 		Set<String> identifiers = new HashSet<>();
-		for (TrustedServiceWrapper trustedService : trustServicesAtTime) {
-			String status = trustedService.getStatus();
-			TrustedServiceStatus tss = TrustedServiceStatus.fromUri(status);
+		for (TrustServiceWrapper trustService : trustServicesAtTime) {
+			String status = trustService.getStatus();
+			TrustServiceStatus tss = TrustServiceStatus.fromUri(status);
 			identifiers.add(tss != null ? tss.getShortName() : status);
 		}
 		return identifiers;

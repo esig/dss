@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import org.junit.jupiter.api.Test;
 
@@ -29,34 +29,34 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustedServiceQCStatementConsistencyTest {
+public class TrustServiceLegalPersonConsistencyTest {
 
-	private TrustedServiceCondition condition = new TrustedServiceQCStatementConsistency();
+	private TrustServiceCondition condition = new TrustServiceLegalPersonConsistency();
 
 	@Test
 	public void testEmpty() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testQCStatementOnly() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_STATEMENT.getUri()));
+	public void testLegalOnly() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testNoQualifiedOnly() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED.getUri()));
+	public void testESigOnly() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testConflict() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.NOT_QUALIFIED.getUri(), ServiceQualification.QC_STATEMENT.getUri()));
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

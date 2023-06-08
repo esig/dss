@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import org.junit.jupiter.api.Test;
 
@@ -29,35 +29,34 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustedServiceUsageConsistencyTest {
+public class TrustServiceQSCDConsistencyTest {
 
-	private TrustedServiceCondition condition = new TrustedServiceUsageConsistency();
+	private TrustServiceCondition condition = new TrustServiceQSCDConsistency();
 
 	@Test
-	public void testNoUsage() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void testNoInfo() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigUsage() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri()));
+	public void testQSCD() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigAndEsealsUsage() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
-		assertFalse(condition.isConsistent(service));
+	public void testNoQSCD() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri()));
+		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigAndEsealsAndWsaUsage() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(
-				ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri(), ServiceQualification.QC_FOR_WSA.getUri()));
+	public void testConflict() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
+		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri(), ServiceQualification.QC_WITH_QSCD.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 

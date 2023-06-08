@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
@@ -32,26 +32,26 @@ import java.util.List;
  * Verifies whether type qualifiers and additional service information are consistent for pre-eIDAS trusted service
  *
  */
-public class TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency implements TrustedServiceCondition {
+public class TrustServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency implements TrustServiceCondition {
 
     /**
      * Default constructor
      */
-    public TrustedServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency() {
+    public TrustServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency() {
         // empty
     }
 
     @Override
-    public boolean isConsistent(TrustedServiceWrapper trustedService) {
-        Date startDate = trustedService.getStartDate();
+    public boolean isConsistent(TrustServiceWrapper trustService) {
+        Date startDate = trustService.getStartDate();
         if (EIDASUtils.isPreEIDAS(startDate)) {
 
-            List<String> asis = trustedService.getAdditionalServiceInfos();
+            List<String> asis = trustService.getAdditionalServiceInfos();
             if (AdditionalServiceInformation.isForeSealsOnly(asis) || AdditionalServiceInformation.isForWebAuthOnly(asis)) {
                 return false;
             }
 
-            List<String> qualifiers = trustedService.getCapturedQualifiers();
+            List<String> qualifiers = trustService.getCapturedQualifiers();
             if (ServiceQualification.isQcForEseal(qualifiers) || ServiceQualification.isQcForWSA(qualifiers)) {
                 return false;
             }

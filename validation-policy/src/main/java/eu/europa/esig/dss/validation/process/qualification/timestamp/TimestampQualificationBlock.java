@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -41,8 +41,8 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.Acce
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtProductionTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTSTCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -94,7 +94,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			List<TrustServiceWrapper> originalTSPs = signingCertificate.getTrustServices();
 			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
@@ -138,32 +138,32 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 			
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
-				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+				TrustServiceFilter filter = TrustServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
 				// Execute only for Trusted Lists with defined MRA
 				if (isMRAEnactedForTrustedList(acceptableServices)) {
-					filter = TrustedServicesFilterFactory.createMRAEnactedFilter();
+					filter = TrustServicesFilterFactory.createMRAEnactedFilter();
 					acceptableServices = filter.filter(acceptableServices);
 
-					item = item.setNextItem(hasMraEnactedTrustedService(acceptableServices));
+					item = item.setNextItem(hasMraEnactedTrustService(acceptableServices));
 				}
 
 				// 1. filter by service for QTST
-				filter = TrustedServicesFilterFactory.createFilterByQTST();
-				List<TrustedServiceWrapper> qtstServices = filter.filter(acceptableServices);
+				filter = TrustServicesFilterFactory.createFilterByQTST();
+				List<TrustServiceWrapper> qtstServices = filter.filter(acceptableServices);
 	
 				item = item.setNextItem(hasQTST(qtstServices));
 	
 				// 2. filter by granted
-				filter = TrustedServicesFilterFactory.createFilterByGranted();
-				List<TrustedServiceWrapper> grantedServices = filter.filter(qtstServices);
+				filter = TrustServicesFilterFactory.createFilterByGranted();
+				List<TrustServiceWrapper> grantedServices = filter.filter(qtstServices);
 	
 				item = item.setNextItem(hasGrantedStatus(grantedServices));
 	
 				// 3. filter by date (generation time)
-				filter = TrustedServicesFilterFactory.createFilterByDate(timestamp.getProductionTime());
-				List<TrustedServiceWrapper> grantedAtDateServices = filter.filter(grantedServices);
+				filter = TrustServicesFilterFactory.createFilterByDate(timestamp.getProductionTime());
+				List<TrustServiceWrapper> grantedAtDateServices = filter.filter(grantedServices);
 	
 				item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
 	
@@ -233,25 +233,25 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationTimestampQualification> hasMraEnactedTrustedService(List<TrustedServiceWrapper> services) {
+	private ChainItem<XmlValidationTimestampQualification> hasMraEnactedTrustService(List<TrustServiceWrapper> services) {
 		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {
+	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustServiceWrapper> services) {
 		return new QTSTCheck(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatus(List<TrustedServiceWrapper> services) {
+	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatus(List<TrustServiceWrapper> services) {
 		return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatusAtDate(List<TrustedServiceWrapper> services) {
+	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatusAtDate(List<TrustServiceWrapper> services) {
 		return new GrantedStatusAtProductionTimeCheck(i18nProvider, result, services, getFailLevelConstraint());
 	}
 
-	private boolean isMRAEnactedForTrustedList(List<TrustedServiceWrapper> trustedServices) {
-		for (TrustedServiceWrapper trustedService : trustedServices) {
-			if (Utils.isTrue(trustedService.getTrustedList().isMra())) {
+	private boolean isMRAEnactedForTrustedList(List<TrustServiceWrapper> trustServices) {
+		for (TrustServiceWrapper trustService : trustServices) {
+			if (Utils.isTrue(trustService.getTrustedList().isMra())) {
 				return true;
 			}
 		}

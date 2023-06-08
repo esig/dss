@@ -59,7 +59,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -370,12 +370,12 @@ public abstract class DiagnosticDataBuilder {
 	private void linkCertificatesAndTrustServices(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				List<XmlTrustedServiceProvider> trustedServiceProviders =
-						new XmlTrustedServiceProviderBuilder(xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
+				List<XmlTrustServiceProvider> trustServiceProviders =
+						new XmlTrustServiceProviderBuilder(xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
 						.build(certificateToken, getRelatedTrustServices(certificateToken));
-				if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
+				if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
 					XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
-					xmlCertificate.setTrustedServiceProviders(trustedServiceProviders);
+					xmlCertificate.setTrustServiceProviders(trustServiceProviders);
 				}
 			}
 		}

@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 
 /**
- * Used to obtain a {@code QSCDStrategy} for the given certificate and a TrustedService
+ * Used to obtain a {@code QSCDStrategy} for the given certificate and a TrustService
  *
  */
 public final class QSCDStrategyFactory {
@@ -52,30 +52,30 @@ public final class QSCDStrategyFactory {
 	}
 
 	/**
-	 * Creates a QSCD Strategy from the TrustedService
+	 * Creates a QSCD Strategy from the TrustService
 	 *
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus}
 	 * @param qscdFromCertificate {@link QSCDStrategy}
 	 * @return {@link QSCDStrategy}
 	 */
-	public static QSCDStrategy createQSCDFromTL(TrustedServiceWrapper trustedService,
+	public static QSCDStrategy createQSCDFromTL(TrustServiceWrapper trustService,
 												CertificateQualifiedStatus qualified, QSCDStrategy qscdFromCertificate) {
-		return new QSCDByTL(trustedService, qualified, qscdFromCertificate);
+		return new QSCDByTL(trustService, qualified, qscdFromCertificate);
 	}
 
 	/**
-	 * Creates a QSCD Strategy from the given certificate and TrustedService
+	 * Creates a QSCD Strategy from the given certificate and TrustService
 	 *
 	 * @param signingCertificate {@link CertificateWrapper}
-	 * @param caQcTrustedService {@link TrustedServiceWrapper}
+	 * @param caQcTrustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus} of the certificate
 	 * @return {@link QSCDStrategy}
 	 */
 	public static QSCDStrategy createQSCDFromCertAndTL(CertificateWrapper signingCertificate,
-					TrustedServiceWrapper caQcTrustedService, CertificateQualifiedStatus qualified) {
+					TrustServiceWrapper caQcTrustService, CertificateQualifiedStatus qualified) {
 		QSCDStrategy qscdFromCert = createQSCDFromCert(signingCertificate);
-		return createQSCDFromTL(caQcTrustedService, qualified, qscdFromCert);
+		return createQSCDFromTL(caQcTrustService, qualified, qscdFromCert);
 	}
 
 }

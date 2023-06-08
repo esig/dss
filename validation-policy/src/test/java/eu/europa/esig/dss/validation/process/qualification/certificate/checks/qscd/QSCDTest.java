@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
@@ -143,193 +143,193 @@ public class QSCDTest {
 	// -------------------- Overrules
 
 	@Test
-	public void trustedServiceNull() {
+	public void trustServiceNull() {
 		notQSCD(null, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServicePreEIDASButNoQC() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServicePreEIDASButNoQC() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		notQSCD(service, CertificateQualifiedStatus.NOT_QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServicePostEIDASButNoQC() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServicePostEIDASButNoQC() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		notQSCD(service, CertificateQualifiedStatus.NOT_QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServicePreEIDASNoOverrules() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServicePreEIDASNoOverrules() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServicePostEIDASNoOverrules() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServicePostEIDASNoOverrules() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesNotQSCDPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesNotQSCDPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesNotQSCDPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesNotQSCDPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_QSCD.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_SSCD.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_SSCD.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesNotSSCDPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesNotSSCDPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_SSCD.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesNotSSCDPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesNotSSCDPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_NO_SSCD.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDPreEIADS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDPreEIADS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDPostEIADS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDPostEIADS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDAsInCertPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDAsInCertPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDAsInCertPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDAsInCertPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDAsInCertTruePreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDAsInCertTruePreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesQSCDAsInCertTruePostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesQSCDAsInCertTruePostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_QSCD_STATUS_AS_IN_CERT.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDAsInCertPreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDAsInCertPreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_SSCD_STATUS_AS_IN_CERT.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDAsInCertPostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDAsInCertPostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_SSCD_STATUS_AS_IN_CERT.getUri()));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDAsInCertTruePreEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDAsInCertTruePreEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_SSCD_STATUS_AS_IN_CERT.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceOverrulesSSCDAsInCertTruePostEIDAS() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceOverrulesSSCDAsInCertTruePostEIDAS() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_SSCD_STATUS_AS_IN_CERT.getUri()));
 		qscd(service, CertificateQualifiedStatus.QC, QSCDTrue);
 	}
 
 	@Test
-	public void trustedServiceUnknownPreEIDASOverrule() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceUnknownPreEIDASOverrule() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(PRE_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList("Test"));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
 	}
 
 	@Test
-	public void trustedServiceUnknownPostEIDASOverrule() {
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+	public void trustServiceUnknownPostEIDASOverrule() {
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(POST_EIDAS_DATE);
 		service.setCapturedQualifiers(Arrays.asList("Test"));
 		notQSCD(service, CertificateQualifiedStatus.QC, QSCDFalse);
@@ -415,8 +415,8 @@ public class QSCDTest {
 		assertTrue(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
-	private void qscd(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, QSCDStrategy qscdInCert) {
-		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
+	private void qscd(TrustServiceWrapper trustService, CertificateQualifiedStatus qualified, QSCDStrategy qscdInCert) {
+		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustService, qualified, qscdInCert);
 		assertTrue(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
@@ -425,8 +425,8 @@ public class QSCDTest {
 		assertFalse(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 
-	private void notQSCD(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified, QSCDStrategy qscdInCert) {
-		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustedService, qualified, qscdInCert);
+	private void notQSCD(TrustServiceWrapper trustService, CertificateQualifiedStatus qualified, QSCDStrategy qscdInCert) {
+		QSCDStrategy strategy = QSCDStrategyFactory.createQSCDFromTL(trustService, qualified, qscdInCert);
 		assertFalse(QSCDStatus.isQSCD(strategy.getQSCDStatus()));
 	}
 }

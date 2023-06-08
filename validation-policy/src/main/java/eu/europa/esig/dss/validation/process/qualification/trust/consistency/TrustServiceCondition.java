@@ -20,31 +20,20 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.enumerations.ServiceQualification;
-
-import java.util.List;
-import java.util.stream.Stream;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
 /**
- * A Trusted Service can only have one of these values {QcForEsig, QcForEseal or QcForWSA} or none.
- * 
+ * Checks whether the TrustService is valid
+ *
  */
-class TrustedServiceUsageConsistency implements TrustedServiceCondition {
+public interface TrustServiceCondition {
 
-	@Override
-	public boolean isConsistent(TrustedServiceWrapper trustedService) {
-
-		List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
-
-		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);
-		boolean qcForEseal = ServiceQualification.isQcForEseal(capturedQualifiers);
-		boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
-
-		boolean noneOfThem = !(qcForEsig || qcForEseal || qcForWSA);
-		boolean onlyOneOfThem = Stream.of(qcForEsig, qcForEseal, qcForWSA).filter(b -> b).count() == 1;
-
-		return noneOfThem || onlyOneOfThem;
-	}
+	/**
+	 * Whether the TrustService is consistent
+	 *
+	 * @param trustService {@link TrustServiceWrapper} to check
+	 * @return TRUE if the {@code trustService} is consistent, FALSE otherwise
+	 */
+	boolean isConsistent(TrustServiceWrapper trustService);
 
 }

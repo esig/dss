@@ -25,8 +25,8 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -112,29 +112,29 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 	}
 	
 	@Override
-	protected void checkTrustedServices(DiagnosticData diagnosticData) {
-		super.checkTrustedServices(diagnosticData);
+	protected void checkTrustServices(DiagnosticData diagnosticData) {
+		super.checkTrustServices(diagnosticData);
 		
 		String rootCaCertId = "C-9F9744463BE13714754E1A3BECF98C08CC205E4AB32028F4E2830C4A1B2775B8";
 
 		CertificateWrapper certificateById = diagnosticData.getUsedCertificateById(rootCaCertId);
 		assertNotNull(certificateById);
 		assertTrue(certificateById.isTrusted());
-		List<XmlTrustedServiceProvider> trustServiceProviders = certificateById.getTrustServiceProviders();
+		List<XmlTrustServiceProvider> trustServiceProviders = certificateById.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);
 		
-		XmlTrustedServiceProvider xmlTrustedServiceProvider = trustServiceProviders.get(0);
-		assertNull(xmlTrustedServiceProvider.getLOTL());
-		XmlTrustedList xmlTL = xmlTrustedServiceProvider.getTL();
+		XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
+		assertNull(xmlTrustServiceProvider.getLOTL());
+		XmlTrustedList xmlTL = xmlTrustServiceProvider.getTL();
 		assertNotNull(xmlTL);
 		assertNotNull(xmlTL);
 		assertNotNull(xmlTL.getId());
 		assertNotNull(xmlTL.getUrl());
 		
-		List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
-		assertNotNull(trustedServices);
-		for (XmlTrustedService xmlTrustedService : trustedServices) {
-			assertEquals(rootCaCertId, xmlTrustedService.getServiceDigitalIdentifier().getId());
+		List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+		assertNotNull(trustServices);
+		for (XmlTrustService xmlTrustService : trustServices) {
+			assertEquals(rootCaCertId, xmlTrustService.getServiceDigitalIdentifier().getId());
 		}
 	}
 	

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -36,9 +36,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Checks if the certificate's usage time in the validity range of a TrustedService with the accepted status
+ * Checks if the certificate's usage time in the validity range of a TrustService with the accepted type
  */
-public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
+public class TrustServiceTypeIdentifierCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
 	/** The certificate to check */
 	private final CertificateWrapper certificate;
@@ -49,8 +49,8 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 	/** The validation times */
 	private final Context context;
 
-	/** Service status string */
-	private String serviceStatusStr;
+	/** Service type string */
+	private String serviceTypeStr;
 
 	/**
 	 * Default constructor
@@ -62,8 +62,8 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 	 * @param context {@link Context}
 	 * @param constraint {@link MultiValuesConstraint}
 	 */
-	public TrustedServiceStatusCheck(I18nProvider i18nProvider, XmlXCV result, CertificateWrapper certificate,
-									 Date usageTime, Context context, MultiValuesConstraint constraint) {
+	public TrustServiceTypeIdentifierCheck(I18nProvider i18nProvider, XmlXCV result, CertificateWrapper certificate,
+			Date usageTime, Context context, MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 		this.usageTime = usageTime;
@@ -77,35 +77,33 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 			return true;
 		}
 
-		List<TrustedServiceWrapper> trustedServices = certificate.getTrustedServices();
-		if (Utils.isCollectionNotEmpty(trustedServices)) {
-			for (TrustedServiceWrapper trustedService : trustedServices) {
-				serviceStatusStr = Utils.trim(trustedService.getStatus());
-				Date statusStartDate = trustedService.getStartDate();
-				if (processValueCheck(serviceStatusStr) && statusStartDate != null) {
-					Date statusEndDate = trustedService.getEndDate();
-					// The issuing time of the certificate should be into the validity period of the associated service
-					if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
-						return true;
-					}
+		List<TrustServiceWrapper> trustServices = certificate.getTrustServices();
+		for (TrustServiceWrapper trustService : trustServices) {
+			serviceTypeStr = Utils.trim(trustService.getType());
+			Date statusStartDate = trustService.getStartDate();
+			if (processValueCheck(serviceTypeStr) && statusStartDate != null) {
+				Date statusEndDate = trustService.getEndDate();
+				// The issuing time of the certificate should be into the validity period of the associated service
+				if ((usageTime.compareTo(statusStartDate) >= 0) && ((statusEndDate == null) || usageTime.before(statusEndDate))) {
+					return true;
 				}
 			}
 		}
-
 		return false;
+
 	}
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (Utils.isStringNotEmpty(serviceStatusStr)) {
-			return i18nProvider.getMessage(MessageTag.TRUSTED_SERVICE_STATUS, serviceStatusStr);
+		if (Utils.isStringNotEmpty(serviceTypeStr)) {
+			return i18nProvider.getMessage(MessageTag.TRUSTED_SERVICE_TYPE, serviceTypeStr);
 		}
 		return null;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return MessageTag.XCV_TSL_ESP;
+		return MessageTag.XCV_TSL_ETIP;
 	}
 
 	@Override
@@ -113,13 +111,13 @@ public class TrustedServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlX
 		switch (context) {
 		case SIGNATURE:
 		case COUNTER_SIGNATURE:
-			return MessageTag.XCV_TSL_ESP_SIG_ANS;
+			return MessageTag.XCV_TSL_ETIP_SIG_ANS;
 		case TIMESTAMP:
-			return MessageTag.XCV_TSL_ESP_TSP_ANS;
+			return MessageTag.XCV_TSL_ETIP_TSP_ANS;
 		case REVOCATION:
-			return MessageTag.XCV_TSL_ESP_REV_ANS;
+			return MessageTag.XCV_TSL_ETIP_REV_ANS;
 		default:
-			return MessageTag.XCV_TSL_ESP_ANS;
+			return MessageTag.XCV_TSL_ETIP_ANS;
 		}
 	}
 
