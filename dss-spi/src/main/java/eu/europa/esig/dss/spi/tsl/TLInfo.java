@@ -49,8 +49,8 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	/** The validation result record */
 	private final ValidationInfoRecord validationCacheInfo;
 
-	/** Mutual Recognition Agreement element extracted from the referencing LOTL */
-	private final MRA mra;
+	/** OtherTSLPointer element extracted from the pointing TL/LOTL */
+	private final OtherTSLPointer otherTSLPointer;
 
 	/** Cached Identifier instance */
 	private Identifier identifier;
@@ -90,16 +90,17 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	 * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
 	 * @param url {@link String} address used to extract the entry
 	 * @param parent {@link TLInfo} referencing the current Trusted List
-	 * @param mra {@link MRA} Mutual Recognition Agreement
+	 * @param otherTSLPointer {@link OtherTSLPointer} element from the pointing TL/LOTL
 	 */
-	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo, 
-			final ValidationInfoRecord validationCacheInfo, final String url, final TLInfo parent, final MRA mra) {
+	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
+				  final ValidationInfoRecord validationCacheInfo, final String url, final TLInfo parent,
+				  final OtherTSLPointer otherTSLPointer) {
 		this.downloadCacheInfo = downloadCacheInfo;
 		this.parsingCacheInfo = parsingCacheInfo;
 		this.validationCacheInfo = validationCacheInfo;
 		this.url = url;
 		this.parent = parent;
-		this.mra = mra;
+		this.otherTSLPointer = otherTSLPointer;
 	}
 	
 	/**
@@ -148,12 +149,27 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	}
 
 	/**
+	 * Gets the OtherTSLPointer element to referencing the current TL from the pointing TL/LOTL
+	 *
+	 * @return {@link OtherTSLPointer}
+	 */
+	public OtherTSLPointer getOtherTSLPointer() {
+		return otherTSLPointer;
+	}
+
+	/**
 	 * Gets the MRA (Mutual Recognition Agreement) element when applicable
 	 *
 	 * @return {@link MRA}
+	 * @deprecated since DSS 5.13. Use {@code #getOtherTSLPointer.getMra} instead
 	 */
+	@Deprecated
 	public MRA getMra() {
-		return mra;
+		OtherTSLPointer otherTSLPointer = getOtherTSLPointer();
+		if (otherTSLPointer != null) {
+			return getOtherTSLPointer().getMra();
+		}
+		return null;
 	}
 
 	/**

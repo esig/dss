@@ -70,11 +70,13 @@ public class OtherTLSLPointerPredicatesTest {
 			assertEquals(3, result.size());
 			for (OtherTSLPointer otherTSLPointerDTO : result) {
 				assertNotNull(otherTSLPointerDTO);
-				assertNotNull(otherTSLPointerDTO.getLocation());
-				assertNotNull(otherTSLPointerDTO.getCertificates());
-				assertFalse(otherTSLPointerDTO.getCertificates().isEmpty());
+				assertNotNull(otherTSLPointerDTO.getTSLLocation());
+				assertNotNull(otherTSLPointerDTO.getServiceDigitalIdentities());
+				assertFalse(otherTSLPointerDTO.getServiceDigitalIdentities().isEmpty());
+				assertNotNull(otherTSLPointerDTO.getSchemeTerritory());
+				assertNotNull(otherTSLPointerDTO.getTslType());
+				assertNotNull(otherTSLPointerDTO.getMimeType());
 			}
-
 		}
 	}
 

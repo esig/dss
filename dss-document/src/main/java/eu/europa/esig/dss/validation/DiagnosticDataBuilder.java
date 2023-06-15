@@ -579,7 +579,7 @@ public abstract class DiagnosticDataBuilder {
 			if (validationCacheInfo != null) {
 				result.setWellSigned(validationCacheInfo.isValid());
 			}
-			if (tlInfo.getMra() != null) {
+			if (tlInfo.getOtherTSLPointer() != null && tlInfo.getOtherTSLPointer().getMra() != null) {
 				result.setMra(true);
 			}
 			tlInfoMap.put(id, tlInfo);

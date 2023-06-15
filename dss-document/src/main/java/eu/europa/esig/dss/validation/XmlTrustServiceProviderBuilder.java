@@ -219,9 +219,9 @@ public class XmlTrustServiceProviderBuilder {
     private MRA getMRA(TrustProperties trustProperties) {
         if (trustProperties.getTLIdentifier() != null) {
             TLInfo tlInfo = tlInfoMap.get(trustProperties.getTLIdentifier().asXmlId());
-            if (tlInfo != null) {
+            if (tlInfo != null && tlInfo.getOtherTSLPointer() != null) {
                 // may be null when no TLValidationJob is used
-                return tlInfo.getMra();
+                return tlInfo.getOtherTSLPointer().getMra();
             }
         }
         return null;

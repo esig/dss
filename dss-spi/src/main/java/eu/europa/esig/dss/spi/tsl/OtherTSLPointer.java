@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contains certificates for the url location
@@ -32,44 +33,134 @@ public class OtherTSLPointer implements Serializable {
 
 	private static final long serialVersionUID = 3015076999802292662L;
 
-	/** URL location */
-	private final String location;
-
 	/** List of certificates */
-	private final List<CertificateToken> certificates;
+	private List<CertificateToken> serviceDigitalIdentities;
+
+	/** URL location */
+	private String tslLocation;
+
+	/** An ISO code of the country or an alliance */
+	private String schemeTerritory;
+
+	/** Type of the Trusted List */
+	private String tslType;
+
+	/** MimeType of the Trusted List document */
+	private String mimeType;
+
+	/** A map of defined scheme operator names between the used languages */
+	private Map<String, List<String>> schemeOperatorNames;
+
+	/** A map of defined type community rules between the used languages */
+	private Map<String, List<String>> schemeTypeCommunityRules;
 
 	/** Mutual Recognition Agreement block */
-	private final MRA mra;
+	private MRA mra;
 
 	/**
-	 * Default constructor
-	 *
-	 * @param location {@link String} url
-	 * @param certificates list of {@link CertificateToken}s
-	 * @param mra {@link MRA}
+	 * Default constructor to create an empty object
 	 */
-	public OtherTSLPointer(String location, List<CertificateToken> certificates, MRA mra) {
-		this.location = location;
-		this.certificates = certificates;
-		this.mra = mra;
+	public OtherTSLPointer() {
+		// empty
 	}
 
 	/**
-	 * Gets location url
-	 *
-	 * @return {@link String}
+	 * Default constructor to create an empty object
 	 */
-	public String getLocation() {
-		return location;
+	public OtherTSLPointer(OtherTSLPointerBuilder builder) {
+		this.serviceDigitalIdentities = builder.getServiceDigitalIdentities();
+		this.tslLocation = builder.getTslLocation();
+		this.schemeTerritory = builder.getSchemeTerritory();
+		this.tslType = builder.getTslType();
+		this.mimeType = builder.getMimeType();
+		this.schemeOperatorNames = builder.getSchemeOperatorNames();
+		this.schemeTypeCommunityRules = builder.getSchemeTypeCommunityRules();
+		this.mra = builder.getMra();
 	}
 
 	/**
-	 * Gets a list of certificates
+	 * Gets a list of SDI certificates
 	 *
 	 * @return a list of {@link CertificateToken}s
 	 */
+	public List<CertificateToken> getServiceDigitalIdentities() {
+		return serviceDigitalIdentities;
+	}
+
+	/**
+	 * Gets a list of SDI certificates
+	 *
+	 * @return a list of {@link CertificateToken}s
+	 * @deprecated since DSS 5.13. Use {@code #getServiceDigitalIdentities} method instead
+	 */
+	@Deprecated
 	public List<CertificateToken> getCertificates() {
-		return certificates;
+		return getServiceDigitalIdentities();
+	}
+
+	/**
+	 * Gets TSL location url
+	 *
+	 * @return {@link String}
+	 */
+	public String getTSLLocation() {
+		return tslLocation;
+	}
+
+	/**
+	 * Gets TSL location url
+	 *
+	 * @return {@link String}
+	 * @deprecated since DSS 5.13. Use {@code #getTSLLocation} method instead
+	 */
+	@Deprecated
+	public String getLocation() {
+		return tslLocation;
+	}
+
+	/**
+	 * Gets the scheme territory ISO country code
+	 *
+	 * @return {@link String}
+	 */
+	public String getSchemeTerritory() {
+		return schemeTerritory;
+	}
+
+	/**
+	 * Gets the TSL Type
+	 *
+	 * @return {@link String}
+	 */
+	public String getTslType() {
+		return tslType;
+	}
+
+	/**
+	 * Gets the MimeType of the referenced document
+	 *
+	 * @return {@link String}
+	 */
+	public String getMimeType() {
+		return mimeType;
+	}
+
+	/**
+	 * Gets a map of scheme operator names
+	 *
+	 * @return a map of {@link String} language code and a list of corresponding {@link String} names
+	 */
+	public Map<String, List<String>> getSchemeOperatorNames() {
+		return schemeOperatorNames;
+	}
+
+	/**
+	 * Gets a map of scheme type community rules
+	 *
+	 * @return a map of {@link String} language code and a list of corresponding {@link String} names
+	 */
+	public Map<String, List<String>> getSchemeTypeCommunityRules() {
+		return schemeTypeCommunityRules;
 	}
 
 	/**
@@ -79,6 +170,213 @@ public class OtherTSLPointer implements Serializable {
 	 */
 	public MRA getMra() {
 		return mra;
+	}
+
+	/**
+	 * Builds {@code OtherTSLPointer}
+	 */
+	public static final class OtherTSLPointerBuilder {
+
+		/** List of certificates */
+		private List<CertificateToken> serviceDigitalIdentities;
+
+		/** URL location */
+		private String tslLocation;
+
+		/** An ISO code of the country or an alliance */
+		private String schemeTerritory;
+
+		/** Type of the Trusted List */
+		private String tslType;
+
+		/** MimeType of the Trusted List document */
+		private String mimeType;
+
+		/** A map of defined scheme operator names between the used languages */
+		private Map<String, List<String>> schemeOperatorNames;
+
+		/** A map of defined type community rules between the used languages */
+		private Map<String, List<String>> schemeTypeCommunityRules;
+
+		/** Mutual Recognition Agreement block */
+		private MRA mra;
+
+		/**
+		 * Default constructor
+		 */
+		public OtherTSLPointerBuilder() {
+			// empty
+		}
+
+		/**
+		 * Gets the ServiceDigitalIdentity certificates
+		 *
+		 * @return a list of {@link CertificateToken}s
+		 */
+		public List<CertificateToken> getServiceDigitalIdentities() {
+			return serviceDigitalIdentities;
+		}
+
+		/**
+		 * Sets the ServiceDigitalIdentity certificates
+		 *
+		 * @param serviceDigitalIdentities a list of {@link CertificateToken}s
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setServiceDigitalIdentities(List<CertificateToken> serviceDigitalIdentities) {
+			this.serviceDigitalIdentities = serviceDigitalIdentities;
+			return this;
+		}
+
+		/**
+		 * Gets the TSL location URL
+		 *
+		 * @return tslLocation {@link String}
+		 */
+		public String getTslLocation() {
+			return tslLocation;
+		}
+
+		/**
+		 * Sets the TSL location URL
+		 *
+		 * @param tslLocation {@link String}
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setTslLocation(String tslLocation) {
+			this.tslLocation = tslLocation;
+			return this;
+		}
+
+		/**
+		 * Gets the scheme territory code
+		 *
+		 * @return {@link String}
+		 */
+		public String getSchemeTerritory() {
+			return schemeTerritory;
+		}
+
+		/**
+		 * Sets the scheme territory code
+		 *
+		 * @param schemeTerritory {@link String}
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setSchemeTerritory(String schemeTerritory) {
+			this.schemeTerritory = schemeTerritory;
+			return this;
+		}
+
+		/**
+		 * Gets the TSL Type
+		 *
+		 * @return {@link String}
+		 */
+		public String getTslType() {
+			return tslType;
+		}
+
+		/**
+		 * Sets the TSL Type
+		 *
+		 * @param tslType {@link String}
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setTslType(String tslType) {
+			this.tslType = tslType;
+			return this;
+		}
+
+		/**
+		 * Gets the MimeType of the Trusted List document
+		 *
+		 * @return {@link String}
+		 */
+		public String getMimeType() {
+			return mimeType;
+		}
+
+		/**
+		 * Sets the MimeType of the Trusted List document
+		 *
+		 * @param mimeType {@link String}
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setMimeType(String mimeType) {
+			this.mimeType = mimeType;
+			return this;
+		}
+
+		/**
+		 * Gets a map of scheme operator names
+		 *
+		 * @return a map between {@link String} languages and lists of {@link String} names
+		 */
+		public Map<String, List<String>> getSchemeOperatorNames() {
+			return schemeOperatorNames;
+		}
+
+		/**
+		 * Sets a map of scheme operator names
+		 *
+		 * @param schemeOperatorNames a map between {@link String} languages and lists of {@link String} names
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setSchemeOperatorNames(Map<String, List<String>> schemeOperatorNames) {
+			this.schemeOperatorNames = schemeOperatorNames;
+			return this;
+		}
+
+		/**
+		 * Gets a map of scheme type community rules
+		 *
+		 * @return a map between {@link String} languages and lists of {@link String} names
+		 */
+		public Map<String, List<String>> getSchemeTypeCommunityRules() {
+			return schemeTypeCommunityRules;
+		}
+
+		/**
+		 * Sets a map of scheme type community rules
+		 *
+		 * @param schemeTypeCommunityRules a map between {@link String} languages and lists of {@link String} names
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setSchemeTypeCommunityRules(Map<String, List<String>> schemeTypeCommunityRules) {
+			this.schemeTypeCommunityRules = schemeTypeCommunityRules;
+			return this;
+		}
+
+		/**
+		 * Gets the MRA (Mutual Recognition Agreement) scheme
+		 *
+		 * @return {@link MRA}
+		 */
+		public MRA getMra() {
+			return mra;
+		}
+
+		/**
+		 * Sets the MRA (Mutual Recognition Agreement) scheme
+		 *
+		 * @param mra {@link MRA}
+		 * @return {@link OtherTSLPointerBuilder}
+		 */
+		public OtherTSLPointerBuilder setMra(MRA mra) {
+			this.mra = mra;
+			return this;
+		}
+
+		/**
+		 * Builds the {@code OtherTSLPointer}
+		 *
+		 * @return {@link OtherTSLPointer}
+		 */
+		public OtherTSLPointer build() {
+			return new OtherTSLPointer(this);
+		}
+
 	}
 
 }

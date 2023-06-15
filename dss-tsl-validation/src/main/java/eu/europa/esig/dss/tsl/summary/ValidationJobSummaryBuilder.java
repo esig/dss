@@ -23,7 +23,6 @@ package eu.europa.esig.dss.tsl.summary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
@@ -108,13 +107,8 @@ public class ValidationJobSummaryBuilder {
 				List<TLInfo> tlInfos = new ArrayList<>();
 				List<TLSource> currentTLSources = extractTLSources(lotlParsingResult);
 				for (TLSource tlSource : currentTLSources) {
-					TLInfo tlInfo;
-					if (lotlSource.isMraSupport()) {
-						MRA mra = getMRA(lotlParsingResult.getTlOtherPointers(), tlSource.getUrl());
-						tlInfo = buildTLInfo(tlSource, lotlInfo, mra);
-					} else {
-						tlInfo = buildTLInfo(tlSource, lotlInfo);
-					}
+					OtherTSLPointer otherTSLPointer = getOtherTSLPointer(lotlParsingResult.getTlOtherPointers(), tlSource.getUrl());
+					TLInfo tlInfo = buildTLInfo(tlSource, lotlInfo, otherTSLPointer);
 					tlInfos.add(tlInfo);
 				}
 				lotlInfo.setTlInfos(tlInfos);
@@ -167,16 +161,10 @@ public class ValidationJobSummaryBuilder {
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl());
 	}
 
-	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo) {
+	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo, OtherTSLPointer otherTSLPointer) {
 		CacheKey cacheKey = tlSource.getCacheKey();
 		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
-				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo);
-	}
-
-	private TLInfo buildTLInfo(TLSource tlSource, LOTLInfo lotlInfo, MRA mra) {
-		CacheKey cacheKey = tlSource.getCacheKey();
-		return new TLInfo(readOnlyCacheAccess.getDownloadCacheDTO(cacheKey), readOnlyCacheAccess.getParsingCacheDTO(cacheKey),
-				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo, mra);
+				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), tlSource.getUrl(), lotlInfo, otherTSLPointer);
 	}
 
 	private PivotInfo buildPivotInfo(LOTLSource pivotSource, Map<CertificateToken, CertificatePivotStatus> certificateChangesMap, 
@@ -186,10 +174,10 @@ public class ValidationJobSummaryBuilder {
 				readOnlyCacheAccess.getValidationCacheDTO(cacheKey), pivotSource.getUrl(), certificateChangesMap, associatedLOTLLocation);
 	}
 
-	private MRA getMRA(List<OtherTSLPointer> tlOtherPointers, String tslPointerLocation) {
+	private OtherTSLPointer getOtherTSLPointer(List<OtherTSLPointer> tlOtherPointers, String tslPointerLocation) {
 		for (OtherTSLPointer otherTSLPointer : tlOtherPointers) {
-			if (Utils.areStringsEqual(tslPointerLocation, otherTSLPointer.getLocation())) {
-				return otherTSLPointer.getMra();
+			if (Utils.areStringsEqual(tslPointerLocation, otherTSLPointer.getTSLLocation())) {
+				return otherTSLPointer;
 			}
 		}
 		return null;
@@ -201,7 +189,7 @@ public class ValidationJobSummaryBuilder {
 			List<OtherTSLPointer> tlPointers = lotlParsingResult.getTlOtherPointers();
 			for (OtherTSLPointer otherTSLPointerDTO : tlPointers) {
 				TLSource tlSource = new TLSource();
-				tlSource.setUrl(otherTSLPointerDTO.getLocation());
+				tlSource.setUrl(otherTSLPointerDTO.getTSLLocation());
 				result.add(tlSource);
 			}
 		}
@@ -237,7 +225,7 @@ public class ValidationJobSummaryBuilder {
 		List<OtherTSLPointer> lotlOtherPointers = parsingCacheDTO.getLotlOtherPointers();
 		int lotlOtherPointersAmount = Utils.isCollectionNotEmpty(lotlOtherPointers) ? lotlOtherPointers.size() : 0;
 		if (lotlOtherPointersAmount == 1) {
-			return lotlOtherPointers.get(0).getCertificates();
+			return lotlOtherPointers.get(0).getServiceDigitalIdentities();
 		} else {
 			LOG.debug("Pivot certificates were not extracted. Nb of OtherTSLPointers is [{}]", lotlOtherPointersAmount);
 			return Collections.emptyList();
@@ -278,7 +266,7 @@ public class ValidationJobSummaryBuilder {
 		
 		OtherTSLPointer xmllotlPointer = ParsingUtils.getXMLLOTLPointer(parsingCacheDTO);
 		if (xmllotlPointer != null) {
-			return xmllotlPointer.getLocation();
+			return xmllotlPointer.getTSLLocation();
 		}
 		return null;
 	}
