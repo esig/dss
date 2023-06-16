@@ -79,6 +79,8 @@
 	            				<xsl:attribute name="class">list-unstyled mb-0</xsl:attribute>
 			    		
 			    				<li>
+									<xsl:attribute name="class">mb-1</xsl:attribute>
+
 			    					Issuance Time (<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:notBefore"/></xsl:call-template>) :
 					    			<span>
 					    				<xsl:attribute name="class">
@@ -91,8 +93,17 @@
 					    				<xsl:value-of select="dss:qualificationAtIssuance"/>
 					    			</span>
 					    		</li>
+
+								<li>
+									<xsl:attribute name="class">mb-1</xsl:attribute>
+									<span>
+										<xsl:apply-templates select="dss:qualificationDetailsAtIssuance"/>
+									</span>
+								</li>
 					    		
 			    				<li>
+									<xsl:attribute name="class">mb-1</xsl:attribute>
+
 				    				Validation Time (<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="$validationTime"/></xsl:call-template>) :
 					    			<span>
 					    				<xsl:attribute name="class">
@@ -105,25 +116,26 @@
 					    				<xsl:value-of select="dss:qualificationAtValidation"/>
 					    			</span>
 					    		</li>
+
+								<li>
+									<xsl:attribute name="class">mb-1</xsl:attribute>
+									<span>
+										<xsl:apply-templates select="dss:qualificationDetailsAtValidation"/>
+									</span>
+								</li>
+
+								<xsl:if test="dss:enactedMRA">
+									<li>
+										<xsl:attribute name="class">mt-2 mb-1</xsl:attribute>
+										<span>
+											The qualification level has been determined using an enacted trust service equivalence mapping.
+										</span>
+									</li>
+								</xsl:if>
 					    	</ul>
 			    		</dd>
 		        	</dl>
 	        	</xsl:if>
-
-				<!-- <xsl:apply-templates select="dss:QualificationDetails" /> --> <!-- do not include qualification details -->
-	        	
-	        	<xsl:if test="dss:enactedMRA">
-					<dl>
-			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
-			            <dt>
-			            	<xsl:attribute name="class">col-sm-3</xsl:attribute>
-			            </dt>
-			            <dd>
-			            	<xsl:attribute name="class">col-sm-9</xsl:attribute>
-							The qualification level has been determined using an enacted trust service equivalence mapping.
-			            </dd>
-					</dl>
-				</xsl:if>
 
 				<dl>
 					<xsl:attribute name="class">row mb-0</xsl:attribute>
@@ -234,19 +246,13 @@
     	</div>
     </xsl:template>
 
-	<xsl:template match="dss:X509ValidationDetails|dss:QualificationDetails">
-		<xsl:variable name="header">
-			<xsl:choose>
-				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
-				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
+	<xsl:template match="dss:X509ValidationDetails">
 		<dl>
 			<xsl:attribute name="class">row mb-0</xsl:attribute>
 			<dt>
 				<xsl:attribute name="class">col-sm-3</xsl:attribute>
 
-				<xsl:value-of select="$header" />:
+				X509 Validation Details:
 			</dt>
 			<dd>
 				<xsl:attribute name="class">col-sm-9</xsl:attribute>
@@ -258,6 +264,16 @@
 				</ul>
 			</dd>
 		</dl>
+	</xsl:template>
+
+	<xsl:template match="dss:qualificationDetailsAtIssuance|dss:qualificationDetailsAtValidation">
+		<ul>
+			<xsl:attribute name="class">list-unstyled</xsl:attribute>
+
+			<xsl:apply-templates select="dss:Error" />
+			<xsl:apply-templates select="dss:Warning" />
+			<xsl:apply-templates select="dss:Info" />
+		</ul>
 	</xsl:template>
 
 	<xsl:template match="dss:Error|dss:Warning|dss:Info">

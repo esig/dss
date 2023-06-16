@@ -102,7 +102,7 @@ public class PDFGenerationTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(simpleReportString, result);
-			assertTrue(baos.toByteArray().length >= 0);
+			assertTrue(baos.toByteArray().length > 0);
 		}
 
 	}
