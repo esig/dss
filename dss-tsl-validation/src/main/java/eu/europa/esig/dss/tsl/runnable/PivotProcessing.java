@@ -79,7 +79,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	private CertificateSource getLOTLAnnouncedCertificateSource(OtherTSLPointer currentLOTLPointer) {
 		CertificateSource certificateSource = new CommonCertificateSource();
-		for (CertificateToken certificate : currentLOTLPointer.getServiceDigitalIdentities()) {
+		for (CertificateToken certificate : currentLOTLPointer.getSdiCertificates()) {
 			certificateSource.addCertificate(certificate);
 		}
 		return certificateSource;

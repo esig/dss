@@ -33,8 +33,8 @@ public class OtherTSLPointer implements Serializable {
 
 	private static final long serialVersionUID = 3015076999802292662L;
 
-	/** List of certificates */
-	private List<CertificateToken> serviceDigitalIdentities;
+	/** List of ServiceDigitalIdentity X509 certificates */
+	private List<CertificateToken> sdiCertificates;
 
 	/** URL location */
 	private String tslLocation;
@@ -68,7 +68,7 @@ public class OtherTSLPointer implements Serializable {
 	 * Default constructor to create an empty object
 	 */
 	public OtherTSLPointer(OtherTSLPointerBuilder builder) {
-		this.serviceDigitalIdentities = builder.getServiceDigitalIdentities();
+		this.sdiCertificates = builder.getSdiCertificates();
 		this.tslLocation = builder.getTslLocation();
 		this.schemeTerritory = builder.getSchemeTerritory();
 		this.tslType = builder.getTslType();
@@ -79,23 +79,23 @@ public class OtherTSLPointer implements Serializable {
 	}
 
 	/**
-	 * Gets a list of SDI certificates
+	 * Gets a list of ServiceDigitalIdentity X509 certificates
 	 *
 	 * @return a list of {@link CertificateToken}s
 	 */
-	public List<CertificateToken> getServiceDigitalIdentities() {
-		return serviceDigitalIdentities;
+	public List<CertificateToken> getSdiCertificates() {
+		return sdiCertificates;
 	}
 
 	/**
 	 * Gets a list of SDI certificates
 	 *
 	 * @return a list of {@link CertificateToken}s
-	 * @deprecated since DSS 5.13. Use {@code #getServiceDigitalIdentities} method instead
+	 * @deprecated since DSS 5.13. Use {@code #getSdiCertificates} method instead
 	 */
 	@Deprecated
 	public List<CertificateToken> getCertificates() {
-		return getServiceDigitalIdentities();
+		return getSdiCertificates();
 	}
 
 	/**
@@ -177,8 +177,8 @@ public class OtherTSLPointer implements Serializable {
 	 */
 	public static final class OtherTSLPointerBuilder {
 
-		/** List of certificates */
-		private List<CertificateToken> serviceDigitalIdentities;
+		/** List of ServiceDigitalIdentity X509 certificates */
+		private List<CertificateToken> sdiCertificates;
 
 		/** URL location */
 		private String tslLocation;
@@ -209,22 +209,22 @@ public class OtherTSLPointer implements Serializable {
 		}
 
 		/**
-		 * Gets the ServiceDigitalIdentity certificates
+		 * Gets the ServiceDigitalIdentity X509 certificates
 		 *
 		 * @return a list of {@link CertificateToken}s
 		 */
-		public List<CertificateToken> getServiceDigitalIdentities() {
-			return serviceDigitalIdentities;
+		public List<CertificateToken> getSdiCertificates() {
+			return sdiCertificates;
 		}
 
 		/**
-		 * Sets the ServiceDigitalIdentity certificates
+		 * Sets the ServiceDigitalIdentity X509 certificates
 		 *
-		 * @param serviceDigitalIdentities a list of {@link CertificateToken}s
+		 * @param sdiCertificates a list of {@link CertificateToken}s
 		 * @return {@link OtherTSLPointerBuilder}
 		 */
-		public OtherTSLPointerBuilder setServiceDigitalIdentities(List<CertificateToken> serviceDigitalIdentities) {
-			this.serviceDigitalIdentities = serviceDigitalIdentities;
+		public OtherTSLPointerBuilder setSdiCertificates(List<CertificateToken> sdiCertificates) {
+			this.sdiCertificates = sdiCertificates;
 			return this;
 		}
 

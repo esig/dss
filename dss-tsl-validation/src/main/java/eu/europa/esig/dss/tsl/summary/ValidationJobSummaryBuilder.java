@@ -225,7 +225,7 @@ public class ValidationJobSummaryBuilder {
 		List<OtherTSLPointer> lotlOtherPointers = parsingCacheDTO.getLotlOtherPointers();
 		int lotlOtherPointersAmount = Utils.isCollectionNotEmpty(lotlOtherPointers) ? lotlOtherPointers.size() : 0;
 		if (lotlOtherPointersAmount == 1) {
-			return lotlOtherPointers.get(0).getServiceDigitalIdentities();
+			return lotlOtherPointers.get(0).getSdiCertificates();
 		} else {
 			LOG.debug("Pivot certificates were not extracted. Nb of OtherTSLPointers is [{}]", lotlOtherPointersAmount);
 			return Collections.emptyList();

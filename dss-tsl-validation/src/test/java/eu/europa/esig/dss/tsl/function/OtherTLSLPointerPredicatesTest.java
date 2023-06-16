@@ -71,8 +71,8 @@ public class OtherTLSLPointerPredicatesTest {
 			for (OtherTSLPointer otherTSLPointerDTO : result) {
 				assertNotNull(otherTSLPointerDTO);
 				assertNotNull(otherTSLPointerDTO.getTSLLocation());
-				assertNotNull(otherTSLPointerDTO.getServiceDigitalIdentities());
-				assertFalse(otherTSLPointerDTO.getServiceDigitalIdentities().isEmpty());
+				assertNotNull(otherTSLPointerDTO.getSdiCertificates());
+				assertFalse(otherTSLPointerDTO.getSdiCertificates().isEmpty());
 				assertNotNull(otherTSLPointerDTO.getSchemeTerritory());
 				assertNotNull(otherTSLPointerDTO.getTslType());
 				assertNotNull(otherTSLPointerDTO.getMimeType());

@@ -85,7 +85,7 @@ public class LOTLParsingTaskTest {
 		assertEquals("EU", result.getTerritory());
 
 		OtherTSLPointer otherTSLPointer = result.getLotlPointers().get(0);
-		assertEquals(8, otherTSLPointer.getServiceDigitalIdentities().size());
+		assertEquals(8, otherTSLPointer.getSdiCertificates().size());
 		assertEquals("https://ec.europa.eu/tools/lotl/eu-lotl.xml", otherTSLPointer.getTSLLocation());
 		assertEquals("EU", otherTSLPointer.getSchemeTerritory());
 		assertEquals("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists", otherTSLPointer.getTslType());
@@ -129,7 +129,7 @@ public class LOTLParsingTaskTest {
 	private void checkOtherPointers(List<OtherTSLPointer> lotlPointers) {
 		for (OtherTSLPointer otherTSLPointerDTO : lotlPointers) {
 			assertNotNull(otherTSLPointerDTO);
-			List<CertificateToken> certificates = otherTSLPointerDTO.getServiceDigitalIdentities();
+			List<CertificateToken> certificates = otherTSLPointerDTO.getSdiCertificates();
 			assertNotNull(certificates);
 			for (CertificateToken certificateToken : certificates) {
 				assertNotNull(certificateToken);
@@ -276,7 +276,7 @@ public class LOTLParsingTaskTest {
 		assertEquals("IE", result.getTerritory());
 
 		OtherTSLPointer otherTSLPointer = result.getLotlPointers().get(0);
-		assertEquals(8, otherTSLPointer.getServiceDigitalIdentities().size());
+		assertEquals(8, otherTSLPointer.getSdiCertificates().size());
 		assertEquals("https://ec.europa.eu/tools/lotl/eu-lotl.xml", otherTSLPointer.getTSLLocation());
 		assertEquals("EU", otherTSLPointer.getSchemeTerritory());
 		assertEquals("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists", otherTSLPointer.getTslType());

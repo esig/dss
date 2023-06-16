@@ -80,7 +80,7 @@ public class OtherTSLPointerConverter implements Function<OtherTSLPointerType, O
 	@Override
 	public OtherTSLPointer apply(OtherTSLPointerType original) {
 		return new OtherTSLPointer.OtherTSLPointerBuilder()
-				.setServiceDigitalIdentities(getCertificates(original.getServiceDigitalIdentities()))
+				.setSdiCertificates(getCertificates(original.getServiceDigitalIdentities()))
 				.setTslLocation(original.getTSLLocation())
 				.setSchemeTerritory(getSchemeTerritory(original.getAdditionalInformation()))
 				.setTslType(getTSLType(original.getAdditionalInformation()))

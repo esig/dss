@@ -84,7 +84,7 @@ public class DTOTest {
 		schemeTypeCommunityRules.put("en", Arrays.asList("http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon", "http://uri.etsi.org/TrstSvc/TrustedList/schemerules/CZ"));
 
 		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer.OtherTSLPointerBuilder()
-				.setServiceDigitalIdentities(Collections.singletonList(cert))
+				.setSdiCertificates(Collections.singletonList(cert))
 				.setTslLocation("https://tsl.gov.cz/publ/TSL_CZ.xml")
 				.setTslType(TSLTypeEnum.EUgeneric.getUri())
 				.setSchemeTerritory("CZ")
@@ -92,8 +92,8 @@ public class DTOTest {
 				.setSchemeOperatorNames(schemeOperatorNames)
 				.setSchemeTypeCommunityRules(schemeTypeCommunityRules)
 				.build();
-		assertEquals(1, otherTSLPointerDTO.getServiceDigitalIdentities().size());
-		assertEquals(cert, otherTSLPointerDTO.getServiceDigitalIdentities().get(0));
+		assertEquals(1, otherTSLPointerDTO.getSdiCertificates().size());
+		assertEquals(cert, otherTSLPointerDTO.getSdiCertificates().get(0));
 		assertEquals(TSLTypeEnum.EUgeneric.getUri(), otherTSLPointerDTO.getTslType());
 		assertEquals("CZ", otherTSLPointerDTO.getSchemeTerritory());
 		assertEquals(MimeTypeEnum.XML.getMimeTypeString(), otherTSLPointerDTO.getMimeType());
