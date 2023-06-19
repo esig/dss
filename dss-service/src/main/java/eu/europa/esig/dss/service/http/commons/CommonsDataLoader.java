@@ -1242,10 +1242,14 @@ public class CommonsDataLoader implements DataLoader {
 							if (hostname.equals(hostnamePattern)) {
 								// bypass proxy for that hostname
 								return null;
-							}
-							if (hostnamePattern.startsWith("*")) {
+
+							} else if (hostnamePattern.equals("*")) {
+								// bypass all hostnames
+								return null;
+
+							} else if (hostnamePattern.startsWith("*.")) {
 								String matchingEnd = hostnamePattern.substring(1).toLowerCase();
-								if( hostname.endsWith(matchingEnd)) {
+								if (hostname.endsWith(matchingEnd)) {
 									// pattern matches, bypass proxy for that hostname
 									return null;
 								}
