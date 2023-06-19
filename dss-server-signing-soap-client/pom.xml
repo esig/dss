@@ -6,7 +6,7 @@
 		<version>5.13-SNAPSHOT</version>
 	</parent>
 
-	<name>DSS Server signing SOAP Client</name>
+	<name>DSS Server Signing SOAP Client</name>
 	<artifactId>dss-server-signing-soap-client</artifactId>
 
 	<properties>
