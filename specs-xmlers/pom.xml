@@ -25,6 +25,10 @@
             <artifactId>specs-xades</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>specs-trusted-list</artifactId>
         </dependency>
