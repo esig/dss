@@ -125,7 +125,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPaths.getUnsignedPropertiesPath());
 		final int length = unsignedPropertiesNodeList.getLength();
 		if (length == 1) {
-			unsignedPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
+			unsignedPropertiesDom = (Element) unsignedPropertiesNodeList.item(0);
 		} else if (length == 0) {
 			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementUnsignedProperties());
 			if (params.isPrettyPrint()) {
