@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -167,7 +168,8 @@ public class OnlineTSPSource implements TSPSource {
 			if (nonceSource == null) {
 				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
 			} else {
-				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonceSource.getNonce());
+				byte[] nonce = nonceSource.getNonceValue();
+				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, new BigInteger(nonce));
 			}
 
 			final byte[] requestBytes = timeStampRequest.getEncoded();

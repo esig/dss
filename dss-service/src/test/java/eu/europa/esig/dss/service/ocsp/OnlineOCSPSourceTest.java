@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
@@ -30,11 +32,13 @@ import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.alerts.DSSExternalResourceExceptionAlert;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import org.bouncycastle.cert.ocsp.CertificateID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +62,10 @@ public class OnlineOCSPSourceTest {
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
+	
+	private static CertificateToken qtspUser;
+	private static CertificateToken qtspCa;
+	private static byte[] qtspOcsp;
 
 	@BeforeAll
 	public static void init() {
@@ -71,6 +79,10 @@ public class OnlineOCSPSourceTest {
 
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
+
+		qtspUser = DSSUtils.loadCertificate(new File("src/test/resources/sk_user.cer"));
+		qtspCa = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
+		qtspOcsp = DSSUtils.toByteArray(new File("src/test/resources/sk_ocsp.bin"));
 	}
 
 	@Test
@@ -122,6 +134,100 @@ public class OnlineOCSPSourceTest {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void noNonceResponderTest() {
+		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void noNonceResponderEnforceNonceTest() {
+		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
+		ocspSource.setAlertOnNonexistentNonce(new DSSExternalResourceExceptionAlert());
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(certificateToken, rootToken));
+		assertTrue(exception.getMessage().contains("No nonce has been retrieved from OCSP response!"));
+	}
+
+	@Test
+	public void noNonceResponderSilentOnStatusAlertTest() {
+		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
+		ocspSource.setAlertOnNonexistentNonce(new SilentOnStatusAlert());
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void invalidNonceResponderTest() {
+		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(certificateToken, rootToken));
+		assertTrue(exception.getMessage().contains("does not match a dispatched nonce"));
+	}
+
+	@Test
+	public void invalidNonceResponderSilentOnStatusTest() {
+		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
+		ocspSource.setNonceSource(new SecureRandomNonceSource());
+		ocspSource.setAlertOnInvalidNonce(new SilentOnStatusAlert());
+		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void noNextUpdateTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(certificateToken, rootToken));
+		assertTrue(exception.getMessage().contains("Obtained OCSP Response does not contain nextUpdate field!"));
+	}
+
+	@Test
+	public void validNextUpdateTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void validNextUpdateEnforcedTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
+		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void invalidNextUpdateTest() {
+		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
+		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
+		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void invalidNextUpdateEnforcedTest() {
+		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
+		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(qtspUser, qtspCa));
+		assertTrue(exception.getMessage().contains("The current time"));
+	}
+
+	@Test
+	public void invalidNextUpdateWithLargeToleranceTest() {
+		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
+		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
+		ocspSource.setNextUpdateTolerancePeriod(1000L * 60 * 60 * 24 * 365 * 20); // 20 years
+		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
 		assertNotNull(ocspToken);
 	}
 
@@ -236,6 +342,57 @@ public class OnlineOCSPSourceTest {
 		Exception exception = assertThrows(NullPointerException.class,
 				() -> ocspSource.getRevocationToken(certificateToken, rootToken));
 		assertEquals("DataLoader is not provided !", exception.getMessage());
+	}
+
+	private static class NoNonceSubstituteOCSPSource extends OnlineOCSPSource {
+
+		private NoNonceSubstituteOCSPSource() {
+			super();
+		}
+
+		@Override
+		protected byte[] buildOCSPRequest(CertificateID certId, byte[] nonce) throws DSSException {
+			return super.buildOCSPRequest(certId, null);
+		}
+	}
+
+	private static class InvalidNonceSubstituteOCSPSource extends OnlineOCSPSource {
+
+		private InvalidNonceSubstituteOCSPSource() {
+			super();
+		}
+
+		@Override
+		protected byte[] buildOCSPRequest(CertificateID certId, byte[] nonce) throws DSSException {
+			return super.buildOCSPRequest(certId, new SecureRandomNonceSource().getNonceValue());
+		}
+	}
+
+	private static class SubstituteOCSPSource extends OnlineOCSPSource {
+
+		private static final long serialVersionUID = 9135834387628029175L;
+
+		private SubstituteOCSPSource(final byte[] ocspResponse) {
+			super(new SubstituteOCSPDataLoader(ocspResponse));
+		}
+
+	}
+
+	private static class SubstituteOCSPDataLoader extends CommonsDataLoader {
+
+		private static final long serialVersionUID = -7023354489321956369L;
+		
+		private final byte[] ocspResponse;
+
+		private SubstituteOCSPDataLoader(final byte[] ocspResponse) {
+			this.ocspResponse = ocspResponse;
+		}
+
+		@Override
+		public byte[] post(String url, byte[] content) {
+			return ocspResponse;
+		}
+		
 	}
 	
 }
