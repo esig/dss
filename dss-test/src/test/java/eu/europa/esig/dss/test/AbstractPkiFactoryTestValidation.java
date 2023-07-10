@@ -490,6 +490,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkIssuerSigningCertificateValue(diagnosticData);
 		checkCertificateChain(diagnosticData);
 		checkSignatureLevel(diagnosticData);
+		checkSignatureType(diagnosticData);
 		checkSigningDate(diagnosticData);
 		checkCertificates(diagnosticData);
 		checkCertificateExtensions(diagnosticData);
@@ -497,6 +498,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkTimestamps(diagnosticData);
 		checkSignatureScopes(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
+		checkContentType(diagnosticData);
 		checkMimeType(diagnosticData);
 		checkCommitmentTypeIndications(diagnosticData);
 		checkClaimedRoles(diagnosticData);
@@ -609,6 +611,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			assertEquals(isBaselineLTA(signatureFormat), diagnosticData.isThereALevel(signatureWrapper.getId()));
 			assertEquals(isBaselineLTA(signatureFormat), diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
 		}
+	}
+
+	protected void checkSignatureType(DiagnosticData diagnosticData) {
+		// not implemented by default
 	}
 	
 	protected boolean isBaselineT(SignatureLevel signatureLevel) {
@@ -1142,6 +1148,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				}
 			}
 		}
+	}
+
+	protected void checkContentType(DiagnosticData diagnosticData) {
+		// not implemented by default
 	}
 
 	protected void checkMimeType(DiagnosticData diagnosticData) {

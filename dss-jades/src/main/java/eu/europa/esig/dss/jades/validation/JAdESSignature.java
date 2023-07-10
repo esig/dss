@@ -306,22 +306,46 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-		// TODO handle sigD
-		return jws.getContentTypeHeaderValue();
+		// not applicable for JAdES (see TS 119 102-2 v1.4.1)
+		return null;
 	}
 
 	@Override
 	public String getMimeType() {
 		/*
-		 * RFC 7515 :
-		 * A recipient using the media type value MUST treat it as if
-		 * "application/" were prepended to any "typ" value not containing a '/'.
+		 * TS 119 102-2 v1.4.1 :
+		 * The MimeType element shall contain the value of cty header parameter, prefixed with the string "application/"
+		 * when this prefix has been omitted in the cty header parameter.
 		 */
-		String typeValue = jws.getProtectedHeaderValueAsString(HeaderParameterNames.TYPE);
-		if (Utils.isStringNotEmpty(typeValue) && !typeValue.contains("/")) {
-			return DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX + typeValue;
+		String value = jws.getContentTypeHeaderValue();
+		/*
+		 * NOTE: The sigD header parameter has one member that contains information of the format and type of the
+		 * constituents of the JWS Payload.
+		 */
+		if (Utils.isStringEmpty(value)) {
+			// sigD: return the first one when present
+			List<String> ctys = getSignedDataContentTypeList();
+			if (Utils.isCollectionNotEmpty(ctys)) {
+				value = ctys.get(0);
+			}
 		}
-		return typeValue;
+		if (Utils.isStringNotEmpty(value)) {
+			return DSSJsonUtils.getMimeTypeString(value);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns value of the "typ" header parameter, declaring the media type of the JWS, when present.
+	 *
+	 * @return {@link String}
+	 */
+	public String getSignatureType() {
+		String value = jws.getProtectedHeaderValueAsString(HeaderParameterNames.TYPE);
+		if (Utils.isStringNotEmpty(value)) {
+			return DSSJsonUtils.getMimeTypeString(value);
+		}
+		return null;
 	}
 
 	@Override
@@ -656,19 +680,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
 
-					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.HTTP_HEADERS.equals(sigDMechanism)) {
 						// detached with HTTP_HEADERS mechanism
 						byte[] payload = getPayloadForHttpHeadersMechanism();
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(payload != null);
 
-					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(sigDMechanism)) {
 						// detached with OBJECT_ID_BY_URI mechanism
 						byte[] payload = getPayloadForObjectIdByUriMechanism();
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(payload != null);
 
-					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(sigDMechanism)) {
 						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
 						signatureValueReferenceValidation.setFound(true);
 
@@ -983,6 +1007,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		Map<?, ?> signatureDetached = jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.SIG_D);
 		if (Utils.isMapNotEmpty(signatureDetached)) {
 			List<?> pars = DSSJsonUtils.getAsList(signatureDetached, JAdESHeaderParameterNames.HASH_V);
+			return DSSJsonUtils.toListOfStrings(pars);
+		}
+		return Collections.emptyList();
+	}
+
+	private List<String> getSignedDataContentTypeList() {
+		Map<?, ?> signatureDetached = jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.SIG_D);
+		if (Utils.isMapNotEmpty(signatureDetached)) {
+			List<?> pars = DSSJsonUtils.getAsList(signatureDetached, JAdESHeaderParameterNames.CTYS);
 			return DSSJsonUtils.toListOfStrings(pars);
 		}
 		return Collections.emptyList();

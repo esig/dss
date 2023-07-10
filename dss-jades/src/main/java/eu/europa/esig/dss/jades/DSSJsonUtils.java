@@ -1240,4 +1240,18 @@ public class DSSJsonUtils {
 		return listOfNumbers;
 	}
 
+	/**
+	 * Returns a complete mime type string.
+	 * The method adds "application/" prefix when required.
+	 *
+	 * @param mimeType {@link String} extracted
+	 * @return {@link String} representing a complete mime type
+	 */
+	public static String getMimeTypeString(String mimeType) {
+		if (Utils.isStringNotEmpty(mimeType) && !mimeType.contains("/")) {
+			return DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX + mimeType;
+		}
+		return mimeType;
+	}
+
 }

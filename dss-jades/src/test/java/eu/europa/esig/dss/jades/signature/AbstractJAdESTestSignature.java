@@ -49,7 +49,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
@@ -259,20 +258,12 @@ public abstract class AbstractJAdESTestSignature
 	}
 	
 	@Override
-	protected void checkMimeType(DiagnosticData diagnosticData) {
+	protected void checkSignatureType(DiagnosticData diagnosticData) {
 		super.checkMimeType(diagnosticData);
 
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-		assertNotNull(signature.getMimeType());
-		assertEquals(getExpectedMime(), MimeType.fromMimeTypeString(signature.getMimeType()));
-	}
-
-	@Override
-	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
-		super.validateETSIDataObjectFormatType(dataObjectFormat);
-
-		assertNotNull(dataObjectFormat.getMimeType());
-		assertEquals(getExpectedMime(), MimeType.fromMimeTypeString(dataObjectFormat.getMimeType()));
+		assertNotNull(signature.getSignatureType());
+		assertEquals(getExpectedMime(), MimeType.fromMimeTypeString(signature.getSignatureType()));
 	}
 
 	@Override

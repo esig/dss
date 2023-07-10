@@ -26,24 +26,47 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestValidation<JAdESSignatureParameters, JAdESTimestampParameters> {
 	
+	@Override
+	protected void checkSignatureType(DiagnosticData diagnosticData) {
+		super.checkSignatureType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNotNull(signatureWrapper.getSignatureType());
+			MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getSignatureType());
+			assertTrue(MimeTypeEnum.JOSE.equals(mimeType) || MimeTypeEnum.JOSE_JSON.equals(mimeType));
+		}
+	}
+
+	@Override
+	protected void checkContentType(DiagnosticData diagnosticData) {
+		super.checkContentType(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertNull(signatureWrapper.getContentType());
+		}
+	}
+
 	@Override
 	protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
@@ -84,6 +107,13 @@ public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestVa
 				}
 			}
 		}
+	}
+
+	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
+		super.validateETSIDataObjectFormatType(dataObjectFormat);
+
+		assertNull(dataObjectFormat.getContentType());
+		assertNotNull(dataObjectFormat.getMimeType());
 	}
 
 	@Override

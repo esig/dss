@@ -39,7 +39,7 @@ public abstract class AbstractTrustServiceFilter implements TrustServiceFilter {
 ...
 etc
 
-|OCSP response without nonce (keep failing behavior)              a|
+|OCSP response without nonce (keep failing behavior)                 a|
 [source,java]
 ----
 OnlineOCSPSource ocspSource = new OnlineOCSPSource();
@@ -51,6 +51,20 @@ OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 ocspSource.setNonceSource(new SecureRandomNonceSource());
 ocspSource.setAlertOnNonexistentNonce(new DSSExternalResourceExceptionAlert());
 Exception exception = assertThrows(DSSExternalResourceException.class, () -> ocspSource.getRevocationToken(certificateToken, rootToken)); // if OCSP response does not include nonce
+
+|JWS content media type ("cty" header)                               a|[source,java]
+----
+String mimeType = signature.getContentType();
+----
+                                                                     a|[source,java]
+String mimeType = signature.getMimeType();
+
+|JWS media type ("typ" header)                                       a|[source,java]
+----
+String jwsType = signature.getMimeType();
+----
+                                                                     a|[source,java]
+String jwsType = signature.getSignatureType();
 
 |===
 
