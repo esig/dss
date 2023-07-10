@@ -410,9 +410,9 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.jvnet.jaxb2.maven2</groupId>
-					<artifactId>maven-jaxb2-plugin</artifactId>
-					<version>0.15.3</version>
+					<groupId>org.jvnet.jaxb</groupId>
+					<artifactId>jaxb-maven-plugin</artifactId>
+					<version>2.0.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
