@@ -27,8 +27,8 @@
 			<xs:element ref="ds:Signature" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-================= Signature Validation Report =================
+	<!-- 
+================= Signature Validation Report ================= 
 -->
 	<xs:complexType name="SignatureValidationReportType">
 		<xs:sequence>
@@ -135,8 +135,8 @@
 			<xs:choice>
 				<xs:sequence>
 					<xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType"/>
-					<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType"
-								minOccurs="0"/>
+					<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType" 
+						minOccurs="0"/>
 				</xs:sequence>
 				<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType"/>
 			</xs:choice>
@@ -272,7 +272,7 @@
 			<xs:element name="ReportData" type="vr:TypedDataType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
+	<!-- 
 	========================= Signature Validation Objects =============================
 	========================= ValidationObjectListType =============================
 -->
@@ -281,7 +281,7 @@
 			<xs:element name="ValidationObject" type="vr:ValidationObjectType" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
+	<!-- 
 	========================= ValidationObjectType =============================
 -->
 	<xs:complexType name="ValidationObjectType">
@@ -294,18 +294,18 @@
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="required"/>
 	</xs:complexType>
-	<!--
+	<!-- 
 	========================= ValidationObjectRepresentationType =============================
 -->
-	<xs:complexType name="ValidationObjectRepresentationType">
-		<xs:choice maxOccurs="unbounded">
-			<xs:element name="direct" type="xs:anyType"/>
-			<xs:element name="base64" type="xs:base64Binary"/>
-			<xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType"/>
-			<xs:element name="URI" type="xs:anyURI"/>
-		</xs:choice>
-	</xs:complexType>
-	<!--
+    <xs:complexType name="ValidationObjectRepresentationType">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="direct" type="xs:anyType"/>
+            <xs:element name="base64" type="xs:base64Binary"/>
+            <xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType"/>
+            <xs:element name="URI" type="xs:anyURI"/>
+        </xs:choice>
+    </xs:complexType>
+	<!-- 
 	========================= POEType =============================
 -->
 	<xs:complexType name="POEType">
@@ -315,7 +315,7 @@
 			<xs:element name="POEObject" type="vr:VOReferenceType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
+	<!-- 
 	========================= POEProvisioningType =============================
 -->
 	<xs:complexType name="POEProvisioningType">
@@ -325,7 +325,7 @@
 			<xs:element name="SignatureReference" type="vr:SignatureReferenceType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
+	<!-- 
 	========================= VOReferenceType =============================
 -->
 	<xs:complexType name="VOReferenceType">
@@ -334,8 +334,8 @@
 		</xs:sequence>
 		<xs:attribute name="VOReference" type="xs:IDREFS" use="required"/>
 	</xs:complexType>
-	<!--
-	=============  Signature References =============
+	<!-- 
+	=============  Signature References =============  
 -->
 	<xs:complexType name="SignatureReferenceType">
 		<xs:choice>
@@ -364,8 +364,8 @@
 			<xs:element name="NamespacePrefix" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-	=============  Attribute Base type and definitions=============
+	<!-- 
+	=============  Attribute Base type and definitions=============  
 -->
 	<xs:complexType name="AttributeBaseType">
 		<xs:sequence>
@@ -373,8 +373,8 @@
 		</xs:sequence>
 		<xs:attribute name="Signed" type="xs:boolean" use="optional"/>
 	</xs:complexType>
-	<!--
-	=============  A.2 SigningTime =============
+	<!-- 
+	=============  A.2 SigningTime =============  
 -->
 	<xs:complexType name="SASigningTimeType">
 		<xs:complexContent>
@@ -385,8 +385,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.3 SigningCertificate =============
+	<!-- 
+	=============  A.3 SigningCertificate =============  
 -->
 	<xs:complexType name="SACertIDListType">
 		<xs:complexContent>
@@ -404,8 +404,8 @@
 			<xs:element ref="ds:DigestValue"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-	=============  A.4 DataObjectFormat =============
+	<!-- 
+	=============  A.4 DataObjectFormat =============  
 -->
 	<xs:complexType name="SADataObjectFormatType">
 		<xs:complexContent>
@@ -417,8 +417,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.5 CommitmentTypeIndication =============
+	<!-- 
+	=============  A.5 CommitmentTypeIndication =============  
 -->
 	<xs:complexType name="SACommitmentTypeIndicationType">
 		<xs:complexContent>
@@ -429,8 +429,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.8 SignaturePolicyIdentifier =============
+	<!-- 
+	=============  A.8 SignaturePolicyIdentifier =============  
 -->
 	<xs:complexType name="SASigPolicyIdentifierType">
 		<xs:complexContent>
@@ -441,8 +441,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.9 SignatureProductionPlace =============
+	<!-- 
+	=============  A.9 SignatureProductionPlace =============  
 -->
 	<xs:complexType name="SASignatureProductionPlaceType">
 		<xs:complexContent>
@@ -453,8 +453,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.10 SignerRole =============
+	<!-- 
+	=============  A.10 SignerRole =============  
 -->
 	<xs:complexType name="SASignerRoleType">
 		<xs:complexContent>
@@ -479,8 +479,8 @@
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-	=============  A.11 CounterSignature =============
+	<!-- 
+	=============  A.11 CounterSignature =============  
 -->
 	<xs:complexType name="SACounterSignatureType">
 		<xs:complexContent>
@@ -491,8 +491,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.14 CompleteRevocationRefs =============
+	<!-- 
+	=============  A.14 CompleteRevocationRefs =============  
 -->
 	<xs:complexType name="SARevIDListType">
 		<xs:complexContent>
@@ -519,8 +519,8 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-	=============  A.27 DSS =============
+	<!-- 
+	=============  A.27 DSS =============  
 -->
 	<xs:complexType name="SADSSType">
 		<xs:complexContent>
@@ -533,8 +533,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.28 VRI =============
+	<!-- 
+	=============  A.28 VRI =============  
 -->
 	<xs:complexType name="SAVRIType">
 		<xs:complexContent>
@@ -549,8 +549,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.30 Reason =============
+	<!-- 
+	=============  A.30 Reason =============  
 -->
 	<xs:complexType name="SAReasonType">
 		<xs:complexContent>
@@ -561,8 +561,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.31 Name =============
+	<!-- 
+	=============  A.31 Name =============  
 -->
 	<xs:complexType name="SANameType">
 		<xs:complexContent>
@@ -573,8 +573,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.32 ContactInfo =============
+	<!-- 
+	=============  A.32 ContactInfo =============  
 -->
 	<xs:complexType name="SAContactInfoType">
 		<xs:complexContent>
@@ -585,8 +585,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.33 SubFilter=============
+	<!-- 
+	=============  A.33 SubFilter=============  
 -->
 	<xs:complexType name="SASubFilterType">
 		<xs:complexContent>
@@ -597,16 +597,16 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<!--
-	=============  A.35 Filter=============
+	<!-- 
+	=============  A.35 Filter=============  
 -->
 	<xs:complexType name="SAFilterType">
 		<xs:sequence>
 			<xs:element name="Filter" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
-	<!--
-	=============  Annex A auxillary types  =============
+	<!-- 
+	=============  Annex A auxillary types  =============  
 -->
 	<xs:complexType name="SATimestampType">
 		<xs:complexContent>

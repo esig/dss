@@ -1603,94 +1603,87 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 	@SuppressWarnings("rawtypes")
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
 		if (signatureAttributes != null) {
-			List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 			assertTrue(Utils.isCollectionNotEmpty(signatureAttributeObjects));
 
-			for (Object signatureAttributeObj : signatureAttributeObjects) {
-				if (signatureAttributeObj instanceof JAXBElement) {
-					JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-					Object value = jaxbElement.getValue();
-
-					if (value instanceof SASigningTimeType) {
-						SASigningTimeType signingTime = (SASigningTimeType) value;
-						assertNotNull(signingTime.getTime());
-					} else if (value instanceof SACertIDListType) {
-						SACertIDListType certIdList = (SACertIDListType) value;
-						validateETSIACertIDListType(certIdList);
-					} else if (value instanceof SACommitmentTypeIndicationType) {
-						SACommitmentTypeIndicationType commitmentTypeIndicationType = (SACommitmentTypeIndicationType) value;
-						validateETSICommitmentTypeIndicationType(commitmentTypeIndicationType);
-					} else if (value instanceof SADataObjectFormatType) {
-						SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
-						validateETSIDataObjectFormatType(dataObjectFormatType);
-					} else if (value instanceof SATimestampType) {
-						SATimestampType timestamp = (SATimestampType) value;
-						assertNotNull(timestamp.getAttributeObject());
-						assertNotNull(timestamp.getTimeStampValue());
-					} else if (value instanceof SASigPolicyIdentifierType) {
-						SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
-						validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
-					} else if (value instanceof SASignatureProductionPlaceType) {
-						SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
-						validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
-					} else if (value instanceof SASignerRoleType) {
-						SASignerRoleType saSignerRoleType = (SASignerRoleType) value;
-						validateETSISASignerRoleType(saSignerRoleType);
-					} else if (value instanceof SACounterSignatureType) {
-						SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
-						validateETSISACounterSignatureType(saCounterSignature);
-					} else if (value instanceof SAMessageDigestType) {
-						SAMessageDigestType md = (SAMessageDigestType) value;
-						validateETSIMessageDigest(md);
-					} else if (value instanceof SAReasonType) {
-						SAReasonType reasonType = (SAReasonType) value;
-						validateETSISAReasonType(reasonType);
-					} else if (value instanceof SAFilterType) {
-						SAFilterType filterType = (SAFilterType) value;
-						validateETSIFilter(filterType);
-					} else if (value instanceof SASubFilterType) {
-						SASubFilterType subFilterType = (SASubFilterType) value;
-						validateETSISubFilter(subFilterType);
-					} else if (value instanceof SANameType) {
-						SANameType nameType = (SANameType) value;
-						validateETSISAName(nameType);
-					} else if (value instanceof SAContactInfoType) {
-						SAContactInfoType contactTypeInfo = (SAContactInfoType) value;
-						validateETSIContactInfo(contactTypeInfo);
-					} else if (value instanceof SADSSType) {
-						SADSSType dss = (SADSSType) value;
-						validateETSIDSSType(dss);
-					} else if (value instanceof SAVRIType) {
-						SAVRIType vri = (SAVRIType) value;
-						validateETSIVRIType(vri);
-					} else if (value instanceof SARevIDListType) {
-						SARevIDListType revIdList = (SARevIDListType) value;
-						validateETSIRevIDListType(revIdList);
-					} else if ("CertificateValues".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof AttributeBaseType);
-						validateETSICertificateValues((AttributeBaseType) value);
-					} else if ("RevocationValues".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof AttributeBaseType);
-						validateETSIRevocationValues((AttributeBaseType) value);
-					} else if ("AttrAuthoritiesCertValues".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof AttributeBaseType);
-						validateETSIAttrAuthoritiesCertValues((AttributeBaseType) value);
-					} else if ("AttributeRevocationValues".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof AttributeBaseType);
-						validateETSIAttributeRevocationValues((AttributeBaseType) value);
-					} else if ("TimeStampValidationData".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof AttributeBaseType);
-						validateETSITimeStampValidationData((AttributeBaseType) value);
-					} else if ("ByteRange".equals(jaxbElement.getName().getLocalPart())) {
-						assertTrue(value instanceof List<?>);
-						validateETSIByteArray((List<?>) value);
-					} else {
-						fail(String.format("Not tested! Name : %s, class : %s",
-								jaxbElement.getName().getLocalPart(), value.getClass()));
-					}
-
+			for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+				Object value = signatureAttributeObj.getValue();
+				if (value instanceof SASigningTimeType) {
+					SASigningTimeType signingTime = (SASigningTimeType) value;
+					assertNotNull(signingTime.getTime());
+				} else if (value instanceof SACertIDListType) {
+					SACertIDListType certIdList = (SACertIDListType) value;
+					validateETSIACertIDListType(certIdList);
+				} else if (value instanceof SACommitmentTypeIndicationType) {
+					SACommitmentTypeIndicationType commitmentTypeIndicationType = (SACommitmentTypeIndicationType) value;
+					validateETSICommitmentTypeIndicationType(commitmentTypeIndicationType);
+				} else if (value instanceof SADataObjectFormatType) {
+					SADataObjectFormatType dataObjectFormatType = (SADataObjectFormatType) value;
+					validateETSIDataObjectFormatType(dataObjectFormatType);
+				} else if (value instanceof SATimestampType) {
+					SATimestampType timestamp = (SATimestampType) value;
+					assertNotNull(timestamp.getAttributeObject());
+					assertNotNull(timestamp.getTimeStampValue());
+				} else if (value instanceof SASigPolicyIdentifierType) {
+					SASigPolicyIdentifierType saSigPolicyIdentifier = (SASigPolicyIdentifierType) value;
+					validateETSISASigPolicyIdentifierType(saSigPolicyIdentifier);
+				} else if (value instanceof SASignatureProductionPlaceType) {
+					SASignatureProductionPlaceType saSignatureProductionPlace = (SASignatureProductionPlaceType) value;
+					validateETSISASignatureProductionPlaceType(saSignatureProductionPlace);
+				} else if (value instanceof SASignerRoleType) {
+					SASignerRoleType saSignerRoleType = (SASignerRoleType) value;
+					validateETSISASignerRoleType(saSignerRoleType);
+				} else if (value instanceof SACounterSignatureType) {
+					SACounterSignatureType saCounterSignature = (SACounterSignatureType) value;
+					validateETSISACounterSignatureType(saCounterSignature);
+				} else if (value instanceof SAMessageDigestType) {
+					SAMessageDigestType md = (SAMessageDigestType) value;
+					validateETSIMessageDigest(md);
+				} else if (value instanceof SAReasonType) {
+					SAReasonType reasonType = (SAReasonType) value;
+					validateETSISAReasonType(reasonType);
+				} else if (value instanceof SAFilterType) {
+					SAFilterType filterType = (SAFilterType) value;
+					validateETSIFilter(filterType);
+				} else if (value instanceof SASubFilterType) {
+					SASubFilterType subFilterType = (SASubFilterType) value;
+					validateETSISubFilter(subFilterType);
+				} else if (value instanceof SANameType) {
+					SANameType nameType = (SANameType) value;
+					validateETSISAName(nameType);
+				} else if (value instanceof SAContactInfoType) {
+					SAContactInfoType contactTypeInfo = (SAContactInfoType) value;
+					validateETSIContactInfo(contactTypeInfo);
+				} else if (value instanceof SADSSType) {
+					SADSSType dss = (SADSSType) value;
+					validateETSIDSSType(dss);
+				} else if (value instanceof SAVRIType) {
+					SAVRIType vri = (SAVRIType) value;
+					validateETSIVRIType(vri);
+				} else if (value instanceof SARevIDListType) {
+					SARevIDListType revIdList = (SARevIDListType) value;
+					validateETSIRevIDListType(revIdList);
+				} else if ("CertificateValues".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof AttributeBaseType);
+					validateETSICertificateValues((AttributeBaseType) value);
+				} else if ("RevocationValues".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof AttributeBaseType);
+					validateETSIRevocationValues((AttributeBaseType) value);
+				} else if ("AttrAuthoritiesCertValues".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof AttributeBaseType);
+					validateETSIAttrAuthoritiesCertValues((AttributeBaseType) value);
+				} else if ("AttributeRevocationValues".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof AttributeBaseType);
+					validateETSIAttributeRevocationValues((AttributeBaseType) value);
+				} else if ("TimeStampValidationData".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof AttributeBaseType);
+					validateETSITimeStampValidationData((AttributeBaseType) value);
+				} else if ("ByteRange".equals(signatureAttributeObj.getName().getLocalPart())) {
+					assertTrue(value instanceof List<?>);
+					validateETSIByteArray((List<?>) value);
 				} else {
-					fail("Only JAXBElements are accepted!");
+					fail(String.format("Not tested! Name : %s, class : %s",
+							signatureAttributeObj.getName().getLocalPart(), value.getClass()));
 				}
 			}
 		}
@@ -1820,8 +1813,12 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				assertNotNull(validationObject.getId());
 				assertNotNull(validationObject.getObjectType());
 				assertNotNull(validationObject.getValidationObjectRepresentation());
-				assertTrue(validationObject.getValidationObjectRepresentation().getDigestAlgAndValue() != null || 
-						validationObject.getValidationObjectRepresentation().getBase64() != null);
+
+				List<Object> validationObjectRepresentationList = validationObject.getValidationObjectRepresentation().getDirectOrBase64OrDigestAlgAndValue();
+				assertEquals(1 , validationObjectRepresentationList.size());
+				Object validationObjectRepresentation = validationObjectRepresentationList.get(0);
+				assertNotNull(validationObjectRepresentation);
+				assertTrue(validationObjectRepresentation instanceof DigestAlgAndValueType || validationObjectRepresentation instanceof byte[]);
 				switch (validationObject.getObjectType()) {
 					case TIMESTAMP:
 						assertNotNull(validationObject.getPOEProvisioning());
@@ -1903,9 +1900,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 						boolean correspondingValidationObjectFound = false;
 						for (ValidationObjectType validationObject : validationObjects) {
 							if (signerData.getId().equals(validationObject.getId())) {
-								ValidationObjectRepresentationType validationObjectRepresentation = validationObject.getValidationObjectRepresentation();
-								assertNotNull(validationObjectRepresentation);
-								DigestAlgAndValueType digestAlgAndValue = validationObjectRepresentation.getDigestAlgAndValue();
+								ValidationObjectRepresentationType validationObjectRepresentationType = validationObject.getValidationObjectRepresentation();
+								assertNotNull(validationObjectRepresentationType);
+								List<Object> validationObjectRepresentationList = validationObjectRepresentationType.getDirectOrBase64OrDigestAlgAndValue();
+								assertEquals(1, validationObjectRepresentationList.size());
+								Object validationObjectRepresentation = validationObjectRepresentationList.get(0);
+								assertTrue(validationObjectRepresentation instanceof DigestAlgAndValueType);
+								DigestAlgAndValueType digestAlgAndValue = (DigestAlgAndValueType) validationObjectRepresentation;
 								assertNotNull(digestAlgAndValue);
 								assertEquals(xmlDigestAlgoAndValue.getDigestMethod(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
 								assertArrayEquals(xmlDigestAlgoAndValue.getDigestValue(), digestAlgAndValue.getDigestValue());
@@ -2298,14 +2299,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
 				if (Utils.isStringNotEmpty(signature.getPolicyId()) && // implicit policies are ignored
 						!SignaturePolicyType.IMPLICIT_POLICY.name().equals(signature.getPolicyId())) {
-					List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport
+					List<JAXBElement<?>> signingTimeOrSigningCertificateOrDataObjectFormat = signatureValidationReport
 							.getSignatureAttributes().getSigningTimeOrSigningCertificateOrDataObjectFormat();
 					assertNotNull(signingTimeOrSigningCertificateOrDataObjectFormat);
 					boolean signaturePolicyIdPresent = false;
-					for (Object object : signingTimeOrSigningCertificateOrDataObjectFormat) {
-						JAXBElement<?> jaxbElement = (JAXBElement<?>) object;
-						if (jaxbElement.getValue() instanceof SASigPolicyIdentifierType) {
-							SASigPolicyIdentifierType sigPolicyIdentifier = (SASigPolicyIdentifierType) jaxbElement.getValue();
+					for (JAXBElement<?> object : signingTimeOrSigningCertificateOrDataObjectFormat) {
+						if (object.getValue() instanceof SASigPolicyIdentifierType) {
+							SASigPolicyIdentifierType sigPolicyIdentifier = (SASigPolicyIdentifierType) object.getValue();
 							assertNotNull(sigPolicyIdentifier);
 							assertEquals(signature.getPolicyId(), sigPolicyIdentifier.getSigPolicyId());
 							signaturePolicyIdPresent = true;
@@ -2313,7 +2313,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 					}
 					assertTrue(signaturePolicyIdPresent);
 				}
-				
+
 			}
 		}
 	}

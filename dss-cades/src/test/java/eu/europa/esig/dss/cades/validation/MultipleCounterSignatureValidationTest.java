@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,6 +28,12 @@ import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MultipleCounterSignatureValidationTest extends AbstractCAdESTestValidation {
 
@@ -82,13 +81,10 @@ public class MultipleCounterSignatureValidationTest extends AbstractCAdESTestVal
 		int nbCounterSig = 0;
 		for (SignatureValidationReportType signatureValidationReportType : signatureValidationReports) {
 			SignatureAttributesType signatureAttributes = signatureValidationReportType.getSignatureAttributes();
-			List<Object> signingTimeOrSigningCertificateOrDataObjectFormat = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-			for (Object attribute : signingTimeOrSigningCertificateOrDataObjectFormat) {
-				if (attribute instanceof JAXBElement) {
-					JAXBElement e = (JAXBElement) attribute;
-					if (e.getDeclaredType().equals(SACounterSignatureType.class)) {
-						nbCounterSig++;
-					}
+			List<JAXBElement<?>> signingTimeOrSigningCertificateOrDataObjectFormat = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			for (JAXBElement<?> attribute : signingTimeOrSigningCertificateOrDataObjectFormat) {
+				if (attribute.getDeclaredType().equals(SACounterSignatureType.class)) {
+					nbCounterSig++;
 				}
 			}
 		}

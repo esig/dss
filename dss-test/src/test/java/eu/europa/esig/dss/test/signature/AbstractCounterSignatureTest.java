@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
-import javax.xml.bind.JAXBElement;
-
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
@@ -47,6 +35,16 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBElement;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractCounterSignatureTest<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
 				CSP extends SerializableCounterSignatureParameters> extends AbstractPkiFactoryTestDocumentSignatureService<SP, TP> {
@@ -153,26 +151,21 @@ public abstract class AbstractCounterSignatureTest<SP extends SerializableSignat
 				getSignatureParameters() : getCounterSignatureParameters();
 		super.validateETSISignatureAttributes(signatureAttributes, signatureParameters);
 	}
-	
-	@SuppressWarnings("rawtypes")
+
 	protected boolean hasCounterSignature(SignatureAttributesType signatureAttributes) {
-		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		for (Object signatureAttributeObj : signatureAttributeObjects) {
-			if (signatureAttributeObj instanceof JAXBElement) {
-				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-				Object value = jaxbElement.getValue();
-				
-				if (value instanceof SACounterSignatureType) {
-					// TODO multiple value -> multiple tag in signatureattributes ??
-					SACounterSignatureType counterSignature = (SACounterSignatureType) value;
-					List<VOReferenceType> attributeObject = counterSignature.getAttributeObject();
-					assertTrue(Utils.isCollectionNotEmpty(attributeObject));
-					assertNotNull(counterSignature.getCounterSignature());
-					assertNotNull(counterSignature.getCounterSignature().getDigestMethod());
-					assertNotNull(counterSignature.getCounterSignature().getDigestValue());
-					
-					return true;
-				}
+		List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+			Object value = signatureAttributeObj.getValue();
+			if (value instanceof SACounterSignatureType) {
+				// TODO multiple value -> multiple tag in signatureattributes ??
+				SACounterSignatureType counterSignature = (SACounterSignatureType) value;
+				List<VOReferenceType> attributeObject = counterSignature.getAttributeObject();
+				assertTrue(Utils.isCollectionNotEmpty(attributeObject));
+				assertNotNull(counterSignature.getCounterSignature());
+				assertNotNull(counterSignature.getCounterSignature().getDigestMethod());
+				assertNotNull(counterSignature.getCounterSignature().getDigestValue());
+
+				return true;
 			}
 		}
 		return false;
