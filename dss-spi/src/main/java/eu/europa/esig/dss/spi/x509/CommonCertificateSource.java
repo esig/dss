@@ -169,7 +169,12 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public boolean isKnown(CertificateToken token) {
 		final CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(token.getEntityKey());
-		return poolEntity != null;
+		if (poolEntity != null) {
+			Set<CertificateToken> certsByPublicKey = poolEntity.getEquivalentCertificates();
+			Set<CertificateToken> certsBySubject = getBySubject(token.getSubject());
+			return Utils.containsAny(certsByPublicKey, certsBySubject);
+		}
+		return false;
 	}
 
 	/**
