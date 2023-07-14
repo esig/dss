@@ -283,6 +283,16 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate IssuerName constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if IssuerName for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateIssuerNameConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate MaxPathLength constraint
 	 *
 	 * @param context {@link Context}

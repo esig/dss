@@ -219,8 +219,8 @@
         <Certificate Id="C-17ABDFD9CA2841B2C8C00B487E07FA030C7638115B4C4BC7B4F551F174E8B6C0">
             <SubjectDistinguishedName Format="CANONICAL">cn=test (firma),ou=test,o=persona test,c=cr,2.5.4.42=#249535130943485449414e,2.5.4.4=#55a2042413104d415254494e4152424f5a41,2.5.4.5=#0312d313131372d3030313104350462d3939</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=test,OU=test,C=CR,2.5.4.42=#55a2042413104d415254494e4152424f5a41,2.5.4.4=#13104d415254494e455a20424152424f5a41,2.5.4.5=#0312d313131372d3030313104350462d3939</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">cn=ca sinpe - persona fisica v2,ou=division sistemas de pago,o=banco central de costa rica,c=cr,2.5.4.5=#0312d313131372d3030313104350462d3939</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#0312d313131372d3030313104350462d3939</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca sinpe - persona fisica v2,ou=division sistemas de pago,o=banco central de costa rica,c=cr,2.5.4.5=#131043504a2d342d3030302d303034303137</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#131043504a2d342d3030302d303034303137</IssuerDistinguishedName>
             <SerialNumber>446015065374646546573661845078818521014630765</SerialNumber>
             <SubjectSerialNumber>CPF-01-1117-0099</SubjectSerialNumber>
             <CommonName>TEST (FIRMA)</CommonName>
@@ -462,10 +462,10 @@
             </DigestAlgoAndValue>
         </Certificate>
         <Certificate Id="C-F4C3A6079428EFA4DE5E0BEBD8770E05826F99BAF303D5130D1C49737051F809">
-            <SubjectDistinguishedName Format="CANONICAL">cn=persona fisica v2,ou=division sistemaso,o=costa rica,c=cr,2.5.4.5=#04a2d342d30301310435302d303034303137</SubjectDistinguishedName>
-            <SubjectDistinguishedName Format="RFC2253">CN=PERSONA FISICA v2,OU=DIVISION SISTEMAS,O=COSTA RICA,C=CR,2.5.4.5=#04a2d342d30301310435302d303034303137</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">cn=ca politica persona fisica - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#04a2d342d30301310435302d303034303137</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">CN=CA POLITICA PERSONA FISICA - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#04a2d342d30301310435302d303034303137</IssuerDistinguishedName>
+            <SubjectDistinguishedName Format="CANONICAL">cn=ca sinpe - persona fisica v2,ou=division sistemas de pago,o=banco central de costa rica,c=cr,2.5.4.5=#131043504a2d342d3030302d303034303137</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=CA SINPE - PERSONA FISICA v2,OU=DIVISION SISTEMAS DE PAGO,O=BANCO CENTRAL DE COSTA RICA,C=CR,2.5.4.5=#131043504a2d342d3030302d303034303137</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ca politica persona fisica - costa rica v2,ou=dcfd,o=micitt,c=cr,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CA POLITICA PERSONA FISICA - COSTA RICA v2,OU=DCFD,O=MICITT,C=CR,2.5.4.5=#131043504a2d322d3130302d303938333131</IssuerDistinguishedName>
             <SerialNumber>1672555889905774989374701447987177132319047683</SerialNumber>
             <SubjectSerialNumber>CPJ-4-000-004017</SubjectSerialNumber>
             <CommonName>PERSONA FISICA v2</CommonName>

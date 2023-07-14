@@ -150,8 +150,8 @@
         <Certificate Id="C-138F1CD102CB1D706019D2213FAEEF3D0AA03111FD543AC966999292860D3A1A">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#4c2d37343037313030381311504e4f50353933,cn=peter moreka,2.5.4.42=#27a60c07416e64756a,2.5.4.4=#6c6970690c084669756b,c=pl</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#4c2d37343037313030381311504e4f50353933,CN=Peter Moreka,2.5.4.42=#27a60c07416e64756a,2.5.4.4=#6c6970690c084669756b,C=PL</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#c2d35323631300c105641545043239363134,cn=cencert qtsp ca,o=enigma systemy ochrony informacji sp. z o.o.,c=pl</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#c2d35323631300c105641545043239363134,CN=CenCert QTSP CA,O=Enigma Systemy Ochrony Informacji Sp. z o.o.,C=PL</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c10564154504c2d35323631303239363134,cn=cencert qtsp ca,o=enigma systemy ochrony informacji sp. z o.o.,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c10564154504c2d35323631303239363134,CN=CenCert QTSP CA,O=Enigma Systemy Ochrony Informacji Sp. z o.o.,C=PL</IssuerDistinguishedName>
             <SerialNumber>170527619219970419</SerialNumber>
             <SubjectSerialNumber>PPNOL-71004078593</SubjectSerialNumber>
             <CommonName>Peter Moreka</CommonName>
