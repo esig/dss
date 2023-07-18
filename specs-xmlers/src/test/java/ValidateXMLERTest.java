@@ -3,18 +3,15 @@ import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.ers.xmlers.XMLEvidenceRecordFacade;
 import eu.europa.esig.ers.xmlers.XMLEvidenceRecordUtils;
 
-import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import eu.europa.esig.ers.xmlers.jaxb.ArchiveTimeStampSequenceType;
 import eu.europa.esig.ers.xmlers.jaxb.ArchiveTimeStampType;
 import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
 import eu.europa.esig.ers.xmlers.jaxb.HashTreeType;
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
@@ -57,35 +54,50 @@ public class ValidateXMLERTest {
 
     @Test
     public void testVerifyER()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
-        boolean isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/ER_01.xml"));
+        boolean isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/ER_01.xml"));
         assertEquals(isValid,true);
 
-        isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/ER_47.xml"));
+        isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/ER_47.xml"));
         assertEquals(isValid,true);
 
-        isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/xmler_1.txt.xml"));
-        assertEquals(isValid,true);
+        isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/xmler_1.txt.xml"));
+        assertEquals(isValid,false);
 
     }
 
     @Test
     public void testVerifyEREPres()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
-        boolean isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/XMLER_EPRES/er-ao-c2e7c2e2-10ef-4497-bced-82ced6ce93a4.xml"));
-        //assertEquals(isValid,true);
-
-        isValid = verifyERArchiveTimeStampMessageImprint(new File("src/test/resources/XMLER_EPRES/er-group-item-42a89ce5-0983-4246-ad7b-a735504cf23c.xml"));
+        boolean isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/XMLER_EPRES/er-ao-c2e7c2e2-10ef-4497-bced-82ced6ce93a4.xml"));
         assertEquals(isValid,true);
+
+        isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/XMLER_EPRES/er-group-item-42a89ce5-0983-4246-ad7b-a735504cf23c.xml"));
+        assertEquals(isValid,true);
+    }
+
+    @Test
+    public void testVerifyERTSTRenewal()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
+        boolean isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/evidence-record-renewal-test.xml"));
+        assertEquals(isValid,true);
+
+    }
+    @Test
+    public void testVerifyERNotPerfectTree()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
+        boolean isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/evidence-record-perfectTree_01.xml"));
+        assertEquals(isValid,true);
+        isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(new File("src/test/resources/evidence-record-notPerfectTree_01.xml"));
+        assertEquals(isValid,true);
+
     }
 
     @Test
     public void testVerifyEPresER()throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
         boolean isValid = false;
-        File dir = new File("src/test/resources/XMLER_EPRES/er");
+        File dir = new File("src/test/resources/XMLER_EPRES_NOTPERFECT");
         File[] directoryListing = dir.listFiles();
         List<File> validFiles = new ArrayList<File>();
         List<File> invalidFiles = new ArrayList<File>();
         for (File child : directoryListing) {
-            isValid = verifyERArchiveTimeStampMessageImprint(child);
+            isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(child);
             if(isValid){
                 validFiles.add(child);
             }
@@ -105,7 +117,6 @@ public class ValidateXMLERTest {
             for (File f : invalidFiles) {
                 System.out.println(f.getName());
             }
-            //assertEquals(isValid,true);
         }
     }
 
@@ -118,7 +129,7 @@ public class ValidateXMLERTest {
         List<File> validFiles = new ArrayList<File>();
         List<File> invalidFiles = new ArrayList<File>();
         for (File child : directoryListing) {
-            isValid = verifyERArchiveTimeStampMessageImprint(child);
+            isValid = verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(child);
             if(isValid){
                 validFiles.add(child);
             }
@@ -153,6 +164,8 @@ public class ValidateXMLERTest {
         if(list.size() == 1){
             return list.get(0);
         }
+
+        // Otherwise, the parent is computed as the digest of the concatenation of the binary ascending order sorted children (the elements in the list provided as input)
         byte[] result;
 
         list.sort(new ByteArrayComparator());
@@ -192,20 +205,20 @@ public class ValidateXMLERTest {
     }
 
 
-    public boolean verifyERArchiveTimeStampMessageImprint(File xmlER) throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
+    public boolean verifyERArchiveTimeStampMessageImprintAndHashTreesFirstValue(File xmlER) throws IOException, NoSuchAlgorithmException, JAXBException, SAXException, XMLStreamException, CMSException, TSPException {
         XMLEvidenceRecordFacade facade = XMLEvidenceRecordFacade.newFacade();
         EvidenceRecordType evidenceRecordType = facade.unmarshall(xmlER);
 
         //Dom equivalent for XMLER
         Document ERdoc = DomUtils.buildDOM(new FileInputStream(xmlER));
-        NodeList ATSSeqs = ERdoc.getElementsByTagName("ArchiveTimeStampSequence");
+        NodeList ATSSeqs = ERdoc.getElementsByTagNameNS("*","ArchiveTimeStampSequence");
 
 
         // An XMLER only has one ArchiveTimesTampSequence, that is a list of ArchiveTimeStampChain
         List<ArchiveTimeStampSequenceType.ArchiveTimeStampChain> ATSCList = evidenceRecordType.getArchiveTimeStampSequence().getArchiveTimeStampChain();
 
         Element eATSSeq = (Element) ATSSeqs.item(0);
-        NodeList ATSChains = eATSSeq.getElementsByTagName("ArchiveTimeStampChain");
+        NodeList ATSChains = eATSSeq.getElementsByTagNameNS("*","ArchiveTimeStampChain");
         int i = 0;
 
         // An ArchiveTimeStampChain contains a list of ArchiveTimeStamp object.
@@ -216,7 +229,7 @@ public class ValidateXMLERTest {
             List<ArchiveTimeStampType> ATSList = ATSC.getArchiveTimeStamp();
 
             Element eATSChain = (Element) ATSChains.item(i);
-            NodeList ATStamps = eATSChain.getElementsByTagName("ArchiveTimeStamp");
+            NodeList ATStamps = eATSChain.getElementsByTagNameNS("*","ArchiveTimeStamp");
             int j = 0;
 
             byte[] hashValueToCompare = null;
@@ -233,33 +246,40 @@ public class ValidateXMLERTest {
                 HashTreeType hashTree = ATS.getHashTree();
                 byte[] hashTreeRoot = getHashTreeRoot(hashTree, md);
 
+                // Each ArchiveTimeStamp element has a mandatory TimeStamp child element.
+                // This mandatory TimeStamp child element itself has a mandatory TimeStampToken child element.
+                // For the purpose of this test, the value of the TimeStampToken child element is assumed to be the b64 encoding of an RFC3161 time-stamp
                 String timeStampValue = (String) ATS.getTimeStamp().getTimeStampToken().getContent().get(0);
                 TimestampToken timestampToken = new TimestampToken(Base64.getDecoder().decode(timeStampValue), TimestampType.ARCHIVE_TIMESTAMP);
                 byte[] messageImprint = timestampToken.getMessageImprint().getValue();
                 System.out.println("Timestamp messageImprint value is: "+ Base64.getEncoder().encodeToString(messageImprint));
 
-                //assertArrayEquals(hashTreeRoot,messageImprint);
-
+                // The value of the time-stamp message imprint must match the computed value of the root of the hash tree.
                 if (!Arrays.equals(messageImprint, hashTreeRoot)){
                     return false;
                 }
 
+                // When there is more than one ArchiveTimeStamp in an ArchiveTimeStampChain, the first digest value of the reduced hash tree encapsulated in that ArchiveTimeStamp must match the value of the digest of the canonicalized <TimeStamp> element of the PREVIOUS ArchiveTimeStamp
                 if (hashValueToCompare != null && !Arrays.equals(hashTree.getSequence().get(0).getDigestValue().get(0),hashValueToCompare)){
-                    System.out.println(Base64.getEncoder().encodeToString(hashTree.getSequence().get(0).getDigestValue().get(0))+  " is different from " + Base64.getEncoder().encodeToString(hashValueToCompare));
-                    // return false;
+                    System.out.println("Hash tree first value " + Base64.getEncoder().encodeToString(hashTree.getSequence().get(0).getDigestValue().get(0))+  " is different from hash value of canonicalized TimeStamp element " + Base64.getEncoder().encodeToString(hashValueToCompare));
+                    return false;
                 }
 
-                // The canonicalized TimeStamp element is used to compute the first element of the HashTree sub-element of the next ArchiveTimeStamp.
+                // The canonicalized TimeStamp element is used to compute the first element of the HashTree child element of the next ArchiveTimeStamp.
                 Element eATS = (Element) ATStamps.item(j);
-                NodeList TimeStamps = eATS.getElementsByTagName("TimeStamp");
-                // ArchiveTimeStamp elements only have one TimeStamp element.
+                NodeList TimeStamps = eATS.getElementsByTagNameNS("*","TimeStamp");
+
+                // ArchiveTimeStamp elements always have exactly one TimeStamp element.
                 Node TimeStamp = TimeStamps.item(0);
+                // The TimeStamp element must be canonicalized using the canonicalization method listed in the current ArchiveTimeStampChain
                 byte[] canonicalizedTimeStamp = canonicalizeSubtree(ATSCCanonicalizationMethod,TimeStamp);
+                // The digest of the canonicalized TimeStamp element must be computed using the digest algorithm listed in the current ArchiveTimeStampChain
                 byte[] canonicalizedTimeStampDigest = md.digest(canonicalizedTimeStamp);
-                System.out.println("=====BEGIN TimeStamp Element Canonlicalization=====");
+                System.out.println("=====BEGIN TimeStamp Element Canonicalization=====");
                 System.out.println(new String(canonicalizedTimeStamp, StandardCharsets.UTF_8));
                 System.out.println(Base64.getEncoder().encodeToString(canonicalizedTimeStampDigest));
-                System.out.println("=====END TimeStamp Element Canonlicalization=====");
+                System.out.println("=====END TimeStamp Element Canonicalization=====");
+                // The digest of the canonicalization of the current TimeStamp element will be used to verify the correctness of the first entry of the reduced hash tree of the next ArchiveTimeStamp element in the ArchiveTimeStampChain
                 hashValueToCompare = canonicalizedTimeStampDigest;
                 j++;
             }
