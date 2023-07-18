@@ -46,10 +46,17 @@ class TrustServiceQualifierAndAdditionalServiceInfoConsistency implements TrustS
 		CORRESPONDENCE_MAP_QUALIFIER_ASI.put(ServiceQualification.QC_FOR_WSA, AdditionalServiceInformation.FOR_WEB_AUTHENTICATION);
 	}
 
+	/**
+	 * Default constructor
+	 */
+	public TrustServiceQualifierAndAdditionalServiceInfoConsistency() {
+		// empty
+	}
+
 	@Override
 	public boolean isConsistent(TrustServiceWrapper trustService) {
 		List<String> asis = trustService.getAdditionalServiceInfos();
-		List<String> qualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifiers());
+		List<String> qualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifierUris());
 		return isQualifierInAdditionServiceInfos(qualifiers, asis);
 	}
 

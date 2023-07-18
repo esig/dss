@@ -51,7 +51,7 @@ public class TrustServiceQualifierAndAdditionalServiceInfoPreEIDASConsistency im
                 return false;
             }
 
-            List<String> qualifiers = trustService.getCapturedQualifiers();
+            List<String> qualifiers = trustService.getCapturedQualifierUris();
             if (ServiceQualification.isQcForEseal(qualifiers) || ServiceQualification.isQcForWSA(qualifiers)) {
                 return false;
             }

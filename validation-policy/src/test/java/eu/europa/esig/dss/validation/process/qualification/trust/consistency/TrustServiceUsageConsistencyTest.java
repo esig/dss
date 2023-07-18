@@ -24,12 +24,10 @@ import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceUsageConsistencyTest {
+public class TrustServiceUsageConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
 	private TrustServiceCondition condition = new TrustServiceUsageConsistency();
 
@@ -42,21 +40,21 @@ public class TrustServiceUsageConsistencyTest {
 	@Test
 	public void testForEsigUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri()));
+		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testForEsigAndEsealsUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
+		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 
 	@Test
 	public void testForEsigAndEsealsAndWsaUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
-		service.setCapturedQualifiers(Arrays.asList(
+		service.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri(), ServiceQualification.QC_FOR_WSA.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}

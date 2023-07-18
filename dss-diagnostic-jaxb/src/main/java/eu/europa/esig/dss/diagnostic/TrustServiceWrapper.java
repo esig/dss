@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Wraps an extracted information from a Trusted Service
@@ -65,7 +68,7 @@ public class TrustServiceWrapper {
 	private Date endDate;
 
 	/** Captured qualifiers */
-	private List<String> capturedQualifiers;
+	private List<XmlQualifier> capturedQualifiers;
 
 	/** Additional service informations */
 	private List<String> additionalServiceInfos;
@@ -89,7 +92,7 @@ public class TrustServiceWrapper {
 	private String originalTCType;
 
 	/** Original third-country captured qualifiers before applied MRA */
-	private List<String> originalCapturedQualifiers;
+	private List<XmlQualifier> originalCapturedQualifiers;
 
 	/** Original third-country captured qualifiers before applied MRA */
 	private List<String> originalTCAdditionalServiceInfos;
@@ -297,8 +300,20 @@ public class TrustServiceWrapper {
 	 *
 	 * @return list of {@link String}s
 	 */
-	public List<String> getCapturedQualifiers() {
+	public List<XmlQualifier> getCapturedQualifiers() {
 		return capturedQualifiers;
+	}
+
+	/**
+	 * Gets captured qualifiers
+	 *
+	 * @return list of {@link String}s
+	 */
+	public List<String> getCapturedQualifierUris() {
+		if (capturedQualifiers != null) {
+			return capturedQualifiers.stream().map(XmlQualifier::getValue).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 	/**
@@ -306,7 +321,7 @@ public class TrustServiceWrapper {
 	 *
 	 * @param capturedQualifiers list of {@link String}s
 	 */
-	public void setCapturedQualifiers(List<String> capturedQualifiers) {
+	public void setCapturedQualifiers(List<XmlQualifier> capturedQualifiers) {
 		this.capturedQualifiers = capturedQualifiers;
 	}
 
@@ -439,18 +454,30 @@ public class TrustServiceWrapper {
 	/**
 	 * Gets original third-country captured qualifiers defined within Trusted List (before applied MRA)
 	 *
+	 * @return a list of {@link XmlQualifier}s
+	 */
+	public List<XmlQualifier> getOriginalCapturedQualifiers() {
+		return originalCapturedQualifiers;
+	}
+
+	/**
+	 * Gets original third-country captured qualifier URIs defined within Trusted List (before applied MRA)
+	 *
 	 * @return a list of {@link String}s
 	 */
-	public List<String> getOriginalCapturedQualifiers() {
-		return originalCapturedQualifiers;
+	public List<String> getOriginalCapturedQualifierUris() {
+		if (originalCapturedQualifiers != null) {
+			return originalCapturedQualifiers.stream().map(XmlQualifier::getValue).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 	/**
 	 * Sets original third-country captured qualifiers defined within Trusted List (before applied MRA)
 	 *
-	 * @param originalCapturedQualifiers a list of {@link String}s
+	 * @param originalCapturedQualifiers a list of {@link XmlQualifier}s
 	 */
-	public void setOriginalCapturedQualifiers(List<String> originalCapturedQualifiers) {
+	public void setOriginalCapturedQualifiers(List<XmlQualifier> originalCapturedQualifiers) {
 		this.originalCapturedQualifiers = originalCapturedQualifiers;
 	}
 

@@ -139,8 +139,9 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 						JAXBElement jaxbElement = (JAXBElement) object;
 						Object objectValue = jaxbElement.getValue();
 						if (objectValue instanceof QualificationsType) {
+							QualificationsType qualifications = (QualificationsType) jaxbElement.getValue();
 							List<ConditionForQualifiers> conditionForQualifiers =
-									toConditionForQualificationsType((QualificationsType) jaxbElement.getValue());
+									toConditionForQualificationsType(qualifications, extensionType.isCritical());
 							if (Utils.isCollectionNotEmpty(conditionForQualifiers)) {
 								conditionsForQualifiersList.addAll(conditionForQualifiers);
 							}
@@ -152,11 +153,11 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		return conditionsForQualifiersList;
 	}
 
-	private List<ConditionForQualifiers> toConditionForQualificationsType(QualificationsType qt) {
+	private List<ConditionForQualifiers> toConditionForQualificationsType(QualificationsType qt, boolean critical) {
 		List<ConditionForQualifiers> conditionForQualifiers = new ArrayList<>();
 		if ((qt != null) && Utils.isCollectionNotEmpty(qt.getQualificationElement())) {
 			for (QualificationElementType qualificationElement : qt.getQualificationElement()) {
-				ConditionForQualifiers condition = toConditionForQualifiers(qualificationElement);
+				ConditionForQualifiers condition = toConditionForQualifiers(qualificationElement, critical);
 				if (condition != null) {
 					conditionForQualifiers.add(condition);
 				}
@@ -165,11 +166,11 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 		return conditionForQualifiers;
 	}
 
-	private ConditionForQualifiers toConditionForQualifiers(QualificationElementType qualificationElement) {
+	private ConditionForQualifiers toConditionForQualifiers(QualificationElementType qualificationElement, boolean critical) {
 		List<String> qualifiers = extractQualifiers(qualificationElement);
 		if (Utils.isCollectionNotEmpty(qualifiers)) {
 			Condition condition = new CriteriaListConverter().apply(qualificationElement.getCriteriaList());
-			return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers));
+			return new ConditionForQualifiers(condition, Collections.unmodifiableList(qualifiers), critical);
 		}
 		return null;
 	}

@@ -640,8 +640,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 							if (originalThirdCountryMapping != null) {
 								wrapper.setOriginalTCType(originalThirdCountryMapping.getServiceType());
 								wrapper.setOriginalTCStatus(originalThirdCountryMapping.getStatus());
-								wrapper.setOriginalCapturedQualifiers(originalThirdCountryMapping.getCapturedQualifiers());
-								wrapper.setOriginalTCAdditionalServiceInfos(originalThirdCountryMapping.getAdditionalServiceInfoUris());
+								wrapper.setOriginalCapturedQualifiers(new ArrayList<>(originalThirdCountryMapping.getCapturedQualifiers()));
+								wrapper.setOriginalTCAdditionalServiceInfos(new ArrayList<>(originalThirdCountryMapping.getAdditionalServiceInfoUris()));
 							}
 						}
 

@@ -65,7 +65,7 @@ class QSCDByTL implements QSCDStrategy {
 
 		} else {
 
-			List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+			List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {

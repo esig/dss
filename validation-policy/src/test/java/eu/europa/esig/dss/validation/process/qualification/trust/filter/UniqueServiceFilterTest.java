@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
@@ -55,7 +56,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -76,7 +77,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -84,7 +85,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(
+		ts1.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts1);
 
@@ -105,7 +106,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(BEFORE_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -113,7 +114,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(
+		ts1.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_QSCD_MANAGED_ON_BEHALF.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts1);
 
@@ -134,7 +135,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -143,7 +144,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(
+		ts1.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
 		trustServices.add(ts1);
 
@@ -164,7 +165,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -173,7 +174,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.WITHDRAWN.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(
+		ts1.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts1);
 
@@ -194,7 +195,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -203,7 +204,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(
+		ts1.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_NO_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts1);
 
@@ -224,7 +225,7 @@ public class UniqueServiceFilterTest {
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
-		ts0.setCapturedQualifiers(Arrays.asList(
+		ts0.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_STATEMENT.getUri(), ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts0);
 
@@ -233,7 +234,7 @@ public class UniqueServiceFilterTest {
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
-		ts1.setCapturedQualifiers(Arrays.asList(ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
+		ts1.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_QSCD.getUri(), ServiceQualification.QC_FOR_ESIG.getUri()));
 		trustServices.add(ts1);
 
 		List<TrustServiceWrapper> filtered = filter.filter(trustServices);
@@ -245,6 +246,16 @@ public class UniqueServiceFilterTest {
 		xmlCertificate.setNotBefore(notBefore);
 		xmlCertificate.getCertificateExtensions().add(new XmlCertificatePolicies());
 		return new CertificateWrapper(xmlCertificate);
+	}
+
+	private List<XmlQualifier> getXmlQualifierList(String... uris) {
+		List<XmlQualifier> qualifierList = new ArrayList<>();
+		for (String uri : uris) {
+			XmlQualifier xmlQualifier = new XmlQualifier();
+			xmlQualifier.setValue(uri);
+			qualifierList.add(xmlQualifier);
+		}
+		return qualifierList;
 	}
 
 }
