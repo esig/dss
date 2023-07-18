@@ -168,6 +168,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
+        <module>dss-pki-factory</module>
     </modules>
 
 	<build>
