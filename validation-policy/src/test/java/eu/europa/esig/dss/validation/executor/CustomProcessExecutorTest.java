@@ -4702,6 +4702,443 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void grantedTspWithQualifierTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-with-qualifier.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspWithUnknownQualifierTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-with-unknown-qualifier.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3C)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3C.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspQscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-qscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspSscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-sscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_CERTIFICATE_ISSUANCE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3B)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3B.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspSscdAndQscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-sscd-and-qscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithNoSscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/qscd-with-no-sscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3B)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3B.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithManagedOnBehalfAndQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-managedonbehalf-and-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+
+	@Test
+	public void qscdWithManagedOnBehalfAndNoQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-managedonbehalf-and-noqscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+
+	@Test
+	public void qscdWithStatusAsInCertAndQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-statusasincert-and-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3A)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3A.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
 	public void withdrawnAtTOIAndGrantedAtTOSTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/withdrawn-at-toi-granted-at-tos.xml"));
 		assertNotNull(diagnosticData);

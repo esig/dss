@@ -116,7 +116,7 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2016-06-30T22:00:00Z</StartDate>
                             <CapturedQualifiers>
-                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>

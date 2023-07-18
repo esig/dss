@@ -146,6 +146,9 @@
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-01-09T23:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="false">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -158,6 +161,9 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-01-09T23:00:00Z</StartDate>
                             <EndDate>2019-01-09T23:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="false">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -228,6 +234,9 @@
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2019-01-09T23:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="false">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
@@ -240,6 +249,9 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-01-09T23:00:00Z</StartDate>
                             <EndDate>2019-01-09T23:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="false">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>

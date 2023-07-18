@@ -44,7 +44,8 @@ public class ConsistentServiceByQSCDFilter implements TrustServiceFilter {
         List<TrustServiceWrapper> result = new ArrayList<>();
         for (TrustServiceWrapper service : trustServices) {
             if (TrustServiceChecker.isQSCDConsistent(service) &&
-                    TrustServiceChecker.isQSCDStatusAsInCertConsistent(service)) {
+                    TrustServiceChecker.isQSCDStatusAsInCertConsistent(service) &&
+                    TrustServiceChecker.isPostEIDASQSCDConsistent(service)) {
                 result.add(service);
             }
         }
