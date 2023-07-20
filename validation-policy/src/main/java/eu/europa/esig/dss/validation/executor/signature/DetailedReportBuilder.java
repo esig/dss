@@ -47,15 +47,15 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
-import eu.europa.esig.dss.validation.process.qualification.timestamp.TimestampQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProcess;
-import eu.europa.esig.dss.validation.process.vpftsp.TimestampBasicValidationProcess;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
+import eu.europa.esig.dss.validation.process.vpftsp.AllTimestampValidationBlock;
 import eu.europa.esig.dss.validation.reports.DSSReportException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -112,11 +112,18 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		Map<String, XmlBasicBuildingBlocks> bbbs = executeAllBasicBuildingBlocks();
 		detailedReport.getBasicBuildingBlocks().addAll(bbbs.values());
 
-		Set<String> attachedTimestamps = new HashSet<>();
+		// Init POE
+		final POEExtraction poe = new POEExtraction();
+		poe.init(diagnosticData, currentTime);
+
+		Map<String, XmlTimestamp> timestampValidations = Collections.emptyMap();
+		if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
+			timestampValidations = executeAllTimestampsValidation(bbbs, tlAnalysis, poe);
+		}
+
+		final Set<String> attachedTimestamps = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
-
-			XmlSignature signatureAnalysis = new XmlSignature();
-
+			final XmlSignature signatureAnalysis = new XmlSignature();
 			signatureAnalysis.setId(signature.getId());
 			if (signature.isCounterSignature()) {
 				signatureAnalysis.setCounterSignature(true);
@@ -124,7 +131,9 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 			if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
 				attachedTimestamps.addAll(signature.getTimestampIdsList());
-				signatureAnalysis.getTimestamps().addAll(getXmlTimestamps(signature.getTimestampList(), bbbs, detailedReport.getTLAnalysis()));
+				for (TimestampWrapper sigTimestamp : signature.getTimestampList()) {
+					signatureAnalysis.getTimestamps().add(timestampValidations.get(sigTimestamp.getId()));
+				}
 			}
 
 			XmlConstraintsConclusionWithProofOfExistence validation = executeBasicValidation(signatureAnalysis, signature, signatureAnalysis.getTimestamps(), bbbs);
@@ -133,7 +142,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				validation = executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
-				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs);
+				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs, poe);
 			}
 
 			if (policy.isEIDASConstraintPresent()) {
@@ -158,8 +167,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				if (attachedTimestamps.contains(timestamp.getId())) {
 					continue;
 				}
-
-				detailedReport.getSignatureOrTimestampOrCertificate().add(buildXmlTimestamp(timestamp, bbbs, tlAnalysis));
+				detailedReport.getSignatureOrTimestampOrCertificate().add(timestampValidations.get(timestamp.getId()));
 			}
 		}
 		
@@ -180,27 +188,11 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		return bs;
 	}
 
-	private List<XmlTimestamp> getXmlTimestamps(List<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis) {
-		List<XmlTimestamp> results = new ArrayList<>();
-		for (TimestampWrapper timestamp : timestamps) {
-			results.add(buildXmlTimestamp(timestamp, bbbs, tlAnalysis));
-		}
-		return results;
-	}
-
-	private XmlTimestamp buildXmlTimestamp(TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis) {
-		XmlTimestamp xmlTimestamp = new XmlTimestamp();
-		xmlTimestamp.setId(timestamp.getId());
-
-		TimestampBasicValidationProcess vpftsp = new TimestampBasicValidationProcess(i18nProvider, diagnosticData, timestamp, bbbs);
-		xmlTimestamp.setValidationProcessTimestamp(vpftsp.execute());
-
-		// Timestamp qualification
-		if (policy.isEIDASConstraintPresent()) {
-			TimestampQualificationBlock timestampQualificationBlock = new TimestampQualificationBlock(i18nProvider, timestamp, tlAnalysis);
-			xmlTimestamp.setValidationTimestampQualification(timestampQualificationBlock.execute());
-		}
-		return xmlTimestamp;
+	private Map<String, XmlTimestamp> executeAllTimestampsValidation(Map<String, XmlBasicBuildingBlocks> bbbs,
+															  List<XmlTLAnalysis> tlAnalysis, POEExtraction poe) {
+		AllTimestampValidationBlock allTimestampValidationBlock = new AllTimestampValidationBlock(
+				i18nProvider, diagnosticData, policy, currentTime, bbbs, tlAnalysis, validationLevel, poe);
+		return allTimestampValidationBlock.execute();
 	}
 
 	private XmlValidationProcessLongTermData executeLongTermValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
@@ -212,10 +204,10 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		return vpfltvdResult;
 	}
 
-	private XmlValidationProcessArchivalData executeArchiveValidation(XmlSignature signatureAnalysis, SignatureWrapper signature,
-			Map<String, XmlBasicBuildingBlocks> bbbs) {
-		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(i18nProvider, signatureAnalysis, 
-				signature, diagnosticData, bbbs, policy, currentTime);
+	private XmlValidationProcessArchivalData executeArchiveValidation(XmlSignature signatureAnalysis,
+			SignatureWrapper signature, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+		ValidationProcessForSignaturesWithArchivalData vpfswad = new ValidationProcessForSignaturesWithArchivalData(
+				i18nProvider, signatureAnalysis, signature, diagnosticData, bbbs, policy, currentTime, poe);
 		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
 		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
 		return vpfswadResult;

@@ -18,21 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
+package eu.europa.esig.dss.validation.process.vpftspwatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AbstractPastTokenValidationCheck;
 
 /**
  * Checks if timestamp's past validation is acceptable
  */
-public class PastTimestampValidationCheck extends AbstractPastTokenValidationCheck {
+public class PastTimestampValidationCheck<T extends XmlConstraintsConclusion> extends AbstractPastTokenValidationCheck<T> {
 
 	/** The validated timestamp */
 	private TimestampWrapper timestamp;
@@ -41,13 +42,13 @@ public class PastTimestampValidationCheck extends AbstractPastTokenValidationChe
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationProcessArchivalData}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param timestamp {@link TimestampWrapper}
 	 * @param xmlPSV {@link XmlPSV}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public PastTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
-										TimestampWrapper timestamp, XmlPSV xmlPSV, LevelConstraint constraint) {
+	public PastTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp, XmlPSV xmlPSV,
+										LevelConstraint constraint) {
 		super(i18nProvider, result, timestamp, xmlPSV, constraint);
 		this.timestamp = timestamp;
 	}

@@ -123,15 +123,15 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		this.acceptableServices = new ArrayList<>(acceptableServices);
 
 		switch (validationTime) {
-		case CERTIFICATE_ISSUANCE_TIME:
-			this.date = signingCertificate.getNotBefore();
-			break;
-		case VALIDATION_TIME:
-		case BEST_SIGNATURE_TIME:
-			this.date = date;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
+			case CERTIFICATE_ISSUANCE_TIME:
+				this.date = signingCertificate.getNotBefore();
+				break;
+			case VALIDATION_TIME:
+			case BEST_SIGNATURE_TIME:
+				this.date = date;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
 

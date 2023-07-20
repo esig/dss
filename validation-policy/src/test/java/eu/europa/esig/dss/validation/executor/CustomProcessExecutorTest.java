@@ -48,6 +48,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -10717,14 +10718,21 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustServiceCheckFound = false;
-			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
-				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					mraTrustServiceCheckFound = true;
+			assertNotNull(validationTimestampQualification);
+
+			List<XmlValidationTimestampQualificationAtTime> timestampQualificationsAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+			assertEquals(2, timestampQualificationsAtTime.size());
+
+			for (XmlValidationTimestampQualificationAtTime timestampQualificationAtTime : timestampQualificationsAtTime) {
+				boolean mraTrustServiceCheckFound = false;
+				for (XmlConstraint constraint : timestampQualificationAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
+						mraTrustServiceCheckFound = true;
+					}
+					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
-				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertTrue(mraTrustServiceCheckFound);
 			}
-			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10797,17 +10805,24 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustServiceCheckFound = false;
-			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
-				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustServiceCheckFound = true;
-				} else {
-					assertEquals(XmlStatus.OK, constraint.getStatus());
+			assertNotNull(validationTimestampQualification);
+
+			List<XmlValidationTimestampQualificationAtTime> timestampQualificationsAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+			assertEquals(2, timestampQualificationsAtTime.size());
+
+			for (XmlValidationTimestampQualificationAtTime timestampQualificationAtTime : timestampQualificationsAtTime) {
+				boolean mraTrustServiceCheckFound = false;
+				for (XmlConstraint constraint : timestampQualificationAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+						assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
+						mraTrustServiceCheckFound = true;
+					} else {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					}
 				}
+				assertTrue(mraTrustServiceCheckFound);
 			}
-			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);

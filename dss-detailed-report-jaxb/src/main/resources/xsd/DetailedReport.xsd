@@ -152,7 +152,7 @@
 
 	<xs:complexType name="ValidationProcessTimestamp">	
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusion">
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence">
 				<xs:attribute name="Type" type="xs:string" use="required" />
 				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
 			</xs:extension>
@@ -162,6 +162,19 @@
 	<xs:complexType name="ValidationTimestampQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="ValidationTimestampQualificationAtTime" type="ValidationTimestampQualificationAtTime" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationTimestampQualificationAtTime">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="DateTime" type="xs:dateTime" />
+				<xs:attribute name="ValidationTime" type="ValidationTime" />
 				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
@@ -506,6 +519,8 @@
 			<xs:enumeration value="CERTIFICATE_ISSUANCE_TIME" />
 			<xs:enumeration value="BEST_SIGNATURE_TIME" />
 			<xs:enumeration value="VALIDATION_TIME" />
+			<xs:enumeration value="TIMESTAMP_GENERATION_TIME" />
+			<xs:enumeration value="TIMESTAMP_POE_TIME" />
 		</xs:restriction>
 	</xs:simpleType>
 	

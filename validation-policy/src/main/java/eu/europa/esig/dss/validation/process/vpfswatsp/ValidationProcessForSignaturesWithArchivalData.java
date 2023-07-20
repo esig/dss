@@ -91,7 +91,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private final Date currentTime;
 
 	/** The POE container */
-	private final POEExtraction poe = new POEExtraction();
+	private final POEExtraction poe;
 
 	/** Current validation context */
 	private Context context;
@@ -107,10 +107,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	 * @param policy {@link ValidationPolicy}
 	 * @param currentTime {@link Date}
 	 */
-	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis,
-														  SignatureWrapper signature, DiagnosticData diagnosticData,
-														  Map<String, XmlBasicBuildingBlocks> bbbs,
-														  ValidationPolicy policy, Date currentTime) {
+	public ValidationProcessForSignaturesWithArchivalData(final I18nProvider i18nProvider, final XmlSignature signatureAnalysis,
+			final SignatureWrapper signature, final DiagnosticData diagnosticData, final Map<String, XmlBasicBuildingBlocks> bbbs,
+			final ValidationPolicy policy, final Date currentTime, final POEExtraction poe) {
 		super(i18nProvider, new XmlValidationProcessArchivalData());
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.xmlTimestamps = signatureAnalysis.getTimestamps();
@@ -119,6 +118,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		this.bbbs = bbbs;
 		this.policy = policy;
 		this.currentTime = currentTime;
+		this.poe = poe;
 	}
 	
 	@Override
@@ -146,7 +146,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * NOTE 1: The set of POE in the input may have been initialized from external sources (e.g. provided from
 		 * an external archiving system). These POEs will be used without additional processing.
 		 */
-		poe.init(diagnosticData, currentTime);
+
+		// POE provided to the validation
 
 		/*
 		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
@@ -222,8 +223,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 							if (isValid(davResult)) {
 								item = item.setNextItem(timestampMessageImprint(newestTimestamp));
-								// message-imprint check for POE extraction is executed inside
-								poe.extractPOE(newestTimestamp);
+								// POEs are extracted during AllTimestampValidationBlock
 							}
 						}
 						/*
@@ -236,15 +236,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 						 * validation data and the set of POEs.
 						 */
 						else {
-
-							PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, bbbs,
-									timestampValidation.getConclusion(), poe, currentTime, policy, Context.TIMESTAMP);
-							XmlPSV psvResult = psv.execute();
-							bbbTsp.setPSV(psvResult);
-
+							XmlPSV psvResult = bbbTsp.getPSV();
 							latestConclusion = psvResult.getConclusion();
-
-							enrichBBBWithPSVConclusion(bbbTsp, psvResult);
 
 							item = item.setNextItem(pastTimestampValidation(newestTimestamp, psvResult));
 
@@ -260,7 +253,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 								if (isValid(davResult)) {
 									item = item.setNextItem(timestampMessageImprint(newestTimestamp));
-									poe.extractPOE(newestTimestamp);
+									// POEs are extracted during AllTimestampValidationBlock
 								}
 							}
 						}

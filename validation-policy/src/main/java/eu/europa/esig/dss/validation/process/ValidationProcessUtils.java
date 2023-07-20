@@ -485,6 +485,10 @@ public class ValidationProcessUtils {
 				return MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
 			case VALIDATION_TIME:
 				return MessageTag.VT_VALIDATION_TIME;
+			case TIMESTAMP_GENERATION_TIME:
+				return MessageTag.VT_TST_GENERATION_TIME;
+			case TIMESTAMP_POE_TIME:
+				return MessageTag.VT_TST_POE_TIME;
 			default:
 				throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
 		}

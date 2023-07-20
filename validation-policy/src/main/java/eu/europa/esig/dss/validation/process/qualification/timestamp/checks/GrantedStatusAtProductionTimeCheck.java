@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.timestamp.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -37,7 +37,7 @@ import java.util.List;
  * at the timestamp's production time
  *
  */
-public class GrantedStatusAtProductionTimeCheck extends ChainItem<XmlValidationTimestampQualification> {
+public class GrantedStatusAtProductionTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** List of granted TrustServices at timestamp's production time */
 	private final List<TrustServiceWrapper> trustServicesAtTime;
@@ -46,11 +46,11 @@ public class GrantedStatusAtProductionTimeCheck extends ChainItem<XmlValidationT
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationTimestampQualification}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public GrantedStatusAtProductionTimeCheck(I18nProvider i18nProvider, XmlValidationTimestampQualification result,
+	public GrantedStatusAtProductionTimeCheck(I18nProvider i18nProvider, T result,
 			List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
