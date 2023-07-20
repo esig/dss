@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -82,10 +82,10 @@ public class BasicSignatureValidationProcess extends AbstractBasicValidationProc
     }
 
     @Override
-    protected XmlValidationProcessTimestamp getTimestampValidation(String timestampId) {
+    protected XmlValidationProcessBasicTimestamp getTimestampValidation(String timestampId) {
         for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
             if (Utils.areStringsEqual(timestampId, xmlTimestamp.getId())) {
-                return xmlTimestamp.getValidationProcessTimestamp();
+                return xmlTimestamp.getValidationProcessBasicTimestamp();
             }
         }
         return null;

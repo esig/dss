@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -33,10 +33,13 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Checks if a result of a Basic Signature Validation process for a timestamp token is acceptable
  */
-public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The validated timestamp */
     private final TimestampWrapper timestamp;
@@ -54,12 +57,12 @@ public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValida
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationProcessArchivalData}
+     * @param result {@link XmlConstraintsConclusion}
      * @param timestamp {@link TimestampWrapper}
      * @param basicTimestampValidation {@link XmlConstraintsConclusion}
      * @param constraint {@link LevelConstraint}
      */
-    public AcceptableBasicTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    public AcceptableBasicTimestampValidationCheck(I18nProvider i18nProvider, T result,
                                                    TimestampWrapper timestamp,
                                                    XmlConstraintsConclusion basicTimestampValidation,
                                                    LevelConstraint constraint) {
@@ -110,6 +113,14 @@ public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValida
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
         return bbbSubIndication;
+    }
+
+    @Override
+    protected List<XmlMessage> getPreviousErrors() {
+        if (basicTimestampValidation != null && basicTimestampValidation.getConclusion() != null) {
+            return basicTimestampValidation.getConclusion().getErrors();
+        }
+        return Collections.emptyList();
     }
 
 }

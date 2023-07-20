@@ -20,25 +20,47 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.enumerations.ValidationTime;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
+
+	private static I18nProvider i18nProvider;
+
+	@BeforeAll
+	public static void init() {
+		i18nProvider = new I18nProvider(Locale.getDefault());
+	}
 
 	@Test
 	public void qtsa() throws Exception {
@@ -49,9 +71,14 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		executor.setDiagnosticData(diagnosticData);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		executor.setValidationPolicy(loadDefaultPolicy());
+
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.QTSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
 
 		checkReports(reports);
 	}
@@ -69,6 +96,10 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
 
 		checkReports(reports);
 	}
@@ -176,6 +207,263 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
 		assertEquals(0, detailedReport.getIndependentTimestamps().size());
 		assertEquals(2, xmlSignature.getTimestamps().size());
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void diffResultQualAtGenTimeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/tsa-diff-qual-at-gen-time.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
+
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(detailedReport.getFirstTimestampId());
+		assertNotNull(xmlTimestamp);
+
+		XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+		assertEquals(TimestampQualification.TSA, validationTimestampQualification.getTimestampQualification());
+		assertFalse(Utils.isCollectionEmpty(validationTimestampQualification.getConclusion().getErrors()));
+		assertTrue(checkMessageValuePresence(convert(validationTimestampQualification.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+
+		assertTrue(Utils.isCollectionNotEmpty(validationTimestampQualification.getConstraint()));
+		for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
+			assertEquals(XmlStatus.OK, constraint.getStatus());
+		}
+
+		List<XmlValidationTimestampQualificationAtTime> validationTimestampQualificationAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+		assertEquals(2, validationTimestampQualificationAtTime.size());
+
+		boolean tstQualValidationAtGenTimeFound = false;
+		boolean tstQualValidationAtBestPoeTimeFound = false;
+		for (XmlValidationTimestampQualificationAtTime tstQualAtTime : validationTimestampQualificationAtTime) {
+			if (ValidationTime.TIMESTAMP_GENERATION_TIME.equals(tstQualAtTime.getValidationTime())) {
+				assertEquals(TimestampQualification.QTSA, tstQualAtTime.getTimestampQualification());
+				assertTrue(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+				tstQualValidationAtGenTimeFound = true;
+			} else if (ValidationTime.TIMESTAMP_POE_TIME.equals(tstQualAtTime.getValidationTime())) {
+				assertEquals(TimestampQualification.TSA, tstQualAtTime.getTimestampQualification());
+				assertFalse(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				assertTrue(checkMessageValuePresence(convert(tstQualAtTime.getConclusion().getErrors()),
+						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				boolean grantedAtTimeCheckFound = false;
+				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+						assertEquals(MessageTag.QUAL_HAS_GRANTED_AT_ANS.getId(), constraint.getError().getKey());
+						grantedAtTimeCheckFound = true;
+					} else {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					}
+				}
+				assertTrue(grantedAtTimeCheckFound);
+				tstQualValidationAtBestPoeTimeFound = true;
+			}
+		}
+		assertTrue(tstQualValidationAtGenTimeFound);
+		assertTrue(tstQualValidationAtBestPoeTimeFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void diffResultQualAtPoeTimeTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/tsa-diff-qual-at-poe-time.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
+		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
+
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(detailedReport.getFirstTimestampId());
+		assertNotNull(xmlTimestamp);
+
+		XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
+		assertEquals(TimestampQualification.TSA, validationTimestampQualification.getTimestampQualification());
+		assertFalse(Utils.isCollectionEmpty(validationTimestampQualification.getConclusion().getErrors()));
+		assertTrue(checkMessageValuePresence(convert(validationTimestampQualification.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+
+		assertTrue(Utils.isCollectionNotEmpty(validationTimestampQualification.getConstraint()));
+		for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
+			assertEquals(XmlStatus.OK, constraint.getStatus());
+		}
+
+		List<XmlValidationTimestampQualificationAtTime> validationTimestampQualificationAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+		assertEquals(2, validationTimestampQualificationAtTime.size());
+
+		boolean tstQualValidationAtGenTimeFound = false;
+		boolean tstQualValidationAtBestPoeTimeFound = false;
+		for (XmlValidationTimestampQualificationAtTime tstQualAtTime : validationTimestampQualificationAtTime) {
+			if (ValidationTime.TIMESTAMP_GENERATION_TIME.equals(tstQualAtTime.getValidationTime())) {assertEquals(TimestampQualification.TSA, tstQualAtTime.getTimestampQualification());
+				assertFalse(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				assertTrue(checkMessageValuePresence(convert(tstQualAtTime.getConclusion().getErrors()),
+						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				boolean grantedAtTimeCheckFound = false;
+				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+						assertEquals(MessageTag.QUAL_HAS_GRANTED_AT_ANS.getId(), constraint.getError().getKey());
+						grantedAtTimeCheckFound = true;
+					} else {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					}
+				}
+				assertTrue(grantedAtTimeCheckFound);
+
+				tstQualValidationAtGenTimeFound = true;
+			} else if (ValidationTime.TIMESTAMP_POE_TIME.equals(tstQualAtTime.getValidationTime())) {
+				assertEquals(TimestampQualification.QTSA, tstQualAtTime.getTimestampQualification());
+				assertTrue(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+				tstQualValidationAtBestPoeTimeFound = true;
+			}
+		}
+		assertTrue(tstQualValidationAtGenTimeFound);
+		assertTrue(tstQualValidationAtBestPoeTimeFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void twoTstPastValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		List<String> timestampIdList = simpleReport.getTimestampIdList();
+		assertEquals(2, timestampIdList.size());
+
+		assertEquals(Indication.PASSED, simpleReport.getIndication(timestampIdList.get(0)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampIdList.get(0))));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(0))));
+		assertEquals(Indication.PASSED, simpleReport.getIndication(timestampIdList.get(1)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampIdList.get(1))));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(1))));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(0, detailedReport.getSignatures().size());
+		assertEquals(2, detailedReport.getIndependentTimestamps().size());
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+
+		assertEquals(Indication.PASSED, detailedReport.getFinalIndication(timestampIds.get(0)));
+		assertTrue(Utils.isCollectionEmpty(detailedReport.getAdESValidationErrors(timestampIds.get(0))));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0)));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(timestampIds.get(0)));
+
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataTimestampValidationIndication(timestampIds.get(0)));
+
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(timestampIds.get(0));
+		XmlValidationProcessBasicTimestamp tstBasic = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.INDETERMINATE, tstBasic.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, tstBasic.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(tstBasic.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(convert(tstBasic.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRSC_ANS)));
+
+		XmlValidationProcessArchivalDataTimestamp timestampArchivalData = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.PASSED, timestampArchivalData.getConclusion().getIndication());
+		assertTrue(Utils.isCollectionEmpty(timestampArchivalData.getConclusion().getErrors()));
+
+		boolean tstBasicAcceptableFound = false;
+		boolean tstBasicConclusiveFound = false;
+		boolean tstPastSigFound = false;
+		for (XmlConstraint constraint : timestampArchivalData.getConstraint()) {
+			if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				tstBasicAcceptableFound = true;
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+				tstBasicConclusiveFound = true;
+			} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				tstPastSigFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(tstBasicAcceptableFound);
+		assertTrue(tstBasicConclusiveFound);
+		assertTrue(tstPastSigFound);
+
+		assertEquals(Indication.PASSED, detailedReport.getFinalIndication(timestampIds.get(1)));
+		assertTrue(Utils.isCollectionEmpty(detailedReport.getAdESValidationErrors(timestampIds.get(1))));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(1)));
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataTimestampValidationIndication(timestampIds.get(1)));
+
+		xmlTimestamp = detailedReport.getXmlTimestampById(timestampIds.get(1));
+		tstBasic = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.PASSED, tstBasic.getConclusion().getIndication());
+		assertTrue(Utils.isCollectionEmpty(tstBasic.getConclusion().getErrors()));
+
+		timestampArchivalData = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.PASSED, timestampArchivalData.getConclusion().getIndication());
+		assertTrue(Utils.isCollectionEmpty(timestampArchivalData.getConclusion().getErrors()));
+
+		tstBasicAcceptableFound = false;
+		tstBasicConclusiveFound = false;
+		tstPastSigFound = false;
+		for (XmlConstraint constraint : timestampArchivalData.getConstraint()) {
+			if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				tstBasicAcceptableFound = true;
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				tstBasicConclusiveFound = true;
+			} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+				tstPastSigFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(tstBasicAcceptableFound);
+		assertTrue(tstBasicConclusiveFound);
+		assertFalse(tstPastSigFound);
 
 		checkReports(reports);
 	}

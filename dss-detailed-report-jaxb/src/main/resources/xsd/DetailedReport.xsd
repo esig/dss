@@ -39,10 +39,13 @@
 	
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
-			<xs:element name="ValidationProcessTimestamp" type="ValidationProcessTimestamp"  />
+			<xs:element name="ValidationProcessBasicTimestamp" type="ValidationProcessBasicTimestamp" />
+			<xs:element name="ValidationProcessArchivalDataTimestamp" type="ValidationProcessArchivalDataTimestamp" minOccurs="0" />
 			
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" />
+
+			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" /> 
 	</xs:complexType>
@@ -150,12 +153,18 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationProcessTimestamp">	
+	<xs:complexType name="ValidationProcessBasicTimestamp">
 		<xs:complexContent>
-			<xs:extension base="ConstraintsConclusionWithProofOfExistence">
+			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Type" type="xs:string" use="required" />
 				<xs:attribute name="ProductionTime" type="xs:dateTime" use="required" />
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessArchivalDataTimestamp">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 	
@@ -389,6 +398,7 @@
 			<xs:enumeration value="PCV" />
 			<xs:enumeration value="VTS" />
 			<xs:enumeration value="TST_PSV" />
+			<xs:enumeration value="TST" />
 		</xs:restriction>
 	</xs:simpleType>
 

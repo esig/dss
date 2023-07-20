@@ -284,7 +284,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private void collectIndications(XmlTimestamp xmlTimestamp) {
-		collectIndications(xmlTimestamp.getValidationProcessTimestamp());
+		collectIndications(xmlTimestamp.getValidationProcessBasicTimestamp());
 	}
 
 	private void collectIndications(XmlBasicBuildingBlocks bbb) {

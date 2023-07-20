@@ -32,7 +32,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -198,7 +198,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
                     for (TimestampWrapper timestampWrapper : contentTimestamps) {
 
-                        final XmlValidationProcessTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
+                        final XmlValidationProcessBasicTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
                         if (timestampValidation != null) {
 
                             item = item.setNextItem(timestampBasicValidation(timestampWrapper, timestampValidation));
@@ -243,7 +243,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
                     for (TimestampWrapper timestampWrapper : contentTimestamps) {
 
-                        final XmlValidationProcessTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
+                        final XmlValidationProcessBasicTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
                         if (timestampValidation != null) {
 
                             item = item.setNextItem(timestampBasicValidation(timestampWrapper, timestampValidation));
@@ -365,7 +365,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
                 for (TimestampWrapper timestampWrapper : contentTimestamps) {
 
-                    final XmlValidationProcessTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
+                    final XmlValidationProcessBasicTimestamp timestampValidation = getTimestampValidation(timestampWrapper.getId());
                     if (timestampValidation != null) {
 
                         item = item.setNextItem(timestampBasicValidation(timestampWrapper, timestampValidation));
@@ -427,7 +427,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
     }
 
     private ChainItem<T> timestampBasicValidation(final TimestampWrapper timestamp,
-                                                  final XmlValidationProcessTimestamp timestampValidation) {
+                                                  final XmlValidationProcessBasicTimestamp timestampValidation) {
         return new BasicTimestampValidationCheck<>(i18nProvider, result, timestamp, timestampValidation,
                 getWarnLevelConstraint());
     }
@@ -474,9 +474,9 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
      * Gets the corresponding validation result for a timestamp with the given Id
      *
      * @param timestampId {@link String} Id of a timestamp to get validation result for
-     * @return {@link XmlValidationProcessTimestamp}
+     * @return {@link XmlValidationProcessBasicTimestamp}
      */
-    protected XmlValidationProcessTimestamp getTimestampValidation(String timestampId) {
+    protected XmlValidationProcessBasicTimestamp getTimestampValidation(String timestampId) {
         return null;
     }
 
