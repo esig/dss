@@ -1483,10 +1483,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> xmlTimestamps = xmlSignature.getTimestamps();
 			if (Utils.isCollectionNotEmpty(xmlTimestamps)) {
 				for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlTimestamps) {
-					Indication timestampIndication = detailedReport.getTimestampValidationIndication(xmlTimestamp.getId());
+					Indication timestampIndication = detailedReport.getBasicTimestampValidationIndication(xmlTimestamp.getId());
 					assertNotNull(timestampIndication);
 					if (!Indication.PASSED.equals(timestampIndication)) {
-						assertNotNull(detailedReport.getTimestampValidationSubIndication(xmlTimestamp.getId()));
+						assertNotNull(detailedReport.getBasicTimestampValidationSubIndication(xmlTimestamp.getId()));
 					}
 				}
 			}
@@ -1610,7 +1610,6 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	protected void validateETSISignatureAttributes(SignatureAttributesType signatureAttributes) {
 		if (signatureAttributes != null) {
 			List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
@@ -1829,16 +1828,13 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 				Object validationObjectRepresentation = validationObjectRepresentationList.get(0);
 				assertNotNull(validationObjectRepresentation);
 				assertTrue(validationObjectRepresentation instanceof DigestAlgAndValueType || validationObjectRepresentation instanceof byte[]);
-				switch (validationObject.getObjectType()) {
-					case TIMESTAMP:
-						assertNotNull(validationObject.getPOEProvisioning());
-						assertNotNull(validationObject.getValidationReport());
-						break;
-					default:
-						assertNotNull(validationObject.getPOE());
-						assertNotNull(validationObject.getPOE().getTypeOfProof());
-						assertNotNull(validationObject.getPOE().getPOETime());
-						break;
+				if (ObjectType.TIMESTAMP == validationObject.getObjectType()) {
+					assertNotNull(validationObject.getPOEProvisioning());
+					assertNotNull(validationObject.getValidationReport());
+				} else {
+					assertNotNull(validationObject.getPOE());
+					assertNotNull(validationObject.getPOE().getTypeOfProof());
+					assertNotNull(validationObject.getPOE().getPOETime());
 				}
 			}
 		}

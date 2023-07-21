@@ -160,7 +160,10 @@ public class SimpleReportBuilder {
 			if (attachedTimestampIds.contains(timestamp.getId())) {
 				continue;
 			}
-			simpleReport.getSignatureOrTimestamp().add(getXmlTimestamp(timestamp));
+			Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
+			if (tstValidationIndication != null) {
+				simpleReport.getSignatureOrTimestamp().add(getXmlTimestamp(timestamp));
+			}
 		}
 
 		addStatistics(simpleReport);
@@ -303,7 +306,7 @@ public class SimpleReportBuilder {
 		if (Utils.isCollectionNotEmpty(timestampList)) {
 			XmlTimestamps xmlTimestamps = new XmlTimestamps();
 			for (TimestampWrapper timestamp : timestampList) {
-				Indication tstValidationIndication = detailedReport.getTimestampValidationIndication(timestamp.getId());
+				Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
 				if (tstValidationIndication != null) {
 					xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
 				}

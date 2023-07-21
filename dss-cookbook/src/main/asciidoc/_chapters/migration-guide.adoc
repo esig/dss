@@ -75,6 +75,15 @@ String jwsType = signature.getMimeType();
                                                                      a|[source,java]
 String jwsType = signature.getSignatureType();
 
+|DetailedReport. Timestamp validation                                      a|[source,java]
+----
+Indication indication = detailedReport.getTimestampValidationIndication(tspId);
+SubIndication subIndication = detailedReport.getTimestampValidationSubIndication(tspId);
+----
+                                                                     a|[source,java]
+Indication indication = detailedReport.getBasicTimestampValidationIndication(tspId);
+SubIndication subIndication = detailedReport.getBasicTimestampValidationSubIndication(tspId);
+
 |===
 
 [cols="2,5,5"]

@@ -51,6 +51,7 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
@@ -464,6 +465,105 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertTrue(tstBasicAcceptableFound);
 		assertTrue(tstBasicConclusiveFound);
 		assertFalse(tstPastSigFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void twoTstTimestampOnlyValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setValidationLevel(ValidationLevel.TIMESTAMPS);
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		List<String> timestampIdList = simpleReport.getTimestampIdList();
+		assertEquals(2, timestampIdList.size());
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(timestampIdList.get(0)));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(timestampIdList.get(0)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(timestampIdList.get(0)),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(timestampIdList.get(0)),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRSC_ANS)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(0))));
+
+		assertEquals(Indication.PASSED, simpleReport.getIndication(timestampIdList.get(1)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampIdList.get(1))));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(1))));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(0, detailedReport.getSignatures().size());
+		assertEquals(2, detailedReport.getIndependentTimestamps().size());
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getFinalIndication(timestampIds.get(0)));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getFinalSubIndication(timestampIds.get(0)));
+		assertTrue(checkMessageValuePresence(detailedReport.getAdESValidationErrors(timestampIds.get(0)),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(detailedReport.getAdESValidationErrors(timestampIds.get(0)),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRSC_ANS)));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0)));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(timestampIds.get(0)));
+
+		assertNull(detailedReport.getArchiveDataTimestampValidationIndication(timestampIds.get(0)));
+
+		XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(timestampIds.get(0));
+		XmlValidationProcessBasicTimestamp tstBasic = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.INDETERMINATE, tstBasic.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, tstBasic.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(tstBasic.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(convert(tstBasic.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_XCV_ICTIVRSC_ANS)));
+
+		XmlValidationProcessArchivalDataTimestamp timestampArchivalData = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertNull(timestampArchivalData);
+
+		assertEquals(Indication.PASSED, detailedReport.getFinalIndication(timestampIds.get(1)));
+		assertTrue(Utils.isCollectionEmpty(detailedReport.getAdESValidationErrors(timestampIds.get(1))));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(1)));
+		assertNull(detailedReport.getArchiveDataTimestampValidationIndication(timestampIds.get(1)));
+
+		xmlTimestamp = detailedReport.getXmlTimestampById(timestampIds.get(1));
+		tstBasic = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.PASSED, tstBasic.getConclusion().getIndication());
+		assertTrue(Utils.isCollectionEmpty(tstBasic.getConclusion().getErrors()));
+
+		timestampArchivalData = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertNull(timestampArchivalData);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void twoTstsBasicValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		List<String> timestampIdList = simpleReport.getTimestampIdList();
+		assertEquals(0, timestampIdList.size());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(0, detailedReport.getIndependentTimestamps().size());
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		assertEquals(0, timestampIds.size());
 
 		checkReports(reports);
 	}

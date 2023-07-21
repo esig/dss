@@ -112,7 +112,7 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		for (String timestampId : simpleReport.getTimestampIdList()) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestampId));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampId));
 		}
 		assertNull(detailedReport.getFirstSignatureId());
 		
