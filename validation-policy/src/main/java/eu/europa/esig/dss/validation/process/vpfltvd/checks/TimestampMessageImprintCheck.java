@@ -51,7 +51,20 @@ public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> ex
      */
     public TimestampMessageImprintCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                  LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        this(i18nProvider, result, timestamp, constraint, null);
+    }
+
+    /**
+     * Constructor to instantiate check with Id provided
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlSAV}
+     * @param timestamp {@link TimestampWrapper}
+     * @param constraint {@link LevelConstraint}
+     */
+    protected TimestampMessageImprintCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
+                                        LevelConstraint constraint, String bbbId) {
+        super(i18nProvider, result, constraint, bbbId);
         this.timestamp = timestamp;
     }
 

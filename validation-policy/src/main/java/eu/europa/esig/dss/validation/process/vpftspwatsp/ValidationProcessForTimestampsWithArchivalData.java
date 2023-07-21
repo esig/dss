@@ -79,7 +79,7 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     @Override
     protected MessageTag getTitle() {
-        return MessageTag.VPFSWATSP;
+        return MessageTag.VPFTSPWATSP;
     }
 
     @Override

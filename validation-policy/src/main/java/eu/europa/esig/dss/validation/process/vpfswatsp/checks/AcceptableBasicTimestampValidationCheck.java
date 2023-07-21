@@ -66,7 +66,7 @@ public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsCon
                                                    TimestampWrapper timestamp,
                                                    XmlConstraintsConclusion basicTimestampValidation,
                                                    LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
         this.basicTimestampValidation = basicTimestampValidation;
     }

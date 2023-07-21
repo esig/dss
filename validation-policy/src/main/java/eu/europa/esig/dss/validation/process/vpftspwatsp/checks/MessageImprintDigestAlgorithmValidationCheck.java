@@ -62,7 +62,7 @@ public class MessageImprintDigestAlgorithmValidationCheck<T extends XmlConstrain
                                                   TimestampWrapper timestamp,
                                                   XmlSAV davResult, Date currentTime,
                                                   LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
         this.davResult = davResult;
         this.currentTime = currentTime;
