@@ -18,8 +18,9 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>specs-xmldsig</artifactId>
+            <artifactId>dss-jaxb-common</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
@@ -95,29 +96,11 @@
                     <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
-                        <version>2.3.5</version>
+                        <version>2.3.8</version>
                     </dependency>
                 </dependencies>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>remove-duplicate-sources</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/xmldsig" />
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>

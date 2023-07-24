@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.saml;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

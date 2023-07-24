@@ -27,7 +27,7 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.xades.XAdES319132Utils;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 /**
  * XAdES 1.3.2 paths

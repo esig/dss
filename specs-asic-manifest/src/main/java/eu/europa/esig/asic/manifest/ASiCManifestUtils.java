@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.asic.manifest;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 

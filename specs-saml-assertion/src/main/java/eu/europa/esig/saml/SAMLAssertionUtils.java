@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.saml;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 

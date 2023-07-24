@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.definition;
 
 import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 import java.io.Serializable;
 

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.xmldsig;
 
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.xmldsig.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
