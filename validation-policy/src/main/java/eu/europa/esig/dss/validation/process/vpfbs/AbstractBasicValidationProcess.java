@@ -57,7 +57,7 @@ import eu.europa.esig.dss.validation.process.vpfbs.checks.TimestampGenerationTim
 import eu.europa.esig.dss.validation.process.vpfbs.checks.ValidationContextInitializationResultCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.ValidationTimeAtCertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.X509CertificateValidationResultCheck;
-import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationWithIdCheck;
 
 import java.util.Collections;
 import java.util.Date;
@@ -428,7 +428,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
     private ChainItem<T> timestampBasicValidation(final TimestampWrapper timestamp,
                                                   final XmlValidationProcessBasicTimestamp timestampValidation) {
-        return new BasicTimestampValidationCheck<>(i18nProvider, result, timestamp, timestampValidation,
+        return new BasicTimestampValidationWithIdCheck<>(i18nProvider, result, timestamp, timestampValidation,
                 getWarnLevelConstraint());
     }
 

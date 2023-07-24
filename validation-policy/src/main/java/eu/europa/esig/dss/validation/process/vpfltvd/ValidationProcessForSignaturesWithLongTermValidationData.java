@@ -76,7 +76,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttribute
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintWithIdCheck;
-import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationWithIdCheck;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -443,7 +443,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
 			TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
-		return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
+		return new BasicTimestampValidationWithIdCheck<>(i18nProvider, result, timestampWrapper,
 				timestampValidationResult, getWarnLevelConstraint());
 	}
 	

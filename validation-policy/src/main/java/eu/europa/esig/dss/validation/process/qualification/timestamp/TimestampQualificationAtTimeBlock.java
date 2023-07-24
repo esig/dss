@@ -13,7 +13,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustServiceCheck;
-import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtProductionTimeCheck;
+import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTSTCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
 import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
@@ -80,7 +80,7 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
                 this.date = date;
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported qualification time : " + validationTime);
+                throw new IllegalArgumentException("Unsupported time-stamp qualification time : " + validationTime);
         }
     }
 
@@ -157,7 +157,7 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
     }
 
     private ChainItem<XmlValidationTimestampQualificationAtTime> hasGrantedStatusAtDate(List<TrustServiceWrapper> services) {
-        return new GrantedStatusAtProductionTimeCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+        return new GrantedStatusAtTimeCheck<>(i18nProvider, result, services, validationTime, getFailLevelConstraint());
     }
 
     private boolean isMRAEnactedForTrustedList(List<TrustServiceWrapper> trustServices) {

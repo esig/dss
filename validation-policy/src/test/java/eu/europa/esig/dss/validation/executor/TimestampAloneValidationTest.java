@@ -228,7 +228,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
 		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId()),
-				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_POE_TIME)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(detailedReport.getFirstTimestampId()));
@@ -242,7 +242,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(TimestampQualification.TSA, validationTimestampQualification.getTimestampQualification());
 		assertFalse(Utils.isCollectionEmpty(validationTimestampQualification.getConclusion().getErrors()));
 		assertTrue(checkMessageValuePresence(convert(validationTimestampQualification.getConclusion().getErrors()),
-				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_POE_TIME)));
 
 		assertTrue(Utils.isCollectionNotEmpty(validationTimestampQualification.getConstraint()));
 		for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
@@ -258,15 +258,23 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 			if (ValidationTime.TIMESTAMP_GENERATION_TIME.equals(tstQualAtTime.getValidationTime())) {
 				assertEquals(TimestampQualification.QTSA, tstQualAtTime.getTimestampQualification());
 				assertTrue(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				boolean atGenTimeCheckFound = false;
 				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
+						assertEquals(i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT, MessageTag.VT_TST_GENERATION_TIME),
+								constraint.getName().getValue());
+						atGenTimeCheckFound = true;
+					}
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
+				assertTrue(atGenTimeCheckFound);
 				tstQualValidationAtGenTimeFound = true;
+
 			} else if (ValidationTime.TIMESTAMP_POE_TIME.equals(tstQualAtTime.getValidationTime())) {
 				assertEquals(TimestampQualification.TSA, tstQualAtTime.getTimestampQualification());
 				assertFalse(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
 				assertTrue(checkMessageValuePresence(convert(tstQualAtTime.getConclusion().getErrors()),
-						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_POE_TIME)));
 				boolean grantedAtTimeCheckFound = false;
 				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
 					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
@@ -303,7 +311,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
 		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstTimestampId()),
-				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_GENERATION_TIME)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(detailedReport.getFirstTimestampId()));
@@ -317,7 +325,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		assertEquals(TimestampQualification.TSA, validationTimestampQualification.getTimestampQualification());
 		assertFalse(Utils.isCollectionEmpty(validationTimestampQualification.getConclusion().getErrors()));
 		assertTrue(checkMessageValuePresence(convert(validationTimestampQualification.getConclusion().getErrors()),
-				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_GENERATION_TIME)));
 
 		assertTrue(Utils.isCollectionNotEmpty(validationTimestampQualification.getConstraint()));
 		for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
@@ -330,13 +338,16 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 		boolean tstQualValidationAtGenTimeFound = false;
 		boolean tstQualValidationAtBestPoeTimeFound = false;
 		for (XmlValidationTimestampQualificationAtTime tstQualAtTime : validationTimestampQualificationAtTime) {
-			if (ValidationTime.TIMESTAMP_GENERATION_TIME.equals(tstQualAtTime.getValidationTime())) {assertEquals(TimestampQualification.TSA, tstQualAtTime.getTimestampQualification());
+			if (ValidationTime.TIMESTAMP_GENERATION_TIME.equals(tstQualAtTime.getValidationTime())) {
+				assertEquals(TimestampQualification.TSA, tstQualAtTime.getTimestampQualification());
 				assertFalse(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
 				assertTrue(checkMessageValuePresence(convert(tstQualAtTime.getConclusion().getErrors()),
-						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS)));
+						i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, MessageTag.VT_TST_GENERATION_TIME)));
 				boolean grantedAtTimeCheckFound = false;
 				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
 					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
+						assertEquals(i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT, MessageTag.VT_TST_GENERATION_TIME),
+								constraint.getName().getValue());
 						assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 						assertEquals(MessageTag.QUAL_HAS_GRANTED_AT_ANS.getId(), constraint.getError().getKey());
 						grantedAtTimeCheckFound = true;
@@ -350,9 +361,15 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 			} else if (ValidationTime.TIMESTAMP_POE_TIME.equals(tstQualAtTime.getValidationTime())) {
 				assertEquals(TimestampQualification.QTSA, tstQualAtTime.getTimestampQualification());
 				assertTrue(Utils.isCollectionEmpty(tstQualAtTime.getConclusion().getErrors()));
+				boolean atPoeTimeCheckFound = false;
 				for (XmlConstraint constraint : tstQualAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_GRANTED_AT.getId().equals(constraint.getName().getKey())) {
+						assertEquals(i18nProvider.getMessage(MessageTag.QUAL_HAS_GRANTED_AT, MessageTag.VT_TST_POE_TIME), constraint.getName().getValue());
+						atPoeTimeCheckFound = true;
+					}
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
+				assertTrue(atPoeTimeCheckFound);
 				tstQualValidationAtBestPoeTimeFound = true;
 			}
 		}

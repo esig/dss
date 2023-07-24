@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
+package eu.europa.esig.dss.validation.process.vpftspwatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -96,13 +96,6 @@ public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsCon
     @Override
     protected MessageTag getErrorMessageTag() {
         return MessageTag.ARCH_IRTVBBA_ANS;
-    }
-
-    @Override
-    protected String buildAdditionalInfo() {
-        String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
-        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
-                ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
     }
 
     @Override
