@@ -101,6 +101,7 @@
 		<module>specs-validation-report</module>
 		<module>specs-asic-manifest</module>
 		<module>specs-saml-assertion</module>
+		<module>specs-xmlers</module>
 		<module>specs-jws</module>
 		<module>specs-jades</module>
 		<module>dss-policy-jaxb</module>
@@ -169,7 +170,6 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-		<module>specs-xmlers</module>
     </modules>
 
 	<build>
@@ -500,6 +500,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>specs-saml-assertion</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-xmlers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

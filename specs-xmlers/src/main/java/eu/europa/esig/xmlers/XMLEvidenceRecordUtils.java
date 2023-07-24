@@ -1,15 +1,19 @@
-package eu.europa.esig.ers.xmlers;
+package eu.europa.esig.xmlers;
 
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.ers.xmlers.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Common XML Evidence Records schema utils
+ *
+ */
 public final class XMLEvidenceRecordUtils extends XSDAbstractUtils {
 
     /** The Object Factory to use */
@@ -24,7 +28,11 @@ public final class XMLEvidenceRecordUtils extends XSDAbstractUtils {
     /** JAXBContext */
     private JAXBContext jc;
 
+    /**
+     * Default constructor
+     */
     private XMLEvidenceRecordUtils() {
+        // empty
     }
 
     /**
@@ -42,15 +50,16 @@ public final class XMLEvidenceRecordUtils extends XSDAbstractUtils {
     @Override
     public JAXBContext getJAXBContext() throws JAXBException {
         if (jc == null) {
-            jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.ers.xmlers.jaxb.ObjectFactory.class);
+            jc = JAXBContext.newInstance(ObjectFactory.class);
         }
         return jc;
     }
 
     @Override
     public List<Source> getXSDSources() {
-        List<Source> xsdSources = XmlDSigUtils.getInstance().getXSDSources();
+        List<Source> xsdSources = new ArrayList<>();
         xsdSources.add(new StreamSource(XMLEvidenceRecordUtils.class.getResourceAsStream(XML_ER)));
         return xsdSources;
     }
+
 }

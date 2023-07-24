@@ -1,22 +1,17 @@
-
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.ers.xmlers.XMLEvidenceRecordFacade;
-import eu.europa.esig.ers.xmlers.XMLEvidenceRecordUtils;
-
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-
 import eu.europa.esig.ers.xmlers.jaxb.ArchiveTimeStampSequenceType;
 import eu.europa.esig.ers.xmlers.jaxb.ArchiveTimeStampType;
 import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
 import eu.europa.esig.ers.xmlers.jaxb.HashTreeType;
+import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -25,7 +20,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.dom.DOMSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,19 +27,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Comparator;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ValidateXMLERTest {
-
-    private static XMLEvidenceRecordUtils xmlerUtils;
-
-    @BeforeAll
-    public static void init() {
-        xmlerUtils = XMLEvidenceRecordUtils.getInstance();
-    }
-
 
     @Test
     public void testXMLER() throws JAXBException, XMLStreamException, IOException, SAXException {

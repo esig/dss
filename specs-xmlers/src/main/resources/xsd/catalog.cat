@@ -1,4 +1,1 @@
-PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "XMLSchema.dtd"
-REWRITE_SYSTEM "http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xmldsig-core-schema.xsd"
-REWRITE_SYSTEM "http://www.w3.org/2001/xml.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xml.xsd"
 SYSTEM "urn:ietf:params:xml:ns:ers" "rfc6283_ers.xsd"
