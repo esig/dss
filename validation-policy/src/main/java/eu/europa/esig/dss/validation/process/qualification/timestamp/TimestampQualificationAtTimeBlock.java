@@ -34,9 +34,6 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
     /** The time to check against */
     private final Date date;
 
-    /** The timestamp to be validated */
-    private final TimestampWrapper timestamp;
-
     /** List of matching TrustServices */
     private final List<TrustServiceWrapper> acceptableServices;
 
@@ -69,7 +66,6 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
                                              TimestampWrapper timestamp, List<TrustServiceWrapper> acceptableServices) {
         super(i18nProvider, new XmlValidationTimestampQualificationAtTime());
         this.validationTime = validationTime;
-        this.timestamp = timestamp;
         this.acceptableServices = acceptableServices;
 
         switch (validationTime) {
@@ -100,6 +96,9 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
         // Execute only for Trusted Lists with defined MRA
         if (isMRAEnactedForTrustedList(filteredServices)) {
             TrustServiceFilter filter = TrustServicesFilterFactory.createMRAEnactedFilter();
+            filteredServices = filter.filter(filteredServices);
+
+            filter = TrustServicesFilterFactory.createFilterByMRAEquivalenceStartingDate(date);
             filteredServices = filter.filter(filteredServices);
 
             item = firstItem = hasMraEnactedTrustService(filteredServices);

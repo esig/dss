@@ -921,6 +921,16 @@
                             <StartDate>2022-01-19T16:02:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
+                            <MRATrustServiceMapping>
+                                <TrustServiceLegalIdentifier>QTST</TrustServiceLegalIdentifier>
+                                <EquivalenceStatusStartingTime>2020-05-16T23:59:59Z</EquivalenceStatusStartingTime>
+                                <OriginalThirdCountryMapping>
+                                    <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QTST</ServiceType>
+                                    <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                                    <CapturedQualifiers/>
+                                    <AdditionalServiceInfoUris/>
+                                </OriginalThirdCountryMapping>
+                            </MRATrustServiceMapping>
                         </TrustService>
                     </TrustServices>
                 </TrustServiceProvider>
