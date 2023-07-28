@@ -945,39 +945,6 @@ public final class DSSUtils {
 		}
 	}
 
-	/**
-	 * Concatenates all the arrays into a new array. The new array contains all bytes of each array followed by
-	 * all bytes of the next array. When an array is returned, it is always a new array.
-	 *
-	 * @param arrays
-	 *            {@code byte} arrays to concatenate
-	 * @return the new {@code byte} array
-	 */
-	public static byte[] concatenate(byte[]... arrays) {
-		if ((arrays == null) || (arrays.length == 0) || ((arrays.length == 1) && (arrays[0] == null))) {
-			return null;
-		}
-		if (arrays.length == 1) {
-			return arrays[0].clone();
-		}
-		int joinedLength = 0;
-		for (final byte[] array : arrays) {
-			if (array != null) {
-				joinedLength += array.length;
-			}
-		}
-		byte[] joinedArray = new byte[joinedLength];
-		int destinationIndex = 0;
-		for (final byte[] array : arrays) {
-			if (array != null) {
-
-				System.arraycopy(array, 0, joinedArray, destinationIndex, array.length);
-				destinationIndex += array.length;
-			}
-		}
-		return joinedArray;
-	}
-
 
 	/**
 	 * This method decodes an URI to be compliant with the RFC 3986 (see DSS-2411 for details)

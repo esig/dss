@@ -182,6 +182,27 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void concat() {
+		assertArrayEquals(new byte[] {'h','e','l','l','o','w','o','r','l','d'},
+				Utils.concat(new byte[] {'h','e','l','l','o'}, new byte[] {'w','o','r','l','d'}));
+		assertArrayEquals(new byte[] {'h','e','l','l','o','h','e','l','l','o'},
+				Utils.concat(new byte[] {'h','e','l','l','o'}, new byte[] {'h','e','l','l','o'}));
+		assertArrayEquals(new byte[] {'h','e','l','l','o','w','o','r','l','d','!'},
+				Utils.concat(new byte[] {'h','e','l','l','o'}, new byte[] {'w','o','r','l','d'}, new byte[] {'!'}));
+		assertArrayEquals(new byte[] {'h','e','l','l','o'},
+				Utils.concat(new byte[] {'h','e','l','l','o'}, new byte[] {}));
+		assertArrayEquals(new byte[] {'w','o','r','l','d'},
+				Utils.concat(new byte[] {}, new byte[] {'w','o','r','l','d'}));
+		assertArrayEquals(new byte[] {},
+				Utils.concat(new byte[] {}, new byte[] {}));
+		assertArrayEquals(new byte[] {},
+				Utils.concat(new byte[] {}));
+		assertArrayEquals(new byte[] {}, Utils.concat());
+		assertThrows(NullPointerException.class, () -> Utils.concat((byte[]) null));
+		assertThrows(NullPointerException.class, () -> Utils.concat(new byte[] {}, null));
+	}
+
+	@Test
 	public void substringAfter() {
 		assertNull(Utils.substringAfter(null, null));
 		assertEquals("", Utils.substringAfter("", null));

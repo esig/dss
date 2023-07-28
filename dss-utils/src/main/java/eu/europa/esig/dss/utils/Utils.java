@@ -186,6 +186,17 @@ public final class Utils {
 	}
 
 	/**
+	 * Concatenates byte arrays to a single byte array. The new array contains all bytes of each array followed by
+	 * all bytes of the next array. When an array is returned, it is always a new array.
+	 *
+	 * @param byteArrays an array of byte arrays to be concatenated
+	 * @return byte array
+	 */
+	public static byte[] concat(byte[]... byteArrays) {
+		return impl.concat(byteArrays);
+	}
+
+	/**
 	 * Returns a substring after the specified character
 	 * Ex. "aaaaa?bbb", "?" = "bbb"
 	 *

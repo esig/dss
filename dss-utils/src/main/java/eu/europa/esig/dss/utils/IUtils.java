@@ -124,6 +124,14 @@ public interface IUtils {
 	String joinStrings(Collection<String> strings, String separator);
 
 	/**
+	 * Concatenates byte arrays to a single byte array
+	 *
+	 * @param byteArrays an array of byte arrays to be concatenated
+	 * @return byte array
+	 */
+	byte[] concat(byte[]... byteArrays);
+
+	/**
 	 * Returns a substring after the specified character
 	 * Ex. "aaaaa?bbb", "?" = "bbb"
 	 *

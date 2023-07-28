@@ -1032,7 +1032,7 @@ public final class DSSASN1Utils {
 		List<byte[]> octets = new ArrayList<>();
 		byte[] attrType = getDEREncoded(attributeIdentifier);
 		for (ASN1Encodable asn1Encodable : attributeValues.toArray()) {
-			octets.add(DSSUtils.concatenate(attrType, getDEREncoded(asn1Encodable)));
+			octets.add(Utils.concat(attrType, getDEREncoded(asn1Encodable)));
 		}
 		return octets;
 	}

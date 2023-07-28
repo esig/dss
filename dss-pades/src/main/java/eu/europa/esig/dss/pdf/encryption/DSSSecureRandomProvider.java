@@ -114,7 +114,7 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 		byte[] seed = buildSeed();
 		byte[] value = DSSUtils.digest(digestAlgorithm, seed);
 		while (value.length < binaryLength) {
-			value = DSSUtils.concatenate(value, value);
+			value = Utils.concat(value, value);
 		}
 		value = Utils.subarray(value, 0, binaryLength);
 		return new FixedSecureRandom(value);

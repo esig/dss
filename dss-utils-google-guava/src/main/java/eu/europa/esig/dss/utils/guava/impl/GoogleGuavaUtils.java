@@ -30,6 +30,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 import com.google.common.io.Files;
+import com.google.common.primitives.Bytes;
 import eu.europa.esig.dss.utils.IUtils;
 
 import java.io.BufferedInputStream;
@@ -126,6 +127,11 @@ public class GoogleGuavaUtils implements IUtils {
 		}
 		Joiner joiner = Joiner.on(separator);
 		return joiner.join(strings);
+	}
+
+	@Override
+	public byte[] concat(byte[]... byteArrays) {
+		return Bytes.concat(byteArrays);
 	}
 
 	@Override

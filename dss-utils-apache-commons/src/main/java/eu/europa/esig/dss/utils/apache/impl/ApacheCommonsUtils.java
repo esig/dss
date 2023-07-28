@@ -105,6 +105,19 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public byte[] concat(byte[]... byteArrays) {
+		if (byteArrays.length == 0) {
+			return new byte[0];
+		}
+		byte[] result = new byte[]{};
+		for (byte[] byteArray : byteArrays) {
+			Objects.requireNonNull(byteArray, "ByteArray is null!");
+			result = ArrayUtils.addAll(result, byteArray);
+		}
+		return result;
+	}
+
+	@Override
 	public String substringAfter(String text, String after) {
 		return StringUtils.substringAfter(text, after);
 	}
