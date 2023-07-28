@@ -71,6 +71,9 @@ public enum DigestMatcherType {
 	COUNTER_SIGNED_SIGNATURE_VALUE,
 
 	/** Timestamp */
-	MESSAGE_IMPRINT
+	MESSAGE_IMPRINT,
+
+	/** Evidence record archive object */
+	EVIDENCE_RECORD_ARCHIVE_OBJECT
 
 }

@@ -54,7 +54,10 @@ public enum TimestampType {
 	DOCUMENT_TIMESTAMP(3, true),
 
 	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, JAdES: arcTst */
-	ARCHIVE_TIMESTAMP(3, true);
+	ARCHIVE_TIMESTAMP(3, true),
+
+	/** An evidence record time-stamp */
+	EVIDENCE_RECORD_TIMESTAMP(3, true);
 	
 	/**
 	 * Specifies a presence order of the timestamp in a signature

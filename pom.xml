@@ -134,6 +134,8 @@
 		<module>dss-asic-xades</module>
 		<module>dss-asic-cades</module>
 		<module>dss-tsl-validation</module>
+		<module>dss-evidence-record-common</module>
+		<module>dss-evidence-record-xml</module>
 		<module>dss-common-remote-dto</module>
 		<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
@@ -170,7 +172,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-    </modules>
+	</modules>
 
 	<build>
 		<plugins>
@@ -619,6 +621,16 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-xades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-evidence-record-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-evidence-record-xml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -48,6 +48,12 @@ public enum ArchiveTimestampType {
 	JAdES,
 
 	/** DOCUMENT_TIMESTAMP covering a DSS dictionary (revision) */
-	PAdES;
+	PAdES,
+
+	/** XML Evidence Record time-stamp */
+	XML_EVIDENCE_RECORD,
+
+	/** ASN.1 Evidence Record time-stamp */
+	ANS1_EVIDENCE_RECORD;
 
 }

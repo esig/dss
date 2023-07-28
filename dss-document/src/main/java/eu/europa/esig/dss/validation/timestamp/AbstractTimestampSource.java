@@ -54,6 +54,7 @@ public abstract class AbstractTimestampSource {
 	 * Default constructor
 	 */
 	protected AbstractTimestampSource() {
+		// empty
 	}
 
 	/**
