@@ -1,17 +1,13 @@
 package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 
-import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ListRevocationSource;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.slf4j.Logger;
@@ -89,10 +85,7 @@ public abstract class EvidenceRecordTimestampSource<ER extends EvidenceRecord> e
             for (ArchiveTimeStampObject archiveTimeStamp : archiveTimeStampChain.getArchiveTimeStamps()) {
 
                 // TODO : populate references
-                TimestampToken timestampToken = createTimestampToken(archiveTimeStamp, references);
-
-                DSSMessageDigest messageDigest = getTimestampMessageImprintDigestBuilder(archiveTimeStamp).getArchiveTimestampMessageDigest();
-                timestampToken.matchData(messageDigest);
+                TimestampToken timestampToken = createTimestampToken(archiveTimeStamp);
 
                 // add time-stamp token
                 timestamps.add(timestampToken);
@@ -101,33 +94,13 @@ public abstract class EvidenceRecordTimestampSource<ER extends EvidenceRecord> e
     }
 
     /**
-     * Returns a related {@link TimestampMessageDigestBuilder}
+     * This method is used to create a {@code TimestampToken} from {@code ArchiveTimeStampObject}
      *
-     * @param archiveTimeStampObject {@link ArchiveTimeStampObject} containing a time-stamp to get message-imprint digest builder for
-     * @return {@link TimestampMessageDigestBuilder}
-     */
-    protected abstract EvidenceRecordTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(ArchiveTimeStampObject archiveTimeStampObject);
-
-    /**
-     * Creates a time-stamp token
-     *
-     * @param archiveTimeStamp {@link ArchiveTimeStampObject} containing time-stamp's token data
-     * @param references a list of {@link TimestampedReference}s
+     * @param archiveTimeStamp {@link ArchiveTimeStampObject} to extract time-stamp token from
      * @return {@link TimestampToken}
      */
-    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp, List<TimestampedReference> references) {
-        try {
-            return new TimestampToken(
-                    archiveTimeStamp.getTimestampToken(), TimestampType.EVIDENCE_RECORD_TIMESTAMP, references);
-        } catch (Exception e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.warn("Unable to build timestamp token from binaries '{}'! Reason : {}",
-                        Utils.toBase64(archiveTimeStamp.getTimestampToken()), e.getMessage(), e);
-            } else {
-                LOG.warn("Unable to build timestamp token! Reason : {}", e.getMessage(), e);
-            }
-        }
-        return null;
+    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp) {
+        return archiveTimeStamp.getTimestampToken();
     }
 
     /**

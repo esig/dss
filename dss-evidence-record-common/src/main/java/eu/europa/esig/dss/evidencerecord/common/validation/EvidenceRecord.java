@@ -2,8 +2,6 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.ReferenceValidation;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
@@ -95,6 +93,25 @@ public abstract class EvidenceRecord {
     protected abstract List<? extends ArchiveTimeStampChainObject> buildArchiveTimeStampSequence();
 
     /**
+     * Performs validation of the detached content and returns back the validity results
+     *
+     * @return a list of {@link ReferenceValidation} objects corresponding to each archive data object validation
+     */
+    public List<ReferenceValidation> getReferenceValidation() {
+        if (referenceValidations == null) {
+            referenceValidations = validate();
+        }
+        return referenceValidations;
+    }
+
+    /**
+     * Performs validation of the evidence record
+     *
+     * @return a list of {@link ReferenceValidation}s
+     */
+    protected abstract List<ReferenceValidation> validate();
+
+    /**
      * Returns a list of incorporated timestamp tokens
      *
      * @return a list of {@link TimestampToken}s
@@ -109,13 +126,6 @@ public abstract class EvidenceRecord {
      * @return {@code EvidenceRecordTimestampSource}
      */
     public abstract EvidenceRecordTimestampSource<?> getTimestampSource();
-
-    /**
-     * Performs validation of the detached content and returns back the validity results
-     *
-     * @return a list of {@link ReferenceValidation} objects corresponding to each archive data object validation
-     */
-    public abstract List<ReferenceValidation> getReferenceValidation();
 
     /**
      * This method is used to verify the structure of the evidence record document

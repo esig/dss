@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+
 import java.util.List;
 
 /**
@@ -13,11 +15,8 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
     /** The ordered list of data object groups containing their digest values */
     private List<? extends DigestValueGroup> hashTree;
 
-    /** Binaries of the time-stamp token */
-    private byte[] timestampToken;
-
-    /** The reference to the parent object */
-    private ArchiveTimeStampChainObject parent;
+    /** Time-stamp token */
+    private TimestampToken timestampToken;
 
     /**
      * Default constructor
@@ -45,39 +44,21 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
     }
 
     /**
-     * Gets the time-stamp token binaries
+     * Gets the time-stamp
      *
-     * @return encoded time-stamp token
+     * @return {@link TimestampToken}
      */
-    public byte[] getTimestampToken() {
+    public TimestampToken getTimestampToken() {
         return timestampToken;
     }
 
     /**
-     * Sets the time-stamp token binaries
+     * Sets the time-stamp token
      *
-     * @param timestampToken byte array containing the encoded time-stamp token
+     * @param timestampToken {@link TimestampToken}
      */
-    public void setTimestampToken(byte[] timestampToken) {
+    public void setTimestampToken(TimestampToken timestampToken) {
         this.timestampToken = timestampToken;
-    }
-
-    /**
-     * Gets the parent {@code ArchiveTimeStampChainObject}
-     *
-     * @return {@link ArchiveTimeStampChainObject}
-     */
-    public ArchiveTimeStampChainObject getParent() {
-        return parent;
-    }
-
-    /**
-     * Sets the parent {@code ArchiveTimeStampChainObject}
-     *
-     * @param parent {@link ArchiveTimeStampChainObject}
-     */
-    public void setParent(ArchiveTimeStampChainObject parent) {
-        this.parent = parent;
     }
 
 }

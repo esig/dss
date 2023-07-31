@@ -2,22 +2,29 @@ package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
-import eu.europa.esig.dss.evidencerecord.common.validation.OrderableComparator;
 import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
 import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPaths;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * This class is used to parse an XML Evidence Record
  */
 public class XmlEvidenceRecordParser {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XmlEvidenceRecordParser.class);
 
     /** Element containing the root EvidenceRecord element */
     private final Element evidenceRecordElement;
@@ -38,18 +45,20 @@ public class XmlEvidenceRecordParser {
      * @return a list of {@code ArchiveTimeStampChainObject}s
      */
     public List<XmlArchiveTimeStampChainObject> parse() {
-        final List<XmlArchiveTimeStampChainObject> archiveTimeStampSequence = new ArrayList<>();
-
         final NodeList archiveTimeStampSequenceList = DomUtils.getNodeList(evidenceRecordElement, XMLERSPaths.ARCHIVE_TIME_STAMP_CHAIN_PATH);
         if (archiveTimeStampSequenceList != null && archiveTimeStampSequenceList.getLength() > 0) {
+            XmlArchiveTimeStampChainObject[] result = new XmlArchiveTimeStampChainObject[archiveTimeStampSequenceList.getLength()];
             for (int i = 0; i < archiveTimeStampSequenceList.getLength(); i++) {
-                final Element archiveTimeStampChain = (Element) archiveTimeStampSequenceList.item(i);
-                archiveTimeStampSequence.add(getXmlArchiveTimeStampChainObject(archiveTimeStampChain));
+                final Element archiveTimeStampChainElement = (Element) archiveTimeStampSequenceList.item(i);
+                XmlArchiveTimeStampChainObject archiveTimeStampChain = getXmlArchiveTimeStampChainObject(archiveTimeStampChainElement);
+                int order = archiveTimeStampChain.getOrder();
+                // TODO : verify order validity
+                result[order - 1] = archiveTimeStampChain;
             }
+            return Arrays.asList(result);
         }
 
-        archiveTimeStampSequence.sort(new OrderableComparator());
-        return archiveTimeStampSequence;
+        return Collections.emptyList();
     }
 
     private XmlArchiveTimeStampChainObject getXmlArchiveTimeStampChainObject(Element archiveTimeStampChain) {
@@ -57,35 +66,34 @@ public class XmlEvidenceRecordParser {
         archiveTimeStampChainObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStampChain));
         archiveTimeStampChainObject.setCanonicalizationMethod(getCanonicalizationMethod(archiveTimeStampChain));
         archiveTimeStampChainObject.setOrder(getOrderAttributeValue(archiveTimeStampChain));
-        archiveTimeStampChainObject.setArchiveTimeStamps(getXmlArchiveTimeStamps(archiveTimeStampChain, archiveTimeStampChainObject));
+        archiveTimeStampChainObject.setArchiveTimeStamps(getXmlArchiveTimeStamps(archiveTimeStampChain));
         return archiveTimeStampChainObject;
     }
 
-    private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain, XmlArchiveTimeStampChainObject parent) {
-        final List<XmlArchiveTimeStampObject> result = new ArrayList<>();
-
+    private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain) {
         final NodeList archiveTimeStampList = DomUtils.getNodeList(archiveTimeStampChain, XMLERSPaths.ARCHIVE_TIME_STAMP_PATH);
         if (archiveTimeStampList != null && archiveTimeStampList.getLength() > 0) {
+            XmlArchiveTimeStampObject[] result = new XmlArchiveTimeStampObject[archiveTimeStampList.getLength()];
             for (int i = 0; i < archiveTimeStampList.getLength(); i++) {
                 final Element archiveTimeStampElement = (Element) archiveTimeStampList.item(i);
-                result.add(getXmlArchiveTimeStampObject(archiveTimeStampElement, parent));
+                XmlArchiveTimeStampObject archiveTimeStamp = getXmlArchiveTimeStampObject(archiveTimeStampElement);
+                int order = archiveTimeStamp.getOrder();
+                result[order - 1] = archiveTimeStamp;
             }
+            return Arrays.asList(result);
         }
-
-        result.sort(new OrderableComparator());
-        return result;
+        return Collections.emptyList();
     }
 
-    private XmlArchiveTimeStampObject getXmlArchiveTimeStampObject(Element archiveTimeStampElement, XmlArchiveTimeStampChainObject parent) {
+    private XmlArchiveTimeStampObject getXmlArchiveTimeStampObject(Element archiveTimeStampElement) {
         XmlArchiveTimeStampObject archiveTimeStampObject = new XmlArchiveTimeStampObject(archiveTimeStampElement);
-        archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement));
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStampElement));
         archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStampElement));
-        archiveTimeStampObject.setParent(parent);
+        archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement));
         return archiveTimeStampObject;
     }
 
-    private byte[] getTimestampToken(Element archiveTimeStampElement) {
+    private TimestampToken getTimestampToken(Element archiveTimeStampElement) {
         Element timeStampTokenElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPaths.TIME_STAMP_TOKEN_PATH);
         if (timeStampTokenElement == null) {
             throw new IllegalInputException("TimeStampToken shall be defined!");
@@ -94,26 +102,33 @@ public class XmlEvidenceRecordParser {
         if (!Utils.isBase64Encoded(base64EncodedTimeStamp)) {
             throw new IllegalInputException("The content of TimeStampToken shall be represented by a base64-encoded value!");
         }
-        return Utils.fromBase64(base64EncodedTimeStamp);
+        try {
+            return new TimestampToken(Utils.fromBase64(base64EncodedTimeStamp), TimestampType.EVIDENCE_RECORD_TIMESTAMP);
+        } catch (Exception e) {
+            LOG.warn("Unable to create a time-stamp token. Reason : {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     private List<XmlSequenceObject> getHashTree(Element archiveTimeStampElement) {
-        List<XmlSequenceObject> result = new ArrayList<>();
-
         final NodeList hashTree = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPaths.HASH_TREE_SEQUENCE_PATH);
-        for (int i = 0; i < hashTree.getLength(); i++) {
-            final Element sequenceElement = (Element) hashTree.item(i);
-            result.add(getDigestValueGroup(sequenceElement));
+        if (hashTree != null && hashTree.getLength() > 0) {
+            XmlSequenceObject[] result = new XmlSequenceObject[hashTree.getLength()];
+            for (int i = 0; i < hashTree.getLength(); i++) {
+                final Element sequenceElement = (Element) hashTree.item(i);
+                XmlSequenceObject digestValueGroup = getDigestValueGroup(sequenceElement);
+                int order = digestValueGroup.getOrder();
+                result[order - 1] = digestValueGroup;
+            }
+            return Arrays.asList(result);
         }
-
-        result.sort(new OrderableComparator());
-        return result;
+        return Collections.emptyList();
     }
 
     private XmlSequenceObject getDigestValueGroup(Element sequenceElement) {
         XmlSequenceObject digestValueGroup = new XmlSequenceObject(sequenceElement);
-        digestValueGroup.setOrder(getOrderAttributeValue(sequenceElement));
         digestValueGroup.setDigestValues(getDigestValues(sequenceElement));
+        digestValueGroup.setOrder(getOrderAttributeValue(sequenceElement));
         return digestValueGroup;
     }
 

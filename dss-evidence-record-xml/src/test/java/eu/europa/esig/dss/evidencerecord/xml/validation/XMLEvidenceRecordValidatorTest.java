@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -244,7 +245,7 @@ public class XMLEvidenceRecordValidatorTest {
 
     @Test
     public void chainRenewalTest() {
-        DSSDocument document = new FileDocument("src/test/resources/evidence-record-chain-renewal-371e4226-d580-401d-845b-7429c4afcf4c.xml");
+        DSSDocument document = new FileDocument("src/test/resources/evidence-record-chain-renewal.xml");
 
         List<DSSDocument> detachedDocs = new ArrayList<>();
         detachedDocs.add(new FileDocument("src/test/resources/371e4226-d580-401d-845b-7429c4afcf4c"));
@@ -267,6 +268,43 @@ public class XMLEvidenceRecordValidatorTest {
             assertTrue(timestampToken.isMessageImprintDataFound());
             assertTrue(timestampToken.isMessageImprintDataIntact());
         }
+    }
+
+    @Test
+    public void chainRenewalInvalidTest() {
+        DSSDocument document = new FileDocument("src/test/resources/evidence-record-chain-renewal-invalid.xml");
+
+        DigestDocument digestDocument = new DigestDocument();
+        digestDocument.addDigest(DigestAlgorithm.SHA256, "sq/z8fJz0dy6uDA8Xuc4ycGpY6wdD5YcYF8FRlvixAI=");
+        digestDocument.addDigest(DigestAlgorithm.SHA512, "F3lElKvRVhSsXfS8P+YPEXkoK+hS9f0CPF9U/9wJ4Q7T4/UHOOmYF/PKS/0AuJkl1QL7Imw5Q983WAtFd7cTrg==");
+
+        EvidenceRecordValidator validator = EvidenceRecordValidator.fromDocument(document);
+        assertNotNull(validator);
+
+        validator.setDetachedContents(Collections.singletonList(digestDocument));
+
+        EvidenceRecord evidenceRecord = validator.getEvidenceRecord();
+        List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
+        for (ReferenceValidation referenceValidation : referenceValidationList) {
+            assertTrue(referenceValidation.isFound());
+            assertTrue(referenceValidation.isIntact());
+        }
+
+        int validTstCounter = 0;
+        int invalidTstCounter = 0;
+        List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+        for (TimestampToken timestampToken : timestamps) {
+            assertTrue(timestampToken.isProcessed());
+            if (timestampToken.isMessageImprintDataFound()) {
+                assertTrue(timestampToken.isMessageImprintDataIntact());
+                ++validTstCounter;
+            } else {
+                assertFalse(timestampToken.isMessageImprintDataIntact());
+                ++invalidTstCounter;
+            };
+        }
+        assertEquals(1, validTstCounter);
+        assertEquals(1, invalidTstCounter);
     }
 
 }
