@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KeyStoreTSPSourceTest {
+public class EntityStoreTSPSourceTest {
 
     private static final File KS_FILE = new File("src/test/resources/self-signed-tsa.p12");
     private static final String KS_TYPE = "PKCS12";
@@ -37,7 +37,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void test() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         assertTimestampValid(timeStampResponse, digest);
@@ -45,7 +45,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void initEmptyTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource();
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource();
 
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
         keyStore.load(Files.newInputStream(KS_FILE.toPath()), KS_PASSWORD);
@@ -61,7 +61,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void acceptedDigestAlgorithmsTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DTBS);
         Exception exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
@@ -74,7 +74,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void tsaPolicyTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy("1.5.6.7.8.9");
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
@@ -85,7 +85,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void productionDateTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
 
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
@@ -101,7 +101,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void serialNumberTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponseOne = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampTokenOne = assertTimestampValid(timeStampResponseOne, digest);
@@ -112,7 +112,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void digestAlgoTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -127,7 +127,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void pssTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -143,7 +143,7 @@ public class KeyStoreTSPSourceTest {
 
     @Test
     public void errorTest() throws Exception {
-        KeyStoreTSPSource tspSource = new KeyStoreTSPSource();
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource();
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         Exception exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));

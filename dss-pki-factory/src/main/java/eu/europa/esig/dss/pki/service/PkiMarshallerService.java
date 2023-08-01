@@ -8,7 +8,6 @@ import eu.europa.esig.dss.pki.dto.CertDto;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
@@ -19,7 +18,6 @@ import java.util.*;
 
 public class PkiMarshallerService {
 
-    //    @Autowired
     private static JaxbConfig unmarshaller;
     private static PkiMarshallerService pkiMarshallerService;
 
@@ -41,7 +39,7 @@ public class PkiMarshallerService {
 
     public void init(InputStream is, String fileName) throws IOException, JAXBException {
         Pki pki = (Pki) unmarshaller.unmarshaller().unmarshal(new StreamSource(is));
-        String key = FilenameUtils.removeExtension(fileName);
+        String key = removeExtension(fileName);
         if (pkis.containsKey(key)) {
             throw new RuntimeException("Duplicate entry : " + key);
         } else {
@@ -79,11 +77,7 @@ public class PkiMarshallerService {
 
         for (CertificateWrapper cert : certWrappers) {
             int level = getLevel(cert, certWrappers);
-            List<CertDto> list = result.get(level);
-            if (list == null) {
-                list = new ArrayList<>();
-                result.put(level, list);
-            }
+            List<CertDto> list = result.computeIfAbsent(level, k -> new ArrayList<>());
             CertDto dto = convert(cert, certWrappers);
             list.add(dto);
         }
@@ -182,6 +176,14 @@ public class PkiMarshallerService {
 
     private String getStringKey(EntityId id) {
         return id.getIssuerName() + "-" + id.getSerialNumber().longValue();
+    }
+
+    private String removeExtension(String fileName) {
+        if (fileName == null) {
+            return null;
+        } else {
+            return fileName.substring(0, fileName.lastIndexOf('.'));
+        }
     }
 
 }

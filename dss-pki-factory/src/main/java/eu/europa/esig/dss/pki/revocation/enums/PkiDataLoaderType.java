@@ -7,7 +7,8 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-public enum FileFormat {
+
+public enum PkiDataLoaderType {
 
     CERTIFICATE(PkiDataLoader::certificationGet, "pki-factory/crt/"),
     KEYSTORE(PkiDataLoader::keyStoreGet, "pki-factory/keystore/"),
@@ -21,20 +22,39 @@ public enum FileFormat {
     private TriFunction<PkiDataLoader, String, byte[], byte[]> triFunction;
 
 
-    FileFormat(TriFunction<PkiDataLoader, String, byte[], byte[]> function, final String type) {
+    /**
+     * Constructs a FileFormat enum with a TriFunction for data loading and the associated file format type.
+     *
+     * @param function The TriFunction for data loading.
+     * @param type The associated file format type.
+     */
+    PkiDataLoaderType(TriFunction<PkiDataLoader, String, byte[], byte[]> function, final String type) {
         this.triFunction = function;
         this.type = type;
 
     }
 
-    FileFormat(BiFunction<PkiDataLoader, String, DataLoader.DataAndUrl> function, final String type) {
+
+    /**
+     * Constructs a FileFormat enum with a BiFunction for data loading and the associated file format type.
+     *
+     * @param function The BiFunction for data loading.
+     * @param type The associated file format type.
+     */
+    PkiDataLoaderType(BiFunction<PkiDataLoader, String, DataLoader.DataAndUrl> function, final String type) {
         this.function = function;
         this.type = type;
     }
 
-
-    public static FileFormat getType(final String type) {
-        return Arrays.stream(FileFormat.values())
+    /**
+     * Retrieves the FileFormat enum based on the given file format type.
+     *
+     * @param type The file format type to match with the FileFormat enum.
+     * @return The corresponding FileFormat enum.
+     * @throws Error500Exception if no matching FileFormat enum is found.
+     */
+    public static PkiDataLoaderType getType(final String type) {
+        return Arrays.stream(PkiDataLoaderType.values())
                 .filter(fileType -> type.contains(fileType.type))
                 .findFirst()
                 .orElseThrow(() -> new Error500Exception("Bad url"));

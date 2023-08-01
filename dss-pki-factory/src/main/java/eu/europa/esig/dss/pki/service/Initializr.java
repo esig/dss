@@ -7,7 +7,7 @@ import eu.europa.esig.dss.pki.dto.CertSubjectWrapperDTO;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
-import org.apache.commons.lang3.StringUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
@@ -35,22 +35,23 @@ public class Initializr {
     private static final String CRT_EXTENSION = ".crt";
     private static final String CRT_PATH = "crt/";
     private static final String OCSP_PATH = "ocsp/";
+    private static final String PKI_FACTORY_HOST = "pki.factory.host";
+    private static final String PKI_FACTORY_COUNTRY = "pki.factory.country";
+    private static final String PKI_FACTORY_ORGANISATION = "pki.factory.organisation";
+    private static final String PKI_FACTORY_ORGANISATION_UNIT = "pki.factory.organisation.unit";
 
-    //    @Value("${pki.factory.host}")
-    private String host = LoadProperties.getValue("pki.factory.host");
+    private final String host = LoadProperties.getValue(PKI_FACTORY_HOST);
 
-    //    @Value("${pki.factory.country:CC}")
-    private String country = LoadProperties.getValue("pki.factory.country", "CC");
+    private final String country = LoadProperties.getValue(PKI_FACTORY_COUNTRY, "CC");
 
-    //    @Value("${pki.factory.organisation:Organization}")
-    private String organisation = LoadProperties.getValue("pki.factory.organisation", "Organization");
+    private final String organisation = LoadProperties.getValue(PKI_FACTORY_ORGANISATION, "Organization");
 
-    //    @Value("${pki.factory.organisation.unit:CERT FOR TEST}")
-    private String organisationUnit = LoadProperties.getValue("pki.factory.organisation.unit", "CERT FOR TEST");
-    //  @Autowired
+    private final String organisationUnit = LoadProperties.getValue(PKI_FACTORY_ORGANISATION_UNIT, "CERT FOR TEST");
+
     private static PkiMarshallerService pkiMarshallerService;
-    //  @Autowired
+
     private static CertificateEntityService entityService;
+
     private static Initializr initializr;
 
     public static Initializr getInstance() {
@@ -68,7 +69,11 @@ public class Initializr {
 
     }
 
-
+    /**
+     * Initializes the certificate entities and their related information using the provided PKIs.
+     *
+     * @throws Exception if an error occurs during initialization.
+     */
     public void init() throws Exception {
 
         Map<EntityId, X500Name> x500names = new HashMap<>();
@@ -133,11 +138,7 @@ public class Initializr {
                 EntityId key = wrapper.getKey();
                 boolean selfSign = wrapper.getIssuer().equals(key);
 
-                DBCertEntity entity = entityService.persist(certificateHolder, subjectKeyPair.getPrivate(), wrapper.getRevocationDate(),
-                        wrapper.getRevocationReason(),
-                        wrapper.isSuspended(),
-                        getEntity(entities, wrapper.getIssuer(), selfSign), getEntity(entities, wrapper.getOCSPResponder(), false), wrapper.isTrustAnchor(), wrapper.isCA(), wrapper.isTSA(),
-                        wrapper.isOcspSigning(), wrapper.isToBeIgnored(), pki.getName(), wrapper.isPSS(), wrapper.getDigestAlgo());
+                DBCertEntity entity = entityService.persist(certificateHolder, subjectKeyPair.getPrivate(), wrapper.getRevocationDate(), wrapper.getRevocationReason(), wrapper.isSuspended(), getEntity(entities, wrapper.getIssuer(), selfSign), getEntity(entities, wrapper.getOCSPResponder(), false), wrapper.isTrustAnchor(), wrapper.isCA(), wrapper.isTSA(), wrapper.isOcspSigning(), wrapper.isToBeIgnored(), pki.getName(), wrapper.isPSS(), wrapper.getDigestAlgo());
 
                 saveEntity(entities, key, entity);
 
@@ -146,13 +147,27 @@ public class Initializr {
         }
     }
 
+    /**
+     * Retrieves the issuer certificate entity with the given entity key from the entities map.
+     *
+     * @param entities The map of certificate entities, where the key is the EntityId and the value is the DBCertEntity.
+     * @param entityKey The entity key for the issuer certificate.
+     * @return The issuer certificate entity associated with the given entity key, or null if not found.
+     */
     private DBCertEntity getIssuer(Map<EntityId, DBCertEntity> entities, EntityKey entityKey) {
         if (entityKey.getSerialNumber() != null) {
             return entities.get(new EntityId(entityKey));
         }
         return null;
     }
-
+    /**
+     * Retrieves the subject name of the certificate entity associated with the given EntityId from the entities map.
+     *
+     * @param entities The map of certificate entities, where the key is the EntityId and the value is the DBCertEntity.
+     * @param key The EntityId for the certificate entity.
+     * @return The subject name of the certificate entity associated with the given EntityId.
+     * @throws IllegalArgumentException if the certificate entity is not found in the entities map.
+     */
     private String getIssuerSubject(Map<EntityId, DBCertEntity> entities, EntityId key) {
         DBCertEntity entity = entities.get(key);
         if (entity == null) {
@@ -230,8 +245,7 @@ public class Initializr {
      * @param subjectWrapper     {@link CertSubjectWrapperDTO}
      * @throws IllegalStateException Common name is null
      */
-    private X500Name getX500NameSubject(Map<EntityId, X500Name> x500Names, CertificateWrapper certificateWrapper,
-                                        CertSubjectWrapperDTO subjectWrapper) {
+    private X500Name getX500NameSubject(Map<EntityId, X500Name> x500Names, CertificateWrapper certificateWrapper, CertSubjectWrapperDTO subjectWrapper) {
         EntityId key = certificateWrapper.getKey();
         if (x500Names.containsKey(key)) {
             return x500Names.get(key);
@@ -241,21 +255,20 @@ public class Initializr {
             }
 
             String tmpCountry;
-            if (!StringUtils.isEmpty(subjectWrapper.getCountry())) {
+            if (!Utils.isStringEmpty(subjectWrapper.getCountry())) {
                 tmpCountry = subjectWrapper.getCountry();
             } else {
                 tmpCountry = country;
             }
 
             String tmpOrganisation;
-            if (!StringUtils.isEmpty(subjectWrapper.getOrganization())) {
+            if (!Utils.isStringEmpty(subjectWrapper.getOrganization())) {
                 tmpOrganisation = subjectWrapper.getOrganization();
             } else {
                 tmpOrganisation = organisation;
             }
 
-            X500Name x500Name = new X500NameBuilder().commonName(subjectWrapper.getCommonName()).pseudo(subjectWrapper.getPseudo()).country(tmpCountry).organisation(tmpOrganisation)
-                    .organisationUnit(organisationUnit).build();
+            X500Name x500Name = new X500NameBuilder().commonName(subjectWrapper.getCommonName()).pseudo(subjectWrapper.getPseudo()).country(tmpCountry).organisation(tmpOrganisation).organisationUnit(organisationUnit).build();
             x500Names.put(key, x500Name);
             x500Names.put(new EntityId(certificateWrapper.getSubject(), null), x500Name);
             return x500Name;

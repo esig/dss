@@ -4,8 +4,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.util.KeyEntityTSPUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.DefaultCMSSignatureAlgorithmNameGenerator;
@@ -17,12 +20,7 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.TSPException;
-import org.bouncycastle.tsp.TimeStampRequest;
-import org.bouncycastle.tsp.TimeStampRequestGenerator;
-import org.bouncycastle.tsp.TimeStampResponse;
-import org.bouncycastle.tsp.TimeStampResponseGenerator;
-import org.bouncycastle.tsp.TimeStampTokenGenerator;
+import org.bouncycastle.tsp.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,113 +29,134 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.SecureRandom;
-import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TSPSource implementation allowing to configure issuance of a time-stamp using a local {@code KeyStore}
- *
  */
-public class KeyStoreTSPSource implements TSPSource {
+public class KeyEntityTSPSource implements TSPSource {
 
     private static final long serialVersionUID = -5082887845359355029L;
 
-    /** SecureRandom used to calculate a serial number for a timestamp */
+    /**
+     * SecureRandom used to calculate a serial number for a timestamp
+     */
     private final SecureRandom secureRandom = new SecureRandom();
 
-    /** The KeyStore to be used to access the key to create a timestamp */
+
+    /**
+     * The KeyStore to be used to access the key to create a timestamp
+     */
     private KeyStore keyStore;
 
-    /** The alias of the key entry to be used to sign the timestamp */
+    /**
+     * The alias of the key entry to be used to sign the timestamp
+     */
     private String alias;
 
-    /** The password protection to access the key entry within the key store */
+    /**
+     * The password protection to access the key entry within the key store
+     */
     private char[] keyEntryPassword;
 
-    /** Collection of digest algorithms accepted by the current TSP source in the request */
-    private Collection<DigestAlgorithm> acceptedDigestAlgorithms = Arrays.asList(
-            DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512);
+    /**
+     * Collection of digest algorithms accepted by the current TSP source in the request
+     */
+    protected Collection<DigestAlgorithm> acceptedDigestAlgorithms = Arrays.asList(DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512);
 
-    /** The TSA policy */
+    /**
+     * The TSA policy
+     */
     private String tsaPolicy = "1.2.3.4";
 
-    /** The static production date of the timestamp */
-    private Date productionTime;
+    /**
+     * The static production date of the timestamp
+     */
+    protected Date productionTime;
 
-    /** The Digest Algorithm of the signature of the created time-stamp token */
+    /**
+     * The Digest Algorithm of the signature of the created time-stamp token
+     */
     private DigestAlgorithm tstDigestAlgorithm = DigestAlgorithm.SHA256;
 
-    /** Defines whether a time-stamp should be generated with a hash algorithm using a Probabilistic Signature Scheme (always MGF1 is used) */
+    /**
+     * Defines whether a time-stamp should be generated with a hash algorithm using a Probabilistic Signature Scheme (always MGF1 is used)
+     */
     private boolean enablePSS = false;
 
     /**
      * Default constructor instantiating empty configuration of the KeyStoreTSPSource
      */
-    public KeyStoreTSPSource() {
+    public KeyEntityTSPSource() {
         // empty
     }
+
+    protected PrivateKey privateKey;
+    protected X509Certificate certificate;
+    protected List<X509Certificate> certificateChain;
+
+    public KeyEntityTSPSource(PrivateKey privateKey, X509Certificate certificateToken, List<X509Certificate> certificateChain) {
+        this.privateKey = privateKey;
+        this.certificate = certificateToken;
+        this.certificateChain = certificateChain;
+    }
+
 
     /**
      * Constructor instantiating the key store content and key entry data
      *
-     * @param ksContent byte array representing the key store content
-     * @param ksType {@link String} representing the type of the key store
-     * @param ksPassword char array representing a password from the key store
-     * @param alias {@link String} alias of the key entry to be used for timestamp signing
+     * @param ksContent        byte array representing the key store content
+     * @param ksType           {@link String} representing the type of the key store
+     * @param ksPassword       char array representing a password from the key store
+     * @param alias            {@link String} alias of the key entry to be used for timestamp signing
      * @param keyEntryPassword char array representing a password from the key entry
      */
-    public KeyStoreTSPSource(byte[] ksContent, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) {
+    public KeyEntityTSPSource(byte[] ksContent, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) {
         this(loadKeyStore(new ByteArrayInputStream(ksContent), ksType, ksPassword), alias, keyEntryPassword);
     }
 
     /**
      * Constructor instantiating the key store path location and key entry data
      *
-     * @param ksPath {@link String} representing the path to the key store
-     * @param ksType {@link String} representing the type of the key store
-     * @param ksPassword char array representing a password from the key store
-     * @param alias {@link String} alias of the key entry to be used for timestamp signing
+     * @param ksPath           {@link String} representing the path to the key store
+     * @param ksType           {@link String} representing the type of the key store
+     * @param ksPassword       char array representing a password from the key store
+     * @param alias            {@link String} alias of the key entry to be used for timestamp signing
      * @param keyEntryPassword char array representing a password from the key entry
      * @throws IOException if not able to load the key store file
      */
-    public KeyStoreTSPSource(String ksPath, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) throws IOException {
+    public KeyEntityTSPSource(String ksPath, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) throws IOException {
         this(new File(ksPath), ksType, ksPassword, alias, keyEntryPassword);
     }
 
     /**
      * Constructor instantiating the key store File and key entry data
      *
-     * @param ksFile {@link File} key store file
-     * @param ksType {@link String} representing the type of the key store
-     * @param ksPassword char array representing a password from the key store
-     * @param alias {@link String} alias of the key entry to be used for timestamp signing
+     * @param ksFile           {@link File} key store file
+     * @param ksType           {@link String} representing the type of the key store
+     * @param ksPassword       char array representing a password from the key store
+     * @param alias            {@link String} alias of the key entry to be used for timestamp signing
      * @param keyEntryPassword char array representing a password from the key entry
      * @throws IOException if not able to load the key store file
      */
-    public KeyStoreTSPSource(File ksFile, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) throws IOException {
+    public KeyEntityTSPSource(File ksFile, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) throws IOException {
         this(Files.newInputStream(ksFile.toPath()), ksType, ksPassword, alias, keyEntryPassword);
     }
 
     /**
      * Constructor instantiating the key store InputStream and key entry data
      *
-     * @param ksIs {@link InputStream} representing the key store content
-     * @param ksType {@link String} representing the type of the key store
-     * @param ksPassword char array representing a password from the key store
-     * @param alias {@link String} alias of the key entry to be used for timestamp signing
+     * @param ksIs             {@link InputStream} representing the key store content
+     * @param ksType           {@link String} representing the type of the key store
+     * @param ksPassword       char array representing a password from the key store
+     * @param alias            {@link String} alias of the key entry to be used for timestamp signing
      * @param keyEntryPassword char array representing a password from the key entry
      */
-    public KeyStoreTSPSource(InputStream ksIs, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) {
+    public KeyEntityTSPSource(InputStream ksIs, String ksType, char[] ksPassword, String alias, char[] keyEntryPassword) {
         this(loadKeyStore(ksIs, ksType, ksPassword), alias, keyEntryPassword);
     }
 
@@ -154,11 +173,14 @@ public class KeyStoreTSPSource implements TSPSource {
     /**
      * Constructor instantiating the key store and key entry data
      *
-     * @param keyStore {@link KeyStore}
-     * @param alias {@link String} alias of the key entry to be used for timestamp signing
+     * @param keyStore         {@link KeyStore}
+     * @param alias            {@link String} alias of the key entry to be used for timestamp signing
      * @param keyEntryPassword char array representing a password from the key entry
      */
-    public KeyStoreTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
+    public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
+        this(KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getPrivateKey(),
+                (X509Certificate) KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getCertificate(),
+                List.of((X509Certificate[]) KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getCertificateChain()));
         this.keyStore = keyStore;
         this.alias = alias;
         this.keyEntryPassword = keyEntryPassword;
@@ -241,6 +263,18 @@ public class KeyStoreTSPSource implements TSPSource {
         this.enablePSS = enablePSS;
     }
 
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setCertificate(X509Certificate certificate) {
+        this.certificate = certificate;
+    }
+
+    public void setCertificateChain(List<X509Certificate> certificateChain) {
+        this.certificateChain = certificateChain;
+    }
+
     @Override
     public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
         Objects.requireNonNull(keyStore, "KeyStore is not defined!");
@@ -249,59 +283,63 @@ public class KeyStoreTSPSource implements TSPSource {
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
-            throw new DSSException(String.format(
-                    "DigestAlgorithm '%s' is not supported by the KeyStoreTSPSource implementation!", digestAlgorithm));
+            throw new DSSException(String.format("DigestAlgorithm '%s' is not supported by the KeyStoreTSPSource implementation!", digestAlgorithm));
         }
 
         try {
-            if (!keyStore.isKeyEntry(alias)) {
-                throw new IllegalArgumentException(String.format(
-                        "No related/supported key entry found for alias '%s'!", alias));
-            }
-            if (!keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
-                throw new IllegalArgumentException(String.format(
-                        "No key entry found for alias '%s' is not instance of a PrivateKeyEntry!", alias));
-            }
 
-            KeyStore.PrivateKeyEntry keyEntry = (KeyStore.PrivateKeyEntry) keyStore
-                    .getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
+            KeyStore.PrivateKeyEntry keyEntry = KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
             ASN1ObjectIdentifier digestAlgoOID = getASN1ObjectIdentifier(digestAlgorithm);
 
-            TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
-            requestGenerator.setCertReq(true);
-            TimeStampRequest request = requestGenerator.generate(digestAlgoOID, digest);
-
-            EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forKey(keyEntry.getPrivateKey());
-            String sigAlgoName = getSignatureAlgorithmName(tstDigestAlgorithm, encryptionAlgorithm, enablePSS);
-
-            ContentSigner signer = new JcaContentSignerBuilder(sigAlgoName).build(keyEntry.getPrivateKey());
-
-            X509Certificate x509Certificate = (X509Certificate) keyEntry.getCertificate();
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(x509Certificate.getEncoded());
-            SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider())
-                    .build(signer, certificateHolder);
-
-            AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(digestAlgoOID);
-            DigestCalculator digestCalculator = new JcaDigestCalculatorProviderBuilder().build().get(digestAlgorithmIdentifier);
-
-            TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(
-                    infoGenerator, digestCalculator, getASN1ObjectIdentifier(tsaPolicy));
-
+            TimeStampRequest request = initRequest(digestAlgoOID, digest);
             X509Certificate[] certificateChain = (X509Certificate[]) keyEntry.getCertificateChain();
-            tokenGenerator.addCertificates(new JcaCertStore(Arrays.asList(certificateChain)));
 
-            TimeStampResponseGenerator responseGenerator = new TimeStampResponseGenerator(
-                    tokenGenerator, getAcceptedDigestAlgorithmIdentifiers());
+            TimeStampResponseGenerator responseGenerator = initResponseGenerator(keyEntry.getPrivateKey(), (X509Certificate) keyEntry.getCertificate(), List.of(certificateChain), digestAlgoOID);
 
             Date date = productionTime != null ? productionTime : new Date();
             TimeStampResponse response = generateResponse(responseGenerator, request, date);
             return new TimestampBinary(response.getTimeStampToken().getEncoded());
 
-        } catch (UnrecoverableEntryException e) {
-            throw new DSSException(String.format("Unable to recover the key entry with alias '%s'. Reason : %s", alias, e.getMessage()), e);
-        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateEncodingException | IOException |
-                 OperatorCreationException | TSPException e) {
+        } catch (IOException | TSPException e) {
             throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
+        }
+    }
+
+
+    protected TimeStampRequest initRequest(ASN1ObjectIdentifier digestAlgoOID, byte[] digest) {
+
+        TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
+        requestGenerator.setCertReq(true);
+        return requestGenerator.generate(digestAlgoOID, digest);
+
+    }
+
+    protected TimeStampResponseGenerator initResponseGenerator(PrivateKey privateKey,
+                                                               X509Certificate certificateToken,
+                                                               List<X509Certificate> certificateChain,
+                                                               ASN1ObjectIdentifier digestAlgoOID) {
+        try {
+            EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forKey(privateKey);
+            String sigAlgoName = getSignatureAlgorithmName(tstDigestAlgorithm, encryptionAlgorithm, enablePSS);
+
+            ContentSigner signer = new JcaContentSignerBuilder(sigAlgoName).build(privateKey);
+
+            X509CertificateHolder certificateHolder =new X509CertificateHolder(certificateToken.getEncoded());
+            SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider()).build(signer, certificateHolder);
+
+            AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(digestAlgoOID);
+            DigestCalculator digestCalculator = new JcaDigestCalculatorProviderBuilder().build().get(digestAlgorithmIdentifier);
+
+            TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(infoGenerator, digestCalculator, getASN1ObjectIdentifier(tsaPolicy));
+
+            tokenGenerator.addCertificates(new JcaCertStore(certificateChain));
+
+            return new TimeStampResponseGenerator(tokenGenerator, getAcceptedDigestAlgorithmIdentifiers());
+
+        } catch (CertificateEncodingException | OperatorCreationException | TSPException e) {
+            throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -317,7 +355,7 @@ public class KeyStoreTSPSource implements TSPSource {
         return getASN1ObjectIdentifier(encryptionAlgorithm.getOid());
     }
 
-    private ASN1ObjectIdentifier getASN1ObjectIdentifier(DigestAlgorithm digestAlgorithm) {
+    protected ASN1ObjectIdentifier getASN1ObjectIdentifier(DigestAlgorithm digestAlgorithm) {
         return getASN1ObjectIdentifier(digestAlgorithm.getOid());
     }
 
@@ -329,9 +367,9 @@ public class KeyStoreTSPSource implements TSPSource {
     /**
      * Returns the target signature algorithm to be used to time-stamp generation
      *
-     * @param digestAlgorithm {@link DigestAlgorithm}
+     * @param digestAlgorithm     {@link DigestAlgorithm}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm}
-     * @param enablePSS whether the MGF1 shall be applied
+     * @param enablePSS           whether the MGF1 shall be applied
      * @return {@link String} signature algorithm name
      */
     protected String getSignatureAlgorithmName(DigestAlgorithm digestAlgorithm, EncryptionAlgorithm encryptionAlgorithm, boolean enablePSS) {
@@ -350,8 +388,8 @@ public class KeyStoreTSPSource implements TSPSource {
      * This method generates a timestamp response
      *
      * @param responseGenerator {@link TimeStampResponseGenerator}
-     * @param request {@link TimeStampRequest}
-     * @param date {@link Date} production time of the timestamp
+     * @param request           {@link TimeStampRequest}
+     * @param date              {@link Date} production time of the timestamp
      * @return {@link TimeStampResponse}
      * @throws TSPException if an error occurs during the timestamp response generation
      */

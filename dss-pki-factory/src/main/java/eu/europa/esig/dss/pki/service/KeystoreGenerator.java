@@ -17,6 +17,7 @@ import java.util.List;
 
 
 public class KeystoreGenerator {
+    public static final String PKI_FACTORY_KEYSTORE_PASSWORD = "pki.factory.keystore.password";
     private static KeystoreGenerator instance = null;
     private static final Logger LOG = LoggerFactory.getLogger(KeystoreGenerator.class);
 
@@ -24,8 +25,7 @@ public class KeystoreGenerator {
     private static final String JKS = "JKS";
 
     private static CertificateEntityService entityService = null;
-    //	@Value("${pki.factory.keystore.password}")
-    private String password = LoadProperties.getValue("pki.factory.keystore.password");
+    private String password = LoadProperties.getValue(PKI_FACTORY_KEYSTORE_PASSWORD);
 
     private KeystoreGenerator() {
     }

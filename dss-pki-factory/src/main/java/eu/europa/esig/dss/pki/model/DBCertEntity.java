@@ -1,19 +1,35 @@
 package eu.europa.esig.dss.pki.model;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.RevocationReason;
-import java.util.Date;
-import java.util.UUID;
+import eu.europa.esig.dss.pki.exception.Error500Exception;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.*;
 
 
-public class DBCertEntity {
-
-    private String internalId= UUID.randomUUID().toString();
+public class DBCertEntity implements CertEntity {
+    private static final Logger LOG = LoggerFactory.getLogger(DBCertEntity.class);
+    private String internalId = UUID.randomUUID().toString();
 
     private String subject;
 
     private Long serialNumber;
 
-    private byte[] certificate;
+    private CertificateToken certificateToken;
 
     private byte[] privateKey;
 
@@ -69,12 +85,9 @@ public class DBCertEntity {
         this.serialNumber = serialNumber;
     }
 
-    public byte[] getCertificate() {
-        return certificate;
-    }
+    public void setCertificateToken(CertificateToken certificateToken) {
 
-    public void setCertificate(byte[] certificate) {
-        this.certificate = certificate;
+        this.certificateToken = certificateToken;
     }
 
     public byte[] getPrivateKey() {
@@ -196,19 +209,44 @@ public class DBCertEntity {
     public void setPkiName(String pkiName) {
         this.pkiName = pkiName;
     }
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof DBCertEntity)) return false;
-//        DBCertEntity that = (DBCertEntity) o;
-//        return isSuspended() == that.isSuspended() && isPss() == that.isPss() && isTrustAnchor() == that.isTrustAnchor() && isCa() == that.isCa() && isOcsp() == that.isOcsp() && isTsa() == that.isTsa() && isToBeIgnored() == that.isToBeIgnored() && Objects.equals(getInternalId(), that.getInternalId()) && Objects.equals(getSubject(), that.getSubject()) && Objects.equals(getSerialNumber(), that.getSerialNumber()) && Arrays.equals(getCertificate(), that.getCertificate()) && Arrays.equals(getPrivateKey(), that.getPrivateKey()) && Objects.equals(getPrivateKeyAlgo(), that.getPrivateKeyAlgo()) && Objects.equals(getDigestAlgo(), that.getDigestAlgo()) && Objects.equals(getRevocationDate(), that.getRevocationDate()) && getRevocationReason() == that.getRevocationReason() && Objects.equals(getParent(), that.getParent()) && Objects.equals(getOcspResponder(), that.getOcspResponder()) && Objects.equals(getPkiName(), that.getPkiName());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        int result = Objects.hash(getInternalId(), getSubject(), getSerialNumber(), getPrivateKeyAlgo(), getDigestAlgo(), getRevocationDate(), getRevocationReason(), isSuspended(), getParent(), getOcspResponder(), isPss(), isTrustAnchor(), isCa(), isOcsp(), isTsa(), isToBeIgnored(), getPkiName());
-//        result = 31 * result + Arrays.hashCode(getCertificate());
-//        result = 31 * result + Arrays.hashCode(getPrivateKey());
-//        return result;
-//    }
+
+
+    @Override
+    public PrivateKey getPrivateKeyObject() {
+        try {
+            KeyFactory keyFactory = KeyFactory.getInstance(this.getPrivateKeyAlgo());
+            EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(this.getPrivateKey());
+            return keyFactory.generatePrivate(privateKeySpec);
+        } catch (GeneralSecurityException e) {
+
+            throw new Error500Exception("Unable to regenerate the private key");
+        }
+    }
+
+
+    @Override
+    public CertificateToken getCertificateToken() {
+        return certificateToken;
+    }
+
+    @Override
+    public EncryptionAlgorithm getEncryptionAlgorithm() {
+        return EncryptionAlgorithm.forKey(this.getPrivateKeyObject());
+    }
+
+    public List<CertificateToken> getCertificateChain() {
+        List<CertificateToken> certChain = new ArrayList<>();
+        DBCertEntity entity = this;
+        while (entity != null) {
+            certChain.add(this.getCertificateToken());
+            DBCertEntity parent = entity.getParent();
+            if (entity.getInternalId().equals(parent.getInternalId())) {
+                break;
+            }
+            entity = parent;
+        }
+        return certChain;
+    }
+
+
 }

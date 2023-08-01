@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.pki.business;
 
 
+import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.service.Initializr;
 import eu.europa.esig.dss.pki.service.PkiMarshallerService;
 import org.slf4j.Logger;
@@ -12,22 +13,28 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
-
+/**
+ * A class that performs post-construction initialization tasks for PKI resources.
+ * It initializes the PKI resources by parsing XML files .
+ */
 public class PostConstructInitializr {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostConstructInitializr.class);
 
-    //    @Autowired
-    private Initializr initializrService = Initializr.getInstance();
+    // The service for initializing the PKI resources.
+    private final Initializr initializrService = GenericFactory.getInstance().create(Initializr.class);
 
-    //   @Autowired
-    private PkiMarshallerService pkiMarshallerService = PkiMarshallerService.getInstance();
+    // The service for marshalling PKI resources from XML files.
+    private final PkiMarshallerService pkiMarshallerService = GenericFactory.getInstance().create(PkiMarshallerService.class);
 
+    private static final String PATH = "src/main/resources/pki";
 
-    //    @PostConstruct
+    /**
+     * Initializes the PKI resources by parsing the XML files located in resources directory.
+     * This method is called during the post-construction phase.
+     * It parses the XML files using the PkiMarshallerService and initializes the PKI resources using the Initializr service.
+     */
     public void init() {
-
-
         this.parsePKIResources();
 
         // Init certificate
@@ -38,11 +45,17 @@ public class PostConstructInitializr {
         }
     }
 
+    /**
+     * Parses the PKI resources by walking through the XML files .
+     * It matches the XML files using a glob pattern and then calls the PkiMarshallerService to parse each file.
+     * Any parsing error is logged as a RuntimeException.
+     */
     public void parsePKIResources() {
         try {
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/pki/*.xml");
 
-            Files.walkFileTree(Paths.get("src/main/resources/pki"), new SimpleFileVisitor<Path>() {
+
+            Files.walkFileTree(Paths.get(PATH), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (pathMatcher.matches(file)) {
@@ -62,5 +75,4 @@ public class PostConstructInitializr {
             throw new RuntimeException("PKI parsing error", e);
         }
     }
-
 }

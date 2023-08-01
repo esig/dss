@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.service;
 
 
 import eu.europa.esig.dss.pki.DigestAlgo;
-import eu.europa.esig.dss.pki.utils.Utils;
+import eu.europa.esig.dss.pki.utils.PkiUtils;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
@@ -153,7 +153,7 @@ public class X509CertBuilder {
 
     public X509CertificateHolder build(BigInteger serial, Date notBefore, Date notAfter) throws Exception {
 
-		String signatureAlgo = Utils.getAlgorithmString(issuerKey.getAlgorithm(), digestAlgo, pss);
+		String signatureAlgo = PkiUtils.getAlgorithmString(issuerKey.getAlgorithm(), digestAlgo, pss);
 
 		ContentSigner rootSigner = new JcaContentSignerBuilder(signatureAlgo).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerKey);
 

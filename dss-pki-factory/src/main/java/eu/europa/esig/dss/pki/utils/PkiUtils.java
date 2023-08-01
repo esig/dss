@@ -3,12 +3,16 @@ package eu.europa.esig.dss.pki.utils;
 import eu.europa.esig.dss.pki.DigestAlgo;
 import eu.europa.esig.dss.pki.EncryptionAlgo;
 import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.dss.pki.exception.Error500Exception;
 import org.bouncycastle.asn1.x509.CRLReason;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Utils {
+public final class PkiUtils {
 
     /**
      * A map between digest algo JavaName and a {@code DigestAlgo} name value
@@ -24,7 +28,7 @@ public final class Utils {
         digestAlgoMap.put("SHA3-512", "SHA3-512");
     }
 
-    private Utils() {
+    private PkiUtils() {
     }
 
     public static int getCRLReason(RevocationReason revocationReason) {
@@ -97,5 +101,19 @@ public final class Utils {
         }
         return DigestAlgo.fromValue(digestAlgoName);
     }
+    public static byte[] convertDerToPem(byte[] derEncodedCRL) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            baos.write("-----BEGIN CRL-----\n".getBytes());
 
+            Base64.Encoder encoder = Base64.getEncoder();
+            byte[] base64Encoded = encoder.encode(derEncodedCRL);
+            baos.write(base64Encoded);
+
+            baos.write("\n-----END CRL-----".getBytes());
+
+            return baos.toByteArray();
+        } catch (IOException e) {
+            throw new Error500Exception("Unable to generate the CRL");
+        }
+    }
 }

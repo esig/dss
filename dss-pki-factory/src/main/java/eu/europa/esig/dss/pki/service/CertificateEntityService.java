@@ -7,21 +7,17 @@ import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
-import org.apache.commons.codec.binary.Base64;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
-import org.bouncycastle.util.io.pem.PemWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -32,13 +28,14 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class CertificateEntityService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificateEntityService.class);
 
     private static final JcaX509CertificateConverter CONVERTER;
-    private static CertEntityRepository repository;
+    private static CertEntityRepository<DBCertEntity> repository;
     private static CertificateEntityService certificateEntityService;
 
     private CertificateEntityService() {
@@ -47,7 +44,7 @@ public class CertificateEntityService {
 
     public static CertificateEntityService getInstance() {
         if (certificateEntityService == null) {
-            synchronized (Db.class) {
+            synchronized (CertificateEntityService.class) {
                 repository = Db.getInstance();
                 certificateEntityService = new CertificateEntityService();
             }
@@ -61,56 +58,50 @@ public class CertificateEntityService {
 
 
     public List<X509CertificateHolder> getRoots() {
-        List<DBCertEntity> rootEntities = repository.findByParentNull();
+        List<DBCertEntity> rootEntities = repository.getByParentNull();
         return getCertificates(rootEntities);
     }
 
 
     public List<X509CertificateHolder> getTrustAnchors() {
-        List<DBCertEntity> trustAnchorEntities = repository.findByTrustAnchorTrue();
+        List<DBCertEntity> trustAnchorEntities = repository.getByTrustAnchorTrue();
         return getCertificates(trustAnchorEntities);
     }
 
 
     public List<X509CertificateHolder> getTrustAnchorsForPKI(String name) {
-        List<DBCertEntity> trustAnchorEntities = repository.findByTrustAnchorTrueAndPkiName(name);
+        List<DBCertEntity> trustAnchorEntities = repository.getByTrustAnchorTrueAndPkiName(name);
         return getCertificates(trustAnchorEntities);
     }
 
 
     public List<X509CertificateHolder> getToBeIgnored() {
-        List<DBCertEntity> toBeIgnored = repository.findByToBeIgnoredTrue();
+        List<DBCertEntity> toBeIgnored = repository.getByToBeIgnoredTrue();
         return getCertificates(toBeIgnored);
     }
 
     private List<X509CertificateHolder> getCertificates(List<DBCertEntity> entities) {
         List<X509CertificateHolder> result = new ArrayList<>();
         for (DBCertEntity certEntity : entities) {
-            result.add(convertToX509CertificateHolder(certEntity.getCertificate()));
+            result.add(DSSASN1Utils.getX509CertificateHolder((certEntity.getCertificateToken())));
         }
         return result;
     }
 
 
-    public List<DBCertEntity> getChildren(String id) {
-        DBCertEntity ca = getEntity(id);
-        return getChildren(ca);
-    }
-
-
     public List<DBCertEntity> getChildren(DBCertEntity certEntity) {
-        return repository.findByParent(certEntity);
+        return repository.getByParent(certEntity);
     }
 
 
     public DBCertEntity getBySerialNumberAndParent(Long serialNumber, String idCA) {
-        return repository.findBySerialNumberAndParentSubject(serialNumber, idCA);
+        return repository.getBySerialNumberAndParentSubject(serialNumber, idCA);
     }
 
 
     public X509CertificateHolder getCertificate(String id) {
         DBCertEntity entity = getEntity(id);
-        return convertToX509CertificateHolder(entity.getCertificate());
+        return DSSASN1Utils.getX509CertificateHolder(entity.getCertificateToken());
     }
 
 
@@ -124,7 +115,7 @@ public class CertificateEntityService {
         List<X509CertificateHolder> certChain = new ArrayList<>();
         DBCertEntity entity = certEntity;
         while (entity != null) {
-            certChain.add(convertToX509CertificateHolder(entity.getCertificate()));
+            certChain.add(DSSASN1Utils.getX509CertificateHolder(entity.getCertificateToken()));
             DBCertEntity parent = entity.getParent();
             if (entity.getInternalId().equals(parent.getInternalId())) {
                 break;
@@ -132,42 +123,6 @@ public class CertificateEntityService {
             entity = parent;
         }
         return certChain.toArray(new X509CertificateHolder[certChain.size()]);
-    }
-
-
-    public X509CertificateHolder getOCSPCertificate(String id) {
-        DBCertEntity ocsp = getOCSPForCA(id);
-        return getOCSPCertificate(ocsp);
-    }
-
-
-    public X509CertificateHolder getOCSPCertificate(DBCertEntity certEntity) {
-        DBCertEntity ocsp = getOCSPForCA(certEntity);
-        return convertToX509CertificateHolder(ocsp.getCertificate());
-    }
-
-
-    public X509CertificateHolder[] getOCSPCertificateChain(String id) {
-        DBCertEntity ocsp = getOCSPForCA(id);
-        return getOCSPCertificateChain(ocsp);
-    }
-
-
-    public X509CertificateHolder[] getOCSPCertificateChain(DBCertEntity certEntity) {
-        DBCertEntity ocsp = getOCSPForCA(certEntity);
-        return getCertificateChain(ocsp);
-    }
-
-
-    public PrivateKey getOCSPPrivateKey(String id) {
-        DBCertEntity ocsp = getOCSPForCA(id);
-        return getPrivateKey(ocsp);
-    }
-
-
-    public PrivateKey getOCSPPrivateKey(DBCertEntity certEntity) {
-        DBCertEntity ocsp = getOCSPForCA(certEntity);
-        return getPrivateKey(ocsp);
     }
 
 
@@ -182,7 +137,7 @@ public class CertificateEntityService {
     }
 
     private DBCertEntity getEntity(String id) {
-        List<DBCertEntity> certEntity = repository.findBySubject(id);
+        List<DBCertEntity> certEntity = repository.getBySubject(id);
         if (certEntity == null || certEntity.size() == 0) {
             throw new Error404Exception("Certificate '" + id + "' not found");
         }
@@ -192,18 +147,6 @@ public class CertificateEntityService {
         return certEntity.get(0);
     }
 
-    public X509CertificateHolder convertToX509CertificateHolder(DBCertEntity certEntity) {
-        return convertToX509CertificateHolder(certEntity.getCertificate());
-    }
-
-    private X509CertificateHolder convertToX509CertificateHolder(byte[] binary) {
-        try {
-            return new X509CertificateHolder(binary);
-        } catch (IOException e) {
-            LOG.error("Unable to regenerate the certificate", e);
-            throw new Error500Exception("Unable to regenerate the certificate");
-        }
-    }
 
     public PrivateKey getPrivateKey(DBCertEntity certEntity) {
         return getPrivateKey(certEntity.getPrivateKey(), certEntity.getPrivateKeyAlgo());
@@ -218,11 +161,6 @@ public class CertificateEntityService {
             LOG.error("Unable to regenerate the private key", e);
             throw new Error500Exception("Unable to regenerate the private key");
         }
-    }
-
-    private DBCertEntity getOCSPForCA(String id) {
-        DBCertEntity entity = getEntity(id);
-        return getOCSPForCA(entity);
     }
 
     private DBCertEntity getOCSPForCA(DBCertEntity entity) {
@@ -241,12 +179,8 @@ public class CertificateEntityService {
         DBCertEntity entity = new DBCertEntity();
         entity.setSubject(getCommonName(cert));
         entity.setSerialNumber(cert.getSerialNumber().longValue());
-        entity.setCertificate(cert.getEncoded());
-        if (parent == null) {
-            entity.setParent(entity);
-        } else {
-            entity.setParent(parent);
-        }
+        entity.setCertificateToken(DSSUtils.loadCertificate(cert.getEncoded()));
+        entity.setParent(Objects.requireNonNullElse(parent, entity));
         entity.setPrivateKey(privateKey.getEncoded());
         entity.setPrivateKeyAlgo(privateKey.getAlgorithm());
         entity.setRevocationDate(revocationDate);
@@ -263,7 +197,7 @@ public class CertificateEntityService {
         if (digestAlgo != null) {
             entity.setDigestAlgo(digestAlgo.value());
         }
-        LOG.info("Creating new entity '{}' : {}", entity.getSubject(), Base64.encodeBase64String(cert.getEncoded()));
+        LOG.info("Creating new entity '{}' : {}", entity.getSubject(), Utils.toBase64(cert.getEncoded()));
 
         return repository.save(entity);
     }
@@ -277,53 +211,4 @@ public class CertificateEntityService {
     }
 
 
-    public List<String> getEndEntityList() {
-        return repository.getEndEntityNames();
-    }
-
-
-    public List<String> getTsaList() {
-        return repository.getTsaNames();
-    }
-
-
-    public List<String> getOcspList() {
-        return repository.getOcspNameList();
-    }
-
-
-    public List<String> getCAList() {
-        return repository.getCaNameList();
-    }
-
-
-    public List<String> getCertList() {
-        return repository.getCertNameList();
-    }
-
-
-    public Iterable<DBCertEntity> getAllCertEntities() {
-        return repository.findAll();
-    }
-
-    public byte[] getPemCertificate(String id) {
-        try (StringWriter sw = new StringWriter(); PemWriter pw = new PemWriter(sw);) {
-            pw.writeObject(new JcaMiscPEMGenerator(getCertificate(id)));
-            pw.flush();
-            return sw.toString().getBytes(StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            LOG.error("Unable to convert to PEM", e);
-            throw new Error500Exception("Unable to convert to PEM");
-        }
-    }
-
-    public DataLoader.DataAndUrl getByCrlUrl(List<String> urlStrings) {
-        for (String url : urlStrings) {
-            byte[] data = repository.getByCrlUrl(url).getCertificate();
-            if (data != null) {
-                return new DataLoader.DataAndUrl(url, data);
-            }
-        }
-        throw new DSSExternalResourceException(String.format("A content for URLs [%s] does not exist!", urlStrings));
-    }
 }

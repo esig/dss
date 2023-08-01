@@ -1,12 +1,27 @@
 package eu.europa.esig.dss.pki.db;
 
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.exception.Error404Exception;
+import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
+import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class Db implements CertEntityRepository {
+public class Db implements CertEntityRepository<DBCertEntity> {
+    private static final Logger LOG = LoggerFactory.getLogger(Db.class);
     private static Db instance = null;
     private Map<String, DBCertEntity> map = new HashMap<>();
 
@@ -31,59 +46,55 @@ public class Db implements CertEntityRepository {
     }
 
     @Override
-    public List<DBCertEntity> findByParent(DBCertEntity parent) {
+    public List<DBCertEntity> getByParent(DBCertEntity parent) {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.getParent().equals(parent)).collect(Collectors.toList());
     }
 
     @Override
-    public List<DBCertEntity> findAll() {
+    public List<DBCertEntity> getAll() {
         return new ArrayList<>(map.values());
     }
 
     @Override
-    public DBCertEntity findBySerialNumberAndParentSubject(Long serialNumber, String idCA) {
+    public DBCertEntity getBySerialNumberAndParentSubject(Long serialNumber, String idCA) {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.getSerialNumber().equals(serialNumber) && dbCertEntity.getParent().getSubject().equals(idCA)).findFirst().orElse(null);
     }
 
     @Override
-    public List<DBCertEntity> findByParentNull() {
+    public List<DBCertEntity> getByParentNull() {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.getParent() == null).collect(Collectors.toList());
     }
 
     @Override
-    public List<DBCertEntity> findByTrustAnchorTrue() {
+    public List<DBCertEntity> getByTrustAnchorTrue() {
         return map.values().stream().filter(DBCertEntity::isTrustAnchor).collect(Collectors.toList());
     }
 
     @Override
-    public List<DBCertEntity> findByTrustAnchorTrueAndPkiName(String name) {
+    public List<DBCertEntity> getByTrustAnchorTrueAndPkiName(String name) {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.isTrustAnchor() && dbCertEntity.getPkiName().equals(name)).collect(Collectors.toList());
     }
 
     @Override
-    public List<DBCertEntity> findByToBeIgnoredTrue() {
+    public List<DBCertEntity> getByToBeIgnoredTrue() {
         return map.values().stream().filter(DBCertEntity::isToBeIgnored).collect(Collectors.toList());
     }
 
-    //select distinct(e.subject) from DBCertEntity e where e.ca = false and e.ocsp = false and e.tsa = false
     @Override
     public List<String> getEndEntityNames() {
         return map.values().stream().filter(dbCertEntity -> !dbCertEntity.isCa() && !dbCertEntity.isOcsp() && !dbCertEntity.isTsa()).map(DBCertEntity::getSubject).distinct().collect(Collectors.toList());
     }
 
-    //select distinct(e.subject) from DBCertEntity e where e.tsa = true")
     @Override
     public List<String> getTsaNames() {
         return map.values().stream().filter(DBCertEntity::isTsa).map(DBCertEntity::getSubject).distinct().collect(Collectors.toList());
     }
 
-    //"select distinct(e.subject)from DBCertEntity e where e.ocspResponder is not null")
     @Override
     public List<String> getOcspNameList() {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.getOcspResponder() != null).map(DBCertEntity::getSubject).distinct().collect(Collectors.toList());
     }
 
-    //select distinct( e.subject) from DBCertEntity e
     @Override
     public List<String> getCaNameList() {
         return map.values().stream().map(DBCertEntity::getSubject).distinct().collect(Collectors.toList());
@@ -96,7 +107,7 @@ public class Db implements CertEntityRepository {
     }
 
     @Override
-    public List<DBCertEntity> findBySubject(String id) {
+    public List<DBCertEntity> getBySubject(String id) {
         return map.values().stream().filter(dbCertEntity -> dbCertEntity.getSubject().equals(id)).collect(Collectors.toList());
     }
 
@@ -117,4 +128,74 @@ public class Db implements CertEntityRepository {
         return dbCertEntity;
     }
 
+
+    public DBCertEntity getCertEntity(String id) {
+        List<DBCertEntity> certEntity = this.getBySubject(id);
+        if (certEntity == null || certEntity.size() == 0) {
+            throw new Error404Exception("Certificate '" + id + "' not found");
+        }
+        if (certEntity.size() > 1) {
+            LOG.warn("More than one result (returns first)");
+        }
+        return certEntity.get(0);
+    }
+
+    public X509CertificateHolder convertToX509CertificateHolder(DBCertEntity certEntity) {
+        return convertToX509CertificateHolder(certEntity.getCertificateToken().getEncoded());
+    }
+
+    public X509CertificateHolder[] getCertificateChain(DBCertEntity certEntity) {
+        List<X509CertificateHolder> certChain = new ArrayList<>();
+        DBCertEntity entity = certEntity;
+        while (entity != null) {
+            certChain.add(convertToX509CertificateHolder(entity));
+            DBCertEntity parent = entity.getParent();
+            if (entity.getInternalId().equals(parent.getInternalId())) {
+                break;
+            }
+            entity = parent;
+        }
+        return certChain.toArray(new X509CertificateHolder[certChain.size()]);
+    }
+
+    public CertificateToken convertToCertificateToken(byte[] certificate) {
+        CertificateToken loadedCertificates = null;
+        try (InputStream is = new ByteArrayInputStream(certificate)) {
+            loadedCertificates = DSSUtils.loadCertificate(is);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("{} certificate", loadedCertificates);
+            }
+
+        } catch (Exception e) {
+            String errorMessage = "Unable to parse certificate(s) ";
+            if (LOG.isDebugEnabled()) {
+                LOG.warn(errorMessage, e.getMessage(), e);
+            } else {
+                LOG.warn(errorMessage, e.getMessage());
+            }
+        }
+        return loadedCertificates;
+    }
+
+
+    @Override
+    public List<Revocation> getRevocationList(DBCertEntity parent) {
+        return map.values().stream().filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null)
+                .map(dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason(), dbCertEntity))
+                .collect(Collectors.toList());
+    }
+
+    private X509CertificateHolder convertToX509CertificateHolder(byte[] binary) {
+        try {
+            return new X509CertificateHolder(binary);
+        } catch (IOException e) {
+            LOG.error("Unable to regenerate the certificate", e);
+            throw new Error500Exception("Unable to regenerate the certificate");
+        }
+    }
+
+    @Override
+    public DBCertEntity getByCertificateToken(CertificateToken certificateToken) {
+        return getBySerialNumberAndParentSubject(certificateToken.getSerialNumber().longValue(), DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getIssuer()));
+    }
 }

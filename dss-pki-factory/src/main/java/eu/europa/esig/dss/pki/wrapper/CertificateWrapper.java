@@ -3,7 +3,7 @@ package eu.europa.esig.dss.pki.wrapper;
 import eu.europa.esig.dss.pki.*;
 import eu.europa.esig.dss.pki.dto.CertificatePolicyOids;
 import eu.europa.esig.dss.pki.dto.QCStatementOids;
-import org.apache.commons.lang3.BooleanUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.CertificatePolicies;
 import org.bouncycastle.asn1.x509.KeyUsage;
@@ -58,7 +58,7 @@ public class CertificateWrapper {
     }
 
     public boolean isPSS() {
-        return BooleanUtils.isTrue(cert.getKeyAlgo().isPss());
+        return Utils.isTrue(cert.getKeyAlgo().isPss());
     }
 
     public boolean isSelfSigned() {
@@ -182,7 +182,7 @@ public class CertificateWrapper {
 
     public CertificatePolicies getCertificatePolicies() {
         if (cert.getCertificatePolicies() != null
-                && !   CollectionUtils.isEmpty(cert.getCertificatePolicies().getCertificatePolicy())) {
+                && !CollectionUtils.isEmpty(cert.getCertificatePolicies().getCertificatePolicy())) {
             PolicyInformation[] policyInformation = new PolicyInformation[cert.getCertificatePolicies()
                     .getCertificatePolicy().size()];
             int index = 0;

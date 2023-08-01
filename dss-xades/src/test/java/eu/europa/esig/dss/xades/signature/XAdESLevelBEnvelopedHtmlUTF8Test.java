@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -47,7 +47,7 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 	public void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
 
-		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(EE_GOOD_TSA);
+		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(EE_GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
 		service.setTspSource(tspSource);
 

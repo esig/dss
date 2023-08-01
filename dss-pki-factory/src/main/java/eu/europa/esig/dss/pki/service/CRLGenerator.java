@@ -2,7 +2,8 @@ package eu.europa.esig.dss.pki.service;
 
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.utils.Utils;
+import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v2CRLBuilder;
@@ -74,11 +75,11 @@ public class CRLGenerator {
      */
     private byte[] generateCRL(final DBCertEntity certEntity, Date productionTime, Date nextUpdateTime) {
         try {
-            X509CertificateHolder caCert = entityService.convertToX509CertificateHolder(certEntity);
+            X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(certEntity.getCertificateToken());
             PrivateKey caPrivateKey = entityService.getPrivateKey(certEntity);
             List<DBCertEntity> children = entityService.getChildren(certEntity);
 
-            String algo = Utils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
+            String algo = PkiUtils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
 
             if (productionTime == null) {
                 productionTime = new Date();
@@ -88,8 +89,8 @@ public class CRLGenerator {
 
             for (DBCertEntity child : children) {
                 if (child.getRevocationDate() != null) {
-                    X509CertificateHolder entry = new X509CertificateHolder(child.getCertificate());
-                    builder.addCRLEntry(entry.getSerialNumber(), child.getRevocationDate(), Utils.getCRLReason(child.getRevocationReason()));
+                    X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(child.getCertificateToken());
+                    builder.addCRLEntry(entry.getSerialNumber(), child.getRevocationDate(), PkiUtils.getCRLReason(child.getRevocationReason()));
                 }
             }
 
@@ -104,32 +105,6 @@ public class CRLGenerator {
         }
     }
 
-    /**
-     * Returns PEM encoded CRL
-     *
-     * @param certEntity {@link DBCertEntity} of the CRL issuer
-     * @return PEM encoded CRL binaries
-     */
-    public byte[] getPemCRL(final DBCertEntity certEntity) {
-        byte[] derCRL = getCRL(certEntity);
-        return convertDerToPem(derCRL);
-    }
 
-    private byte[] convertDerToPem(byte[] derEncodedCRL) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            baos.write("-----BEGIN CRL-----\n".getBytes());
-
-            Encoder encoder = Base64.getEncoder();
-            byte[] base64Encoded = encoder.encode(derEncodedCRL);
-            baos.write(base64Encoded);
-
-            baos.write("\n-----END CRL-----".getBytes());
-
-            return baos.toByteArray();
-        } catch (IOException e) {
-            LOG.error("Unable to generate the CRL", e);
-            throw new Error500Exception("Unable to generate the CRL");
-        }
-    }
 
 }
