@@ -43,7 +43,7 @@ import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
-import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
@@ -322,7 +322,7 @@ public abstract class PKIFactoryAccess {
 	}
 
 	protected TSPSource getSHA3GoodTsa() {
-		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(SHA3_GOOD_TSA);
+		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(SHA3_GOOD_TSA);
 		tspSource.setTstDigestAlgorithm(DigestAlgorithm.SHA3_256);
 		return tspSource;
 	}
@@ -355,21 +355,21 @@ public abstract class PKIFactoryAccess {
 		return getKeyStoreTSPSourceByNameAndTime(GOOD_TSA, date);
 	}
 
-	protected KeyStoreTSPSource getKeyStoreTSPSourceByNameWithPss(String tsaName) {
-		KeyStoreTSPSource keyStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
-		keyStoreTSPSource.setEnablePSS(true);
-		return keyStoreTSPSource;
+	protected KeyEntityTSPSource getKeyStoreTSPSourceByNameWithPss(String tsaName) {
+		KeyEntityTSPSource entityStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
+		entityStoreTSPSource.setEnablePSS(true);
+		return entityStoreTSPSource;
 	}
 	
-	protected KeyStoreTSPSource getKeyStoreTSPSourceByNameAndTime(String tsaName, Date date) {
-		KeyStoreTSPSource keyStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
-		keyStoreTSPSource.setProductionTime(date);
-		return keyStoreTSPSource;
+	protected KeyEntityTSPSource getKeyStoreTSPSourceByNameAndTime(String tsaName, Date date) {
+		KeyEntityTSPSource entityStoreTSPSource = getKeyStoreTSPSourceByName(tsaName);
+		entityStoreTSPSource.setProductionTime(date);
+		return entityStoreTSPSource;
 	}
 	
-	protected KeyStoreTSPSource getKeyStoreTSPSourceByName(String tsaName) {
+	protected KeyEntityTSPSource getKeyStoreTSPSourceByName(String tsaName) {
 		byte[] keystoreContent = getKeystoreContent(getKeystoreFilename(tsaName));
-		return new KeyStoreTSPSource(keystoreContent, KEYSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD,
+		return new KeyEntityTSPSource(keystoreContent, KEYSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD,
 				tsaName, PKI_FACTORY_KEYSTORE_PASSWORD);
 	}
 
