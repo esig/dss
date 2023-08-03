@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,7 +52,7 @@ public class XPath2FilterTransform extends XPathTransform {
 	 * @param filter {@link String}
 	 */
 	public XPath2FilterTransform(String xPathExpression, String filter) {
-		this(XAdESNamespaces.XMLDSIG, xPathExpression, filter);
+		this(XMLDSigNamespace.NS, xPathExpression, filter);
 	}
 
 	/**

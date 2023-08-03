@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -32,8 +33,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
@@ -114,10 +115,10 @@ public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSigna
         assertEquals(1, originalDocuments.size());
         Document signedElement = DomUtils.buildDOM(originalDocuments.get(0));
 
-        assertArrayEquals(DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, elementById),
-                DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, signedElement));
-        assertFalse(Arrays.equals(DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, originalDocument),
-                DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, signedElement)));
+        assertArrayEquals(XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(elementById),
+                XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(signedElement));
+        assertFalse(Arrays.equals(XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(originalDocument),
+                XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(signedElement)));
     }
 
     @Override

@@ -33,7 +33,6 @@ import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
-import eu.europa.esig.dss.validation.scope.ManifestEntrySignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;

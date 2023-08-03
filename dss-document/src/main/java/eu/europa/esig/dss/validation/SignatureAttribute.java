@@ -18,12 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.model;
 
 import java.io.Serializable;
 
 /**
  * Defines a child of "signed-signature-properties" or "unsigned-signature-properties" element
+ *
  */
 public interface SignatureAttribute extends Serializable {
 	

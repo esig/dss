@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;

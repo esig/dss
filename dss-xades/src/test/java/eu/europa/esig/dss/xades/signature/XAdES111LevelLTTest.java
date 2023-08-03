@@ -43,7 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
 import eu.europa.esig.xades.XAdES111Utils;
 
 public class XAdES111LevelLTTest extends AbstractXAdESTestSignature {

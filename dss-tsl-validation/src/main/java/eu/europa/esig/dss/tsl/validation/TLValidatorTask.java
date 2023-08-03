@@ -40,8 +40,8 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 import java.util.Date;

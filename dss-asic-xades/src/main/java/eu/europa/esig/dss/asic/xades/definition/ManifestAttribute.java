@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
 
 /**
  * The enumeration of Manifest attributes

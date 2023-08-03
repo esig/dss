@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.xades.validation;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.asic.xades.definition.ManifestPaths;
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.utils.Utils;

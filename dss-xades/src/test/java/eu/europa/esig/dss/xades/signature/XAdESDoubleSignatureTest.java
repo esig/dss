@@ -20,18 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.RepeatedTest;
-
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -48,6 +37,17 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.RepeatedTest;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 
@@ -108,15 +108,15 @@ public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 		List<DSSDocument> originals = validator.getOriginalDocuments(signatureIdList.get(0));
 		assertEquals(1, originals.size());
 		DSSDocument original = originals.get(0);
-		String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(toBeSigned)));
-		String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
+		String firstDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(toBeSigned)));
+		String secondDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(original)));
 		assertEquals(firstDocument, secondDocument);
 
 		originals = validator.getOriginalDocuments(signatureIdList.get(1));
 		assertEquals(1, originals.size());
 		original = originals.get(0);
-		firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(toBeSigned)));
-		secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
+		firstDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(toBeSigned)));
+		secondDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(original)));
 		assertEquals(firstDocument, secondDocument);
 		
 	}

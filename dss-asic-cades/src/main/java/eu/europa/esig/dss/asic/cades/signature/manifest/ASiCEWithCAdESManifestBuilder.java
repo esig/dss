@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
+import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.definition.ASiCElement;
-import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.model.DSSDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -103,7 +103,7 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 	 */
 	public DSSDocument build() {
 		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCNamespace.NS, ASiCElement.ASIC_MANIFEST);
+		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCManifestNamespace.NS, ASiCManifestElement.ASIC_MANIFEST);
 		documentDom.appendChild(asicManifestDom);
 
 		addSigReference(documentDom, asicManifestDom, documentUri, getSigReferenceMimeType());

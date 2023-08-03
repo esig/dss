@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;

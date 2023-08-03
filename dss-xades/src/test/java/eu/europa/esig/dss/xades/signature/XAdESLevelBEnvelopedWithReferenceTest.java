@@ -20,27 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.xml.security.transforms.Transforms;
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.SantuarioInitializer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -49,13 +31,29 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.apache.xml.security.transforms.Transforms;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 
@@ -117,14 +115,14 @@ public class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSign
 			xPath.setNamespaceContext(new Name());
 			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
 
-			byte c14nBytes[] = DSSXMLUtils.canonicalizeSubtree("http://www.w3.org/2001/10/xml-exc-c14n#", node);
+			byte c14nBytes[] = XMLCanonicalizer.createInstance("http://www.w3.org/2001/10/xml-exc-c14n#").canonicalize(node);
 
 			assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
 					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));
 
 			node = (Node) xPath.evaluate("root/data[@id='data2']", doc, XPathConstants.NODE);
 
-			c14nBytes = DSSXMLUtils.canonicalizeSubtree("http://www.w3.org/2001/10/xml-exc-c14n#", node);
+			c14nBytes = XMLCanonicalizer.createInstance("http://www.w3.org/2001/10/xml-exc-c14n#").canonicalize(node);
 
 			assertEquals("R69a3Im5463c09SuOrn9Sfly9h9LxVxSqg/0CVumJjA=",
 					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));

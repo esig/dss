@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 
 import java.io.Serializable;
 

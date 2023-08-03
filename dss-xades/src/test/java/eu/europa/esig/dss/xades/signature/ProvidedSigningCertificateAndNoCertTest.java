@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -34,9 +33,9 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,7 +82,7 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 			throw new DSSException("Unable to remove the KeyInfo element", e);
 		}
 
-		byte[] bytes = DSSXMLUtils.serializeNode(dom);
+		byte[] bytes = DomUtils.serializeNode(dom);
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
 		inMemoryDocument.setName("bla.xml");
 		inMemoryDocument.setMimeType(MimeTypeEnum.XML);

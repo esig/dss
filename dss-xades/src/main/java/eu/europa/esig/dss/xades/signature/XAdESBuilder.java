@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,17 +36,17 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESElement;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.definition.XAdESElement;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.xades.definition.xades122.XAdES122Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
@@ -318,9 +318,9 @@ public abstract class XAdESBuilder {
 		byte[] bytes;
 		if (SigningOperation.SIGN.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
 			alignNodes();
-			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+			bytes = DomUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {
-			bytes = DSSXMLUtils.serializeNode(documentDom);
+			bytes = DomUtils.serializeNode(documentDom);
 		}
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
 		inMemoryDocument.setMimeType(MimeTypeEnum.XML);

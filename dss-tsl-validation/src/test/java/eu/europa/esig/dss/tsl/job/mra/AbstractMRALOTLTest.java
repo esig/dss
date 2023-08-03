@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.tsl.job.mra;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -32,6 +30,7 @@ import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -63,12 +62,12 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.trustedlist.enums.Assert;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -175,7 +174,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
 
         signer = SIGNER_ZZ_TL_NAME;
-        DSSDocument tlToSign = new InMemoryDocument(DSSXMLUtils.serializeNode(tlDocument));
+        DSSDocument tlToSign = new InMemoryDocument(DomUtils.serializeNode(tlDocument));
 
         XAdESService service = new XAdESService(getOfflineCertificateVerifier());
         XAdESSignatureParameters signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), tlToSign).build();
@@ -210,7 +209,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
 
         signer = SIGNER_LOTL_NAME;
-        DSSDocument lotlToSign = new InMemoryDocument(DSSXMLUtils.serializeNode(lotlDocument));
+        DSSDocument lotlToSign = new InMemoryDocument(DomUtils.serializeNode(lotlDocument));
 
         XAdESService service = new XAdESService(getOfflineCertificateVerifier());
         XAdESSignatureParameters signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), lotlToSign).build();

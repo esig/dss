@@ -122,10 +122,14 @@ public final class ASiCUtils {
 	/** The ASiC-S with CAdES timestamp document name (META-INF/timestamp.tst) */
 	public static final String TIMESTAMP_TST = META_INF_FOLDER + TIMESTAMP_FILENAME + TST_EXTENSION;
 
+	/** Identifies a first bytes of a zip archive document */
+	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
+
 	/**
 	 * Singleton
 	 */
 	private ASiCUtils() {
+		// empty
 	}
 
 	/**
@@ -352,17 +356,11 @@ public final class ASiCUtils {
 	 */
 	public static boolean isZip(InputStream is) {
 		Objects.requireNonNull(is, "InputStream cannot be null!");
-		byte[] preamble = new byte[2];
 		try {
-			int r = is.read(preamble, 0, 2);
-			if (r != 2) {
-				return false;
-			}
+			return Utils.startsWith(is, ZIP_PREFIX);
 		} catch (IOException e) {
 			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
-
-		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
 
 	/**

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.utils.Utils;
@@ -31,7 +32,7 @@ import eu.europa.esig.dss.utils.Utils;
 public class XAdESTimestampParameters extends TimestampParameters {
 
 	/** The canonicalization method to use for the message-imprint */
-	private String canonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+	private String canonicalizationMethod = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * Empty constructor

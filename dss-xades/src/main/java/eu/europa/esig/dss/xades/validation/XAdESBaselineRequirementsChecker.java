@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -29,9 +29,9 @@ import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;

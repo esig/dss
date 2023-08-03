@@ -20,12 +20,23 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestMultipleDocumentsSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 public abstract class AbstractXAdESMultipleDocumentsSignatureService extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> {
 
@@ -47,6 +58,37 @@ public abstract class AbstractXAdESMultipleDocumentsSignatureService extends Abs
 	protected boolean isBaselineLTA() {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML +
+				// something else) )
+			}
+		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
 	}
 
 	@Override

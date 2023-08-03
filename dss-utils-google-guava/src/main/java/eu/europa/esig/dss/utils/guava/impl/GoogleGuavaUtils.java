@@ -344,6 +344,37 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public boolean startsWith(byte[] byteArray, byte[] prefixArray) {
+		if (byteArray == null || prefixArray == null) {
+			return false;
+		}
+		if (byteArray.length >= prefixArray.length) {
+			for (int i = 0; i < prefixArray.length; i++) {
+				if (byteArray[i] != prefixArray[i]) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean startsWith(InputStream inputStream, byte[] prefixArray) {
+		if (inputStream == null || prefixArray == null) {
+			return false;
+		}
+		byte[] temp = new byte[prefixArray.length];
+		try {
+			ByteStreams.readFully(inputStream, temp);
+		} catch (IOException e) {
+			// cannot read the InputStream, return false silently
+			return false;
+		}
+		return Arrays.equals(prefixArray, temp);
+	}
+
+	@Override
 	public void cleanDirectory(File directory) throws IOException {
 		Objects.requireNonNull(directory, "Directory cannot be null");
 		if (!directory.exists() || !directory.isDirectory()) {

@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeEach;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,7 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
 
 public class XAdESLevelLTACustomPrefixNamespacesTest extends AbstractXAdESTestSignature {
 
@@ -47,7 +48,7 @@ public class XAdESLevelLTACustomPrefixNamespacesTest extends AbstractXAdESTestSi
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		signatureParameters.setXmldsigNamespace(new DSSNamespace(XAdESNamespaces.XMLDSIG.getUri(), "toto"));
+		signatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "toto"));
 		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "tata"));
 
 		service = new XAdESService(getCompleteCertificateVerifier());

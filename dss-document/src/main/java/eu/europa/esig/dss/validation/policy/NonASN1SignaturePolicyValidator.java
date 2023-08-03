@@ -20,13 +20,16 @@
  */
 package eu.europa.esig.dss.validation.policy;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignaturePolicy;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class covers the case of non ASN1 signature policies (e.g. : PDF file and its digest)
@@ -45,9 +48,17 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 		DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		if (policyContent != null) {
 			byte firstByte = DSSUtils.readFirstByte(policyContent);
-			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && !DomUtils.startsWithXmlPreamble(policyContent);
+			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && '<' != firstByte && !startsWithXmlBom(policyContent);
 		}
 		return false;
+	}
+
+	private boolean startsWithXmlBom(DSSDocument policyContent) {
+		try (InputStream is = policyContent.openStream()) {
+			return Utils.startsWith(is, new byte[] { -17, -69, -65, '<' });
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!", e);
+		}
 	}
 
 	@Override

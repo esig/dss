@@ -118,6 +118,7 @@
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
 		<module>dss-spi</module>
+		<module>dss-xml</module>
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-test</module>
@@ -172,7 +173,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-	</modules>
+    </modules>
 
 	<build>
 		<plugins>
@@ -522,6 +523,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-xml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

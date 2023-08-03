@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.definition.AbstractPaths;
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.utils.Utils;
 
 /**

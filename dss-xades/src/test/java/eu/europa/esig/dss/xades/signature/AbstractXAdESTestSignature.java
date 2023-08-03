@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -37,23 +38,29 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -209,6 +216,44 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				}
 			}
 		}
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML +
+				// something else) )
+			}
+		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
+	}
+
+	@Override
+	protected boolean areSignedAssertionsEqual(String signedAssertionOne, String signedAssertionTwo) {
+		Document expected = DomUtils.buildDOM(signedAssertionOne);
+		Document extracted = DomUtils.buildDOM(signedAssertionTwo);
+		return expected.isEqualNode(extracted);
 	}
 
 }

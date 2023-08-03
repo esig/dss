@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -87,7 +88,7 @@ public class ReferenceProcessor {
         byte[] referenceOutputResult = DSSXMLUtils.applyTransforms(nodeToTransform, reference.getTransforms());
 
         if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referenceOutputResult)) {
-            referenceOutputResult = DSSXMLUtils.canonicalize(DSSXMLUtils.DEFAULT_XMLDSIG_C14N_METHOD, referenceOutputResult);
+            referenceOutputResult = XMLCanonicalizer.createInstance().canonicalize(referenceOutputResult);
         }
         if (LOG.isTraceEnabled()) {
             LOG.trace("Reference output : ");

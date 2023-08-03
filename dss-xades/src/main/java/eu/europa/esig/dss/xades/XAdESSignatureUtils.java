@@ -118,7 +118,7 @@ public final class XAdESSignatureUtils {
 				String objectId = DomUtils.getId(reference.getURI());
 				Node objectById = signature.getObjectById(objectId);
 				if (objectById != null && objectById.hasChildNodes()) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
+					byte[] bytes = DomUtils.getNodeBytes(objectById.getFirstChild());
 					if (bytes != null) {
 						return new InMemoryDocument(bytes, objectId, MimeTypeEnum.XML);
 					}
@@ -136,7 +136,7 @@ public final class XAdESSignatureUtils {
 				String manifestId = DomUtils.getId(reference.getURI());
 				Node manifestById = signature.getManifestById(manifestId);
 				if (manifestById != null) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
+					byte[] bytes = DomUtils.getNodeBytes(manifestById);
 					if (bytes != null) {
 						return new InMemoryDocument(bytes, manifestId, MimeTypeEnum.XML);
 					}

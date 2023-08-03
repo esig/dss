@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 
 /**
  * This class contains constants for Manifest and its namespace.
@@ -33,8 +33,12 @@ public final class ManifestNamespace {
 
 	/** The OpenDocument Manifest namespace */
 	public static final DSSNamespace NS = new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "manifest");
-	
+
+	/**
+	 * Default constructor
+	 */
 	private ManifestNamespace() {
+		// empty
 	}
 
 }

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.ws.timestamp.remote;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -38,7 +39,6 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.ws.timestamp.dto.TimestampResponseDTO;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +88,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(digestAlgorithm);
 		
-		byte[] digest = DSSUtils.digest(digestAlgorithm, DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign)));
+		byte[] digest = DSSUtils.digest(digestAlgorithm, XMLCanonicalizer.createInstance(canonicalizationAlgo).canonicalize(DSSUtils.toByteArray(documentToSign)));
 		TimestampResponseDTO timeStampResponse = timestampService.getTimestampResponse(digestAlgorithm, digest);
 		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBinaries(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);

@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -65,7 +65,7 @@ public class XAdESAttributeIdentifier extends SignatureAttributeIdentifier {
     }
 
     private static byte[] getBinaries(Node node) {
-        return DSSXMLUtils.serializeNode(node);
+        return DomUtils.serializeNode(node);
     }
 
     private static int getOrder(Node node) {

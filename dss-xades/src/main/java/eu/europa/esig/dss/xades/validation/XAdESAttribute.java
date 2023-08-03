@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;

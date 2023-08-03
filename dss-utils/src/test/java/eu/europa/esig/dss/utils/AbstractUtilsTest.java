@@ -660,6 +660,70 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void startsWithByteArrayTest() {
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H'}));
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','e','l','l','o'}));
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'W','o','r','l','d'}));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','W'}));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','e','l','l','o',' ','W','o','r','l','d','!'}));
+
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "H".getBytes()));
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "Hello".getBytes()));
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "Hello World".getBytes()));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "World".getBytes()));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "HW".getBytes()));
+		assertFalse(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, "Hello World!".getBytes()));
+
+		assertTrue(Utils.startsWith("H".getBytes(), new byte[] {'H'}));
+		assertTrue(Utils.startsWith("Hello".getBytes(), new byte[] {'H','e','l','l','o'}));
+		assertTrue(Utils.startsWith("Hello World".getBytes(), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
+		assertFalse(Utils.startsWith("H".getBytes(), new byte[] {'W','o','r','l','d'}));
+		assertFalse(Utils.startsWith("Hello".getBytes(), new byte[] {'H','W'}));
+		assertFalse(Utils.startsWith("Hello World".getBytes(), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d','!'}));
+
+		assertTrue(Utils.startsWith("H".getBytes(), "H".getBytes()));
+		assertTrue(Utils.startsWith("Hello".getBytes(), "Hello".getBytes()));
+		assertTrue(Utils.startsWith("Hello World".getBytes(), "Hello World".getBytes()));
+		assertFalse(Utils.startsWith("H".getBytes(), "World".getBytes()));
+		assertFalse(Utils.startsWith("Hello".getBytes(), "HW".getBytes()));
+		assertFalse(Utils.startsWith("Hello World".getBytes(), "Hello World!".getBytes()));
+
+		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[]{ }));
+		assertFalse(Utils.startsWith(new byte[] {}, new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
+
+		assertTrue(Utils.startsWith(new byte[] {}, new byte[]{}));
+		assertFalse(Utils.startsWith(new byte[] {}, null));
+		assertFalse(Utils.startsWith((byte[]) null, new byte[]{}));
+		assertFalse(Utils.startsWith((byte[]) null, null));
+	}
+
+	@Test
+	public void startsWithInputStreamTest() throws IOException {
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H'}));
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','e','l','l','o'}));
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'W','o','r','l','d'}));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','W'}));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d','!'}));
+
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "H".getBytes()));
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "Hello".getBytes()));
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "Hello World".getBytes()));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "World".getBytes()));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "HW".getBytes()));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), "Hello World!".getBytes()));
+
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[]{ }));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {}), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
+
+		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {}), new byte[]{}));
+		assertFalse(Utils.startsWith(new ByteArrayInputStream(new byte[] {}), null));
+		assertFalse(Utils.startsWith((InputStream) null, new byte[]{}));
+		assertFalse(Utils.startsWith((InputStream) null, null));
+	}
+
+	@Test
 	public void clearDirectory() throws IOException {
 		Path pathToFolder = folder.resolve("test");
 		File dir = new File(pathToFolder.toString());

@@ -20,22 +20,29 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractCounterSignatureTest;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -121,19 +128,40 @@ public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterS
 			
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {
-				boolean found = false;
-				boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
-				String originalDigest = getDigest(original, toBeCanonicalized);
-				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
-					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
-						found = true;
-					}
-				}
-
-				assertTrue(found, "Unable to retrieve the original document " + original.getName());
+				assertTrue(documentPresent(original, retrievedOriginalDocuments), "Unable to retrieve the original document " + original.getName());
 			}
 		}
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML +
+				// something else) )
+			}
+		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
 	}
 
 }

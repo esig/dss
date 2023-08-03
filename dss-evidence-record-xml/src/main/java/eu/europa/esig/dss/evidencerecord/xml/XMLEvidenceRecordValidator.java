@@ -1,16 +1,16 @@
 package eu.europa.esig.dss.evidencerecord.xml;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.evidencerecord.common.EvidenceRecordValidator;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSElement;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSNamespaces;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPaths;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.xmlers.definition.XMLERSElement;
+import eu.europa.esig.xmlers.definition.XMLERSNamespaces;
+import eu.europa.esig.xmlers.definition.XMLERSPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -46,7 +46,7 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
     }
 
     static {
-        XMLERSNamespaces.registerNamespaces();
+        DomUtils.registerNamespace(XMLERSNamespaces.XMLERS);
     }
 
     private Document toDomDocument(DSSDocument document) {

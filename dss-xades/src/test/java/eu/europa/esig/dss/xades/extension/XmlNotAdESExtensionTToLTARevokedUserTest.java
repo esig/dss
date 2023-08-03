@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -34,10 +32,12 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.timestamp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,14 +84,14 @@ public class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestE
         assertEquals(1, signatures.getLength());
         Node signatureElement = signatures.item(0);
         Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
-        final Element keyInfoDom = DomUtils.createElementNS(docDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.KEY_INFO);
+        final Element keyInfoDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.KEY_INFO);
         signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
         for (CertificateToken token : getCertificateChain()) {
             // <ds:X509Data>
-            final Element x509DataDom = DomUtils.createElementNS(docDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_DATA);
+            final Element x509DataDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.X509_DATA);
             keyInfoDom.appendChild(x509DataDom);
-            DomUtils.addTextElement(docDom, x509DataDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
-            DomUtils.addTextElement(docDom, x509DataDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
+            DomUtils.addTextElement(docDom, x509DataDom, XMLDSigNamespace.NS, XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
+            DomUtils.addTextElement(docDom, x509DataDom, XMLDSigNamespace.NS, XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
         }
         return DomUtils.createDssDocumentFromDomDocument(docDom, signedDocument.getName());
     }

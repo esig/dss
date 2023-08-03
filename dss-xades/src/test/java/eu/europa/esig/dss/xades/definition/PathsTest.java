@@ -22,13 +22,14 @@ package eu.europa.esig.dss.xades.definition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import eu.europa.esig.xades.definition.XAdESPaths;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.AbstractPaths;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
 
 public class PathsTest {
 	

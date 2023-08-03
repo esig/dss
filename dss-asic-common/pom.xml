@@ -17,9 +17,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>specs-asic-manifest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-document</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-utils</artifactId>
@@ -40,10 +43,9 @@
 			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>specs-asic-manifest</artifactId>
+			<artifactId>dss-xml</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

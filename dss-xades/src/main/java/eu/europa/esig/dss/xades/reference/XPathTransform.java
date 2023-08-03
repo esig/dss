@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +46,7 @@ public class XPathTransform extends ComplexTransform {
 	 * @param xPathExpression {@link String}
 	 */
 	public XPathTransform(String xPathExpression) {
-		this(XAdESNamespaces.XMLDSIG, Transforms.TRANSFORM_XPATH, xPathExpression);
+		this(XMLDSigNamespace.NS, Transforms.TRANSFORM_XPATH, xPathExpression);
 	}
 
 	/**

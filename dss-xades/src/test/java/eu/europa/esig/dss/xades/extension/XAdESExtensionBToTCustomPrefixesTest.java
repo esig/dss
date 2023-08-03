@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
 public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
 	
@@ -40,7 +41,7 @@ public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExten
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
-		signatureParameters.setXmldsigNamespace(new DSSNamespace(XAdESNamespaces.XMLDSIG.getUri(), "tutu"));
+		signatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "tutu"));
 		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "toto"));
 		
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());

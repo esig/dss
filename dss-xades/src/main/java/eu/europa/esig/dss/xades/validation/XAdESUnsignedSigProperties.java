@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPaths;
 
 /**
  * Unsigned XAdES signature properties

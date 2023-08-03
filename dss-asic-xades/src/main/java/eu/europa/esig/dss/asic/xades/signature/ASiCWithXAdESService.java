@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
+import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.common.definition.ASiCElement;
-import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
@@ -71,7 +71,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private ASiCWithXAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithXAdESFilenameFactory();
 
 	static {
-		DomUtils.registerNamespace(ASiCNamespace.NS);
+		DomUtils.registerNamespace(ASiCManifestNamespace.NS);
 		DomUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
@@ -261,9 +261,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Document rootDocument = DomUtils.buildDOM();
 		Element xadesSignatures;
 		if (openDocument) {
-			xadesSignatures = rootDocument.createElementNS(ASiCNamespace.LIBREOFFICE_NS, ASiCNamespace.LIBREOFFICE_SIGNATURES);
+			xadesSignatures = rootDocument.createElementNS(ASiCManifestNamespace.LIBREOFFICE_NS, ASiCManifestNamespace.LIBREOFFICE_SIGNATURES);
 		} else {
-			xadesSignatures = DomUtils.createElementNS(rootDocument, ASiCNamespace.NS, ASiCElement.XADES_SIGNATURES);
+			xadesSignatures = DomUtils.createElementNS(rootDocument, ASiCManifestNamespace.NS, ASiCManifestElement.XADES_SIGNATURES);
 		}
 		rootDocument.appendChild(xadesSignatures);
 		return rootDocument;

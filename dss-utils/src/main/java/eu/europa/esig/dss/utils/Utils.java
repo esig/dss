@@ -516,6 +516,29 @@ public final class Utils {
 	}
 
 	/**
+	 * Checks if the {@code byteArray} starts with {@code prefixArray}
+	 *
+	 * @param byteArray byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the byte array starts with a prefix array, FALSE otherwise
+	 */
+	public static boolean startsWith(byte[] byteArray, byte[] prefixArray) {
+		return impl.startsWith(byteArray, prefixArray);
+	}
+
+	/**
+	 * Checks if the {@code inputStream} starts with {@code prefixArray}.
+	 *
+	 * @param inputStream byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the InputStream starts with a prefix array, FALSE otherwise
+	 * @throws IOException if an exception occurs
+	 */
+	public static boolean startsWith(InputStream inputStream, byte[] prefixArray) throws IOException {
+		return impl.startsWith(inputStream, prefixArray);
+	}
+
+	/**
 	 * Cleans the directory
 	 *
 	 * @param directory {@link File}

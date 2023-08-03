@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.extension.prettyprint;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -39,7 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;

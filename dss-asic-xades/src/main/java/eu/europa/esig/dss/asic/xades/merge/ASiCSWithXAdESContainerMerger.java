@@ -277,7 +277,7 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
             }
         }
 
-        byte[] bytes = DSSXMLUtils.serializeNode(documentElement);
+        byte[] bytes = DomUtils.serializeNode(documentElement);
         return new InMemoryDocument(bytes, ASiCUtils.SIGNATURES_XML, MimeTypeEnum.XML);
     }
 

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +41,7 @@ public abstract class AbstractTransform implements DSSTransform {
 	protected final String algorithm;
 
 	/** The namespace */
-	protected DSSNamespace namespace = XAdESNamespaces.XMLDSIG;
+	protected DSSNamespace namespace = XMLDSigNamespace.NS;
 
 	/**
 	 * Default constructor

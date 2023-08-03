@@ -1,14 +1,14 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
-import eu.europa.esig.dss.evidencerecord.xml.XmlEvidenceRecordUtils;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSElement;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPaths;
+import eu.europa.esig.xmlers.definition.XMLERSAttribute;
+import eu.europa.esig.xmlers.definition.XMLERSElement;
+import eu.europa.esig.xmlers.definition.XMLERSPaths;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
@@ -49,7 +49,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         for (DSSDocument document : evidenceRecord.getDetachedContents()) {
             byte[] documentDigest;
             if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-                byte[] canonicalizedDocument = XmlEvidenceRecordUtils.canonicalize(canonicalizationMethod, DSSUtils.toByteArray(document));
+                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(DSSUtils.toByteArray(document));
                 documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
             } else {
                 String base64Digest = document.getDigest(digest.getAlgorithm());
@@ -80,7 +80,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         XmlArchiveTimeStampObject xmlArchiveTimeStampObject = (XmlArchiveTimeStampObject) archiveTimeStamp;
         Element archiveTimeStampElement = xmlArchiveTimeStampObject.getElement();
         Element timeStampElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPaths.TIME_STAMP_PATH);
-        byte[] canonicalizedSubtree = XmlEvidenceRecordUtils.canonicalizeSubtree(canonicalizationMethod, timeStampElement);
+        byte[] canonicalizedSubtree = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(timeStampElement);
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, canonicalizedSubtree);
         return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
@@ -105,8 +105,8 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
                 }
             }
         }
-        byte[] canonicalizedSubtree = XmlEvidenceRecordUtils.canonicalizeSubtree(
-                xmlArchiveTimeStampChainObject.getCanonicalizationMethod(), archiveTimeStampSequence);
+        byte[] canonicalizedSubtree = XMLCanonicalizer.createInstance(xmlArchiveTimeStampChainObject.getCanonicalizationMethod())
+                .canonicalize(archiveTimeStampSequence);
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, canonicalizedSubtree);
         return new DSSMessageDigest(digestAlgorithm, digestValue);
     }

@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
+import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Node;
-
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 
 /**
  * Transforms a reference content to its base64 representation
@@ -57,7 +56,7 @@ public class Base64Transform extends AbstractTransform {
 
 	@Override
 	public byte[] getBytesAfterTransformation(Node node) {
-		return DSSXMLUtils.serializeNode(node);
+		return DomUtils.serializeNode(node);
 	}
 
 }

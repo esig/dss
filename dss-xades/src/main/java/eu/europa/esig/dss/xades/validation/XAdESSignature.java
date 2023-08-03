@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.SantuarioInitializer;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -41,6 +43,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -60,13 +63,13 @@ import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.SantuarioInitializer;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.EnforcedResolverFragment;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
 import org.apache.xml.security.algorithms.JCEMapper;
@@ -74,6 +77,8 @@ import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.SignedInfo;
 import org.apache.xml.security.signature.XMLSignature;
+import org.apache.xml.security.utils.resolver.ResourceResolver;
+import org.apache.xml.security.utils.resolver.implementations.ResolverXPointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -145,7 +150,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		SantuarioInitializer.init();
 
-		XAdESNamespaces.registerNamespaces();
+		DSSXMLUtils.registerXAdESNamespaces();
 
 		/**
 		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
@@ -161,12 +166,17 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		// LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
 		// }
 
+		//
+		// Set the default JCE algorithms
+		//
+		JCEMapper.setProviderId(DSSSecurityProvider.getSecurityProviderName());
+		JCEMapper.registerDefaultAlgorithms();
+
 		/**
 		 * Adds the support of not standard algorithm name: http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160. Used
 		 * by some AT signature providers. The BC
 		 * provider must be previously added.
 		 */
-
 		final JCEMapper.Algorithm notStandardAlgorithm = new JCEMapper.Algorithm("", SignatureAlgorithm.RSA_RIPEMD160.getJCEId(), "Signature");
 		JCEMapper.register(SignatureRSARIPEMD160AT.XML_ID, notStandardAlgorithm);
 		try {
@@ -1150,7 +1160,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		byte[] signatureElementBytes = DSSXMLUtils.canonicalizeSubtree(DEFAULT_CANONICALIZATION_METHOD, signatureElement);
+		byte[] signatureElementBytes = XMLCanonicalizer.createInstance(DEFAULT_CANONICALIZATION_METHOD).canonicalize(signatureElement);
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
 		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, new Digest(digestAlgorithm, digestValue));
 	}
@@ -1172,7 +1182,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Canonicalization method is not present in SignedInfo element! Unable to compute DTBSR.");
 			return null;
 		}
-		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, signedInfo);
+		byte[] canonicalizedSignedInfo = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(signedInfo);
 		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, canonicalizedSignedInfo));
 	}
 
@@ -1262,6 +1272,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
+			initDefaultResolvers();
+
 			// Secure validation disabled to support all signature algos
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -1272,6 +1284,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} catch (XMLSecurityException e) {
 			throw new DSSException(String.format("Unable to initialize Santuario XMLSignature. Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Customized
+	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
+	 *
+	 * Ignore references which point to a file (file://) or external http urls
+	 * Enforce ResolverFragment against XPath injections
+	 */
+	private void initDefaultResolvers() {
+		ResourceResolver.register(new EnforcedResolverFragment(), false);
+		ResourceResolver.register(new ResolverXPointer(), false);
 	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {

@@ -20,16 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Date;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -41,9 +32,17 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class XAdESLevelBEnvelopedTest extends AbstractXAdESTestSignature {
 
@@ -94,8 +93,8 @@ public class XAdESLevelBEnvelopedTest extends AbstractXAdESTestSignature {
 		DSSDocument original = originals.get(0);
 
 		try {
-			String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(documentToSign)));
-			String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(original)));
+			String firstDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(documentToSign)));
+			String secondDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(original)));
 			assertEquals(firstDocument, secondDocument);
 		} catch (Exception e) {
 			fail(e);

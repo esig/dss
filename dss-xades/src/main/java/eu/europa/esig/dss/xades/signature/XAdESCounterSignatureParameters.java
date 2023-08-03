@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 import java.util.Objects;
@@ -46,7 +46,7 @@ public class XAdESCounterSignatureParameters extends XAdESSignatureParameters im
 	 * The canonicalization method used for a SignatureValue canonicalization
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String counterSignatureCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+	private String counterSignatureCanonicalizationMethod = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * Default constructor instantiating object with null values

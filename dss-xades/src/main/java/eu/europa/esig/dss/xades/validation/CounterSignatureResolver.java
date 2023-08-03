@@ -21,12 +21,11 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -67,7 +66,7 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 	}
 
 	private XMLSignatureInput createFromNode(Node node) {
-		final XMLSignatureInput result = new XMLSignatureInput(DSSXMLUtils.serializeNode(node));
+		final XMLSignatureInput result = new XMLSignatureInput(DomUtils.serializeNode(node));
 		result.setMIMEType(MimeTypeEnum.XML.getMimeTypeString());
 		return result;
 	}

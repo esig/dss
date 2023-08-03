@@ -20,13 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestPaths;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
-import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
-import eu.europa.esig.dss.asic.common.definition.ASiCPaths;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -37,6 +35,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.ManifestEntry;
 import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -55,7 +55,7 @@ public class ASiCWithCAdESManifestParser {
 
 	static {
 		DomUtils.registerNamespace(XMLDSigNamespace.NS);
-		DomUtils.registerNamespace(ASiCNamespace.NS);
+		DomUtils.registerNamespace(ASiCManifestNamespace.NS);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class ASiCWithCAdESManifestParser {
 		}
 		try {
 			Document manifestDom = DomUtils.buildDOM(manifestDocument);
-			return DomUtils.getElement(manifestDom, ASiCPaths.ASIC_MANIFEST_PATH);
+			return DomUtils.getElement(manifestDom, ASiCManifestPaths.ASIC_MANIFEST_PATH);
 		} catch (Exception e) {
 			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
 			return null;
@@ -119,12 +119,12 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static String getLinkedSignatureName(Element root) {
-		return DomUtils.getValue(root, ASiCPaths.SIG_REFERENCE_URI_PATH);
+		return DomUtils.getValue(root, ASiCManifestPaths.SIG_REFERENCE_URI_PATH);
 	}
 	
 	private static MimeType getMimeType(Element element) {
 		try {
-			String mimeTypeString = element.getAttribute(ASiCAttribute.MIME_TYPE.getAttributeName());
+			String mimeTypeString = element.getAttribute(ASiCManifestAttribute.MIME_TYPE.getAttributeName());
 			if (Utils.isStringNotBlank(mimeTypeString)) {
 				return MimeType.fromMimeTypeString(mimeTypeString);
 			}
@@ -158,7 +158,7 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static boolean isTimestampAssociatedManifest(Element root) {
-		Element sigReference = DomUtils.getElement(root, ASiCPaths.SIG_REFERENCE_PATH);
+		Element sigReference = DomUtils.getElement(root, ASiCManifestPaths.SIG_REFERENCE_PATH);
 		if (sigReference != null) {
 			MimeType mimeType = getMimeType(sigReference);
 			return MimeTypeEnum.TST == mimeType;
@@ -168,14 +168,14 @@ public class ASiCWithCAdESManifestParser {
 
 	private static List<ManifestEntry> parseManifestEntries(Element root) {
 		List<ManifestEntry> entries = new ArrayList<>();
-		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCPaths.DATA_OBJECT_REFERENCE_PATH);
+		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCManifestPaths.DATA_OBJECT_REFERENCE_PATH);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 		} else {
 			for (int i = 0; i < dataObjectReferences.getLength(); i++) {
 				ManifestEntry entry = new ManifestEntry();
 				Element dataObjectReference = (Element) dataObjectReferences.item(i);
-				entry.setFileName(DSSUtils.decodeURI(dataObjectReference.getAttribute(ASiCAttribute.URI.getAttributeName())));
+				entry.setFileName(DSSUtils.decodeURI(dataObjectReference.getAttribute(ASiCManifestAttribute.URI.getAttributeName())));
 				entry.setMimeType(getMimeType(dataObjectReference));
 
 				DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);
@@ -184,7 +184,7 @@ public class ASiCWithCAdESManifestParser {
 					entry.setDigest(new Digest(digestAlgorithm, digestValueBinary));
 				}
 				
-				String attribute = dataObjectReference.getAttribute(ASiCAttribute.ROOTFILE.getAttributeName());
+				String attribute = dataObjectReference.getAttribute(ASiCManifestAttribute.ROOTFILE.getAttributeName());
 				if (Utils.areStringsEqualIgnoreCase("true", attribute)) {
 					entry.setRootfile(true);
 				}

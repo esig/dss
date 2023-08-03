@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -125,7 +126,7 @@ public class AllDataObjectsTimeStampBuilder {
 			 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
 			 */
 			if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
-				binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
+				binaries = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(binaries);
 			}
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Computed AllDataObjectsTimestampData reference bytes: {}", new String(binaries));

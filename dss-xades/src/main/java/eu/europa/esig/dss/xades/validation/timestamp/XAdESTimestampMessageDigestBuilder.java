@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation.timestamp;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -33,9 +34,9 @@ import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -247,7 +248,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
 		 */
 		if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referencedBytes)) {
-			referencedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, referencedBytes);
+			referencedBytes = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(referencedBytes);
 		}
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("ReferencedBytes : {}", new String(referencedBytes));
@@ -581,7 +582,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private byte[] getCanonicalizedValue(final String xPathString, final String canonicalizationMethod) {
 		final Element element = DomUtils.getElement(signature, xPathString);
 		if (element != null) {
-			final byte[] bytes = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, element);
+			final byte[] bytes = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(element);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Canonicalized subtree string : \n{}", new String(bytes));
 			}
@@ -601,7 +602,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
          * Namespaces are not added to canonicalizer for new created elements.
          * The binaries need to be parsed at a new instance of Document
          */
-        final byte[] serializedDoc = DSSXMLUtils.serializeNode(signature.getOwnerDocument());
+        final byte[] serializedDoc = DomUtils.serializeNode(signature.getOwnerDocument());
         Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
         Element recreatedSignature = DomUtils.getElementById(recreatedDocument, DSSXMLUtils.getIDIdentifier(signature));
         return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
@@ -702,7 +703,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	}
 
 	private byte[] getCanonicalizedValue(XAdESAttribute attribute, String canonicalizationMethod) {
-		byte[] canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, attribute.getElement());
+		byte[] canonicalizedValue = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(attribute.getElement());
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("{}: Canonicalization: {} : \n{}", attribute.getName(), canonicalizationMethod,
 					new String(canonicalizedValue));
@@ -754,7 +755,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					continue;
 				}
 			}
-			canonicalizedValue = DSSXMLUtils.canonicalizeSubtree(canonicalizationMethod, node);
+			canonicalizedValue = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node);
 			digestCalculator.update(canonicalizedValue);
 		}
 		

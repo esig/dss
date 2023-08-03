@@ -21,16 +21,17 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -259,7 +260,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			xmldsigNamespace = params.getXmldsigNamespace();
 			if (xmldsigNamespace == null) {
 				LOG.warn("Current XMLDSig namespace not found in the parameters (use the default XMLDSig)");
-				xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+				xmldsigNamespace = XMLDSigNamespace.NS;
 					
 			}
 		}

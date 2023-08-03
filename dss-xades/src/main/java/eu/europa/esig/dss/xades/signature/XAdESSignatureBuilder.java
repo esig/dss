@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -56,7 +57,7 @@ import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
@@ -236,7 +237,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		// Preparation of SignedInfo
-		byte[] canonicalizedSignedInfo = DSSXMLUtils.canonicalizeSubtree(signedInfoCanonicalizationMethod, getNodeToCanonicalize(signedInfoDom));
+		byte[] canonicalizedSignedInfo = XMLCanonicalizer.createInstance(signedInfoCanonicalizationMethod).canonicalize(getNodeToCanonicalize(signedInfoDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignedInfo         --> {}", new String(canonicalizedSignedInfo));
 			final byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedSignedInfo);
@@ -700,7 +701,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 
-		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(signedPropertiesCanonicalizationMethod, getNodeToCanonicalize(signedPropertiesDom));
+		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(signedPropertiesCanonicalizationMethod).canonicalize(getNodeToCanonicalize(signedPropertiesDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
 			LOG.trace("Canonicalized REF_2      --> {}", new String(canonicalizedBytes));
@@ -743,7 +744,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 		
-		final byte[] canonicalizedBytes = DSSXMLUtils.canonicalizeSubtree(keyInfoCanonicalizationMethod, getNodeToCanonicalize(keyInfoDom));
+		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(keyInfoCanonicalizationMethod).canonicalize(getNodeToCanonicalize(keyInfoDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method   --> {}", keyInfoCanonicalizationMethod);
 			LOG.trace("Canonicalized REF_KeyInfo --> {}", new String(canonicalizedBytes));

@@ -21,10 +21,12 @@
 package eu.europa.esig.dss.asic.common.definition;
 
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSAttribute;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
+import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.xades.XAdESUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -46,7 +48,7 @@ public class ASiCEnumsTest {
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(ASiCManifestUtils.ASIC_MANIFEST)) {
 			Document xsdDom = DomUtils.buildDOM(is);
-			checkElementSynchronization(xsdDom, ASiCElement.values());
+			checkElementSynchronization(xsdDom, ASiCManifestElement.values());
 		}
 
 	}
@@ -57,7 +59,7 @@ public class ASiCEnumsTest {
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(ASiCManifestUtils.ASIC_MANIFEST)) {
 			Document xsdDom = DomUtils.buildDOM(is);
-			 checkAttributesSynchronization(xsdDom, ASiCAttribute.values());
+			 checkAttributesSynchronization(xsdDom, ASiCManifestAttribute.values());
 		}
 
 	}

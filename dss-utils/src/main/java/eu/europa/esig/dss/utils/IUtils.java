@@ -390,6 +390,26 @@ public interface IUtils {
 	 */
 	boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException;
 
+
+	/**
+	 * Checks if the {@code byteArray} starts with {@code prefixArray}
+	 *
+	 * @param byteArray byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the byte array starts with a prefix array, FALSE otherwise
+	 */
+	boolean startsWith(byte[] byteArray, byte[] prefixArray);
+
+	/**
+	 * Checks if the {@code inputStream} starts with {@code prefixArray}.
+	 *
+	 * @param inputStream byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the InputStream starts with a prefix array, FALSE otherwise
+	 * @throws IOException if an exception occurs
+	 */
+	boolean startsWith(InputStream inputStream, byte[] prefixArray) throws IOException;
+
 	/**
 	 * Cleans the directory
 	 *

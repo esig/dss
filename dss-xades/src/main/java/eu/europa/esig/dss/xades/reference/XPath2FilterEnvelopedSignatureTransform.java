@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
 /**
  * Enveloped signature transformation by Filter 2.0. Excludes all signatures from the XML.
@@ -40,7 +40,7 @@ public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterT
 	 * Default constructor
 	 */
 	public XPath2FilterEnvelopedSignatureTransform() {
-		super(XAdESNamespaces.XMLDSIG, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
+		super(XMLDSigNamespace.NS, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
 	}
 
 	/**

@@ -20,32 +20,34 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.AbstractPaths;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.SantuarioInitializer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
+import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
+import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
@@ -64,16 +66,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -93,53 +89,35 @@ public final class DSSXMLUtils {
 	/** List of supported transforms */
 	private static final Set<String> transforms;
 
-	/** List of supported canonicalization methods */
-	private static final Set<String> canonicalizers;
-
 	/** List of transforms resulting to a NodeSet output */
 	private static final Set<String> transformsWithNodeSetOutput;
+
+	/** Value used to pretty print xades signature */
+	public static final int TRANSFORMER_INDENT_NUMBER = 4;
 
 	/** The Enveloped-signature transformation */
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 
 	/** The XPath transform name */
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
-	
-	/**
-	 * This is the default canonicalization method used for production of signatures
-	 * within DSS framework.
-	 * 
-	 * Another complication arises because of the way that the default
-	 * canonicalization algorithm handles namespace declarations; frequently a
-	 * signed XML document needs to be embedded in another document; in this case
-	 * the original canonicalization algorithm will not yield the same result as if
-	 * the document is treated alone. For this reason, the so-called Exclusive
-	 * Canonicalization, which serializes XML namespace declarations independently
-	 * of the surrounding XML, was created.
-	 */
-	public static final String DEFAULT_DSS_C14N_METHOD = CanonicalizationMethod.EXCLUSIVE;
-	
-	/**
-	 * This is the default canonicalization method for XMLDSIG used for signatures
-	 * and timestamps (see XMLDSIG 4.4.3.2) when one is not defined.
-	 */
-	public static final String DEFAULT_XMLDSIG_C14N_METHOD = CanonicalizationMethod.INCLUSIVE;
 
 	/** The SPDocDigestAsInSpecification transform algorithm URI for a custom SignaturePolicy processing */
 	public static final String SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI =
 			"http://uri.etsi.org/01903/v1.3.2/SignaturePolicy/SPDocDigestAsInSpecification";
+
+	/** SAML namespace definition */
+	public static final DSSNamespace SAML_NAMESPACE = new DSSNamespace("urn:oasis:names:tc:SAML:2.0:assertion", "saml2");
 
 	static {
 		SantuarioInitializer.init();
 
 		transforms = new HashSet<>();
 		registerDefaultTransforms();
-
-		canonicalizers = new HashSet<>();
-		registerDefaultCanonicalizers();
 		
 		transformsWithNodeSetOutput = new HashSet<>();
 		registerTransformsWithNodeSetOutput();
+
+		registerXAdESNamespaces();
 	}
 
 	/**
@@ -155,25 +133,27 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method registers the default canonicalizers.
-	 */
-	private static void registerDefaultCanonicalizers() {
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_PHYSICAL);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS);
-	}
-
-	/**
 	 * This method registers transforms resulting to a node-set according to XMLDSIG
 	 */
 	private static void registerTransformsWithNodeSetOutput() {
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH);
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH2FILTER);
+	}
+
+	/**
+	 * Registers the XAdES namespaces
+	 */
+	public static void registerXAdESNamespaces() {
+		DomUtils.registerNamespace(XMLDSigNamespace.NS);
+
+		DomUtils.registerNamespace(XAdESNamespaces.XADES_111);
+		DomUtils.registerNamespace(XAdESNamespaces.XADES_122);
+		DomUtils.registerNamespace(XAdESNamespaces.XADES_132);
+		DomUtils.registerNamespace(XAdESNamespaces.XADES_141);
+		// DO NOT register "xades"
+
+		DomUtils.registerNamespace(SAML_NAMESPACE);
 	}
 
 	/**
@@ -200,9 +180,11 @@ public final class DSSXMLUtils {
 	 * @param c14nAlgorithmURI
 	 *            the URI of canonicalization algorithm
 	 * @return true if this set did not already contain the specified element
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.registerCanonicalizer(c14nAlgorithmURI)}
 	 */
+	@Deprecated
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		return canonicalizers.add(c14nAlgorithmURI);
+		return XMLCanonicalizer.registerCanonicalizer(c14nAlgorithmURI);
 	}
 
 	/**
@@ -417,7 +399,7 @@ public final class DSSXMLUtils {
 					}
 				}
 				Node lastChild = parentNode.getLastChild();
-				targetIndent = targetIndent.substring(0, targetIndent.length() - DomUtils.TRANSFORMER_INDENT_NUMBER);
+				targetIndent = targetIndent.substring(0, targetIndent.length() - TRANSFORMER_INDENT_NUMBER);
 				switch (lastChild.getNodeType()) {
 				case Node.ELEMENT_NODE:
 					DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element) parentNode, targetIndent);
@@ -449,32 +431,11 @@ public final class DSSXMLUtils {
 	 * @param xmlNode
 	 *            The node to be serialized.
 	 * @return the serialized bytes
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.serializeNode(xmlNode)}
 	 */
+	@Deprecated
 	public static byte[] serializeNode(final Node xmlNode) {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			Transformer transformer = DomUtils.getSecureTransformer();
-			Document document;
-			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
-				document = (Document) xmlNode;
-			} else {
-				document = xmlNode.getOwnerDocument();
-			}
-
-			if (document != null) {
-				String xmlEncoding = document.getXmlEncoding();
-				if (Utils.isStringNotBlank(xmlEncoding)) {
-					transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
-				}
-			}
-
-			StreamResult result = new StreamResult(bos);
-			Source source = new DOMSource(xmlNode);
-			transformer.transform(source, result);
-			
-			return bos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("An error occurred during a node serialization.", e);
-		}
+		return DomUtils.serializeNode(xmlNode);
 	}
 
 	/**
@@ -483,9 +444,11 @@ public final class DSSXMLUtils {
 	 * @param canonicalizationMethod
 	 *            the canonicalization method to be checked
 	 * @return true if it is possible to canonicalize false otherwise
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.canCanonicalize(canonicalizationMethod)}
 	 */
+	@Deprecated
 	public static boolean canCanonicalize(final String canonicalizationMethod) {
-		return canonicalizers.contains(canonicalizationMethod);
+		return XMLCanonicalizer.canCanonicalize(canonicalizationMethod);
 	}
 
 	/**
@@ -498,15 +461,11 @@ public final class DSSXMLUtils {
 	 * @return array of canonicalized bytes
 	 * @throws DSSException
 	 *             if any error is encountered
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes}
 	 */
+	@Deprecated
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			c14n.canonicalize(toCanonicalizeBytes, baos, true);
-			return baos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("Cannot canonicalize the binaries", e);
-		}
+		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes);
 	}
 
 	/**
@@ -518,15 +477,11 @@ public final class DSSXMLUtils {
 	 * @param node
 	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node}}
 	 */
+	@Deprecated
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			c14n.canonicalizeSubtree(node, baos);
-			return baos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("Cannot canonicalize the subtree", e);
-		}
+		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node);
 	}
 	
 	/**
@@ -534,13 +489,15 @@ public final class DSSXMLUtils {
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
 	 * @return canonicalizationMethod to be used
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.CanonicalizationUtils}
 	 */
+	@Deprecated
 	public static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			// The INCLUSIVE canonicalization is used by default (See DSS-2208)
 			LOG.warn("Canonicalization method is not defined. "
-					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", DEFAULT_XMLDSIG_C14N_METHOD);
-			return DEFAULT_XMLDSIG_C14N_METHOD;
+					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD);
+			return XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD;
 		}
 		return canonicalizationMethod;
 	}
@@ -660,31 +617,11 @@ public final class DSSXMLUtils {
 	 * Returns bytes of the given {@code node}
 	 * @param node {@link Node} to get bytes for
 	 * @return byte array
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.getNodeBytes(node)} instead
 	 */
+	@Deprecated
 	public static byte[] getNodeBytes(Node node) {
-		switch (node.getNodeType()) {
-		case Node.ELEMENT_NODE:
-		case Node.DOCUMENT_NODE:
-			byte[] bytes = serializeNode(node);
-			String str = new String(bytes);
-			// TODO: better
-			// remove <?xml version="1.0" encoding="UTF-8"?>
-			if (str.startsWith("<?")) {
-				str = str.substring(str.indexOf("?>") + 2);
-			}
-			return str.getBytes();
-
-		case Node.TEXT_NODE:
-			String textContent = node.getTextContent();
-			if (Utils.isBase64Encoded(textContent)) {
-				return Utils.fromBase64(node.getTextContent());
-			} else {
-				return textContent.getBytes();
-			}
-
-		default:
-			return null;
-		}
+		return DomUtils.getNodeBytes(node);
 	}
 	
 	/**
@@ -1089,7 +1026,7 @@ public final class DSSXMLUtils {
 			}
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(new String(transformedReferenceBytes));
+				LOG.debug(transformedReferenceBytes != null ? new String(transformedReferenceBytes) : "null");
 			}
 			if (Utils.isArrayEmpty(transformedReferenceBytes)) {
 				LOG.warn("The output of reference transforms processing is an empty byte array!");
@@ -1097,7 +1034,7 @@ public final class DSSXMLUtils {
 			return transformedReferenceBytes;
 			
 		} else {
-			return DSSXMLUtils.getNodeBytes(nodeToTransform);
+			return DomUtils.getNodeBytes(nodeToTransform);
 		}
 	}
 	/**
