@@ -35,8 +35,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 

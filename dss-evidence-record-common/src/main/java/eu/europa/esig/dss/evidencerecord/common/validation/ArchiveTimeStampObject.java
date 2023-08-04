@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.List;
 

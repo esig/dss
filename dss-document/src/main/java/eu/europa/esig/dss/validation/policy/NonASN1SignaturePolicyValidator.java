@@ -48,6 +48,7 @@ public class NonASN1SignaturePolicyValidator extends AbstractSignaturePolicyVali
 		DSSDocument policyContent = signaturePolicy.getPolicyContent();
 		if (policyContent != null) {
 			byte firstByte = DSSUtils.readFirstByte(policyContent);
+			// non ASN1 nor XML policy
 			return !DSSASN1Utils.isASN1SequenceTag(firstByte) && '<' != firstByte && !startsWithXmlBom(policyContent);
 		}
 		return false;

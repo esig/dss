@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampTokenComparator;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 
 public class TimestampTokenComparatorTest {
 

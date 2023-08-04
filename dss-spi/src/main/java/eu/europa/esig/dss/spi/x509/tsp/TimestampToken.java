@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.timestamp;
+package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -30,19 +30,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
-import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestFile;
-import eu.europa.esig.dss.validation.SignatureAttribute;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -169,12 +168,6 @@ public class TimestampToken extends Token {
 	 * NOTE: Takes a value only for a successfully validated token
 	 */
 	private X500Principal tsaX500Principal;
-
-	/**
-	 * It's an internal attribute which allows to unambiguously identify a timestamp.
-	 * The value is used for a message-imprint computation.
-	 */
-	private SignatureAttribute attribute;
 
 	/**
 	 * Cached list of signing certificate candidates
@@ -779,24 +772,6 @@ public class TimestampToken extends Token {
 	 */
 	public TimeStampToken getTimeStamp() {
 		return timeStamp;
-	}
-	
-	/**
-	 * Gets the timestamp's element attribute (XAdES, JAdES)
-	 *
-	 * @return {@link SignatureAttribute}
-	 */
-	public SignatureAttribute getTimestampAttribute() {
-		return attribute;
-	}
-
-	/**
-	 * Sets the timestamp's element attribute (XAdES, JAdES)
-	 *
-	 * @param attribute {@link SignatureAttribute}
-	 */
-	public void setTimestampAttribute(SignatureAttribute attribute) {
-		this.attribute = attribute;
 	}
 
 	@Override

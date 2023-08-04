@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.validation;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
-import eu.europa.esig.dss.validation.CMSCertificateSource;
+import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 
 /**
  * CertificateSource that retrieves items from a CAdES Signature

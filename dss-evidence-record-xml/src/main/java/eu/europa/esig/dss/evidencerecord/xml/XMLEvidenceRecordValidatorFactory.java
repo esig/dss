@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.evidencerecord.xml;
 
 
-import eu.europa.esig.dss.evidencerecord.common.EvidenceRecordValidator;
-import eu.europa.esig.dss.evidencerecord.common.EvidenceRecordValidatorFactory;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**

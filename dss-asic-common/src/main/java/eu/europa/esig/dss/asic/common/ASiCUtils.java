@@ -29,8 +29,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

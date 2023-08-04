@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.evidencerecord.common;
+package eu.europa.esig.dss.validation.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
 

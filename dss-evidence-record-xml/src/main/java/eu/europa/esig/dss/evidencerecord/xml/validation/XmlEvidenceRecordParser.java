@@ -8,7 +8,7 @@ import eu.europa.esig.xmlers.definition.XMLERSAttribute;
 import eu.europa.esig.xmlers.definition.XMLERSPaths;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;

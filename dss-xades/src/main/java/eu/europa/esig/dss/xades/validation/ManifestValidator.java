@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import org.apache.xml.security.exceptions.XMLSecurityException;

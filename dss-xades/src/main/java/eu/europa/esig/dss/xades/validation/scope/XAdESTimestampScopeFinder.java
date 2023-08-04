@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.apache.xml.security.signature.Reference;
 

@@ -1,10 +1,7 @@
-package eu.europa.esig.dss.evidencerecord.common;
+package eu.europa.esig.dss.validation.evidencerecord;
 
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.reports.Reports;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,8 +15,6 @@ import java.util.ServiceLoader;
  *
  */
 public abstract class EvidenceRecordValidator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EvidenceRecordValidator.class);
 
     /** Document to be validated */
     protected DSSDocument document;

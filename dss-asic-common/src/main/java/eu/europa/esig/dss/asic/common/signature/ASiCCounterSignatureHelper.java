@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

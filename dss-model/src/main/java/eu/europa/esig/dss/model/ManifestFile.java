@@ -18,11 +18,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -190,7 +188,7 @@ public class ManifestFile implements Serializable {
 	 * @return TRUE if the document with the given name is covered, FALSE otherwise
 	 */
 	public boolean isDocumentCovered(String documentName) {
-		if (Utils.isStringNotBlank(documentName)) {
+		if (documentName != null && documentName.length() > 0) {
 			for (ManifestEntry entry : getEntries()) {
 				if (documentName.equals(entry.getFileName())) {
 					return true;

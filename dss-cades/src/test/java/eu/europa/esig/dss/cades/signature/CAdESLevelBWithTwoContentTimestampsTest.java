@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;

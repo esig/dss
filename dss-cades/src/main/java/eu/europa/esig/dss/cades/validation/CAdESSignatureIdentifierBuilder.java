@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestFile;
 import org.bouncycastle.cms.SignerInformation;
 
 import java.io.ByteArrayOutputStream;

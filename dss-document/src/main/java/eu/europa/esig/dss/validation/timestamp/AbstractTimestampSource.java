@@ -34,9 +34,14 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCRLSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampOCSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;

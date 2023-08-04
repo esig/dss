@@ -1,15 +1,16 @@
 package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.validation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ import java.util.Objects;
  * This class is used for extraction and validation of time-stamps incorporated within an Evidence Record
  *
  */
-public abstract class EvidenceRecordTimestampSource<ER extends EvidenceRecord> extends AbstractTimestampSource {
+public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRecord> extends AbstractTimestampSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(EvidenceRecordTimestampSource.class);
 

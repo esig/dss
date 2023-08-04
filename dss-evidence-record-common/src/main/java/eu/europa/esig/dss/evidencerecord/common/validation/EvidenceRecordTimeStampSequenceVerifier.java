@@ -2,13 +2,14 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     private static final Logger LOG = LoggerFactory.getLogger(EvidenceRecordTimeStampSequenceVerifier.class);
 
     /** Evidence record to be validated */
-    protected final EvidenceRecord evidenceRecord;
+    protected final DefaultEvidenceRecord evidenceRecord;
 
     /** Contains a list of reference validations performed on the archive data objects */
     private List<ReferenceValidation> referenceValidations;
@@ -37,7 +38,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param evidenceRecord {@link EvidenceRecord}
      */
-    protected EvidenceRecordTimeStampSequenceVerifier(final EvidenceRecord evidenceRecord) {
+    protected EvidenceRecordTimeStampSequenceVerifier(final DefaultEvidenceRecord evidenceRecord) {
         this.evidenceRecord = evidenceRecord;
     }
 
@@ -59,14 +60,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     protected void verify() {
         referenceValidations = new ArrayList<>();
 
-        DSSMessageDigest lastTimeStampSequenceHash = DSSMessageDigest.createEmptyDigest();
         DSSMessageDigest lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
 
         boolean firstArchiveTimeStampChain = true;
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
-        Iterator<? extends ArchiveTimeStampChainObject> archiveTimeStampSequenceIt = archiveTimeStampSequence.iterator();
-        while (archiveTimeStampSequenceIt.hasNext()) {
-            ArchiveTimeStampChainObject archiveTimeStampChain = archiveTimeStampSequenceIt.next();
+        for (ArchiveTimeStampChainObject archiveTimeStampChain : archiveTimeStampSequence) {
             DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
 
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChain.getArchiveTimeStamps();
@@ -85,7 +83,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                             referenceValidations = validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain);
 
                             if (!firstArchiveTimeStampChain) {
-                                lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain);
+                                DSSMessageDigest lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain);
                                 // validate first time-stamp in ArchiveTimeStampChain
                                 if (!containsDigest(referenceValidations, lastTimeStampSequenceHash)) {
                                     LOG.warn("No digest matching the previous ArchiveTimeStampSequence element found!");

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -35,12 +36,13 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
@@ -62,7 +64,9 @@ import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The timestamp source for a XAdES signature
@@ -77,6 +81,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	/** XAdES XPaths to use */
 	private final XAdESPaths xadesPaths;
+
+	/** Map between time-stamp tokens and corresponding XAdES attributes */
+	private final Map<TimestampToken, XAdESAttribute> timestampAttributeMap = new HashMap<>();
 
 	/**
 	 * Default constructor
@@ -106,7 +113,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected XAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
-		return new XAdESTimestampMessageDigestBuilder(signature, timestampToken);
+		return new XAdESTimestampMessageDigestBuilder(signature, timestampToken)
+				.setTimestampAttribute(timestampAttributeMap.get(timestampToken));
 	}
 	
 	/**
@@ -119,8 +127,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getSignatureTimestampMessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
-		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm)
+				.setCanonicalizationAlgorithm(canonicalizationMethod);
 		return builder.getSignatureTimestampMessageDigest();
 	}
 	
@@ -136,9 +144,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getTimestampX1MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
-		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
-		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
-		builder.setEn319132(en319132);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm)
+				.setCanonicalizationAlgorithm(canonicalizationMethod)
+				.setEn319132(en319132);
 		return builder.getTimestampX1MessageDigest();
 	}
 
@@ -154,9 +162,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getTimestampX2MessageDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, boolean en319132) {
-		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
-		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
-		builder.setEn319132(en319132);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm)
+				.setCanonicalizationAlgorithm(canonicalizationMethod)
+				.setEn319132(en319132);
 		return builder.getTimestampX2MessageDigest();
 	}
 	
@@ -170,8 +178,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	 * @return {@link DSSMessageDigest}
 	 */
 	public DSSMessageDigest getArchiveTimestampData(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
-		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		XAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm)
+				.setCanonicalizationAlgorithm(canonicalizationMethod);
 		return builder.getArchiveTimestampMessageDigest();
 	}
 
@@ -294,9 +302,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			final Element encapsulatedTimeStamp = (Element) encapsulatedTimestamps.item(ii);
 			TimestampToken timestampToken = createTimestampToken(encapsulatedTimeStamp, timestampType, references);
 			if (timestampToken != null) {
-				timestampToken.setTimestampAttribute(signatureAttribute);
 				timestampToken.setCanonicalizationMethod(signatureAttribute.getTimestampCanonicalizationMethod());
 				timestampToken.setTimestampIncludes(signatureAttribute.getTimestampIncludedReferences());
+				timestampAttributeMap.put(timestampToken, signatureAttribute);
 				result.add(timestampToken);
 			}
 		}

@@ -18,15 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
-import eu.europa.esig.dss.spi.x509.revocation.MultipleRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 
 import java.util.ArrayList;
 import java.util.List;

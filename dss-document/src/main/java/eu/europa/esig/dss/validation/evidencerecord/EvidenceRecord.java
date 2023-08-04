@@ -1,7 +1,7 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.evidencerecord;
 
 import eu.europa.esig.dss.model.ReferenceValidation;
-import eu.europa.esig.dss.spi.x509.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.List;
 

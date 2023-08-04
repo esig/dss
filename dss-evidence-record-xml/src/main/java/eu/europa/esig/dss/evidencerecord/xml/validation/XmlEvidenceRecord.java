@@ -1,9 +1,9 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.xmlers.XMLEvidenceRecordUtils;
 import org.w3c.dom.Element;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * XML Evidence Record implementations (RFC 6283)
  *
  */
-public class XmlEvidenceRecord extends EvidenceRecord {
+public class XmlEvidenceRecord extends DefaultEvidenceRecord {
 
     /** The current signature element */
     private final Element evidenceRecordElement;

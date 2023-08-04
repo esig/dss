@@ -18,21 +18,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.timestamp;
+package eu.europa.esig.dss.spi.x509.tsp;
 
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 import org.bouncycastle.tsp.TimeStampToken;
 
-import eu.europa.esig.dss.validation.CMSCRLSource;
-
 /**
- * CRLSource that retrieves information embedded to a {@link TimeStampToken}
+ * A timestamp CMS certificate source
  *
  */
 @SuppressWarnings("serial")
-public class TimestampCRLSource extends CMSCRLSource {
+public class TimestampCertificateSource extends CMSCertificateSource {
 
-	TimestampCRLSource(TimeStampToken timeStampToken) {
-		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
+	/**
+	 * Default constructor
+	 *
+	 * @param timestampToken {@link TimeStampToken}
+	 */
+	public TimestampCertificateSource(final TimeStampToken timestampToken) {
+		super(timestampToken.toCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData()));
+	}
+
+	@Override
+	public CertificateSourceType getCertificateSourceType() {
+		return CertificateSourceType.TIMESTAMP;
 	}
 
 }

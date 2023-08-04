@@ -47,14 +47,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,9 @@ import java.util.Map;
 public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignature, JAdESAttribute> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESTimestampSource.class);
+
+	/** Map between time-stamp tokens and corresponding JAdES attributes */
+	private final Map<TimestampToken, JAdESAttribute> timestampAttributeMap = new HashMap<>();
 
 	/**
 	 * Default constructor
@@ -400,7 +404,8 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected JAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken) {
-		return new JAdESTimestampMessageDigestBuilder(signature, timestampToken);
+		return new JAdESTimestampMessageDigestBuilder(signature, timestampToken)
+				.setTimestampAttribute(timestampAttributeMap.get(timestampToken));
 	}
 
 	@Override
@@ -439,8 +444,8 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	 * @return {@link DSSMessageDigest} representing a message-imprint digest
 	 */
 	public DSSMessageDigest getArchiveTimestampData(DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
-		JAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm);
-		builder.setCanonicalizationAlgorithm(canonicalizationMethod);
+		JAdESTimestampMessageDigestBuilder builder = getTimestampMessageImprintDigestBuilder(digestAlgorithm)
+				.setCanonicalizationAlgorithm(canonicalizationMethod);
 		return builder.getArchiveTimestampMessageDigest();
 	}
 
@@ -470,6 +475,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 				for (Object item : tstTokens) {
 					TimestampToken timestampToken = toTimestampToken(item, signatureAttribute, timestampType, references);
 					if (timestampToken != null) {
+						timestampAttributeMap.put(timestampToken, signatureAttribute);
 						result.add(timestampToken);
 					}
 				}
@@ -491,11 +497,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 				String tstBase64 = DSSJsonUtils.getAsString(tstTokenMap, JAdESHeaderParameterNames.VAL);
 				if (Utils.isStringNotEmpty(tstBase64)) {
 					try {
-						TimestampToken timestampToken = new TimestampToken(
-								Utils.fromBase64(tstBase64), timestampType, references);
-						timestampToken.setTimestampAttribute(signatureAttribute);
-						return timestampToken;
-
+						return new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references);
 					} catch (Exception e) {
 						LOG.warn("Unable to parse timestamp '{}'", tstBase64, e);
 					}

@@ -43,10 +43,10 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.List;

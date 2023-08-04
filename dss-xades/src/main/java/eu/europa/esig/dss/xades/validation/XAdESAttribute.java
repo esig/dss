@@ -25,7 +25,7 @@ import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;

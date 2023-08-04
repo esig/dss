@@ -25,11 +25,11 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
 import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 
 import java.util.List;
 

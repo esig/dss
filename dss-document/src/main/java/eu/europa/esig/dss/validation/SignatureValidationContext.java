@@ -39,6 +39,7 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -49,8 +50,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

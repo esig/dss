@@ -1,13 +1,13 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.evidencerecord.common.EvidenceRecordValidator;
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

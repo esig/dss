@@ -18,11 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.timestamp;
+package eu.europa.esig.dss.spi.x509.tsp;
 
+import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 import org.bouncycastle.tsp.TimeStampToken;
-
-import eu.europa.esig.dss.validation.CMSOCSPSource;
 
 /**
  * OCSPSource that retrieves information embedded to a {@link TimeStampToken}

@@ -1,9 +1,10 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * Default representation of an Evidence Record
  *
  */
-public abstract class EvidenceRecord {
+public abstract class DefaultEvidenceRecord implements EvidenceRecord {
 
     /**
      * The name of the evidence record document
@@ -33,7 +34,7 @@ public abstract class EvidenceRecord {
     /**
      * Default constructor
      */
-    protected EvidenceRecord() {
+    protected DefaultEvidenceRecord() {
         // empty
     }
 
@@ -92,11 +93,7 @@ public abstract class EvidenceRecord {
      */
     protected abstract List<? extends ArchiveTimeStampChainObject> buildArchiveTimeStampSequence();
 
-    /**
-     * Performs validation of the detached content and returns back the validity results
-     *
-     * @return a list of {@link ReferenceValidation} objects corresponding to each archive data object validation
-     */
+    @Override
     public List<ReferenceValidation> getReferenceValidation() {
         if (referenceValidations == null) {
             referenceValidations = validate();
@@ -111,11 +108,7 @@ public abstract class EvidenceRecord {
      */
     protected abstract List<ReferenceValidation> validate();
 
-    /**
-     * Returns a list of incorporated timestamp tokens
-     *
-     * @return a list of {@link TimestampToken}s
-     */
+    @Override
     public List<TimestampToken> getTimestamps() {
         return getTimestampSource().getTimestamps();
     }

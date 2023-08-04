@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

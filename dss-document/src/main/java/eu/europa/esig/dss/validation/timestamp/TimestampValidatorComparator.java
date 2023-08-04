@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
+import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
+
 import java.io.Serializable;
 import java.util.Comparator;
 

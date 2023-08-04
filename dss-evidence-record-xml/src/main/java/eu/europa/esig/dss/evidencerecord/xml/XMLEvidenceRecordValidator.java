@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.evidencerecord.xml;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.evidencerecord.common.EvidenceRecordValidator;
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;

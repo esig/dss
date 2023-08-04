@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.jwk.PublicJsonWebKey;
 import org.jose4j.jwx.HeaderParameterNames;

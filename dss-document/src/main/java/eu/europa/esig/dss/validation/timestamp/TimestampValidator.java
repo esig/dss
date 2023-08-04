@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 /**
  * The interface to be used for timestamp validation
