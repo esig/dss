@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -45,12 +46,14 @@ import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESCertificateRefExtractionUtils;
 import eu.europa.esig.dss.xades.validation.XAdESRevocationRefExtractionUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
+import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
 import eu.europa.esig.xades.definition.XAdESNamespaces;
 import eu.europa.esig.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
@@ -304,6 +307,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			if (timestampToken != null) {
 				timestampToken.setCanonicalizationMethod(signatureAttribute.getTimestampCanonicalizationMethod());
 				timestampToken.setTimestampIncludes(signatureAttribute.getTimestampIncludedReferences());
+				if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timestampType)) {
+					addReferences(timestampToken.getTimestampedReferences(), getIndividualDataContentTimestampReferences(signatureAttribute.getTimestampIncludedReferences()));
+				}
 				timestampAttributeMap.put(timestampToken, signatureAttribute);
 				result.add(timestampToken);
 			}
@@ -325,6 +331,40 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			}
 			return null;
 		}
+	}
+
+	@Override
+	protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
+		XAdESTimestampScopeFinder timestampScopeFinder = new XAdESTimestampScopeFinder();
+		timestampScopeFinder.setSignature(signature);
+		return timestampScopeFinder.findTimestampScope(timestampToken);
+	}
+
+	private List<TimestampedReference> getIndividualDataContentTimestampReferences(List<TimestampInclude> timestampIncludes) {
+		List<SignatureScope> result = new ArrayList<>();
+		List<SignatureScope> signatureScopes = signature.getSignatureScopes();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (ReferenceValidation referenceValidation : signature.getReferenceValidations()) {
+				XAdESReferenceValidation xadesReferenceValidation = (XAdESReferenceValidation) referenceValidation;
+				if (isContentTimestampedReference(xadesReferenceValidation, timestampIncludes)) {
+					for (SignatureScope signatureScope : signatureScopes) {
+						if (Utils.endsWithIgnoreCase(xadesReferenceValidation.getUri(), signatureScope.getDocumentName())) {
+							result.add(signatureScope);
+						}
+					}
+				}
+			}
+		}
+		return getSignerDataTimestampedReferences(result);
+	}
+
+	private boolean isContentTimestampedReference(XAdESReferenceValidation xadesReferenceValidation, List<TimestampInclude> includes) {
+		for (TimestampInclude timestampInclude : includes) {
+			if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

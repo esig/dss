@@ -29,6 +29,8 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
@@ -46,11 +48,7 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
-import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
-import eu.europa.esig.dss.validation.scope.TimestampScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,11 +142,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	private boolean includeSemantics = false;
 
 	/**
-	 * The class to extract a list of {@code SignatureScope}s from a signature
-	 */
-	protected final SignatureScopeFinder<?> signatureScopeFinder;
-
-	/**
 	 * Provides methods to extract a policy content by its identifier
 	 */
 	private SignaturePolicyProvider signaturePolicyProvider;
@@ -195,16 +188,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * The constructor with a null {@code signatureScopeFinder}
 	 */
 	protected SignedDocumentValidator() {
-		this.signatureScopeFinder = null;
+		// empty
 	}
 
 	/**
 	 * The default constructor
 	 *
 	 * @param signatureScopeFinder {@link SignatureScopeFinder}
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	protected SignedDocumentValidator(SignatureScopeFinder<?> signatureScopeFinder) {
-		this.signatureScopeFinder = signatureScopeFinder;
+		// empty
 	}
 
 	/**
@@ -744,11 +739,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			allSignatureList.add(signature);
 			appendCounterSignatures(allSignatureList, signature);
 		}
-		
-		// Signature Scope must be processed before in order to properly initialize content timestamps
-		// TODO change this
-		findSignatureScopes(allSignatureList);
-		
 		return allSignatureList;
 	}
 
@@ -811,52 +801,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
-	/**
-	 * Finds and assigns SignatureScopes for a list of signatures
-	 * 
-	 * @param allSignatures
-	 *                      a list of {@link AdvancedSignature}s to get a
-	 *                      SignatureScope list
-	 */
+	@Deprecated
 	@Override
-	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> allSignatures) {
-		prepareSignatureScopeFinder(signatureScopeFinder);
-		for (final AdvancedSignature signature : allSignatures) {
-			signature.findSignatureScope(signatureScopeFinder);
-
-			TimestampScopeFinder timestampScopeFinder = getTimestampScopeFinder();
-			prepareTimestampScopeFinder(timestampScopeFinder, signature);
-			for (TimestampToken timestampToken : signature.getContentTimestamps()) {
-				findTimestampScopes(timestampToken, timestampScopeFinder);
-			}
-			for (TimestampToken timestampToken : signature.getArchiveTimestamps()) {
-				findTimestampScopes(timestampToken, timestampScopeFinder);
-			}
-		}
-	}
-
-	/**
-	 * Sets the provided configuration for a {@code SignatureScopeFinder}
-	 *
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to configure
-	 */
-	protected void prepareSignatureScopeFinder(SignatureScopeFinder<?> signatureScopeFinder) {
-		if (signatureScopeFinder != null) {
-			signatureScopeFinder.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
-			signatureScopeFinder.setTokenIdentifierProvider(tokenIdentifierProvider);
-		}
-	}
-
-	/**
-	 * Finds timestamp scope for the {@code TimestampToken}
-	 *
-	 * @param timestampToken {@link TimestampToken} to find timestamp scope for
-	 * @param timestampScopeFinder {@link TimestampScopeFinder} to use
-	 */
-	protected void findTimestampScopes(TimestampToken timestampToken, TimestampScopeFinder timestampScopeFinder) {
-		List<SignatureScope> timestampScopes = timestampScopeFinder.findTimestampScope(timestampToken);
-		timestampToken.setTimestampScopes(timestampScopes);
-		timestampToken.getTimestampedReferences().addAll(getTimestampedReferences(timestampScopes));
+	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures) {
+		LOG.warn("Use of deprecated method! Use eu.europa.esig.dss.validation.AdvancedSignature.getSignatureScopes() method instead.");
 	}
 
 	/**
@@ -880,7 +828,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * Checks if the signature scope shall be added as a timestamped reference
-	 *
 	 * NOTE: used to avoid duplicates in ASiC with CAdES validator, due to covered signature/timestamp files
 	 *
 	 * @param signatureScope {@link SignatureScope} to check
@@ -889,30 +836,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected boolean addReference(SignatureScope signatureScope) {
 		// accept all by default
 		return true;
-	}
-
-	/**
-	 * This method returns a timestamp scope finder
-	 *
-	 * @return {@link TimestampScopeFinder}
-	 */
-	protected TimestampScopeFinder getTimestampScopeFinder() {
-		// signature encapsulated timestamp scope finder is used by default
-		return new EncapsulatedTimestampScopeFinder();
-	}
-
-	/**
-	 * This method is used to prepare a {@code DetachedTimestampScopeFinder} for execution
-	 *
-	 * @param timestampScopeFinder {@link DetachedTimestampScopeFinder}
-	 * @param signature {@link AdvancedSignature} used for encapsulated timestamps
-	 */
-	protected void prepareTimestampScopeFinder(TimestampScopeFinder timestampScopeFinder, AdvancedSignature signature) {
-		timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-		if (timestampScopeFinder instanceof EncapsulatedTimestampScopeFinder) {
-			EncapsulatedTimestampScopeFinder encapsulatedTimestampScopeFinder = (EncapsulatedTimestampScopeFinder) timestampScopeFinder;
-			encapsulatedTimestampScopeFinder.setSignature(signature);
-		}
 	}
 
 	/**

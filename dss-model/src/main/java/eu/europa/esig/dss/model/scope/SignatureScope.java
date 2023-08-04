@@ -18,15 +18,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.scope;
+package eu.europa.esig.dss.model.scope;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
-import eu.europa.esig.dss.validation.DataIdentifier;
+import eu.europa.esig.dss.model.identifier.DataIdentifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -43,9 +48,9 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	private final String name;
 	
 	/**
-	 * Digest of the original signer data
+	 * Original signer data
 	 */
-	private final Digest dataDigest;
+	private final DSSDocument document;
 	
 	/**
 	 * Represents a default DSS Identifier
@@ -60,12 +65,21 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	/**
 	 * Default constructor
 	 *
-	 * @param name {@link String} document name
-	 * @param digest {@link Digest} document digest
+	 * @param document {@link DSSDocument}
 	 */
-	protected SignatureScope(final String name, final Digest digest) {
+	protected SignatureScope(final DSSDocument document) {
+		this(document.getName(), document);
+	}
+
+	/**
+	 * Default constructor with name provided
+	 *
+	 * @param name {@link String} document name
+	 * @param document {@link DSSDocument}
+	 */
+	protected SignatureScope(final String name, final DSSDocument document) {
 		this.name = name;
-		this.dataDigest = digest;
+		this.document = document;
 	}
 
 	/**
@@ -73,8 +87,18 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	 *
 	 * @return {@link String}
 	 */
-	public String getName() {
+	public String getDocumentName() {
 		return name;
+	}
+
+	/**
+	 * Returns a signature scope name
+	 *
+	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider} to extract a token identifier, when required
+	 * @return {@link String}
+	 */
+	public String getName(TokenIdentifierProvider tokenIdentifierProvider) {
+		return getDocumentName();
 	}
 	
 	/**
@@ -82,16 +106,24 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	 *
 	 * @return {@link Digest}
 	 */
-	public Digest getDigest() {
-		return dataDigest;
+	public Digest getDigest(DigestAlgorithm digestAlgorithm) {
+		if (document != null) {
+			if (document instanceof DigestDocument) {
+				return ((DigestDocument) document).getExistingDigest();
+			} else {
+				return new Digest(digestAlgorithm, Base64.getDecoder().decode(document.getDigest(digestAlgorithm)));
+			}
+		}
+		return null;
 	}
 
 	/**
 	 * Gets the signature scope description
 	 *
+	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider} to extract a token identifier, when required
 	 * @return {@link String}
 	 */
-	public abstract String getDescription();
+	public abstract String getDescription(TokenIdentifierProvider tokenIdentifierProvider);
 	
 	/**
 	 * Returns a list of transformations on the original document when applicable
@@ -140,7 +172,7 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 		if (dssId != null) {
 			return dssId;
 		}
-		String uniqueString = name + dataDigest.toString();
+		String uniqueString = name + getDigest(DigestAlgorithm.SHA256);
 		dssId = new DataIdentifier(uniqueString.getBytes());
 		return dssId;
 	}
@@ -158,7 +190,7 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	public String toString() {
 		return "SignatureScope{" +
 				"name='" + name + '\'' +
-				", dataDigest=" + dataDigest +
+				", document=" + document +
 				", dssId=" + dssId +
 				", children=" + children +
 				'}';

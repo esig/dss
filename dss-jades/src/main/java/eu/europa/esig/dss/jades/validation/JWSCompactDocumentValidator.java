@@ -42,6 +42,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 	 * Empty constructor
 	 */
 	public JWSCompactDocumentValidator() {
+		// empty
 	}
 
 	/**

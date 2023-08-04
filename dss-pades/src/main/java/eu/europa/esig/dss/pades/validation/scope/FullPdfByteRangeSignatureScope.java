@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 
 /**
@@ -30,6 +30,8 @@ import eu.europa.esig.dss.pades.validation.ByteRange;
  */
 public class FullPdfByteRangeSignatureScope extends PdfByteRangeSignatureScope {
 
+    private static final long serialVersionUID = -1284820739809488661L;
+
     /** A string used for a fully covered PDF representation */
     private static final String FULL_PDF = "Full PDF";
 
@@ -37,10 +39,10 @@ public class FullPdfByteRangeSignatureScope extends PdfByteRangeSignatureScope {
      * Default constructor
      *
      * @param byteRange {@link ByteRange} used byte range
-     * @param digest {@link Digest} of the signed byte range
+     * @param document {@link DSSDocument} pdf revision document
      */
-    public FullPdfByteRangeSignatureScope(final ByteRange byteRange, final Digest digest) {
-        super(FULL_PDF, byteRange, digest);
+    public FullPdfByteRangeSignatureScope(final ByteRange byteRange, final DSSDocument document) {
+        super(FULL_PDF, byteRange, document);
     }
 
     @Override

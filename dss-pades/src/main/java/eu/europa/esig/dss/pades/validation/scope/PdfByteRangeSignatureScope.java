@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.pades.validation.scope;
 
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 import java.util.Objects;
 
@@ -42,15 +43,15 @@ public abstract class PdfByteRangeSignatureScope extends SignatureScope {
 	 *
 	 * @param name {@link String} document name
 	 * @param byteRange {@link ByteRange}
-	 * @param digest {@link Digest}
+	 * @param document {@link DSSDocument} pdf revision document
 	 */
-	protected PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final Digest digest) {
-		super(name, digest);
+	protected PdfByteRangeSignatureScope(final String name, final ByteRange byteRange, final DSSDocument document) {
+		super(name, document);
 		this.byteRange = byteRange;
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
 		return "The document ByteRange : " + byteRange;
 	}
 

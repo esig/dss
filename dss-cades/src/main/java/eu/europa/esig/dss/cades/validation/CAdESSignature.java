@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
+import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
 import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
@@ -204,6 +206,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public SignerId getSignerId() {
 		return signerInformation.getSID();
+	}
+
+	@Override
+	protected List<SignatureScope> findSignatureScopes() {
+		return new CAdESSignatureScopeFinder().findSignatureScope(this);
 	}
 
 	@Override

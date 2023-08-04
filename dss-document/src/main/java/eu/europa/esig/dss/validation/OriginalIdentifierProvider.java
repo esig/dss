@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 /**
  * Returns the original hash-based calculated {@code java.lang.String} identifier for the given token

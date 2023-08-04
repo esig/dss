@@ -104,7 +104,7 @@ public class PAdESExtensionBToLTADocWithVRITest extends AbstractPAdESTestValidat
                     docTstFound = true;
 
                 } else if (Utils.collectionSize(timestampWrapper.getTimestampedTimestamps()) == 1) {
-                    assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
+                    assertEquals(3, timestampWrapper.getTimestampedSignedData().size());
                     assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
                     assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedCertificates()));
                     assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedRevocations()));

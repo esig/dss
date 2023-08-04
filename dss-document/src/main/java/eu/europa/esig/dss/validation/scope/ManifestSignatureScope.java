@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 import java.util.List;
 
@@ -36,26 +38,35 @@ public final class ManifestSignatureScope extends SignatureScopeWithTransformati
 	/**
 	 * Default constructor
 	 *
-	 * @param name {@link String} manifest filename
-	 * @param digest {@link Digest}
+	 * @param manifestFile {@link ManifestFile}
 	 */
-	public ManifestSignatureScope(final String name, final Digest digest) {
-		super(name, digest, null);
+	public ManifestSignatureScope(final ManifestFile manifestFile) {
+		this(manifestFile, null);
 	}
 
 	/**
 	 * Constructor with a list of XML transformations (to be used for XAdES only)
 	 *
-	 * @param name {@link String} manifest filename
-	 * @param digest {@link Digest}
+	 * @param manifestFile {@link ManifestFile}
 	 * @param transformations a list of {@link String} transforms definitions
 	 */
-	public ManifestSignatureScope(final String name, final Digest digest, final List<String> transformations) {
-		super(name, digest, transformations);
+	public ManifestSignatureScope(final ManifestFile manifestFile, final List<String> transformations) {
+		super(manifestFile.getFilename(), manifestFile.getDocument(), transformations);
+	}
+
+	/**
+	 * Constructor with a list of XML transformations (to be used for XAdES only)
+	 *
+	 * @param filename {@link String} name of the manifest file
+	 * @param document {@link DSSDocument} manifest content
+	 * @param transformations a list of {@link String} transforms definitions
+	 */
+	public ManifestSignatureScope(final String filename, final DSSDocument document, final List<String> transformations) {
+		super(filename, document, transformations);
 	}
 
     @Override
-    public String getDescription() {
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
         return "Manifest document";
     }
 

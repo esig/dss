@@ -55,16 +55,18 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 * The empty constructor, instantiate {@link CAdESSignatureScopeFinder}
 	 */
 	CMSDocumentValidator() {
-		this(new CAdESSignatureScopeFinder());
+		// empty
 	}
 
 	/**
 	 * The empty constructor
 	 *
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use for a signatureScopes extraction
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	CMSDocumentValidator(SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
-		super(signatureScopeFinder);
+		// empty
 	}
 
 	/**
@@ -74,7 +76,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *            pkcs7-signature(s)
 	 */
 	public CMSDocumentValidator(final CMSSignedData cmsSignedData) {
-		this();
 		this.cmsSignedData = cmsSignedData;
 	}
 
@@ -85,9 +86,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *            document to validate (with the signature(s))
 	 */
 	public CMSDocumentValidator(final DSSDocument document) {
-		this();
 		Objects.requireNonNull(document, "Document to be validated cannot be null!");
-
 		this.document = document;
 		this.cmsSignedData = toCMSSignedData(document);
 	}
@@ -105,11 +104,11 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	 *
 	 * @param document {@link DSSDocument} representing a CMSSignedData to be validated
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 * @deprecated since DSS 5.13. Use {@code new CMSDocumentValidator(DSSDocument document)} instead.
 	 */
+	@Deprecated
 	protected CMSDocumentValidator(final DSSDocument document, SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
-		this(signatureScopeFinder);
-		this.document = document;
-		this.cmsSignedData = DSSUtils.toCMSSignedData(document);
+		this(document);
 	}
 
 	@Override

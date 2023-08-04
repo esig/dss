@@ -542,7 +542,7 @@ public class SignatureValidationContext implements ValidationContext {
 			Set<CertificateToken> issuerCandidates = new HashSet<>();
 			CertificateToken timestampSigner = theBestCandidate.getCertificateToken();
 			if (timestampSigner == null) {
-				issuerCandidates.addAll(allCertificateSources.getByCertificateIdentifier(theBestCandidate.getSignerInfo()));
+				issuerCandidates.addAll(allCertificateSources.getBySignerIdentifier(theBestCandidate.getSignerInfo()));
 			} else {
 				issuerCandidates.add(timestampSigner);
 			}

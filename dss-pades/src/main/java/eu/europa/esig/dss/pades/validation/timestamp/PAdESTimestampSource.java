@@ -25,10 +25,12 @@ import eu.europa.esig.dss.cades.validation.timestamp.CAdESTimestampSource;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.RevocationInfoArchival;
+import eu.europa.esig.dss.pades.validation.scope.PAdESTimestampScopeFinder;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
@@ -143,6 +145,10 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
 
                 final PdfDocTimestampRevision timestampRevision = (PdfDocTimestampRevision) pdfRevision;
                 final TimestampToken timestampToken = timestampRevision.getTimestampToken();
+
+                List<SignatureScope> timestampScopes = getTimestampScopes(timestampToken);
+                timestampToken.setTimestampScopes(timestampScopes);
+                addReferences(individualTimestampReferences, getSignerDataTimestampedReferences(timestampScopes));
 
                 if (dssRevisionReached) {
                     timestampToken.setArchiveTimestampType(ArchiveTimestampType.PAdES);
@@ -265,6 +271,13 @@ public class PAdESTimestampSource extends CAdESTimestampSource {
             final DSSMessageDigest messageDigest = messageDigestBuilder.getSignatureTimestampMessageDigest();
             timestampToken.matchData(messageDigest);
         }
+    }
+
+    @Override
+    protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
+        PAdESTimestampScopeFinder timestampScopeFinder = new PAdESTimestampScopeFinder();
+        timestampScopeFinder.setSignature(signature);
+        return timestampScopeFinder.findTimestampScope(timestampToken);
     }
 
     @Override

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.List;
 
@@ -35,11 +35,11 @@ public final class XmlFullSignatureScope extends XmlRootSignatureScope {
 	 * Constructor with document name
 	 *
 	 * @param name {@link String} document name
+	 * @param document {@link DSSDocument}
 	 * @param transformations a list of {@link String} transform descriptions
-	 * @param digest {@link Digest} of the element
 	 */
-	protected XmlFullSignatureScope(String name, List<String> transformations, Digest digest) {
-		super(name, transformations, digest);
+	protected XmlFullSignatureScope(final String name, final DSSDocument document, final List<String> transformations) {
+		super(name, document, transformations);
 	}
 
 }

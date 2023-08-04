@@ -45,7 +45,8 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -352,10 +353,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
             List<TimestampToken> timestampTokens;
 
             if (isContentTimestamp(signedAttribute)) {
-                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.CONTENT_TIMESTAMP);
+                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.CONTENT_TIMESTAMP, getSignerDataReferences());
 
             } else if (isAllDataObjectsTimestamp(signedAttribute)) {
-                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
+                timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.ALL_DATA_OBJECTS_TIMESTAMP, getSignerDataReferences());
 
             } else if (isIndividualDataObjectsTimestamp(signedAttribute)) {
                 timestampTokens = makeTimestampTokens(signedAttribute, TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
@@ -1023,6 +1024,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         for (final TimestampToken timestampToken : getContentTimestamps()) {
             messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getContentTimestampMessageDigest();
             timestampToken.matchData(messageDigest);
+            timestampToken.setTimestampScopes(getTimestampScopes(timestampToken));
         }
 
         /*
@@ -1056,6 +1058,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
             if (!timestampToken.isProcessed()) {
                 messageDigest = getTimestampMessageImprintDigestBuilder(timestampToken).getArchiveTimestampMessageDigest();
                 timestampToken.matchData(messageDigest);
+                timestampToken.setTimestampScopes(getTimestampScopes(timestampToken));
             }
         }
 
@@ -1078,6 +1081,18 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @return {@link TimestampMessageDigestBuilder}
      */
     protected abstract TimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(TimestampToken timestampToken);
+
+    /**
+     * Generates timestamp token scopes
+     *
+     * @param timestampToken {@link TimestampToken} to get timestamp sources for
+     * @return a list of {@link SignatureScope}s
+     */
+    protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
+        EncapsulatedTimestampScopeFinder timestampScopeFinder = new EncapsulatedTimestampScopeFinder();
+        timestampScopeFinder.setSignature(signature);
+        return timestampScopeFinder.findTimestampScope(timestampToken);
+    }
 
     private void processExternalTimestamp(TimestampToken externalTimestamp) {
         // add all validation data present in Signature CMS SignedData, because an external timestamp covers a whole signature file

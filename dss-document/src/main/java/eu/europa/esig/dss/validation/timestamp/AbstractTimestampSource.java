@@ -266,7 +266,7 @@ public abstract class AbstractTimestampSource {
 		for (CertificateRef certRef : certificateRefs) {
 			Set<CertificateToken> certificateTokens = currentCertificateSource.findTokensFromCertRef(certRef);
 			if (Utils.isCollectionEmpty(certificateTokens)) {
-				certificateTokens = listCertificateSource.findTokensFromRefs(certRef);
+				certificateTokens = listCertificateSource.findTokensFromCertRef(certRef);
 			}
 			if (Utils.isCollectionNotEmpty(certificateTokens)) {
 				addReferences(timestampedReferences, createReferencesForCertificates(certificateTokens));

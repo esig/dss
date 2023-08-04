@@ -44,6 +44,7 @@ public class PDFADocumentValidator extends PDFDocumentValidator {
      * Empty constructor
      */
     protected PDFADocumentValidator() {
+        // empty
     }
 
     /**

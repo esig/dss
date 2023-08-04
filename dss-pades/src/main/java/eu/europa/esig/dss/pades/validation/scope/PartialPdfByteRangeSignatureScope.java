@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 
 /**
@@ -30,6 +30,8 @@ import eu.europa.esig.dss.pades.validation.ByteRange;
  */
 public class PartialPdfByteRangeSignatureScope extends PdfByteRangeSignatureScope {
 
+    private static final long serialVersionUID = -8793601604854976873L;
+
     /** A string used for a partially covered PDF representation */
     private static final String PARTIAL_PDF = "Partial PDF";
 
@@ -37,10 +39,10 @@ public class PartialPdfByteRangeSignatureScope extends PdfByteRangeSignatureScop
      * Default constructor
      *
      * @param byteRange {@link ByteRange} used byte range
-     * @param digest {@link Digest} of the signed byte range
+     * @param document {@link DSSDocument} representing content of the signed byte range
      */
-    public PartialPdfByteRangeSignatureScope(final ByteRange byteRange, final Digest digest) {
-        super(PARTIAL_PDF, byteRange, digest);
+    public PartialPdfByteRangeSignatureScope(final ByteRange byteRange, final DSSDocument document) {
+        super(PARTIAL_PDF, byteRange, document);
     }
 
     @Override

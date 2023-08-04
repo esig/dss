@@ -24,13 +24,13 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
 import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +93,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
      */
     private List<SignatureScope> getTimestampSignatureScopeForManifest(ManifestFile manifestFile) {
         List<SignatureScope> result = new ArrayList<>();
-        result.add(new ManifestSignatureScope(manifestFile.getFilename(), getDigest(manifestFile.getDocument())));
+        result.add(new ManifestSignatureScope(manifestFile));
         if (Utils.isCollectionNotEmpty(containerDocuments)) {
             List<DSSDocument> rootLevelDocuments = ASiCUtils.getRootLevelDocuments(containerDocuments);
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
@@ -130,11 +130,10 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
 
     private List<SignatureScope> getTimestampSignatureScopeForZipPackage(DSSDocument document) {
         List<SignatureScope> result = new ArrayList<>();
-        result.add(new ContainerSignatureScope(document.getName(), getDigest(document)));
+        result.add(new ContainerSignatureScope(document));
         if (Utils.isCollectionNotEmpty(archiveDocuments)) {
             for (DSSDocument archivedDocument : archiveDocuments) {
-                result.add(new ContainerContentSignatureScope(DSSUtils.decodeURI(archivedDocument.getName()),
-                        getDigest(archivedDocument)));
+                result.add(new ContainerContentSignatureScope(archivedDocument));
             }
         }
         return result;

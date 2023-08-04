@@ -27,12 +27,9 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
-import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
-import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
-import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
 import eu.europa.esig.xades.definition.XAdESPaths;
 import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
 import eu.europa.esig.xades.definition.xades122.XAdES122Paths;
@@ -83,7 +80,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 *                    The instance of {@code DSSDocument} to validate
 	 */
 	public XMLDocumentValidator(final DSSDocument dssDocument) {
-		super(new XAdESSignatureScopeFinder());
 		Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
 
 		this.document = dssDocument;
@@ -173,7 +169,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * Removes all of the elements from the list of query holders. The list will be empty after this call returns.
+	 * Removes all elements from the list of query holders. The list will be empty after this call returns.
 	 */
 	public void clearQueryHolders() {
 		xadesPathsHolders.clear();
@@ -193,11 +189,6 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		DefaultSignaturePolicyValidatorLoader signaturePolicyValidatorLoader = new DefaultSignaturePolicyValidatorLoader();
 		signaturePolicyValidatorLoader.setDefaultSignaturePolicyValidator(new XMLSignaturePolicyValidator());
 		return signaturePolicyValidatorLoader;
-	}
-
-	@Override
-	protected EncapsulatedTimestampScopeFinder getTimestampScopeFinder() {
-		return new XAdESTimestampScopeFinder();
 	}
 
 }

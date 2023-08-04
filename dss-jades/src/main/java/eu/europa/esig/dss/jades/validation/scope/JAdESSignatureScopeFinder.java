@@ -39,7 +39,7 @@ import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,8 +81,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				} else if (originalDocuments.size() == 1) {
 					if (jadesSignature.isCounterSignature()) {
 						// only one document shall be present
-						return Collections.singletonList(new CounterSignatureScope(
-								getTokenIdentifierProvider().getIdAsString(jadesSignature.getMasterSignature()), getDigest(originalDocuments.get(0)) ));
+						return Collections.singletonList(new CounterSignatureScope(jadesSignature.getMasterSignature(), originalDocuments.get(0)));
 					} else {
 						return Collections.singletonList(getSignatureScopeFromOriginalDocument(originalDocuments.get(0)));
 					}
@@ -125,11 +124,10 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	protected SignatureScope getSignatureScopeFromOriginalDocument(DSSDocument originalDocument) {
 		if (originalDocument instanceof DigestDocument) {
 			DigestDocument digestDocument = (DigestDocument) originalDocument;
-			return new DigestSignatureScope(originalDocument.getName(), digestDocument.getExistingDigest());
+			return new DigestSignatureScope(originalDocument.getName(), digestDocument);
 			
 		} else {
-			return new FullSignatureScope(originalDocument.getName(),
-					getDigest(originalDocument) );
+			return new FullSignatureScope(originalDocument.getName(), originalDocument);
 		}
 	}
 	
@@ -170,10 +168,10 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (originalDocument instanceof DigestDocument) {
 				DigestDocument digestDocument = (DigestDocument) originalDocument;
-				result.add(new DigestSignatureScope(documentName, digestDocument.getExistingDigest()));
+				result.add(new DigestSignatureScope(documentName, digestDocument));
 	
 			} else {
-				result.add(new FullSignatureScope(documentName, getDigest(originalDocument)));
+				result.add(new FullSignatureScope(documentName, originalDocument));
 				
 			}
 		}
@@ -202,9 +200,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	
 	private SignatureScope getHttpHeadersPayloadSignatureScope(List<DSSDocument> originalDocuments) {
 		HttpHeadersPayloadBuilder httpHeadersPayloadBuilder = new HttpHeadersPayloadBuilder(originalDocuments, false);
-		byte[] payload = httpHeadersPayloadBuilder.build();
-		byte[] digest = DSSUtils.digest(getDefaultDigestAlgorithm(), payload);
-		return new HTTPHeaderSignatureScope(new Digest(getDefaultDigestAlgorithm(), digest));
+		return new HTTPHeaderSignatureScope(createInMemoryDocument(httpHeadersPayloadBuilder.build()));
 	}
 	
 	private SignatureScope getHttpHeaderDigestSignatureScope(HTTPHeader digestHttpHeader) {
@@ -212,9 +208,9 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 		if (digest != null) {
 			if (digestHttpHeader instanceof HTTPHeaderDigest) {
 				HTTPHeaderDigest httpHeaderDigest = (HTTPHeaderDigest) digestHttpHeader;
-				return new HTTPHeaderMessageBodySignatureScope(httpHeaderDigest.getMessageBodyDocument().getName(), digest);
+				return new HTTPHeaderMessageBodySignatureScope(httpHeaderDigest.getMessageBodyDocument());
 			} else {
-				return new HTTPHeaderMessageBodySignatureScope(digest);
+				return new HTTPHeaderMessageBodySignatureScope(createDigestDocument(digest));
 			}
 		}
 		return null;

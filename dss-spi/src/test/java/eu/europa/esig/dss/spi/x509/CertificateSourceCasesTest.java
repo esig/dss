@@ -68,8 +68,8 @@ public class CertificateSourceCasesTest {
 		assertTrue(lcs.isTrusted(c1));
 		assertFalse(lcs.isTrusted(c2));
 
-		assertEquals(2, lcs.getCertificateSource(c1).size());
-		assertEquals(1, lcs.getCertificateSource(c2).size());
+		assertEquals(2, lcs.getCertificateSourceType(c1).size());
+		assertEquals(1, lcs.getCertificateSourceType(c2).size());
 	}
 
 	@Test

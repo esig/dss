@@ -138,7 +138,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		this.signerInformation = signature.getSignerInformation();
 		this.detachedDocuments = signature.getDetachedContents();
 		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				cmsSignedData, certificateSource.getAllCertificateTokens());
+				cmsSignedData, certificateSource.getCertificates());
 	}
 
 	@Override

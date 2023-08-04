@@ -36,10 +36,12 @@ import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +53,8 @@ import java.util.List;
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
 
 	/**
 	 * In case of a detached signature this is the signed document.
@@ -427,16 +431,27 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return Collections.emptyList();
 	}
 
+	@Deprecated
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void findSignatureScope(SignatureScopeFinder signatureScopeFinder) {
-		signatureScopes = signatureScopeFinder.findSignatureScope(this);
+	public void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder) {
+		LOG.warn("Use of deprecated method! The signatureScopeFinder variable is ignored. Use method #getSignatureScopes instead.");
+		signatureScopes = findSignatureScopes();
 	}
 
 	@Override
 	public List<SignatureScope> getSignatureScopes() {
+		if (signatureScopes == null) {
+			signatureScopes = findSignatureScopes();
+		}
 		return signatureScopes;
 	}
+
+	/**
+	 * Finds signature scopes
+	 *
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected abstract List<SignatureScope> findSignatureScopes();
 	
 	@Override
 	public List<TimestampToken> getContentTimestamps() {

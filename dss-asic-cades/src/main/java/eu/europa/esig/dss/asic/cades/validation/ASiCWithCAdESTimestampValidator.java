@@ -25,9 +25,8 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 
@@ -118,22 +117,17 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 	}
 
 	@Override
-	protected ASiCWithCAdESTimestampScopeFinder getTimestampScopeFinder() {
-		return new ASiCWithCAdESTimestampScopeFinder();
-	}
-
-	@Override
-	protected void prepareDetachedTimestampScopeFinder(DetachedTimestampScopeFinder timestampScopeFinder) {
-		super.prepareDetachedTimestampScopeFinder(timestampScopeFinder);
-
-		ASiCWithCAdESTimestampScopeFinder asicWithCAdESTimestampScopeFinder = (ASiCWithCAdESTimestampScopeFinder) timestampScopeFinder;
-		asicWithCAdESTimestampScopeFinder.setContainerDocuments(originalDocuments);
-		asicWithCAdESTimestampScopeFinder.setArchiveDocuments(archiveDocuments);
+	protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
+		ASiCWithCAdESTimestampScopeFinder timestampScopeFinder = new ASiCWithCAdESTimestampScopeFinder();
+		timestampScopeFinder.setContainerDocuments(originalDocuments);
+		timestampScopeFinder.setArchiveDocuments(archiveDocuments);
+		timestampScopeFinder.setTimestampedData(getTimestampedData());
+		return timestampScopeFinder.findTimestampScope(timestampToken);
 	}
 
 	@Override
 	protected boolean addReference(SignatureScope signatureScope) {
-		String fileName = signatureScope.getName();
+		String fileName = signatureScope.getDocumentName();
 		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName));
 	}
 

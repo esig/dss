@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
+import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.jades.validation.timestamp.JAdESTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -1117,6 +1119,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Error(s) occurred during the JSON schema validation : {}", validationErrors);
 		}
 		return validationErrors;
+	}
+
+	@Override
+	protected List<SignatureScope> findSignatureScopes() {
+		return new JAdESSignatureScopeFinder().findSignatureScope(this);
 	}
 
 	@Override

@@ -489,9 +489,10 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * Runs SignatureScopeFinder
 	 * 
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 * @deprecated since DSS 5.13. Use {@code #getSignatureScopes} directly
 	 */
-	@SuppressWarnings("rawtypes")
-	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
+	@Deprecated
+	void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder);
 
 	/**
 	 * Returns a list of found SignatureScopes NOTE: the method

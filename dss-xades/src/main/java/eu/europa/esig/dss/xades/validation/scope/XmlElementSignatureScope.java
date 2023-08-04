@@ -21,7 +21,8 @@
 package eu.europa.esig.dss.xades.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
 import java.util.List;
@@ -37,16 +38,16 @@ public class XmlElementSignatureScope extends SignatureScopeWithTransformations 
 	 * Default constructor
 	 *
 	 * @param xmlId {@link String} id of the element
+	 * @param document {@link DSSDocument}
 	 * @param transformations a list of {@link String} transform descriptions
-	 * @param digest {@link Digest} of the element
 	 */
-	protected XmlElementSignatureScope(final String xmlId, final List<String> transformations, final Digest digest) {
-		super(xmlId, digest, transformations);
+	protected XmlElementSignatureScope(final String xmlId, final DSSDocument document, final List<String> transformations) {
+		super(xmlId, document, transformations);
 	}
 
 	@Override
-	public String getDescription() {
-		String description = "The XML element with ID '" + getName() + "'";
+	public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
+		String description = "The XML element with ID '" + getDocumentName() + "'";
 		return addTransformationIfNeeded(description);
 	}
 

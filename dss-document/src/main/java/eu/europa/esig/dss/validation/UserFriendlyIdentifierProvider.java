@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -41,7 +42,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -349,8 +350,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     protected String getIdAsStringForSignatureScope(SignatureScope signatureScope) {
         StringBuilder stringBuilder = new StringBuilder(signedDataPrefix);
         stringBuilder.append(STRING_DELIMITER);
-        if (Utils.isStringNotBlank(signatureScope.getName())) {
-            stringBuilder.append(getUserFriendlyString(signatureScope.getName()));
+        String documentName = signatureScope.getName(this);
+        if (Utils.isStringNotBlank(documentName)) {
+            stringBuilder.append(getUserFriendlyString(documentName));
         } else {
             stringBuilder.append(signatureScope.getType().toString());
         }

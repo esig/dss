@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -141,7 +142,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	
 	/**
 	 * This method allows to specify if the ETSI Validation Report must be generated.
-	 * By default the value if TRUE (the ETSI Validation report will be generated).
+	 * Default : TRUE (the ETSI Validation report will be generated).
 	 * 
 	 * @param enableEtsiValidationReport - TRUE if the report must be generated, FALSE otherwise
 	 */
@@ -262,7 +263,9 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *
 	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param currentValidatorSignatures a collection of {@link AdvancedSignature}s
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.validation.AdvancedSignature.getSignatureScopes()}
 	 */
+	@Deprecated
 	<T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures);
 
 	/**

@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 
 /**
  * The Signature Scope defines a Digest document
@@ -32,17 +34,17 @@ public class DigestSignatureScope extends SignatureScope {
 	private static final long serialVersionUID = -5483258316745203622L;
 
 	/**
-	 * Default constructor
+	 * Default constructor with a filename
 	 *
-	 * @param name {@link String} filename
-	 * @param digest {@link Digest}
+	 * @param filename {@link String} filename
+	 * @param digestDocument {@link String} filename
 	 */
-	public DigestSignatureScope(String name, Digest digest) {
-		super(name, digest);
+	public DigestSignatureScope(final String filename, DSSDocument digestDocument) {
+		super(filename, digestDocument);
 	}
 
     @Override
-    public String getDescription() {
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
         return "Digest of the document content";
     }
 

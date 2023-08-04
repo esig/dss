@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 
 /**
  * Marker class meaning that the signature covers the whole document.
@@ -34,15 +36,15 @@ public final class FullSignatureScope extends SignatureScope {
     /**
      * Default constructor
      *
-     * @param name {@link String} filename
-     * @param digest {@link Digest}
+     * @param filename {@link String}
+     * @param document {@link DSSDocument}
      */
-    public FullSignatureScope(final String name, Digest digest) {
-        super(name, digest);
+    public FullSignatureScope(final String filename, final DSSDocument document) {
+        super(filename, document);
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
         return "Full document";
     }
 

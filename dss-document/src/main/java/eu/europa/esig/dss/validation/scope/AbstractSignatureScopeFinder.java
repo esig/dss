@@ -20,14 +20,12 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
-import eu.europa.esig.dss.validation.TokenIdentifierProvider;
 
 /**
  * The abstract class for {@code SignatureScope} finding
@@ -35,72 +33,11 @@ import eu.europa.esig.dss.validation.TokenIdentifierProvider;
  */
 public abstract class AbstractSignatureScopeFinder {
 
-	/** The DigestAlgorithm to use for digest computation */
-	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
-
-	/** The TokenIdentifierProvider to be used for extraction of token IDs */
-	private TokenIdentifierProvider tokenIdentifierProvider = new OriginalIdentifierProvider();
-
 	/**
 	 * Default constructor instantiating the object with default values
 	 */
 	protected AbstractSignatureScopeFinder() {
-	}
-
-	/**
-	 * Returns the used {@code DigestAlgorithm}
-	 *
-	 * @return {@link DigestAlgorithm}
-	 */
-	protected DigestAlgorithm getDefaultDigestAlgorithm() {
-		return defaultDigestAlgorithm;
-	}
-
-	/**
-	 * Sets the default DigestAlgorithm to use for {@code SignatureScope} digest computation
-	 *
-	 * @param defaultDigestAlgorithm {@link DigestAlgorithm} to use
-	 */
-	public void setDefaultDigestAlgorithm(DigestAlgorithm defaultDigestAlgorithm) {
-		this.defaultDigestAlgorithm = defaultDigestAlgorithm;
-	}
-
-	/**
-	 * Gets the {@code TokenIdentifierProvider}
-	 *
-	 * @return {@link TokenIdentifierProvider}
-	 */
-	protected TokenIdentifierProvider getTokenIdentifierProvider() {
-		return tokenIdentifierProvider;
-	}
-
-	/**
-	 * Sets the {@code TokenIdentifierProvider} to be used for identifiers extraction
-	 *
-	 * @param tokenIdentifierProvider {@link TokenIdentifierProvider}
-	 */
-	public void setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider) {
-		this.tokenIdentifierProvider = tokenIdentifierProvider;
-	}
-
-	/**
-	 * Gets digest of a document
-	 *
-	 * @param document {@link DSSDocument}
-	 * @return {@link Digest}
-	 */
-	protected Digest getDigest(DSSDocument document) {
-		return new Digest(defaultDigestAlgorithm, Utils.fromBase64(document.getDigest(defaultDigestAlgorithm)));
-	}
-
-	/**
-	 * Gets digest of a binaries
-	 *
-	 * @param dataBytes a byte array
-	 * @return {@link Digest}
-	 */
-	protected Digest getDigest(byte[] dataBytes) {
-		return new Digest(defaultDigestAlgorithm, DSSUtils.digest(defaultDigestAlgorithm, dataBytes));
+		// empty
 	}
 
 	/**
@@ -121,6 +58,26 @@ public abstract class AbstractSignatureScopeFinder {
 	 */
 	protected boolean isASiCEArchive(AdvancedSignature advancedSignature) {
 		return advancedSignature.getManifestFile() != null;
+	}
+
+	/**
+	 * Creates a {@code DSSDocument} from given {@code binaries}
+	 *
+	 * @param binaries {@link Digest} to create an in-memory document instance from
+	 * @return {@link DSSDocument}
+	 */
+	protected DSSDocument createInMemoryDocument(byte[] binaries) {
+		return new InMemoryDocument(binaries);
+	}
+
+	/**
+	 * Creates a {@code DSSDocument} from given {@code digest}
+	 *
+	 * @param digest {@link Digest} to create a digest document instance from
+	 * @return {@link DSSDocument}
+	 */
+	protected DSSDocument createDigestDocument(Digest digest) {
+		return new DigestDocument(digest.getAlgorithm(), Utils.toBase64(digest.getValue()));
 	}
 
 }

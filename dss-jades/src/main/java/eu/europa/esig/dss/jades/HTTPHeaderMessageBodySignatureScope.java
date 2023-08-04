@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.jades;
 
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 /**
  * The signature scope used to define the HTTPHeader message body
@@ -32,24 +33,14 @@ public class HTTPHeaderMessageBodySignatureScope extends HTTPHeaderSignatureScop
 	/**
 	 * The default constructor
 	 *
-	 * @param digest {@link Digest} of the document
+	 * @param document {@link DSSDocument} message body content
 	 */
-	public HTTPHeaderMessageBodySignatureScope(Digest digest) {
-		super(digest);
-	}
-
-	/**
-	 * Constructor with a document name
-	 *
-	 * @param documentName {@link String} document name
-	 * @param digest {@link Digest} of the document
-	 */
-	public HTTPHeaderMessageBodySignatureScope(String documentName, Digest digest) {
-		super(documentName, digest);
+	public HTTPHeaderMessageBodySignatureScope(DSSDocument document) {
+		super(document);
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
 		return "Message body value digest";
 	}
 

@@ -85,7 +85,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -378,8 +378,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlSignerData getXmlSignerData(SignatureScope signatureScope) {
 		XmlSignerData xmlSignedData = new XmlSignerData();
 		xmlSignedData.setId(identifierProvider.getIdAsString(signatureScope));
-		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest()));
-		xmlSignedData.setReferencedName(signatureScope.getName());
+		xmlSignedData.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(signatureScope.getDigest(defaultDigestAlgorithm)));
+		xmlSignedData.setReferencedName(signatureScope.getName(identifierProvider));
 		return xmlSignedData;
 	}
 
@@ -887,9 +887,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private XmlSignatureScope getXmlSignatureScope(SignatureScope scope) {
 		final XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
-		xmlSignatureScope.setName(scope.getName());
+		xmlSignatureScope.setName(scope.getName(identifierProvider));
 		xmlSignatureScope.setScope(scope.getType());
-		xmlSignatureScope.setDescription(scope.getDescription());
+		xmlSignatureScope.setDescription(scope.getDescription(identifierProvider));
 		xmlSignatureScope.setTransformations(scope.getTransformations());
 		xmlSignatureScope.setSignerData(xmlSignedDataMap.get(scope.getDSSIdAsString()));
 		return xmlSignatureScope;

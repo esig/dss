@@ -37,7 +37,6 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
-import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContainer {@link DSSDocument} to be validated
 	 */
 	public ASiCContainerWithXAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer, new XAdESSignatureScopeFinder());
+		super(asicContainer);
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	public ASiCContainerWithXAdESValidator(final ASiCContent asicContent) {
-		super(asicContent, new XAdESSignatureScopeFinder());
+		super(asicContent);
 	}
 
 	@Override

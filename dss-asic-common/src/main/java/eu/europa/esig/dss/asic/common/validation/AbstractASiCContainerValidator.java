@@ -71,7 +71,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param document {@link DSSDocument} to be validated
 	 */
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
-		this(document, null);
+		this.document = document;
+		this.asicContent = extractEntries();
 	}
 
 	/**
@@ -80,7 +81,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	protected AbstractASiCContainerValidator(final ASiCContent asicContent) {
-		this(asicContent, null);
+		this.document = asicContent.getAsicContainer();
+		this.asicContent = asicContent;
 	}
 
 	/**
@@ -88,12 +90,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * 
 	 * @param document             {@link DSSDocument} to be validated
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	protected AbstractASiCContainerValidator(final DSSDocument document,
 			final SignatureScopeFinder<?> signatureScopeFinder) {
-		super(signatureScopeFinder);
-		this.document = document;
-		this.asicContent = extractEntries();
+		this(document);
 	}
 
 	/**
@@ -101,12 +103,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 *
 	 * @param asicContent          {@link ASiCContent} to be validated
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	protected AbstractASiCContainerValidator(final ASiCContent asicContent,
 											 final SignatureScopeFinder<?> signatureScopeFinder) {
-		super(signatureScopeFinder);
-		this.document = asicContent.getAsicContainer();
-		this.asicContent = asicContent;
+		this(asicContent);
 	}
 
 	/**

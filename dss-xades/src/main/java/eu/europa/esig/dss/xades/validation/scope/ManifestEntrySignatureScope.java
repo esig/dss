@@ -18,11 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.scope;
+package eu.europa.esig.dss.xades.validation.scope;
 
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,23 +43,23 @@ public class ManifestEntrySignatureScope extends SignatureScopeWithTransformatio
 	/**
 	 * Constructor with transformations (Used in XAdES)
 	 * @param entryName {@link String} name of the manifest entry
-	 * @param digest {@link Digest} of the manifest entry
+	 * @param document {@link DSSDocument} manifest entry content
 	 * @param manifestName {@link String} name of the manifest containing the entry
 	 * @param transformations list of {@link String}s transformations
 	 */
-	public ManifestEntrySignatureScope(final String entryName, final Digest digest, final String manifestName, 
-			final List<String> transformations) {
-		super(entryName, digest, transformations);
+	public ManifestEntrySignatureScope(final String entryName, final DSSDocument document, final String manifestName,
+									   final List<String> transformations) {
+		super(entryName, document, transformations);
 		this.manifestName = manifestName;
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
 		String description;
-		if (DomUtils.isElementReference(getName())) {
-			description = String.format("The XML Manifest Entry with ID '%s' from a Manifest with name '%s'", getName(), manifestName);
+		if (DomUtils.isElementReference(getDocumentName())) {
+			description = String.format("The XML Manifest Entry with ID '%s' from a Manifest with name '%s'", getDocumentName(), manifestName);
 		} else {
-			description = String.format("The File Manifest Entry with name '%s' from a Manifest with name '%s'", getName(), manifestName);
+			description = String.format("The File Manifest Entry with name '%s' from a Manifest with name '%s'", getDocumentName(), manifestName);
 		}
 		return addTransformationIfNeeded(description);
 	}

@@ -18,24 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation;
-
-import eu.europa.esig.dss.model.identifier.Identifier;
+package eu.europa.esig.dss.model.identifier;
 
 /**
- * The DSS identifier for a SignedData
+ * Generates a String identifier for a given token (e.g. {@code eu.europa.esig.dss.validation.AdvancedSignature},
+ * {@code eu.europa.esig.dss.model.x509.CertificateToken}, etc.).
+ *
+ * Caches the calculated values and takes care of duplicates
  */
-public final class DataIdentifier extends Identifier {
+public interface TokenIdentifierProvider {
 
-	private static final long serialVersionUID = -9023635708755646223L;
-
-	/**
-	 * Default constructor
-	 *
-	 * @param data the signed data binaries
-	 */
-	public DataIdentifier(final byte[] data) {
-		super("D-", data);
-	}
+    /**
+     * Gets a {@code String} identifier for a given object
+     *
+     * @param object {@link IdentifierBasedObject} to get String id for
+     * @return {@link String}
+     */
+    String getIdAsString(IdentifierBasedObject object);
 
 }

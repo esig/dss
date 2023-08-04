@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
@@ -73,7 +72,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContainer {@link DSSDocument} to be validated
 	 */
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer, new ASiCWithCAdESSignatureScopeFinder());
+		super(asicContainer);
 	}
 
 	/**
@@ -82,7 +81,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	public ASiCContainerWithCAdESValidator(final ASiCContent asicContent) {
-		super(asicContent, new ASiCWithCAdESSignatureScopeFinder());
+		super(asicContent);
 	}
 
 	@Override

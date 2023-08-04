@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.pades.validation.scope;
 
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.scope.TimestampScopeFinder;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +35,9 @@ import java.util.List;
  */
 public class PAdESTimestampScopeFinder extends PdfRevisionScopeFinder implements TimestampScopeFinder {
 
+    /** {@code AdvancedSignature} embedding the timestamp */
+    private AdvancedSignature signature;
+
     /**
      * Default constructor
      */
@@ -42,10 +45,26 @@ public class PAdESTimestampScopeFinder extends PdfRevisionScopeFinder implements
         // empty
     }
 
+    /**
+     * This method sets an encapsulating {@code AdvancedSignature}
+     *
+     * @param signature {@link AdvancedSignature}
+     */
+    public void setSignature(AdvancedSignature signature) {
+        this.signature = signature;
+    }
+
     @Override
     public List<SignatureScope> findTimestampScope(TimestampToken timestampToken) {
-        if (timestampToken.isMessageImprintDataIntact() && timestampToken instanceof PdfTimestampToken) {
-            return Arrays.asList(findSignatureScope(((PdfTimestampToken) timestampToken).getPdfRevision()));
+        if (timestampToken.isMessageImprintDataIntact()) {
+            // for a document time-stamp
+            if (timestampToken instanceof PdfTimestampToken) {
+                return Collections.singletonList(findSignatureScope(((PdfTimestampToken) timestampToken).getPdfRevision()));
+            }
+            // for a content time-stamp
+            else {
+                return signature.getSignatureScopes();
+            }
         }
         return Collections.emptyList();
     }

@@ -27,9 +27,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.dss.PdfVriDictSource;
+import eu.europa.esig.dss.pades.validation.scope.PAdESSignatureScopeFinder;
 import eu.europa.esig.dss.pades.validation.timestamp.PAdESTimestampSource;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -198,6 +200,11 @@ public class PAdESSignature extends CAdESSignature {
 	 */
 	public List<TimestampToken> getVRITimestamps() {
 		return getTimestampSource().getVriTimestamps();
+	}
+
+	@Override
+	protected List<SignatureScope> findSignatureScopes() {
+		return new PAdESSignatureScopeFinder().findSignatureScope(this);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -80,19 +80,21 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 			final List<String> transformations = xadesReferenceValidation.getTransformationNames();
 			
 			if (xadesReferenceValidation.isFound() && DigestMatcherType.XPOINTER.equals(xadesReferenceValidation.getType())) {
-				result.add(new XPointerSignatureScope(uri, transformations, getDigest(xadesReferenceValidation.getOriginalContentBytes())));
+				result.add(new XPointerSignatureScope(uri, createInMemoryDocument(xadesReferenceValidation.getOriginalContentBytes()), transformations));
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.OBJECT.equals(xadesReferenceValidation.getType())) {
 				Node objectById = xadesSignature.getObjectById(uri);
 				if (objectById != null && objectById.hasChildNodes()) {
 					Node referencedObject = objectById.getFirstChild();
-					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations, getDigest(DSSXMLUtils.getNodeBytes(referencedObject))));
+					result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, createInMemoryDocument(DomUtils.getNodeBytes(referencedObject)), transformations));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.MANIFEST.equals(xadesReferenceValidation.getType())) {
-				ManifestSignatureScope manifestSignatureScope = new ManifestSignatureScope(xadesReferenceValidation.getName(), xadesReferenceValidation.getDigest(),
+				ManifestSignatureScope manifestSignatureScope = new ManifestSignatureScope(
+						xadesReferenceValidation.getName(), createDigestDocument(xadesReferenceValidation.getDigest()),
 						xadesReferenceValidation.getTransformationNames());
 				result.add(manifestSignatureScope);
+
 				for (ReferenceValidation manifestEntry : xadesReferenceValidation.getDependentValidations()) {
 					if (manifestEntry.getName() != null && manifestEntry.isFound()) {
 						// try to get document digest from list of detached contents
@@ -101,7 +103,8 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 							manifestSignatureScope.addChildSignatureScope(detachedSignatureScopeResult);
 						} else if (manifestEntry.getDigest() != null) {
 							// if the relative detached content is not found, store the reference value
-							manifestSignatureScope.addChildSignatureScope(new ManifestEntrySignatureScope(manifestEntry.getName(), manifestEntry.getDigest(),
+							manifestSignatureScope.addChildSignatureScope(
+									new ManifestEntrySignatureScope(manifestEntry.getName(), createDigestDocument(manifestEntry.getDigest()),
 									xadesReferenceValidation.getName(), manifestEntry.getTransformationNames()));
 						}
 					}
@@ -109,14 +112,14 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (xadesReferenceValidation.isFound() && DigestMatcherType.COUNTER_SIGNATURE.equals(xadesReferenceValidation.getType()) &&
 					xadesSignature.getMasterSignature() != null) {
-            	result.add(new CounterSignatureScope(getTokenIdentifierProvider().getIdAsString(xadesSignature.getMasterSignature()),
-						getDigest(xadesReferenceValidation.getOriginalContentBytes())));
+            	result.add(new CounterSignatureScope(xadesSignature.getMasterSignature(),
+						createInMemoryDocument(xadesReferenceValidation.getOriginalContentBytes())));
 				
 			} else if (xadesReferenceValidation.isFound() && Utils.EMPTY_STRING.equals(uri)) {
 				byte[] originalContentBytes = xadesReferenceValidation.getOriginalContentBytes();
 				if (originalContentBytes != null) {
 					// self contained document
-					result.add(new XmlRootSignatureScope(transformations, getDigest(originalContentBytes)));
+					result.add(new XmlRootSignatureScope(createInMemoryDocument(originalContentBytes), transformations));
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DomUtils.isElementReference(uri)) {
@@ -124,11 +127,11 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 						xadesSignature.getSignatureElement().getOwnerDocument(), DomUtils.getId(uri));
 				if (signedElement != null) {
 					if (isEverythingCovered(xadesSignature, xmlIdOfSignedElement)) {
-						result.add(new XmlRootSignatureScope(transformations,
-								getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
+						result.add(new XmlRootSignatureScope(
+								createInMemoryDocument(DomUtils.getNodeBytes(signedElement)), transformations));
 					} else {
-						result.add(new XmlElementSignatureScope(xmlIdOfSignedElement, transformations,
-								getDigest(DSSXMLUtils.getNodeBytes(signedElement))));
+						result.add(new XmlElementSignatureScope(
+								xmlIdOfSignedElement, createInMemoryDocument(DomUtils.getNodeBytes(signedElement)), transformations));
 					}
 				}
 				
@@ -138,7 +141,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (Utils.isCollectionEmpty(transformations)) {
 				// if a matching file was not found around the detached contents and transformations are not defined, use the original reference data
-				result.add(new FullSignatureScope(uri, xadesReferenceValidation.getDigest()));
+				result.add(new FullSignatureScope(uri, createDigestDocument(xadesReferenceValidation.getDigest())));
 				
 			}
 		}
@@ -160,21 +163,20 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 					String fileName = detachedDocument.getName() != null ? detachedDocument.getName() : decodedUrl;
 					if (detachedDocument instanceof DigestDocument) {
 						DigestDocument digestDocument = (DigestDocument) detachedDocument;
-						return new DigestSignatureScope(fileName, digestDocument.getExistingDigest());
+						return new DigestSignatureScope(fileName, digestDocument);
 	
 					} else if (Utils.isCollectionNotEmpty(transformations)) {
-						return new XmlFullSignatureScope(fileName, transformations, getDigest(detachedDocument));
+						return new XmlFullSignatureScope(fileName, detachedDocument, transformations);
 	
 					} else if (isASiCSArchive(xadesSignature)) {
-						ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(decodedUrl, getDigest(detachedDocument));
+						ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(decodedUrl, detachedDocument);
 						for (DSSDocument archivedDocument : xadesSignature.getContainerContents()) {
-							containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(
-									DSSUtils.decodeURI(archivedDocument.getName()), getDigest(archivedDocument)));
+							containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(archivedDocument));
 						}
 						return containerSignatureScope;
 	
 					} else {
-						return new FullSignatureScope(fileName, getDigest(detachedDocument));
+						return new FullSignatureScope(fileName, detachedDocument);
 					}
 				}
 			}

@@ -63,6 +63,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 	 * Empty constructor
 	 */
 	public JWSSerializationDocumentValidator() {
+		// empty
 	}
 
 	/**

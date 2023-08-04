@@ -88,8 +88,11 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	/** The canonicalization algorithm to be used for message-imprint computation */
 	private String canonicalizationAlgorithm;
 
-	/** Identifies whether message-imprint shall be build as per EN 319 132-1 standard (against old version) */
+	/** Identifies whether message-imprint shall be built as per EN 319 132-1 standard (against old version) */
 	private boolean en319132;
+
+	/** A signature attribute corresponding to the time-stamp */
+	private XAdESAttribute timestampAttribute;
 
 	/**
 	 * Default constructor to be used for a new timestamp creation.
@@ -116,7 +119,6 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		this.timestampToken = timestampToken;
 		this.digestAlgorithm = timestampToken.getDigestAlgorithm();
 		this.canonicalizationAlgorithm = timestampToken.getCanonicalizationMethod();
-		this.en319132 = isEn319132TimestampToken(timestampToken);
 	}
 
 	/**
@@ -135,18 +137,37 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * Sets the canonicalization algorithm to be used for message-digest computation
 	 *
 	 * @param canonicalizationAlgorithm {@link String}
+	 * @return this {@link XAdESTimestampMessageDigestBuilder}
 	 */
-	public void setCanonicalizationAlgorithm(String canonicalizationAlgorithm) {
+	public XAdESTimestampMessageDigestBuilder setCanonicalizationAlgorithm(String canonicalizationAlgorithm) {
 		this.canonicalizationAlgorithm = canonicalizationAlgorithm;
+		return this;
 	}
 
 	/**
 	 * Sets whether the message-digest should be computed for a EN 319 132-1 standard timestamp token
 	 *
 	 * @param en319132 whether the timestamp is of EN 319 132-1 format
+	 * @return this {@link XAdESTimestampMessageDigestBuilder}
 	 */
-	public void setEn319132(boolean en319132) {
+	public XAdESTimestampMessageDigestBuilder setEn319132(boolean en319132) {
 		this.en319132 = en319132;
+		return this;
+	}
+
+	/**
+	 * Sets a signature attribute corresponding to the time-stamp token.
+	 * Defined also {@code en319132} based on the provided timestamp attribute.
+	 *
+	 * @param timestampAttribute {@link XAdESAttribute}
+	 * @return this {@link XAdESTimestampMessageDigestBuilder}
+	 */
+	public XAdESTimestampMessageDigestBuilder setTimestampAttribute(XAdESAttribute timestampAttribute) {
+		this.timestampAttribute = timestampAttribute;
+		if (timestampAttribute != null) {
+			this.en319132 = isEn319132TimestampToken(timestampAttribute);
+		}
+		return this;
 	}
 
 	@Override
@@ -341,7 +362,6 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
 
-			final XAdESAttribute timestampAttribute = getTimestampAttribute();
 			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 			for (XAdESAttribute xadesAttribute : xadesUnsignedSigProperties.getAttributes()) {
 				if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
@@ -402,13 +422,6 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return DSSMessageDigest.createEmptyDigest();
 	}
 
-	private XAdESAttribute getTimestampAttribute() {
-		if (timestampToken != null) {
-			return (XAdESAttribute) timestampToken.getTimestampAttribute();
-		}
-		return null;
-	}
-
 	@Override
 	public DSSMessageDigest getTimestampX2MessageDigest() {
 		try {
@@ -428,8 +441,6 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (unsignedProperties == null) {
 				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
 			}
-
-			final XAdESAttribute timestampAttribute = getTimestampAttribute();
 
 			byte[] canonicalizedValue = null;
 			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
@@ -649,7 +660,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			 * satisfy with the rules specified in clause 7.6.4.
 			 */
 			// } else
-			if (timestampToken != null && timestampToken.getTimestampAttribute().equals(xadesAttribute)) {
+			if (timestampAttribute != null && timestampAttribute.equals(xadesAttribute)) {
 				break;
 				
 			// } else if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(xadesAttribute.getName())) {
@@ -687,9 +698,8 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
 	}
 
-	private boolean isEn319132TimestampToken(TimestampToken timestampToken) {
-		XAdESAttribute xadesAttribute = (XAdESAttribute) timestampToken.getTimestampAttribute();
-		return checkAttributeNameMatches(xadesAttribute, XAdES132Element.ALL_DATA_OBJECTS_TIMESTAMP,
+	private boolean isEn319132TimestampToken(XAdESAttribute timestampAttribute) {
+		return checkAttributeNameMatches(timestampAttribute, XAdES132Element.ALL_DATA_OBJECTS_TIMESTAMP,
 				XAdES132Element.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP, XAdES132Element.SIGNATURE_TIMESTAMP,
 				XAdES141Element.REFS_ONLY_TIMESTAMP_V2, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2,
 				XAdES141Element.ARCHIVE_TIMESTAMP);

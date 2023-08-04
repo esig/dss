@@ -24,6 +24,8 @@ import eu.europa.esig.dss.XMLCanonicalizer;
 import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.SantuarioInitializer;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
@@ -1497,6 +1499,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public List<String> validateStructure() {
 		return DSSXMLUtils.validateAgainstXSD(xadesPaths.getXSDUtils(), new DOMSource(signatureElement));
+	}
+
+	@Override
+	protected List<SignatureScope> findSignatureScopes() {
+		return new XAdESSignatureScopeFinder().findSignatureScope(this);
 	}
 
 	/**

@@ -72,6 +72,7 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.TokenComparator;
@@ -137,7 +138,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Contains a common code for DiagnosticData building
@@ -1367,7 +1367,7 @@ public abstract class DiagnosticDataBuilder {
 	 */
 	protected Collection<CertificateToken> getUsedCertificatesByCertificateRef(CertificateRef certificateRef) {
 		final CertificateTokenRefMatcher matcher = new CertificateTokenRefMatcher();
-		final Set<CertificateToken> tokensFromRefs = allCertificateSources.findTokensFromRefs(certificateRef);
+		final Set<CertificateToken> tokensFromRefs = allCertificateSources.findTokensFromCertRef(certificateRef);
 
 		final Set<CertificateToken> certificates = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
@@ -1727,7 +1727,7 @@ public abstract class DiagnosticDataBuilder {
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {
 		List<CertificateSourceType> certificateSources = new ArrayList<>();
 		if (allCertificateSources != null) {
-			Set<CertificateSourceType> sourceTypes = allCertificateSources.getCertificateSource(token);
+			Set<CertificateSourceType> sourceTypes = allCertificateSources.getCertificateSourceType(token);
 			if (sourceTypes != null) {
 				certificateSources.addAll(sourceTypes);
 			}

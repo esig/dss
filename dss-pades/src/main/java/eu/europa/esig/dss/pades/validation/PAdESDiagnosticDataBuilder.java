@@ -237,7 +237,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	}
 
 	private void buildOrphanTokensFromDocumentSources() {
-		for (CertificateToken certificateToken : documentCertificateSource.getAllCertificateTokens()) {
+		for (CertificateToken certificateToken : documentCertificateSource.getCertificates()) {
 			String id = certificateToken.getDSSIdAsString();
 			if (!xmlCertsMap.containsKey(id) && !xmlOrphanCertificateTokensMap.containsKey(id)) {
 				buildXmlOrphanCertificateToken(certificateToken);
