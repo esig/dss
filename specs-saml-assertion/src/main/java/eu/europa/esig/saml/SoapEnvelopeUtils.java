@@ -42,6 +42,9 @@ public class SoapEnvelopeUtils extends XSDAbstractUtils {
 	/** JAXBContext */
 	private JAXBContext jc;
 
+	/**
+	 * Empty constructor
+	 */
 	private SoapEnvelopeUtils() {
 		// empty
 	}

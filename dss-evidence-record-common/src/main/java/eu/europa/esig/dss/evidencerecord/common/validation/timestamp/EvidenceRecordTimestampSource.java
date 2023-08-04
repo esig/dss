@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
@@ -10,9 +9,8 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,10 +20,9 @@ import java.util.Objects;
 /**
  * This class is used for extraction and validation of time-stamps incorporated within an Evidence Record
  *
+ * @param <ER> {@code DefaultEvidenceRecord}
  */
 public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRecord> extends AbstractTimestampSource {
-
-    private static final Logger LOG = LoggerFactory.getLogger(EvidenceRecordTimestampSource.class);
 
     /**
      * The evidence record to be validated

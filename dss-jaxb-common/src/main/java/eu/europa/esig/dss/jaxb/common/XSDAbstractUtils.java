@@ -47,6 +47,13 @@ public abstract class XSDAbstractUtils {
 	private Schema schema;
 
 	/**
+	 * Empty constructor
+	 */
+	protected XSDAbstractUtils() {
+		// empty
+	}
+
+	/**
 	 * Returns a JAXBContext
 	 * 
 	 * @return the created {@link JAXBContext}

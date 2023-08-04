@@ -51,6 +51,13 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 	/** The error key to be used for XML processing related issues */
 	protected static final String XML_ERROR_KEY = "xmlProcessing";
 
+	/**
+	 * Default constructor
+	 */
+	public XMLSignaturePolicyValidator() {
+		// empty
+	}
+
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {
 		if (signaturePolicy.getPolicyContent() != null) {

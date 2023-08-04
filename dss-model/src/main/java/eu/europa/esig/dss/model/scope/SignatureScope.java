@@ -104,6 +104,7 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	/**
 	 * Gets digests of the document
 	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
 	 * @return {@link Digest}
 	 */
 	public Digest getDigest(DigestAlgorithm digestAlgorithm) {

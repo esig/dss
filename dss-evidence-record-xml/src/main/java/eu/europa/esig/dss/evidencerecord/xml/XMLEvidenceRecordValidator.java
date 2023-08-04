@@ -17,6 +17,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**
+ * Class for validation of an XML Evidence Record
+ *
+ */
 public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
 
     private static final Logger LOG = LoggerFactory.getLogger(XMLEvidenceRecordValidator.class);

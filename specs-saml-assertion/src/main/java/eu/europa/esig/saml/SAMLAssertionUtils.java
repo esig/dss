@@ -50,6 +50,9 @@ public class SAMLAssertionUtils extends XSDAbstractUtils {
 	/** JAXBContext */
 	private JAXBContext jc;
 
+	/**
+	 * Empty constructor
+	 */
 	private SAMLAssertionUtils() {
 		// empty
 	}

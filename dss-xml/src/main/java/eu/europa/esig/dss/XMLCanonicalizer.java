@@ -90,6 +90,7 @@ public class XMLCanonicalizer {
      * If the canonicalization method is null, the default XMLDSig canonicalization method
      * "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" will be used.
      *
+     * @param canonicalizationMethod {@link String} canonicalization method to instantiate XML Canonicalizer with
      * @return {@link XMLCanonicalizer}
      */
     public static XMLCanonicalizer createInstance(String canonicalizationMethod) {

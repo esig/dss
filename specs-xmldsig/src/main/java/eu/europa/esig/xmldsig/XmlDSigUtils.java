@@ -50,6 +50,9 @@ public final class XmlDSigUtils extends XSDAbstractUtils {
 	/** JAXBContext */
 	private JAXBContext jc;
 
+	/**
+	 * Empty constructor
+	 */
 	private XmlDSigUtils() {
 		// empty
 	}

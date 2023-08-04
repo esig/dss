@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 /**
  * Used to compare two byte arrays.
- * Inspired by {@link <a href="https://github.com/bcgit/bc-java/blob/main/pkix/src/main/java/org/bouncycastle/tsp/ers/ByteArrayComparator.java">BC ByteArrayComparator implementation</a>}
+ * Inspired by {@code <a href="https://github.com/bcgit/bc-java/blob/main/pkix/src/main/java/org/bouncycastle/tsp/ers/ByteArrayComparator.java">BC ByteArrayComparator implementation</a>}
  */
 public class ByteArrayComparator implements Comparator<byte[]>, Serializable {
 

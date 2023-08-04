@@ -44,6 +44,9 @@ public final class ASiCManifestUtils extends XSDAbstractUtils {
 	/** JAXBContext */
 	private JAXBContext jc;
 
+	/**
+	 * Empty constructor
+	 */
 	private ASiCManifestUtils() {
 		// empty
 	}

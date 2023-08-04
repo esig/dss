@@ -50,6 +50,7 @@ public abstract class SignatureScopeWithTransformations extends SignatureScope {
 	/**
 	 * Default constructor with a name provided
 	 *
+	 * @param name {@link String} filename
 	 * @param document {@link DSSDocument}
 	 * @param transformations list of {@link String} transform definitions
 	 */

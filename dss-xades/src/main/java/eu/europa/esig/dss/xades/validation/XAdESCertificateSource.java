@@ -55,7 +55,10 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESCertificateSource.class);
 
+	/** The Signature element */
 	private final Element signatureElement;
+
+	/** Contains a list of XAdES path corresponding to the signature */
 	private final XAdESPaths xadesPaths;
 	
 	/**

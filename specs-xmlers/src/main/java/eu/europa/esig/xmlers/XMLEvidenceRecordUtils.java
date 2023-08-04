@@ -29,7 +29,7 @@ public final class XMLEvidenceRecordUtils extends XSDAbstractUtils {
     private JAXBContext jc;
 
     /**
-     * Default constructor
+     * Empty constructor
      */
     private XMLEvidenceRecordUtils() {
         // empty
