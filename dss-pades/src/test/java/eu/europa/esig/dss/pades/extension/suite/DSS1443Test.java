@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
 import java.util.List;
 
@@ -53,13 +55,17 @@ public class DSS1443Test extends PKIFactoryAccess {
 	public void testSigWithAttached() {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1443.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getCertificateVerifier());
+
+		CertificateVerifier certificateVerifier = getCertificateVerifier();
+		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+
+		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureLevel.PAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 
-		PAdESService service = new PAdESService(getCertificateVerifier());
+		PAdESService service = new PAdESService(certificateVerifier);
 		service.setTspSource(getCompositeTsa());
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
@@ -67,7 +73,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 
 		validator = SignedDocumentValidator.fromDocument(extendDocument);
-		validator.setCertificateVerifier(getCertificateVerifier());
+		validator.setCertificateVerifier(certificateVerifier);
 		reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
