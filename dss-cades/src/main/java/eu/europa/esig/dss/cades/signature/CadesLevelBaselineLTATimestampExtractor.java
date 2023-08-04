@@ -102,7 +102,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 *            {@code CAdESSignature} related to the archive timestamp
 	 */
 	public CadesLevelBaselineLTATimestampExtractor(final CAdESSignature cadesSignature) {
-		this(cadesSignature.getCmsSignedData(), cadesSignature.getCompleteCertificateSource().getAllCertificateTokens());
+		this(cadesSignature.getCmsSignedData(), cadesSignature.getCompleteCertificateSource().getCertificates());
 		/* these attribute are validated elsewhere */
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_certValues);
 		excludedAttributesFromAtsHashIndex.add(id_aa_ets_revocationValues);

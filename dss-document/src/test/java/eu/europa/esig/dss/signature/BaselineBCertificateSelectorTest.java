@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,13 +75,7 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalNoTrust() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -91,16 +84,12 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalTrust() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(1, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -108,16 +97,12 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testSkipTrustAndUpper() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2, c3);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(1, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -129,16 +114,12 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalTrust2() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2, c3);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -147,16 +128,12 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalTrustOtherRoot() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3Bis);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2, c3);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -165,16 +142,12 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalTrustTooMuch() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3, c4));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2, c3, c4);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -183,17 +156,14 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalIncludeTrust() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c2);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c2);
-		parameters.bLevel().setTrustAnchorBPPolicy(false);
+		selector.setTrustAnchorBPPolicy(false);
 
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -202,17 +172,14 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testNormalIncludeTrustFixChainOrder() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c3, c2));
+
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
 		trustCertSource.addCertificate(c3);
-		certificateVerifier.setTrustedCertSources(trustCertSource);
+		selector.setTrustedCertificateSource(trustCertSource);
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c3, c2);
-		parameters.bLevel().setTrustAnchorBPPolicy(false);
+		selector.setTrustAnchorBPPolicy(false);
 
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(3, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -222,13 +189,8 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testDuplicateSigningCert() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c1, c2));
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setSigningCertificate(c1);
-		parameters.setCertificateChain(c1, c2);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(certificateVerifier, parameters);
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
 		assertEquals(c1, certificates.get(0));
@@ -237,17 +199,14 @@ public class BaselineBCertificateSelectorTest {
 
 	@Test
 	public void testMissingIntermediateCerts() {
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setCertificateChain(c1, c4);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(new CommonCertificateVerifier(), parameters);
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(null, Arrays.asList(c1, c4));
 		Exception exception = assertThrows(DSSException.class, () -> selector.getCertificates());
 		assertEquals("Unable to determine a signing certificate : No pertinent input parameters", exception.getMessage());
 	}
 	
 	@Test
 	public void testEmptyCertChain() {
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(new CommonCertificateVerifier(), new CommonSignatureParameters());
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(null, Collections.emptyList());
 		Exception exception = assertThrows(DSSException.class, () -> selector.getCertificates());
 		assertEquals("No signing certificate found", exception.getMessage());
 	}
@@ -257,16 +216,9 @@ public class BaselineBCertificateSelectorTest {
 		CertificateToken cert1 = DSSUtils.loadCertificateFromBase64EncodedString("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");
 		CertificateToken cert2 = DSSUtils.loadCertificateFromBase64EncodedString("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");
 
-		CommonSignatureParameters parameters = new CommonSignatureParameters();
-		parameters.setCertificateChain(cert1, cert2);
-
-		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(new CommonCertificateVerifier(), parameters);
+		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(null, Arrays.asList(cert1, cert2));
 		Exception exception = assertThrows(DSSException.class, () -> selector.getCertificates());
 		assertEquals("The certificate chain contains only bridge certificates", exception.getMessage());
-	}
-
-	@SuppressWarnings("serial")
-	private static class CommonSignatureParameters extends AbstractSignatureParameters<TimestampParameters> {
 	}
 
 }

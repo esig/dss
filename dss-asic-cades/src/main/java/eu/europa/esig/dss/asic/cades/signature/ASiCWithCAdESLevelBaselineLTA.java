@@ -29,7 +29,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -141,7 +141,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
 
             // ensure the validation data is not duplicated
             for (AdvancedSignature signature : allSignatures) {
-                allValidationData.excludeCertificateTokens(signature.getCompleteCertificateSource().getAllCertificateTokens());
+                allValidationData.excludeCertificateTokens(signature.getCompleteCertificateSource().getCertificates());
                 allValidationData.excludeCRLTokens(signature.getCompleteCRLSource().getAllRevocationBinaries());
                 allValidationData.excludeOCSPTokens(signature.getCompleteOCSPSource().getAllRevocationBinaries());
             }
@@ -209,8 +209,10 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
 
     private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion) {
         CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
-        CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-        CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion);
+        CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(cmsSignedData);
+        CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(
+                validationDataForInclusion.getCertificateTokens(), validationDataForInclusion.getCrlTokens(),
+                validationDataForInclusion.getOcspTokens());
         return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeTypeEnum.TST);
     }
 

@@ -22,55 +22,36 @@ package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
-import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CMSSignerInfoGeneratorBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSAttributeTableGenerationException;
 import org.bouncycastle.cms.CMSAttributeTableGenerator;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
-import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 import java.util.Map;
 
 /**
- * Builds a CMSSignedData for a PAdES signature
+ * Builds a SignerInfoGenerator for a PAdES signature
  */
-class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
+class PAdESSignerInfoGeneratorBuilder extends CMSSignerInfoGeneratorBuilder {
+
+	private final DSSMessageDigest messageDigest;
 
 	/**
-	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}. The {@code CertificateVerifier} is used to find the trusted certificates.
+	 * This is the default constructor for {@code CMSSignedDataGeneratorBuilder}.
 	 *
-	 * @param certificateVerifier {@code CertificateVerifier} provides information on the sources to be used in the validation process in the context of a signature.
+	 * @param messageDigest {@link DSSMessageDigest} to be used for a signature computation
 	 */
-	public PadesCMSSignedDataBuilder(CertificateVerifier certificateVerifier) {
-		super(certificateVerifier);
+	public PAdESSignerInfoGeneratorBuilder(final DSSMessageDigest messageDigest) {
+		this.messageDigest = messageDigest;
 	}
 
 	@Override
-	protected CMSSignedDataGenerator createCMSSignedDataGenerator(CAdESSignatureParameters parameters, ContentSigner contentSigner, SignerInfoGeneratorBuilder signerInfoGeneratorBuilder,
-			CMSSignedData originalSignedData) throws DSSException {
-
-		return super.createCMSSignedDataGenerator(parameters, contentSigner, signerInfoGeneratorBuilder, originalSignedData);
-	}
-
-	/**
-	 * Returns the {@code SignerInfoGeneratorBuilder}
-	 *
-	 * @param parameters the parameters of the signature containing values for the attributes
-	 * @param messageDigest the message-digest to be signed
-	 * @return a SignerInfoGeneratorBuilder that generate the signed and unsigned attributes according to the CAdESLevelBaselineB and
-	 * PAdESLevelBaselineB
-	 */
-	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(final PAdESSignatureParameters parameters,
-																	   final DSSMessageDigest messageDigest) {
-
+	protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(CAdESSignatureParameters parameters, DSSDocument contentToSign) {
 		final CAdESLevelBaselineB cadesLevelBaselineB = new CAdESLevelBaselineB(true);
 		final PAdESLevelBaselineB padesProfileB = new PAdESLevelBaselineB();
 
@@ -94,4 +75,5 @@ class PadesCMSSignedDataBuilder extends CMSSignedDataBuilder {
 
 		return signerInfoGeneratorBuilder;
 	}
+
 }

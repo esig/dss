@@ -386,7 +386,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		SignerInformation signerInfoToCounterSign = counterSignatureBuilder.getSignerInformationToBeCounterSigned(signatureDocument, parameters);
 
 		CAdESService cadesService = getCAdESService();
-		return cadesService.getDataToBeCounterSigned(signatureDocument, signerInfoToCounterSign, parameters);
+		return cadesService.getDataToBeCounterSigned(signerInfoToCounterSign, parameters);
 	}
 
 	@Override

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
@@ -30,11 +31,11 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.DERSet;
@@ -43,13 +44,13 @@ import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -182,37 +183,54 @@ public class CAdESCounterSignatureBuilder {
 		return new Attribute(CMSAttributes.counterSignature, new DERSet(signers));
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private CMSSignedData addNewCertificates(CMSSignedData updatedCMSSignedData, CAdESCounterSignatureParameters parameters) {
-		ValidationData validationDataToAdd = new ValidationData();
+		final List<CertificateToken> newCertificates =
+				new BaselineBCertificateSelector(parameters.getSigningCertificate(), parameters.getCertificateChain())
+						.setTrustedCertificateSource(certificateVerifier.getTrustedCertSources())
+						.setTrustAnchorBPPolicy(parameters.bLevel().isTrustAnchorBPPolicy())
+						.getCertificates();
 
-		BaselineBCertificateSelector certificateSelectors = new BaselineBCertificateSelector(certificateVerifier, parameters);
-		List<CertificateToken> newCertificates = certificateSelectors.getCertificates();
-		for (CertificateToken certificateToken : newCertificates) {
-			validationDataToAdd.addToken(certificateToken);
-		}
-
-		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		return cmsSignedDataBuilder.extendCMSSignedData(updatedCMSSignedData, validationDataToAdd);
+		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(updatedCMSSignedData);
+		return cmsSignedDataBuilder.extendCMSSignedData(newCertificates, Collections.emptyList(), Collections.emptyList());
 	}
 
 	private SignerInformationStore generateCounterSignature(SignerInformation signerInformation,
 			CAdESCounterSignatureParameters parameters, SignatureValue signatureValue) {
-		CMSSignedDataBuilder builder = new CMSSignedDataBuilder(certificateVerifier);
-
-		SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
+		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-
-		final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(new InMemoryDocument(signerInformation.getSignature()),
-				parameters.getReferenceDigestAlgorithm());
-		SignerInfoGeneratorBuilder signerInformationGeneratorBuilder = builder.getSignerInfoGeneratorBuilder(dcp, parameters, false);
-		CMSSignedDataGenerator cmsSignedDataGenerator = builder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInformationGeneratorBuilder,
-				null);
-		return CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInformation);
+		return generateCounterSignature(signerInformation, parameters, customContentSigner);
 	}
 
 	/**
-	 * Returns a {@code SignerInformation} to be counter signed
+	 * Generates a counter-signature {@code SignerInformationStore}
+	 *
+	 * @param signerInformation {@link SignerInformation} of a signature to be counter-signed
+	 * @param parameters {@link CAdESCounterSignatureParameters}
+	 * @param customContentSigner {@link CustomContentSigner}
+	 * @return {@link SignerInformationStore}
+	 */
+	public SignerInformationStore generateCounterSignature(
+			SignerInformation signerInformation, CAdESSignatureParameters parameters, CustomContentSigner customContentSigner) {
+		InMemoryDocument toSignDocument = new InMemoryDocument(signerInformation.getSignature());
+		final SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder()
+				.build(toSignDocument, parameters, customContentSigner);
+		final CMSSignedDataGenerator cmsSignedDataGenerator = getCMSSignedDataBuilder(parameters)
+				.createCMSSignedDataGenerator(signerInfoGenerator);
+		return CMSUtils.generateCounterSigners(cmsSignedDataGenerator, signerInformation);
+	}
+
+	private CMSSignedDataBuilder getCMSSignedDataBuilder(CAdESSignatureParameters parameters) {
+		return new CMSSignedDataBuilder()
+				.setSigningCertificate(parameters.getSigningCertificate())
+				.setCertificateChain(parameters.getCertificateChain())
+				.setGenerateWithoutCertificates(parameters.isGenerateTBSWithoutCertificate())
+				.setTrustAnchorBPPolicy(parameters.bLevel().isTrustAnchorBPPolicy())
+				.setTrustedCertificateSource(certificateVerifier.getTrustedCertSources())
+				.setEncapsulate(false);
+	}
+
+	/**
+	 * Returns a {@code SignerInformation} to be counter-signed
 	 * 
 	 * @param signatureDocument {@link DSSDocument} to find the related signature
 	 * @param parameters {@link CAdESCounterSignatureParameters}

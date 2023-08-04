@@ -28,6 +28,7 @@ import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -209,8 +210,9 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	 */
 	private CMSSignedData extendWithValidationData(CMSSignedData cmsSignedData,
 												   ValidationData validationDataForInclusion) {
-		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-		return cmsSignedDataBuilder.extendCMSSignedData(cmsSignedData, validationDataForInclusion);
+		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(cmsSignedData);
+		return cmsSignedDataBuilder.extendCMSSignedData(validationDataForInclusion.getCertificateTokens(),
+				validationDataForInclusion.getCrlTokens(), validationDataForInclusion.getOcspTokens());
 	}
 	
 	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {

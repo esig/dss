@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.CertificateReorderer;
+import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;

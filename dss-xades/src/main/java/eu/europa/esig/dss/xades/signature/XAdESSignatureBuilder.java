@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -482,8 +482,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (params.isSignKeyInfo()) {
 			keyInfoElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), KEYINFO_SUFFIX + deterministicId);
 		}
-		BaselineBCertificateSelector certSelector = new BaselineBCertificateSelector(certificateVerifier, params);
-		List<CertificateToken> certificates = certSelector.getCertificates();
+		List<CertificateToken> certificates = new BaselineBCertificateSelector(params.getSigningCertificate(), params.getCertificateChain())
+				.setTrustedCertificateSource(certificateVerifier.getTrustedCertSources())
+				.setTrustAnchorBPPolicy(params.bLevel().isTrustAnchorBPPolicy())
+				.getCertificates();
 
 		if (params.isAddX509SubjectName()) {
 			for (CertificateToken token : certificates) {
