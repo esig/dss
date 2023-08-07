@@ -95,7 +95,7 @@ public class CertificateEntityService {
 
 
     public DBCertEntity getBySerialNumberAndParent(Long serialNumber, String idCA) {
-        return repository.getBySerialNumberAndParentSubject(serialNumber, idCA);
+        return repository.getOneBySerialNumberAndParentSubject(serialNumber, idCA);
     }
 
 
