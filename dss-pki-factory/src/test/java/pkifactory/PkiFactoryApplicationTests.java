@@ -17,22 +17,15 @@ import java.security.cert.Certificate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@ExtendWith(SpringExtension.class)
-//@SpringBootTest
 public class PkiFactoryApplicationTests {
 
-    //	@Autowired
     private KeystoreGenerator generator = KeystoreGenerator.getInstance();
 
-    //	@Autowired
     private CertificateEntityService entityService = CertificateEntityService.getInstance();
 
-    @Test
     @BeforeAll
-    public void contextLoads() {
-        PostConstructInitializr initializr = new PostConstructInitializr();
-
-        initializr.init();
+    public static void contextLoads() {
+        PostConstructInitializr.getInstance();
 
     }
 

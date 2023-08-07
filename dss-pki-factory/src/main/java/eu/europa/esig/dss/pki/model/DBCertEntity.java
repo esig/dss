@@ -4,21 +4,18 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.RevocationReason;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 
 public class DBCertEntity implements CertEntity {
@@ -238,8 +235,8 @@ public class DBCertEntity implements CertEntity {
         List<CertificateToken> certChain = new ArrayList<>();
         DBCertEntity entity = this;
         while (entity != null) {
-            certChain.add(this.getCertificateToken());
             DBCertEntity parent = entity.getParent();
+            certChain.add(entity.getCertificateToken());
             if (entity.getInternalId().equals(parent.getInternalId())) {
                 break;
             }

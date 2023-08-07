@@ -2,11 +2,12 @@ package eu.europa.esig.dss.pki.repository;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
+import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.model.Revocation;
 import org.bouncycastle.cert.X509CertificateHolder;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * This interface represents a repository for CertEntity objects.
@@ -38,7 +39,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param idCA         The subject (distinguished name) of the parent CertEntity.
      * @return The CertEntity with the specified serial number and parent subject.
      */
-    T getBySerialNumberAndParentSubject(Long serialNumber, String idCA);
+    T getOneBySerialNumberAndParentSubject(Long serialNumber, String idCA);
 
     /**
      * Retrieves a list of CertEntity objects that have a null parent.
@@ -136,6 +137,9 @@ public interface CertEntityRepository<T extends CertEntity> {
      */
     T getCertEntity(String id);
 
+
+    Map<DBCertEntity, Revocation> getRevocationList(Long serialNumber, CertificateToken certificateToken);
+
     /**
      * Retrieves the certificate entity associated with the given certificate token.
      *
@@ -166,6 +170,6 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param parent The parent certificate entity.
      * @return A list containing the revocation entities associated with the parent certificate.
      */
-    List getRevocationList(T parent);
+    Map<T, Revocation> getRevocationList(T parent);
 
 }

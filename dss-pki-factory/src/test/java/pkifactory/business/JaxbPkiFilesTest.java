@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@ContextConfiguration(classes = JaxbConfig.class)
 public class JaxbPkiFilesTest {
 
     public static Stream<Arguments> data() {
@@ -29,12 +28,9 @@ public class JaxbPkiFilesTest {
         return dataToRun.stream();
     }
 
-    //	@Autowired
     private JaxbConfig unmarshaller = new JaxbConfig();
 
-    public JaxbPkiFilesTest() throws Exception {
-//		new TestContextManager(getClass()).prepareTestInstance(this);
-    }
+
 
     @ParameterizedTest(name = "PKI {index} : {0}")
     @MethodSource("data")

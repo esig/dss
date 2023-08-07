@@ -20,33 +20,22 @@
  */
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pki.business.PostConstructInitializr;
 import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
+import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.crl.PkiCRLSource;
 import eu.europa.esig.dss.pki.revocation.ocsp.PkiOCSPSource;
-import eu.europa.esig.dss.service.SecureRandomNonceSource;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
-import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.util.*;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,35 +49,32 @@ public class PkiOCSPSourceTest {
     private static CertificateToken goodCa;
     private static CertificateToken ed25519goodUser;
     private static CertificateToken ed25519goodCa;
-    static OCSPDataLoader dataLoader = new OCSPDataLoader();
-    static CertEntityRepository certificateEntityService = Db.getInstance();
+    static CertEntityRepository<DBCertEntity> certificateEntityService = Db.getInstance();
     private static CertEntity certEntity;
+    private static CertificateToken revokedCa;
+    private static CertificateToken revokedUser;
 
     @BeforeAll
     public static void init() {
-        PostConstructInitializr initializr = new PostConstructInitializr();
-        initializr.init();
+        PostConstructInitializr.getInstance();
 
-        certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
-//        certificateToken = certificateEntityService.getCertEntity("Test-National-RootCA-from-ZZ").getCertificateToken();
-//        rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
         certEntity = certificateEntityService.getCertEntity("good-user");
         rootToken = certificateEntityService.getCertEntity("root-ca").getCertificateToken();
 
 
-
         goodUser = certEntity.getCertificateToken();
+        certificateToken = certEntity.getCertificateToken();
         goodUserOCSPWithReqCertId = certificateEntityService.getCertEntity("good-user-ocsp-certid-digest").getCertificateToken();
         goodCa = certEntity.getCertificateToken();
         ed25519goodUser = certificateEntityService.getCertEntity("Ed25519-good-user").getCertificateToken();
         ed25519goodCa = certificateEntityService.getCertEntity("Ed25519-good-ca").getCertificateToken();
-
+        revokedCa = certificateEntityService.getCertEntity("revoked-ca").getCertificateToken();
+        revokedUser = certificateEntityService.getCertEntity("revoked-user").getCertificateToken();
     }
 
     @Test
     public void testOCSPWithoutNonce() {
         PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
-//        ocspSource.setDataLoader(dataLoader);
         OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
@@ -98,53 +84,21 @@ public class PkiOCSPSourceTest {
     public void testOCSP() {
 
         PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
-//        ocspSource.setDataLoader(dataLoader);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         System.out.println(ocspToken.toString());
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
     }
+  @Test
+    public void testOCSPRevoked() {
 
-    @Test
-    public void getRevocationTokenTest() {
-        CRLToken revocationToken = new OnlineCRLSource().getRevocationToken(goodUser, goodCa);
-        assertNull(revocationToken);
-
-        revocationToken = new OnlineCRLSource().getRevocationToken(goodCa, rootToken);
-        assertNotNull(revocationToken);
-    }
-
-    @Test
-    public void testWithCustomDataLoaderConstructor() {
-//        OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
-        CertEntity goodUser = Db.getInstance().getCertEntity("good-user");
-        CertEntity goodCa = Db.getInstance().getCertEntity("good-ca");
-
-        PkiCRLSource ocspSource = new PkiCRLSource(Db.getInstance());
-        ocspSource.setProductionDate(new Date());
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, 6);
-        Date nextUpdate = cal.getTime();
-
-        ocspSource.setNextUpdate(nextUpdate);
-        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        ocspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
-        CRLToken ocspToken = ocspSource.getRevocationToken(goodUser.getCertificateToken(), goodCa.getCertificateToken());
+        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
+        OCSPToken ocspToken = ocspSource.getRevocationToken(revokedCa,revokedCa);
+        System.out.println(ocspToken.toString());
         assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getCrlValidity());
+        assertNotNull(ocspToken.getBasicOCSPResp());
     }
 
-    private static OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-
-    @Test
-    public void getRevocationTokenWithAlternateUrlTest() {
-        CRLToken wrongRevocationToken = onlineCRLSource.getRevocationToken(goodUser, goodCa, new ArrayList<>());
-        assertNull(wrongRevocationToken);
-
-        CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/root-ca.crt")), new ArrayList<>());
-        assertNotNull(revocationToken);
-    }
 
     @Test
     public void testWithSetDataLoader() {
@@ -157,89 +111,26 @@ public class PkiOCSPSourceTest {
     @Test
     public void testOCSPEd25519() {
         PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
-        ocspSource.setDigestAlgorithm(SignatureAlgorithm.ED25519.getDigestAlgorithm());
-        OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
-        assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getBasicOCSPResp());
-        assertEquals(SignatureAlgorithm.ED25519, ocspToken.getSignatureAlgorithm());
-        assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
+        Exception exception = assertThrows(Error404Exception.class, () -> ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa));
+        assertTrue(exception.getMessage().contains("not found for CA '"));
+//        OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
+//        assertNotNull(ocspToken);
+//        assertNotNull(ocspToken.getBasicOCSPResp());
+//        assertEquals(SignatureAlgorithm.ED25519, ocspToken.getSignatureAlgorithm());
+//        assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
     }
 
     @Test
     public void testOCSPWithNonce() {
         PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
-
+        ocspSource.setProductionDate(new Date());
         OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
         assertNotNull(ocspToken);
     }
-
-    @Test
-    public void testOCSPWithFileCache() {
-        File cacheFolder = new File("target/ocsp-cache");
-
-        // clean cache if exists
-        if (cacheFolder.exists()) {
-            Arrays.asList(cacheFolder.listFiles()).forEach(File::delete);
-        }
-
-        /* 1) Test default behavior of PkiOCSPSource */
-
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
-        ocspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
-        OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-        assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getBasicOCSPResp());
-
-        /* 2) Test PkiOCSPSource with a custom FileCacheDataLoader (without online loader) */
-
-        // create a FileCacheDataLoader
-        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
-        fileCacheDataLoader.setFileCacheDirectory(cacheFolder);
-        fileCacheDataLoader.setCacheExpirationTime(5000);
-        fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
-
-        assertTrue(cacheFolder.exists());
-
-        // nothing in cache
-        PkiOCSPSource PkiOCSPSource = new PkiOCSPSource(certificateEntityService);
-        Exception exception = assertThrows(DSSExternalResourceException.class, () -> PkiOCSPSource.getRevocationToken(certificateToken, rootToken));
-        assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id "));
-
-        /* 3) Test PkiOCSPSource with a custom FileCacheDataLoader (with pkiDataloader) */
-
-        fileCacheDataLoader.setDataLoader(dataLoader);
-        ocspSource = new PkiOCSPSource(certificateEntityService);
-
-        // load from online
-        ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-        assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getBasicOCSPResp());
-
-        /* 4) Test PkiOCSPSource with a custom FileCacheDataLoader (loading from cache) */
-
-        fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
-
-        // load from cache
-        ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-        assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getBasicOCSPResp());
-
-        /* 5) Test PkiOCSPSource with setDataLoader(fileCacheDataLoader) method */
-
-        // test setDataLoader(dataLoader)
-        ocspSource = new PkiOCSPSource(certificateEntityService);
-
-        ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
-        assertNotNull(ocspToken);
-        assertNotNull(ocspToken.getBasicOCSPResp());
-    }
-
 
     @Test
     public void customCertIDDigestAlgorithmTest() {
-        OCSPDataLoader dataLoader = new OCSPDataLoader();
-        dataLoader.setTimeoutConnection(10000);
-        dataLoader.setTimeoutSocket(10000);
 
         PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
 

@@ -21,22 +21,41 @@ public class PostConstructInitializr {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostConstructInitializr.class);
 
+    private static PostConstructInitializr instance = null;
     // The service for initializing the PKI resources.
-    private final Initializr initializrService = GenericFactory.getInstance().create(Initializr.class);
+    private static final Initializr initializrService = GenericFactory.getInstance().create(Initializr.class);
 
     // The service for marshalling PKI resources from XML files.
-    private final PkiMarshallerService pkiMarshallerService = GenericFactory.getInstance().create(PkiMarshallerService.class);
+    private final static PkiMarshallerService pkiMarshallerService = GenericFactory.getInstance().create(PkiMarshallerService.class);
 
     private static final String PATH = "src/main/resources/pki";
+
+    private PostConstructInitializr() {
+
+    }
+
+    /**
+     * Get the singleton instance of the PostConstructInitializr.
+     *
+     * @return The singleton instance of the PostConstructInitializr.
+     */
+    public static PostConstructInitializr getInstance() {
+        if (instance == null) {
+            synchronized (PostConstructInitializr.class) {
+                instance = new PostConstructInitializr();
+                init();
+            }
+        }
+        return instance;
+    }
 
     /**
      * Initializes the PKI resources by parsing the XML files located in resources directory.
      * This method is called during the post-construction phase.
      * It parses the XML files using the PkiMarshallerService and initializes the PKI resources using the Initializr service.
      */
-    public void init() {
-        this.parsePKIResources();
-
+    public static void init() {
+        parsePKIResources();
         // Init certificate
         try {
             initializrService.init();
@@ -50,10 +69,9 @@ public class PostConstructInitializr {
      * It matches the XML files using a glob pattern and then calls the PkiMarshallerService to parse each file.
      * Any parsing error is logged as a RuntimeException.
      */
-    public void parsePKIResources() {
+    protected static void parsePKIResources() {
         try {
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/pki/*.xml");
-
 
             Files.walkFileTree(Paths.get(PATH), new SimpleFileVisitor<Path>() {
                 @Override

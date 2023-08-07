@@ -23,8 +23,12 @@ public class PkiAIASource implements AIASource {
 
     @Override
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
+
         Objects.requireNonNull(certificateToken, "CertificateToken shall be provided!");
+        Objects.requireNonNull(certEntityRepository, "CertEntityRepository shall be provided!");
+
         CertEntity certEntity = certEntityRepository.getByCertificateToken(certificateToken);
+        Objects.requireNonNull(certEntity, "certEntity cannot be null");
         if (completeCertificateChain) {
             return new HashSet<>(certEntity.getCertificateChain());
         } else if (Utils.isCollectionNotEmpty(certEntity.getCertificateChain())) {

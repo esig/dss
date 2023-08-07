@@ -32,9 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import java.security.PrivateKey;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * The PkiOCSPSource class implements the OCSPSource interface for obtaining revocation tokens.
@@ -137,28 +136,30 @@ public class PkiOCSPSource implements OCSPSource {
     protected OCSPResp getCustomOCSPResponse(final CertEntity certEntity, OCSPReq ocspReq, String algo, Date productionDate) {
         X509CertificateHolder ocspCertificate = DSSASN1Utils.getX509CertificateHolder(certEntity.getCertificateToken());
         X509CertificateHolder[] ocspCertificateChain = certEntityRepository.getCertificateChain(certEntity);
-        List<Revocation> revocationList = certEntityRepository.getRevocationList(certEntity);
+
         PrivateKey ocspPrivateKey = certEntity.getPrivateKeyObject();
 
         BasicOCSPRespBuilder builder = initBuilder(ocspCertificate);
 
         for (Req r : ocspReq.getRequestList()) {
-            addStatusToOCSPResponse(revocationList, builder, r);
+
+            addStatusToOCSPResponse(certEntity, builder, r);
         }
 
         return generateOCSPResp(ocspCertificateChain, ocspPrivateKey, builder, productionDate, algo);
     }
 
-    protected void addStatusToOCSPResponse(List<Revocation> revocationList, BasicOCSPRespBuilder builder, Req r) {
+    protected void addStatusToOCSPResponse(final CertEntity certEntity, BasicOCSPRespBuilder builder, Req r) {
         long serialNumber = r.getCertID().getSerialNumber().longValue();
-        Optional<Revocation> revocation = revocationList.stream().findFirst();
-        revocation.ifPresent(rev -> {
-            if (rev.getDbCertEntity() == null) {
-                throw new Error404Exception("Entity '" + serialNumber + "' not found for CA '" + (rev.getDbCertEntity().getSubject() + "'"));
-            } else if (rev.getDbCertEntity().getRevocationDate() == null) {
+        Map<CertEntity, Revocation> revocationList = certEntityRepository.getRevocationList(serialNumber, certEntity.getCertificateToken());
+
+        if (revocationList.isEmpty()) throw new Error404Exception("Entity '" + serialNumber + "' not found for CA '");
+
+        revocationList.forEach((key, value) -> {
+            if (value.getRevocationDate() == null) {
                 builder.addResponse(r.getCertID(), CertificateStatus.GOOD);
             } else {
-                builder.addResponse(r.getCertID(), new RevokedStatus(rev.getDbCertEntity().getRevocationDate(), PkiUtils.getCRLReason(rev.getDbCertEntity().getRevocationReason())));
+                builder.addResponse(r.getCertID(), new RevokedStatus(value.getRevocationDate(), PkiUtils.getCRLReason(value.getRevocationReason())));
             }
         });
     }

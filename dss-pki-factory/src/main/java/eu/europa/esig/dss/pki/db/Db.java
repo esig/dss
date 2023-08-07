@@ -7,18 +7,14 @@ import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Db implements CertEntityRepository<DBCertEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(Db.class);
@@ -56,8 +52,12 @@ public class Db implements CertEntityRepository<DBCertEntity> {
     }
 
     @Override
-    public DBCertEntity getBySerialNumberAndParentSubject(Long serialNumber, String idCA) {
-        return map.values().stream().filter(dbCertEntity -> dbCertEntity.getSerialNumber().equals(serialNumber) && dbCertEntity.getParent().getSubject().equals(idCA)).findFirst().orElse(null);
+    public DBCertEntity getOneBySerialNumberAndParentSubject(Long serialNumber, String idCA) {
+        return getAllBySerialNumberAndParentSubject(serialNumber, idCA).stream().findFirst().orElse(null);
+    }
+
+    private List<DBCertEntity> getAllBySerialNumberAndParentSubject(Long serialNumber, String idCA) {
+        return map.values().stream().filter(dbCertEntity -> dbCertEntity.getSerialNumber().equals(serialNumber) && dbCertEntity.getParent().getSubject().equals(idCA)).collect(Collectors.toList());
     }
 
     @Override
@@ -158,31 +158,25 @@ public class Db implements CertEntityRepository<DBCertEntity> {
         return certChain.toArray(new X509CertificateHolder[certChain.size()]);
     }
 
-    public CertificateToken convertToCertificateToken(byte[] certificate) {
-        CertificateToken loadedCertificates = null;
-        try (InputStream is = new ByteArrayInputStream(certificate)) {
-            loadedCertificates = DSSUtils.loadCertificate(is);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("{} certificate", loadedCertificates);
-            }
-
-        } catch (Exception e) {
-            String errorMessage = "Unable to parse certificate(s) ";
-            if (LOG.isDebugEnabled()) {
-                LOG.warn(errorMessage, e.getMessage(), e);
-            } else {
-                LOG.warn(errorMessage, e.getMessage());
-            }
-        }
-        return loadedCertificates;
-    }
-
 
     @Override
-    public List<Revocation> getRevocationList(DBCertEntity parent) {
-        return map.values().stream().filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null)
-                .map(dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason(), dbCertEntity))
-                .collect(Collectors.toList());
+    public Map<DBCertEntity, Revocation> getRevocationList(DBCertEntity parent) {
+        return map.values()
+                .stream()
+                .filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null)
+                .collect(Collectors.toMap(
+                        dbCertEntity -> dbCertEntity,
+                        dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())
+                ));
+    }
+
+    @Override
+    public Map<DBCertEntity, Revocation> getRevocationList(Long serialNumber, CertificateToken certificateToken) {
+        return getAllBySerialNumberAndParentSubject(serialNumber, DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getIssuer())).stream()
+                .collect(Collectors.toMap(
+                        dbCertEntity -> dbCertEntity,
+                        dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())
+                ));
     }
 
     private X509CertificateHolder convertToX509CertificateHolder(byte[] binary) {
@@ -196,6 +190,6 @@ public class Db implements CertEntityRepository<DBCertEntity> {
 
     @Override
     public DBCertEntity getByCertificateToken(CertificateToken certificateToken) {
-        return getBySerialNumberAndParentSubject(certificateToken.getSerialNumber().longValue(), DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getIssuer()));
+        return getOneBySerialNumberAndParentSubject(certificateToken.getSerialNumber().longValue(), DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getIssuer()));
     }
 }

@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 /**
  * A generic factory implementation that provides instances of various classes using a registration mechanism.
  * It allows registering factories for different classes and creates instances of those classes based on the registrations.
- *
  */
 public class GenericFactory implements Factory {
     // The map that holds the class-factory registrations.

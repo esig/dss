@@ -8,12 +8,12 @@ public class Revocation {
 
     private Date revocationDate;
     private RevocationReason revocationReason;
-    private DBCertEntity dbCertEntity;
 
-    public Revocation(Date revocationDate, RevocationReason revocationReason, DBCertEntity dbCertEntity) {
+
+    public Revocation(Date revocationDate, RevocationReason revocationReason ) {
         this.revocationDate = revocationDate;
         this.revocationReason = revocationReason;
-        this.dbCertEntity = dbCertEntity;
+
     }
 
     public Date getRevocationDate() {
@@ -25,11 +25,5 @@ public class Revocation {
         return revocationReason;
     }
 
-    public DBCertEntity getDbCertEntity() {
-        return dbCertEntity;
-    }
 
-    public void setDbCertEntity(DBCertEntity dbCertEntity) {
-        this.dbCertEntity = dbCertEntity;
-    }
 }

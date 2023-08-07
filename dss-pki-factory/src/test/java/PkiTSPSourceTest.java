@@ -54,8 +54,7 @@ public class PkiTSPSourceTest {
 
     @BeforeAll
     public static void contextLoads() {
-        PostConstructInitializr initializr = new PostConstructInitializr();
-        initializr.init();
+        PostConstructInitializr.getInstance();
 
     }
 
