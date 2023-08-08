@@ -19,6 +19,13 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="EvidenceRecords" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="EvidenceRecord" type="EvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="UsedCertificates" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -143,14 +150,7 @@
 		
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					
-					<xs:element name="DigestMatchers" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					
+					<xs:element name="DigestMatchers" type="DigestMatchers" minOccurs="0" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
@@ -1027,6 +1027,11 @@
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
+
+			<!-- EVIDENCE_RECORD -->
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_OBJECT" />
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1178,6 +1183,7 @@
 			<xs:enumeration value="CONTAINER_TIMESTAMP" /> <!-- ASiC container Timestamp -->
 			<xs:enumeration value="DOCUMENT_TIMESTAMP" /> <!-- PDF Timestamp -->
 			<xs:enumeration value="VRI_TIMESTAMP" /> <!-- PDF Timestamp of a VRI dictionary -->
+			<xs:enumeration value="EVIDENCE_RECORD_TIMESTAMP" /> <!-- Evidence Record Timestamp -->
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1191,6 +1197,10 @@
 			<xs:enumeration value="CAdES_DETACHED" />
 			<xs:enumeration value="JAdES" />
 			<xs:enumeration value="PAdES" />
+
+			<!-- Evidence record time-stamps -->
+			<xs:enumeration value="XML_EVIDENCE_RECORD" />
+			<xs:enumeration value="ASN1_EVIDENCE_RECORD" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1399,6 +1409,46 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecord">
+		<xs:complexContent>
+			<xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
+					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
+					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
+					<xs:element name="DigestMatchers" type="DigestMatchers" />
+					<xs:element name="EvidenceRecordTimestamps">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="EvidenceRecordScopes">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DigestMatchers">
+		<xs:sequence>
+			<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="EvidenceRecordType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XML Evidence Record" />
+			<xs:enumeration value="ASN.1 Evidence Record" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>

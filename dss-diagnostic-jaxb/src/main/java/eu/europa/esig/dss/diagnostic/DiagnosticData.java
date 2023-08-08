@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -49,7 +50,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,6 +72,9 @@ public class DiagnosticData {
 
 	/** List of found timestamps */
 	private List<TimestampWrapper> usedTimestamps;
+
+	/** List of found evidence records */
+	private List<EvidenceRecordWrapper> foundEvidenceRecords;
 
 	/**
 	 * Default constructor
@@ -905,9 +908,9 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method retrieves a set of timestamp wrappers
+	 * This method retrieves a list of timestamp wrappers
 	 * 
-	 * @return a List of timestamp wrappers
+	 * @return a list of timestamp wrappers
 	 */
 	public List<TimestampWrapper> getTimestampList() {
 		if (usedTimestamps == null) {
@@ -920,6 +923,24 @@ public class DiagnosticData {
 			}
 		}
 		return usedTimestamps;
+	}
+
+	/**
+	 * This method retrieves a list of evidence record wrappers
+	 *
+	 * @return a list of evidence record wrappers
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		if (foundEvidenceRecords == null) {
+			foundEvidenceRecords = new ArrayList<>();
+			List<XmlEvidenceRecord> xmlEvidenceRecords = wrapped.getEvidenceRecords();
+			if (xmlEvidenceRecords != null) {
+				for (XmlEvidenceRecord xmlEvidenceRecord : xmlEvidenceRecords) {
+					foundEvidenceRecords.add(new EvidenceRecordWrapper(xmlEvidenceRecord));
+				}
+			}
+		}
+		return foundEvidenceRecords;
 	}
 
 	/**

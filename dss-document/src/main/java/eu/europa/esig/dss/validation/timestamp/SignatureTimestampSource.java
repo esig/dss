@@ -709,25 +709,6 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     }
 
     /**
-     * Creates a list of {@link TimestampedReference}s from a given list of {@code SignatureScope}s
-     *
-     * @param signatureScopes a list of {@link SignatureScope} to create {@link TimestampedReference}s for
-     * @return a list of {@link TimestampedReference}s
-     */
-    protected List<TimestampedReference> getSignerDataTimestampedReferences(List<SignatureScope> signatureScopes) {
-        final List<TimestampedReference> references = new ArrayList<>();
-        if (Utils.isCollectionNotEmpty(signatureScopes)) {
-            for (SignatureScope signatureScope : signatureScopes) {
-                addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
-                if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
-                    addReferences(references, getSignerDataTimestampedReferences(signatureScope.getChildren()));
-                }
-            }
-        }
-        return references;
-    }
-
-    /**
      * Returns a list of {@link TimestampedReference} for a "signature-timestamp" element
      *
      * @return list of {@link TimestampedReference}s

@@ -38,16 +38,17 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.SerializableSignatureParameters;
-import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -55,12 +56,9 @@ import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.validationreport.ValidationReportUtils;
 import eu.europa.esig.validationreport.jaxb.SAContactInfoType;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
@@ -104,7 +102,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-public class SignaturePoolTest extends AbstractDocumentTestValidation<SerializableSignatureParameters, SerializableTimestampParameters>{
+public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
 	

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.pdfa.PDFAValidationResult;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 import java.util.Objects;
@@ -74,10 +75,10 @@ public class PDFADocumentValidator extends PDFDocumentValidator {
     }
 
     @Override
-    protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-                                                                final List<AdvancedSignature> signatures) {
-        PAdESWithPDFADiagnosticDataBuilder builder = (PAdESWithPDFADiagnosticDataBuilder) super.createDiagnosticDataBuilder(
-                validationContext, signatures);
+    protected DiagnosticDataBuilder createDiagnosticDataBuilder(ValidationContext validationContext,
+            List<AdvancedSignature> signatures, List<EvidenceRecord> evidenceRecords) {
+        PAdESWithPDFADiagnosticDataBuilder builder = (PAdESWithPDFADiagnosticDataBuilder)
+                super.createDiagnosticDataBuilder(validationContext, signatures, evidenceRecords);
         builder.pdfaValidationResult(getPdfValidationResult());
         return builder;
     }

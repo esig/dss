@@ -3,6 +3,8 @@ package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
+import eu.europa.esig.dss.evidencerecord.common.validation.scope.EvidenceRecordTimestampScopeFinder;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -13,7 +15,6 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,17 +78,39 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
      */
     protected void createAndValidate() {
         timestamps = new ArrayList<>();
-        final List<TimestampedReference> references = new ArrayList<>();
+
+        final List<TimestampedReference> signerDataReferences = getSignerDataReferences();
+        List<TimestampedReference> previousTimestampReferences = new ArrayList<>();
+        List<TimestampedReference> previousChainTimestampReferences = new ArrayList<>();
+
+        List<TimestampedReference> references = new ArrayList<>();
 
         for (ArchiveTimeStampChainObject archiveTimeStampChain : evidenceRecord.getArchiveTimeStampSequence()) {
+
+            addReferences(references, signerDataReferences);
+            addReferences(references, previousChainTimestampReferences);
+            previousChainTimestampReferences = new ArrayList<>();
+
             for (ArchiveTimeStampObject archiveTimeStamp : archiveTimeStampChain.getArchiveTimeStamps()) {
 
-                // TODO : populate references
+                addReferences(references, previousTimestampReferences);
+                previousTimestampReferences = new ArrayList<>();
+
                 TimestampToken timestampToken = createTimestampToken(archiveTimeStamp);
+                timestampToken.getTimestampedReferences().addAll(references);
+                timestampToken.setTimestampScopes(findTimestampScopes(timestampToken));
 
                 // add time-stamp token
                 timestamps.add(timestampToken);
+
+                List<TimestampedReference> encapsulatedTimestampReferences = getEncapsulatedReferencesFromTimestamp(timestampToken);
+                addReferences(previousTimestampReferences, encapsulatedTimestampReferences);
+                addReferences(previousChainTimestampReferences, encapsulatedTimestampReferences);
+
+                // clear references for the next time-stamp token
+                references = new ArrayList<>();
             }
+
         }
     }
 
@@ -107,8 +130,27 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
      * @return a list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getSignerDataReferences() {
-        // TODO : to be implemented
-        return Collections.emptyList();
+        return getSignerDataTimestampedReferences(evidenceRecord.getEvidenceRecordScopes());
+    }
+
+    /**
+     * Returns a list of TimestampedReferences for tokens encapsulated within the time-stamp token
+     *
+     * @param timestampToken {@link TimestampToken} to get references from
+     * @return a list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getEncapsulatedReferencesFromTimestamp(TimestampToken timestampToken) {
+        return getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource);
+    }
+
+    /**
+     * Finds timestamp scopes
+     *
+     * @param timestampToken {@link TimestampToken} to get timestamp scopes for
+     * @return a list of {@link SignatureScope}s
+     */
+    protected List<SignatureScope> findTimestampScopes(TimestampToken timestampToken) {
+        return new EvidenceRecordTimestampScopeFinder().setEvidenceRecord(evidenceRecord).findTimestampScope(timestampToken);
     }
 
     /**

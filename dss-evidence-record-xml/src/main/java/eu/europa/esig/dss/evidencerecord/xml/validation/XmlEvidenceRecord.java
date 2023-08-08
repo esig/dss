@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
@@ -61,6 +62,11 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     @Override
     public List<String> validateStructure() {
         return XMLEvidenceRecordUtils.getInstance().validateAgainstXSD(new DOMSource(evidenceRecordElement));
+    }
+
+    @Override
+    public EvidenceRecordTypeEnum getReferenceRecordType() {
+        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
     }
 
 }

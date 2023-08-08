@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractTestExtension<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
+				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation {
 
 	protected abstract FileDocument getOriginalDocument();
 

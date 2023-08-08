@@ -1,10 +1,15 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
+import eu.europa.esig.dss.evidencerecord.common.validation.scope.EvidenceRecordScopeFinder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +30,28 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     private List<DSSDocument> detachedContents = new ArrayList<>();
 
-    /** Represents a structure of the evidence record */
+    /**
+     * Represents a structure of the evidence record
+     */
     private List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence;
 
-    /** Cached result of archive data objects validation */
+    /**
+     * Cached result of archive data objects validation
+     */
     protected List<ReferenceValidation> referenceValidations;
+
+    /**
+     * A list of found {@code SignatureScope}s
+     */
+    private List<SignatureScope> evidenceRecordScopes;
+
+    /**
+     * A list of error messages occurred during a structure validation
+     */
+    protected List<String> structureValidationMessages;
+
+    /** Cached identifier instance */
+    private Identifier identifier;
 
     /**
      * Default constructor
@@ -38,11 +60,7 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
         // empty
     }
 
-    /**
-     * Gets the evidence record filename
-     *
-     * @return {@link String}
-     */
+    @Override
     public String getFilename() {
         return filename;
     }
@@ -56,11 +74,7 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
         this.filename = filename;
     }
 
-    /**
-     * Returns a list of provided detached documents covered by the Evidence Record
-     *
-     * @return a list of {@link DSSDocument}s
-     */
+    @Override
     public List<DSSDocument> getDetachedContents() {
         return detachedContents;
     }
@@ -120,6 +134,31 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public abstract EvidenceRecordTimestampSource<?> getTimestampSource();
 
+    @Override
+    public List<SignatureScope> getEvidenceRecordScopes() {
+        if (evidenceRecordScopes == null) {
+            evidenceRecordScopes = findEvidenceRecordScopes();
+        }
+        return evidenceRecordScopes;
+    }
+
+    /**
+     * Finds signature scopes
+     *
+     * @return a list of {@link SignatureScope}s
+     */
+    protected List<SignatureScope> findEvidenceRecordScopes() {
+        return new EvidenceRecordScopeFinder().findEvidenceRecordScope(this);
+    }
+
+    @Override
+    public List<String> getStructureValidationResult() {
+        if (Utils.isCollectionEmpty(structureValidationMessages)) {
+            structureValidationMessages = validateStructure();
+        }
+        return structureValidationMessages;
+    }
+
     /**
      * This method is used to verify the structure of the evidence record document
      *
@@ -127,5 +166,17 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public abstract List<String> validateStructure();
 
+    @Override
+    public Identifier getDSSId() {
+        if (identifier == null) {
+            identifier = new EvidenceRecordIdentifierBuilder(this).build();
+        }
+        return identifier;
+    }
+
+    @Override
+    public String getId() {
+        return getDSSId().asXmlId();
+    }
 
 }

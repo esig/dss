@@ -24,7 +24,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
@@ -44,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidation<PAdESSignatureParameters, PAdESTimestampParameters> {
+public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidation {
 
     private static final String DSS_APP_NAME = "DSS";
 

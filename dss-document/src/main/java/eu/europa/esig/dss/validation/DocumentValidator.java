@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -58,6 +59,13 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @return a list of TimestampToken for validation purposes
 	 */
 	List<TimestampToken> getDetachedTimestamps();
+
+	/**
+	 * Retrieves the detached evidence records found in the document
+	 *
+	 * @return a list of Evidence Records for validation purposes
+	 */
+	List<EvidenceRecord> getDetachedEvidenceRecords();
 
 	/**
 	 * Provides a {@code CertificateVerifier} to be used during the validation process.
@@ -107,6 +115,14 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 *            the {@code List} of {@code DSSDocument} to set
 	 */
 	void setDetachedContents(final List<DSSDocument> detachedContent);
+
+	/**
+	 * Sets a {@code List} of {@code DSSDocument} containing the evidence record documents covering the signature document.
+	 *
+	 * @param detachedEvidenceRecordDocuments
+	 *            the {@code List} of {@code DSSDocument} to set
+	 */
+	void setDetachedEvidenceRecordDocuments(final List<DSSDocument> detachedEvidenceRecordDocuments);
 
 	/**
 	 * Sets the {@code List} of {@code DSSDocument} containing the original container content for ASiC-S signatures.

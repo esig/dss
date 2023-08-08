@@ -47,6 +47,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,9 +115,9 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
 
     @Override
     protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
-            final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
-            final CertificateVerifier certificateVerifier) {
-        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps, certificateVerifier);
+            Collection<T> signatures, Collection<TimestampToken> detachedTimestamps, Collection<EvidenceRecord> detachedEvidenceRecords,
+            CertificateVerifier certificateVerifier) {
+        ValidationContext validationContext = super.prepareValidationContext(signatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifier);
         List<PdfDocDssRevision> dssRevisions = getDssRevisions();
         prepareDssDictionaryValidationContext(validationContext, dssRevisions);
         return validationContext;

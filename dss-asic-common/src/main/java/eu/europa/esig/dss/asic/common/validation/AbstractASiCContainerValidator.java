@@ -33,6 +33,7 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -135,10 +136,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract AbstractASiCContainerExtractor getContainerExtractor();
 	
 	@Override
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-																final List<AdvancedSignature> signatures) {
-		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder) super.createDiagnosticDataBuilder(
-				validationContext, signatures);
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(ValidationContext validationContext, List<AdvancedSignature> signatures,
+																List<EvidenceRecord> evidenceRecords) {
+		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder)
+				super.createDiagnosticDataBuilder(validationContext, signatures, evidenceRecords);
 		builder.containerInfo(getContainerInfo());
 		return builder;
 	}

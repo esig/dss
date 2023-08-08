@@ -72,32 +72,28 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             while (archiveTimeStampsIt.hasNext()) {
                 ArchiveTimeStampObject archiveTimeStamp = archiveTimeStampsIt.next();
 
+                List<ReferenceValidation> timestampValidations = new ArrayList<>();
                 DSSMessageDigest lastMessageDigest = DSSMessageDigest.createEmptyDigest();
                 List<? extends DigestValueGroup> hashTree = archiveTimeStamp.getHashTree();
                 for (DigestValueGroup digestValueGroup : hashTree) {
                     // Validation of first HashTree/Sequence
                     if (lastMessageDigest.isEmpty()) {
+                        List<ReferenceValidation> archiveDataObjectValidations = validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain);
 
                         // if first time-stamp in a next ArchiveTimeStampChain
                         if (lastTimeStampHash.isEmpty()) {
-                            referenceValidations = validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain);
-
                             if (!firstArchiveTimeStampChain) {
                                 DSSMessageDigest lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain);
                                 // validate first time-stamp in ArchiveTimeStampChain
-                                if (!containsDigest(referenceValidations, lastTimeStampSequenceHash)) {
-                                    LOG.warn("No digest matching the previous ArchiveTimeStampSequence element found!");
-                                    lastMessageDigest = DSSMessageDigest.createEmptyDigest();
-                                    break;
-                                }
+                                timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHash);
+
+                            } else {
+                                referenceValidations.addAll(archiveDataObjectValidations);
                             }
+
                         } else {
                             // validate other time-stamps
-                            if (!containsDigest(digestValueGroup, lastTimeStampHash)) {
-                                LOG.warn("No digest matching the previous TimeStamp element found!");
-                                lastMessageDigest = DSSMessageDigest.createEmptyDigest();
-                                break;
-                            }
+                            timestampValidations = validateArchiveTimeStampDigest(archiveDataObjectValidations, lastTimeStampHash);
                         }
 
                     }
@@ -108,6 +104,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 // Validate time-stamp
                 TimestampToken timestampToken = archiveTimeStamp.getTimestampToken();
                 timestampToken.matchData(lastMessageDigest);
+                timestampToken.setReferenceValidations(timestampValidations);
 
                 if (archiveTimeStampsIt.hasNext()) {
                     lastTimeStampHash = computeTimeStampHash(digestAlgorithm, archiveTimeStamp, archiveTimeStampChain);
@@ -119,18 +116,31 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
     }
 
-    private boolean containsDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHash) {
+    private List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHash) {
+        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
+    }
+
+    private List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampHash) {
+        return validateAdditionalDigest(referenceValidations, lastTimeStampHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP);
+    }
+
+    private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest messageDigest, DigestMatcherType type) {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isFound()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
-            if (reference.getDigest() != null && Arrays.equals(lastTimeStampSequenceHash.getValue(), reference.getDigest().getValue())) {
-                referenceValidations.remove(reference);
-                return true;
+            if (reference.getDigest() != null && Arrays.equals(messageDigest.getValue(), reference.getDigest().getValue())) {
+                reference.setType(type);
+                reference.setFound(true);
+                reference.setIntact(true);
+                return referenceValidations;
             }
         }
+        // If one invalid reference and hash does not match -> change type
         if (Utils.collectionSize(invalidReferences) == 1) {
-            referenceValidations.removeAll(invalidReferences);
+            ReferenceValidation reference = invalidReferences.iterator().next();
+            reference.setType(type);
+            reference.setFound(!messageDigest.isEmpty());
         }
-        return false;
+        return referenceValidations;
     }
 
     /**
@@ -202,21 +212,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @return {@link DSSMessageDigest}
      */
     protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain);
-
-    /**
-     * This method verifies whether the {@code hashTree} contains the {@code messageDigest}
-     *
-     * @param digestValueGroup {@link DigestValueGroup}
-     * @param messageDigest {@link DSSMessageDigest} containing hash value to check
-     * @return TRUE if the hashTree contains digest value, FALSE otherwise
-     */
-    protected boolean containsDigest(DigestValueGroup digestValueGroup, DSSMessageDigest messageDigest) {
-        if (digestValueGroup == null || Utils.isCollectionEmpty(digestValueGroup.getDigestValues())) {
-            LOG.warn("Empty HashTree encountered! Unable to validate a time-stamp.");
-            return false;
-        }
-        return digestValueGroup.getDigestValues().stream().anyMatch(b -> Arrays.equals(messageDigest.getValue(), b));
-    }
 
     /**
      * Computes a hash value for a group of hashes

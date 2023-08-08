@@ -74,6 +74,12 @@ public enum DigestMatcherType {
 	MESSAGE_IMPRINT,
 
 	/** Evidence record archive object */
-	EVIDENCE_RECORD_ARCHIVE_OBJECT
+	EVIDENCE_RECORD_ARCHIVE_OBJECT,
+
+	/** Evidence record previous archive time-stamp object */
+	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
+
+	/** Evidence record previous archive time-stamp sequence */
+	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE
 
 }

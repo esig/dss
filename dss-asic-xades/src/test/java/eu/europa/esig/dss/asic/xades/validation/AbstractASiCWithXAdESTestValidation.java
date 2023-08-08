@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public abstract class AbstractASiCWithXAdESTestValidation extends AbstractDocumentTestValidation<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public abstract class AbstractASiCWithXAdESTestValidation extends AbstractDocumentTestValidation {
 	
 	@Override
 	protected void checkContainerInfo(DiagnosticData diagnosticData) {

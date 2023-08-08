@@ -1,13 +1,12 @@
 package eu.europa.esig.dss.evidencerecord.xml;
 
 import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.xmlers.definition.XMLERSElement;
 import eu.europa.esig.xmlers.definition.XMLERSNamespaces;
 import eu.europa.esig.xmlers.definition.XMLERSPaths;
@@ -95,12 +94,6 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
         return DomUtils.startsWithXmlPreamble(dssDocument);
     }
 
-    @Override
-    public Reports validateDocument() {
-        // TODO : to be implemented
-        return null;
-    }
-
     /**
      * Returns the root element of the validating document
      *
@@ -110,12 +103,8 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
         return rootElement;
     }
 
-    /**
-     * Returns an evidence record extracted from the document
-     *
-     * @return {@link EvidenceRecord}
-     */
-    public EvidenceRecord getEvidenceRecord() {
+    @Override
+    protected EvidenceRecord buildEvidenceRecord() {
         Element evidenceRecordRootElement = getEvidenceRecordRootElement();
         if (evidenceRecordRootElement != null) {
             final XmlEvidenceRecord evidenceRecord = new XmlEvidenceRecord(evidenceRecordRootElement);

@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -39,9 +31,15 @@ import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.Test;
 
-public class XAdESMultipleNestedCounterSignaturesTest extends AbstractPkiFactoryTestValidation<XAdESSignatureParameters, XAdESTimestampParameters> {
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+public class XAdESMultipleNestedCounterSignaturesTest extends AbstractPkiFactoryTestValidation {
 
 	private String signingAlias;
 

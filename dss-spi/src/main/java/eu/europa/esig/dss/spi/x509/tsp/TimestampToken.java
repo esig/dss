@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -148,6 +149,11 @@ public class TimestampToken extends Token {
 	 * In case of XAdES IndividualDataObjectsTimeStamp, Includes shall be specified
 	 */
 	private List<TimestampInclude> timestampIncludes;
+
+	/**
+	 * In case of an Evidence record time-stamp, contains references to
+	 */
+	private List<ReferenceValidation> referenceValidations;
 
 	/**
 	 * Defines for archive timestamp its type.
@@ -282,7 +288,7 @@ public class TimestampToken extends Token {
 	 */
 	@Override
 	public boolean isValid() {
-		return isSignatureIntact() && isMessageImprintDataFound() && isMessageImprintDataIntact();
+		return isSignatureIntact() && isMessageImprintDataFound() && isMessageImprintDataIntact() && areReferenceValidationsValid();
 	}
 
 	/**
@@ -700,6 +706,40 @@ public class TimestampToken extends Token {
 	 */
 	public void setTimestampIncludes(List<TimestampInclude> timestampIncludes) {
 		this.timestampIncludes = timestampIncludes;
+	}
+
+	/**
+	 * Returns a list of timestamped data reference validations (used for Evidence Record timestamps)
+	 *
+	 * @return a list of {@link ReferenceValidation}s
+	 */
+	public List<ReferenceValidation> getReferenceValidations() {
+		return referenceValidations;
+	}
+
+	/**
+	 * Sets a list of timestamped data reference validations (used for Evidence Record timestamps)
+	 *
+	 * @param referenceValidations a list of {@link ReferenceValidation}s
+	 */
+	public void setReferenceValidations(List<ReferenceValidation> referenceValidations) {
+		this.referenceValidations = referenceValidations;
+	}
+
+	/**
+	 * This method verifies whether the corresponding reference validations are valid
+	 *
+	 * @return TRUE if all reference validations are valid, FALSE otherwise
+	 */
+	protected boolean areReferenceValidationsValid() {
+		if (Utils.isCollectionNotEmpty(referenceValidations)) {
+			for (ReferenceValidation referenceValidation : referenceValidations) {
+				if (!referenceValidation.isFound() || !referenceValidation.isIntact()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

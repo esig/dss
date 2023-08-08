@@ -138,6 +138,15 @@ public enum TimestampType {
 	public boolean isArchivalTimestamp() {
 		return ARCHIVE_TIMESTAMP == this;
 	}
+
+	/**
+	 * Checks if the timestamp type is an evidence record timestamp
+	 *
+	 * @return TRUE if the type is an evidence record timestamp, FALSE otherwise
+	 */
+	public boolean isEvidenceRecordTimestamp() {
+		return EVIDENCE_RECORD_TIMESTAMP == this;
+	}
 	
 	/**
 	 * Checks if a timestamp of this type covers a signature

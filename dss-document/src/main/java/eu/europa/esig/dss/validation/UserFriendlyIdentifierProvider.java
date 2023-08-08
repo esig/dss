@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
+import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,6 +118,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /** The prefix to be used for an original document identifier creation */
     private String signedDataPrefix = "DOCUMENT";
+
+    /** The prefix to be used for an evidence record identifier creation */
+    private String evidenceRecordPrefix = "EVIDENCE-RECORD";
 
     /** The prefix to be used for a List of Trusted Lists identifier creation */
     private String lotlPrefix = "LOTL";
@@ -221,6 +226,17 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     /**
+     * Sets the prefix to be used for evidence record identifiers
+     *
+     * Default = "EVIDENCE-RECORD"
+     *
+     * @param evidenceRecordPrefix {@link String}
+     */
+    public void setEvidenceRecordPrefix(String evidenceRecordPrefix) {
+        this.evidenceRecordPrefix = evidenceRecordPrefix;
+    }
+
+    /**
      * Sets the prefix to be used for a LOTL identifier
      *
      * Default = "LOTL"
@@ -293,6 +309,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
         } else if (object instanceof EncapsulatedRevocationTokenIdentifier) {
             return getIdAsStringForRevTokenIdentifier((EncapsulatedRevocationTokenIdentifier<?>) object);
+
+        } else if (object instanceof EvidenceRecord) {
+            return getIdAsStringForEvidenceRecordIdentifier((EvidenceRecord) object);
 
         }
         LOG.warn("The class '{}' is not supported! Return the original identifier for the object.", object.getClass());
@@ -439,6 +458,23 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         stringBuilder.append(STRING_DELIMITER);
         stringBuilder.append(Utils.toHex(revocationIdentifier.getDigestValue(DigestAlgorithm.SHA256)));
         return generateId(stringBuilder, revocationIdentifier.asXmlId());
+    }
+
+    /**
+     * Gets a {@code String} identifier for a given {@code EvidenceRecord}
+     *
+     * @param evidenceRecord {@link EvidenceRecord} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForEvidenceRecordIdentifier(EvidenceRecord evidenceRecord) {
+        StringBuilder stringBuilder = new StringBuilder(evidenceRecordPrefix);
+        stringBuilder.append(STRING_DELIMITER);
+        if (Utils.isStringNotEmpty(evidenceRecord.getFilename())) {
+            stringBuilder.append(evidenceRecord.getFilename());
+        } else {
+            stringBuilder.append(Utils.toHex(((MultipleDigestIdentifier) evidenceRecord.getDSSId()).getDigestValue(DigestAlgorithm.SHA256)));
+        }
+        return generateId(stringBuilder, evidenceRecord.getId());
     }
 
     private String createIdString(String prefix, X500PrincipalHelper subject, Date creationDate, String dssId) {

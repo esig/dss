@@ -42,6 +42,8 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -97,6 +99,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * documents.
 	 */
 	protected List<DSSDocument> detachedContents = new ArrayList<>();
+
+	/**
+	 * Contains a list of evidence record documents detached from the signature
+	 */
+	protected List<DSSDocument> detachedEvidenceRecordDocuments = new ArrayList<>();
 	
 	/**
 	 * In case of an ASiC signature this {@code List} of container documents.
@@ -183,6 +190,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * Cached list of detached timestamps extracted from the document
 	 */
 	private List<TimestampToken> detachedTimestamps;
+
+	/**
+	 * Cached list of detached evidence records extracted from the document
+	 */
+	private List<EvidenceRecord> evidenceRecords;
 
 	/**
 	 * The constructor with a null {@code signatureScopeFinder}
@@ -279,6 +291,11 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setDetachedContents(final List<DSSDocument> detachedContents) {
 		this.detachedContents = detachedContents;
+	}
+
+	@Override
+	public void setDetachedEvidenceRecordDocuments(final List<DSSDocument> detachedEvidenceRecordDocuments) {
+		this.detachedEvidenceRecordDocuments = detachedEvidenceRecordDocuments;
 	}
 
 	@Override
@@ -468,19 +485,37 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return {@link DiagnosticDataBuilder}
 	 */
 	protected DiagnosticDataBuilder prepareDiagnosticDataBuilder() {
-		
 		List<AdvancedSignature> allSignatures = getAllSignatures();
         List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
+		List<EvidenceRecord> detachedEvidenceRecords = getDetachedEvidenceRecords();
 
 		final CertificateVerifier certificateVerifierForValidation =
 				new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
 		final ValidationContext validationContext = prepareValidationContext(
-				allSignatures, detachedTimestamps, certificateVerifierForValidation);
+				allSignatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifierForValidation);
 
 		if (!skipValidationContextExecution) {
 			validateContext(validationContext);
 		}
-		return createDiagnosticDataBuilder(validationContext, allSignatures);
+		return createDiagnosticDataBuilder(validationContext, allSignatures, detachedEvidenceRecords);
+	}
+
+	/**
+	 * Initializes and fills {@code ValidationContext} with necessary data sources
+	 *
+	 * @param <T> {@link AdvancedSignature} implementation
+	 * @param signatures a collection of {@link AdvancedSignature}s
+	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
+	 * @param certificateVerifier {@link CertificateVerifier} to be used for the validation
+	 * @return {@link ValidationContext}
+	 * @deprecated since DSS 5.13. Use
+	 * 		{@code #prepareValidationContext(signatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifier}}
+	 */
+	@Deprecated
+	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
+			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
+			final CertificateVerifier certificateVerifier) {
+		return prepareValidationContext(signatures, detachedTimestamps, Collections.emptyList(), certificateVerifier);
 	}
 
 	/**
@@ -489,16 +524,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
 	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
+	 * @param detachedEvidenceRecords a collection of detached {@link EvidenceRecord}s
 	 * @param certificateVerifier {@link CertificateVerifier} to be used for the validation
 	 * @return {@link ValidationContext}
 	 */
 	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
 			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
+			final Collection<EvidenceRecord> detachedEvidenceRecords,
 			final CertificateVerifier certificateVerifier) {
 		ValidationContext validationContext = new SignatureValidationContext();
 		validationContext.initialize(certificateVerifier);
 		prepareSignatureValidationContext(validationContext, signatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
+		prepareDetachedEvidenceRecordValidationContext(validationContext, detachedEvidenceRecords);
 		return validationContext;
 	}
 	
@@ -577,14 +615,30 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * 
 	 * @param validationContext {@link ValidationContext} used for the validation
 	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
-	 *                          collection
+	 * @return filled {@link DiagnosticDataBuilder}
+	 * @deprecated since DSS 5.13. Use {@code #createDiagnosticDataBuilder(validationContext, signatures, evidenceRecords)}
+	 */
+	@Deprecated
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
+																final List<AdvancedSignature> signatures) {
+		return createDiagnosticDataBuilder(validationContext, signatures, Collections.emptyList());
+	}
+
+	/**
+	 * Creates and fills the {@code DiagnosticDataBuilder} with a relevant data
+	 * 
+	 * @param validationContext {@link ValidationContext} used for the validation
+	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
+	 * @param evidenceRecords   a list of {@link EvidenceRecord}s to be validated
 	 * @return filled {@link DiagnosticDataBuilder}
 	 */
 	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-																final List<AdvancedSignature> signatures) {
+																final List<AdvancedSignature> signatures,
+																final List<EvidenceRecord> evidenceRecords) {
 		return initializeDiagnosticDataBuilder().document(document)
 				.foundSignatures(signatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
+				.foundEvidenceRecords(evidenceRecords)
 				.allCertificateSources(validationContext.getAllCertificateSources())
 				.documentCertificateSource(validationContext.getDocumentCertificateSource())
 				.documentCRLSource(validationContext.getDocumentCRLSource())
@@ -642,9 +696,17 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param timestamps
 	 *                          a collection of detached timestamps
 	 */
-	protected void prepareDetachedTimestampValidationContext(final ValidationContext validationContext, Collection<TimestampToken> timestamps) {
+	protected void prepareDetachedTimestampValidationContext(
+			final ValidationContext validationContext, Collection<TimestampToken> timestamps) {
 		for (TimestampToken timestampToken : timestamps) {
 			validationContext.addTimestampTokenForVerification(timestampToken);
+		}
+	}
+
+	protected void prepareDetachedEvidenceRecordValidationContext(
+			final ValidationContext validationContext, Collection<EvidenceRecord> evidenceRecords) {
+		for (EvidenceRecord evidenceRecord : evidenceRecords) {
+			prepareDetachedTimestampValidationContext(validationContext, evidenceRecord.getTimestamps());
 		}
 	}
 
@@ -791,6 +853,34 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return a list of {@code TimestampToken}s
 	 */
 	protected List<TimestampToken> buildDetachedTimestamps() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<EvidenceRecord> getDetachedEvidenceRecords() {
+		if (evidenceRecords == null) {
+			evidenceRecords = buildDetachedEvidenceRecords();
+		}
+		return evidenceRecords;
+	}
+
+	/**
+	 * Builds a list of detached {@code EvidenceRecord}s extracted from the document
+	 *
+	 * @return a list of {@code EvidenceRecord}s
+	 */
+	protected List<EvidenceRecord> buildDetachedEvidenceRecords() {
+		if (Utils.isCollectionNotEmpty(detachedEvidenceRecordDocuments)) {
+			List<EvidenceRecord> result = new ArrayList<>();
+			for (DSSDocument document : detachedEvidenceRecordDocuments) {
+				EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(document);
+				EvidenceRecord evidenceRecord = evidenceRecordValidator.getEvidenceRecord();
+				if (evidenceRecord != null) {
+					result.add(evidenceRecord);
+				}
+			}
+			return result;
+		}
 		return Collections.emptyList();
 	}
 

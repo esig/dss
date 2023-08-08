@@ -97,7 +97,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
+				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 

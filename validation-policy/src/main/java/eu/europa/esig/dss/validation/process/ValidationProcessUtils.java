@@ -401,6 +401,12 @@ public class ValidationProcessUtils {
 			return MessageTag.ACCM_POS_SIG_D_ENT;
 		case MESSAGE_IMPRINT:
 			return MessageTag.ACCM_POS_MESS_IMP;
+		case EVIDENCE_RECORD_ARCHIVE_OBJECT:
+			return MessageTag.ACCM_POS_ER_DO;
+		case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
+				return MessageTag.ACCM_POS_ER_TST;
+		case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
+				return MessageTag.ACCM_POS_ER_TST_SEQ;
 		default:
 			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
 					digestMatcher.getType()));

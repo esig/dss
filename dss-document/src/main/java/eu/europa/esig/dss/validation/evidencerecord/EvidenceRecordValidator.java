@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.validation.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -14,20 +14,10 @@ import java.util.ServiceLoader;
  * as well as containing a loader for an Evidence Record validation of the given format.
  *
  */
-public abstract class EvidenceRecordValidator {
+public abstract class EvidenceRecordValidator extends SignedDocumentValidator {
 
-    /** Document to be validated */
-    protected DSSDocument document;
-
-    /**
-     * A time to validate the document against
-     */
-    private Date validationTime;
-
-    /**
-     * Contains a list of documents time-stamped within a reduced HashTree
-     */
-    protected List<DSSDocument> detachedContents = new ArrayList<>();
+    /** Cached instance of evidence record */
+    private EvidenceRecord evidenceRecord;
 
     /**
      * Empty constructor
@@ -66,56 +56,33 @@ public abstract class EvidenceRecordValidator {
     }
 
     /**
-     * Checks if the document is supported by the current validator
-     *
-     * @param dssDocument {@link DSSDocument} to check
-     * @return TRUE if the document is supported, FALSE otherwise
-     */
-    public abstract boolean isSupported(DSSDocument dssDocument);
-
-    /**
-     * Allows to define a custom validation time
-     *
-     * @param validationTime {@link Date}
-     */
-    public void setValidationTime(Date validationTime) {
-        this.validationTime = validationTime;
-    }
-
-    /**
-     * Returns validation time In case if the validation time is not provided,
-     * initialize the current time value from the system
-     *
-     * @return {@link Date} validation time
-     */
-    protected Date getValidationTime() {
-        if (validationTime == null) {
-            validationTime = new Date();
-        }
-        return validationTime;
-    }
-
-    /**
-     * Sets a list of time-stamped documents present in the initial sequence of the reduced HashTree
-     *
-     * @param detachedContents a list of {@link DSSDocument}s
-     */
-    public void setDetachedContents(final List<DSSDocument> detachedContents) {
-        this.detachedContents = detachedContents;
-    }
-
-    /**
-     * Validates the document containing Evidence Record
-     *
-     * @return {@link Reports}
-     */
-    public abstract Reports validateDocument();
-
-    /**
      * Returns an evidence record extracted from the document
      *
      * @return {@link EvidenceRecord}
      */
-    public abstract EvidenceRecord getEvidenceRecord();
+    public EvidenceRecord getEvidenceRecord() {
+        if (evidenceRecord == null) {
+            evidenceRecord = buildEvidenceRecord();
+        }
+        return evidenceRecord;
+    }
+
+    /**
+     * Builds an evidence record object
+     *
+     * @return {@link EvidenceRecord}
+     */
+    protected abstract EvidenceRecord buildEvidenceRecord();
+
+    @Override
+    public List<EvidenceRecord> getDetachedEvidenceRecords() {
+        return Collections.singletonList(getEvidenceRecord());
+    }
+
+    @Override
+    public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
+        throw new UnsupportedOperationException("getOriginalDocuments(AdvancedSignature) is " +
+                "not supported for EvidenceRecordValidator!");
+    }
 
 }

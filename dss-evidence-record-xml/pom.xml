@@ -54,16 +54,23 @@
             <artifactId>dss-utils-apache-commons</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-crl-parser-stream</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-test</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-evidence-record-common</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>quick-init</id>
-            <properties>
-                <maven.test.skip>false</maven.test.skip>
-                <maven.test.skip.exec>true</maven.test.skip.exec>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>

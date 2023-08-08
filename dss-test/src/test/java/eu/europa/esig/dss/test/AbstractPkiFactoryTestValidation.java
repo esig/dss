@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
@@ -93,8 +94,7 @@ import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.SerializableSignatureParameters;
-import eu.europa.esig.dss.model.SerializableTimestampParameters;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -102,23 +102,24 @@ import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.AdditionalValidationReportDataType;
@@ -199,8 +200,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends PKIFactoryAccess {
+public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestValidation.class);
 
@@ -220,9 +220,10 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		SignedDocumentValidator validator = getValidator(signedDocument);
 		checkValidationContext(validator);
 
-		List<AdvancedSignature> signatures = validator.getSignatures();
+		List<AdvancedSignature> signatures = getSignatures(validator);
 		checkAdvancedSignatures(signatures);
 		checkDetachedTimestamps(validator.getDetachedTimestamps());
+		checkDetachedEvidenceRecords(validator.getDetachedEvidenceRecords());
 		checkSignaturePolicy(signatures);
 
 		Reports reports = validator.validateDocument();
@@ -315,11 +316,19 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		return null;
 	}
 
+	protected List<AdvancedSignature> getSignatures(DocumentValidator validator) {
+		return validator.getSignatures();
+	}
+
 	protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
 	}
 
 	protected void checkDetachedTimestamps(List<TimestampToken> detachedTimestamps) {
+		// not implemented by default
+	}
+
+	protected void checkDetachedEvidenceRecords(List<EvidenceRecord> detachedEvidenceRecords) {
 		// not implemented by default
 	}
 
@@ -495,6 +504,7 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkCertificateExtensions(diagnosticData);
 		checkRevocationData(diagnosticData);
 		checkTimestamps(diagnosticData);
+		checkEvidenceRecords(diagnosticData);
 		checkSignatureScopes(diagnosticData);
 		checkMessageDigestAlgorithm(diagnosticData);
 		checkMimeType(diagnosticData);
@@ -927,64 +937,71 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 
 			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 			for (TimestampWrapper timestampWrapper : allTimestamps) {
-				assertNotNull(timestampWrapper.getProductionTime());
-				assertTrue(timestampWrapper.isMessageImprintDataFound());
-				assertTrue(timestampWrapper.isMessageImprintDataIntact());
-				assertTrue(timestampWrapper.isSignatureIntact());
-				assertTrue(timestampWrapper.isSignatureValid());
-	
-				List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
-				for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-					assertTrue(xmlDigestMatcher.isDataFound());
-					assertTrue(xmlDigestMatcher.isDataIntact());
-				}
-				if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
-					assertNotNull(timestampWrapper.getArchiveTimestampType());
-				}
-				
-				assertTrue(timestampWrapper.isSigningCertificateIdentified());
-				assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
-				assertTrue(timestampWrapper.isSigningCertificateReferenceUnique());
-
-				if (timestampWrapper.isTSAGeneralNamePresent()) {
-					assertTrue(timestampWrapper.isTSAGeneralNameMatch());
-					assertTrue(timestampWrapper.isTSAGeneralNameOrderMatch());
-				}
-
-				CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
-				assertNotNull(signingCertificateReference);
-				assertTrue(signingCertificateReference.isDigestValuePresent());
-				assertTrue(signingCertificateReference.isDigestValueMatch());
-				if (signingCertificateReference.isIssuerSerialPresent()) {
-					assertTrue(signingCertificateReference.isIssuerSerialMatch());
-				}
-				
-				CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
-				assertNotNull(signingCertificate);
-				String signingCertificateId = signingCertificate.getId();
-				String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
-				String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
-				assertEquals(signingCertificate.getCertificateDN(), certificateDN);
-				assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
-				
-				assertTrue(Utils.isCollectionEmpty(timestampWrapper.foundCertificates()
-						.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
+				checkTimestamp(diagnosticData, timestampWrapper);
 
 				List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
 				if (timestampedSignatures.stream().map(SignatureWrapper::getId)
 						.collect(Collectors.toList()).contains(signatureWrapper.getId())) {
 					checkTimestampedProperties(allTimestamps, timestampWrapper, allSignatures, signatureWrapper);
 				}
-
-				assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
-
-				if (timestampWrapper.getType().isContentTimestamp() || timestampWrapper.getType().isArchivalTimestamp() ||
-						timestampWrapper.getType().isDocumentTimestamp() || timestampWrapper.getType().isContainerTimestamp()) {
-					assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
-				} else {
-					assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
-				}
 			}
+		}
+	}
+	
+	protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
+		assertNotNull(timestampWrapper.getProductionTime());
+		assertTrue(timestampWrapper.isMessageImprintDataFound());
+		assertTrue(timestampWrapper.isMessageImprintDataIntact());
+		assertTrue(timestampWrapper.isSignatureIntact());
+		assertTrue(timestampWrapper.isSignatureValid());
+
+		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
+		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			assertTrue(xmlDigestMatcher.isDataFound());
+			assertTrue(xmlDigestMatcher.isDataIntact());
+		}
+		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+			assertNotNull(timestampWrapper.getArchiveTimestampType());
+		}
+
+		assertTrue(timestampWrapper.isSigningCertificateIdentified());
+		assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+		assertTrue(timestampWrapper.isSigningCertificateReferenceUnique());
+
+		if (timestampWrapper.isTSAGeneralNamePresent()) {
+			assertTrue(timestampWrapper.isTSAGeneralNameMatch());
+			assertTrue(timestampWrapper.isTSAGeneralNameOrderMatch());
+		}
+
+		CertificateRefWrapper signingCertificateReference = timestampWrapper.getSigningCertificateReference();
+		assertNotNull(signingCertificateReference);
+		assertTrue(signingCertificateReference.isDigestValuePresent());
+		assertTrue(signingCertificateReference.isDigestValueMatch());
+		if (signingCertificateReference.isIssuerSerialPresent()) {
+			assertTrue(signingCertificateReference.isIssuerSerialMatch());
+		}
+
+		CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
+		assertNotNull(signingCertificate);
+		String signingCertificateId = signingCertificate.getId();
+		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
+		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
+		assertEquals(signingCertificate.getCertificateDN(), certificateDN);
+		assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
+
+		assertTrue(Utils.isCollectionEmpty(timestampWrapper.foundCertificates()
+				.getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
+
+		assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedObjects()));
+
+		if (timestampWrapper.getType().isContentTimestamp() || timestampWrapper.getType().isArchivalTimestamp() ||
+				timestampWrapper.getType().isDocumentTimestamp() || timestampWrapper.getType().isContainerTimestamp()) {
+			assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+		} else if (timestampWrapper.getType().isEvidenceRecordTimestamp()) {
+			boolean coversData = timestampWrapper.getDigestMatchers().stream().anyMatch(t -> t.getType().equals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT));
+			assertEquals(coversData, Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+		} else {
+			assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
 		}
 	}
 
@@ -1104,6 +1121,65 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 			for (OrphanRevocationWrapper revocation : signatureWrapper.foundRevocations()
 					.getOrphanRevocationsByOrigin(RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES)) {
 				assertTrue(orphanRevocIds.contains(revocation.getId()));
+			}
+		}
+	}
+
+	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
+		checkEvidenceRecordDigestMatchers(diagnosticData);
+		checkEvidenceRecordTimestamps(diagnosticData);
+		checkEvidenceRecordStructuralValidation(diagnosticData);
+	}
+
+	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
+			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
+				assertNotNull(digestMatcher.getDigestMethod());
+				assertNotNull(digestMatcher.getDigestValue());
+				assertTrue(digestMatcher.isDataIntact());
+				assertTrue(digestMatcher.isDataFound());
+			}
+		}
+	}
+
+	protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<TimestampWrapper> timestamps = evidenceRecord.getTimestamps();
+			assertTrue(Utils.isCollectionNotEmpty(timestamps));
+			for (TimestampWrapper timestampWrapper : timestamps) {
+				checkTimestamp(diagnosticData, timestampWrapper);
+			}
+		}
+	}
+
+	protected void checkEvidenceRecordStructuralValidation(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			assertTrue(evidenceRecord.isStructuralValidationValid());
+			assertTrue(Utils.isCollectionEmpty(evidenceRecord.getStructuralValidationMessages()));
+		}
+	}
+
+	protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
+			assertTrue(Utils.isCollectionNotEmpty(evidenceRecordScopes));
+			for (XmlSignatureScope signatureScope : evidenceRecordScopes) {
+				assertEquals(SignatureScopeType.FULL, signatureScope.getScope());
+				assertNotNull(signatureScope.getName());
+				assertNotNull(signatureScope.getDescription());
+
+				XmlSignerData signerData = signatureScope.getSignerData();
+				assertNotNull(signerData);
+				assertNotNull(signerData.getDigestAlgoAndValue());
+				assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
+				assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
 			}
 		}
 	}
