@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.XMLCanonicalizer;
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;

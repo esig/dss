@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.download;
 
-import eu.europa.esig.dss.XMLCanonicalizer;
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;

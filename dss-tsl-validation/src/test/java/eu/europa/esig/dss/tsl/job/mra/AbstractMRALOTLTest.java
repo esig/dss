@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.job.mra;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;

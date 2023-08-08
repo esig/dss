@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.XMLCanonicalizer;
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.SantuarioInitializer;
+import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.SantuarioInitializer;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.asic.xades.definition.ManifestPaths;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;

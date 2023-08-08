@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.validation;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestPaths;
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;

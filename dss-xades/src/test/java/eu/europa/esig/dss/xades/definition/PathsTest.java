@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import eu.europa.esig.xades.definition.XAdESPaths;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
 import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;

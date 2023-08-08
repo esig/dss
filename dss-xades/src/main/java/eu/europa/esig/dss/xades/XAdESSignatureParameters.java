@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.XMLCanonicalizer;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;

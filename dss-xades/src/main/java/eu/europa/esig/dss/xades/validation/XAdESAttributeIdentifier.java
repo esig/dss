@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
 import org.w3c.dom.Node;

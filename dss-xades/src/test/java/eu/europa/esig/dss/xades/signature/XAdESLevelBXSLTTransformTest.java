@@ -29,7 +29,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;

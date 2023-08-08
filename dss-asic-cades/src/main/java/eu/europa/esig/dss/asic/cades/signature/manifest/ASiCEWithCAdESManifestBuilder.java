@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 
 import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss;
+package eu.europa.esig.dss.xml;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
