@@ -119,10 +119,10 @@ public class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 		
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		
-		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(0))); // signature_timestamp
-		assertEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(1))); // first archive_timestamp
-		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getTimestampValidationSubIndication(timestampIds.get(1))); // first archive_timestamp
-		assertNotEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(timestampIds.get(2))); // second archive_timestamp
+		assertNotEquals(Indication.FAILED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0))); // signature_timestamp
+		assertEquals(Indication.FAILED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(1))); // first archive_timestamp
+		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(timestampIds.get(1))); // first archive_timestamp
+		assertNotEquals(Indication.FAILED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(2))); // second archive_timestamp
 	}
 	
 	private int getNumberOfManifestEntries(TimestampWrapper timestampWrapper) {

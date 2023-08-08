@@ -18,10 +18,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
+package eu.europa.esig.dss.validation.process.vpftspwatsp.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -37,7 +37,7 @@ import java.util.Date;
  * Verifies whether the result of {@code MessageImprintDigestAlgorithmValidation} is valid
  *
  */
-public class MessageImprintDigestAlgorithmValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public class MessageImprintDigestAlgorithmValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
     private final TimestampWrapper timestamp;
@@ -52,17 +52,17 @@ public class MessageImprintDigestAlgorithmValidationCheck extends ChainItem<XmlV
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationProcessArchivalData}
+     * @param result {@link XmlConstraintsConclusion}
      * @param timestamp {@link TimestampWrapper}
      * @param davResult {@link XmlSAV}
      * @param currentTime {@link Date}
      * @param constraint {@link LevelConstraint}
      */
-    public MessageImprintDigestAlgorithmValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    public MessageImprintDigestAlgorithmValidationCheck(I18nProvider i18nProvider, T result,
                                                   TimestampWrapper timestamp,
                                                   XmlSAV davResult, Date currentTime,
                                                   LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
         this.davResult = davResult;
         this.currentTime = currentTime;

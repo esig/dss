@@ -101,6 +101,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -144,6 +145,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -225,6 +227,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -266,6 +269,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -345,6 +349,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
@@ -380,6 +385,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -429,6 +435,7 @@
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 					<!-- policyMappings 2.5.29.33 not supported -->
 				</SupportedCriticalExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -463,6 +470,7 @@
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />

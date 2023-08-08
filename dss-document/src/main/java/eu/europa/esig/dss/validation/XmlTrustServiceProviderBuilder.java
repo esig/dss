@@ -31,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceEquivalenceInformation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
@@ -238,7 +239,7 @@ public class XmlTrustServiceProviderBuilder {
         trustService.setStartDate(serviceInfoStatus.getStartDate());
         trustService.setEndDate(serviceInfoStatus.getEndDate());
 
-        List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
+        List<XmlQualifier> qualifiers = getQualifiers(serviceInfoStatus, certToken);
         if (Utils.isCollectionNotEmpty(qualifiers)) {
             trustService.setCapturedQualifiers(qualifiers);
         }
@@ -263,22 +264,31 @@ public class XmlTrustServiceProviderBuilder {
      *
      * @param serviceInfoStatus {@link TrustServiceStatusAndInformationExtensions}
      * @param certificateToken {@link CertificateToken}
-     * @return a list of {@link String} qualifiers
+     * @return a list of {@link XmlQualifier}
      */
-    private List<String> getQualifiers(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
-                                       CertificateToken certificateToken) {
+    private List<XmlQualifier> getQualifiers(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
+                                             CertificateToken certificateToken) {
         LOG.trace("--> GET_QUALIFIERS()");
-        List<String> list = new ArrayList<>();
+        final List<XmlQualifier> list = new ArrayList<>();
         final List<ConditionForQualifiers> conditionsForQualifiers = serviceInfoStatus.getConditionsForQualifiers();
         if (Utils.isCollectionNotEmpty(conditionsForQualifiers)) {
             for (ConditionForQualifiers conditionForQualifiers : conditionsForQualifiers) {
                 Condition condition = conditionForQualifiers.getCondition();
                 if (condition.check(certificateToken)) {
-                    list.addAll(conditionForQualifiers.getQualifiers());
+                    for (String qualifier : conditionForQualifiers.getQualifiers()) {
+                        list.add(getXmlQualifier(qualifier, conditionForQualifiers.isCritical()));
+                    }
                 }
             }
         }
         return list;
+    }
+
+    private XmlQualifier getXmlQualifier(String value, boolean critical) {
+        final XmlQualifier xmlQualifier = new XmlQualifier();
+        xmlQualifier.setValue(value);
+        xmlQualifier.setCritical(critical);
+        return xmlQualifier;
     }
 
     private List<XmlTrustService> buildXmlTrustServicesWithMRA(
@@ -451,7 +461,7 @@ public class XmlTrustServiceProviderBuilder {
         originalThirdCountryMapping.setServiceType(serviceInfoStatus.getType());
         originalThirdCountryMapping.setStatus(serviceInfoStatus.getStatus());
 
-        List<String> qualifiers = getQualifiers(serviceInfoStatus, certToken);
+        List<XmlQualifier> qualifiers = getQualifiers(serviceInfoStatus, certToken);
         if (Utils.isCollectionNotEmpty(qualifiers)) {
             originalThirdCountryMapping.setCapturedQualifiers(qualifiers);
         }
@@ -597,7 +607,7 @@ public class XmlTrustServiceProviderBuilder {
                 }
                 qualifiers.add(qualifier);
             }
-            result.add(new ConditionForQualifiers(qualifierCondition.getCondition(), qualifiers));
+            result.add(new ConditionForQualifiers(qualifierCondition.getCondition(), qualifiers, qualifierCondition.isCritical()));
         }
         return result;
     }

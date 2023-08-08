@@ -52,6 +52,27 @@ This chapter covers the changes occurred between different versions of DSS withi
 ----
 not present
 ----
+                                                  a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <PdfSignatureDictionary Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+|Issuer DN check                                  |
+----
+not present
+----
+                                                  a|[source,xml]
+----
+<SigningCertificate>
+    ...
+    <IssuerName Level="FAIL" />
+    ...
+</SigningCertificate>
+----
 
 |===
 

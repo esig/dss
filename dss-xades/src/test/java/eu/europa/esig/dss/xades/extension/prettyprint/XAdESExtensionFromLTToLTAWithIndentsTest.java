@@ -195,11 +195,11 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		if (Utils.isCollectionNotEmpty(timestampIds)) {
 			for (String tspId : timestampIds) {
-				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
+				Indication timestampIndication = detailedReport.getBasicTimestampValidationIndication(tspId);
 				assertNotNull(timestampIndication);
 				assertNotEquals(Indication.FAILED, timestampIndication);
 				if (!Indication.PASSED.equals(timestampIndication)) {
-					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
+					assertNotNull(detailedReport.getBasicTimestampValidationSubIndication(tspId));
 				}
 			}
 		}

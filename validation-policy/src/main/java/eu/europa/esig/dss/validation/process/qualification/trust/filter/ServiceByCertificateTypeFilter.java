@@ -65,7 +65,7 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustServiceFilter {
 			boolean asiEseals = AdditionalServiceInformation.isForeSeals(additionalServiceInfos);
 			boolean asiWsa = AdditionalServiceInformation.isForWebAuth(additionalServiceInfos);
 
-			final List<String> capturedQualifiers = service.getCapturedQualifiers();
+			final List<String> capturedQualifiers = service.getCapturedQualifierUris();
 			boolean qcForEsign = ServiceQualification.isQcForEsig(capturedQualifiers);
 			boolean qcForEseals = ServiceQualification.isQcForEseal(capturedQualifiers);
 			boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);

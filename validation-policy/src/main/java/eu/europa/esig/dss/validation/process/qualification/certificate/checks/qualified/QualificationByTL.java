@@ -62,7 +62,7 @@ class QualificationByTL implements QualificationStrategy {
 				return CertificateQualifiedStatus.NOT_QC;
 			}
 
-			List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+			List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {

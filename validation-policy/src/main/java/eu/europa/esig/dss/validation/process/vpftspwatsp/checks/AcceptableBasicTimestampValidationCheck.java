@@ -18,12 +18,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
+package eu.europa.esig.dss.validation.process.vpftspwatsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -33,10 +33,13 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Checks if a result of a Basic Signature Validation process for a timestamp token is acceptable
  */
-public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The validated timestamp */
     private final TimestampWrapper timestamp;
@@ -54,16 +57,16 @@ public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValida
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationProcessArchivalData}
+     * @param result {@link XmlConstraintsConclusion}
      * @param timestamp {@link TimestampWrapper}
      * @param basicTimestampValidation {@link XmlConstraintsConclusion}
      * @param constraint {@link LevelConstraint}
      */
-    public AcceptableBasicTimestampValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    public AcceptableBasicTimestampValidationCheck(I18nProvider i18nProvider, T result,
                                                    TimestampWrapper timestamp,
                                                    XmlConstraintsConclusion basicTimestampValidation,
                                                    LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
         this.basicTimestampValidation = basicTimestampValidation;
     }
@@ -96,13 +99,6 @@ public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValida
     }
 
     @Override
-    protected String buildAdditionalInfo() {
-        String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
-        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
-                ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
-    }
-
-    @Override
     protected Indication getFailedIndicationForConclusion() {
         return bbbIndication;
     }
@@ -110,6 +106,14 @@ public class AcceptableBasicTimestampValidationCheck extends ChainItem<XmlValida
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
         return bbbSubIndication;
+    }
+
+    @Override
+    protected List<XmlMessage> getPreviousErrors() {
+        if (basicTimestampValidation != null && basicTimestampValidation.getConclusion() != null) {
+            return basicTimestampValidation.getConclusion().getErrors();
+        }
+        return Collections.emptyList();
     }
 
 }

@@ -103,7 +103,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(3, timestampIds.size());
 		for (String id : timestampIds) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(id));
 		}
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

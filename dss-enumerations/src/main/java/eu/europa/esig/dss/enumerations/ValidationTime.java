@@ -38,6 +38,16 @@ public enum ValidationTime {
 	/**
 	 * Date of the validation
 	 */
-	VALIDATION_TIME
+	VALIDATION_TIME,
+
+	/**
+	 * Time of the timestamp generation
+	 */
+	TIMESTAMP_GENERATION_TIME,
+
+	/**
+	 * The time when the timestamp is proved to exist
+	 */
+	TIMESTAMP_POE_TIME
 
 }

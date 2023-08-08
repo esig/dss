@@ -692,6 +692,11 @@
 					<xsd:documentation>Checks if the certificate does not contain any of the extensions defined in the list (e.g. ocsp-noCheck for end-entity certificate), whether critical or not</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="IssuerName" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's issuer distinguished name matches the subject distinguished name of the issuer certificate</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate's surname is in the acceptable values list</xsd:documentation>

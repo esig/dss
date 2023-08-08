@@ -32,10 +32,17 @@ import java.util.stream.Stream;
  */
 class TrustServiceUsageConsistency implements TrustServiceCondition {
 
+	/**
+	 * Default constructor
+	 */
+	public TrustServiceUsageConsistency() {
+		// empty
+	}
+
 	@Override
 	public boolean isConsistent(TrustServiceWrapper trustService) {
 
-		List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+		List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);
 		boolean qcForEseal = ServiceQualification.isQcForEseal(capturedQualifiers);

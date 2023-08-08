@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -902,9 +903,22 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
                 }
                 if (getQualifierEquivalenceMap() != null) {
                     for (Map.Entry<String, String> mapEntry : getQualifierEquivalenceMap().entrySet()) {
-                        if (trustServiceWrapper.getOriginalCapturedQualifiers().contains(mapEntry.getKey())) {
-                            assertTrue(trustServiceWrapper.getCapturedQualifiers().contains(mapEntry.getValue()));
+                        if (trustServiceWrapper.getOriginalCapturedQualifierUris().contains(mapEntry.getKey())) {
+                            assertTrue(trustServiceWrapper.getCapturedQualifierUris().contains(mapEntry.getValue()));
                         }
+                    }
+                }
+                if (Utils.isCollectionNotEmpty(trustServiceWrapper.getCapturedQualifiers())) {
+                    assertEquals(Utils.collectionSize(trustServiceWrapper.getCapturedQualifiers()), Utils.collectionSize(trustServiceWrapper.getCapturedQualifierUris()));
+                    assertEquals(Utils.collectionSize(trustServiceWrapper.getCapturedQualifiers()), Utils.collectionSize(trustServiceWrapper.getOriginalCapturedQualifiers()));
+                    assertEquals(Utils.collectionSize(trustServiceWrapper.getCapturedQualifiers()), Utils.collectionSize(trustServiceWrapper.getOriginalCapturedQualifierUris()));
+                    for (XmlQualifier qualifier : trustServiceWrapper.getCapturedQualifiers()) {
+                        assertNotNull(qualifier.getValue());
+                        assertTrue(qualifier.isCritical());
+                    }
+                    for (XmlQualifier qualifier : trustServiceWrapper.getOriginalCapturedQualifiers()) {
+                        assertNotNull(qualifier.getValue());
+                        assertTrue(qualifier.isCritical());
                     }
                 }
                 enactedMRAFound = true;

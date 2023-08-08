@@ -1090,6 +1090,20 @@ Default: not executed
 </SigningCertificate>
 ----
 
+* `IssuerName` - this constraint is used to check whether the issuer distinguished name found in the certificate does match the subject distinguished name of its issuer certificate. If the certificate's issuer DN does not match the subject DN of the issuer certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of IssuerName usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <IssuerName Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
 * `SerialNumberPresent` - this constraint is used to check whether the certificate contains serialNumber field. If the certificate does not contain serialNumber field, the check will fail.
 
 Default: `WARN`

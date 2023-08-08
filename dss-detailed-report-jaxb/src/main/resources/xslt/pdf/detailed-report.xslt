@@ -245,7 +245,7 @@
 	    			</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
-							<xsl:apply-templates select="dss:Conclusion|dss:ValidationProcessTimestamp/dss:Conclusion" />
+							<xsl:apply-templates select="dss:Conclusion" />
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
@@ -276,7 +276,15 @@
 	    	
     </xsl:template>
     
-	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessTimestamp|dss:ValidationProcessLongTermData|dss:ValidationProcessArchivalData|dss:Certificate">
+	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessBasicTimestamp|dss:ValidationProcessLongTermData
+			|dss:ValidationProcessArchivalData|dss:ValidationProcessArchivalDataTimestamp|dss:Certificate">
+
+		<xsl:variable name="poeStringValue">
+			<xsl:choose>
+				<xsl:when test="name()='ValidationProcessBasicTimestamp' or name()='ValidationProcessArchivalDataTimestamp'" >Lowest POE</xsl:when>
+				<xsl:otherwise>Best-signature-time</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 
 		<fo:table table-layout="fixed">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -307,7 +315,7 @@
 								<fo:inline>
 									<xsl:attribute name="font-weight">normal</xsl:attribute>
 									<xsl:attribute name="font-size">6pt</xsl:attribute>
-									(Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)
+									(<xsl:value-of select="$poeStringValue"/> : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)
 								</fo:inline>
 							</xsl:if>
 
@@ -352,7 +360,7 @@
     	
     </xsl:template>
     
-    <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationCertificateQualification">
+    <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationTimestampQualificationAtTime|dss:ValidationCertificateQualification">
 
     	<fo:table table-layout="fixed">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>

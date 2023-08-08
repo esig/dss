@@ -87,6 +87,16 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 				return false;
 			}
 
+			if (!TrustServiceChecker.isPostEIDASQSCDConsistent(trustService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3B;
+				return false;
+			}
+
+			if (!TrustServiceChecker.isQualifiersListKnownConsistent(trustService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3C;
+				return false;
+			}
+
 			if (!TrustServiceChecker.isUsageConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS4;
 				return false;

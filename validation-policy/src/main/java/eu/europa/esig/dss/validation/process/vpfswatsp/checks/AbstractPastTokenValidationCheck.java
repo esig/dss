@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -32,7 +32,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Abstract class containing the main logic for PastSignatureValidation result check
  */
-public abstract class AbstractPastTokenValidationCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public abstract class AbstractPastTokenValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** Past signature validation */
     private final XmlPSV xmlPSV;
@@ -50,12 +50,12 @@ public abstract class AbstractPastTokenValidationCheck extends ChainItem<XmlVali
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationProcessArchivalData}
+     * @param result {@link XmlConstraintsConclusion}
      * @param token {@link TokenProxy}
      * @param xmlPSV {@link XmlPSV}
      * @param constraint {@link LevelConstraint}
      */
-    protected AbstractPastTokenValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    protected AbstractPastTokenValidationCheck(I18nProvider i18nProvider, T result,
                                         TokenProxy token, XmlPSV xmlPSV, LevelConstraint constraint) {
         super(i18nProvider, result, constraint, token.getId() + PSV_BLOCK_SUFFIX);
         this.xmlPSV = xmlPSV;

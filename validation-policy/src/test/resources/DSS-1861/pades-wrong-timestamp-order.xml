@@ -213,8 +213,8 @@
         <Certificate Id="C-C2FCF477A55CAA547096C318833E5F58497B4BFC6FFB910476B3E288EC6911AC">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#2313532382e322e322e312e33313239131d312e332e362e312e342e312e333,1.2.840.113549.1.9.1=#160f696e666f40706f6c797379732e6575,cn=sys Co.,ou=sys (r),2.5.4.97=#0c0e56415448552d3130343430363538,o=sys Co.,l=budapest,c=hu</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#2313532382e322e322e312e33313239131d312e332e362e312e342e312e333,1.2.840.113549.1.9.1=#160f696e666f40706f6c797379732e6575,CN=SYS Co.,OU=sys (R),2.5.4.97=#0c0e56415448552d3130343430363538,O=SYS Co.,L=Budapest,C=HU</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017,2.5.4.97=#2d32333538343439370c0e5641544855,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#2d32333538343439370c0e5641544855,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=e-szigno qualified qcp ca 2017,2.5.4.97=#0c0e56415448552d3233353834343937,o=microsec ltd.,l=budapest,c=hu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=e-Szigno Qualified QCP CA 2017,2.5.4.97=#0c0e56415448552d3233353834343937,O=Microsec Ltd.,L=Budapest,C=HU</IssuerDistinguishedName>
             <SerialNumber>22264676765912719507090342209546</SerialNumber>
             <CommonName>Sys com.</CommonName>
             <Locality>Budapest</Locality>

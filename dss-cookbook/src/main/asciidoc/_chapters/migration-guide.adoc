@@ -24,7 +24,7 @@ KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSou
                                                                      a|[source,java]
 KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(file, "PKCS12", new char[] { 'p', 'a', 's', 's', 'w', 'o', 'r', 'd' });
 
-|Trust Services naming              a|[source,java]
+|Trust Service naming              a|[source,java]
 ----
 1) List<TrustedServiceWrapper> trustServices = certificateWrapper.getTrustedServices();
 2) public abstract class AbstractTrustedServiceFilter implements TrustedServiceFilter {}
@@ -38,6 +38,15 @@ List<TrustServiceWrapper> trustServices = certificateWrapper.getTrustServices();
 public abstract class AbstractTrustServiceFilter implements TrustServiceFilter {}
 ...
 etc
+
+|Trust Service qualifiers             a|[source,java]
+----
+TrustedServiceWrapper trustService = ...
+List<String> qualifierUris = trustService.getCapturedQualifiers();
+----
+                                                                     a|[source,java]
+TrustServiceWrapper trustService = ...
+List<String> qualifierUris = trustService.getCapturedQualifierUris();
 
 |OCSP response without nonce (keep failing behavior)                 a|
 [source,java]
@@ -65,6 +74,15 @@ String jwsType = signature.getMimeType();
 ----
                                                                      a|[source,java]
 String jwsType = signature.getSignatureType();
+
+|DetailedReport. Timestamp validation                                      a|[source,java]
+----
+Indication indication = detailedReport.getTimestampValidationIndication(tspId);
+SubIndication subIndication = detailedReport.getTimestampValidationSubIndication(tspId);
+----
+                                                                     a|[source,java]
+Indication indication = detailedReport.getBasicTimestampValidationIndication(tspId);
+SubIndication subIndication = detailedReport.getBasicTimestampValidationSubIndication(tspId);
 
 |===
 

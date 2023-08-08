@@ -173,8 +173,8 @@
         <Certificate Id="C-25704969DA22CEA61A21AE0834969A05A2E595B4AA01605FD66AB160F9AC4E38">
             <SubjectDistinguishedName Format="CANONICAL">c=sk,l=bratislava,2.5.4.5=#534b2d353033343932130e4e54523837,ou=rep,o=mini,cn=sr</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">C=SK,L=Bratislava,2.5.4.5=#534b2d353033343932130e4e54523837,OU=rep,O=Mini,CN=SR</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">cn=3,ou=sep,o=narod,2.5.4.5=#630363137130e4e5452534b2d3333031,l=bratislava,c=sk</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">CN=3,OU=SEP,O=Narod,2.5.4.5=#630363137130e4e5452534b2d3333031,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=snca3,ou=sep,o=narodny bezpecnostny urad,2.5.4.5=#130e4e5452534b2d3336303631373031,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SNCA3,OU=SEP,O=Narodny bezpecnostny urad,2.5.4.5=#130e4e5452534b2d3336303631373031,L=Bratislava,C=SK</IssuerDistinguishedName>
             <SerialNumber>6207885476685364795468</SerialNumber>
             <SubjectSerialNumber>49285037</SubjectSerialNumber>
             <CommonName>SR</CommonName>

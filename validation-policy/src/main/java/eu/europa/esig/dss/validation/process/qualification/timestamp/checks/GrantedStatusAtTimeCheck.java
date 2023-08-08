@@ -20,41 +20,48 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.timestamp.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.List;
 
 /**
  * Verifies of the certificate has related TrustServices which have been 'granted'
- * at the timestamp's production time
+ * at the given validation time
  *
  */
-public class GrantedStatusAtProductionTimeCheck extends ChainItem<XmlValidationTimestampQualification> {
+public class GrantedStatusAtTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** List of granted TrustServices at timestamp's production time */
 	private final List<TrustServiceWrapper> trustServicesAtTime;
+
+	/** Validation time of the TSP */
+	private final ValidationTime validationTime;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationTimestampQualification}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public GrantedStatusAtProductionTimeCheck(I18nProvider i18nProvider, XmlValidationTimestampQualification result,
-			List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+	public GrantedStatusAtTimeCheck(I18nProvider i18nProvider, T result, List<TrustServiceWrapper> trustServicesAtTime,
+									ValidationTime validationTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustServicesAtTime = trustServicesAtTime;
+		this.validationTime = validationTime;
 	}
 
 	@Override
@@ -63,13 +70,13 @@ public class GrantedStatusAtProductionTimeCheck extends ChainItem<XmlValidationT
 	}
 
 	@Override
-	protected MessageTag getMessageTag() {
-		return MessageTag.QUAL_HAS_GRANTED_AT;
+	protected XmlMessage buildConstraintMessage() {
+		return buildXmlMessage(MessageTag.QUAL_HAS_GRANTED_AT, ValidationProcessUtils.getValidationTimeMessageTag(validationTime));
 	}
 
 	@Override
-	protected MessageTag getErrorMessageTag() {
-		return MessageTag.QUAL_HAS_GRANTED_AT_ANS;
+	protected XmlMessage buildErrorMessage() {
+		return buildXmlMessage(MessageTag.QUAL_HAS_GRANTED_AT_ANS, ValidationProcessUtils.getValidationTimeMessageTag(validationTime));
 	}
 
 	@Override

@@ -31,9 +31,16 @@ import java.util.List;
  */
 class TrustServiceQSCDConsistency implements TrustServiceCondition {
 
+	/**
+	 * Default constructor
+	 */
+	public TrustServiceQSCDConsistency() {
+		// empty
+	}
+
 	@Override
 	public boolean isConsistent(TrustServiceWrapper trustService) {
-		List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+		List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 		boolean qscd = ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcWithSSCD(capturedQualifiers) ||
 				ServiceQualification.isQcQSCDStatusAsInCert(capturedQualifiers) || ServiceQualification.isQcSSCDStatusAsInCert(capturedQualifiers) ||

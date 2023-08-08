@@ -72,7 +72,7 @@ class TypeByTL implements TypeStrategy {
 				return CertificateType.ESIGN;
 			}
 
-			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifiers());
+			List<String> usageQualifiers = ServiceQualification.getUsageQualifiers(trustService.getCapturedQualifierUris());
 
 			if (Utils.collectionSize(usageQualifiers) > 1) {
 				return CertificateType.UNKNOWN;

@@ -30,10 +30,17 @@ import java.util.List;
  */
 class TrustServiceLegalPersonConsistency implements TrustServiceCondition {
 
+	/**
+	 * Default constructor
+	 */
+	public TrustServiceLegalPersonConsistency() {
+		// empty
+	}
+
 	@Override
 	public boolean isConsistent(TrustServiceWrapper trustService) {
 
-		List<String> capturedQualifiers = trustService.getCapturedQualifiers();
+		List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 		boolean qcForLegalPerson = ServiceQualification.isQcForLegalPerson(capturedQualifiers);
 		boolean qcForEsig = ServiceQualification.isQcForEsig(capturedQualifiers);

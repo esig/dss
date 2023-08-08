@@ -1521,8 +1521,16 @@
 
 	<xs:complexType name="CapturedQualifiers">
 		<xs:sequence>
-			<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Qualifier">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="critical" type="xs:boolean" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="AdditionalServiceInfoUris">

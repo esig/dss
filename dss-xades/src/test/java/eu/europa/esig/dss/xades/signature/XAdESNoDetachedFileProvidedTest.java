@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -47,6 +36,16 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	
@@ -182,8 +181,8 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		
-		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(timestamp.getId()));
-		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getTimestampValidationSubIndication(timestamp.getId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(timestamp.getId()));
+		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getBasicTimestampValidationSubIndication(timestamp.getId()));
 		
 	}
 	

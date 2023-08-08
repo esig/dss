@@ -79,6 +79,28 @@ public final class TrustServiceChecker {
 	}
 
 	/**
+	 * Checks whether the QSCD identifiers within {@code TrustServiceWrapper} are consistent for post eIDAS
+	 *
+	 * @param service {@link TrustServiceWrapper}
+	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise
+	 */
+	public static boolean isPostEIDASQSCDConsistent(TrustServiceWrapper service) {
+		TrustServiceCondition condition = new TrustServiceQSCDPostEIDASConsistency();
+		return condition.isConsistent(service);
+	}
+
+	/**
+	 * Checks whether the found qualifiers are known bye the application
+	 *
+	 * @param service {@link TrustServiceWrapper}
+	 * @return TRUE if the Trusted Service is consistent, FALSE otherwise
+	 */
+	public static boolean isQualifiersListKnownConsistent(TrustServiceWrapper service) {
+		TrustServiceCondition condition = new TrustServiceQualifiersKnownConsistency();
+		return condition.isConsistent(service);
+	}
+
+	/**
 	 * Checks whether the usage type identifiers within {@code TrustServiceWrapper} are consistent
 	 *
 	 * @param service {@link TrustServiceWrapper}
