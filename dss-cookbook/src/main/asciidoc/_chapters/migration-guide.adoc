@@ -75,7 +75,7 @@ String jwsType = signature.getMimeType();
                                                                      a|[source,java]
 String jwsType = signature.getSignatureType();
 
-|DetailedReport. Timestamp validation                                      a|[source,java]
+|DetailedReport. Timestamp validation                                a|[source,java]
 ----
 Indication indication = detailedReport.getTimestampValidationIndication(tspId);
 SubIndication subIndication = detailedReport.getTimestampValidationSubIndication(tspId);
@@ -83,6 +83,13 @@ SubIndication subIndication = detailedReport.getTimestampValidationSubIndication
                                                                      a|[source,java]
 Indication indication = detailedReport.getBasicTimestampValidationIndication(tspId);
 SubIndication subIndication = detailedReport.getBasicTimestampValidationSubIndication(tspId);
+
+|DSSErrorHandlerAlert package                                        a|[source,java]
+----
+import eu.europa.esig.dss.jaxb.common.DSSErrorHandlerAlert;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.jaxb.common.alert.DSSErrorHandlerAlert;
 
 |===
 

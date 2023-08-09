@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.jaxb.common.exception;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * An exception to be throwed in case of XSD validation error(s)
+ * An exception to be thrown in case of XSD validation error(s)
  *
  */
 public class XSDValidationException extends RuntimeException {
@@ -60,7 +61,16 @@ public class XSDValidationException extends RuntimeException {
 	public String getMessage() {
 		List<String> allMessages = getAllMessages();
 		if (allMessages != null && !allMessages.isEmpty()) {
-			return allMessages.toString();
+			StringBuilder sb = new StringBuilder();
+			Iterator<String> it = allMessages.iterator();
+			while (it.hasNext()) {
+				String message = it.next();
+				sb.append(message);
+				if (it.hasNext()) {
+					sb.append("; ");
+				}
+			}
+			return sb.toString();
 		}
 		return null;
 	}
