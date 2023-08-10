@@ -29,9 +29,9 @@ import java.util.Arrays;
 public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTimeStampSequenceVerifier {
 
     /**
-     * XML evidence record to be validated
+     * Default constructor to instantiate an XML evidence record verifier
      *
-     * @param evidenceRecord {@link XmlEvidenceRecord}
+     * @param evidenceRecord {@link XmlEvidenceRecord} XML evidence record to be validated
      */
     public XmlEvidenceRecordTimeStampSequenceVerifier(XmlEvidenceRecord evidenceRecord) {
         super(evidenceRecord);
@@ -44,6 +44,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
+    @Override
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain) {
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
         for (DSSDocument document : evidenceRecord.getDetachedContents()) {
@@ -65,7 +66,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     /**
      * Extracts a canonicalization method defined within XML {@code ArchiveTimeStampChainObject}
      *
-     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to get canonicalization method defintion from
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to get canonicalization method definition from
      * @return {@link String} canonicalization method
      */
     protected String getCanonicalizationMethod(ArchiveTimeStampChainObject archiveTimeStampChain) {

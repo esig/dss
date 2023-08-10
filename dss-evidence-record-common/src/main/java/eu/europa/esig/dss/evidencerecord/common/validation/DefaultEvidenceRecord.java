@@ -12,6 +12,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,6 +35,9 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * Represents a structure of the evidence record
      */
     private List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence;
+
+    /** Cached instance of timestamp source */
+    private EvidenceRecordTimestampSource<?> timestampSource;
 
     /**
      * Cached result of archive data objects validation
@@ -105,7 +109,16 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      *
      * @return a list of ordered {@link ArchiveTimeStampChainObject}s
      */
-    protected abstract List<? extends ArchiveTimeStampChainObject> buildArchiveTimeStampSequence();
+    protected List<? extends ArchiveTimeStampChainObject> buildArchiveTimeStampSequence() {
+        return buildEvidenceRecordParser().parse();
+    }
+
+    /**
+     * Builds an {@code EvidenceRecordParser} parsing the Evidence Record to a list of DSS DTOs
+     *
+     * @return {@link EvidenceRecordParser}
+     */
+    protected abstract EvidenceRecordParser buildEvidenceRecordParser();
 
     @Override
     public List<ReferenceValidation> getReferenceValidation() {
@@ -120,7 +133,17 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      *
      * @return a list of {@link ReferenceValidation}s
      */
-    protected abstract List<ReferenceValidation> validate();
+    protected List<ReferenceValidation> validate() {
+        return buildCryptographicEvidenceRecordVerifier().getReferenceValidations();
+    }
+
+    /**
+     * Builds an instance of {@code EvidenceRecordTimeStampSequenceVerifier}
+     * to perform a cryptographic validation of an evidence record
+     *
+     * @return {@link EvidenceRecordTimeStampSequenceVerifier}
+     */
+    protected abstract EvidenceRecordTimeStampSequenceVerifier buildCryptographicEvidenceRecordVerifier();
 
     @Override
     public List<TimestampToken> getTimestamps() {
@@ -132,7 +155,19 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      *
      * @return {@code EvidenceRecordTimestampSource}
      */
-    public abstract EvidenceRecordTimestampSource<?> getTimestampSource();
+    public EvidenceRecordTimestampSource<?> getTimestampSource() {
+        if (timestampSource == null) {
+            timestampSource = buildTimestampSource();
+        }
+        return timestampSource;
+    }
+
+    /**
+     * Builds a new instance of an {@code EvidenceRecordTimestampSource}
+     *
+     * @return {@link EvidenceRecordTimestampSource}
+     */
+    protected abstract EvidenceRecordTimestampSource<?> buildTimestampSource();
 
     @Override
     public List<SignatureScope> getEvidenceRecordScopes() {
@@ -164,7 +199,10 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      *
      * @return a list of {@link String} errors when applicable
      */
-    public abstract List<String> validateStructure();
+    public List<String> validateStructure() {
+        // not implemented by default
+        return Collections.emptyList();
+    }
 
     @Override
     public Identifier getDSSId() {

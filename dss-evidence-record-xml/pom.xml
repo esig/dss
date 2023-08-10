@@ -8,7 +8,7 @@
 
     <artifactId>dss-evidence-record-xml</artifactId>
     <name>DSS Evidence Record XML</name>
-    <description>DSS Evidence Record - XML contains classes for creation and validation of XML Evidence Record Syntax (XMLERS). See RFC 6283.</description>
+    <description>DSS Evidence Record XML contains classes for creation and validation of XML Evidence Record Syntax (XMLERS). See RFC 6283.</description>
 
     <properties>
         <module-name>jpms_dss_evidence_record_xml</module-name>

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.evidencerecord.xml;
+package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
@@ -7,6 +7,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * Loads the relevant validator for an XML Evidence Record document validation
+ *
  */
 public class XMLEvidenceRecordValidatorFactory implements EvidenceRecordValidatorFactory {
 

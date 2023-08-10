@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -21,8 +22,9 @@ import java.util.List;
 
 /**
  * This class is used to parse an XML Evidence Record
+ *
  */
-public class XmlEvidenceRecordParser {
+public class XmlEvidenceRecordParser implements EvidenceRecordParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(XmlEvidenceRecordParser.class);
 
@@ -44,6 +46,7 @@ public class XmlEvidenceRecordParser {
      *
      * @return a list of {@code ArchiveTimeStampChainObject}s
      */
+    @Override
     public List<XmlArchiveTimeStampChainObject> parse() {
         final NodeList archiveTimeStampSequenceList = DomUtils.getNodeList(evidenceRecordElement, XMLERSPaths.ARCHIVE_TIME_STAMP_CHAIN_PATH);
         if (archiveTimeStampSequenceList != null && archiveTimeStampSequenceList.getLength() > 0) {

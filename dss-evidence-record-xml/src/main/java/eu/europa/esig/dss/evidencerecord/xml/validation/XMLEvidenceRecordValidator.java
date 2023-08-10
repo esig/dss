@@ -1,7 +1,6 @@
-package eu.europa.esig.dss.evidencerecord.xml;
+package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -17,7 +16,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Class for validation of an XML Evidence Record
+ * Class for validation of an XML Evidence Record (RFC 6283)
  *
  */
 public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {

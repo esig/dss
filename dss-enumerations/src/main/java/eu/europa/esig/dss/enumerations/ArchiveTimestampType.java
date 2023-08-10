@@ -54,6 +54,6 @@ public enum ArchiveTimestampType {
 	XML_EVIDENCE_RECORD,
 
 	/** ASN.1 Evidence Record time-stamp */
-	ANS1_EVIDENCE_RECORD;
+	ASN1_EVIDENCE_RECORD;
 
 }

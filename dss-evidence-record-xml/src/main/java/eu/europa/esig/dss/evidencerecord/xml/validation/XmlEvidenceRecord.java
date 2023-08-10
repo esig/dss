@@ -2,9 +2,10 @@ package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
-import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.xmlers.XMLEvidenceRecordUtils;
 import org.w3c.dom.Element;
 
@@ -19,9 +20,6 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
 
     /** The current signature element */
     private final Element evidenceRecordElement;
-
-    /** Cached instance of timestamp source */
-    private XMLEvidenceRecordTimestampSource timestampSource;
 
     /**
      * Default constructor to instantiate an XML Evidence Record from a root element
@@ -42,21 +40,18 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     }
 
     @Override
-    protected List<XmlArchiveTimeStampChainObject> buildArchiveTimeStampSequence() {
-        return new XmlEvidenceRecordParser(evidenceRecordElement).parse();
+    protected EvidenceRecordParser buildEvidenceRecordParser() {
+        return new XmlEvidenceRecordParser(evidenceRecordElement);
     }
 
     @Override
-    protected List<ReferenceValidation> validate() {
-        return new XmlEvidenceRecordTimeStampSequenceVerifier(this).getReferenceValidations();
+    protected EvidenceRecordTimeStampSequenceVerifier buildCryptographicEvidenceRecordVerifier() {
+        return new XmlEvidenceRecordTimeStampSequenceVerifier(this);
     }
 
     @Override
-    public EvidenceRecordTimestampSource<?> getTimestampSource() {
-        if (timestampSource == null) {
-            timestampSource = new XMLEvidenceRecordTimestampSource(this);
-        }
-        return timestampSource;
+    protected EvidenceRecordTimestampSource<?> buildTimestampSource() {
+        return new XMLEvidenceRecordTimestampSource(this);
     }
 
     @Override
