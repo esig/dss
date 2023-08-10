@@ -22,12 +22,12 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
-import eu.europa.esig.xades.definition.XAdESPaths;
-import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class XAdESAttribute implements SignatureAttribute {
 	private final Element element;
 
 	/** The XPath list to use */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/** The tag name of the element */
 	private String localName;
@@ -63,9 +63,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 * Default constructor
 	 *
 	 * @param element {@link Element}
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 */
-	XAdESAttribute(Element element, XAdESPaths xadesPaths) {
+	XAdESAttribute(Element element, XAdESPath xadesPaths) {
 		this.element = element;
 		this.xadesPaths = xadesPaths;
 	}
@@ -125,9 +125,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 * @return {@link String} timestamp canonicalization method
 	 */
 	public String getTimestampCanonicalizationMethod() {
-		String canonicalizationMethod = DomUtils.getValue(element, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
+		String canonicalizationMethod = DomUtils.getValue(element, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			NodeList nodeList = DomUtils.getNodeList(element, XAdES111Paths.HASH_DATA_INFO_TRANSFORM_PATH);
+			NodeList nodeList = DomUtils.getNodeList(element, XAdES111Path.HASH_DATA_INFO_TRANSFORM_PATH);
 			if (nodeList != null && nodeList.getLength() == 1) {
 				Element transform = (Element) nodeList.item(0);
 				canonicalizationMethod = transform.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());

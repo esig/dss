@@ -39,7 +39,7 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
@@ -166,7 +166,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			
 			// Allows setting of a XAdES namespace (changes a XAdES format)
 			// Default : XAdESNamespaces.XADES_132 (produces XAdES 1.3.2)
-			parameters.setXadesNamespace(XAdESNamespaces.XADES_132);
+			parameters.setXadesNamespace(XAdESNamespace.XADES_132);
 			
 			// Defines an XmlDSig prefix
 			// Default : XAdESNamespaces.XMLDSIG
@@ -174,7 +174,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			
 			// Defines a XAdES 1.4.1 format prefix
 			// Default : XAdESNamespaces.XADES_141
-			parameters.setXades141Namespace(XAdESNamespaces.XADES_141);
+			parameters.setXades141Namespace(XAdESNamespace.XADES_141);
 			
 			// end::demoPrefixes[]
 		}

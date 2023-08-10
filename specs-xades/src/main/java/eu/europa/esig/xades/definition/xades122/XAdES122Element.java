@@ -23,7 +23,7 @@ package eu.europa.esig.xades.definition.xades122;
 import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.xades.definition.XAdESElement;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 
 /**
  * The XAdES 1.2.2 elements
@@ -219,7 +219,7 @@ public enum XAdES122Element implements XAdESElement {
 	XML_TIMESTAMP("XMLTimeStamp");
 
 	/** An error message */
-	private static final String NOT_SUPPORTED_XADES_122 = "Element not supported by " + XAdESNamespaces.XADES_122.getUri();
+	private static final String NOT_SUPPORTED_XADES_122 = "Element not supported by " + XAdESNamespace.XADES_122.getUri();
 
 	/** Namespace */
 	private final DSSNamespace namespace;
@@ -234,7 +234,7 @@ public enum XAdES122Element implements XAdESElement {
 	 */
 	XAdES122Element(String tagName) {
 		this.tagName = tagName;
-		this.namespace = XAdESNamespaces.XADES_122;
+		this.namespace = XAdESNamespace.XADES_122;
 	}
 
 	@Override

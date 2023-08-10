@@ -25,7 +25,7 @@ import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -138,7 +138,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			// ------------------------------------ SIGNED INFO
 			// -----------------------------------------------------
 			// Signed info extraction
-			NodeList signedInfoNodeList = DomUtils.getNodeList(doc, AbstractPaths.all(XMLDSigElement.SIGNED_INFO));
+			NodeList signedInfoNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.SIGNED_INFO));
 			assertNotNull(signedInfoNodeList);
 			assertEquals(1, signedInfoNodeList.getLength());
 
@@ -181,7 +181,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			originalFileByteArray = XMLCanonicalizer.createInstance(algo).canonicalize(fileContent);
 		} else {
 			// Original File base64 extraction + Verification
-			NodeList originalFileNodeList = DomUtils.getNodeList(doc, AbstractPaths.all(XMLDSigElement.OBJECT));
+			NodeList originalFileNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.OBJECT));
 			assertNotNull(originalFileNodeList);
 			assertEquals(2, originalFileNodeList.getLength());
 
@@ -212,7 +212,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		// ------------------------------------ KEY INFO
 		// -----------------------------------------------------
 		// Key info extraction + Verification
-		NodeList keyInfoNodeList = DomUtils.getNodeList(doc, AbstractPaths.all(XMLDSigElement.KEY_INFO));
+		NodeList keyInfoNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.KEY_INFO));
 		assertNotNull(keyInfoNodeList);
 		assertEquals(1, keyInfoNodeList.getLength());
 
@@ -240,7 +240,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		// -----------------------------------------------------
 		try {
 			// Signed properties extraction + verification
-			NodeList signedPropertiesNodeList = DomUtils.getNodeList(doc, AbstractPaths.all(XAdES132Element.SIGNED_PROPERTIES));
+			NodeList signedPropertiesNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XAdES132Element.SIGNED_PROPERTIES));
 			assertNotNull(signedPropertiesNodeList);
 			assertEquals(1, signedPropertiesNodeList.getLength());
 

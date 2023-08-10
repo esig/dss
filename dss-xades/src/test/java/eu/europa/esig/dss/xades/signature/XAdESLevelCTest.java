@@ -46,7 +46,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
@@ -95,7 +95,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
 		assertEquals(1, signaturesList.getLength());
 
-		XAdES132Paths paths = new XAdES132Paths();
+		XAdES132Path paths = new XAdES132Path();
 
 		Node signature = signaturesList.item(0);
 		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -86,7 +86,7 @@ public class XAdESEnvelopingWithCustomObjectsTest extends AbstractXAdESTestSigna
         super.onDocumentSigned(byteArray);
 
         Document document = DomUtils.buildDOM(byteArray);
-        NodeList objectList = DomUtils.getNodeList(document.getDocumentElement(), XMLDSigPaths.OBJECT_PATH);
+        NodeList objectList = DomUtils.getNodeList(document.getDocumentElement(), XMLDSigPath.OBJECT_PATH);
         assertEquals(4, objectList.getLength());
 
         boolean xmlObjectFound = false;

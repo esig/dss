@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Path expressions for a Manifest
  */
-public class ManifestPaths extends AbstractPaths {
+public class ManifestPath extends AbstractPath {
 
 	private static final long serialVersionUID = 1661986382868079585L;
 
@@ -37,7 +37,7 @@ public class ManifestPaths extends AbstractPaths {
 	/**
 	 * Default constructor
 	 */
-	public ManifestPaths() {
+	public ManifestPath() {
 		// empty
 	}
 

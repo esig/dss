@@ -66,7 +66,7 @@ import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.trustedlist.enums.Assert;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -110,7 +110,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     @BeforeAll
     public static void init() {
         DomUtils.registerNamespace(XMLDSigNamespace.NS);
-        DomUtils.registerNamespace(XAdESNamespaces.XADES_132);
+        DomUtils.registerNamespace(XAdESNamespace.XADES_132);
         DomUtils.registerNamespace(TL_NAMESPACE);
         DomUtils.registerNamespace(MRA_NAMESPACE);
         DomUtils.registerNamespace(CONDITION_NAMESPACE);
@@ -697,7 +697,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             Element qcTypeElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QcType");
             qcStatementInfoElement.appendChild(qcTypeElement);
 
-            Element identifierElement = document.createElementNS(XAdESNamespaces.XADES_132.getUri(), "ns4:Identifier");
+            Element identifierElement = document.createElementNS(XAdESNamespace.XADES_132.getUri(), "ns4:Identifier");
             qcTypeElement.appendChild(identifierElement);
             identifierElement.setAttribute("Qualifier", "OIDAsURN");
             setText(identifierElement, qcStatementCondition.getType());
@@ -720,7 +720,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     private void addUrnOid(Document document, Element element, String oid) {
-        Element identifierElement = document.createElementNS(XAdESNamespaces.XADES_132.getUri(), "ns4:Identifier");
+        Element identifierElement = document.createElementNS(XAdESNamespace.XADES_132.getUri(), "ns4:Identifier");
         element.appendChild(identifierElement);
         identifierElement.setAttribute("Qualifier", "OIDAsURN");
         setText(identifierElement, oid);

@@ -51,7 +51,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -95,7 +95,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
 		for (int i = 0; i < signatureNodeList.getLength(); i++) {
 			Element signatureElement = (Element) signatureNodeList.item(i);
-			NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Paths().getDataObjectFormat());
+			NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
 			for (int j = 0; j < dataObjectFormatList.getLength(); j++) {
 				Element dataObjectFormat = (Element) dataObjectFormatList.item(j);
 				String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());

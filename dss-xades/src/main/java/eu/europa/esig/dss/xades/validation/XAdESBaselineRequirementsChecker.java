@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -29,8 +29,8 @@ import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
@@ -65,28 +65,28 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     @Override
     public boolean hasBaselineBProfile() {
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
         // ds:KeyInfo (Cardinality == 1)
-        if (getNumberOfOccurrences(signatureElement, XMLDSigPaths.KEY_INFO_PATH) != 1) {
+        if (getNumberOfOccurrences(signatureElement, XMLDSigPath.KEY_INFO_PATH) != 1) {
             LOG.warn("ds:KeyInfo element shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
         // ds:SignedInfo/ds:CanonicalizationMethod (Cardinality == 1)
-        if (getNumberOfOccurrences(signatureElement, XMLDSigPaths.SIGNED_INFO_CANONICALIZATION_METHOD) != 1) {
+        if (getNumberOfOccurrences(signatureElement, XMLDSigPath.SIGNED_INFO_CANONICALIZATION_METHOD) != 1) {
             LOG.warn("ds:SignedInfo/ds:CanonicalizationMethod element shall be present for XAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
         // ds:SignedInfo/ds:Reference (Cardinality >= 2)
-        if (getNumberOfOccurrences(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH) < 2) {
+        if (getNumberOfOccurrences(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH) < 2) {
             LOG.warn("ds:SignedInfo/ds:Reference element shall be present for XAdES-BASELINE-B signature (cardinality >= 2)!");
             return false;
         }
         // ds:SignedInfo/ds:Reference/ds:Transforms (Cardinality 0 or 1)
-        NodeList referenceList = DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+        NodeList referenceList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
         if (referenceList != null && referenceList.getLength() > 0) {
             for (int ii = 0; ii < referenceList.getLength(); ii++) {
                 Element reference = (Element) referenceList.item(ii);
-                if (DomUtils.getNodesAmount(reference, XMLDSigPaths.TRANSFORMS_PATH) > 1) {
+                if (DomUtils.getNodesAmount(reference, XMLDSigPath.TRANSFORMS_PATH) > 1) {
                     LOG.warn("Only one ds:Reference/ds:Transforms may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
                     return false;
                 }
@@ -169,7 +169,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             NodeList archiveTimeStampList = DomUtils.getNodeList(signatureElement, archiveTimestampPath);
             for (int ii = 0; ii < archiveTimeStampList.getLength(); ii++) {
                 Node archiveTimeStamp = archiveTimeStampList.item(ii);
-                if (XAdESNamespaces.XADES_132.getUri().equals(archiveTimeStamp.getNamespaceURI())) {
+                if (XAdESNamespace.XADES_132.getUri().equals(archiveTimeStamp.getNamespaceURI())) {
                     LOG.warn("xades132:ArchiveTimeStamp shall not be present for XAdES-BASELINE-B signature (cardinality == 0)!");
                     return false;
                 }
@@ -184,7 +184,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // Additional requirement (d)
         final Element signedInfo = signature.getSignedInfo();
         if (signedInfo != null) {
-            String canonicalizationMethod = DomUtils.getValue(signedInfo, XMLDSigPaths.CANONICALIZATION_ALGORITHM_PATH);
+            String canonicalizationMethod = DomUtils.getValue(signedInfo, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
             if (Utils.isStringNotEmpty(canonicalizationMethod)) {
                 switch (canonicalizationMethod) {
                     case Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS:
@@ -255,7 +255,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
 
         // Additional requirement (n)
         NodeList signatureTimeStampList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
@@ -282,7 +282,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
         // CertificateValues (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) > 1) {
             LOG.warn("Only one CertificateValues element may be present for XAdES-BASELINE-LT signature (cardinality 0 or 1)!");
@@ -341,7 +341,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      */
     public boolean hasExtendedBESProfile() {
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
         // SigningTime (Cardinality 0 or 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningTimePath()) > 1) {
             LOG.warn("Only one SigningTime may be present for XAdES-BES signature (cardinality 0 or 1)!");
@@ -387,7 +387,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      */
     public boolean hasExtendedEPESProfile() {
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
         // SignaturePolicyIdentifier (Cardinality == 1)
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getSignaturePolicyIdentifierPath()) != 1) {
             LOG.debug("SignaturePolicyIdentifier shall be present for XAdES-EPES signature (cardinality == 1)!");
@@ -419,7 +419,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
 
         // Additional requirement (d)
         NodeList signatureTimeStampList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
@@ -452,7 +452,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
 
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
         // CompleteCertificateRefs/CompleteCertificateRefsV2 (Cardinality == 1)
         int completeCompleteCertificateRefsAmount = allSelfSigned ? 0 : 1;
         if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
@@ -484,7 +484,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
      */
     public boolean hasExtendedXProfile() {
         Element signatureElement = signature.getSignatureElement();
-        XAdESPaths xadesPaths = signature.getXAdESPaths();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
 
         final boolean refsOnlyTst = isElementPresent(signatureElement, xadesPaths.getRefsOnlyTimestampPath());
         final boolean refsOnlyTstV2 = isElementPresent(signatureElement, xadesPaths.getRefsOnlyTimestampV2Path());
@@ -515,7 +515,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return minimalLTARequirement();
     }
 
-    private boolean isSigningCertificatePresent(Element signatureElement, XAdESPaths xadesPaths) {
+    private boolean isSigningCertificatePresent(Element signatureElement, XAdESPath xadesPaths) {
         return getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) == 1;
     }

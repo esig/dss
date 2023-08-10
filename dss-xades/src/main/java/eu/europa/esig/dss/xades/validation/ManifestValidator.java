@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -164,7 +164,7 @@ public class ManifestValidator {
 	
 	private List<String> getTransformNames(Element refNode) {
 		List<String> transformNames = new ArrayList<>();
-		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
+		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 				Element transformElement = (Element) nodeList.item(ii);

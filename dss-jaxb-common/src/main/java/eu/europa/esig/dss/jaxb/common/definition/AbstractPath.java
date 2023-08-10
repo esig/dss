@@ -25,14 +25,14 @@ import java.io.Serializable;
 /**
  * Contains a list of common XML xpaths
  */
-public abstract class AbstractPaths implements Serializable {
+public abstract class AbstractPath implements Serializable {
 
 	private static final long serialVersionUID = 4685307161693054765L;
 
 	/**
 	 * Default constructor
 	 */
-	protected AbstractPaths() {
+	protected AbstractPath() {
 		// empty
 	}
 

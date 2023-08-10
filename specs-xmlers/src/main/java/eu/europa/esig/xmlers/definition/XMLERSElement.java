@@ -79,7 +79,7 @@ public enum XMLERSElement implements DSSElement {
      */
     XMLERSElement(String tagName) {
         this.tagName = tagName;
-        this.namespace = XMLERSNamespaces.XMLERS;
+        this.namespace = XMLERSNamespace.XMLERS;
     }
 
     @Override

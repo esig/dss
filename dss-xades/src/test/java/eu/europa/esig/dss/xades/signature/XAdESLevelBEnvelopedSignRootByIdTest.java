@@ -34,7 +34,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
@@ -94,7 +94,7 @@ public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSigna
         assertEquals(1, signatureNodeList.getLength());
 
         Element signatureElement = (Element) signatureNodeList.item(0);
-        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Paths().getDataObjectFormat());
+        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
         assertEquals(1, dataObjectFormatList.getLength());
 
         Element dataObjectFormat = (Element) dataObjectFormatList.item(0);

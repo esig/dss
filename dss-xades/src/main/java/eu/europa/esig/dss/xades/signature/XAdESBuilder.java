@@ -37,15 +37,15 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.xades.definition.XAdESElement;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
+import eu.europa.esig.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.xades.definition.xades122.XAdES122Paths;
+import eu.europa.esig.xades.definition.xades122.XAdES122Path;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import org.bouncycastle.asn1.x509.IssuerSerial;
@@ -78,7 +78,7 @@ public abstract class XAdESBuilder {
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
 	 * queries needed to cope with the default signature schema.
 	 */
-	protected XAdESPaths xadesPaths;
+	protected XAdESPath xadesPath;
 
 	/**
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
@@ -200,7 +200,7 @@ public abstract class XAdESBuilder {
 	}
 
 	private DSSNamespace getDigestAlgAndValueNamespace() {
-		return XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
+		return XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
 				getXadesNamespace() : getXmldsigNamespace();
 	}
 
@@ -366,11 +366,11 @@ public abstract class XAdESBuilder {
 	 */
 	protected XAdESElement getCurrentXAdESElements() {
 		String xadesURI = getXadesNamespace().getUri();
-		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
+		if (XAdESNamespace.XADES_132.getUri().equals(xadesURI)) {
 			return XAdES132Element.values()[0];
-		} else if (XAdESNamespaces.XADES_122.getUri().equals(xadesURI)) {
+		} else if (XAdESNamespace.XADES_122.getUri().equals(xadesURI)) {
 			return XAdES122Element.values()[0];
-		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
+		} else if (XAdESNamespace.XADES_111.getUri().equals(xadesURI)) {
 			return XAdES111Element.values()[0];
 		}
 		throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
@@ -379,16 +379,16 @@ public abstract class XAdESBuilder {
 	/**
 	 * Gets a relevant class containing the list of paths
 	 *
-	 * @return {@link XAdESPaths} implementation
+	 * @return {@link XAdESPath} implementation
 	 */
-	protected XAdESPaths getCurrentXAdESPaths() {
+	protected XAdESPath getCurrentXAdESPath() {
 		String xadesURI = getXadesNamespace().getUri();
-		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {
-			return new XAdES132Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), xadesURI)) {
-			return new XAdES122Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
-			return new XAdES111Paths();
+		if (Utils.areStringsEqual(XAdESNamespace.XADES_132.getUri(), xadesURI)) {
+			return new XAdES132Path();
+		} else if (Utils.areStringsEqual(XAdESNamespace.XADES_122.getUri(), xadesURI)) {
+			return new XAdES122Path();
+		} else if (Utils.areStringsEqual(XAdESNamespace.XADES_111.getUri(), xadesURI)) {
+			return new XAdES111Path();
 		} else {
 			throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 		}

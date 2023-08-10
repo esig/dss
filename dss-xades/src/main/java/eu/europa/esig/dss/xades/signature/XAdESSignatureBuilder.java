@@ -25,7 +25,7 @@ import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -210,7 +210,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 		ensureConfigurationValidity();
 		
-		xadesPaths = getCurrentXAdESPaths();
+		xadesPath = getCurrentXAdESPath();
 
 		documentDom = buildRootDocumentDom();
 
@@ -265,7 +265,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (referenceNodeList != null && referenceNodeList.getLength() > 0) {
 			for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 				final Node referenceNode = referenceNodeList.item(ii);
-				NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
+				NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
 				if (transformList != null && transformList.getLength() > 0) {
 					for (int jj = 0; jj < transformList.getLength(); jj++) {
 						final Element transformElement = (Element) transformList.item(jj);
@@ -691,7 +691,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		
 		final Element reference = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.REFERENCE);
 		signedInfoDom.appendChild(reference);	
-		reference.setAttribute(XMLDSigAttribute.TYPE.getAttributeName(), xadesPaths.getSignedPropertiesUri());
+		reference.setAttribute(XMLDSigAttribute.TYPE.getAttributeName(), xadesPath.getSignedPropertiesUri());
 		reference.setAttribute(XMLDSigAttribute.URI.getAttributeName(), DomUtils.toElementReference(XADES_SUFFIX + deterministicId));
 
 		final Element transforms = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
@@ -1115,7 +1115,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final List<DSSReference> references = params.getReferences();
 		for (final DSSReference reference : references) {
 			
-			if (xadesPaths.getCounterSignatureUri().equals(reference.getType())) {
+			if (xadesPath.getCounterSignatureUri().equals(reference.getType())) {
 				/*
 				 * 6.3 Requirements on XAdES signature's elements, qualifying properties and services
 				 * 

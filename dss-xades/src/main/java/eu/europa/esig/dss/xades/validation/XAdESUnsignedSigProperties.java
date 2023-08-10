@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import org.w3c.dom.Element;
 
 import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 
 /**
  * Unsigned XAdES signature properties
@@ -36,9 +36,9 @@ public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 	 * Default constructor
 	 *
 	 * @param unsignedSignatureProperties {@link Element} unsigned signature properties
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 */
-	public XAdESUnsignedSigProperties(Element unsignedSignatureProperties, XAdESPaths xadesPaths) {
+	public XAdESUnsignedSigProperties(Element unsignedSignatureProperties, XAdESPath xadesPaths) {
 		super(unsignedSignatureProperties, xadesPaths);
 	}
 
@@ -46,10 +46,10 @@ public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 	 * Builds {code XAdESUnsignedSigProperties}
 	 *
 	 * @param signatureElement {@link Element} signature element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link XAdESUnsignedSigProperties}
 	 */
-	public static XAdESUnsignedSigProperties build(Element signatureElement, XAdESPaths xadesPaths) {
+	public static XAdESUnsignedSigProperties build(Element signatureElement, XAdESPath xadesPaths) {
 		Element unsignedSignatureProperties = getUnsignedSignaturePropertiesDom(signatureElement, xadesPaths);
 		return new XAdESUnsignedSigProperties(unsignedSignatureProperties, xadesPaths);
 	}
@@ -58,10 +58,10 @@ public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 	 * Gets xades:UnsignedSignatureProperties element
 	 *
 	 * @param signatureElement {@link Element} signature element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link Element}
 	 */
-	protected static Element getUnsignedSignaturePropertiesDom(Element signatureElement, XAdESPaths xadesPaths) {
+	protected static Element getUnsignedSignaturePropertiesDom(Element signatureElement, XAdESPath xadesPaths) {
 		return DomUtils.getElement(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 

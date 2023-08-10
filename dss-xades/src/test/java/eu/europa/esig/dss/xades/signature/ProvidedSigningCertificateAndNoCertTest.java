@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,7 +75,7 @@ public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSi
 		Document dom = DomUtils.buildDOM(signedDoc);
 		try {
 			Element root = dom.getDocumentElement();
-			XPathExpression xpath = DomUtils.createXPathExpression(XMLDSigPaths.KEY_INFO_PATH);
+			XPathExpression xpath = DomUtils.createXPathExpression(XMLDSigPath.KEY_INFO_PATH);
 			Element keyInfoTag = (Element) xpath.evaluate(root, XPathConstants.NODE);
 			keyInfoTag.getParentNode().removeChild(keyInfoTag);
 		} catch (Exception e) {

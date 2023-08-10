@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
-import eu.europa.esig.dss.asic.xades.definition.ManifestPaths;
+import eu.europa.esig.dss.asic.xades.definition.ManifestPath;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -102,12 +102,12 @@ public class ASiCEWithXAdESManifestParser {
 			Document manifestDom = DomUtils.buildDOM(manifestDocument);
 			DSSNamespace manifestNamespace = getManifestNamespace(manifestDom);
 
-			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPaths.FILE_ENTRY_PATH);
+			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPath.FILE_ENTRY_PATH);
 			if (nodeList != null && nodeList.getLength() > 0) {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					ManifestEntry manifestEntry = new ManifestEntry();
 					Element fileEntryElement = (Element) nodeList.item(i);
-					String fullPathValue = fileEntryElement.getAttribute(ManifestPaths.getFullPathAttribute(manifestNamespace));
+					String fullPathValue = fileEntryElement.getAttribute(ManifestPath.getFullPathAttribute(manifestNamespace));
 					if (!isFolder(fullPathValue)) {
 						manifestEntry.setFileName(fullPathValue);
 						manifestEntry.setMimeType(getMimeType(fileEntryElement, manifestNamespace));
@@ -134,7 +134,7 @@ public class ASiCEWithXAdESManifestParser {
 	}
 
 	private MimeType getMimeType(Element fileEntryElement, DSSNamespace manifestNamespace) {
-		String mediaType = fileEntryElement.getAttribute(ManifestPaths.getMediaTypeAttribute(manifestNamespace));
+		String mediaType = fileEntryElement.getAttribute(ManifestPath.getMediaTypeAttribute(manifestNamespace));
 		if (Utils.isStringNotBlank(mediaType)) {
 			return MimeType.fromMimeTypeString(mediaType);
 		}

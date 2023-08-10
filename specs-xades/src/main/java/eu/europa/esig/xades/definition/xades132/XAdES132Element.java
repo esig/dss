@@ -23,7 +23,7 @@ package eu.europa.esig.xades.definition.xades132;
 import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.xades.definition.XAdESElement;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 
 /**
  * Defines elements for a XAdES 1.3.2 schema
@@ -263,7 +263,7 @@ public enum XAdES132Element implements XAdESElement {
 	 */
 	XAdES132Element(String tagName) {
 		this.tagName = tagName;
-		this.namespace = XAdESNamespaces.XADES_132;
+		this.namespace = XAdESNamespace.XADES_132;
 	}
 
 	@Override

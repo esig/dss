@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.Digest;
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -59,7 +59,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	private final Element signatureElement;
 
 	/** Contains a list of XAdES path corresponding to the signature */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 	
 	/**
 	 * The default constructor for XAdESCertificateSource. All certificates are
@@ -70,7 +70,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @param xadesPaths
 	 *                         adapted {@code XAdESPaths}
 	 */
-	public XAdESCertificateSource(final Element signatureElement, final XAdESPaths xadesPaths) {
+	public XAdESCertificateSource(final Element signatureElement, final XAdESPath xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Element signature must not be null");
 		Objects.requireNonNull(xadesPaths, "XAdESPaths must not be null");
 
@@ -78,7 +78,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		this.xadesPaths = xadesPaths;
 
 		// init
-		extractCertificates(XMLDSigPaths.KEY_INFO_X509_CERTIFICATE_PATH, CertificateOrigin.KEY_INFO);
+		extractCertificates(XMLDSigPath.KEY_INFO_X509_CERTIFICATE_PATH, CertificateOrigin.KEY_INFO);
 		extractCertificates(xadesPaths.getEncapsulatedCertificateValuesPath(), CertificateOrigin.CERTIFICATE_VALUES);
 		extractCertificates(xadesPaths.getEncapsulatedAttrAuthoritiesCertValuesPath(), CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES);
 		extractCertificates(xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath(), CertificateOrigin.TIMESTAMP_VALIDATION_DATA);

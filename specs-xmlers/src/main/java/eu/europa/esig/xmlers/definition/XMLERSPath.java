@@ -1,17 +1,17 @@
 package eu.europa.esig.xmlers.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 
 /**
  * XMLERS Paths
  */
-public class XMLERSPaths extends AbstractPaths {
+public class XMLERSPath extends AbstractPath {
 
     /**
      * Default constructor
      */
-    public XMLERSPaths() {
+    public XMLERSPath() {
         // empty
     }
 
@@ -71,7 +71,7 @@ public class XMLERSPaths extends AbstractPaths {
      * @return {@link DSSNamespace}
      */
     public DSSNamespace getNamespace() {
-        return XMLERSNamespaces.XMLERS;
+        return XMLERSNamespace.XMLERS;
     }
 
 }

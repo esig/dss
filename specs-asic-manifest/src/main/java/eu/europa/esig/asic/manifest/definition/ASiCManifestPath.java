@@ -18,35 +18,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.xades.definition;
+package eu.europa.esig.asic.manifest.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 
 /**
- * Defines a list of used XAdES namespaces
+ * Contains paths for an ASiC scheme
  */
-public class XAdESNamespaces {
+public class ASiCManifestPath extends AbstractPath {
 
-	/** The XMLDSIG Filter 2.0 namespace */
-	public static final DSSNamespace XMLDSIG_FILTER2 = new DSSNamespace("http://www.w3.org/2002/06/xmldsig-filter2", "dsig-filter2");
-
-	/** XAdES 1.1.1 */
-	public static final DSSNamespace XADES_111 = new DSSNamespace("http://uri.etsi.org/01903/v1.1.1#", "xades111");
-
-	/** XAdES 1.2.2 */
-	public static final DSSNamespace XADES_122 = new DSSNamespace("http://uri.etsi.org/01903/v1.2.2#", "xades122");
-
-	/** XAdES 1.3.2 */
-	public static final DSSNamespace XADES_132 = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades132");
-
-	/** XAdES 1.4.1 */
-	public static final DSSNamespace XADES_141 = new DSSNamespace("http://uri.etsi.org/01903/v1.4.1#", "xades141");
+	private static final long serialVersionUID = 2410165510311258998L;
 
 	/**
-	 * Empty constructor
+	 * "./asic:ASiCManifest"
 	 */
-	private XAdESNamespaces() {
+	public static final String ASIC_MANIFEST_PATH = fromCurrentPosition(ASiCManifestElement.ASIC_MANIFEST);
+
+	/**
+	 * "./asic:DataObjectReference"
+	 */
+	public static final String DATA_OBJECT_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.DATA_OBJECT_REFERENCE);
+	
+	/**
+	 * "./asic:SigReference"
+	 */
+	public static final String SIG_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE);
+
+	/**
+	 * "./asic:SigReference@URI"
+	 */
+	public static final String SIG_REFERENCE_URI_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE, ASiCManifestAttribute.URI);
+
+	/**
+	 * Default constructor
+	 */
+	public ASiCManifestPath() {
 		// empty
 	}
-
+	
 }

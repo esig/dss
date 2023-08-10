@@ -7,8 +7,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.xmlers.definition.XMLERSElement;
-import eu.europa.esig.xmlers.definition.XMLERSNamespaces;
-import eu.europa.esig.xmlers.definition.XMLERSPaths;
+import eu.europa.esig.xmlers.definition.XMLERSNamespace;
+import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -48,7 +48,7 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
     }
 
     static {
-        DomUtils.registerNamespace(XMLERSNamespaces.XMLERS);
+        DomUtils.registerNamespace(XMLERSNamespace.XMLERS);
     }
 
     private Document toDomDocument(DSSDocument document) {
@@ -116,7 +116,7 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
 
     private Element getEvidenceRecordRootElement() {
         try {
-            return DomUtils.getElement(rootElement, XMLERSPaths.EVIDENCE_RECORD_PATH);
+            return DomUtils.getElement(rootElement, XMLERSPath.EVIDENCE_RECORD_PATH);
         } catch (Exception e) {
             LOG.warn("Unable to analyze manifest file '{}' : {}", document.getName(), e.getMessage());
             return null;

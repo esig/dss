@@ -54,8 +54,8 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -83,7 +83,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	private final transient Element signatureElement;
 
 	/** XAdES XPaths to use */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/** Map between time-stamp tokens and corresponding XAdES attributes */
 	private final Map<TimestampToken, XAdESAttribute> timestampAttributeMap = new HashMap<>();
@@ -549,7 +549,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected ArchiveTimestampType getArchiveTimestampType(XAdESAttribute unsignedAttribute) {
-		if (XAdESNamespaces.XADES_141.isSameUri(unsignedAttribute.getNamespace())) {
+		if (XAdESNamespace.XADES_141.isSameUri(unsignedAttribute.getNamespace())) {
 			return ArchiveTimestampType.XAdES_141;
 		}
 		return ArchiveTimestampType.XAdES;

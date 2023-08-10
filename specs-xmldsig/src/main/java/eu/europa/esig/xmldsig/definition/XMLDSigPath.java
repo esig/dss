@@ -20,23 +20,23 @@
  */
 package eu.europa.esig.xmldsig.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 
 /**
  * Contains a list of "http://www.w3.org/2000/09/xmldsig#" xpaths
  *
  */
-public class XMLDSigPaths extends AbstractPaths {
+public class XMLDSigPath extends AbstractPath {
 
 	private static final long serialVersionUID = 7404631861282645939L;
 
-	/** The "Type" attribute value for a ds:Reference element referring an "ds:Object" element */
+	/** The "Type" attribute value for a ds:Reference element referring a "ds:Object" element */
 	public static final String OBJECT_TYPE = "http://www.w3.org/2000/09/xmldsig#Object";
 
 	/** The "Type" attribute value for a ds:Reference element referring a signed manifest */
 	public static final String MANIFEST_TYPE = "http://www.w3.org/2000/09/xmldsig#Manifest";
 
-	/** The "Type" attribute value for a ds:Reference element a ds:SignatureValue of a counter signed signature */
+	/** The "Type" attribute value for a ds:Reference element a ds:SignatureValue of a counter-signed signature */
 	public static final String COUNTER_SIGNATURE_TYPE = "http://uri.etsi.org/01903#CountersignedSignature";
 
 	/** "./ds:Signature" */
@@ -121,7 +121,7 @@ public class XMLDSigPaths extends AbstractPaths {
 	/**
 	 * Default constructor
 	 */
-	public XMLDSigPaths() {
+	public XMLDSigPath() {
 		// empty
 	}
 

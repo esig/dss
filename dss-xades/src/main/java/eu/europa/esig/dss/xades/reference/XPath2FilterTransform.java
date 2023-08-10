@@ -24,7 +24,7 @@ import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
@@ -73,11 +73,11 @@ public class XPath2FilterTransform extends XPathTransform {
 		final Element transform = DomUtils.addElement(document, parentNode, namespace, XMLDSigElement.TRANSFORM);
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), algorithm);
 		// XPath element must have a specific namespace
-		Element xPathElement = DomUtils.addTextElement(document, transform, XAdESNamespaces.XMLDSIG_FILTER2, XMLDSigElement.XPATH, xPathExpression);
+		Element xPathElement = DomUtils.addTextElement(document, transform, XAdESNamespace.XMLDSIG_FILTER2, XMLDSigElement.XPATH, xPathExpression);
 
-		xPathElement.setPrefix(XAdESNamespaces.XMLDSIG_FILTER2.getPrefix());
-		xPathElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + XAdESNamespaces.XMLDSIG_FILTER2.getPrefix(),
-				XAdESNamespaces.XMLDSIG_FILTER2.getUri());
+		xPathElement.setPrefix(XAdESNamespace.XMLDSIG_FILTER2.getPrefix());
+		xPathElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + XAdESNamespace.XMLDSIG_FILTER2.getPrefix(),
+				XAdESNamespace.XMLDSIG_FILTER2.getUri());
 		xPathElement.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + namespace.getPrefix(), namespace.getUri());
 		xPathElement.setAttribute(FILTER_ATTRIBUTE, filter);
 		return xPathElement;

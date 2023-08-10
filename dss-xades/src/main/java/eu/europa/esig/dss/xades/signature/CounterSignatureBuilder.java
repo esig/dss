@@ -37,7 +37,7 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -121,7 +121,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		byte[] signatureElementBinaries = DomUtils.serializeNode(xadesSignature.getSignatureElement());
 		reference.setContents(new InMemoryDocument(signatureElementBinaries));
 		reference.setDigestMethodAlgorithm(getReferenceDigestAlgorithmOrDefault(parameters));
-		reference.setType(xadesPaths.getCounterSignatureUri());
+		reference.setType(xadesPath.getCounterSignatureUri());
 
 		String signatureValueId = xadesSignature.getSignatureValueId();
 		if (Utils.isStringNotEmpty(signatureValueId)) {
@@ -222,7 +222,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	private Element getSignatureValueElement(XAdESSignature xadesSignature) {
 		Element signatureElement = xadesSignature.getSignatureElement();
 
-		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
 		if (signatureValueElement != null) {
 			return signatureValueElement;
 		}

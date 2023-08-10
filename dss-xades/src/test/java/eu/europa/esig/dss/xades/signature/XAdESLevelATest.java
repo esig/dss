@@ -32,7 +32,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -72,7 +72,7 @@ public class XAdESLevelATest extends AbstractXAdESTestSignature {
 		NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
 		assertEquals(1, signaturesList.getLength());
 
-		XAdES132Paths paths = new XAdES132Paths();
+		XAdES132Path paths = new XAdES132Path();
 
 		Node signature = signaturesList.item(0);
 		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());

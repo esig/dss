@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -62,7 +62,7 @@ public class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
 		assertNotNull(signatureDigestReference);
 
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPaths.SIGNATURE_PATH);
+		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = XMLCanonicalizer.createInstance(signatureDigestReference.getCanonicalizationMethod()).canonicalize(signatureElement);
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);

@@ -28,7 +28,7 @@ import java.io.Serializable;
 /**
  * Contains a list of useful XAdES XPaths
  */
-public interface XAdESPaths extends Serializable {
+public interface XAdESPath extends Serializable {
 
 	/**
 	 * Gets the current namespace

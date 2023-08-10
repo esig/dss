@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestPaths;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -111,7 +111,7 @@ public class ASiCWithCAdESManifestParser {
 		}
 		try {
 			Document manifestDom = DomUtils.buildDOM(manifestDocument);
-			return DomUtils.getElement(manifestDom, ASiCManifestPaths.ASIC_MANIFEST_PATH);
+			return DomUtils.getElement(manifestDom, ASiCManifestPath.ASIC_MANIFEST_PATH);
 		} catch (Exception e) {
 			LOG.warn("Unable to analyze manifest file '{}' : {}", manifestDocument.getName(), e.getMessage());
 			return null;
@@ -119,7 +119,7 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static String getLinkedSignatureName(Element root) {
-		return DomUtils.getValue(root, ASiCManifestPaths.SIG_REFERENCE_URI_PATH);
+		return DomUtils.getValue(root, ASiCManifestPath.SIG_REFERENCE_URI_PATH);
 	}
 	
 	private static MimeType getMimeType(Element element) {
@@ -137,7 +137,7 @@ public class ASiCWithCAdESManifestParser {
 	private static DigestAlgorithm getDigestAlgorithm(Element dataObjectReference) {
 		String value = null;
 		try {
-			value = DomUtils.getValue(dataObjectReference, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
+			value = DomUtils.getValue(dataObjectReference, XMLDSigPath.DIGEST_METHOD_ALGORITHM_PATH);
 			return DigestAlgorithm.forXML(value);
 		} catch (IllegalArgumentException e) {
 			LOG.warn("Unable to extract DigestAlgorithm (value = {}). Reason : [{}]", value, e.getMessage());
@@ -146,7 +146,7 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static byte[] getDigestValue(Element dataObjectReference) {
-		Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPaths.DIGEST_VALUE_PATH);
+		Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPath.DIGEST_VALUE_PATH);
 		if (digestValueElement != null) {
 			try {
 				return Utils.fromBase64(digestValueElement.getTextContent());
@@ -158,7 +158,7 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static boolean isTimestampAssociatedManifest(Element root) {
-		Element sigReference = DomUtils.getElement(root, ASiCManifestPaths.SIG_REFERENCE_PATH);
+		Element sigReference = DomUtils.getElement(root, ASiCManifestPath.SIG_REFERENCE_PATH);
 		if (sigReference != null) {
 			MimeType mimeType = getMimeType(sigReference);
 			return MimeTypeEnum.TST == mimeType;
@@ -168,7 +168,7 @@ public class ASiCWithCAdESManifestParser {
 
 	private static List<ManifestEntry> parseManifestEntries(Element root) {
 		List<ManifestEntry> entries = new ArrayList<>();
-		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCManifestPaths.DATA_OBJECT_REFERENCE_PATH);
+		NodeList dataObjectReferences = DomUtils.getNodeList(root, ASiCManifestPath.DATA_OBJECT_REFERENCE_PATH);
 		if (dataObjectReferences == null || dataObjectReferences.getLength() == 0) {
 			LOG.warn("No DataObjectReference found in manifest file");
 		} else {

@@ -20,31 +20,31 @@
  */
 package eu.europa.esig.xades.definition.xades122;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 /**
  * XAdES 1.2.2 paths
  */
-public class XAdES122Paths extends AbstractPaths implements XAdESPaths {
+public class XAdES122Path extends AbstractPath implements XAdESPath {
 
 	private static final long serialVersionUID = 5349623288353583493L;
 
 	/**
 	 * Default constructor
 	 */
-	public XAdES122Paths() {
+	public XAdES122Path() {
 		// empty
 	}
 
 	@Override
 	public DSSNamespace getNamespace() {
-		return XAdESNamespaces.XADES_122;
+		return XAdESNamespace.XADES_122;
 	}
 
 	@Override

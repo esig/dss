@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,7 +48,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	private final Element signatureElement;
 
 	/** The XAdES XPaths */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/**
 	 * The default constructor for XAdESCRLSource.
@@ -58,7 +58,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 * @param xadesPaths
 	 *                         adapted {@code XAdESPaths}
 	 */
-	public XAdESCRLSource(final Element signatureElement, final XAdESPaths xadesPaths) {
+	public XAdESCRLSource(final Element signatureElement, final XAdESPath xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xadesPaths, "XAdESPaths cannot be null");
 
