@@ -45,6 +45,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
@@ -377,7 +378,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument addDssDictionary(DSSDocument document, PdfValidationDataContainer validationDataForInclusion) {
-		return addDssDictionary(document, validationDataForInclusion, (char[]) null);
+		return addDssDictionary(document, validationDataForInclusion, null);
 	}
 
 	@Override
@@ -388,12 +389,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document) {
-		return getAvailableSignatureFields(document, (char[]) null);
+		return getAvailableSignatureFields(document, null);
 	}
 
 	@Override
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		return addNewSignatureField(document, parameters, (char[]) null);
+		return addNewSignatureField(document, parameters, null);
 	}
 
 	/**
@@ -596,9 +597,19 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected AnnotationBox getVisibleSignatureFieldBoxPosition(final PdfDocumentReader reader,
 																SignatureFieldParameters parameters) throws IOException {
+		int pageRotation = reader.getPageRotation(parameters.getPage());
+		int globalRotation = ImageRotationUtils.getRotation(parameters.getRotation(), pageRotation);
+
+		AnnotationBox originalPageBox = reader.getPageBox(parameters.getPage());
+		AnnotationBox pageBox = originalPageBox;
 		AnnotationBox annotationBox = new AnnotationBox(parameters);
-		AnnotationBox pageBox = reader.getPageBox(parameters.getPage());
-		annotationBox = toPdfPageCoordinates(annotationBox, pageBox);
+		if (ImageRotationUtils.isSwapOfDimensionsRequired(globalRotation)) {
+			pageBox = ImageRotationUtils.swapDimensions(pageBox);
+		}
+
+		annotationBox = ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageBox, 360 - globalRotation);
+
+		annotationBox = toPdfPageCoordinates(annotationBox, originalPageBox);
 
 		assertSignatureFieldPositionValid(reader, annotationBox, parameters.getPage());
 		return annotationBox;

@@ -636,9 +636,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 	}
 	
 	private void testRotation(VisualSignatureRotation visualSignatureRotation) throws IOException {
-		SignatureImageParameters parameters = signatureParameters.getImageParameters();
-		parameters.setRotation(visualSignatureRotation);
-		signatureParameters.setImageParameters(parameters);
+		signatureParameters.getImageParameters().getFieldParameters().setRotation(visualSignatureRotation);
 		compareDoc("/visualSignature/test.pdf");
 		compareDoc("/visualSignature/test_90.pdf");
 		compareDoc("/visualSignature/test_180.pdf");
@@ -748,9 +746,9 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setOriginY(50);
 		fieldParameters.setWidth(100);
 		fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		imageParameters.setFieldParameters(fieldParameters);
-		
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareExplicitly();
@@ -767,10 +765,10 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setOriginY(50);
 		fieldParameters.setWidth(100);
 		fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		imageParameters.setFieldParameters(fieldParameters);
 		
 		imageParameters.setZoom(150);
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareExplicitly();
@@ -915,11 +913,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setOriginY(50);
 		fieldParameters.setWidth(200);
 		fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 
 		imageParameters.setFieldParameters(fieldParameters);
 		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 		imageParameters.setBackgroundColor(Color.YELLOW);
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("Signature");
@@ -977,11 +975,11 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		fieldParameters.setOriginY(50);
 		fieldParameters.setWidth(200);
 		fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		imageParameters.setFieldParameters(fieldParameters);
 
 		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 		imageParameters.setBackgroundColor(Color.PINK);
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
 
 		drawAndCompareVisually();
@@ -1226,13 +1224,13 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG));
 		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(100);
 		fieldParameters.setOriginY(50);
 		fieldParameters.setWidth(200);
 		fieldParameters.setHeight(40);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		imageParameters.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -1289,7 +1287,7 @@ public class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualCompa
 		service = new PAdESService(getOfflineCertificateVerifier());
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+		imageParameters.getFieldParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My Signature");

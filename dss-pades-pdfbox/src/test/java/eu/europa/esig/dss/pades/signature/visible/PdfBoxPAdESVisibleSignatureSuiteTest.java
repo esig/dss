@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESAddNewFieldRotatedDocumentTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESExistingSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESExternalCMSSignatureBLevelVisibleTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESFieldLevelBTest;
@@ -52,7 +53,8 @@ import org.junit.platform.suite.api.Suite;
 		PDFSignatureServiceTest.class, PAdESMultipleVisibleSignaturesTest.class, PAdESVisibleWithOverlappingFieldsTest.class,
 		PAdESVisibleImageScalingTest.class, PAdESExistingSignatureFieldTest.class, PAdESTextWrappingTest.class,
 		PAdESVisibleSigOutsidePageTest.class, PAdESWithNullTextColorTest.class, PAdESVisibleSignRotatedDocumentTest.class,
-		PAdESWithFontSubsetWithAtomicMethodsTest.class, PAdESExternalCMSSignatureBLevelVisibleTest.class })
+		PAdESWithFontSubsetWithAtomicMethodsTest.class, PAdESExternalCMSSignatureBLevelVisibleTest.class,
+		PAdESAddNewFieldRotatedDocumentTest.class })
 public class PdfBoxPAdESVisibleSignatureSuiteTest {
 
 }

@@ -240,7 +240,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
-		imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+		imageParameters.getFieldParameters().setRotation(VisualSignatureRotation.AUTOMATIC);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");

@@ -91,6 +91,17 @@ import eu.europa.esig.dss.jaxb.common.DSSErrorHandlerAlert;
                                                                      a|[source,java]
 import eu.europa.esig.dss.jaxb.common.alert.DSSErrorHandlerAlert;
 
+|PDF visual signature rotation                                       a|[source,java]
+----
+SignatureImageParameters imageParameters = new SignatureImageParameters();
+imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+----
+                                                                     a|[source,java]
+SignatureImageParameters imageParameters = new SignatureImageParameters();
+SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+imageParameters.setFieldParameters(fieldParameters);
+
 |===
 
 [cols="2,5,5"]
