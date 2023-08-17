@@ -637,6 +637,87 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 	}
 
 	@Test
+	public void noRotationFlagTestTest() throws IOException {
+		DSSDocument documentToSign = new FileDocument("C:\\Users\\AleksandrBeliakov\\Downloads\\PDFBOX-4447-Annotations-NoRotate.pdf");
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setPage(1);
+
+		fieldParameters.setOriginX(0);
+		fieldParameters.setOriginY(0);
+		fieldParameters.setWidth(40);
+		fieldParameters.setHeight(60);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_270);
+
+		DSSDocument noRotate90Degrees = service.addNewSignatureField(documentToSign, fieldParameters);
+		assertNotNull(noRotate90Degrees);
+
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(noRotate90Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(20);
+		fieldParameters.setWidth(40);
+		fieldParameters.setHeight(20);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_270);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(documentToSign, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setPage(2);
+
+		fieldParameters.setOriginX(280);
+		fieldParameters.setOriginY(60);
+		fieldParameters.setWidth(80);
+		fieldParameters.setHeight(40);
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		DSSDocument noRotate180Degrees = service.addNewSignatureField(noRotate90Degrees, fieldParameters);
+		assertNotNull(noRotate180Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(noRotate180Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setOriginX(280);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setWidth(80);
+		fieldParameters.setHeight(40);
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(noRotate90Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setPage(3);
+
+		fieldParameters.setOriginX(412);
+		fieldParameters.setOriginY(300);
+		fieldParameters.setWidth(40);
+		fieldParameters.setHeight(80);
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		DSSDocument noRotate270Degrees = service.addNewSignatureField(noRotate180Degrees, fieldParameters);
+		assertNotNull(noRotate270Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(noRotate270Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setOriginX(400);
+		fieldParameters.setOriginY(320);
+		fieldParameters.setWidth(40);
+		fieldParameters.setHeight(80);
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(noRotate180Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
 	public void fieldsOverlapWithCustomRotationTest() throws IOException {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
