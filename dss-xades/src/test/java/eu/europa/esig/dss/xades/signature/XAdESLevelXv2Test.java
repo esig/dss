@@ -21,12 +21,20 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

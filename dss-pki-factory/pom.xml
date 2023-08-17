@@ -34,6 +34,11 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-pki-manifest</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-crl-parser-stream</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -83,10 +88,7 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-spi</artifactId>
-        </dependency>
+
     </dependencies>
 
 
@@ -102,29 +104,29 @@
                     <tag>${tag}</tag>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.15.3</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <schemaDirectory>src/main/resources/xsd</schemaDirectory>
-                    <generatePackage>eu.europa.esig.dss.pki</generatePackage>
-                    <schemaIncludes>
-                        <schemaInclude>pki.xsd</schemaInclude>
-                    </schemaIncludes>
-                    <specVersion>2.1</specVersion>
-                    <encoding>UTF-8</encoding>
-                    <locale>en</locale>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.jvnet.jaxb2.maven2</groupId>-->
+<!--                <artifactId>maven-jaxb2-plugin</artifactId>-->
+<!--                <version>0.15.3</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>generate</id>-->
+<!--                        <goals>-->
+<!--                            <goal>generate</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <schemaDirectory>src/main/resources/xsd</schemaDirectory>-->
+<!--                    <generatePackage>eu.europa.esig.dss.pki</generatePackage>-->
+<!--                    <schemaIncludes>-->
+<!--                        <schemaInclude>pki.xsd</schemaInclude>-->
+<!--                    </schemaIncludes>-->
+<!--                    <specVersion>2.1</specVersion>-->
+<!--                    <encoding>UTF-8</encoding>-->
+<!--                    <locale>en</locale>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

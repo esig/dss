@@ -1,13 +1,12 @@
 package eu.europa.esig.dss.pki.service;
 
-import eu.europa.esig.dss.pki.CertificateType;
-import eu.europa.esig.dss.pki.Pki;
 import eu.europa.esig.dss.pki.config.JaxbConfig;
-import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.dto.CertDto;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
+import eu.europa.esig.pki.manifest.CertificateType;
+import eu.europa.esig.pki.manifest.Pki;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.stream.StreamSource;
@@ -23,7 +22,7 @@ public class PkiMarshallerService {
 
     public static PkiMarshallerService getInstance() {
         if (pkiMarshallerService == null) {
-            synchronized (Db.class) {
+            synchronized (PkiMarshallerService.class) {
                 pkiMarshallerService = new PkiMarshallerService();
                 unmarshaller = new JaxbConfig();
             }

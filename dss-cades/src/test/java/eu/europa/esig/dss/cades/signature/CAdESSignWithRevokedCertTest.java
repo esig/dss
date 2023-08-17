@@ -28,6 +28,9 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +62,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
     }
+
 
     @Test
     public void signBRevokedAndSignBGoodUserTest() {
@@ -140,7 +144,11 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
         signingAlias = GOOD_USER_UNKNOWN;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
-
+        CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+        service = new CAdESService(certificateVerifier); //FIXME ask aleksender
+        service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }

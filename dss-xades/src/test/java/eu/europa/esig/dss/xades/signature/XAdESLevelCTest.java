@@ -38,11 +38,16 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -57,6 +62,8 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -85,6 +92,23 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
+		PKIOCSPSource ocspSource=new PKIOCSPSource(getDataBase());
+		ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
+		certificateVerifier.setOcspSource(ocspSource);
+
+		PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
+		pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, 6);
+		Date nextUpdate = cal.getTime();
+		pkicrlSource.setNextUpdate(nextUpdate);
+		certificateVerifier.setCrlSource(pkicrlSource);
+		return certificateVerifier;
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.model;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.pki.manifest.RevocationReason;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

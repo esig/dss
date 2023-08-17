@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.xades.signature.XAdESService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -50,7 +51,19 @@ public class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest
     protected String getSigningAlias() {
         return RSA_SHA3_USER;
     }
+    @Override
+    protected XAdESService getSignatureServiceToSign() {
+        XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getUsedTSPSourceAtSignatureTime());
+        return service;
+    }
 
+    @Override
+    protected XAdESService getSignatureServiceToExtend() {
+        XAdESService service = new XAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return service;
+    }
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
         super.checkCertificates(diagnosticData);

@@ -8,7 +8,7 @@ import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.crl.PkiCRLSource;
+import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PkiCRLSourceTest {
+public class PKICRLSourceTest {
 
 
     private static CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(Db.class);
@@ -31,14 +31,15 @@ public class PkiCRLSourceTest {
     private static CertificateToken ed25519goodCa;
     private static CertificateToken ed25519RootCa;
     private static CertificateToken revokedCa;
+    private static CertificateToken sha3GoodUser;
+    private static CertificateToken sha3GoodCa;
     private static CertificateToken revokedUser;
     private static CertEntity certEntity;
-    private static PkiCRLSource pkiCRLSource;
+    private static PKICRLSource pkiCRLSource;
 
     @BeforeAll
     public static void init() {
         PostConstructInitializr.getInstance();
-
         certEntity = certEntityRepository.getCertEntity("good-ca");
 
 
@@ -47,6 +48,8 @@ public class PkiCRLSourceTest {
         rootCa = certEntityRepository.getCertEntity("root-ca").getCertificateToken();
         revokedCa = certEntityRepository.getCertEntity("revoked-ca").getCertificateToken();
         revokedUser = certEntityRepository.getCertEntity("revoked-user").getCertificateToken();
+        sha3GoodUser = certEntityRepository.getCertEntity("sha3-good-user").getCertificateToken();
+        sha3GoodCa = certEntityRepository.getCertEntity("sha3-good-ca").getCertificateToken();
 
 
         ed25519goodUser = certEntityRepository.getCertEntity("Ed25519-good-user").getCertificateToken();
@@ -80,11 +83,22 @@ public class PkiCRLSourceTest {
     }
    @Test
     public void getRevocationToken() {
-        pkiCRLSource = initPkiCRLSource(true);
+        pkiCRLSource = initPkiCRLSource();
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(revokedUser,goodCa );
         assertNotNull(revocationToken);
 
+//       pkiCRLSource = initPkiCRLSource(); //
+
+        revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
+        assertNotNull(revocationToken);
+    }
+    @Test
+    public void getRevocationTokenSha3() {
         pkiCRLSource = initPkiCRLSource();
+        CRLToken revocationToken = pkiCRLSource.getRevocationToken(sha3GoodUser,sha3GoodCa );
+        assertNotNull(revocationToken);
+
+//       pkiCRLSource = initPkiCRLSource(); //
 
         revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
@@ -96,7 +110,6 @@ public class PkiCRLSourceTest {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(revocationToken);
 
-        pkiCRLSource = initPkiCRLSource();
 
         pkiCRLSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
@@ -127,9 +140,9 @@ public class PkiCRLSourceTest {
     }
 
 
-    public static PkiCRLSource initPkiCRLSource(boolean... useCertEntity) {
+    public static PKICRLSource initPkiCRLSource(boolean... useCertEntity) {
 
-        PkiCRLSource pkiCRLSource = useCertEntity.length > 0 && useCertEntity[0] ? new PkiCRLSource(certEntityRepository, certEntity) : new PkiCRLSource(certEntityRepository);
+        PKICRLSource pkiCRLSource = useCertEntity.length > 0 && useCertEntity[0] ? new PKICRLSource(certEntityRepository, certEntity) : new PKICRLSource(certEntityRepository);
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 6);

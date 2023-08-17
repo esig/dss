@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.service;
 
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -13,11 +13,8 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.util.Base64;
-import java.util.Base64.Encoder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -79,7 +76,7 @@ public class CRLGenerator {
             PrivateKey caPrivateKey = entityService.getPrivateKey(certEntity);
             List<DBCertEntity> children = entityService.getChildren(certEntity);
 
-            String algo = PkiUtils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
+            String algo = PKIUtils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
 
             if (productionTime == null) {
                 productionTime = new Date();
@@ -90,7 +87,7 @@ public class CRLGenerator {
             for (DBCertEntity child : children) {
                 if (child.getRevocationDate() != null) {
                     X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(child.getCertificateToken());
-                    builder.addCRLEntry(entry.getSerialNumber(), child.getRevocationDate(), PkiUtils.getCRLReason(child.getRevocationReason()));
+                    builder.addCRLEntry(entry.getSerialNumber(), child.getRevocationDate(), PKIUtils.getCRLReason(child.getRevocationReason()));
                 }
             }
 

@@ -62,7 +62,7 @@ public class CAdESWithRSASSAwithMGF1Test extends AbstractCAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getCertificateVerifierWithMGF1());
 		service.setTspSource(getRSASSAPSSGoodTsa());
 	}
 	

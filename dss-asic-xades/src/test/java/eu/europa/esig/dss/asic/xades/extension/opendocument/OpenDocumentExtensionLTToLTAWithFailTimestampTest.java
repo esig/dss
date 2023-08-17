@@ -36,7 +36,7 @@ public class OpenDocumentExtensionLTToLTAWithFailTimestampTest extends AbstractT
 	
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

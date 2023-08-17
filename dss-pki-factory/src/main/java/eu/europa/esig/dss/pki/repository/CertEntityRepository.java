@@ -138,8 +138,6 @@ public interface CertEntityRepository<T extends CertEntity> {
     T getCertEntity(String id);
 
 
-    Map<DBCertEntity, Revocation> getRevocationList(Long serialNumber, CertificateToken certificateToken);
-
     /**
      * Retrieves the certificate entity associated with the given certificate token.
      *
@@ -172,4 +170,9 @@ public interface CertEntityRepository<T extends CertEntity> {
      */
     Map<T, Revocation> getRevocationList(T parent);
 
+
+    Revocation getRevocation(T certEntity);
+    Revocation getRevocation(CertificateToken certificateToken);
+
+    CertEntity getIssuer(T certEntity);
 }

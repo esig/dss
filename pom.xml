@@ -169,6 +169,7 @@
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
         <module>dss-pki-factory</module>
+        <module>dss-pki-manifest</module>
     </modules>
 
 	<build>
@@ -857,7 +858,16 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pki-factory</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pki-manifest</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- Public Dependencies -->
 
 			<dependency>

@@ -62,7 +62,7 @@ public class ASiCECAdESWithPSSTest extends AbstractASiCECAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getCertificateVerifierWithMGF1());
 		service.setTspSource(getPSSGoodTsa());
 	}
 	

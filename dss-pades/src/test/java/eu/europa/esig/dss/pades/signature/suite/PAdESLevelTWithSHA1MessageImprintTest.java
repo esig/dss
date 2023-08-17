@@ -62,7 +62,7 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 
 		service = new PAdESService(getOfflineCertificateVerifier());
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 		service.setTspSource(tspSource);
 	}

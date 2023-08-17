@@ -30,8 +30,12 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+import eu.europa.esig.dss.spi.x509.aia.OnlineAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -61,7 +65,7 @@ public class DSS2058Test extends AbstractXAdESTestValidation {
 	public void init() {
 		DSSDocument dssDocument = new FileDocument("src/test/resources/validation/OJ_C_2017_173_FULL.xml");
 		
-		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
+		CertificateVerifier completeCertificateVerifier = getOnlineCompleteCertificateVerifier();
 		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
 		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));

@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.service;
 
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
@@ -65,7 +65,7 @@ public class TimestampGenerator {
         X509CertificateHolder[] certificateChain = entityService.getCertificateChain(id);
         DBCertEntity certEntity = entityService.getCertificateEntity(id);
 
-        String sigAlgoName = PkiUtils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
+        String sigAlgoName = PKIUtils.getAlgorithmString(certEntity.getPrivateKeyAlgo(), certEntity.getDigestAlgo(), certEntity.isPss());
 
         Set<ASN1ObjectIdentifier> accepted = new HashSet<>();
         accepted.add(TSPAlgorithms.SHA1);

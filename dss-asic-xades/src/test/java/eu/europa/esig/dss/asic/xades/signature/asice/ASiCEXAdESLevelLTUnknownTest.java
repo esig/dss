@@ -23,6 +23,9 @@ package eu.europa.esig.dss.asic.xades.signature.asice;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,12 +57,21 @@ public class ASiCEXAdESLevelLTUnknownTest extends AbstractASiCEXAdESTestSignatur
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
+
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
+		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
+		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+		return certificateVerifier;
 	}
 
 	@Override
 	@Test
 	public void signAndVerify() {
-		AlertException exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		AlertException exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
 	}
 

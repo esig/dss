@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.pki.service;
 
 
-import eu.europa.esig.dss.pki.DigestAlgo;
-import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
+import eu.europa.esig.pki.manifest.DigestAlgo;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DERNull;
@@ -67,7 +67,7 @@ public class X509CertBuilder {
     private String ocspUrl;
 
     private String crlUrl;
-    
+
     private boolean pss;
 
     public X509CertBuilder() {
@@ -145,7 +145,7 @@ public class X509CertBuilder {
         this.aiaUrl = aiaUrl;
         return this;
     }
-    
+
     public X509CertBuilder pss(boolean pss) {
         this.pss = pss;
         return this;
@@ -153,9 +153,9 @@ public class X509CertBuilder {
 
     public X509CertificateHolder build(BigInteger serial, Date notBefore, Date notAfter) throws Exception {
 
-		String signatureAlgo = PkiUtils.getAlgorithmString(issuerKey.getAlgorithm(), digestAlgo, pss);
+        String signatureAlgo = PKIUtils.getAlgorithmString(issuerKey.getAlgorithm(), digestAlgo, pss);
 
-		ContentSigner rootSigner = new JcaContentSignerBuilder(signatureAlgo).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerKey);
+        ContentSigner rootSigner = new JcaContentSignerBuilder(signatureAlgo).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(issuerKey);
 
         SubjectPublicKeyInfo membersKeyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
 

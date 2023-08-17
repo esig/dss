@@ -47,7 +47,7 @@ public class XAdESLevelBEnvelopedHtmlUTF8Test extends AbstractXAdESTestSignature
 	public void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(EE_GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(EE_GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
 		service.setTspSource(tspSource);
 

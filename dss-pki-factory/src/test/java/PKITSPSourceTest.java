@@ -24,21 +24,16 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pki.business.PostConstructInitializr;
 import eu.europa.esig.dss.pki.db.Db;
-import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.PkiDataLoader;
-import eu.europa.esig.dss.pki.revocation.tsp.PkiTSPSource;
-import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
+import eu.europa.esig.dss.pki.revocation.tsp.PKITSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,23 +42,19 @@ import static org.junit.jupiter.api.Assertions.*;
  * How to initialize online TSP source.
  */
 
-public class PkiTSPSourceTest {
+public class PKITSPSourceTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PkiTSPSourceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PKITSPSourceTest.class);
     CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(Db.class);
 
-    @BeforeAll
-    public static void contextLoads() {
-        PostConstructInitializr.getInstance();
 
-    }
 
 
     @Test
     public void testSuccess() {
 
         CertEntity certEntity = certEntityRepository.getCertEntity("good-tsa");
-        PkiTSPSource tspSource = new PkiTSPSource(certEntity);
+        PKITSPSource tspSource = new PKITSPSource(certEntity);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
         final byte[] toDigest = "Hello world".getBytes(StandardCharsets.UTF_8);
@@ -80,7 +71,7 @@ public class PkiTSPSourceTest {
 
 
         CertEntity certEntity = certEntityRepository.getCertEntity("good-tsa");
-        PkiTSPSource tspSource = new PkiTSPSource(certEntity);
+        PKITSPSource tspSource = new PKITSPSource(certEntity);
         tspSource.setCertEntity(certEntity);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA3_256;

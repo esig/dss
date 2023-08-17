@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
@@ -57,9 +59,15 @@ public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentTestSignature 
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithXAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
+
+//	@Override
+//	protected CertificateVerifier getCompleteCertificateVerifier() {
+//		PKIOCSPSource pkiocspSource= new PKIOCSPSource(getDataBase());
+//
+//	}
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

@@ -31,6 +31,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCEXAdESLevelBUnknownTest extends AbstractASiCEXAdESTestSignature {
+public class ASiCEXAdESLevelBUnknownOCSPTest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -63,6 +65,14 @@ public class ASiCEXAdESLevelBUnknownTest extends AbstractASiCEXAdESTestSignature
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getCompleteCertificateVerifier());
 		return validator;
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+		certificateVerifier.setCrlSource(null);
+		return certificateVerifier;
 	}
 
 	@Override

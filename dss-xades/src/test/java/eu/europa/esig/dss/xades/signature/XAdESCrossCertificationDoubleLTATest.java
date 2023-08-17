@@ -37,6 +37,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -89,7 +90,9 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         commonTrustedCertificateSource.importAsTrusted(trustedListsCertificateSource);
         
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
-        customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
+        PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
+        pkicrlSource.setNextUpdate(new Date());
+        customCertificateVerifier.setCrlSource(pkicrlSource);
         customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
 		
         XAdESService service = new XAdESService(customCertificateVerifier);
@@ -125,7 +128,8 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         List<RelatedRevocationWrapper> relatedRevocationsFirstLTA = signature.foundRevocations().getRelatedRevocationData();
         
         customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
-        customCertificateVerifier.setCrlSource(new OnlineCRLSource(getFileCacheDataLoader()));
+
+        customCertificateVerifier.setCrlSource(pkicrlSource);
 
         service = new XAdESService(customCertificateVerifier);
         service.setTspSource(getGoodTsa());

@@ -63,7 +63,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 
 		service.setTspSource(tspSource);

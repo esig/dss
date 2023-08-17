@@ -383,7 +383,7 @@ public final class DSSRevocationUtils {
 	 * @return {@link String}
 	 */
 	public static String getOcspRevocationKey(final CertificateToken certificateToken, final String ocspUrl) {
-		return DSSUtils.getSHA1Digest(certificateToken.getEntityKey() + ":" + ocspUrl);
+		return DSSUtils.getSHA1Digest(certificateToken.getDSSIdAsString() + ":" + ocspUrl);
 	}
 
 	/**

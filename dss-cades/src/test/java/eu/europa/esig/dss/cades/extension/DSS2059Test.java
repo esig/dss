@@ -68,7 +68,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	public void init() {
 		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
 		
-		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+		CertificateVerifier certificateVerifier = getOnlineCompleteCertificateVerifier();//TODO ASk
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));

@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.pki.service;
 
-import eu.europa.esig.dss.pki.DigestAlgo;
-import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.pki.manifest.DigestAlgo;
+import eu.europa.esig.pki.manifest.RevocationReason;
 import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.exception.Error500Exception;

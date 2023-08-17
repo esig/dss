@@ -32,7 +32,7 @@ public class PAdESExtensionLTToLTAWithFailTimestampTest extends AbstractPAdESTes
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

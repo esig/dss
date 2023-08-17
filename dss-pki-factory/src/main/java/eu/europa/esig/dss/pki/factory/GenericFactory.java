@@ -79,7 +79,6 @@ public class GenericFactory implements Factory {
             registerFactory(CertificateEntityService.class, CertificateEntityService::getInstance);
             registerFactory(CRLGenerator.class, CRLGenerator::getInstance);
             registerFactory(Initializr.class, Initializr::getInstance);
-            registerFactory(KeystoreGenerator.class, KeystoreGenerator::getInstance);
             registerFactory(TimestampGenerator.class, TimestampGenerator::getInstance);
             registerFactory(PkiMarshallerService.class, PkiMarshallerService::getInstance);
             registerFactory(Db.class, Db::getInstance);

@@ -25,19 +25,18 @@ import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.aia.PkiAIASource;
+import eu.europa.esig.dss.pki.x509.aia.aia.PKIAIASource;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PkiAIASourceTest {
+public class PKIAIASourceTest {
 
     private static CertificateToken certificateWithAIA;
     private static CertificateToken goodCaTrusted;
@@ -47,7 +46,6 @@ public class PkiAIASourceTest {
     @BeforeAll
     public static void init() {
         PostConstructInitializr.getInstance();
-
         certEntity = certEntityRepository.getCertEntity("good-user");
         certificateWithAIA = certEntity.getCertificateToken();
         goodCaTrusted = certEntityRepository.getCertEntity("root-ca").getCertificateToken();
@@ -56,7 +54,7 @@ public class PkiAIASourceTest {
 
     @Test
     public void testLoadIssuer() {
-        PkiAIASource aiaSource = new PkiAIASource(certEntityRepository);
+        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
         aiaSource.setCompleteCertificateChain(true);
         CertificateToken certificateToken = certEntityRepository.getCertEntity("John Doe").getCertificateToken();
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateToken);
@@ -73,31 +71,31 @@ public class PkiAIASourceTest {
 
     @Test
     public void setNullCertEntityRepositoryTest() {
-        PkiAIASource aiaSource = new PkiAIASource(null);
+        PKIAIASource aiaSource = new PKIAIASource(null);
         Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.getCertificatesByAIA(certificateWithAIA));
-        assertEquals("CertEntityRepository shall be provided!", exception.getMessage());
+        assertEquals("CertEntity Repository is not provided", exception.getMessage());
     }
 
     @Test
     public void setNullCertificateTokenTest() {
-        PkiAIASource aiaSource = new PkiAIASource(certEntityRepository);
+        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
         Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.getCertificatesByAIA(null));
-        assertEquals("CertificateToken shall be provided!", exception.getMessage());
+        assertEquals("CertificateToken parameter cannot be null", exception.getMessage());
     }
 
     @Test
     public void emptyAcceptedProtocolsTest() {
-        PkiAIASource aiaSource = new PkiAIASource(certEntityRepository);
+        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateWithAIA);
         assertFalse(Utils.isCollectionEmpty(issuers));
     }
 
     @Test
     public void testLoadIssuerNoAIA() {
-        PkiAIASource aiaSource = new PkiAIASource(certEntityRepository);
+        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
         aiaSource.setCompleteCertificateChain(true);
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(goodCaTrusted);
-        assertFalse(Utils.isCollectionEmpty(issuers));
+        assertTrue(Utils.isCollectionEmpty(issuers));
         assertTrue(goodCaTrusted.isCA());
     }
 
@@ -106,7 +104,7 @@ public class PkiAIASourceTest {
         CertificateToken certificate = certEntityRepository.getCertEntity("ocsp-skip-root-ca").getCertificateToken(); //src/test/resources/sk_ca.cer
         Collection<CertificateToken> issuers = new HashSet<>();
         if (CertificateExtensionsUtils.getAuthorityInformationAccess(certificate) != null) {
-            PkiAIASource aiaSource = new PkiAIASource(certEntityRepository);
+            PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
             issuers = aiaSource.getCertificatesByAIA(certificate);
 
         }

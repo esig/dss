@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pki.wrapper;
 
-import eu.europa.esig.dss.pki.EntityKey;
+import eu.europa.esig.pki.manifest.EntityKey;
 
 public class EntityId {
 

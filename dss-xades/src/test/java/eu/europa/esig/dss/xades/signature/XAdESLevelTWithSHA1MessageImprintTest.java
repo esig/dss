@@ -66,7 +66,7 @@ public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSign
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 		service.setTspSource(tspSource);
 	}

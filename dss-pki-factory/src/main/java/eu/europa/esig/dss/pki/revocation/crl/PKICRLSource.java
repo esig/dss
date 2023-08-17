@@ -7,15 +7,19 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v2CRLBuilder;
@@ -36,9 +40,9 @@ import java.util.Objects;
  * for certificate revocation checks. The CRLs are retrieved based on the CertEntity (certificate entity) and
  * optionally specified production and next update dates.
  */
-public class PkiCRLSource implements CRLSource {
+public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PkiCRLSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PKICRLSource.class);
     private static final long serialVersionUID = 6912729291417315212L;
 
     private CertEntity certEntity;
@@ -55,13 +59,13 @@ public class PkiCRLSource implements CRLSource {
      * @param certEntity           The CertEntity for which CRLs will be obtained.
      * @param certEntityRepository The CertEntity for which CRLs will be obtained.
      */
-    public PkiCRLSource(CertEntityRepository certEntityRepository, CertEntity certEntity) {
+    public PKICRLSource(CertEntityRepository certEntityRepository, CertEntity certEntity) {
         this.certEntityRepository = certEntityRepository;
         this.certEntity = certEntity;
     }
 
 
-    public PkiCRLSource(CertEntityRepository certEntityRepository) {
+    public PKICRLSource(CertEntityRepository certEntityRepository) {
         this.certEntityRepository = certEntityRepository;
     }
 
@@ -81,13 +85,24 @@ public class PkiCRLSource implements CRLSource {
         Objects.requireNonNull(nextUpdate, "NextUpdateDate cannot be null");
         Objects.requireNonNull(issuerCertificateToken, "The issuer of the certificate to be verified cannot be null");
 
+        final String dssIdAsString = certificateToken.getDSSIdAsString();
+        List<String> cRLAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+        if (Utils.isCollectionEmpty(cRLAccessUrls) ) {
+            LOG.warn("No CRL location found for {}", dssIdAsString);
+            return null;
+        }
+
         // If the CertEntity is not already set, retrieve it based on the issuer certificate and certificate subject.
+        CertEntity currentCertEntity;
+
         if (certEntity == null) {
-            certEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+            currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+        } else {
+            currentCertEntity = certEntity;
         }
 
         // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
-        byte[] crlBytes = getCRL(certEntity, productionDate, nextUpdate);
+        byte[] crlBytes = getCRL(currentCertEntity, productionDate, nextUpdate);
 
         final CRLValidity crlValidity;
 
@@ -145,7 +160,7 @@ public class PkiCRLSource implements CRLSource {
     protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<DBCertEntity, Revocation> revocationList) {
         revocationList.forEach((key, value) -> {
             X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
-            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), PkiUtils.getCRLReason(value.getRevocationReason()));
+            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), PKIUtils.getCRLReason(value.getRevocationReason()));
         });
     }
 

@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pki.dto;
 
-import eu.europa.esig.dss.pki.CertificateType;
+import eu.europa.esig.pki.manifest.CertificateType;
 import eu.europa.esig.dss.utils.Utils;
 
 public class CertSubjectWrapperDTO {

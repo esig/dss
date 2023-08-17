@@ -25,10 +25,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.pki.x509.aia.aia.PKIAIASource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -37,6 +41,8 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -65,7 +71,7 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         trustedCertSource.addCertificate(getCertificate(OCSP_SKIP_CA));
 
         certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new DefaultAIASource());
+        certificateVerifier.setAIASource(new PKIAIASource(getDataBase()));
         certificateVerifier.addTrustedCertSources(trustedCertSource);
 
         service = new XAdESService(certificateVerifier);
@@ -77,12 +83,16 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
-        certificateVerifier.setOcspSource(new OnlineOCSPSource());
+        certificateVerifier.setOcspSource(null);//FIXME ASK
 
         exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
-
-        certificateVerifier.setCrlSource(new OnlineCRLSource());
+        PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 6);
+        Date nextUpdate = cal.getTime();
+        pkicrlSource.setNextUpdate(nextUpdate);
+        certificateVerifier.setCrlSource(pkicrlSource);
 
         DSSDocument signedDocument = super.sign();
         assertNotNull(signedDocument);

@@ -1,13 +1,12 @@
 package eu.europa.esig.dss.pki.service;
 
-import eu.europa.esig.dss.pki.*;
 import eu.europa.esig.dss.pki.constant.LoadProperties;
-import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.dto.CertSubjectWrapperDTO;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.pki.manifest.*;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
@@ -56,7 +55,7 @@ public class Initializr {
 
     public static Initializr getInstance() {
         if (initializr == null) {
-            synchronized (Db.class) {
+            synchronized (Initializr.class) {
                 entityService = CertificateEntityService.getInstance();
                 pkiMarshallerService = PkiMarshallerService.getInstance();
                 initializr = new Initializr();
@@ -150,7 +149,7 @@ public class Initializr {
     /**
      * Retrieves the issuer certificate entity with the given entity key from the entities map.
      *
-     * @param entities The map of certificate entities, where the key is the EntityId and the value is the DBCertEntity.
+     * @param entities  The map of certificate entities, where the key is the EntityId and the value is the DBCertEntity.
      * @param entityKey The entity key for the issuer certificate.
      * @return The issuer certificate entity associated with the given entity key, or null if not found.
      */
@@ -160,11 +159,12 @@ public class Initializr {
         }
         return null;
     }
+
     /**
      * Retrieves the subject name of the certificate entity associated with the given EntityId from the entities map.
      *
      * @param entities The map of certificate entities, where the key is the EntityId and the value is the DBCertEntity.
-     * @param key The EntityId for the certificate entity.
+     * @param key      The EntityId for the certificate entity.
      * @return The subject name of the certificate entity associated with the given EntityId.
      * @throws IllegalArgumentException if the certificate entity is not found in the entities map.
      */

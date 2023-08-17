@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.pki.service;
 
-import eu.europa.esig.dss.pki.EncryptionAlgo;
-import eu.europa.esig.dss.pki.KeyAlgo;
+import eu.europa.esig.pki.manifest.EncryptionAlgo;
+import eu.europa.esig.pki.manifest.KeyAlgo;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.spec.ECParameterSpec;

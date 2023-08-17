@@ -47,7 +47,7 @@ public class CAdESLevelBWithTwoContentTimestampsTest extends AbstractCAdESTestSi
 	public void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Arrays.asList(DigestAlgorithm.SHA1, DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
 
 		TimestampBinary timeStampResponse1 = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, documentToSign));

@@ -115,42 +115,42 @@ public class PkiDataLoader implements DataLoader {
 
     public DataAndUrl crlGet(String urlString) {
         List<String> urlParams = getPathParams(urlString);
-
-        if (isGetCrl(urlParams)) {
-            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 1, ".crt"))));
-        } else if (isGetUrlWithSeralNumberAndIssuer(urlParams)) {
-            if (urlParams.contains("pem")) {
-                return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 2, ".crl")), parseToDate(urlParams.get(1)), false));
-            }
-            if (urlParams.contains("error-500")) {
-                errorGenerator.getError500();
-            }
-            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 3, ".crl")), parseToDate(urlParams.get(1)), false));
-        } else if (isGetCrlForDate(urlParams)) {
-            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 4, ".crl")), parseToDate(urlParams.get(2)), parseToDate(urlParams.get(3))));
-        } else if (getCrlExtended(urlParams)) {
-            if (urlParams.contains("extended")) {
-                return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getBySerialNumberAndParent(Long.parseLong(urlParams.get(4)), urlParams.get(3))));
-            }
-            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 4, ".crl")), parseToDate(urlParams.get(2)), parseToDate(urlParams.get(3))));
-        }
+//
+//        if (isGetCrl(urlParams)) {
+//            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 1, ".crt"))));
+//        } else if (isGetUrlWithSeralNumberAndIssuer(urlParams)) {
+//            if (urlParams.contains("pem")) {
+//                return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 2, ".crl")), parseToDate(urlParams.get(1)), false));
+//            }
+//            if (urlParams.contains("error-500")) {
+//                errorGenerator.getError500();
+//            }
+//            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 3, ".crl")), parseToDate(urlParams.get(1)), false));
+//        } else if (isGetCrlForDate(urlParams)) {
+//            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 4, ".crl")), parseToDate(urlParams.get(2)), parseToDate(urlParams.get(3))));
+//        } else if (getCrlExtended(urlParams)) {
+//            if (urlParams.contains("extended")) {
+//                return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getBySerialNumberAndParent(Long.parseLong(urlParams.get(4)), urlParams.get(3))));
+//            }
+//            return new DataAndUrl(urlString, crlGenerator.getCRL(certService.getCertificateEntity(getCleanId(urlParams, 4, ".crl")), parseToDate(urlParams.get(2)), parseToDate(urlParams.get(3))));
+//        }
         throw new Error500Exception("Bad url");
     }
 
 
     public DataAndUrl keyStoreGet(String urlString) {
-        List<String> urlParams = getPathParams(urlString);
-        if (isGetKeystoreForCert(urlParams)) {
-            return new DataAndUrl(urlString, keystoreGenerator.getKeystore(getCleanId(urlParams, 1, ".p12")));
-        } else if (isGetRoots(urlParams)) {
-            return new DataAndUrl(urlString, keystoreGenerator.getRoots());
-        } else if (isGetTrustAnchors(urlParams)) {
-            return new DataAndUrl(urlString, keystoreGenerator.getTrustAnchors());
-        } else if (isGetToBeIgnored(urlParams)) {
-            return new DataAndUrl(urlString, keystoreGenerator.getToBeIgnored());
-        } else if (isGetTrustAnchorsForPKI(urlParams)) {
-            return new DataAndUrl(urlString, keystoreGenerator.getTrustAnchorsForPKI(getCleanId(urlParams, 1, ".jks")));
-        }
+//        List<String> urlParams = getPathParams(urlString);
+//        if (isGetKeystoreForCert(urlParams)) {
+//            return new DataAndUrl(urlString, keystoreGenerator.getKeystore(getCleanId(urlParams, 1, ".p12")));
+//        } else if (isGetRoots(urlParams)) {
+//            return new DataAndUrl(urlString, keystoreGenerator.getRoots());
+//        } else if (isGetTrustAnchors(urlParams)) {
+//            return new DataAndUrl(urlString, keystoreGenerator.getTrustAnchors());
+//        } else if (isGetToBeIgnored(urlParams)) {
+//            return new DataAndUrl(urlString, keystoreGenerator.getToBeIgnored());
+//        } else if (isGetTrustAnchorsForPKI(urlParams)) {
+//            return new DataAndUrl(urlString, keystoreGenerator.getTrustAnchorsForPKI(getCleanId(urlParams, 1, ".jks")));
+//        }
         throw new Error500Exception("Bad url");
     }
 

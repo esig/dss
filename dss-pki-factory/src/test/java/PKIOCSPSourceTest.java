@@ -21,8 +21,6 @@
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.business.PostConstructInitializr;
 import eu.europa.esig.dss.pki.db.Db;
@@ -30,7 +28,7 @@ import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.ocsp.PkiOCSPSource;
+import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,7 +37,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PkiOCSPSourceTest {
+public class PKIOCSPSourceTest {
 
     private static CertificateToken certificateToken;
     private static CertificateToken rootToken;
@@ -57,7 +55,6 @@ public class PkiOCSPSourceTest {
     @BeforeAll
     public static void init() {
         PostConstructInitializr.getInstance();
-
         certEntity = certificateEntityService.getCertEntity("good-user");
         rootToken = certificateEntityService.getCertEntity("root-ca").getCertificateToken();
 
@@ -74,7 +71,7 @@ public class PkiOCSPSourceTest {
 
     @Test
     public void testOCSPWithoutNonce() {
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService, certEntity);
         OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
@@ -83,7 +80,7 @@ public class PkiOCSPSourceTest {
     @Test
     public void testOCSP() {
 
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService, certEntity);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         System.out.println(ocspToken.toString());
         assertNotNull(ocspToken);
@@ -92,7 +89,7 @@ public class PkiOCSPSourceTest {
   @Test
     public void testOCSPRevoked() {
 
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
         OCSPToken ocspToken = ocspSource.getRevocationToken(revokedCa,revokedCa);
         System.out.println(ocspToken.toString());
         assertNotNull(ocspToken);
@@ -102,7 +99,7 @@ public class PkiOCSPSourceTest {
 
     @Test
     public void testWithSetDataLoader() {
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
@@ -110,20 +107,16 @@ public class PkiOCSPSourceTest {
 
     @Test
     public void testOCSPEd25519() {
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
         ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
         Exception exception = assertThrows(Error404Exception.class, () -> ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa));
         assertTrue(exception.getMessage().contains("not found for CA '"));
-//        OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
-//        assertNotNull(ocspToken);
-//        assertNotNull(ocspToken.getBasicOCSPResp());
-//        assertEquals(SignatureAlgorithm.ED25519, ocspToken.getSignatureAlgorithm());
-//        assertEquals(SignatureValidity.VALID, ocspToken.getSignatureValidity());
+
     }
 
     @Test
     public void testOCSPWithNonce() {
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService, certEntity);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService, certEntity);
         ocspSource.setProductionDate(new Date());
         OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
         assertNotNull(ocspToken);
@@ -132,7 +125,7 @@ public class PkiOCSPSourceTest {
     @Test
     public void customCertIDDigestAlgorithmTest() {
 
-        PkiOCSPSource ocspSource = new PkiOCSPSource(certificateEntityService);
+        PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
 
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
         assertNotNull(ocspToken);

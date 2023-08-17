@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.pki.utils;
 
-import eu.europa.esig.dss.pki.DigestAlgo;
-import eu.europa.esig.dss.pki.EncryptionAlgo;
-import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.pki.manifest.DigestAlgo;
+import eu.europa.esig.pki.manifest.EncryptionAlgo;
+import eu.europa.esig.pki.manifest.RevocationReason;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import org.bouncycastle.asn1.x509.CRLReason;
 
@@ -12,7 +12,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class PkiUtils {
+public final class PKIUtils {
 
     /**
      * A map between digest algo JavaName and a {@code DigestAlgo} name value
@@ -28,7 +28,7 @@ public final class PkiUtils {
         digestAlgoMap.put("SHA3-512", "SHA3-512");
     }
 
-    private PkiUtils() {
+    private PKIUtils() {
     }
 
     public static int getCRLReason(RevocationReason revocationReason) {
@@ -101,6 +101,7 @@ public final class PkiUtils {
         }
         return DigestAlgo.fromValue(digestAlgoName);
     }
+
     public static byte[] convertDerToPem(byte[] derEncodedCRL) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             baos.write("-----BEGIN CRL-----\n".getBytes());

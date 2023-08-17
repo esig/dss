@@ -1,8 +1,10 @@
 package eu.europa.esig.dss.pki.db;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.business.PostConstructInitializr;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
+import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
@@ -28,6 +30,7 @@ public class Db implements CertEntityRepository<DBCertEntity> {
         if (instance == null) {
             synchronized (Db.class) {
                 instance = new Db();
+                PostConstructInitializr.getInstance();
             }
         }
         return instance;
@@ -116,10 +119,6 @@ public class Db implements CertEntityRepository<DBCertEntity> {
         return map.values().stream().anyMatch(dbCertEntity -> dbCertEntity.getSubject().equals(id));
     }
 
-    public DBCertEntity getByCrlUrl(String crlUrl) {
-        return map.get(crlUrl);
-    }
-
     @Override
     public DBCertEntity save(DBCertEntity dbCertEntity) {
         if (dbCertEntity.getSubject() != null) {
@@ -128,7 +127,7 @@ public class Db implements CertEntityRepository<DBCertEntity> {
         return dbCertEntity;
     }
 
-
+    @Override
     public DBCertEntity getCertEntity(String id) {
         List<DBCertEntity> certEntity = this.getBySubject(id);
         if (certEntity == null || certEntity.size() == 0) {
@@ -140,10 +139,11 @@ public class Db implements CertEntityRepository<DBCertEntity> {
         return certEntity.get(0);
     }
 
+    @Override
     public X509CertificateHolder convertToX509CertificateHolder(DBCertEntity certEntity) {
         return convertToX509CertificateHolder(certEntity.getCertificateToken().getEncoded());
     }
-
+    @Override
     public X509CertificateHolder[] getCertificateChain(DBCertEntity certEntity) {
         List<X509CertificateHolder> certChain = new ArrayList<>();
         DBCertEntity entity = certEntity;
@@ -166,17 +166,24 @@ public class Db implements CertEntityRepository<DBCertEntity> {
                 .filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null)
                 .collect(Collectors.toMap(
                         dbCertEntity -> dbCertEntity,
-                        dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())
-                ));
+                        dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason()))
+                );
+    }
+
+
+    public Revocation getRevocation(DBCertEntity dbCertEntity) {
+        if (dbCertEntity.getRevocationDate() != null) {
+            return new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason());
+        } else return null;
+    }
+    @Override
+    public Revocation getRevocation(CertificateToken certificateToken) {
+        return getRevocation(getByCertificateToken(certificateToken));
     }
 
     @Override
-    public Map<DBCertEntity, Revocation> getRevocationList(Long serialNumber, CertificateToken certificateToken) {
-        return getAllBySerialNumberAndParentSubject(serialNumber, DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getIssuer())).stream()
-                .collect(Collectors.toMap(
-                        dbCertEntity -> dbCertEntity,
-                        dbCertEntity -> new Revocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())
-                ));
+    public CertEntity getIssuer(DBCertEntity certEntity) {
+        return certEntity.getParent();
     }
 
     private X509CertificateHolder convertToX509CertificateHolder(byte[] binary) {

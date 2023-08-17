@@ -86,7 +86,7 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 		byte[] toSignBytes = DSSUtils.toByteArray(documentToSign);
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, toSignBytes);
 
-		KeyEntityTSPSource tspSource = getKeyStoreTSPSourceByName(EE_GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(EE_GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);

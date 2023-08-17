@@ -29,6 +29,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -53,7 +56,7 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 
-		service = new CAdESService(getOfflineCertificateVerifier());
+		service = new CAdESService(getCompleteCertificateVerifier());
 
 	}
 
@@ -65,6 +68,14 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 		detachedContents.add(documentToSign);
 		validator.setDetachedContents(detachedContents);
 		return validator;
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {//FIXME ALEKSANDR
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
+		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+		return certificateVerifier;
 	}
 
 	@Override

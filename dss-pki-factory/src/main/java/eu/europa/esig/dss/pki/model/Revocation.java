@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pki.model;
 
-import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.pki.manifest.RevocationReason;
 
 import java.util.Date;
 

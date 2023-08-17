@@ -26,7 +26,7 @@ public class PostConstructInitializr {
     private static final Initializr initializrService = GenericFactory.getInstance().create(Initializr.class);
 
     // The service for marshalling PKI resources from XML files.
-    private final static PkiMarshallerService pkiMarshallerService = GenericFactory.getInstance().create(PkiMarshallerService.class);
+    private static PkiMarshallerService pkiMarshallerService ;
 
     private static final String PATH = "src/main/resources/pki";
 
@@ -42,6 +42,7 @@ public class PostConstructInitializr {
     public static PostConstructInitializr getInstance() {
         if (instance == null) {
             synchronized (PostConstructInitializr.class) {
+                pkiMarshallerService = GenericFactory.getInstance().create(PkiMarshallerService.class);
                 instance = new PostConstructInitializr();
                 init();
             }
@@ -73,7 +74,7 @@ public class PostConstructInitializr {
         try {
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/pki/*.xml");
 
-            Files.walkFileTree(Paths.get(PATH), new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(Paths.get("C:\\work\\dss\\esig-dss\\dss-pki-factory\\src\\main\\resources\\pki"), new SimpleFileVisitor<>() {//FIXME
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (pathMatcher.matches(file)) {

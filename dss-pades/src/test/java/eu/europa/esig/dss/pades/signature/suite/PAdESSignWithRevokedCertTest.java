@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -29,6 +30,9 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -136,7 +140,11 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         signingAlias = GOOD_USER_UNKNOWN;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
-
+        CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+        service = new PAdESService(certificateVerifier); //FIXME ask aleksender
+        service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }

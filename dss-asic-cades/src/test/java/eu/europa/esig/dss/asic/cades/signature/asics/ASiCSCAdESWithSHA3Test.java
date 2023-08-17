@@ -58,7 +58,7 @@ public class ASiCSCAdESWithSHA3Test extends AbstractASiCSCAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 		
-		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithCAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
 

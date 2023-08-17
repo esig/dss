@@ -171,7 +171,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		XAdESService service = new XAdESService(certificateVerifier);
 		// ensure the time is synchronized between the TSP and revocation data
-        service.setTspSource(getOnlineTSPSourceByName(EE_GOOD_TSA));
+        service.setTspSource(getPkiTSPSourceByName(EE_GOOD_TSA));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		

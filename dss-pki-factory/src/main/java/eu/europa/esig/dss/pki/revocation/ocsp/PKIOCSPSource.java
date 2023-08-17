@@ -6,16 +6,18 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.RevocationReason;
+import eu.europa.esig.pki.manifest.RevocationReason;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.utils.PkiUtils;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -32,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,7 +58,7 @@ public class PKIOCSPSource implements OCSPSource {
     /**
      * The Digest Algorithm of the signature of the created time-stamp token
      */
-    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
 
     /**
@@ -86,7 +89,11 @@ public class PKIOCSPSource implements OCSPSource {
     public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         final String dssIdAsString = certificateToken.getDSSIdAsString();
         LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
-
+        List<String> ocspAccessUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+        if (Utils.isCollectionEmpty(ocspAccessUrls)) {
+            LOG.warn("No OCSP location found for {}", dssIdAsString);
+            return null;
+        }
         final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerCertificateToken, digestAlgorithm);
 
         try {
@@ -95,14 +102,13 @@ public class PKIOCSPSource implements OCSPSource {
             if (certEntity == null) {
                 certEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
             }
-            Objects.requireNonNull(certEntity, "certEntity cannot be null");
+            Objects.requireNonNull(certEntity, "No certification found for the provided CertificateToken.");
 
             OCSPResp ocspRespBytes;
             OCSPReq ocspReq = buildOCSPRequest(certId);
 
             // Determine the OCSP response based on different scenarios
             ocspRespBytes = getCustomOCSPResponse(certEntity, certificateToken, ocspReq);
-
 
             // Build the OCSP response and extract the latest single response
 
@@ -150,7 +156,7 @@ public class PKIOCSPSource implements OCSPSource {
         if (revocation == null || revocation.getRevocationDate() == null) {
             builder.addResponse(r.getCertID(), CertificateStatus.GOOD);
         } else {
-            builder.addResponse(r.getCertID(), new RevokedStatus(revocation.getRevocationDate(), PkiUtils.getCRLReason(revocation.getRevocationReason())));
+            builder.addResponse(r.getCertID(), new RevokedStatus(revocation.getRevocationDate(), PKIUtils.getCRLReason(revocation.getRevocationReason())));
         }
     }
 
