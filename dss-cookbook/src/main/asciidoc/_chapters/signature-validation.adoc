@@ -648,10 +648,10 @@ The module `dss-pdfa` implements its own `DocumentValidator`, as well as `Docume
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=pdfa]
 ----
 
-To load the `PDFADocumentValidator` instead of default PDF validator using `SignedDocumentValidator.fromDocument(DSSDocument)` method, the new class shall be defined within `eu.europa.esig.dss.validation.DocumentValidatorFactory` file in the directory `src/main/java/resources/META-INF/services/`, as following:
+To load the `PDFADocumentValidator` instead of default PDF validator using `SignedDocumentValidator.fromDocument(DSSDocument)` method, the class name `eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory` shall be defined within `eu.europa.esig.dss.validation.DocumentValidatorFactory` file in the directory `src/main/java/resources/META-INF/services/`, as following:
 
-[source,xml,indent=0]
-.Enforce PDF/A validator in "src/main/java/resources/META-INF/services/eu.europa.esig.dss.validation.DocumentValidatorFactory" file
+[source,indent=0]
+.src/main/java/resources/META-INF/services/eu.europa.esig.dss.validation.DocumentValidatorFactory
 ----
 eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory
 ----
