@@ -8,10 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 
 /**
  * A class that performs post-construction initialization tasks for PKI resources.
@@ -26,7 +30,7 @@ public class PostConstructInitializr {
     private static final Initializr initializrService = GenericFactory.getInstance().create(Initializr.class);
 
     // The service for marshalling PKI resources from XML files.
-    private static PkiMarshallerService pkiMarshallerService ;
+    private static PkiMarshallerService pkiMarshallerService;
 
     private static final String PATH = "src/main/resources/pki";
 
@@ -74,22 +78,28 @@ public class PostConstructInitializr {
         try {
             PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/pki/*.xml");
 
-            Files.walkFileTree(Paths.get("C:\\work\\dss\\esig-dss\\dss-pki-factory\\src\\main\\resources\\pki"), new SimpleFileVisitor<>() {//FIXME
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    if (pathMatcher.matches(file)) {
-                        LOG.info("Parsing file: {}", file.getFileName());
-                        try (InputStream is = Files.newInputStream(file)) {
+            ClassLoader classLoader = PostConstructInitializr.class.getClassLoader();
+            URL resourceFolder = classLoader.getResource("pki");
+
+            if (resourceFolder != null) {
+                File folder = new File(resourceFolder.getFile());
+
+                for (File file : Objects.requireNonNull(folder.listFiles())) {
+                    Path filePath = file.toPath();
+                    if (pathMatcher.matches(filePath)) {
+                        LOG.info("Parsing file : {}", file.getName());
+                        try (InputStream is = Files.newInputStream(filePath)) {
                             try {
-                                pkiMarshallerService.init(is, file.getFileName().toString());
+                                pkiMarshallerService.init(is, file.getName());
                             } catch (JAXBException e) {
                                 throw new RuntimeException(e);
                             }
                         }
                     }
-                    return FileVisitResult.CONTINUE;
                 }
-            });
+            } else {
+                throw new RuntimeException("PKI resource folder not found.");
+            }
         } catch (IOException e) {
             throw new RuntimeException("PKI parsing error", e);
         }
