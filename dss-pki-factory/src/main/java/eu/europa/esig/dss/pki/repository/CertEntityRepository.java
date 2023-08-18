@@ -157,7 +157,7 @@ public interface CertEntityRepository<T extends CertEntity> {
     /**
      * Retrieves the certificate chain associated with the provided certificate entity.
      *
-     * @param certEntity The certificate entity for which to retrieve the certificate chain.
+     * @param certEntity The certificate entity.
      * @return An array of X509CertificateHolder representing the certificate chain.
      */
     X509CertificateHolder[] getCertificateChain(T certEntity);
@@ -170,9 +170,27 @@ public interface CertEntityRepository<T extends CertEntity> {
      */
     Map<T, Revocation> getRevocationList(T parent);
 
-
+    /**
+     * Retrieves the revocation information for the given certificate entity.
+     *
+     * @param certEntity The certificate entity .
+     * @return The revocation information  .
+     */
     Revocation getRevocation(T certEntity);
+
+    /**
+     * Retrieves the revocation information for the given certificate token.
+     *
+     * @param certificateToken The certificate token for which to retrieve revocation information.
+     * @return The revocation information .
+     */
     Revocation getRevocation(CertificateToken certificateToken);
 
+    /**
+     * Retrieves the issuer certificate entity for the given certificate entity.
+     *
+     * @param certEntity The certificate entity.
+     * @return The issuer certificate entity .
+     */
     CertEntity getIssuer(T certEntity);
 }

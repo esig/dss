@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;

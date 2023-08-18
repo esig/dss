@@ -151,7 +151,7 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
         certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
-        service = new JAdESService(certificateVerifier); //FIXME ask aleksender
+        service = new JAdESService(certificateVerifier); //FIXME ask Alex about this issue
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));

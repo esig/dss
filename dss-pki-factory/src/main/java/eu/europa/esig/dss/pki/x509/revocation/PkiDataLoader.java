@@ -1,9 +1,9 @@
-package eu.europa.esig.dss.pki.revocation;
+package eu.europa.esig.dss.pki.x509.revocation;
 
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
-import eu.europa.esig.dss.pki.revocation.enums.PkiDataLoaderType;
-import eu.europa.esig.dss.pki.revocation.enums.TriFunction;
+import eu.europa.esig.dss.pki.x509.revocation.enums.PkiDataLoaderType;
+import eu.europa.esig.dss.pki.x509.revocation.enums.TriFunction;
 import eu.europa.esig.dss.pki.service.*;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
@@ -26,12 +26,8 @@ import java.util.*;
 public class PkiDataLoader implements DataLoader {
     private static final Logger LOG = LoggerFactory.getLogger(PkiDataLoader.class);
 
-    private final CertificateEntityService certService = GenericFactory.getInstance().create(CertificateEntityService.class);
-    private final CRLGenerator crlGenerator = GenericFactory.getInstance().create(CRLGenerator.class);
-    private final KeystoreGenerator keystoreGenerator = GenericFactory.getInstance().create(KeystoreGenerator.class);
     private final TimestampGenerator timestampGenerator = GenericFactory.getInstance().create(TimestampGenerator.class);
 
-    private final ErrorGenerator errorGenerator = new ErrorGenerator();
 
 
     @Override

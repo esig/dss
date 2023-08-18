@@ -8,14 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * A class that performs post-construction initialization tasks for PKI resources.
@@ -24,6 +22,7 @@ import java.util.Objects;
 public class PostConstructInitializr {
 
     private static final Logger LOG = LoggerFactory.getLogger(PostConstructInitializr.class);
+    public static final String PATTERN = "glob:**/pki/*.xml";
 
     private static PostConstructInitializr instance = null;
     // The service for initializing the PKI resources.
@@ -35,7 +34,6 @@ public class PostConstructInitializr {
     private static final String PATH = "src/main/resources/pki";
 
     private PostConstructInitializr() {
-
     }
 
     /**
@@ -60,9 +58,9 @@ public class PostConstructInitializr {
      * It parses the XML files using the PkiMarshallerService and initializes the PKI resources using the Initializr service.
      */
     public static void init() {
-        parsePKIResources();
         // Init certificate
         try {
+            parsePKIResources();
             initializrService.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -74,32 +72,28 @@ public class PostConstructInitializr {
      * It matches the XML files using a glob pattern and then calls the PkiMarshallerService to parse each file.
      * Any parsing error is logged as a RuntimeException.
      */
-    protected static void parsePKIResources() {
-        try {
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**/pki/*.xml");
+    protected static void parsePKIResources() throws URISyntaxException {
+        ClassLoader classLoader = PostConstructInitializr.class.getClassLoader();
+        URL resourceFolder = classLoader.getResource("pki");
 
-            ClassLoader classLoader = PostConstructInitializr.class.getClassLoader();
-            URL resourceFolder = classLoader.getResource("pki");
+        if (resourceFolder == null) {
+            throw new RuntimeException("PKI resource folder not found.");
+        }
 
-            if (resourceFolder != null) {
-                File folder = new File(resourceFolder.getFile());
+        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher(PATTERN);
+        Path folderPath = Paths.get(resourceFolder.toURI());
 
-                for (File file : Objects.requireNonNull(folder.listFiles())) {
-                    Path filePath = file.toPath();
-                    if (pathMatcher.matches(filePath)) {
-                        LOG.info("Parsing file : {}", file.getName());
+        try (Stream<Path> pathStream = Files.walk(folderPath)) {
+            pathStream
+                    .filter(pathMatcher::matches)
+                    .forEach(filePath -> {
+                        LOG.info("Parsing file: {}", filePath.getFileName());
                         try (InputStream is = Files.newInputStream(filePath)) {
-                            try {
-                                pkiMarshallerService.init(is, file.getName());
-                            } catch (JAXBException e) {
-                                throw new RuntimeException(e);
-                            }
+                            pkiMarshallerService.init(is, filePath.getFileName().toString());
+                        } catch (IOException | JAXBException e) {
+                            throw new RuntimeException(e);
                         }
-                    }
-                }
-            } else {
-                throw new RuntimeException("PKI resource folder not found.");
-            }
+                    });
         } catch (IOException e) {
             throw new RuntimeException("PKI parsing error", e);
         }

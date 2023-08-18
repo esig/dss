@@ -147,7 +147,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
         certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
-        service = new CAdESService(certificateVerifier); //FIXME ask aleksender
+        service = new CAdESService(certificateVerifier); //FIXME ask Alex about this issue
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));

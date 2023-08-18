@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.revocation.tsp;
+package eu.europa.esig.dss.pki.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;

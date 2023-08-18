@@ -1,9 +1,8 @@
-package eu.europa.esig.dss.pki.x509.aia.aia;
+package eu.europa.esig.dss.pki.x509.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;

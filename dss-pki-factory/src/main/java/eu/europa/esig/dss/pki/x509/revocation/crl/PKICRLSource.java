@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.revocation.crl;
+package eu.europa.esig.dss.pki.x509.revocation.crl;
 
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;

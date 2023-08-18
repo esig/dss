@@ -1,7 +1,7 @@
-package eu.europa.esig.dss.pki.revocation.enums;
+package eu.europa.esig.dss.pki.x509.revocation.enums;
 
 import eu.europa.esig.dss.pki.exception.Error500Exception;
-import eu.europa.esig.dss.pki.revocation.PkiDataLoader;
+import eu.europa.esig.dss.pki.x509.revocation.PkiDataLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 
 import java.util.Arrays;

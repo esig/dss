@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 
-public abstract class    CollectionUtils {
+public abstract class CollectionUtils {
     static final float DEFAULT_LOAD_FACTOR = 0.75F;
 
     public CollectionUtils() {

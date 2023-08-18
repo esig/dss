@@ -88,17 +88,6 @@ public class CertificateEntityService {
         return result;
     }
 
-
-    public List<DBCertEntity> getChildren(DBCertEntity certEntity) {
-        return repository.getByParent(certEntity);
-    }
-
-
-    public DBCertEntity getBySerialNumberAndParent(Long serialNumber, String idCA) {
-        return repository.getOneBySerialNumberAndParentSubject(serialNumber, idCA);
-    }
-
-
     public X509CertificateHolder getCertificate(String id) {
         DBCertEntity entity = getEntity(id);
         return DSSASN1Utils.getX509CertificateHolder(entity.getCertificateToken());
@@ -163,13 +152,6 @@ public class CertificateEntityService {
         }
     }
 
-    private DBCertEntity getOCSPForCA(DBCertEntity entity) {
-        DBCertEntity ocsp = entity.getOcspResponder();
-        if (ocsp == null) {
-            return entity;
-        }
-        return ocsp;
-    }
 
     public DBCertEntity persist(X509CertificateHolder cert, PrivateKey privateKey, Date revocationDate,
                                 RevocationReason reason, boolean suspended, DBCertEntity parent,

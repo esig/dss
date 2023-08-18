@@ -103,7 +103,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 		
 		FoundRevocationsProxy foundRevocations = signature.foundRevocations();
 		assertEquals(2, foundRevocations.getRelatedRevocationData().size());
-		assertEquals(1, foundRevocations.getRelatedRevocationsByType(RevocationType.CRL).size());//TODO ASK ALEk
+		assertEquals(1, foundRevocations.getRelatedRevocationsByType(RevocationType.CRL).size());//TODO ASK
 		assertEquals(1, foundRevocations.getRelatedRevocationsByType(RevocationType.OCSP).size());
 	}
 

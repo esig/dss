@@ -103,35 +103,7 @@ public class Initializr {
                 X500Name subjectX500Name = getX500NameSubject(x500names, wrapper, new CertSubjectWrapperDTO(certType, pki.getCountry(), pki.getOrganization()));
                 X500Name issuerX500Name = getX500NameIssuer(x500names, wrapper.getIssuer());
 
-                X509CertBuilder certBuilder = new X509CertBuilder();
-                certBuilder.subject(subjectX500Name, subjectKeyPair.getPublic());
-                certBuilder.issuer(issuerX500Name, issuerKeyPair.getPrivate());
-
-                certBuilder.digestAlgo(wrapper.getDigestAlgo());
-
-                certBuilder.aia(getAiaUrl(wrapper.getAIA()));
-                String urlCrl = getCrlUrl(wrapper.getCRL());
-                certBuilder.crl(urlCrl);
-                certBuilder.ocsp(getOcspUrl(wrapper.getOCSP()));
-
-                certBuilder.keyUsage(wrapper.getKeyUsage());
-                certBuilder.certificatePolicies(wrapper.getCertificatePolicies());
-                certBuilder.qcStatementIds(wrapper.getQCStatementsIds());
-
-                if (wrapper.isCA()) {
-                    certBuilder.ca();
-                }
-                if (wrapper.isTSA()) {
-                    certBuilder.timestamping();
-                }
-                if (wrapper.isOcspNoCheck()) {
-                    certBuilder.ocspNoCheck();
-                }
-                if (wrapper.isOcspSigning()) {
-                    certBuilder.ocspSigningExtension();
-                }
-
-                certBuilder.pss(wrapper.isPSS());
+                X509CertBuilder certBuilder = getX509CertBuilder(wrapper, subjectKeyPair, issuerKeyPair, subjectX500Name, issuerX500Name);
                 X509CertificateHolder certificateHolder = certBuilder.build(BigInteger.valueOf(wrapper.getSerialNumber()), wrapper.getNotBefore(), wrapper.getNotAfter());
 
                 EntityId key = wrapper.getKey();
@@ -144,6 +116,39 @@ public class Initializr {
                 LOG.info("Creation of '{}' : DONE", certType.getSubject());
             }
         }
+    }
+
+    private X509CertBuilder getX509CertBuilder(CertificateWrapper wrapper, KeyPair subjectKeyPair, KeyPair issuerKeyPair, X500Name subjectX500Name, X500Name issuerX500Name) {
+        X509CertBuilder certBuilder = new X509CertBuilder();
+        certBuilder.subject(subjectX500Name, subjectKeyPair.getPublic());
+        certBuilder.issuer(issuerX500Name, issuerKeyPair.getPrivate());
+
+        certBuilder.digestAlgo(wrapper.getDigestAlgo());
+
+        certBuilder.aia(getAiaUrl(wrapper.getAIA()));
+        String urlCrl = getCrlUrl(wrapper.getCRL());
+        certBuilder.crl(urlCrl);
+        certBuilder.ocsp(getOcspUrl(wrapper.getOCSP()));
+
+        certBuilder.keyUsage(wrapper.getKeyUsage());
+        certBuilder.certificatePolicies(wrapper.getCertificatePolicies());
+        certBuilder.qcStatementIds(wrapper.getQCStatementsIds());
+
+        if (wrapper.isCA()) {
+            certBuilder.ca();
+        }
+        if (wrapper.isTSA()) {
+            certBuilder.timestamping();
+        }
+        if (wrapper.isOcspNoCheck()) {
+            certBuilder.ocspNoCheck();
+        }
+        if (wrapper.isOcspSigning()) {
+            certBuilder.ocspSigningExtension();
+        }
+
+        certBuilder.pss(wrapper.isPSS());
+        return certBuilder;
     }
 
     /**

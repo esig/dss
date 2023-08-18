@@ -143,7 +143,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
         certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
-        service = new PAdESService(certificateVerifier); //FIXME ask aleksender
+        service = new PAdESService(certificateVerifier); //FIXME ask Alex about this
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));

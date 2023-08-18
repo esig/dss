@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.revocation.enums;
+package eu.europa.esig.dss.pki.x509.revocation.enums;
 
 import java.util.Objects;
 import java.util.function.Function;

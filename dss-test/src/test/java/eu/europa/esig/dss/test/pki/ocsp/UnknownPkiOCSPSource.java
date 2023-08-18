@@ -2,7 +2,7 @@ package eu.europa.esig.dss.test.pki.ocsp;
 
 import eu.europa.esig.dss.pki.model.Revocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
 import org.bouncycastle.cert.ocsp.Req;
 import org.bouncycastle.cert.ocsp.UnknownStatus;

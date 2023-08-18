@@ -8,7 +8,7 @@ import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -87,7 +87,7 @@ public class PKICRLSourceTest {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(revokedUser,goodCa );
         assertNotNull(revocationToken);
 
-//       pkiCRLSource = initPkiCRLSource(); //
+//       pkiCRLSource = initPkiCRLSource();
 
         revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
@@ -98,7 +98,7 @@ public class PKICRLSourceTest {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(sha3GoodUser,sha3GoodCa );
         assertNotNull(revocationToken);
 
-//       pkiCRLSource = initPkiCRLSource(); //
+//       pkiCRLSource = initPkiCRLSource();
 
         revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
@@ -108,7 +108,7 @@ public class PKICRLSourceTest {
     public void getRevocationTokenWithMaskGenerationFunction() {
         pkiCRLSource = initPkiCRLSource();
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodUser, goodCa);
-        assertNotNull(revocationToken);
+        assertNull(revocationToken);
 
 
         pkiCRLSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);

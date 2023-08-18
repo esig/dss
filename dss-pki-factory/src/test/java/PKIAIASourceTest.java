@@ -25,7 +25,7 @@ import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.x509.aia.aia.PKIAIASource;
+import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;

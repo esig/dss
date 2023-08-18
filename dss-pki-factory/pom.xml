@@ -95,7 +95,6 @@
     <build>
 
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -104,29 +103,6 @@
                     <tag>${tag}</tag>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.jvnet.jaxb2.maven2</groupId>-->
-<!--                <artifactId>maven-jaxb2-plugin</artifactId>-->
-<!--                <version>0.15.3</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>generate</id>-->
-<!--                        <goals>-->
-<!--                            <goal>generate</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <schemaDirectory>src/main/resources/xsd</schemaDirectory>-->
-<!--                    <generatePackage>eu.europa.esig.dss.pki</generatePackage>-->
-<!--                    <schemaIncludes>-->
-<!--                        <schemaInclude>pki.xsd</schemaInclude>-->
-<!--                    </schemaIncludes>-->
-<!--                    <specVersion>2.1</specVersion>-->
-<!--                    <encoding>UTF-8</encoding>-->
-<!--                    <locale>en</locale>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>

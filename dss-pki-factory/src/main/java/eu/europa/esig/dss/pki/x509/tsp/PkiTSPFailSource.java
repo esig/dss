@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.revocation.tsp;
+package eu.europa.esig.dss.pki.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -6,13 +6,15 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
+import org.bouncycastle.asn1.cmp.PKIFailureInfo;
+import org.bouncycastle.asn1.cmp.PKIStatus;
 import org.bouncycastle.tsp.TSPException;
-import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampResponseGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -20,8 +22,7 @@ import java.util.stream.Collectors;
  * A class that represents a PKI Time Stamp Protocol (TSP) source extending the KeyEntityTSPSource.
  * It provides functionality to generate time-stamp responses for given digest algorithms and digests.
  */
-public class PKITSPSource extends KeyEntityTSPSource {
-
+public class PkiTSPFailSource extends KeyEntityTSPSource {
     /**
      * The certificate entity associated with the TSP source.
      */
@@ -32,7 +33,7 @@ public class PKITSPSource extends KeyEntityTSPSource {
      *
      * @param certEntity The certificate entity associated with the TSP source.
      */
-    public PKITSPSource(CertEntity certEntity) {
+    public PkiTSPFailSource(CertEntity certEntity) {
         super();
         this.certEntity = certEntity;
     }
@@ -55,21 +56,19 @@ public class PKITSPSource extends KeyEntityTSPSource {
         }
 
         try {
-            TimeStampRequest request = initRequest(getASN1ObjectIdentifier(digestAlgorithm), digest);
-
             TimeStampResponseGenerator responseGenerator = initResponseGenerator(certEntity.getPrivateKeyObject(),
                     certEntity.getCertificateToken().getCertificate(),
                     certEntity.getCertificateChain().stream().map(CertificateToken::getCertificate).collect(Collectors.toList()),
                     getASN1ObjectIdentifier(digestAlgorithm));
 
-            Date date = productionTime != null ? productionTime : new Date();
-            TimeStampResponse response = generateResponse(responseGenerator, request, date);
+            TimeStampResponse response = generateFailedResponse(responseGenerator);
             return new TimestampBinary(response.getTimeStampToken().getEncoded());
 
         } catch (IOException | TSPException e) {
             throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
         }
     }
+
 
     /**
      * Sets the certificate entity associated with the TSP source.
@@ -79,4 +78,9 @@ public class PKITSPSource extends KeyEntityTSPSource {
     public void setCertEntity(CertEntity certEntity) {
         this.certEntity = certEntity;
     }
+
+    private TimeStampResponse generateFailedResponse(TimeStampResponseGenerator gen) throws TSPException {
+        return gen.generateFailResponse(PKIStatus.REJECTION, PKIFailureInfo.systemFailure, "Error for testing");
+    }
+
 }

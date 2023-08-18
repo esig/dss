@@ -71,7 +71,7 @@ public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignat
 	}
 
 	@Override
-	protected CertificateVerifier getCompleteCertificateVerifier() {//FIXME ALEKSANDR
+	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
 		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
 		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));

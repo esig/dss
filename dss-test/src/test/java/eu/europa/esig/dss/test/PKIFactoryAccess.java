@@ -27,12 +27,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.db.Db;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.crl.PKICRLSource;
-import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
-import eu.europa.esig.dss.pki.revocation.tsp.PKITSPSource;
-import eu.europa.esig.dss.pki.revocation.tsp.PkiTSPFailSource;
+import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
+import eu.europa.esig.dss.pki.x509.tsp.PkiTSPFailSource;
 import eu.europa.esig.dss.pki.service.KeystoreGenerator;
-import eu.europa.esig.dss.pki.x509.aia.aia.PKIAIASource;
+import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
@@ -371,7 +371,7 @@ public abstract class PKIFactoryAccess {
     protected TSPSource getCompositeTsa() {
         CompositeTSPSource composite = new CompositeTSPSource();
         Map<String, TSPSource> tspSources = new HashMap<>();
-//        tspSources.put(FAIL_GOOD_TSA, getFailPkiTspSource(FAIL_GOOD_TSA));//FIXME ask
+//        tspSources.put(FAIL_GOOD_TSA, getFailPkiTspSource(FAIL_GOOD_TSA));//FIXME ask Alex about this issue
         tspSources.put(GOOD_TSA, getPKITSPSourceByName(GOOD_TSA));
         tspSources.put(EE_GOOD_TSA, getPKITSPSourceByName(EE_GOOD_TSA));
         composite.setTspSources(tspSources);

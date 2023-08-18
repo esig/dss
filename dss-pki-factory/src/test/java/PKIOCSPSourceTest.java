@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -91,7 +91,7 @@ public class PKIOCSPSourceTest {
 
         PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
         OCSPToken ocspToken = ocspSource.getRevocationToken(revokedCa,revokedCa);
-        System.out.println(ocspToken.toString());
+
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
     }
@@ -126,7 +126,7 @@ public class PKIOCSPSourceTest {
     public void customCertIDDigestAlgorithmTest() {
 
         PKIOCSPSource ocspSource = new PKIOCSPSource(certificateEntityService);
-
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA1);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
         assertNotNull(ocspToken);
         assertEquals(SignatureAlgorithm.RSA_SHA1, ocspToken.getSignatureAlgorithm()); // default value

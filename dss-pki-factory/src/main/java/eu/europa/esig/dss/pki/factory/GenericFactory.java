@@ -77,7 +77,6 @@ public class GenericFactory implements Factory {
         if (factoryMap.isEmpty()) {
             // Default registrations for some predefined classes.
             registerFactory(CertificateEntityService.class, CertificateEntityService::getInstance);
-            registerFactory(CRLGenerator.class, CRLGenerator::getInstance);
             registerFactory(Initializr.class, Initializr::getInstance);
             registerFactory(TimestampGenerator.class, TimestampGenerator::getInstance);
             registerFactory(PkiMarshallerService.class, PkiMarshallerService::getInstance);

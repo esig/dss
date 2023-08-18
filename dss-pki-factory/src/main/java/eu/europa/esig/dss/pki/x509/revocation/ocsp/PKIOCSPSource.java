@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.revocation.ocsp;
+package eu.europa.esig.dss.pki.x509.revocation.ocsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;

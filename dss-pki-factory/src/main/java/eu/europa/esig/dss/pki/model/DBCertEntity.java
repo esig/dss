@@ -17,9 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-
+/**
+ * Represents a database entity for certificates.
+ */
 public class DBCertEntity implements CertEntity {
-    private static final Logger LOG = LoggerFactory.getLogger(DBCertEntity.class);
     private String internalId = UUID.randomUUID().toString();
 
     private String subject;
@@ -220,17 +221,30 @@ public class DBCertEntity implements CertEntity {
         }
     }
 
-
+    /**
+     * Retrieves the CertificateToken associated with this entity.
+     *
+     * @return The CertificateToken.
+     */
     @Override
     public CertificateToken getCertificateToken() {
         return certificateToken;
     }
 
+    /**
+     * Retrieves the EncryptionAlgorithm based on the private key.
+     *
+     * @return The EncryptionAlgorithm.
+     */
     @Override
     public EncryptionAlgorithm getEncryptionAlgorithm() {
         return EncryptionAlgorithm.forKey(this.getPrivateKeyObject());
     }
-
+    /**
+     * Retrieves the certificate chain as a list of CertificateToken objects.
+     *
+     * @return The list of CertificateToken objects in the certificate chain.
+     */
     public List<CertificateToken> getCertificateChain() {
         List<CertificateToken> certChain = new ArrayList<>();
         DBCertEntity entity = this;
