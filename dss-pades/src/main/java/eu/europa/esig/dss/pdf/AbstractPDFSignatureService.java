@@ -328,7 +328,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					} else if (isSignature(signatureDictionary)) {
 						// signature contains all dss dictionaries present after
 						newRevision = new PdfSignatureRevision(signatureDictionary, compositeDssDictionary,
-								dssDictionary, fields, signedContent, previousRevision, signatureCoversWholeDocument);
+								containsDSSRevisions(revisions) ? dssDictionary : null, fields, signedContent,
+								previousRevision, signatureCoversWholeDocument);
 
 					} else {
 						LOG.warn("The entry {} is skipped. A signature dictionary entry with a type '{}' " +
@@ -460,6 +461,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			revisions.add(new PdfDocDssRevision(compositeDssDictionary, lastDSSDictionary));
 		}
 		return currentDssDict;
+	}
+
+	private boolean containsDSSRevisions(List<PdfRevision> revisions) {
+		return revisions.stream().anyMatch(r -> r instanceof PdfDocDssRevision);
 	}
 
 	/**

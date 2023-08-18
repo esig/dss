@@ -169,6 +169,15 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
 
     @Override
     public boolean hasBaselineLTProfile() {
+        return hasLTProfile();
+    }
+
+    /**
+     * Verifies a presence of LT-profile for a PDF signature
+     *
+     * @return TRUE if the LT-profile is present, FALSE otherwise
+     */
+    protected boolean hasLTProfile() {
         if (!minimalLTRequirement()) {
             return false;
         }
@@ -422,7 +431,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
      * @return TRUE if the signature has a PKCS#7-LT profile, FALSE otherwise
      */
     public boolean hasPKCS7LTProfile() {
-        return minimalLTRequirement();
+        return hasLTProfile();
     }
 
     /**
