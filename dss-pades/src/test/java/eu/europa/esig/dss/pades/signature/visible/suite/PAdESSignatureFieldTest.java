@@ -637,8 +637,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void noRotationFlagTestTest() throws IOException {
-		DSSDocument documentToSign = new FileDocument("C:\\Users\\AleksandrBeliakov\\Downloads\\PDFBOX-4447-Annotations-NoRotate.pdf");
+	public void noRotationFlagTest() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/annots-no-rotate.pdf"));
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setPage(1);
