@@ -76,8 +76,8 @@ public class GenericFactory implements Factory {
     private void init() {
         if (factoryMap.isEmpty()) {
             // Default registrations for some predefined classes.
-            registerFactory(CertificateEntityService.class, CertificateEntityService::getInstance);
-            registerFactory(TimestampGenerator.class, TimestampGenerator::getInstance);
+//            registerFactory(CertificateEntityService.class, CertificateEntityService::getInstance);
+//            registerFactory(TimestampGenerator.class, TimestampGenerator::getInstance);
 //            registerFactory(LoaderXMlCertificate.class, LoaderXMlCertificate::getInstance);
             registerFactory(JaxbCertEntityRepository.class, JaxbCertEntityRepository::getInstance);
         }

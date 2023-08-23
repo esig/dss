@@ -4,7 +4,9 @@ import eu.europa.esig.pki.manifest.DigestAlgo;
 import eu.europa.esig.pki.manifest.EncryptionAlgo;
 import eu.europa.esig.pki.manifest.RevocationReason;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.CRLReason;
+import org.bouncycastle.cert.X509CertificateHolder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -116,5 +118,9 @@ public final class PKIUtils {
         } catch (IOException e) {
             throw new Error500Exception("Unable to generate the CRL");
         }
+    }
+
+    public static String getCommonName(X509CertificateHolder cert) {
+        return cert.getSubject().getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
     }
 }

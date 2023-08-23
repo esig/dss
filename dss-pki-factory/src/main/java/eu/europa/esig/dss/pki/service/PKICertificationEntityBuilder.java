@@ -5,6 +5,7 @@ import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.dto.CertSubjectWrapperDTO;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
 import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -89,17 +90,14 @@ public class PKICertificationEntityBuilder {
         }
     }
 
-    public String getCommonName(X509CertificateHolder cert) {
-        return cert.getSubject().getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();
-    }
 
-    public DBCertEntity buildDbCertEntity(CertificateWrapper wrapper, X509CertificateHolder certificateHolder, KeyPair subjectKeyPair, Map<EntityId, DBCertEntity> entities, String pkiName) {
+    private DBCertEntity buildDbCertEntity(CertificateWrapper wrapper, X509CertificateHolder certificateHolder, KeyPair subjectKeyPair, Map<EntityId, DBCertEntity> entities, String pkiName) {
 
         boolean selfSign = wrapper.getIssuer().equals(wrapper.getKey());
         DBCertEntity dbCertEntity;
         try {
             dbCertEntity = GenericBuilder.of(DBCertEntity::new)
-                    .with(DBCertEntity::setSubject, getCommonName(certificateHolder))
+                    .with(DBCertEntity::setSubject, PKIUtils.getCommonName(certificateHolder))
                     .with(DBCertEntity::setSerialNumber, certificateHolder.getSerialNumber().longValue())
                     .with(DBCertEntity::setCertificateToken, DSSUtils.loadCertificate(certificateHolder.getEncoded()))
                     .with(DBCertEntity::setPrivateKey, subjectKeyPair.getPrivate().getEncoded())

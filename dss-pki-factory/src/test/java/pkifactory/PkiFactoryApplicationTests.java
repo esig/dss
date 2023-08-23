@@ -2,8 +2,8 @@ package pkifactory;
 
 import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.service.CertificateEntityService;
 import eu.europa.esig.dss.pki.service.KeystoreGenerator;
+import eu.europa.esig.dss.pki.utils.PKIUtils;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PkiFactoryApplicationTests {
 
-    private CertificateEntityService entityService = CertificateEntityService.getInstance();
     private CertEntityRepository certEntityRepository= JaxbCertEntityRepository.getInstance();
     private KeystoreGenerator generator = new KeystoreGenerator(certEntityRepository);
 
@@ -64,7 +63,7 @@ public class PkiFactoryApplicationTests {
 
     private X509CertificateHolder getCCRoot(X509CertificateHolder[] holders) {
         for (X509CertificateHolder x509CertificateHolder : holders) {
-            if (entityService.getCommonName(x509CertificateHolder).equals("cc-root-ca")) {
+            if (PKIUtils.getCommonName(x509CertificateHolder).equals("cc-root-ca")) {
                 return x509CertificateHolder;
             }
         }
