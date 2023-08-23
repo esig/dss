@@ -827,6 +827,7 @@ public final class DomUtils {
 			Node childNode = childNodes.item(ii);
 			if (Node.COMMENT_NODE == childNode.getNodeType()) {
 				node.removeChild(childNode);
+				--ii; // childNodes content is being modified dynamically
 			}
 			if (childNode.hasChildNodes()) {
 				excludeCommentsRecursively(childNode);

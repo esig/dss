@@ -128,5 +128,23 @@ public class DomUtilsTest {
 		assertNull(DomUtils.getDate("2020-02-16:T18:32:24Z"));
 		assertNotNull(DomUtils.getDate("2020-02-16T18:32:24Z"));
 	}
+
+	@Test
+	public void getIdTest() {
+		assertEquals("Id", DomUtils.getId("Id"));
+		assertEquals("Id", DomUtils.getId("#Id"));
+		assertEquals("Id", DomUtils.getId("#xpointer(id('Id'))"));
+
+		assertEquals("#Id", DomUtils.getId("##Id"));
+		assertEquals("#xpointer(id('Id')", DomUtils.getId("#xpointer(id('Id')"));
+
+		assertEquals("#xpointer(/)", DomUtils.getId("#xpointer(/)"));
+		assertEquals("#xpointer(idd('Id'))", DomUtils.getId("#xpointer(idd('Id'))"));
+
+		assertEquals("", DomUtils.getId(""));
+		assertEquals(" ", DomUtils.getId(" "));
+
+		assertNull(DomUtils.getId(null));
+	}
 	
 }

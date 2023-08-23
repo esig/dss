@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Node;
-
 import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import org.apache.xml.security.transforms.Transforms;
+import org.w3c.dom.Node;
 
 /**
  * Used for Enveloped Signature
@@ -52,9 +51,15 @@ public class EnvelopedSignatureTransform extends AbstractTransform {
 	}
 
 	@Override
+	@Deprecated
 	public byte[] getBytesAfterTransformation(Node node) {
-		// do nothing the new signature is not existing yet
 		return DSSXMLUtils.serializeNode(node);
+	}
+
+	@Override
+	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
+		// do nothing the new signature is not existing yet
+		return transformOutput;
 	}
 
 }

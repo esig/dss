@@ -32,6 +32,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.definition.XAdESPaths;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -1132,33 +1134,35 @@ public final class DSSXMLUtils {
 	 * @return a byte array, representing a content obtained after transformations
 	 */
 	public static byte[] applyTransforms(final Node node, final List<DSSTransform> transforms) {
-		Node nodeToTransform = node;
+		byte[] bytes = DSSUtils.EMPTY_BYTE_ARRAY;
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			byte[] transformedReferenceBytes = null;
+			DSSTransformOutput output = new DSSTransformOutput(node);
 			Iterator<DSSTransform> iterator = transforms.iterator();
 			while (iterator.hasNext()) {
 				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
+				output = transform.performTransform(output);
+				bytes = output.getBytes();
 				if (iterator.hasNext()) {
-					if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+					if (Utils.isArrayEmpty(bytes)) {
 						throw new IllegalInputException(String.format(
 								"Unable to perform the next transform. The %s produced an empty output!", transform));
 					}
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 				}
 			}
+
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(new String(transformedReferenceBytes));
+				LOG.debug(new String(bytes));
 			}
-			if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+			if (Utils.isArrayEmpty(bytes)) {
 				LOG.warn("The output of reference transforms processing is an empty byte array!");
 			}
-			return transformedReferenceBytes;
+			return bytes;
 			
 		} else {
-			return DSSXMLUtils.getNodeBytes(nodeToTransform);
+			bytes = DSSXMLUtils.getNodeBytes(node);
 		}
+		return bytes;
 	}
 	/**
 	 * Applies transforms on document content and returns the byte array to be used for a

@@ -85,10 +85,8 @@ public class ReferenceProcessor {
         }
 
         byte[] referenceOutputResult = DSSXMLUtils.applyTransforms(nodeToTransform, reference.getTransforms());
+        // NodeSet canonicalization is performed by Santuario within #applyTransforms method
 
-        if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referenceOutputResult)) {
-            referenceOutputResult = DSSXMLUtils.canonicalize(DSSXMLUtils.DEFAULT_XMLDSIG_C14N_METHOD, referenceOutputResult);
-        }
         if (LOG.isTraceEnabled()) {
             LOG.trace("Reference output : ");
             LOG.trace(new String(referenceOutputResult));
@@ -98,7 +96,19 @@ public class ReferenceProcessor {
 
     private Node dereferenceNode(DSSReference reference) {
         Node deReferencedNode = getNodeToTransform(reference);
-        if (deReferencedNode != null && DSSXMLUtils.isSameDocumentReference(reference.getUri())) {
+        /*
+         * 4.4.3.3 Same-Document URI-References
+         *
+         * The application must behave as if the result of XPointer processing [XPTR-FRAMEWORK] were a node-set
+         * derived from the resultant subresource as follows:
+         * 1. include XPath nodes having full or partial content within the subresource
+         * 2. replace the root node with its children (if it is in the node-set)
+         * 3. replace any element node E with E plus all descendants of E (text, comment, PI, element) and
+         *    all namespace and attribute nodes of E and its descendant elements.
+         * 4. if the URI has no fragment identifier or the fragment identifier is a shortname XPointer,
+         *    then delete all comment nodes
+         */
+        if (deReferencedNode != null && DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
             deReferencedNode = DomUtils.excludeComments(deReferencedNode);
         }
         return deReferencedNode;
