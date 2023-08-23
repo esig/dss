@@ -21,6 +21,7 @@ import java.util.UUID;
  * Represents a database entity for certificates.
  */
 public class DBCertEntity implements CertEntity {
+
     private String internalId = UUID.randomUUID().toString();
 
     private String subject;

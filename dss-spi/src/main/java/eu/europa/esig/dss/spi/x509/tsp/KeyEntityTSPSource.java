@@ -4,11 +4,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.util.KeyEntityTSPUtils;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.DefaultCMSSignatureAlgorithmNameGenerator;
@@ -28,12 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * TSPSource implementation allowing to configure issuance of a time-stamp using a local {@code KeyStore}
@@ -103,6 +100,11 @@ public class KeyEntityTSPSource implements TSPSource {
         this.privateKey = privateKey;
         this.certificate = certificateToken;
         this.certificateChain = certificateChain;
+    }
+    public KeyEntityTSPSource(PrivateKey privateKey, CertificateToken certificateToken, List<CertificateToken> certificateChain) {
+        this.privateKey = privateKey;
+        this.certificate = certificateToken.getCertificate();
+        this.certificateChain = certificateChain.stream().map(CertificateToken::getCertificate).collect(Collectors.toList());
     }
 
 
@@ -178,13 +180,12 @@ public class KeyEntityTSPSource implements TSPSource {
      * @param keyEntryPassword char array representing a password from the key entry
      */
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
-        this(KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getPrivateKey(),
-                (X509Certificate) KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getCertificate(),
-                List.of((X509Certificate[]) KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword).getCertificateChain()));
-        this.keyStore = keyStore;
-        this.alias = alias;
-        this.keyEntryPassword = keyEntryPassword;
+        KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
+        this.privateKey = privateKeyEntry.getPrivateKey();
+        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        this.certificateChain = Arrays.stream(privateKeyEntry.getCertificateChain()).map(c ->(X509Certificate)c).collect(Collectors.toList());
     }
+
 
     /**
      * Sets the KeyStore (required)
@@ -277,9 +278,6 @@ public class KeyEntityTSPSource implements TSPSource {
 
     @Override
     public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
-        Objects.requireNonNull(keyStore, "KeyStore is not defined!");
-        Objects.requireNonNull(alias, "Alias is not defined!");
-        Objects.requireNonNull(keyEntryPassword, "Password from key entry is not defined!");
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
@@ -288,13 +286,11 @@ public class KeyEntityTSPSource implements TSPSource {
 
         try {
 
-            KeyStore.PrivateKeyEntry keyEntry = KeyEntityTSPUtils.getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
             ASN1ObjectIdentifier digestAlgoOID = getASN1ObjectIdentifier(digestAlgorithm);
 
             TimeStampRequest request = initRequest(digestAlgoOID, digest);
-            X509Certificate[] certificateChain = (X509Certificate[]) keyEntry.getCertificateChain();
 
-            TimeStampResponseGenerator responseGenerator = initResponseGenerator(keyEntry.getPrivateKey(), (X509Certificate) keyEntry.getCertificate(), List.of(certificateChain), digestAlgoOID);
+            TimeStampResponseGenerator responseGenerator = initResponseGenerator(privateKey,certificate, certificateChain, digestAlgoOID);
 
             Date date = productionTime != null ? productionTime : new Date();
             TimeStampResponse response = generateResponse(responseGenerator, request, date);
@@ -405,5 +401,18 @@ public class KeyEntityTSPSource implements TSPSource {
     protected BigInteger getTimeStampSerialNumber() {
         return new BigInteger(128, secureRandom);
     }
+    private static KeyStore.PrivateKeyEntry getPrivateKeyEntry(KeyStore keyStore, String alias, char[] keyEntryPassword) {
+        try {
+            if (!keyStore.isKeyEntry(alias)) {
+                throw new IllegalArgumentException(String.format("No related/supported key entry found for alias '%s'!", alias));
+            }
+            if (!keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+                throw new IllegalArgumentException(String.format("No key entry found for alias '%s' is not instance of a PrivateKeyEntry!", alias));
+            }
 
+            return (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
+        } catch (NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException e) {
+            throw new DSSException(String.format("Unable to recover the key entry with alias '%s'. Reason : %s", alias, e.getMessage()), e);
+        }
+    }
 }

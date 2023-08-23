@@ -1,15 +1,12 @@
 package pkifactory;
 
-import eu.europa.esig.dss.pki.business.PostConstructInitializr;
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.service.CertificateEntityService;
 import eu.europa.esig.dss.pki.service.KeystoreGenerator;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PkiFactoryApplicationTests {
 
     private CertificateEntityService entityService = CertificateEntityService.getInstance();
-    private CertEntityRepository certEntityRepository= Db.getInstance();
+    private CertEntityRepository certEntityRepository= JaxbCertEntityRepository.getInstance();
     private KeystoreGenerator generator = new KeystoreGenerator(certEntityRepository);
 
     @BeforeAll

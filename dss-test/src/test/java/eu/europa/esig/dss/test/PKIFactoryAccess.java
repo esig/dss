@@ -24,15 +24,16 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
+import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.pki.service.KeystoreGenerator;
+import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.pki.x509.tsp.PkiTSPFailSource;
-import eu.europa.esig.dss.pki.service.KeystoreGenerator;
-import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
@@ -155,22 +156,25 @@ public abstract class PKIFactoryAccess {
 
     private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
     private static final int TIMEOUT_MS = 10000;
+    private final KeystoreGenerator keystoreGenerator = new KeystoreGenerator(getDataBase());
+    private final XMLCertificateLoader certificateLoader = XMLCertificateLoader.getInstance();
+
 
     protected abstract String getSigningAlias();
 
-    private final KeystoreGenerator keystoreGenerator = new KeystoreGenerator(getDataBase());
 
     protected CertificateVerifier getEmptyCertificateVerifier() {
         return new CommonCertificateVerifier();
     }
 
     protected CertEntityRepository getDataBase() {
-        return GenericFactory.getInstance().create(Db.class);
+        return GenericFactory.getInstance().create(JaxbCertEntityRepository.class);
     }
 
     protected CertificateVerifier getCompleteCertificateVerifier() {
         return getCertificateVerifier(cacheOCSPSource(pKIOCSPSource()), cacheCRLSource(pKICRLSource()), cacheAIASource(pkiAIASource()), getTrustedCertificateSource());
     }
+
     protected CertificateVerifier getOnlineCompleteCertificateVerifier() {
         return getCertificateVerifier(cacheOCSPSource(onlineOcspSource()), cacheCRLSource(onlineCrlSource()), cacheAIASource(onlineAIASource()), getTrustedCertificateSource());
     }
@@ -321,13 +325,11 @@ public abstract class PKIFactoryAccess {
     }
 
     protected AbstractKeyStoreTokenConnection getToken() {
+        certificateLoader.loadCertificateFromXml(getSigningAlias());
         byte[] keystoreContent = keystoreGenerator.getKeystore(getSigningAlias());
         return new KeyStoreSignatureTokenConnection(keystoreContent, KEYSTORE_TYPE, new PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD));
     }
 
-//    protected String getKeystoreFilename(String name) {
-//        return DSSUtils.encodeURI(name + ".p12");
-//    }
 
     private byte[] getKeystoreContent(String keystoreName) {
         keystoreName = keystoreName.substring(0, keystoreName.lastIndexOf('.'));
@@ -371,7 +373,7 @@ public abstract class PKIFactoryAccess {
     protected TSPSource getCompositeTsa() {
         CompositeTSPSource composite = new CompositeTSPSource();
         Map<String, TSPSource> tspSources = new HashMap<>();
-//        tspSources.put(FAIL_GOOD_TSA, getFailPkiTspSource(FAIL_GOOD_TSA));//FIXME ask Alex about this issue
+//        tspSources.put(FAIL_GOOD_TSA, getFailPkiTspSource(FAIL_GOOD_TSA));  //FIXME ask Alex about this issue
         tspSources.put(GOOD_TSA, getPKITSPSourceByName(GOOD_TSA));
         tspSources.put(EE_GOOD_TSA, getPKITSPSourceByName(EE_GOOD_TSA));
         composite.setTspSources(tspSources);
@@ -441,22 +443,25 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PKITSPSource getPKITSPSourceByName(String tsaName) {
-//         byte[] keystoreContent = keystoreGenerator.getKeystore(tsaName);
-//        return new KeyEntityTSPSource(keystoreContent, KEYSTORE_TYPE, PKI_FACTORY_KEYSTORE_PASSWORD,
-//                tsaName, PKI_FACTORY_KEYSTORE_PASSWORD);
-        return new PKITSPSource(getDataBase().getCertEntity(tsaName));
+
+        return new PKITSPSource(getCertEntityOffline(tsaName));
+    }
+
+    private CertEntity getCertEntityOffline(String tsaName) {
+        certificateLoader.loadCertificateFromXml(tsaName);//check the certification was loaded or not
+        return getDataBase().getCertEntity(tsaName);
     }
 
     protected PkiTSPFailSource getFailPkiTspSource(String tsaName) {
-        return new PkiTSPFailSource(getDataBase().getCertEntity(tsaName));
+        return new PkiTSPFailSource(getCertEntityOffline(tsaName));
     }
 
     protected PKITSPSource getPkiTSPSourceByName(String tsaName) {
-        return new PKITSPSource(getDataBase().getCertEntity(tsaName));
+        return new PKITSPSource(getCertEntityOffline(tsaName));
     }
 
     protected PKITSPSource getPkiTSPSourceByNameAndTime(String tsaName, Date date) {
-        PKITSPSource tspSource = new PKITSPSource(getDataBase().getCertEntity(tsaName));
+        PKITSPSource tspSource = new PKITSPSource(getCertEntityOffline(tsaName));
         tspSource.setProductionTime(date);
         return tspSource;
     }
@@ -496,21 +501,8 @@ public abstract class PKIFactoryAccess {
         return sb.toString();
     }
 
-//    private PkiTSPSource getPkiTSPSourceByUrl(String tsaUrl) {
-//        PkiTSPSource tspSource = new PkiTSPSource(tsaUrl);
-//        TimestampDataLoader dataLoader = new TimestampDataLoader();
-//        dataLoader.setTimeoutConnection(TIMEOUT_MS);
-//        dataLoader.setTimeoutSocket(TIMEOUT_MS);
-//        dataLoader.setProxyConfig(getProxyConfig());
-////        tspSource.setDataLoader(dataLoader);
-//        return tspSource;
-//    }
-
     protected CertificateToken getCertificate(String certificateId) {
-//        DataLoader dataLoader = getFileCacheDataLoader();
-//        String keystoreUrl = PKI_FACTORY_HOST + CERT_ROOT_PATH + getCertificateName(certificateId);
-        return getDataBase().getCertEntity(certificateId).getCertificateToken();
-//        return DSSUtils.loadCertificate(dataLoader.get(keystoreUrl));
+        return getCertEntityOffline(certificateId).getCertificateToken();
     }
 
     protected String getCertificateName(String certificateId) {

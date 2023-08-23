@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.pki.factory;
 
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.service.*;
 
 import java.util.HashMap;
@@ -77,10 +77,9 @@ public class GenericFactory implements Factory {
         if (factoryMap.isEmpty()) {
             // Default registrations for some predefined classes.
             registerFactory(CertificateEntityService.class, CertificateEntityService::getInstance);
-            registerFactory(Initializr.class, Initializr::getInstance);
             registerFactory(TimestampGenerator.class, TimestampGenerator::getInstance);
-            registerFactory(PkiMarshallerService.class, PkiMarshallerService::getInstance);
-            registerFactory(Db.class, Db::getInstance);
+//            registerFactory(LoaderXMlCertificate.class, LoaderXMlCertificate::getInstance);
+            registerFactory(JaxbCertEntityRepository.class, JaxbCertEntityRepository::getInstance);
         }
     }
 }

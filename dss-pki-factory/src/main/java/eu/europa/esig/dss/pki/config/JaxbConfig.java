@@ -20,7 +20,7 @@ public class JaxbConfig {
      * @return An Unmarshaller instance for unmarshalling XML data.
      * @throws JAXBException If an error occurs during the creation of the Unmarshaller.
      */
-    public Unmarshaller unmarshaller() throws JAXBException {
+    public Unmarshaller getUnmarshaller() throws JAXBException {
         // Create a JAXBContext for the specified class.
         JAXBContext jaxbContext = PKIManifestUtils.getInstance().getJAXBContext();
 

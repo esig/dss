@@ -22,7 +22,7 @@
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PKITSPSourceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(PKITSPSourceTest.class);
-    CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(Db.class);
+    CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(JaxbCertEntityRepository.class);
 
 
 
@@ -70,7 +70,7 @@ public class PKITSPSourceTest {
 
         CertEntity certEntity = certEntityRepository.getCertEntity("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
-        tspSource.setCertEntity(certEntity);
+
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA3_256;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);

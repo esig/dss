@@ -3,8 +3,7 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.business.PostConstructInitializr;
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PKICRLSourceTest {
 
 
-    private static CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(Db.class);
+    private static CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(JaxbCertEntityRepository.class);
 
     private static CertificateToken goodUser;
     private static CertificateToken goodCa;
@@ -39,7 +38,6 @@ public class PKICRLSourceTest {
 
     @BeforeAll
     public static void init() {
-        PostConstructInitializr.getInstance();
         certEntity = certEntityRepository.getCertEntity("good-ca");
 
 

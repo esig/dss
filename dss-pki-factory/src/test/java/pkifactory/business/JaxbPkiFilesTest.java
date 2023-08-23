@@ -31,7 +31,7 @@ public class JaxbPkiFilesTest {
     @ParameterizedTest(name = "PKI {index} : {0}")
     @MethodSource("data")
     public void testUnmarshall(File pkiFile) throws JAXBException {
-        Pki pki = (Pki) new JaxbConfig().unmarshaller().unmarshal(new StreamSource(pkiFile));
+        Pki pki = (Pki) new JaxbConfig().getUnmarshaller().unmarshal(new StreamSource(pkiFile));
         assertNotNull(pki);
         assertTrue(pki.getCertificate().size() > 0);
     }

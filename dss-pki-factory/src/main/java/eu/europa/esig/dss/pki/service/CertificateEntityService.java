@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.service;
 
 import eu.europa.esig.pki.manifest.DigestAlgo;
 import eu.europa.esig.pki.manifest.RevocationReason;
-import eu.europa.esig.dss.pki.db.Db;
+import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
@@ -45,7 +45,7 @@ public class CertificateEntityService {
     public static CertificateEntityService getInstance() {
         if (certificateEntityService == null) {
             synchronized (CertificateEntityService.class) {
-                repository = Db.getInstance();
+                repository = JaxbCertEntityRepository.getInstance();
                 certificateEntityService = new CertificateEntityService();
             }
         }
@@ -57,28 +57,11 @@ public class CertificateEntityService {
     }
 
 
-    public List<X509CertificateHolder> getRoots() {
-        List<DBCertEntity> rootEntities = repository.getByParentNull();
-        return getCertificates(rootEntities);
-    }
-
-
     public List<X509CertificateHolder> getTrustAnchors() {
         List<DBCertEntity> trustAnchorEntities = repository.getByTrustAnchorTrue();
         return getCertificates(trustAnchorEntities);
     }
 
-
-    public List<X509CertificateHolder> getTrustAnchorsForPKI(String name) {
-        List<DBCertEntity> trustAnchorEntities = repository.getByTrustAnchorTrueAndPkiName(name);
-        return getCertificates(trustAnchorEntities);
-    }
-
-
-    public List<X509CertificateHolder> getToBeIgnored() {
-        List<DBCertEntity> toBeIgnored = repository.getByToBeIgnoredTrue();
-        return getCertificates(toBeIgnored);
-    }
 
     private List<X509CertificateHolder> getCertificates(List<DBCertEntity> entities) {
         List<X509CertificateHolder> result = new ArrayList<>();
@@ -152,37 +135,6 @@ public class CertificateEntityService {
         }
     }
 
-
-    public DBCertEntity persist(X509CertificateHolder cert, PrivateKey privateKey, Date revocationDate,
-                                RevocationReason reason, boolean suspended, DBCertEntity parent,
-                                DBCertEntity ocspResponder, boolean trustAnchor, boolean ca,
-                                boolean tsa, boolean ocsp, boolean toBeIgnored, String pkiName,
-                                boolean pss, DigestAlgo digestAlgo) throws IOException {
-        DBCertEntity entity = new DBCertEntity();
-        entity.setSubject(getCommonName(cert));
-        entity.setSerialNumber(cert.getSerialNumber().longValue());
-        entity.setCertificateToken(DSSUtils.loadCertificate(cert.getEncoded()));
-        entity.setParent(Objects.requireNonNullElse(parent, entity));
-        entity.setPrivateKey(privateKey.getEncoded());
-        entity.setPrivateKeyAlgo(privateKey.getAlgorithm());
-        entity.setRevocationDate(revocationDate);
-        entity.setRevocationReason(reason);
-        entity.setSuspended(suspended);
-        entity.setOcspResponder(ocspResponder);
-        entity.setTrustAnchor(trustAnchor);
-        entity.setCa(ca);
-        entity.setTsa(tsa);
-        entity.setOcsp(ocsp);
-        entity.setToBeIgnored(toBeIgnored);
-        entity.setPkiName(pkiName);
-        entity.setPss(pss);
-        if (digestAlgo != null) {
-            entity.setDigestAlgo(digestAlgo.value());
-        }
-        LOG.info("Creating new entity '{}' : {}", entity.getSubject(), Utils.toBase64(cert.getEncoded()));
-
-        return repository.save(entity);
-    }
 
     public String getCommonName(X509CertificateHolder cert) {
         return cert.getSubject().getRDNs(BCStyle.CN)[0].getFirst().getValue().toString();

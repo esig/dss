@@ -4,11 +4,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.constant.LoadProperties;
 import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +15,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,12 +24,12 @@ public class KeystoreGenerator {
 
     private static final String PKCS12 = "PKCS12";
     private static final String JKS = "JKS";
-    CertEntityRepository certEntityRepository;
+    private CertEntityRepository certEntityRepository;
 
     private String password = LoadProperties.getValue(PKI_FACTORY_KEYSTORE_PASSWORD);
 
     public KeystoreGenerator(CertEntityRepository certEntityRepository) {
-        this.certEntityRepository =certEntityRepository;
+        this.certEntityRepository = certEntityRepository;
     }
 
 
@@ -43,12 +38,12 @@ public class KeystoreGenerator {
         CertificateToken certificateToken = certEntity.getCertificateToken();
         String alias = DSSASN1Utils.getSubjectCommonName(certificateToken);
         PrivateKey privateKey = certEntity.getPrivateKeyObject();
-        Certificate[] certificates=certEntity.getCertificateChain().stream().map(CertificateToken::getCertificate).toArray(Certificate[] ::new);
+        Certificate[] certificates = certEntity.getCertificateChain().stream().map(CertificateToken::getCertificate).toArray(Certificate[]::new);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             KeyStore ks = KeyStore.getInstance(PKCS12);
             ks.load(null, null);
-            ks.setKeyEntry(alias, privateKey, password.toCharArray(),certificates);
+            ks.setKeyEntry(alias, privateKey, password.toCharArray(), certificates);
             ks.store(baos, password.toCharArray());
             return baos.toByteArray();
         } catch (GeneralSecurityException | IOException e) {
@@ -57,10 +52,6 @@ public class KeystoreGenerator {
         }
     }
 
-    public byte[] getRoots() {
-        List<CertEntity> roots = certEntityRepository.getByTrustAnchorTrue();
-        return getJKS(roots);
-    }
 
     public byte[] getTrustAnchors() {
         List<CertEntity> trustAnchors = certEntityRepository.getByTrustAnchorTrue();
