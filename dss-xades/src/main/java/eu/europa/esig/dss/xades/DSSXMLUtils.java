@@ -445,6 +445,7 @@ public final class DSSXMLUtils {
 		return null;
 	}
 
+	// TODO : remove method later and re-use DomUtils.serializeNode(node)
 	/**
 	 * This method performs the serialization of the given node
 	 *

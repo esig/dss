@@ -49,6 +49,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -618,15 +619,60 @@ public final class DomUtils {
 	 * @return {@code String} representation of the node
 	 */
 	public static String xmlToString(final Node node) {
+		final StringWriter stringWriter = new StringWriter();
+		final Result result = new StreamResult(stringWriter);
+
+		serializeNode(node, result);
+		return stringWriter.getBuffer().toString();
+	}
+
+	/**
+	 * This method performs the serialization of the given node
+	 *
+	 * @param xmlNode
+	 *            The node to be serialized.
+	 * @return the serialized bytes
+	 */
+	public static byte[] serializeNode(final Node xmlNode) {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+			StreamResult result = new StreamResult(bos);
+
+			serializeNode(xmlNode, result);
+			return bos.toByteArray();
+
+		} catch (IOException e) {
+			throw new DSSException("An error occurred during a node serialization.", e);
+		}
+	}
+
+	/**
+	 * Serializes a {@code Node} and writes the output into {@code Result}
+	 *
+	 * @param node {@link Node} to serialize
+	 * @param result {@link Result} serialization container
+	 */
+	private static void serializeNode(Node node, Result result) {
 		try {
-			final Source source = new DOMSource(node);
-			final StringWriter stringWriter = new StringWriter();
-			final Result result = new StreamResult(stringWriter);
-			final Transformer transformer = getSecureTransformer();
+			Transformer transformer = DomUtils.getSecureTransformer();
+			Document document;
+			if (Node.DOCUMENT_NODE == node.getNodeType()) {
+				document = (Document) node;
+			} else {
+				document = node.getOwnerDocument();
+			}
+
+			if (document != null) {
+				String xmlEncoding = document.getXmlEncoding();
+				if (Utils.isStringNotBlank(xmlEncoding)) {
+					transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
+				}
+			}
+
+			Source source = new DOMSource(node);
 			transformer.transform(source, result);
-			return stringWriter.getBuffer().toString();
-		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to transform XML Node to string. Reason : %s", e.getMessage()), e);
+
+		} catch (TransformerException e) {
+			throw new DSSException("An error occurred during a node serialization.", e);
 		}
 	}
 
@@ -836,8 +882,7 @@ public final class DomUtils {
 	public static Node excludeComments(Node node) {
 		excludeCommentsRecursively(node);
 		// workaround to handle the transforms correctly (clone does not work)
-		// TODO: improve
-		return buildDOM(xmlToString(node));
+		return buildDOM(serializeNode(node));
 	}
 
 	private static void excludeCommentsRecursively(final Node node) {
