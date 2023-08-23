@@ -125,7 +125,6 @@ public class ReferenceProcessor {
         String uri = reference.getUri();
 
         if (signatureParameters != null && signatureParameters.isEmbedXML()) {
-            Element root = doc.getDocumentElement();
             final Document doc2 = DomUtils.buildDOM();
             final Element dom = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
             final Element dom2 = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
@@ -133,8 +132,7 @@ public class ReferenceProcessor {
             dom2.appendChild(dom);
             dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), DomUtils.getId(uri));
 
-            Node adopted = doc2.adoptNode(root);
-            dom.appendChild(adopted);
+            DomUtils.adoptChildren(dom, doc);
             return dom;
 
         } else if (DomUtils.isElementReference(uri)) {

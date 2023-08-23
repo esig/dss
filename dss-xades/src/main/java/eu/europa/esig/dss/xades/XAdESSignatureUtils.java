@@ -35,7 +35,9 @@ import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,8 +120,15 @@ public final class XAdESSignatureUtils {
 				String objectId = DomUtils.getId(reference.getURI());
 				Node objectById = DSSXMLUtils.getObjectById(signature.getSignatureElement(), objectId);
 				if (objectById != null && objectById.hasChildNodes()) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
-					if (bytes != null) {
+					try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+						NodeList childNodes = objectById.getChildNodes();
+						for (int i = 0; i < childNodes.getLength(); i++) {
+							byte[] nodeBytes = DSSXMLUtils.getNodeBytes(childNodes.item(i));
+							if (nodeBytes != null) {
+								baos.write(nodeBytes);
+							}
+						}
+						byte[] bytes = baos.toByteArray();
 						return new InMemoryDocument(bytes, objectId, MimeTypeEnum.XML);
 					}
 				}

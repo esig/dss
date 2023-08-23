@@ -665,28 +665,29 @@ public final class DSSXMLUtils {
 	 */
 	public static byte[] getNodeBytes(Node node) {
 		switch (node.getNodeType()) {
-		case Node.ELEMENT_NODE:
-		case Node.DOCUMENT_NODE:
-			byte[] bytes = serializeNode(node);
-			String str = new String(bytes);
-			// TODO: better
-			// remove <?xml version="1.0" encoding="UTF-8"?>
-			if (str.startsWith("<?")) {
-				str = str.substring(str.indexOf("?>") + 2);
-			}
-			return str.getBytes();
+			case Node.ELEMENT_NODE:
+			case Node.DOCUMENT_NODE:
+			case Node.COMMENT_NODE:
+				byte[] bytes = serializeNode(node);
+				String str = new String(bytes);
+				// TODO: better
+				// remove <?xml version="1.0" encoding="UTF-8"?>
+				if (str.startsWith("<?")) {
+					str = str.substring(str.indexOf("?>") + 2);
+				}
+				return str.getBytes();
 
-		case Node.TEXT_NODE:
-			String textContent = node.getTextContent();
-			// Use try-catch for performance purposes
-			try {
-				return Utils.fromBase64(node.getTextContent());
-			} catch (Exception e) {
-				return textContent.getBytes();
-			}
+			case Node.TEXT_NODE:
+				String textContent = node.getTextContent();
+				// Use try-catch for performance purposes
+				try {
+					return Utils.fromBase64(node.getTextContent());
+				} catch (Exception e) {
+					return textContent.getBytes();
+				}
 
-		default:
-			return null;
+			default:
+				return null;
 		}
 	}
 	

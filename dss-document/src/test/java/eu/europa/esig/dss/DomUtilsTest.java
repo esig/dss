@@ -26,6 +26,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,6 +47,7 @@ public class DomUtilsTest {
 	private static final String XML_TEXT = "<hello><world></world></hello>";
 	private static final String INCORRECT_XML_TEXT = "<hello><world></warld></hello>";
 	private static final String XML_WITH_NAMESPACE = "<m:manifest xmlns:m=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\"><m:file-entry m:media-type=\"text/plain\" m:full-path=\"hello.txt\" /></m:manifest>";
+	private static final String XML_WITH_COMMENTS = "<!-- Comment 1 --><!-- Comment 2 --><hello><!-- Comment 3 --><world></world></hello><!-- Comment 4 -->";
 
 	@Test
 	public void registerNamespaceTest() {
@@ -127,6 +131,24 @@ public class DomUtilsTest {
 	public void getDate() {
 		assertNull(DomUtils.getDate("2020-02-16:T18:32:24Z"));
 		assertNotNull(DomUtils.getDate("2020-02-16T18:32:24Z"));
+	}
+
+	@Test
+	public void excludeCommentsTest() {
+		Document document = DomUtils.buildDOM(XML_WITH_COMMENTS);
+		Node noCommentsNode = DomUtils.excludeComments(document);
+		assertNoCommentsRecursively(noCommentsNode);
+	}
+
+	private void assertNoCommentsRecursively(Node node) {
+		NodeList childNodes = node.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			assertNotEquals(Node.COMMENT_NODE, child.getNodeType());
+			if (Node.ELEMENT_NODE == child.getNodeType()) {
+				assertNoCommentsRecursively(child);
+			}
+		}
 	}
 
 	@Test

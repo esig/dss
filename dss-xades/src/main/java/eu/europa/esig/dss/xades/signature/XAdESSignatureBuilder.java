@@ -643,14 +643,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				XMLDSigElement.OBJECT);
 
 		// incorporate content
-		Node objectContentDom;
 		if (DomUtils.isDOM(object.getContent())) {
-			objectContentDom = DomUtils.buildDOM(object.getContent()).getDocumentElement();
-			objectContentDom = documentDom.importNode(objectContentDom, true);
+			Document contentDom = DomUtils.buildDOM(object.getContent());
+			DomUtils.adoptChildren(objectDom, contentDom);
 		} else {
-			objectContentDom = documentDom.createTextNode(new String(DSSUtils.toByteArray(object.getContent())));
+			Node objectContentDom = documentDom.createTextNode(new String(DSSUtils.toByteArray(object.getContent())));
+			objectDom.appendChild(objectContentDom);
 		}
-		objectDom.appendChild(objectContentDom);
 
 		// incorporate Id attribute
 		if (Utils.isStringNotBlank(object.getId())) {

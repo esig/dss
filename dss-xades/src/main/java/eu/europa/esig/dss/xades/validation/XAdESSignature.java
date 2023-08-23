@@ -1079,6 +1079,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					if (found && !isDuplicated) {
 						intact = reference.verify();
 					}
+
+					if (LOG.isTraceEnabled()) {
+						LOG.trace("Reference validation output: ");
+						LOG.trace(new String(reference.getReferencedBytes()));
+					}
 					
 				} catch (Exception e) {
 					LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage(), e);

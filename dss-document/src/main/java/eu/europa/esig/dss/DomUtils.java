@@ -341,6 +341,20 @@ public final class DomUtils {
 		return dom;
 	}
 
+	/**
+	 * Adopts all children of the {@code toBeAdopted} Node, excluding the Node itself.
+	 *
+	 * @param parentElement {@link Element} to be extended with children values
+	 * @param toBeAdopted {@link Node} containing children to be adopted
+	 */
+	public static void adoptChildren(Element parentElement, Node toBeAdopted) {
+		NodeList childNodes = toBeAdopted.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			child = parentElement.getOwnerDocument().importNode(child, true);
+			parentElement.appendChild(child);
+		}
+	}
 	
 	/**
 	 * This method creates a new instance of XPathExpression with the given xpath
@@ -646,9 +660,14 @@ public final class DomUtils {
 	public static String getId(String uri) {
 		String id = uri;
 		if (startsFromHash(uri)) {
-			id = id.substring(1);
-		} else if (DomUtils.isXPointerQuery(uri)) {
-			id = DomUtils.getXPointerId(uri);
+			if (DomUtils.isXPointerQuery(uri)) {
+				String xpointerId = DomUtils.getXPointerId(uri);
+				if (xpointerId != null) {
+					id = xpointerId;
+				}
+			} else {
+				id = id.substring(1);
+			}
 		}
 		return id;
 	}
@@ -719,7 +738,7 @@ public final class DomUtils {
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue) {
-		if (Utils.isStringEmpty(uriValue)) {
+		if (Utils.isStringBlank(uriValue)) {
 			return false;
 		}
 		String decodedUri = DSSUtils.decodeURI(uriValue);
