@@ -162,10 +162,18 @@ public class JdbcCacheAIASourceTest {
         }
         assertTrue(foundIssuer);
 
+        int urlFoundCounter = 0;
+        int urlNotFoundCounter = 0;
         for (String url : aiaUrls) {
             Set<CertificateToken> certificates = aiaSource.findCertificates(DSSUtils.getSHA1Digest(url));
-            assertEquals(1, certificates.size());
+            if (Utils.isCollectionEmpty(certificates)) {
+                ++urlNotFoundCounter;
+            } else if (Utils.collectionSize(certificates) == 1) {
+                ++urlFoundCounter;
+            }
         }
+        assertEquals(1, urlFoundCounter);
+        assertEquals(2, urlNotFoundCounter);
     }
 
     @AfterEach

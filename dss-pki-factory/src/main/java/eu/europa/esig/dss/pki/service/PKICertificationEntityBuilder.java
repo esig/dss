@@ -10,9 +10,12 @@ import eu.europa.esig.dss.pki.wrapper.CertificateWrapper;
 import eu.europa.esig.dss.pki.wrapper.EntityId;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.pki.manifest.*;
+import eu.europa.esig.pki.manifest.CRLType;
+import eu.europa.esig.pki.manifest.CertificateType;
+import eu.europa.esig.pki.manifest.EntityKey;
+import eu.europa.esig.pki.manifest.KeyAlgo;
+import eu.europa.esig.pki.manifest.Pki;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +28,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import static eu.europa.esig.dss.pki.constant.Constant.*;
+import static eu.europa.esig.dss.pki.constant.Constant.CRL_EXTENSION;
+import static eu.europa.esig.dss.pki.constant.Constant.CRL_PATH;
+import static eu.europa.esig.dss.pki.constant.Constant.CRT_EXTENSION;
+import static eu.europa.esig.dss.pki.constant.Constant.CRT_PATH;
+import static eu.europa.esig.dss.pki.constant.Constant.CUSTOM_URL_PREFIX;
+import static eu.europa.esig.dss.pki.constant.Constant.EMPTY_URL_PREFIX;
+import static eu.europa.esig.dss.pki.constant.Constant.EXTENDED_URL_PREFIX;
+import static eu.europa.esig.dss.pki.constant.Constant.HOST;
+import static eu.europa.esig.dss.pki.constant.Constant.OCSP_PATH;
+import static eu.europa.esig.dss.pki.constant.Constant.country;
+import static eu.europa.esig.dss.pki.constant.Constant.organisation;
+import static eu.europa.esig.dss.pki.constant.Constant.organisationUnit;
 
 
 public class PKICertificationEntityBuilder {
@@ -118,7 +131,13 @@ public class PKICertificationEntityBuilder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        dbCertEntity.setParent(Objects.requireNonNullElse(getEntity(entities, wrapper.getIssuer(), selfSign), dbCertEntity));
+
+        if (wrapper.isSelfSigned()) {
+            dbCertEntity.setParent(dbCertEntity);
+        } else {
+            dbCertEntity.setParent(getEntity(entities, wrapper.getIssuer(), selfSign));
+        }
+
         return dbCertEntity;
     }
 

@@ -81,8 +81,8 @@ public class XMLCertificateLoader {
         return null;
     }
 
-    private Pki loadPKI(InputStream is) throws JAXBException, IOException {
-        try (is) {
+    private Pki loadPKI(InputStream inputStream) throws JAXBException, IOException {
+        try (InputStream is = inputStream) {
             Unmarshaller unmarshaller = new JaxbConfig().getUnmarshaller();
             return (Pki) unmarshaller.unmarshal(new StreamSource(is));
         }

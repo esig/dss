@@ -70,31 +70,37 @@ public class AIACertificateSource extends CommonCertificateSource {
 	public CertificateToken getIssuerFromAIA() {
 		LOG.info("Retrieving {} certificate's issuer using AIA.", certificate.getAbbreviation());
 
-		Collection<CertificateToken> candidates = aiaSource.getCertificatesByAIA(certificate);
-		if (Utils.isCollectionNotEmpty(candidates)) {
-			// The potential issuers might support 3 known scenarios:
-			// - issuer certificate with single entry
-			// - issuer certificate is a collection of bridge certificates (all having the
-			// same public key)
-			// - full certification path (up to the root of the chain)
-			// In case the issuer is a collection of bridge certificates, only one of the
-			// bridge certificates needs to be verified
-			CertificateToken bridgedIssuer = findBestBridgeCertificate(candidates);
-			if (bridgedIssuer != null) {
-				addCertificate(bridgedIssuer);
-				return bridgedIssuer;
-			}
-			for (CertificateToken candidate : candidates) {
-				addCertificate(candidate);
+		try {
+			Collection<CertificateToken> candidates = aiaSource.getCertificatesByAIA(certificate);
+			if (Utils.isCollectionNotEmpty(candidates)) {
+				// The potential issuers might support 3 known scenarios:
+				// - issuer certificate with single entry
+				// - issuer certificate is a collection of bridge certificates (all having the
+				// same public key)
+				// - full certification path (up to the root of the chain)
+				// In case the issuer is a collection of bridge certificates, only one of the
+				// bridge certificates needs to be verified
+				CertificateToken bridgedIssuer = findBestBridgeCertificate(candidates);
+				if (bridgedIssuer != null) {
+					addCertificate(bridgedIssuer);
+					return bridgedIssuer;
+				}
+				for (CertificateToken candidate : candidates) {
+					addCertificate(candidate);
+				}
+
+				CertificateToken issuer = new TokenIssuerSelector(certificate, candidates).getIssuer();
+				if (issuer == null) {
+					LOG.warn("The retrieved certificate(s) using AIA do not sign the certificate with Id : {}.",
+							certificate.getDSSIdAsString());
+				}
+				return issuer;
 			}
 
-			CertificateToken issuer = new TokenIssuerSelector(certificate, candidates).getIssuer();
-			if (issuer == null) {
-				LOG.warn("The retrieved certificate(s) using AIA do not sign the certificate with Id : {}.",
-						certificate.getDSSIdAsString());
-			}
-			return issuer;
+		} catch (Exception e) {
+			LOG.warn("An error occurred on attempt to retrieve certificate's CA issuers : {}", e.getMessage(), e);
 		}
+
 		return null;
 	}
 

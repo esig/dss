@@ -8,6 +8,7 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,7 @@ public class PKIAIASource implements AIASource {
         } else if (Utils.isCollectionNotEmpty(certificateChain)) {
             CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
             Objects.requireNonNull(certificateToken, "issuer cannot be null!");
-            return new HashSet<>(Set.of(issuerCertEntity.getCertificateToken()));
+            return new HashSet<>(Collections.singleton(issuerCertEntity.getCertificateToken()));
         } else return new HashSet<>();
 
     }

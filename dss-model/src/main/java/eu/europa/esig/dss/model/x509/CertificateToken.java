@@ -73,6 +73,11 @@ public class CertificateToken extends Token {
 	private List<KeyUsageBit> keyUsageBits;
 
 	/**
+	 * URL used to download a certificate from (used in aia.caIssuers download operation)
+	 */
+	private String sourceURL;
+
+	/**
 	 * Creates a CertificateToken wrapping the provided X509Certificate.
 	 *
 	 * @param x509Certificate
@@ -141,6 +146,24 @@ public class CertificateToken extends Token {
 	@Override
 	public Date getCreationDate() {
 		return getNotBefore();
+	}
+
+	/**
+	 * Gets certificate's source URL
+	 *
+	 * @return {@link String}
+	 */
+	public String getSourceURL() {
+		return sourceURL;
+	}
+
+	/**
+	 * Sets certificate's source URL
+	 *
+	 * @param sourceURL {@link String}
+	 */
+	public void setSourceURL(String sourceURL) {
+		this.sourceURL = sourceURL;
 	}
 
 	/**

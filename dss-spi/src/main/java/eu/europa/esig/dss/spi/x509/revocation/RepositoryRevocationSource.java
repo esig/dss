@@ -312,7 +312,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
             if (revocationToken.isValid()) {
                 String sourceUrl = getRevocationSourceUrl(certificateToken, revocationToken);
                 if (sourceUrl == null) {
-                    LOG.warn("Not able to find source url for revocation , revocation token for certificate '{}' not be added to the cache", certificateToken.getDSSIdAsString());
+                    LOG.warn("Not able to find revocation source URL for certificate '{}'. Revocation will not be added to the cache", certificateToken.getDSSIdAsString());
                     return revocationToken;
                 }
                 String revocationTokenKey = getRevocationTokenKey(certificateToken, sourceUrl);
@@ -331,6 +331,13 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
         return revocationToken;
     }
 
+    /**
+     * Returns a revocation URL for the given {@code revocationToken}
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @param revocationToken {@link  RevocationToken}
+     * @return {@link String}
+     */
     protected abstract String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<R> revocationToken);
 
     /**
