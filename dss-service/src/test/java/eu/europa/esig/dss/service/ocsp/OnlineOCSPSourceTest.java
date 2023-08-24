@@ -24,7 +24,6 @@ import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
@@ -38,7 +37,6 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import org.bouncycastle.cert.ocsp.CertificateID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -237,7 +236,7 @@ public class OnlineOCSPSourceTest {
 
 		// clean cache if exists
 		if (cacheFolder.exists()) {
-			Arrays.asList(cacheFolder.listFiles()).forEach(File::delete);
+			Arrays.asList(Objects.requireNonNull(cacheFolder.listFiles())).forEach(File::delete);
 		}
 		
 		/* 1) Test default behavior of OnlineOCSPSource */
@@ -346,26 +345,31 @@ public class OnlineOCSPSourceTest {
 
 	private static class NoNonceSubstituteOCSPSource extends OnlineOCSPSource {
 
+		private static final long serialVersionUID = 8123906984792075209L;
+
 		private NoNonceSubstituteOCSPSource() {
 			super();
 		}
 
 		@Override
-		protected byte[] buildOCSPRequest(CertificateID certId, byte[] nonce) throws DSSException {
-			return super.buildOCSPRequest(certId, null);
+		protected byte[] buildOCSPRequest(CertificateToken certificateToken, CertificateToken issuerToken, byte[] nonce) {
+			return super.buildOCSPRequest(certificateToken, issuerToken, null);
 		}
+
 	}
 
 	private static class InvalidNonceSubstituteOCSPSource extends OnlineOCSPSource {
 
+		private static final long serialVersionUID = -5857935431031029816L;
+
 		private InvalidNonceSubstituteOCSPSource() {
 			super();
 		}
-
 		@Override
-		protected byte[] buildOCSPRequest(CertificateID certId, byte[] nonce) throws DSSException {
-			return super.buildOCSPRequest(certId, new SecureRandomNonceSource().getNonceValue());
+		protected byte[] buildOCSPRequest(CertificateToken certificateToken, CertificateToken issuerToken, byte[] nonce) {
+			return super.buildOCSPRequest(certificateToken, issuerToken, new SecureRandomNonceSource().getNonceValue());
 		}
+
 	}
 
 	private static class SubstituteOCSPSource extends OnlineOCSPSource {

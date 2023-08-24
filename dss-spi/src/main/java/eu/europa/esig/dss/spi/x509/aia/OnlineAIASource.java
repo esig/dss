@@ -28,14 +28,18 @@ import java.util.List;
 /**
  * This class is used to download certificates by AIA Urls from online resources
  *
+ * @deprecated since DSS 5.13. To be removed later.
  */
+@Deprecated
 public interface OnlineAIASource extends AIASource {
 
     /**
      * Sets the data loader to be used to download a certificate token by AIA
      *
      * @param dataLoader {@link DataLoader}
+     * @deprecated since DSS 5.13. Method {@code #setDataLoader} to be used directly in implementation
      */
+    @Deprecated
     void setDataLoader(DataLoader dataLoader);
 
     /**
@@ -43,13 +47,17 @@ public interface OnlineAIASource extends AIASource {
      *
      * @param certificateToken {@link CertificateToken} to obtain AIA certificates for
      * @return a list of {@link CertificatesAndAIAUrl}s
+     * @deprecated since DSS 5.13. Use {@code #getCertificatesByAIA(certificateToken)} and {@code CertificateToken.getSourceURL()} methods
      */
+    @Deprecated
     List<CertificatesAndAIAUrl> getCertificatesAndAIAUrls(final CertificateToken certificateToken);
 
     /**
      * This class represent a returned object by the OnlineAIASource
      *
+     * @deprecated since DSS 5.13. To be removed.
      */
+    @Deprecated
     class CertificatesAndAIAUrl {
 
         /**

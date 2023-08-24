@@ -30,7 +30,6 @@ import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
-import eu.europa.esig.dss.spi.x509.aia.OnlineAIASource;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -104,7 +104,7 @@ public class DefaultAIASourceTest {
 
         Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificate);
         assertEquals(1, issuers.size());
-        assertEquals(3, dataLoader.counter);
+        assertEquals(1, dataLoader.counter); // only one AIA request is being executed (until first success)
 
         dataLoader = new MockCommonsDataLoader();
         aiaSource.setDataLoader(dataLoader);
@@ -120,7 +120,7 @@ public class DefaultAIASourceTest {
 
         issuers = aiaSource.getCertificatesByAIA(certificate);
         assertEquals(0, issuers.size());
-        assertEquals(2, dataLoader.counter);
+        assertEquals(2, dataLoader.counter); // two LDAP urls processes (both failure)
 
         dataLoader = new MockCommonsDataLoader();
         aiaSource.setDataLoader(dataLoader);
@@ -146,12 +146,8 @@ public class DefaultAIASourceTest {
         }
 
         DefaultAIASource aiaSource = new DefaultAIASource(new MemoryDataLoader(dataMap));
-        List<OnlineAIASource.CertificatesAndAIAUrl> certificatesAndAIAUrls = aiaSource.getCertificatesAndAIAUrls(certificateWithAIA);
-        assertEquals(3, certificatesAndAIAUrls.size());
-        for (OnlineAIASource.CertificatesAndAIAUrl certificatesByAiaUrl : certificatesAndAIAUrls) {
-            assertNotNull(certificatesByAiaUrl.getAiaUrl());
-            assertEquals(1, certificatesByAiaUrl.getCertificates().size());
-        }
+        Set<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateWithAIA);
+        assertEquals(1, issuers.size());
     }
 
     private static class MockCommonsDataLoader extends CommonsDataLoader {

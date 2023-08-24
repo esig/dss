@@ -44,7 +44,7 @@ public class KeyEntityTSPSource implements TSPSource {
      */
     private final SecureRandom secureRandom = new SecureRandom();
 
-
+    // TODO : remove unused global variables
     /**
      * The KeyStore to be used to access the key to create a timestamp
      */
@@ -88,10 +88,12 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * Default constructor instantiating empty configuration of the KeyStoreTSPSource
      */
-    public KeyEntityTSPSource() {
+    protected KeyEntityTSPSource() {
+        // TODO : to be removed
         // empty
     }
 
+    // TODO : add comments
     protected PrivateKey privateKey;
     protected X509Certificate certificate;
     protected List<X509Certificate> certificateChain;
@@ -180,10 +182,11 @@ public class KeyEntityTSPSource implements TSPSource {
      * @param keyEntryPassword char array representing a password from the key entry
      */
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
+        // TODO : add Objects.requireNotNull checks
         KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
         this.privateKey = privateKeyEntry.getPrivateKey();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.certificateChain = Arrays.stream(privateKeyEntry.getCertificateChain()).map(c ->(X509Certificate)c).collect(Collectors.toList());
+        this.certificateChain = Arrays.stream(privateKeyEntry.getCertificateChain()).map(c -> (X509Certificate) c).collect(Collectors.toList());
     }
 
 
@@ -264,6 +267,7 @@ public class KeyEntityTSPSource implements TSPSource {
         this.enablePSS = enablePSS;
     }
 
+    // TODO : remove setters below
     public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
     }
@@ -278,6 +282,7 @@ public class KeyEntityTSPSource implements TSPSource {
 
     @Override
     public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
+        // TODO : check add requireNonNull for all mandatory objects
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
@@ -290,7 +295,7 @@ public class KeyEntityTSPSource implements TSPSource {
 
             TimeStampRequest request = initRequest(digestAlgoOID, digest);
 
-            TimeStampResponseGenerator responseGenerator = initResponseGenerator(privateKey,certificate, certificateChain, digestAlgoOID);
+            TimeStampResponseGenerator responseGenerator = initResponseGenerator(privateKey, certificate, certificateChain, digestAlgoOID);
 
             Date date = productionTime != null ? productionTime : new Date();
             TimeStampResponse response = generateResponse(responseGenerator, request, date);

@@ -73,7 +73,7 @@ import java.util.Objects;
  * to retrieve the OCSP response.
  */
 @SuppressWarnings("serial")
-public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSP>, OnlineRevocationSource<OCSP> {
+public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUrlsSupport<OCSP> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineOCSPSource.class);
 
@@ -139,7 +139,12 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		LOG.trace("+OnlineOCSPSource with the specific data loader.");
 	}
 
-	@Override
+	/**
+	 * Set the DataLoader to use for querying a revocation server.
+	 *
+	 * @param dataLoader
+	 *            the component that allows to retrieve an OCSP response using HTTP.
+	 */
 	public void setDataLoader(final DataLoader dataLoader) {
 		this.dataLoader = dataLoader;
 	}
@@ -217,63 +222,24 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 	@Override
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken,
-			List<String> alternativeUrls) {
+										List<String> alternativeUrls) {
+		Objects.requireNonNull(certificateToken, "CertificateToken cannot be null!");
+		Objects.requireNonNull(issuerCertificateToken, "Issuer CertificateToken cannot be null!");
 		Objects.requireNonNull(dataLoader, "DataLoader is not provided !");
+		LOG.trace("--> OnlineOCSPSource queried for {}", certificateToken.getDSSIdAsString());
 
-		final String dssIdAsString = certificateToken.getDSSIdAsString();
-		LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
-		if (Utils.isCollectionNotEmpty(alternativeUrls)) {
-			LOG.info("OCSP alternative urls : {}", alternativeUrls);
+		final List<String> ocspUrls = getOCSPAccessURLs(certificateToken, alternativeUrls);
+		if (Utils.isCollectionEmpty(ocspUrls)) {
+			throw new DSSExternalResourceException(String.format(
+					"No OCSP location found for certificate with Id '%s'", certificateToken.getDSSIdAsString()));
 		}
-
-		List<String> ocspAccessUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
-		if (Utils.isCollectionEmpty(ocspAccessUrls) && Utils.isCollectionEmpty(alternativeUrls)) {
-			LOG.warn("No OCSP location found for {}", dssIdAsString);
-			return null;
-		}
-		final List<String> ocspUrls = new ArrayList<>();
-		ocspUrls.addAll(ocspAccessUrls);
-		ocspUrls.addAll(alternativeUrls);
-
-		RevocationTokenAndUrl<OCSP> revocationTokenAndUrl = getRevocationTokenAndUrl(certificateToken, issuerCertificateToken, ocspUrls);
-		if (revocationTokenAndUrl != null) {
-			return (OCSPToken) revocationTokenAndUrl.getRevocationToken();
-		} else {
-			LOG.debug("No OCSP has been downloaded for a CertificateToken with Id '{}' from a list of urls : {}",
-					certificateToken.getDSSIdAsString(), ocspUrls);
-			return null;
-		}
-	}
-
-	@Override
-	public RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
-																CertificateToken issuerToken) {
-		final List<String> ocspAccessLocations = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
-		if (Utils.isCollectionEmpty(ocspAccessLocations)) {
-			LOG.warn("No OCSP location found for {}", certificateToken.getDSSIdAsString());
-			return null;
-		}
-		return getRevocationTokenAndUrl(certificateToken, issuerToken, ocspAccessLocations);
-	}
-
-	/**
-	 * Extracts an OCSP token for a {@code certificateToken} from the given list of {@code ocspUrls}
-	 *
-	 * @param certificateToken {@link CertificateToken} to get an OCSP token for
-	 * @param issuerToken {@link CertificateToken} issued the {@code certificateToken}
-	 * @param ocspUrls a list of {@link String} URLs to use to access an OCSP token
-	 * @return {@link RevocationTokenAndUrl}
-	 */
-	protected RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
-																   CertificateToken issuerToken, List<String> ocspUrls) {
-		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerToken, certIDDigestAlgorithm);
 
 		byte[] nonce = null;
 		if (nonceSource != null) {
 			nonce = nonceSource.getNonceValue();
 		}
 
-		final byte[] content = buildOCSPRequest(certId, nonce);
+		final byte[] content = buildOCSPRequest(certificateToken, issuerCertificateToken, nonce);
 
 		int nbTries = ocspUrls.size();
 		for (String ocspAccessLocation : ocspUrls) {
@@ -283,36 +249,19 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			nbTries--;
 
 			try {
-				final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, content);
-				if (!Utils.isArrayEmpty(ocspRespBytes)) {
-					if (LOG.isTraceEnabled()) {
-						LOG.trace(String.format("Obtained OCSPResponse binaries from URL '%s' : %s", ocspAccessLocation, Utils.toBase64(ocspRespBytes)));
-					}
-					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
+				BasicOCSPResp basicResponse = executeOCSPRequest(ocspAccessLocation, content);
+				SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerCertificateToken);
+				assertOCSPResponseValid(basicResponse, latestSingleResponse, nonce);
 
-					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
-					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
-						BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
-						SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerToken);
-						assertOCSPResponseValid(basicResponse, latestSingleResponse, nonce);
+				OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerCertificateToken);
+				ocspToken.setSourceURL(ocspAccessLocation);
+				ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
 
-						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerToken);
-						ocspToken.setSourceURL(ocspAccessLocation);
-						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
-
-						if (LOG.isDebugEnabled()) {
-							LOG.debug("OCSP Response '{}' has been retrieved from a source with URL '{}'.",
-									ocspToken.getDSSIdAsString(), ocspAccessLocation);
-						}
-						return new RevocationTokenAndUrl<>(ocspAccessLocation, ocspToken);
-
-					} else {
-						LOG.warn("Ignored OCSP Response from URL '{}' : status -> {}", ocspAccessLocation, status);
-					}
-
-				} else {
-					LOG.warn("OCSP Data Loader for certificate {} responded with an empty byte array!", certificateToken.getDSSIdAsString());
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("OCSP Response '{}' has been retrieved from a source with URL '{}'.",
+							ocspToken.getDSSIdAsString(), ocspAccessLocation);
 				}
+				return ocspToken;
 
 			} catch (Exception e) {
 				if (nbTries == 0) {
@@ -325,7 +274,103 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			}
 		}
 
+		throw new IllegalStateException(String.format("Invalid state within OnlineOCSPSource " +
+				"for a certificate call with id '%s'", certificateToken.getDSSIdAsString()));
+	}
+
+	/**
+	 * Extracts a list of OCSP access URLs to be used in the provided order to retrieve an OCSP response
+	 *
+	 * @param certificateToken {@link CertificateToken} to retrieve OCSP response for
+	 * @param alternativeUrls a list of {@link String} representing alternative URL sources
+	 * @return a list of {@link String} urls
+	 */
+	protected List<String> getOCSPAccessURLs(CertificateToken certificateToken, List<String> alternativeUrls) {
+		if (Utils.isCollectionNotEmpty(alternativeUrls)) {
+			LOG.info("OCSP alternative urls : {}", alternativeUrls);
+		}
+
+		List<String> ocspAccessUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+
+		final List<String> ocspUrls = new ArrayList<>();
+		ocspUrls.addAll(ocspAccessUrls);
+		ocspUrls.addAll(alternativeUrls);
+		return ocspUrls;
+	}
+
+	/**
+	 * This method retrieves a {@code RevocationTokenAndUrl} for the certificateToken
+	 *
+	 * @param certificateToken
+	 *                               The {@code CertificateToken} for which the
+	 *                               request is made
+	 * @param issuerToken
+	 *                               The {@code CertificateToken} which is the
+	 *                               issuer of the certificateToken
+	 * @return an instance of {@code RevocationTokenAndUrl}
+	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
+	 */
+	@Deprecated
+	public OnlineRevocationSource.RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
+																					   CertificateToken issuerToken) {
+		OCSPToken revocationToken = getRevocationToken(certificateToken, issuerToken);
+		if (revocationToken != null) {
+			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
+		}
 		return null;
+	}
+
+	/**
+	 * Extracts an OCSP token for a {@code certificateToken} from the given list of {@code ocspUrls}
+	 *
+	 * @param certificateToken {@link CertificateToken} to get an OCSP token for
+	 * @param issuerToken {@link CertificateToken} issued the {@code certificateToken}
+	 * @param ocspUrls a list of {@link String} URLs to use to access an OCSP token
+	 * @return {@link OnlineRevocationSource.RevocationTokenAndUrl}
+	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
+	 */
+	@Deprecated
+	protected OnlineRevocationSource.RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
+																   CertificateToken issuerToken, List<String> ocspUrls) {
+		OCSPToken revocationToken = getRevocationToken(certificateToken, issuerToken, ocspUrls);
+		if (revocationToken != null) {
+			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
+		}
+		return null;
+	}
+
+	/**
+	 * Builds an OCSP request for {@code certificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken} to retrieve an OCSP token for
+	 * @param issuerToken {@link CertificateToken} representing an issuer certificate of {@code certificateToken}
+	 * @param nonce byte array containing a unique nonce
+	 * @return byte array representing an OCSP request
+	 */
+	protected byte[] buildOCSPRequest(CertificateToken certificateToken, CertificateToken issuerToken, byte[] nonce) {
+		try {
+			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
+
+			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerToken, certIDDigestAlgorithm);
+			ocspReqBuilder.addRequest(certId);
+			/*
+			 * The nonce extension is used to bind a request to a response to
+			 * prevent replay attacks. RFC 6960 (OCSP) section 4.1.2 such
+			 * extensions SHOULD NOT be flagged as critical
+			 */
+			if (nonce != null) {
+				DEROctetString encodedNonceValue = new DEROctetString(nonce);
+				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
+						new DEROctetString(encodedNonceValue));
+				Extensions extensions = new Extensions(extension);
+				ocspReqBuilder.setRequestExtensions(extensions);
+			}
+			final OCSPReq ocspReq = ocspReqBuilder.build();
+			return ocspReq.getEncoded();
+
+		} catch (OCSPException | IOException e) {
+			throw new DSSException("Cannot build OCSP Request", e);
+		}
 	}
 
 	/**
@@ -335,7 +380,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * @param nonce byte array containing nonce value, when applicable
 	 * @return byte array representing the content of the OCSP Request
 	 * @throws DSSException if an error occurred during the OCSP Request building process
+	 * @deprecated since DSS 5.13. Use {@code #buildOCSPRequest(certificateToken, issuerCertificateToken, nonce}
 	 */
+	@Deprecated
 	protected byte[] buildOCSPRequest(final CertificateID certId, byte[] nonce) throws DSSException {
 		try {
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
@@ -360,6 +407,47 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		}
 	}
 
+	/**
+	 * Executes a {@code request} to the given {@code ocspAccessLocation} and returns an OCSP basic response, when applicable
+	 *
+	 * @param ocspAccessLocation {@link String} representing a URL to execute request
+	 * @param request byte array containing OCSP request
+	 * @return {@link BasicOCSPResp}
+	 * @throws IOException if an error occurs on OCSP request execution
+	 * @throws OCSPException if an error occurs on OCSP response reading
+	 */
+	protected BasicOCSPResp executeOCSPRequest(String ocspAccessLocation, byte[] request) throws IOException, OCSPException {
+		final byte[] ocspRespBytes = dataLoader.post(ocspAccessLocation, request);
+		if (Utils.isArrayNotEmpty(ocspRespBytes)) {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace(String.format("Obtained OCSPResponse binaries from URL '%s' : %s", ocspAccessLocation, Utils.toBase64(ocspRespBytes)));
+			}
+			final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
+
+			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
+			if (!OCSPRespStatus.SUCCESSFUL.equals(status)) {
+				throw new DSSExternalResourceException(String.format(
+						"Ignored OCSP Response from URL '%s' : status -> %s", ocspAccessLocation, status));
+			}
+			Object responseObject = ocspResp.getResponseObject();
+			if (!(responseObject instanceof BasicOCSPResp)) {
+				throw new DSSExternalResourceException(
+						String.format("OCSP Response Object shall be of type BasicOCSPResp! Obtained type : %s",
+								responseObject.getClass().getSimpleName()));
+			}
+			return (BasicOCSPResp) responseObject;
+		}
+		throw new DSSExternalResourceException(String.format("OCSP DataLoader for certificate with url '%s' " +
+				"responded with an empty byte array!", ocspAccessLocation));
+	}
+
+	/**
+	 * Verifies whether an OCSP response is valid
+	 *
+	 * @param basicOCSPResp {@link BasicOCSPResp}
+	 * @param latestSingleResponse {@link SingleResp}
+	 * @param expectedNonce byte array
+	 */
 	protected void assertOCSPResponseValid(final BasicOCSPResp basicOCSPResp, final SingleResp latestSingleResponse,
 										   final byte[] expectedNonce) {
 		/*

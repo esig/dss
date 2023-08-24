@@ -26,6 +26,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +41,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The class is used to download issuer certificates by AIA from remote sources
  *
  */
-public class DefaultAIASource implements OnlineAIASource {
+public class DefaultAIASource implements AIASource {
 
     private static final long serialVersionUID = 3968373722847675203L;
 
@@ -58,7 +60,6 @@ public class DefaultAIASource implements OnlineAIASource {
 
     /**
      * Collection of protocols to be accepted and used by the source
-     *
      * Default: all protocols are accepted (FILE, HTTP, HTTPS, LDAP, FTP).
      */
     private Collection<Protocol> acceptedProtocols = Arrays.asList(Protocol.values());
@@ -81,7 +82,11 @@ public class DefaultAIASource implements OnlineAIASource {
         this.dataLoader = dataLoader;
     }
 
-    @Override
+    /**
+     * Sets the data loader to be used to download a certificate token by AIA
+     *
+     * @param dataLoader {@link DataLoader}
+     */
     public void setDataLoader(DataLoader dataLoader) {
         Objects.requireNonNull(dataLoader, "dataLoader cannot be null!");
         this.dataLoader = dataLoader;
@@ -90,7 +95,6 @@ public class DefaultAIASource implements OnlineAIASource {
     /**
      * Defines a set of protocols to be accepted and used by the AIA Source.
      * All protocols which are not defined in the collection will be skipped.
-     *
      * Default: all protocols are accepted (FILE, HTTP, HTTPS, LDAP, FTP).
      *
      * @param acceptedProtocols a collection of accepted {@link Protocol}s
@@ -101,90 +105,109 @@ public class DefaultAIASource implements OnlineAIASource {
 
     @Override
     public Set<CertificateToken> getCertificatesByAIA(final CertificateToken certificateToken) {
-        List<CertificatesAndAIAUrl> certificatesAndAIAUrls = getCertificatesAndAIAUrls(certificateToken);
-        if (Utils.isCollectionNotEmpty(certificatesAndAIAUrls)) {
-            final Set<CertificateToken> allCertificates = new LinkedHashSet<>();
-            for (CertificatesAndAIAUrl certificatesByAiaUrl : certificatesAndAIAUrls) {
-                final List<CertificateToken> certificates = certificatesByAiaUrl.getCertificates();
-                if (Utils.isCollectionNotEmpty(certificates)) {
-                    allCertificates.addAll(certificates);
-                }
+        Objects.requireNonNull(certificateToken, "CertificateToken cannot be null!");
+        Objects.requireNonNull(dataLoader, "DataLoader is not provided!");
+
+        final List<String> caIssuersUrls = getCAIssuersUrls(certificateToken);
+
+        for (String caIssuersUrl : caIssuersUrls) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Trying to retrieve CA issuers from URL '{}'...", caIssuersUrl);
             }
-            return allCertificates;
+
+            try {
+                byte[] bytes = executeCAIssuersRequest(caIssuersUrl);
+
+                try (InputStream is = new ByteArrayInputStream(bytes)) {
+                    List<CertificateToken> loadedCertificates = DSSUtils.loadCertificateFromP7c(is);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), caIssuersUrl);
+                    }
+                    for (CertificateToken certificate : loadedCertificates) {
+                        certificate.setSourceURL(caIssuersUrl);
+                    }
+                    return new LinkedHashSet<>(loadedCertificates);
+                }
+
+            } catch (Exception e) {
+                LOG.warn("Unable to retrieve AIA certificates with URL '{}' : {}", caIssuersUrl, e.getMessage());
+            }
         }
+
         return Collections.emptySet();
     }
-    
-    @Override
-    public List<CertificatesAndAIAUrl> getCertificatesAndAIAUrls(CertificateToken certificateToken) {
+
+    /**
+     * Returns a list of caIssuers URLs for the given {@code certificateToken}
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return a list of {@link String}s
+     */
+    protected List<String> getCAIssuersUrls(CertificateToken certificateToken) {
         List<String> urls = CertificateExtensionsUtils.getCAIssuersAccessUrls(certificateToken);
         if (Utils.isCollectionEmpty(urls)) {
             LOG.info("There is no AIA extension for certificate download.");
             return Collections.emptyList();
         }
-        if (dataLoader == null) {
-            LOG.warn("There is no DataLoader defined to load Certificates from AIA extension (urls : {})", urls);
-            return Collections.emptyList();
-        }
+        return filterURLs(urls);
+    }
 
-        final List<CertificatesAndAIAUrl> certificatesAndAIAUrls = new ArrayList<>();
+    private List<String> filterURLs(List<String> urls) {
+        return urls.stream().filter(this::isUrlAccepted).collect(Collectors.toList());
+    }
 
-        for (String url : urls) {
-            if (!isUrlAccepted(url)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("The url '{}' is not accepted by the defined collection of Protocols. " +
-                            "The entry is skipped.", url);
-                }
-                continue;
-            }
-
+    /**
+     * Executes a GET request to retrieve caIssuers from URL {@code caIssuersUrl}
+     *
+     * @param caIssuersUrl {@link String} to get certificates from
+     * @return byte array
+     */
+    protected byte[] executeCAIssuersRequest(String caIssuersUrl) {
+        byte[] bytes = dataLoader.get(caIssuersUrl);
+        if (Utils.isArrayNotEmpty(bytes)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Loading certificate(s) from '{}'.", url);
+                LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
             }
+            return bytes;
+        }
+        throw new DSSExternalResourceException(String.format("AIA DataLoader for certificate with url '%s' " +
+                "responded with an empty byte array!", caIssuersUrl));
+    }
 
-            byte[] bytes;
+    /**
+     * The method returns a collection of processed URLs and the corresponding downloaded certificates
+     *
+     * @param certificateToken {@link CertificateToken} to obtain AIA certificates for
+     * @return a list of {@link OnlineAIASource.CertificatesAndAIAUrl}s
+     * @deprecated since DSS 5.13. Use {@code #getCertificatesByAIA(certificateToken)} and {@code CertificateToken.getSourceURL()} methods
+     */
+    @Deprecated
+    public List<OnlineAIASource.CertificatesAndAIAUrl> getCertificatesAndAIAUrls(CertificateToken certificateToken) {
+        final List<OnlineAIASource.CertificatesAndAIAUrl> result = new ArrayList<>();
+
+        List<String> caIssuersUrls = getCAIssuersUrls(certificateToken);
+
+        for (String caIssuersUrl : caIssuersUrls) {
             try {
-                bytes = dataLoader.get(url);
+                byte[] bytes = executeCAIssuersRequest(caIssuersUrl);
 
-            } catch (Exception e) {
-                String errorMessage = "Unable to download certificate from '{}': {}";
-                if (LOG.isDebugEnabled()) {
-                    LOG.warn(errorMessage, url, e.getMessage(), e);
-                } else {
-                    LOG.warn(errorMessage, url, e.getMessage());
-                }
-                continue;
-            }
+                List<CertificateToken> loadedCertificates;
 
-            List<CertificateToken> loadedCertificates = Collections.emptyList();
-
-            if (Utils.isArrayNotEmpty(bytes)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Base64 content : {}", Utils.toBase64(bytes));
-                }
                 try (InputStream is = new ByteArrayInputStream(bytes)) {
                     loadedCertificates = DSSUtils.loadCertificateFromP7c(is);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), url);
-                    }
-
-                } catch (Exception e) {
-                    String errorMessage = "Unable to parse certificate(s) from AIA (url: {}) : {}";
-                    if (LOG.isDebugEnabled()) {
-                        LOG.warn(errorMessage, url, e.getMessage(), e);
-                    } else {
-                        LOG.warn(errorMessage, url, e.getMessage());
+                        LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), caIssuersUrl);
                     }
                 }
 
-            } else {
-                LOG.warn("Empty content from {}.", url);
-            }
+                result.add(new OnlineAIASource.CertificatesAndAIAUrl(caIssuersUrl, loadedCertificates));
 
-            certificatesAndAIAUrls.add(new CertificatesAndAIAUrl(url, loadedCertificates));
+            } catch (Exception e) {
+                LOG.warn("Unable to retrieve AIA certificates with URL '{}' : {}", caIssuersUrl, e.getMessage());
+            }
         }
 
-        return certificatesAndAIAUrls;
+        return result;
     }
 
     private boolean isUrlAccepted(String url) {

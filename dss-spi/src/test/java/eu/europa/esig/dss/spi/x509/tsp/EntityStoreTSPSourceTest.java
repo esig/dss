@@ -44,15 +44,11 @@ public class EntityStoreTSPSourceTest {
     }
 
     @Test
-    public void initEmptyTest() throws Exception {
-        KeyEntityTSPSource tspSource = new KeyEntityTSPSource();
-
+    public void initWithKeyStoreTest() throws Exception {
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
         keyStore.load(Files.newInputStream(KS_FILE.toPath()), KS_PASSWORD);
-        tspSource.setKeyStore(keyStore);
 
-        tspSource.setAlias(ALIAS);
-        tspSource.setKeyEntryPassword(KS_PASSWORD);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
@@ -143,10 +139,10 @@ public class EntityStoreTSPSourceTest {
 
     @Test
     public void errorTest() throws Exception {
-        KeyEntityTSPSource tspSource = new KeyEntityTSPSource();
-
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
-        Exception exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+
+        KeyEntityTSPSource tspSource1 = new KeyEntityTSPSource((KeyStore) null, null, null);
+        Exception exception = assertThrows(NullPointerException.class, () -> tspSource1.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
         assertEquals("KeyStore is not defined!", exception.getMessage());
 
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
@@ -154,25 +150,27 @@ public class EntityStoreTSPSourceTest {
             keyStore.load(is, KS_PASSWORD);
         }
 
-        tspSource.setKeyStore(keyStore);
-        exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        KeyEntityTSPSource tspSource2 = new KeyEntityTSPSource(keyStore, null, null);
+
+        exception = assertThrows(NullPointerException.class, () -> tspSource2.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
         assertEquals("Alias is not defined!", exception.getMessage());
 
-        tspSource.setAlias(ALIAS);
-        exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        KeyEntityTSPSource tspSource3 = new KeyEntityTSPSource(keyStore, ALIAS, null);
+
+        exception = assertThrows(NullPointerException.class, () -> tspSource3.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
         assertEquals("Password from key entry is not defined!", exception.getMessage());
 
-        tspSource.setKeyEntryPassword(KS_PASSWORD);
-        TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
+        KeyEntityTSPSource tspSource4 = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
+
+        TimestampBinary timeStampResponse = tspSource4.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         assertTimestampValid(timeStampResponse, digest);
 
-        tspSource.setAlias("wrong-alias");
-        exception = assertThrows(IllegalArgumentException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        KeyEntityTSPSource tspSource5 = new KeyEntityTSPSource(keyStore, "wrong-alias", KS_PASSWORD);
+        exception = assertThrows(IllegalArgumentException.class, () -> tspSource5.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
         assertEquals("No related/supported key entry found for alias 'wrong-alias'!", exception.getMessage());
 
-        tspSource.setAlias(ALIAS);
-        tspSource.setKeyEntryPassword("wrong-password".toCharArray());
-        exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        KeyEntityTSPSource tspSource6 = new KeyEntityTSPSource(keyStore, ALIAS, "wrong-password".toCharArray());
+        exception = assertThrows(DSSException.class, () -> tspSource6.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
         assertTrue(exception.getMessage().contains("Unable to recover the key entry with alias 'self-signed-tsa'."));
     }
 
