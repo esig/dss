@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.exception.Error404Exception;
+import eu.europa.esig.dss.pki.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.DBCertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
@@ -46,7 +47,7 @@ public class PKIOCSPSourceTest {
     private static CertificateToken goodCa;
     private static CertificateToken ed25519goodUser;
     private static CertificateToken ed25519goodCa;
-    static CertEntityRepository<DBCertEntity> certificateEntityService = JaxbCertEntityRepository.getInstance();
+    static CertEntityRepository<DBCertEntity> certificateEntityService = GenericFactory.getInstance().create(JaxbCertEntityRepository.class);
     private static CertEntity certEntity;
     private static CertificateToken revokedCa;
     private static CertificateToken revokedUser;

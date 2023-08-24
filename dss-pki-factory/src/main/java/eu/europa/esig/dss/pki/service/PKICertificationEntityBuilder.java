@@ -113,7 +113,7 @@ public class PKICertificationEntityBuilder {
                     .with(DBCertEntity::setToBeIgnored, wrapper.isToBeIgnored())
                     .with(DBCertEntity::setPkiName, pkiName)
                     .with(DBCertEntity::setPss, wrapper.isPSS())
-                    .with(DBCertEntity::setDigestAlgo, wrapper.getDigestAlgo().value())
+                    .with(DBCertEntity::setDigestAlgo, wrapper.getDigestAlgo() != null ? wrapper.getDigestAlgo().value() : null)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);

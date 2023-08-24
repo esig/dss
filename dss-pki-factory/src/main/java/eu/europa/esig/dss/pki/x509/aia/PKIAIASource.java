@@ -27,7 +27,7 @@ public class PKIAIASource implements AIASource {
     @Override
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
 
-        Objects.requireNonNull(certificateToken, "CertificateToken parameter cannot be null");
+        Objects.requireNonNull(certificateToken, "Certificate Token parameter is not provided");
         Objects.requireNonNull(certEntityRepository, "CertEntity Repository is not provided");
 
 
