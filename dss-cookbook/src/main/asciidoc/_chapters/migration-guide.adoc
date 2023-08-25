@@ -102,6 +102,25 @@ SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 imageParameters.setFieldParameters(fieldParameters);
 
+|ZipUtils handler                                       a|[source,java]
+----
+SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+secureContainerHandler.setMaxAllowedFilesAmount(1000);
+secureContainerHandler.setMaxMalformedFiles(100);
+secureContainerHandler.setMaxCompressionRatio(100);
+secureContainerHandler.setThreshold(1000000);
+secureContainerHandler.setExtractComments(true);
+ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+----
+                                                                     a|[source,java]
+SecureContainerHandlerBuilder secureContainerHandlerBuilder = new SecureContainerHandlerBuilder();
+secureContainerHandlerBuilder.setMaxAllowedFilesAmount(1000);
+secureContainerHandlerBuilder.setMaxMalformedFiles(100);
+secureContainerHandlerBuilder.setMaxCompressionRatio(100);
+secureContainerHandlerBuilder.setThreshold(1000000);
+secureContainerHandlerBuilder.setExtractComments(true);
+ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
+
 |===
 
 [cols="2,5,5"]

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.asic.cades.signature.asics.AbstractASiCSWithCAdESMulti
 import eu.europa.esig.dss.asic.common.ContainerEntryDocument;
 import eu.europa.esig.dss.asic.common.DSSZipEntry;
 import eu.europa.esig.dss.asic.common.DSSZipEntryDocument;
-import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -88,14 +88,14 @@ public class ASiCsExtensionWithCAdESBToLTAWithZipEntryDocTest extends AbstractAS
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-        SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
-        secureContainerHandler.setExtractComments(true);
-        ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+        SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
+                .setExtractComments(true);
+        ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
     }
 
     @AfterAll
     public static void reset() {
-        ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler());
+        ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
     }
 
     @Override
