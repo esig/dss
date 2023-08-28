@@ -42,7 +42,11 @@ public class LogOJUrlChangeAlertHandler implements AlertHandler<LOTLInfo> {
 
 	@Override
 	public void process(LOTLInfo currentInfo) {
-		LOG.warn("The Official Journal URL has changed - new location : {}", currentInfo.getParsingCacheInfo().getSigningCertificateAnnouncementUrl());
+		if (currentInfo.getParsingCacheInfo() != null) {
+			LOG.warn("The Official Journal URL has changed - new location : {}", currentInfo.getParsingCacheInfo().getSigningCertificateAnnouncementUrl());
+		} else {
+			LOG.warn("No parsing result found for a LOTL with URL '{}'", currentInfo.getUrl());
+		}
 	}
 
 }

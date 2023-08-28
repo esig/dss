@@ -53,7 +53,7 @@ public class OJUrlChangeDetection implements AlertDetector<LOTLInfo> {
 		}
 
 		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		if (parsingCacheInfo.isDesynchronized()) {
+		if (parsingCacheInfo != null && parsingCacheInfo.isDesynchronized()) {
 			LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate = lotlSource
 					.getSigningCertificatesAnnouncementPredicate();
 			if (signingCertificatesAnnouncementPredicate instanceof OfficialJournalSchemeInformationURI) {

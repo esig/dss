@@ -1439,10 +1439,10 @@
 	
 	<xs:complexType name="TrustServiceProvider">
 		<xs:sequence>
-			<xs:element name="TSPNames">
+			<xs:element name="TSPNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TSPName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="TSPName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1461,7 +1461,7 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustServices">
+			<xs:element name="TrustServices" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
 						<xs:element name="TrustService" type="TrustService" minOccurs="0" maxOccurs="unbounded" />
@@ -1475,10 +1475,10 @@
 	
 	<xs:complexType name="TrustService">
 		<xs:sequence>
-			<xs:element name="ServiceNames">
+			<xs:element name="ServiceNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="ServiceName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="ServiceName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>

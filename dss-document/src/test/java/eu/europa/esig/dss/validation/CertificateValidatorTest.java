@@ -22,11 +22,14 @@ package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.GeneralNameType;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
@@ -35,7 +38,16 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
+import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.spi.tsl.TrustProperties;
+import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
@@ -45,12 +57,16 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -64,7 +80,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class CertificateValidatorTest {
 
 	@Test
-	public void test() throws JAXBException, IOException, SAXException, TransformerException {
+	public void test() throws JAXBException, IOException, SAXException, TransformerException, XMLStreamException {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 
@@ -394,7 +410,67 @@ public class CertificateValidatorTest {
 		assertEquals("CertificateVerifier is not defined", exception.getMessage());
 	}
 
-	private void validateReports(CertificateReports reports) throws JAXBException, IOException, SAXException, TransformerException {
+	@Test
+	public void trustedListCertSourceTest() throws Exception {
+		CertificateToken sigCert = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIID1DCCArygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcxMTI0MTQ0MzI3WhcNMTkwOTI0MTM0MzI3WjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMt/h9F4KnfbQBEtyIuNg6I9ZPZVN6SqW4smRTKpRcepvB7bL8NnB7dIOzL2bvyS72CqgltWHP5CvFKBRNnooJW6LuGR8DWq/dM5B0khuB15dGcUURkKUzpb4TwpBWuCBriKKtpo3EL6ZRFPeP2w4SsYxYxLT2ZAxKGSM8FOE5oHJzRS8WgYFzOUzqmtAY1o55UqBSqN+6MN3mX7eleHN9VezhixBkhVg+UbEzaO+TCuxzEaOH0Aqmhd9iGdkLsf/Nr/y1hKQw3DI7bnqjykddZqrfgozqXd6FMp9IlNwJ8HdDMy7CeE5DZt5xqmhRHVWOR5XLjCkTZKfLyh+tV4t1ECAwEAAaOBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFC1SwN01X0kcZMmYWF94KUt4e5onMA0GCSqGSIb3DQEBCwUAA4IBAQAsxKL8q6B7OS154tz4AHXYTLQE+/vsLG9oAaqPfi8oYrHOTic3UDKyQT1qzNMrSHCvVFu2FM3x4+EB6qsYjU9u7FZXo0Iw39Om8247Q8AoRlv/NJGXrtzgfw1KoXUdBBGR4Bq05nRN0stfUqg+y41InPbBz7fanhvjStS+rPXiQOMS518LBay3VjjaootiWKQxB5o9pmybjIJMPbB/vwB5U+piWIh8QybAB1cNpqhaZBnwnNye+3/ap4efvy83bPh/aqvZVOQ0qmeZBTIw30HFKgzdp6ieoi9o7zA/yfs8wA522PI2feAMIHwq727Oq3Jx4q5tN1pzR6ZFOwzm/iIh");
+
+		CertificateToken caToken = DSSUtils.loadCertificateFromBase64EncodedString(
+				"MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTcxMTI0MTQ0MzI0WhcNMTkwOTI0MTM0MzI0WjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDE0JtjEg9q26lR5tJnvPLkgtWaMrRkeDfABta1qI3XLC2+AwLketU1lPuwK5HopmHkSTpXFE/cWfGmbgsHSkYlfcsXD6CKtYtinjzeekMQE7xiPWM5b9QtyGoh6BZUyydw934LnNjJNHfMgQVtyVnQ8L6SwFhyT3BTWU9SzVCNSlyUSJCAEsNQrFP1mxiHsdXJlUUykqxhaLC0gGZhIyhTZB3qNaRSIcGr4IlXTCXUkB8oaWNqwe/sS1+JlkiGdGED3NR9Zh4SBAk65wfL1xjzN+JgDrTTbPoKJOlqeTrv3NMsW9rzG/Fx4AlJgA7Lo+ujrHwggyC9zg3pRRQaH+LpAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgeAMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQUYEoTfXrajcuuURqGnbZIZlxBRQ0wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAMEZzOXyFl4FEUrOXIaI2ha74zIbGsmtKdk2p801cYh4vrsldN8hbXUu7sbWTJ9BP6HdFJ+89fP+OUbyHm1NwFYf+BN11+NFKQoDniheezha9ZO8m0aKSTQvt/J3SHr/Ui7F00cDZhPa4SNHWdtl2capxYUY0o7ww/WpI+z5bIUauwiimBEqK2Dr2jwxbztM0qlDjKgHpCtriW48e5NmT9IBnJhMqqlLJpt9/AwepRMakcz65/wu40YcPd42TINMWwcIAWAZLPxdemIuwMrCQnGKZSmi1GkCWuMOwFcHXk7Yb2xku6PQPvcLWqSRMjD0RzVy8G2kK52VMwwwjoDi+Gg==");
+
+		Exception exception = assertThrows(NullPointerException.class, () -> new TrustProperties(null, null, null, null));
+		assertEquals("tlInfo cannot be null!", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class, () -> new TLInfo(null, null, null, null));
+		assertEquals("URL String shall be provided!", exception.getMessage());
+
+		TLInfo tlInfo = new TLInfo(null, null, null, "aaa");
+		exception = assertThrows(NullPointerException.class, () -> new TrustProperties(null, tlInfo, null, null));
+		assertEquals("trustServiceProvider cannot be null!", exception.getMessage());
+
+		exception = assertThrows(NullPointerException.class, () -> new TrustServiceProvider(null));
+		assertEquals("TrustServiceProviderBuilder cannot be null!", exception.getMessage());
+
+		TrustServiceProviderBuilder builder = new TrustServiceProviderBuilder();
+		TrustServiceProvider trustServiceProvider = builder.build();
+
+		exception = assertThrows(NullPointerException.class, () -> new TrustProperties(null, tlInfo, trustServiceProvider, null));
+		assertEquals("trustService cannot be null!", exception.getMessage());
+
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>();
+
+		TrustProperties trustProperties = new TrustProperties(null, tlInfo, trustServiceProvider, status);
+
+		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
+		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
+		hashMap.put(caToken, Collections.singletonList(trustProperties));
+		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
+
+		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+		certificateVerifier.setTrustedCertSources(trustedCertSource);
+
+		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(sigCert);
+		certificateValidator.setCertificateVerifier(certificateVerifier);
+		certificateValidator.setValidationTime(new Date());
+
+		exception = assertThrows(IllegalStateException.class, certificateValidator::validate);
+		assertEquals(String.format("TL with Id '%s' has not been found! Please verify " +
+				"TrustedListsCertificateSource contains TLValidationSummary.", tlInfo.getDSSIdAsString()), exception.getMessage());
+
+		exception = assertThrows(IllegalArgumentException.class, () -> new TLValidationJobSummary(null, null));
+		assertEquals("LOTL or TL Info shall be provided!", exception.getMessage());
+
+		exception = assertThrows(IllegalArgumentException.class, () -> new TLValidationJobSummary(Collections.emptyList(), Collections.emptyList()));
+		assertEquals("LOTL or TL Info shall be provided!", exception.getMessage());
+
+		TLValidationJobSummary summary = new TLValidationJobSummary(Collections.emptyList(), Collections.singletonList(tlInfo));
+		trustedCertSource.setSummary(summary);
+
+		CertificateReports reports = certificateValidator.validate();
+		validateReports(reports);
+	}
+
+	private void validateReports(CertificateReports reports) throws JAXBException, IOException, SAXException, TransformerException, XMLStreamException {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticDataJaxb());
 		assertNotNull(reports.getXmlDiagnosticData());
@@ -403,15 +479,25 @@ public class CertificateValidatorTest {
 		assertNotNull(reports.getSimpleReportJaxb());
 		assertNotNull(reports.getXmlSimpleReport());
 
-		SimpleCertificateReportFacade simpleCertificateReportFacade = SimpleCertificateReportFacade.newFacade();
-		String marshalled = simpleCertificateReportFacade.marshall(reports.getSimpleReportJaxb(), true);
+		DiagnosticDataFacade diagnosticDataFacade = DiagnosticDataFacade.newFacade();
+		String marshalled = diagnosticDataFacade.marshall(reports.getDiagnosticDataJaxb(), true);
 		assertNotNull(marshalled);
-		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(marshalled));
+		XmlDiagnosticData unmarshalled = diagnosticDataFacade.unmarshall(marshalled);
+		assertNotNull(unmarshalled);
+
+		SimpleCertificateReportFacade simpleCertificateReportFacade = SimpleCertificateReportFacade.newFacade();
+		String marshalledSimpleReport = simpleCertificateReportFacade.marshall(reports.getSimpleReportJaxb(), true);
+		assertNotNull(marshalledSimpleReport);
+		XmlSimpleCertificateReport unmarshalledSimpleReport = simpleCertificateReportFacade.unmarshall(marshalledSimpleReport);
+		assertNotNull(unmarshalledSimpleReport);
+		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(marshalledSimpleReport));
 		assertNotNull(simpleCertificateReportFacade.generateHtmlReport(reports.getSimpleReportJaxb()));
 
 		DetailedReportFacade detailedReportFacade = DetailedReportFacade.newFacade();
 		String marshalledDetailedReport = detailedReportFacade.marshall(reports.getDetailedReportJaxb(), true);
 		assertNotNull(marshalledDetailedReport);
+		XmlDetailedReport unmarshalledDetailedReport = detailedReportFacade.unmarshall(marshalledDetailedReport);
+		assertNotNull(unmarshalledDetailedReport);
 		assertNotNull(detailedReportFacade.generateHtmlReport(marshalledDetailedReport));
 		assertNotNull(detailedReportFacade.generateHtmlReport(reports.getDetailedReportJaxb()));
 	}

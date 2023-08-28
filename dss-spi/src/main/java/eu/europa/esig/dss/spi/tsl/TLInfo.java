@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.spi.tsl.identifier.TrustedListIdentifier;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Computes summary for a single Trusted List processing result
@@ -95,6 +96,8 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	public TLInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
 				  final ValidationInfoRecord validationCacheInfo, final String url, final TLInfo parent,
 				  final OtherTSLPointer otherTSLPointer) {
+		Objects.requireNonNull(url, "URL String shall be provided!");
+
 		this.downloadCacheInfo = downloadCacheInfo;
 		this.parsingCacheInfo = parsingCacheInfo;
 		this.validationCacheInfo = validationCacheInfo;

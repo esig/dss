@@ -46,6 +46,7 @@ import eu.europa.esig.dss.spi.QcStatementUtils;
 import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
 import eu.europa.esig.dss.spi.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
+import eu.europa.esig.dss.spi.tsl.LOTLInfo;
 import eu.europa.esig.dss.spi.tsl.MRA;
 import eu.europa.esig.dss.spi.tsl.QCStatementOids;
 import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
@@ -160,13 +161,27 @@ public class XmlTrustServiceProviderBuilder {
                                                                    CertificateToken trustAnchor) {
         TrustProperties trustProperties = trustServices.iterator().next();
 
-        XmlTrustServiceProvider result = new XmlTrustServiceProvider();
-        if (trustProperties.getLOTLIdentifier() != null) {
-            result.setLOTL(xmlTrustedListsMap.get(trustProperties.getLOTLIdentifier().asXmlId()));
+       final XmlTrustServiceProvider result = new XmlTrustServiceProvider();
+
+        LOTLInfo lotlInfo = trustProperties.getLOTLInfo();
+        if (lotlInfo != null) {
+            XmlTrustedList xmlLOTL = xmlTrustedListsMap.get(lotlInfo.getDSSIdAsString());
+            if (xmlLOTL == null) {
+                throw new IllegalStateException(String.format("LOTL with Id '%s' has not been found! " +
+                        "Please verify TrustedListsCertificateSource contains TLValidationSummary.", lotlInfo.getDSSIdAsString()));
+            }
+            result.setLOTL(xmlLOTL);
         }
-        if (trustProperties.getTLIdentifier() != null) {
-            result.setTL(xmlTrustedListsMap.get(trustProperties.getTLIdentifier().asXmlId()));
+        TLInfo tlInfo = trustProperties.getTLInfo();
+        if (tlInfo != null) {
+            XmlTrustedList xmlTL = xmlTrustedListsMap.get(tlInfo.getDSSIdAsString());
+            if (xmlTL == null) {
+                throw new IllegalStateException(String.format("TL with Id '%s' has not been found! " +
+                        "Please verify TrustedListsCertificateSource contains TLValidationSummary.", tlInfo.getDSSIdAsString()));
+            }
+            result.setTL(xmlTL);
         }
+
         TrustServiceProvider tsp = trustProperties.getTrustServiceProvider();
         result.setTSPNames(getLangAndValues(tsp.getNames()));
         result.setTSPTradeNames(getLangAndValues(tsp.getTradeNames()));
@@ -218,8 +233,8 @@ public class XmlTrustServiceProviderBuilder {
     }
 
     private MRA getMRA(TrustProperties trustProperties) {
-        if (trustProperties.getTLIdentifier() != null) {
-            TLInfo tlInfo = tlInfoMap.get(trustProperties.getTLIdentifier().asXmlId());
+        if (trustProperties.getTLInfo() != null) {
+            TLInfo tlInfo = tlInfoMap.get(trustProperties.getTLInfo().getDSSIdAsString());
             if (tlInfo != null && tlInfo.getOtherTSLPointer() != null) {
                 // may be null when no TLValidationJob is used
                 return tlInfo.getOtherTSLPointer().getMra();

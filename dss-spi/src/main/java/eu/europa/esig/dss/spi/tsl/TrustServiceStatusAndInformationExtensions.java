@@ -25,6 +25,7 @@ import eu.europa.esig.dss.spi.util.BaseTimeDependent;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Defines information for a TrustService
@@ -66,7 +67,9 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 	 * @param builder {@link TrustServiceStatusAndInformationExtensionsBuilder}
 	 */
 	public TrustServiceStatusAndInformationExtensions(TrustServiceStatusAndInformationExtensionsBuilder builder) {
-		super(builder.startDate, builder.endDate);
+		super(builder != null ? builder.startDate : null, builder != null ? builder.endDate : null);
+		Objects.requireNonNull(builder, "TrustServiceStatusAndInformationExtensionsBuilder cannot be null!");
+
 		this.names = builder.names;
 		this.type = builder.type;
 		this.status = builder.status;

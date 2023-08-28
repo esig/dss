@@ -373,8 +373,10 @@ public class SimpleReportBuilder {
 			final XmlTrustAnchors xmlTrustAnchors = new XmlTrustAnchors();
 			for (XmlTrustServiceProvider trustServiceProvider : xmlTrustServiceProviders) {
 				final XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
-				trustAnchor.setCountryCode(trustServiceProvider.getTL().getCountryCode());
-				trustAnchor.setTSLType(trustServiceProvider.getTL().getTSLType());
+				if (trustServiceProvider.getTL() != null) {
+					trustAnchor.setCountryCode(trustServiceProvider.getTL().getCountryCode());
+					trustAnchor.setTSLType(trustServiceProvider.getTL().getTSLType());
+				}
 				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustServiceProvider.getTSPNames()));
 				List<String> tspRegistrationIdentifiers = trustServiceProvider.getTSPRegistrationIdentifiers();
 				if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {

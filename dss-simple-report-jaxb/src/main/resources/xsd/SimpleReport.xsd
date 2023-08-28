@@ -197,11 +197,11 @@
 	<xs:complexType name="TrustAnchor">
 		<xs:sequence>
 			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
-			<xs:element name="TrustServiceProvider" type="xs:string" />
-			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" />
-			<xs:element name="TrustServiceName" type="xs:string" maxOccurs="unbounded" />
+			<xs:element name="TrustServiceProvider" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="countryCode" type="xs:string" use="required" />
+		<xs:attribute name="countryCode" type="xs:string" />
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureLevel">

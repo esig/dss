@@ -527,7 +527,10 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				tlIdentifiers.add(trustProperties.getTLIdentifier());
+				TLInfo tlInfo = trustProperties.getTLInfo();
+				if (tlInfo != null) {
+					tlIdentifiers.add(tlInfo.getDSSId());
+				}
 			}
 		}
 		return tlIdentifiers;
@@ -538,9 +541,9 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				Identifier lotlUrl = trustProperties.getLOTLIdentifier();
-				if (lotlUrl != null) {
-					lotlIdentifiers.add(lotlUrl);
+				LOTLInfo lotlInfo = trustProperties.getLOTLInfo();
+				if (lotlInfo != null) {
+					lotlIdentifiers.add(lotlInfo.getDSSId());
 				}
 			}
 		}
