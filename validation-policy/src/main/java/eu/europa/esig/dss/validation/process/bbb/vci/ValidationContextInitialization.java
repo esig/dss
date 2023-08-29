@@ -87,10 +87,15 @@ public class ValidationContextInitialization extends Chain<XmlVCI> {
 			
 			item = item.setNextItem(signaturePolicyStorePresent());
 
-			if (!signature.isPolicyZeroHash()) {
-				item = item.setNextItem(signaturePolicyHashValid());
-			} else {
-				item = item.setNextItem(signaturePolicyZeroHash());
+			// Compare hash only when a policy is identified
+			if (signature.isPolicyIdentified()) {
+
+				if (!signature.isPolicyZeroHash()) {
+					item = item.setNextItem(signaturePolicyHashValid());
+				} else {
+					item = item.setNextItem(signaturePolicyZeroHash());
+				}
+
 			}
 			
 		}

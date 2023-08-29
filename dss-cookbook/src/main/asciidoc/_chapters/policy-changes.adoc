@@ -74,6 +74,25 @@ not present
 </SigningCertificate>
 ----
 
+|Signature Policy                                 a|[source,xml]
+----
+<SignatureConstraints>
+    ...
+    <PolicyAvailable Level="FAIL" />
+    <PolicyHashMatch Level="FAIL" />
+    ...
+</SignatureConstraints>
+----
+                                                  a|[source,xml]
+----
+<SignatureConstraints>
+    ...
+    <PolicyAvailable Level="INFORM" />
+    <PolicyHashMatch Level="WARN" />
+    ...
+</SignatureConstraints>
+----
+
 |===
 
 [cols="2,5,5"]

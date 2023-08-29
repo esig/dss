@@ -37,8 +37,8 @@
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
 		</AcceptablePolicies>
-		<PolicyAvailable Level="FAIL" />
-		<PolicyHashMatch Level="FAIL" />
+		<PolicyAvailable Level="INFORM" />
+		<PolicyHashMatch Level="WARN" />
 		<AcceptableFormats Level="FAIL">
 			<Id>*</Id>
 		</AcceptableFormats>

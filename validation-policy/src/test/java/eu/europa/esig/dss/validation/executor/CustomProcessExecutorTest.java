@@ -84,6 +84,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
@@ -4596,6 +4597,118 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		assertTrue(signaturePolicyStoreCheckExecuted);
 	}
+
+	@Test
+	public void signaturePolicyNotIdentifierFailLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_zero_hash_policy.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
+		xmlPolicy.setIdentified(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.BBB_VCI_ISPA_ANS)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, bbb.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, bbb.getConclusion().getSubIndication());
+
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, vci.getConclusion().getSubIndication());
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
+		boolean zeroHashPolicyCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_VCI_ISPA_ANS.name(), constraint.getError().getKey());
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+				zeroHashPolicyCheckExecuted = true;
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
+		assertFalse(zeroHashPolicyCheckExecuted);
+	}
+
+	@Test
+	public void signaturePolicyNotIdentifierInformLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_zero_hash_policy.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
+		xmlPolicy.setIdentified(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationInfo(simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.BBB_VCI_ISPA_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, bbb.getConclusion().getIndication());
+
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
+		boolean zeroHashPolicyCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.INFORMATION, constraint.getStatus());
+				assertEquals(MessageTag.BBB_VCI_ISPA_ANS.name(), constraint.getInfo().getKey());
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+				zeroHashPolicyCheckExecuted = true;
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
+		assertFalse(zeroHashPolicyCheckExecuted);
+	}
 	
 	@Test
 	public void zeroHashPolicyCheckTest() throws Exception {
@@ -4621,14 +4734,18 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		XmlVCI vci = bbb.getVCI();
 		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
-		
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
 		boolean zeroHashPolicyCheckExecuted = false;
 		for (XmlConstraint constraint : vci.getConstraint()) {
-			if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
 				zeroHashPolicyCheckExecuted = true;
 			}
 			assertEquals(XmlStatus.OK, constraint.getStatus());
 		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
 		assertTrue(zeroHashPolicyCheckExecuted);
 	}
 
