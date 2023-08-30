@@ -90,7 +90,7 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
         XmlConclusion basicTimestampConclusion = vpftsp.getConclusion();
 
-        ChainItem<XmlValidationProcessArchivalDataTimestamp> item = firstItem = timestampBasicSignatureValidationAcceptable(timestamp, vpftsp);
+        ChainItem<XmlValidationProcessArchivalDataTimestamp> item = firstItem = timestampBasicSignatureValidationAcceptable(vpftsp);
 
         if (ValidationProcessUtils.isAllowedBasicTimestampValidation(basicTimestampConclusion)) {
 
@@ -117,7 +117,9 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
                     poe.extractPOE(timestamp);
 
                 }
+
             }
+
             /*
              * c) If the output of the validation is INDETERMINATE/REVOKED_NO_POE,
              * INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
@@ -168,9 +170,8 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationAcceptable(
-            TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
-        return new AcceptableBasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
-                timestampValidationResult, getFailLevelConstraint());
+            XmlValidationProcessBasicTimestamp timestampValidationResult) {
+        return new AcceptableBasicTimestampValidationCheck<>(i18nProvider, result, timestampValidationResult, getFailLevelConstraint());
     }
 
     private void enrichBBBWithPSVConclusion(XmlBasicBuildingBlocks bbb, XmlPSV psv) {

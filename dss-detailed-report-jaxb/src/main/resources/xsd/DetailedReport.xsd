@@ -11,6 +11,7 @@
 				<xs:choice>
 					<xs:element name="Signature" type="Signature" />
 					<xs:element name="Timestamp" type="Timestamp" />
+					<xs:element name="EvidenceRecord" type="EvidenceRecord" />
 					<xs:element name="Certificate" type="Certificate" />
 				</xs:choice>
 			</xs:sequence>
@@ -25,6 +26,7 @@
 		<xs:sequence>
 			<xs:element name="ValidationProcessBasicSignature" type="ValidationProcessBasicSignature" minOccurs="0" />
 			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="EvidenceRecord" type="EvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ValidationProcessLongTermData" type="ValidationProcessLongTermData" minOccurs="0" />
 			<xs:element name="ValidationProcessArchivalData" type="ValidationProcessArchivalData" minOccurs="0" />
 			
@@ -48,6 +50,16 @@
 			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" /> 
+	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecord">
+		<xs:sequence>
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ValidationProcessEvidenceRecord" type="ValidationProcessEvidenceRecord"  />
+
+			<xs:element name="Conclusion" type="Conclusion" />
+		</xs:sequence>
+		<xs:attribute name="Id" type="xs:string" />
 	</xs:complexType>
 	
 	<xs:complexType name="Certificate">
@@ -186,6 +198,12 @@
 				<xs:attribute name="ValidationTime" type="ValidationTime" />
 				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessEvidenceRecord">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
 	</xs:complexType>
 

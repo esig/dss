@@ -478,6 +478,11 @@
 			<Cryptographic />
 		</BasicSignatureConstraints>
 	</Revocation>
+	<EvidenceRecord>
+		<DataObjectExistence Level="FAIL" />
+		<DataObjectIntact Level="FAIL" />
+		<Cryptographic />
+	</EvidenceRecord>
 	<Cryptographic Level="FAIL">
 		<AcceptableEncryptionAlgo>
 			<Algo>RSA</Algo>

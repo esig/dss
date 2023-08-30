@@ -26,14 +26,16 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -242,6 +244,48 @@ public class DetailedReport {
 	}
 
 	/**
+	 * This method returns the first evidence record id.
+	 *
+	 * @return the first evidence record id
+	 */
+	public String getFirstEvidenceRecordId() {
+		final List<String> evidenceRecordIds = getEvidenceRecordIds();
+		if (!evidenceRecordIds.isEmpty()) {
+			return evidenceRecordIds.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a list of all evidence record ids
+	 *
+	 * @return a list of {@link String} ids
+	 */
+	public List<String> getEvidenceRecordIds() {
+		List<String> result = new ArrayList<>();
+		List<?> tokens = jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord();
+		for (Object token : tokens) {
+			if (token instanceof XmlEvidenceRecord) {
+				XmlEvidenceRecord xmlEvidenceRecord = (XmlEvidenceRecord) token;
+				result.add(xmlEvidenceRecord.getId());
+			} else if (token instanceof XmlSignature) {
+				XmlSignature xmlSignature = (XmlSignature) token;
+				List<XmlEvidenceRecord> evidenceRecords = xmlSignature.getEvidenceRecords();
+				for (XmlEvidenceRecord xmlEvidenceRecord : evidenceRecords) {
+					result.add(xmlEvidenceRecord.getId());
+				}
+			}
+		}
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks bbb : bbbs) {
+			if (Context.TIMESTAMP == bbb.getType()) {
+				result.add(bbb.getId());
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Returns a list of all revocation data ids
 	 *
 	 * @return a list of {@link String} ids
@@ -288,6 +332,25 @@ public class DetailedReport {
 			}
 			if (xmlSignature.getValidationProcessBasicSignature() != null) {
 				return xmlSignature.getValidationProcessBasicSignature().getProofOfExistence();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns lowest POE of the evidence record with the given Id
+	 *
+	 * @param evidenceRecordId {@link String} id of the evidence record to get POE for
+	 * @return {@link Date}
+	 */
+	public Date getEvidenceRecordLowestPOETime(String evidenceRecordId) {
+		XmlEvidenceRecord xmlEvidenceRecord = getXmlEvidenceRecordById(evidenceRecordId);
+		if (xmlEvidenceRecord != null) {
+			if (xmlEvidenceRecord.getValidationProcessEvidenceRecord() != null) {
+				XmlProofOfExistence poe = xmlEvidenceRecord.getValidationProcessEvidenceRecord().getProofOfExistence();
+				if (poe != null) {
+					return poe.getTime();
+				}
 			}
 		}
 		return null;
@@ -393,13 +456,67 @@ public class DetailedReport {
 	 * Gets timestamp validation with archive data subIndication for a timestamp with id
 	 *
 	 * @param timestampId {@link String}
-	 * @return {@link Indication}
+	 * @return {@link SubIndication}
 	 */
 	public SubIndication getArchiveDataTimestampValidationSubIndication(String timestampId) {
 		XmlValidationProcessArchivalDataTimestamp timestampValidationById = getArchiveDataTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getSubIndication();
 		}
+		return null;
+	}
+
+	/**
+	 * Gets evidence record validation indication for an evidence record with id
+	 *
+	 * @param evidenceRecordId {@link String}
+	 * @return {@link Indication}
+	 */
+	public Indication getEvidenceRecordValidationIndication(String evidenceRecordId) {
+		XmlValidationProcessEvidenceRecord evidenceRecordValidationById = getEvidenceRecordValidationById(evidenceRecordId);
+		if (evidenceRecordValidationById != null && evidenceRecordValidationById.getConclusion() != null) {
+			return evidenceRecordValidationById.getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets evidence record validation subIndication for an evidence record with id
+	 *
+	 * @param evidenceRecordId {@link String}
+	 * @return {@link SubIndication}
+	 */
+	public SubIndication getEvidenceRecordValidationSubIndication(String evidenceRecordId) {
+		XmlValidationProcessEvidenceRecord evidenceRecordValidationById = getEvidenceRecordValidationById(evidenceRecordId);
+		if (evidenceRecordValidationById != null && evidenceRecordValidationById.getConclusion() != null) {
+			return evidenceRecordValidationById.getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
+	private XmlValidationProcessEvidenceRecord getEvidenceRecordValidationById(String evidenceRecordId) {
+		XmlEvidenceRecord evidenceRecord = getXmlEvidenceRecordById(evidenceRecordId);
+		if (evidenceRecord != null) {
+			return evidenceRecord.getValidationProcessEvidenceRecord();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns an {@code XmlEvidenceRecord} by the given id
+	 * Null if the evidence record is not found
+	 *
+	 * @param evidenceRecordId {@link String} id of an evidence record to get
+	 * @return {@link XmlEvidenceRecord}
+	 */
+	public XmlEvidenceRecord getXmlEvidenceRecordById(String evidenceRecordId) {
+		for (XmlEvidenceRecord xmlEvidenceRecord : getIndependentEvidenceRecords()) {
+			if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+				return xmlEvidenceRecord;
+			}
+		}
+
+		// TODO : extract evidence records from signatures
 		return null;
 	}
 
@@ -571,6 +688,17 @@ public class DetailedReport {
 					return xmlTimestamp;
 				}
 			}
+			// TODO : handle embedded evidence record timestamps
+		}
+
+		List<XmlEvidenceRecord> independentEvidenceRecords = getIndependentEvidenceRecords();
+		for (XmlEvidenceRecord xmlEvidenceRecord : independentEvidenceRecords) {
+			List<XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
+			for (XmlTimestamp xmlTimestamp : timestamps) {
+				if (xmlTimestamp.getId().equals(timestampId)) {
+					return xmlTimestamp;
+				}
+			}
 		}
 		return null;
 	}
@@ -620,7 +748,7 @@ public class DetailedReport {
 	 */
 	public List<XmlSignature> getSignatures() {
 		List<XmlSignature> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlSignature) {
 				result.add((XmlSignature) element);
 			}
@@ -635,9 +763,24 @@ public class DetailedReport {
 	 */
 	public List<XmlTimestamp> getIndependentTimestamps() {
 		List<XmlTimestamp> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlTimestamp) {
 				result.add((XmlTimestamp) element);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of all independent (detached) evidence records
+	 *
+	 * @return a list of {@link XmlEvidenceRecord}s
+	 */
+	public List<XmlEvidenceRecord> getIndependentEvidenceRecords() {
+		List<XmlEvidenceRecord> result = new ArrayList<>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
+			if (element instanceof XmlEvidenceRecord) {
+				result.add((XmlEvidenceRecord) element);
 			}
 		}
 		return result;
@@ -651,7 +794,7 @@ public class DetailedReport {
 	 */
 	public List<XmlCertificate> getCertificates() {
 		List<XmlCertificate> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlCertificate) {
 				result.add((XmlCertificate) element);
 			}
@@ -786,6 +929,10 @@ public class DetailedReport {
 		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
 		if (timestampById != null) {
 			return timestampById.getConclusion();
+		}
+		XmlEvidenceRecord evidenceRecordById = getXmlEvidenceRecordById(tokenId);
+		if (evidenceRecordById != null) {
+			return evidenceRecordById.getConclusion();
 		}
 		XmlBasicBuildingBlocks bbb = getBasicBuildingBlockById(tokenId);
 		if (bbb != null) {

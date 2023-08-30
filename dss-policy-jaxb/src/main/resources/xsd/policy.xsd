@@ -51,6 +51,11 @@
 					<xsd:documentation>Constraints related to the revocation data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="EvidenceRecord" type="EvidenceRecordConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints on the timestamps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
@@ -457,6 +462,34 @@
 					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of common checks on this token signature</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="EvidenceRecordConstraints">
+		<xsd:annotation>
+			<xsd:documentation>Group of constraints on the evidence record</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:sequence>
+					<xsd:element name="DataObjectExistence" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks the existence of the archival data object</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DataObjectIntact" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if the digest match the archival data object</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 				</xsd:sequence>

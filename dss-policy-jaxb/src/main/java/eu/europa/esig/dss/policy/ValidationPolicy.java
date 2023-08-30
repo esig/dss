@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -271,6 +272,13 @@ public interface ValidationPolicy {
 	 *         otherwise.
 	 */
 	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
+
+	/**
+	 * This method returns cryptographic constraints for validation of Evidence Record
+	 *
+	 * @return {@link CryptographicConstraint}
+	 */
+	CryptographicConstraint getEvidenceRecordCryptographicConstraint();
 
 	/**
 	 * Returns certificate CA constraint
@@ -1049,6 +1057,20 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint();
 
 	/**
+	 * Returns DataObjectExistence constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectExistence element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectExistenceConstraint();
+
+	/**
+	 * Returns DataObjectIntact constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectIntact element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectIntactConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade
@@ -1376,7 +1398,6 @@ public interface ValidationPolicy {
 	 */
 	Model getValidationModel();
 
-
 	/**
 	 * Returns the constraint used for Signature validation
 	 *
@@ -1404,6 +1425,13 @@ public interface ValidationPolicy {
 	 * @return {@code RevocationConstraints}
 	 */
 	RevocationConstraints getRevocationConstraints();
+
+	/**
+	 * Returns the constraint used for Evidence Record validation
+	 *
+	 * @return {@link EvidenceRecordConstraints}
+	 */
+	EvidenceRecordConstraints getEvidenceRecordConstraints();
 
 	/**
 	 * Returns the constraint used for ASiC Container validation

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -1236,6 +1237,35 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
+	@Override
+	public LevelConstraint getEvidenceRecordDataObjectExistenceConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getDataObjectExistence();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordDataObjectIntactConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getDataObjectIntact();
+		}
+		return null;
+	}
+
+	@Override
+	public CryptographicConstraint getEvidenceRecordCryptographicConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			CryptographicConstraint evidenceRecordCryptographic = evidenceRecordConstraints.getCryptographic();
+			initializeCryptographicConstraint(evidenceRecordCryptographic);
+			return evidenceRecordCryptographic;
+		}
+		return null;
+	}
+
 	private CertificateConstraints getSigningCertificateByContext(Context context) {
 		return getCertificateConstraints(context, SubContext.SIGNING_CERT);
 	}
@@ -1254,34 +1284,33 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private BasicSignatureConstraints getBasicSignatureConstraintsByContext(Context context) {
 		switch (context) {
-		case SIGNATURE:
-		case CERTIFICATE: // TODO improve
-			SignatureConstraints mainSignature = getSignatureConstraints();
-			if (mainSignature != null) {
-				return mainSignature.getBasicSignatureConstraints();
-			}
-			break;
-		case COUNTER_SIGNATURE:
-			SignatureConstraints counterSignature = getCounterSignatureConstraints();
-			if (counterSignature != null) {
-				return counterSignature.getBasicSignatureConstraints();
-			}
-			break;
-		case TIMESTAMP:
-			TimestampConstraints timestampConstraints = getTimestampConstraints();
-			if (timestampConstraints != null) {
-				return timestampConstraints.getBasicSignatureConstraints();
-			}
-			break;
-		case REVOCATION:
-			RevocationConstraints revocationConstraints = getRevocationConstraints();
-			if (revocationConstraints != null) {
-				return revocationConstraints.getBasicSignatureConstraints();
-			}
-			break;
-		default:
-			LOG.warn("Unsupported context {}", context);
-			break;
+			case SIGNATURE:
+			case CERTIFICATE: // TODO improve
+				SignatureConstraints mainSignature = getSignatureConstraints();
+				if (mainSignature != null) {
+					return mainSignature.getBasicSignatureConstraints();
+				}
+				break;
+			case COUNTER_SIGNATURE:
+				SignatureConstraints counterSignature = getCounterSignatureConstraints();
+				if (counterSignature != null) {
+					return counterSignature.getBasicSignatureConstraints();
+				}
+				break;
+			case TIMESTAMP:
+				TimestampConstraints timestampConstraints = getTimestampConstraints();
+				if (timestampConstraints != null) {
+					return timestampConstraints.getBasicSignatureConstraints();
+				}
+				break;
+			case REVOCATION:
+				RevocationConstraints revocationConstraints = getRevocationConstraints();
+				if (revocationConstraints != null) {
+					return revocationConstraints.getBasicSignatureConstraints();
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException(String.format("Unsupported context '%s'", context));
 		}
 		return null;
 	}
@@ -1518,6 +1547,11 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	@Override
 	public RevocationConstraints getRevocationConstraints() {
 		return policy.getRevocation();
+	}
+
+	@Override
+	public EvidenceRecordConstraints getEvidenceRecordConstraints() {
+		return policy.getEvidenceRecord();
 	}
 
 	@Override

@@ -41,6 +41,15 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Returns name of the evidence record's document, when applicable
+     *
+     * @return {@link String}
+     */
+    public String getFilename() {
+        return evidenceRecord.getDocumentName();
+    }
+
+    /**
      * Gets a list of digest matchers representing the associated archival data objects validation status
      *
      * @return a list of {@link XmlDigestMatcher}
@@ -54,13 +63,29 @@ public class EvidenceRecordWrapper {
      *
      * @return a list of {@link TimestampWrapper}s
      */
-    public List<TimestampWrapper> getTimestamps() {
+    public List<TimestampWrapper> getTimestampList() {
         List<TimestampWrapper> tsps = new ArrayList<>();
         List<XmlFoundTimestamp> timestamps = evidenceRecord.getEvidenceRecordTimestamps();
         for (XmlFoundTimestamp xmlFoundTimestamp : timestamps) {
             tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
         }
         return tsps;
+    }
+
+    /**
+     * Returns a list of time-stamp identifiers associated with the Evidence Record
+     *
+     * @return a list of {@link String}s
+     */
+    public List<String> getTimestampIdsList() {
+        List<String> result = new ArrayList<>();
+        List<TimestampWrapper> timestamps = getTimestampList();
+        if (timestamps != null) {
+            for (TimestampWrapper tsp : timestamps) {
+                result.add(tsp.getId());
+            }
+        }
+        return result;
     }
 
     /**

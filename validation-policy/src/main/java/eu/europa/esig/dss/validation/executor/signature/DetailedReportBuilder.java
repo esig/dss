@@ -25,6 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSemantic;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
@@ -33,9 +34,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
@@ -51,6 +54,7 @@ import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProce
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
+import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.EvidenceRecordValidationProcess;
 import eu.europa.esig.dss.validation.process.vpftsp.AllTimestampValidationBlock;
 import eu.europa.esig.dss.validation.reports.DSSReportException;
 
@@ -121,7 +125,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			timestampValidations = executeAllTimestampsValidation(bbbs, tlAnalysis, poe);
 		}
 
-		final Set<String> attachedTimestamps = new HashSet<>();
+		Set<String> attachedTimestamps = new HashSet<>();
+		Set<String> attachedEvidenceRecords = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			final XmlSignature signatureAnalysis = new XmlSignature();
 			signatureAnalysis.setId(signature.getId());
@@ -141,6 +146,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			if (ValidationLevel.LONG_TERM_DATA.equals(validationLevel)) {
 				validation = executeLongTermValidation(signatureAnalysis, signature, bbbs);
 			} else if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
+				// TODO : attach evidence records
 				executeLongTermValidation(signatureAnalysis, signature, bbbs);
 				validation = executeArchiveValidation(signatureAnalysis, signature, bbbs, poe);
 			}
@@ -159,7 +165,28 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 			
 			signatureAnalysis.setConclusion(getFinalConclusion(validation));
 
-			detailedReport.getSignatureOrTimestampOrCertificate().add(signatureAnalysis);
+			detailedReport.getSignatureOrTimestampOrEvidenceRecord().add(signatureAnalysis);
+		}
+
+		if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
+			for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+				if (attachedEvidenceRecords.contains(evidenceRecord.getId())) {
+					continue;
+				}
+
+				XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+				xmlEvidenceRecord.setId(evidenceRecord.getId());
+
+				attachedTimestamps.addAll(evidenceRecord.getTimestampIdsList());
+				for (TimestampWrapper sigTimestamp : evidenceRecord.getTimestampList()) {
+					xmlEvidenceRecord.getTimestamps().add(timestampValidations.get(sigTimestamp.getId()));
+				}
+
+				XmlValidationProcessEvidenceRecord validation = executeEvidenceRecordValidation(xmlEvidenceRecord, evidenceRecord, bbbs);
+				xmlEvidenceRecord.setConclusion(validation.getConclusion());
+
+				detailedReport.getSignatureOrTimestampOrEvidenceRecord().add(xmlEvidenceRecord);
+			}
 		}
 
 		if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
@@ -167,7 +194,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 				if (attachedTimestamps.contains(timestamp.getId())) {
 					continue;
 				}
-				detailedReport.getSignatureOrTimestampOrCertificate().add(timestampValidations.get(timestamp.getId()));
+				detailedReport.getSignatureOrTimestampOrEvidenceRecord().add(timestampValidations.get(timestamp.getId()));
 			}
 		}
 		
@@ -211,6 +238,15 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		XmlValidationProcessArchivalData vpfswadResult = vpfswad.execute();
 		signatureAnalysis.setValidationProcessArchivalData(vpfswadResult);
 		return vpfswadResult;
+	}
+
+	private XmlValidationProcessEvidenceRecord executeEvidenceRecordValidation(XmlEvidenceRecord evidenceRecordAnalysis,
+																			   EvidenceRecordWrapper evidenceRecord, Map<String, XmlBasicBuildingBlocks> bbbs) {
+		EvidenceRecordValidationProcess ervp = new EvidenceRecordValidationProcess(
+				i18nProvider, evidenceRecord, evidenceRecordAnalysis.getTimestamps(), bbbs, policy, currentTime);
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = ervp.execute();
+		evidenceRecordAnalysis.setValidationProcessEvidenceRecord(validationProcessEvidenceRecord);
+		return validationProcessEvidenceRecord;
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
@@ -261,11 +297,13 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 	
 	private void collectIndications(XmlDetailedReport detailedReport) {
-		for (Serializable xmlObject : detailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable xmlObject : detailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (xmlObject instanceof XmlSignature) {
 				collectIndications((XmlSignature) xmlObject);
 			} else if (xmlObject instanceof XmlTimestamp) {
 				collectIndications((XmlTimestamp) xmlObject);
+			} else if (xmlObject instanceof XmlEvidenceRecord) {
+				collectIndications((XmlEvidenceRecord) xmlObject);
 			}
 		}
 		for (XmlBasicBuildingBlocks bbb : detailedReport.getBasicBuildingBlocks()) {
@@ -285,6 +323,10 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 	private void collectIndications(XmlTimestamp xmlTimestamp) {
 		collectIndications(xmlTimestamp.getValidationProcessBasicTimestamp());
+	}
+
+	private void collectIndications(XmlEvidenceRecord xmlEvidenceRecord) {
+		collectIndications(xmlEvidenceRecord.getValidationProcessEvidenceRecord());
 	}
 
 	private void collectIndications(XmlBasicBuildingBlocks bbb) {

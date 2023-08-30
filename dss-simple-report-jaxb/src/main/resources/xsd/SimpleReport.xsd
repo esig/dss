@@ -20,6 +20,7 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
 				<xs:element name="Timestamp" type="Timestamp" />
+				<xs:element name="EvidenceRecord" type="EvidenceRecord" />
 			</xs:choice>
 			
 			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
@@ -128,6 +129,18 @@
 					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
 					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
 					<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecord">
+		<xs:complexContent>
+			<xs:extension base="Token">
+				<xs:sequence>
+					<xs:element name="POETime" type="xs:dateTime" />
+					<xs:element name="EvidenceRecordScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

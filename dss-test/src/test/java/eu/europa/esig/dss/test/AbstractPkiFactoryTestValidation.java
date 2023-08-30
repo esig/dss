@@ -1155,7 +1155,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
 		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-			List<TimestampWrapper> timestamps = evidenceRecord.getTimestamps();
+			List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
 			assertTrue(Utils.isCollectionNotEmpty(timestamps));
 			for (TimestampWrapper timestampWrapper : timestamps) {
 				checkTimestamp(diagnosticData, timestampWrapper);

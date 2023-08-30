@@ -41,9 +41,6 @@ import java.util.List;
  */
 public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-    /** The validated timestamp */
-    private final TimestampWrapper timestamp;
-
     /** Signature's basic validation conclusion */
     private final XmlConstraintsConclusion basicTimestampValidation;
 
@@ -58,16 +55,13 @@ public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsCon
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
-     * @param timestamp {@link TimestampWrapper}
      * @param basicTimestampValidation {@link XmlConstraintsConclusion}
      * @param constraint {@link LevelConstraint}
      */
     public AcceptableBasicTimestampValidationCheck(I18nProvider i18nProvider, T result,
-                                                   TimestampWrapper timestamp,
                                                    XmlConstraintsConclusion basicTimestampValidation,
                                                    LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
-        this.timestamp = timestamp;
         this.basicTimestampValidation = basicTimestampValidation;
     }
 
