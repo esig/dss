@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>Final_EU_TSL-UKsigned-timestamped-archival.sce</DocumentName>
+    <ValidationDate>2023-07-19T14:56:32Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/ASiCManifest.xml</Filename>
+                <SignatureFilename>META-INF/timestamp001.tst</SignatureFilename>
+                <Entries>
+                    <Entry>signed.xml</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>signed.xml</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures/>
+    <UsedCertificates>
+        <Certificate Id="C-3E15D1FF3A67B2771690FA2C4E43CB43A7C66C9E388C15F4594C974A77AEB576">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ID06,ou=tsa,o=cert spa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ID06,OU=TSA,O=cert SPA,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cert qualified time stamping authority 2,2.5.4.5=#353231313030130b3037393436,ou=tsa,o=cert spa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=cert Qualified Time Stamping Authority 2,2.5.4.5=#353231313030130b3037393436,OU=TSA,O=cert SPA,C=IT</IssuerDistinguishedName>
+            <SerialNumber>239</SerialNumber>
+            <CommonName>ID06</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>cert SPA</OrganizationName>
+            <OrganizationalUnit>TSA</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-06-01T00:00:00Z</NotAfter>
+            <NotBefore>2021-06-01T08:40:10Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C7F673520BBA774BB8815F9830EF28BA74DDB713015D09AE059046F931DC16E2</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>rpKB5TBVbchKdHihcW0/OQL+WIc=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>av5FFkHPbt3rzUnZR+jUzjCROvM=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://www.firma.cert.it/documentazione/manuali.php">1.3.76.36.1.1.40</certificatePolicy>
+                    <certificatePolicy>1.3.76.16.6</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsp.sc.cert.it/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.cert.it/crls/qtss/CRL.crl</crlUrl>
+                    <crlUrl>ldap://ldap.cert.it/cn%3Dcert%20Qualified%20Time%20Stamping%20Authority%202,ou%3DTSA,o%3Dcert%20SPA,c%3DIT?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.18" description="issuerAlternativeName" critical="false">
+                    <octets>BB4wHIEaZmlybWEuZGlnaXRhbGVAaW5mb2NlcnQuaXQ=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">cert S.p.A.</TSPName>
+                        <TSPName lang="it">cert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="en">cert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2022-02-07T01:00:35Z</StartDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-07-01T00:00:01Z</StartDate>
+                            <EndDate>2022-02-07T01:00:35Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-4916BF00A1FC8F30B0C2547CF8BC4077C48B557DE38DCF047495DE2B3147227A">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PhXR/zpnsncWkPosTkPLQ6fGbJ44jBX0WUyXSneutXY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+            <SubjectDistinguishedName Format="CANONICAL">cn=cert qualified time stamping authority 2,2.5.4.5=#353231313030130b3037393436,ou=tsa,o=cert spa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=cert Qualified Time Stamping Authority 2,2.5.4.5=#353231313030130b3037393436,OU=TSA,O=cert SPA,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cert qualified time stamping authority 2,2.5.4.5=#353231313030130b3037393436,ou=tsa,o=cert spa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=cert Qualified Time Stamping Authority 2,2.5.4.5=#353231313030130b3037393436,OU=TSA,O=cert SPA,C=IT</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <SubjectSerialNumber>07945211006</SubjectSerialNumber>
+            <CommonName>cert Qualified Time Stamping Authority 2</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>cert SPA</OrganizationName>
+            <OrganizationalUnit>TSA</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2026-06-28T15:18:40Z</NotAfter>
+            <NotBefore>2016-06-28T14:18:40Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-FFEFB1B762C77ED6BBB3E9D0C894EC2C1CDB7EB4570878A982B9F4403887763F</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>rpKB5TBVbchKdHihcW0/OQL+WIc=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://www.firma.cert.it/documentazione/manuali.php">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.cert.it/crls/qtss/ARL.crl</crlUrl>
+                    <crlUrl>ldap://ldap.cert.it/cn%3Dcert%20Qualified%20Time%20Stamping%20Authority%202,ou%3DTSA,o%3Dcert%20SPA,c%3DIT?authorityRevocationList</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.18" description="issuerAlternativeName" critical="false">
+                    <octets>BB4wHIEaZmlybWEuZGlnaXRhbGVAaW5mb2NlcnQuaXQ=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">cert S.p.A.</TSPName>
+                        <TSPName lang="it">cert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="en">cert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:01Z</StartDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-07-01T00:00:01Z</EndDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2016-06-28T14:18:40Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>RJFsHdxm32bChjUpHkhnLOubQxw1RpKrXiwKElE4dZQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C501A926735CAF05FEC7A258A6D30B1E55B5C68D7D5CA29933A06B1D5B7CD79A">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder ice qtsa2,ou=trust service provider,o=cert spa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder ICE QTSA2,OU=Trust Service Provider,O=cert SpA,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cert qualified time stamping authority 2,2.5.4.5=#353231313030130b3037393436,ou=tsa,o=cert spa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=cert Qualified Time Stamping Authority 2,2.5.4.5=#353231313030130b3037393436,OU=TSA,O=cert SPA,C=IT</IssuerDistinguishedName>
+            <SerialNumber>349</SerialNumber>
+            <CommonName>OCSP Responder ICE QTSA2</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>cert SpA</OrganizationName>
+            <OrganizationalUnit>Trust Service Provider</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2024-11-07T14:07:42Z</NotAfter>
+            <NotBefore>2022-11-07T14:07:42Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-EE0F65ED2A33D8EB0A80E4718A76FD33230623450D80A13812094B7123AD12E0</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>rpKB5TBVbchKdHihcW0/OQL+WIc=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>BRs8inMaQUOq4EPNSBdeRuo1tSM=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+                <OtherExtension OID="2.5.29.18" description="issuerAlternativeName" critical="false">
+                    <octets>BB4wHIEaZmlybWEuZGlnaXRhbGVAaW5mb2NlcnQuaXQ=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">cert S.p.A.</TSPName>
+                        <TSPName lang="it">cert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="en">cert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SPA</TSPTradeName>
+                        <TSPTradeName lang="it">cert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2022-02-07T01:00:35Z</StartDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2016-07-01T00:00:01Z</StartDate>
+                            <EndDate>2022-02-07T01:00:35Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xQGpJnNcrwX+x6JYptMLHlW1xo19XKKZM6BrHVt815o=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-4916BF00A1FC8F30B0C2547CF8BC4077C48B557DE38DCF047495DE2B3147227A">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.sc.cert.it/</SourceAddress>
+            <ProductionDate>2023-07-19T12:00:01Z</ProductionDate>
+            <ThisUpdate>2023-07-18T19:18:08Z</ThisUpdate>
+            <NextUpdate>2023-07-20T11:00:00Z</NextUpdate>
+            <ArchiveCutOff>2016-06-28T14:18:40Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C501A926735CAF05FEC7A258A6D30B1E55B5C68D7D5CA29933A06B1D5B7CD79A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C501A926735CAF05FEC7A258A6D30B1E55B5C68D7D5CA29933A06B1D5B7CD79A"/>
+                <ChainItem Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C501A926735CAF05FEC7A258A6D30B1E55B5C68D7D5CA29933A06B1D5B7CD79A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP Responder ICE QTSA2, OU=Trust Service Provider, O=cert SpA, C=IT</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>SRa/AKH8jzCwwlR8+LxAd8SLVX3jjc8EdJXeKzFHIno=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-C0F20A639DD595C32C43898096FB454EF0AFF48154F9F44A5BF82399891024C0">
+            <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
+            <ProductionTime>2021-06-02T15:14:23Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest.xml">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Tqp0k9GbaLg8PxjdD6J5vs/zSe9c6+BXeH8pkikd44g=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <DigestMatcher type="MANIFEST_ENTRY" name="signed.xml">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qgc3sZCipR5aX6+AhVjFj7noBlMZTF7as5glIgJle6c=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E15D1FF3A67B2771690FA2C4E43CB43A7C66C9E388C15F4594C974A77AEB576"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E15D1FF3A67B2771690FA2C4E43CB43A7C66C9E388C15F4594C974A77AEB576"/>
+                <ChainItem Certificate="C-44916C1DDC66DF66C28635291E48672CEB9B431C354692AB5E2C0A1251387594"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=cert Qualified Time Stamping Authority 2, SERIALNUMBER=07945211006, OU=TSA, O=cert SPA, C=IT</IssuerName>
+                    <SerialNumber>239</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=ID06,OU=TSA,O=cert SPA,C=IT</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-3E15D1FF3A67B2771690FA2C4E43CB43A7C66C9E388C15F4594C974A77AEB576">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGLMIGEpIGBMH8xCzAJBgNVBAYTAklUMRUwEwYDVQQKDAxJTkZPQ0VSVCBTUEExDDAKBgNVBAsMA1RTQTEUMBIGA1UEBRMLMDc5NDUyMTEwMDYxNTAzBgNVBAMMLEluZm9DZXJ0IFF1YWxpZmllZCBUaW1lIFN0YW1waW5nIEF1dGhvcml0eSAyAgIA7w==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>PhXR/zpnsncWkPosTkPLQ6fGbJ44jBX0WUyXSneutXY=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-07A4C00472674B797A482DF3840873D9A11E6B7FEEE945EF173673F9DF80D483" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-2511E8B0CC1F23F19D985917BB6762A69C02328E9B50E2B5738C43DE8D0F8E2F" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-07A4C00472674B797A482DF3840873D9A11E6B7FEEE945EF173673F9DF80D483">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCManifest.xml</Name>
+                    <Description>Manifest document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-2511E8B0CC1F23F19D985917BB6762A69C02328E9B50E2B5738C43DE8D0F8E2F">
+                    <Scope>FULL</Scope>
+                    <Name>UK_TL_FINAL_Sn25.xml</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wPIKY53VlcMsQ4mAlvtFTvCv9IFU+fRKW/gjmYkQJMA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-07A4C00472674B797A482DF3840873D9A11E6B7FEEE945EF173673F9DF80D483">
+            <ReferencedName>META-INF/ASiCManifest.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Tqp0k9GbaLg8PxjdD6J5vs/zSe9c6+BXeH8pkikd44g=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-2511E8B0CC1F23F19D985917BB6762A69C02328E9B50E2B5738C43DE8D0F8E2F">
+            <ReferencedName>signed.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qgc3sZCipR5aX6+AhVjFj7noBlMZTF7as5glIgJle6c=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>IT</CountryCode>
+            <Url>https://eidas.agid.gov.it/TL/TSL-IT.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>192</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2023-07-19T14:49:40Z</LastLoading>
+            <IssueDate>2023-07-17T01:00:00Z</IssueDate>
+            <NextUpdate>2024-01-17T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>328</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2023-07-19T14:49:39Z</LastLoading>
+            <IssueDate>2023-07-04T14:00:22Z</IssueDate>
+            <NextUpdate>2024-01-03T15:00:22Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

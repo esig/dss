@@ -35,13 +35,13 @@ import java.util.List;
 public class DSSErrorHandler implements ErrorHandler {
 
 	/** List of error exceptions */
-	private final List<SAXException> errors = new ArrayList<>();
+	private final List<SAXParseException> errors = new ArrayList<>();
 
 	/** List of fatal error exceptions */
-	private final List<SAXException> fatalErrors = new ArrayList<>();
+	private final List<SAXParseException> fatalErrors = new ArrayList<>();
 
 	/** List of warning exceptions */
-	private final List<SAXException> warnings = new ArrayList<>();
+	private final List<SAXParseException> warnings = new ArrayList<>();
 
 	/**
 	 * Default constructor initializing empty lists of messages
@@ -71,7 +71,7 @@ public class DSSErrorHandler implements ErrorHandler {
 	 * 
 	 * @return a list of {@link SAXParseException} exceptions
 	 */
-	public List<SAXException> getErrors() {
+	public List<SAXParseException> getErrors() {
 		return errors;
 	}
 
@@ -81,7 +81,7 @@ public class DSSErrorHandler implements ErrorHandler {
 	 * 
 	 * @return a list of {@link SAXParseException} exceptions
 	 */
-	public List<SAXException> getFatalErrors() {
+	public List<SAXParseException> getFatalErrors() {
 		return fatalErrors;
 	}
 
@@ -91,7 +91,7 @@ public class DSSErrorHandler implements ErrorHandler {
 	 * 
 	 * @return a list of {@link SAXParseException} exceptions
 	 */
-	public List<SAXException> getWarnings() {
+	public List<SAXParseException> getWarnings() {
 		return warnings;
 	}
 

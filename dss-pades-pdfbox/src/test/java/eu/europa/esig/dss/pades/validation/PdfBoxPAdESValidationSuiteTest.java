@@ -42,6 +42,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2513LTTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS2513Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2601Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2821Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS3111Test;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEndEntityCertIssuedByNotCACertTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
@@ -119,7 +120,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
 		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class,
 		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class,
-		PAdESEndEntityCertIssuedByNotCACertTest.class })
+		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }

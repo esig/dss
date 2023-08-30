@@ -100,7 +100,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
         imageParameters.setImage(PNG_IMAGE);
         imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
         imageParameters.setBackgroundColor(Color.PINK);
-        imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+        imageParameters.getFieldParameters().setRotation(VisualSignatureRotation.ROTATE_90);
 
         super.signAndVerify();
     }

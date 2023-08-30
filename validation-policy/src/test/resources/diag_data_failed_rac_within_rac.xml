@@ -180,7 +180,7 @@
                     <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>FtsTBJKyMLIJLkDdf1d+PLMFPWoQv74wL0XylXZ1teg=</DigestValue>
@@ -224,7 +224,7 @@
                     <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -278,7 +278,7 @@
                     <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>V0dfYTIgSjvofmT0Q8vejf5pqWVFXTtk/4woySj+Q6Q=</DigestValue>
@@ -337,7 +337,7 @@
                     <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8526BFCDFF9313E20D866C91DA562E349CA57055109C01BB838D19136E3D37FE">
                     <Status>GOOD</Status>
@@ -417,7 +417,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-8526BFCDFF9313E20D866C91DA562E349CA57055109C01BB838D19136E3D37FE">
                     <Status>GOOD</Status>
@@ -486,7 +486,7 @@
                     <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-492B3C09192F81EADA4ADF7E9A637C1ABAC925FEE7DB43FD5A8FDC5BB6396DD4">
                     <Status>GOOD</Status>
@@ -546,7 +546,7 @@
                     <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -598,7 +598,7 @@
                     <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-A8080611189466D70593C11799A2BF00A411B074BF1808A7A20DDF790766840A">
                     <Status>GOOD</Status>
@@ -660,7 +660,7 @@
                     <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-95002168FB382096C8CEBC6E480F0DFF16AD634E032600AC6A7A8238E70936FB">
                     <Status>GOOD</Status>

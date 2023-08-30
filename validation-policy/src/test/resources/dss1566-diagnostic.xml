@@ -54,7 +54,7 @@
                     <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
@@ -108,7 +108,7 @@
                     <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
@@ -174,7 +174,7 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>

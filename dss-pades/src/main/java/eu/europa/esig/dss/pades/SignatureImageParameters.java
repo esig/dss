@@ -69,11 +69,6 @@ public class SignatureImageParameters implements Serializable {
 	private Integer dpi;
 
 	/**
-	 * Use rotation on the PDF page, where the visual signature will be
-	 */
-	private VisualSignatureRotation rotation;
-
-	/**
 	 * Horizontal alignment of the visual signature on the pdf page
 	 */
 	private VisualSignatureAlignmentHorizontal alignmentHorizontal = VisualSignatureAlignmentHorizontal.NONE;
@@ -210,14 +205,18 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns rotation value for a signature field
+	 *
 	 * @return {@link VisualSignatureRotation}
+	 * @deprecated since DSS 5.13. Use {@code #SignatureFieldParameters.getRotation()}
 	 */
+	@Deprecated
 	public VisualSignatureRotation getRotation() {
-		return rotation;
+		return getFieldParameters().getRotation();
 	}
 
 	/**
 	 * Sets a rotation value for the signature field.
+	 *
 	 * @param rotation 
 	 *             {@link VisualSignatureRotation}. The following values can be used:
 	 *             NONE (DEFAULT value. No rotation is applied. The origin of coordinates begins from the top left corner of a page);
@@ -225,9 +224,11 @@ public class SignatureImageParameters implements Serializable {
 	 *             ROTATE_90 (Rotates a signature field for a 90° clockwise. Coordinates' origin begins from top right page corner);
 	 *             ROTATE_180 (Rotates a signature field for a 180° clockwise. Coordinates' origin begins from the bottom right page corner);
 	 *             ROTATE_270 (Rotates a signature field for a 270° clockwise. Coordinates' origin begins from the bottom left page corner).
+	 * @deprecated since DSS 5.13. Use {@code #SignatureFieldParameters.setRotation()}
 	 */
+	@Deprecated
 	public void setRotation(VisualSignatureRotation rotation) {
-		this.rotation = rotation;
+		getFieldParameters().setRotation(rotation);
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class SignatureImageParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "SignatureImageParameters [image=" + image + ", zoom=" + zoom
-				+ ", backgroundColor=" + backgroundColor + ", dpi=" + dpi + ", rotation=" + rotation
+				+ ", backgroundColor=" + backgroundColor + ", dpi=" + dpi
 				+ ", alignmentHorizontal=" + alignmentHorizontal + ", alignmentVertical=" + alignmentVertical
 				+ ", fieldParameters=" + getFieldParameters() + ", textParameters=" + getTextParameters() + "]";
 	}
@@ -314,7 +315,6 @@ public class SignatureImageParameters implements Serializable {
 		if (!Objects.equals(backgroundColor, that.backgroundColor))
 			return false;
 		if (!Objects.equals(dpi, that.dpi)) return false;
-		if (rotation != that.rotation) return false;
 		if (alignmentHorizontal != that.alignmentHorizontal) return false;
 		if (alignmentVertical != that.alignmentVertical) return false;
 		if (imageScaling != that.imageScaling) return false;
@@ -328,7 +328,6 @@ public class SignatureImageParameters implements Serializable {
 		result = 31 * result + zoom;
 		result = 31 * result + (backgroundColor != null ? backgroundColor.hashCode() : 0);
 		result = 31 * result + (dpi != null ? dpi.hashCode() : 0);
-		result = 31 * result + (rotation != null ? rotation.hashCode() : 0);
 		result = 31 * result + (alignmentHorizontal != null ? alignmentHorizontal.hashCode() : 0);
 		result = 31 * result + (alignmentVertical != null ? alignmentVertical.hashCode() : 0);
 		result = 31 * result + (imageScaling != null ? imageScaling.hashCode() : 0);

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 /**
  * Checks if the past signature validation result is acceptable
  */
-public class PastSignatureValidationCheck extends AbstractPastTokenValidationCheck {
+public class PastSignatureValidationCheck extends AbstractPastTokenValidationCheck<XmlValidationProcessArchivalData> {
 
 	/**
 	 * Default constructor

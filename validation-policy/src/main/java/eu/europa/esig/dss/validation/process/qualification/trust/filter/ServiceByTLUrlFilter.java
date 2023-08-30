@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -30,7 +30,7 @@ import java.util.Set;
  * This class is used to filter trusted services by the TL Url.
  * 
  */
-public class ServiceByTLUrlFilter extends AbstractTrustedServiceFilter {
+public class ServiceByTLUrlFilter extends AbstractTrustServiceFilter {
 
 	/** Set of TL URLs to filter by */
 	private final Set<String> tlUrls;
@@ -54,7 +54,7 @@ public class ServiceByTLUrlFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustServiceWrapper service) {
 		for (String url : tlUrls) {
 			if (Utils.areStringsEqualIgnoreCase(url, service.getTrustedList().getUrl())) {
 				return true;

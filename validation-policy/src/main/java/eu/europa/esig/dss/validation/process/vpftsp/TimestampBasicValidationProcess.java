@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.vpftsp;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -34,7 +34,7 @@ import java.util.Map;
  * Performs Time-stamp validation building block as per clause 5.4
  *
  */
-public class TimestampBasicValidationProcess extends AbstractBasicValidationProcess<XmlValidationProcessTimestamp> {
+public class TimestampBasicValidationProcess extends AbstractBasicValidationProcess<XmlValidationProcessBasicTimestamp> {
 
     /**
      * Timestamp being validated
@@ -51,7 +51,7 @@ public class TimestampBasicValidationProcess extends AbstractBasicValidationProc
      */
     public TimestampBasicValidationProcess(I18nProvider i18nProvider, DiagnosticData diagnosticData,
                                            TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs) {
-        super(i18nProvider, new XmlValidationProcessTimestamp(), diagnosticData, timestamp, bbbs);
+        super(i18nProvider, new XmlValidationProcessBasicTimestamp(), diagnosticData, timestamp, bbbs);
         this.timestamp = timestamp;
     }
 

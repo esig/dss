@@ -116,8 +116,8 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-5287CEC835848078FB361335D566E2CB5AFA8F0BEB92A42DDB4FE061D0CFA99C" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-5287CEC835848078FB361335D566E2CB5AFA8F0BEB92A42DDB4FE061D0CFA99C" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>
                         <TSPName lang="en">TSP-5.3 Name</TSPName>
                     </TSPNames>
@@ -125,8 +125,8 @@
                         <TSPTradeName lang="en">TSP-5.3 Trade name</TSPTradeName>
                     </TSPTradeNames>
                     <TSPRegistrationIdentifiers/>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B7C1A3FA05153951C0261716DFA8E1D0DFBCD298F36C3BC3EB3099EFC25A09FE">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B7C1A3FA05153951C0261716DFA8E1D0DFBCD298F36C3BC3EB3099EFC25A09FE">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-5.3.1 Name</ServiceName>
                             </ServiceNames>
@@ -137,10 +137,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>t8Gj+gUVOVHAJhcW36jh0N+80pjzbDvD6zCZ78JaCf4=</DigestValue>
@@ -195,8 +195,8 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-5287CEC835848078FB361335D566E2CB5AFA8F0BEB92A42DDB4FE061D0CFA99C" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-5287CEC835848078FB361335D566E2CB5AFA8F0BEB92A42DDB4FE061D0CFA99C" LOTL="LOTL-C60B6849A3F2DBB44ACC1E23F9A8DD7297BA5A96685BC70BE36ECCB13BDFAA3D">
                     <TSPNames>
                         <TSPName lang="en">TSP-5.3 Name</TSPName>
                     </TSPNames>
@@ -204,8 +204,8 @@
                         <TSPTradeName lang="en">TSP-5.3 Trade name</TSPTradeName>
                     </TSPTradeNames>
                     <TSPRegistrationIdentifiers/>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B7C1A3FA05153951C0261716DFA8E1D0DFBCD298F36C3BC3EB3099EFC25A09FE">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B7C1A3FA05153951C0261716DFA8E1D0DFBCD298F36C3BC3EB3099EFC25A09FE">
                             <ServiceNames>
                                 <ServiceName lang="en">TS-5.3.1 Name</ServiceName>
                             </ServiceNames>
@@ -219,10 +219,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-1BCAA442C912D23986764C1CB87DAB0F10955EECBB2A1BFBDF1F2B4530BCCE55">
                     <Status>GOOD</Status>

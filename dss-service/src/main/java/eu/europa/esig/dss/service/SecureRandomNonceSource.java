@@ -41,8 +41,16 @@ public class SecureRandomNonceSource implements NonceSource {
 	}
 
 	@Override
+	public byte[] getNonceValue() {
+		byte[] bytes = new byte[32];
+		secureRandom.nextBytes(bytes);
+		return bytes;
+	}
+
+	@Override
+	@Deprecated
 	public BigInteger getNonce() {
-		return BigInteger.valueOf(secureRandom.nextLong());
+		return new BigInteger(getNonceValue());
 	}
 
 }

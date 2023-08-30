@@ -109,7 +109,7 @@
                     <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-F474F2FA2A34D4E158BC8F9B780E29859ECA68F87F10EB3400B097403F7F9F39">
                     <Status>GOOD</Status>
@@ -156,7 +156,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -207,7 +207,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E3B1DED818BEA65106A8476F5014433E2D683AB835356F2474DF354A419626F4">
                     <Status>GOOD</Status>
@@ -263,7 +263,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-E3B1DED818BEA65106A8476F5014433E2D683AB835356F2474DF354A419626F4">
                     <Status>GOOD</Status>
@@ -314,7 +314,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

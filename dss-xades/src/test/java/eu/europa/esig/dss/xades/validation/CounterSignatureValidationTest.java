@@ -85,23 +85,19 @@ public class CounterSignatureValidationTest extends AbstractXAdESTestValidation 
 			boolean containsCounterSignatures = false;
 
 			SignatureAttributesType signatureAttributes = signatureValidationReport.getSignatureAttributes();
-			List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-			for (Object signatureAttributeObj : signatureAttributeObjects) {
-				if (signatureAttributeObj instanceof JAXBElement) {
-					JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-					Object value = jaxbElement.getValue();
-	
-					if (value instanceof SACounterSignatureType) {
-						SACounterSignatureType counterSignatureType = (SACounterSignatureType) jaxbElement.getValue();
-						assertNotNull(counterSignatureType.getAttributeObject());
-						assertEquals(1, counterSignatureType.getAttributeObject().size());
-						assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
-						assertNotNull(counterSignatureType.getCounterSignature());
-						SignatureIdentifierType counterSignatureReference = (SignatureIdentifierType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
-						etsiCounterSignatureId = counterSignatureReference.getId();
-						countCounterSignatures++;
-						containsCounterSignatures = true;
-					}
+			List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+			for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+				Object value = signatureAttributeObj.getValue();
+				if (value instanceof SACounterSignatureType) {
+					SACounterSignatureType counterSignatureType = (SACounterSignatureType) signatureAttributeObj.getValue();
+					assertNotNull(counterSignatureType.getAttributeObject());
+					assertEquals(1, counterSignatureType.getAttributeObject().size());
+					assertTrue(Utils.isCollectionNotEmpty(counterSignatureType.getAttributeObject()));
+					assertNotNull(counterSignatureType.getCounterSignature());
+					SignatureIdentifierType counterSignatureReference = (SignatureIdentifierType) counterSignatureType.getAttributeObject().get(0).getVOReference().get(0);
+					etsiCounterSignatureId = counterSignatureReference.getId();
+					countCounterSignatures++;
+					containsCounterSignatures = true;
 				}
 			}
 			if (!containsCounterSignatures) {

@@ -35,12 +35,12 @@
                     <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-3.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202034628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                             <ServiceNames><ServiceName lang="en">TS-3.1.4 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -48,10 +48,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
@@ -108,12 +108,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-563C0B20B508FB710778518E766712847E3829EBE483962DCE07016B1BFC2EA8" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-3.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-202034628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-3785B614CDB20D87E4F60BA360A2C08B3410EF4B7FB08359064322281380C376">
                             <ServiceNames><ServiceName lang="en">TS-3.1.4 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
@@ -122,10 +122,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-18d60ffce5904ed1e2b3de04a7ba48bf7f904a34d6988962b964843649a334563b36cbfdce6aa8c34ae67c8acb33073fcf5d2fab96e4adf03d77e66ad2a4f4a9">
                     <Status>GOOD</Status>

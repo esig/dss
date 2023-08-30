@@ -95,7 +95,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIFRzCCAy+gAwIBAgIJEQA0tk7GNi02MA0GCSqGSIb3DQEBCwUAMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjAeFw0xNzAyMDYwOTI3MzVaFw00MjAyMDYwOTI3MzVaMEExCzAJBgNVBAYTAlJPMRQwEgYDVQQKEwtDRVJUU0lHTiBTQTEcMBoGA1UECxMTY2VydFNJR04gUk9PVCBDQSBHMjCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAMDFdRmRfUR0dIf+DjuW3NgBFszuY5HnC2/OOwppGnzC46+CjobXXo9X69MhWf05N0IwvlDqtg+piNguLWkh59E3GE59kdUWX2tbAMI5Qw02hVK5U2UPHULlj88F0+7cDBrZuIt4ImfkabBoxTzkbFpG583H+u/E7Eu9aqSs/cwoUe+StCmrqzWaTOTECMYmzPhpn+Sc8CnTXPnGFiWeI8MgwT0PPzhAsP6CRDiqWhqKa2NYOLQV07YRaXseVO6MGiKscpc/I1mbySKEwQdPzH/iV8oScLumZfNpdWO9lfsbl83kqK/20U6o2YpxJM02PbyWxPFsqa7lzw1uKA2wDrXKUXt4FMMgL3/7FFXhEZn91QqhngLjYl/rNUssuHLoPj1PrCy7Lobio3aP5ZMqz6WryFyNSwb/EkaseMsUBzXgqd+L6a8VTxaJW732jcZZroiFDsGJ6x9nxUWO/203Nit4ZoORUSs9/1F3dmKh7Gc+PoGD4FapUB8fepmrY7+EF3fxDTvf95xhszWYijqy7DwaNz9+j5LP2RIUZNoQAhVB/0/E6xyjyfqZ90bp4RjZsbgyLcsUDFDYg2WD7rlcz8sFWkz6GZdr1l0T08JcVLwyc6B49fFtHsufpaafItzRUZ6CeWRgKRM+o/1Pcmqr4tTluCRVLERLiohEnMqE0yo7AgMBAAGjQjBAMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBSCIS1mxteg4BXrzkwJd8RgnlRuAzANBgkqhkiG9w0BAQsFAAOCAgEAYN4auOfyYILVAzOBywaK8SJJ6ejqkX/GM15oGQOGO0MBzwdw5AgeZYWR5hEit/UCI46uuR59H35s5r0l1ZUa8gWmr4UCb6741jH/JclKyMeKqdmfS0mbEVeZkkMR3rYzpMzXjWR91M08KCy0mpbqTfXERMQlqiCA2ClV9+BB/AYm/7k29UMUA2Z44RGx2iBfRgB4ACGlHgAoYXhvqAEBj500mv/0OJD7uNGzcgbJceaBxXntC6Z58hMLnPddDnskk7RI24Zf3lCGeOdA5jGokHZwYa+cNywRtYK3qq4kNFtyDGkNzVmf9nGvnAvRCjj5BiKDUyUM/FHE5r7iOZULJK2v0ZXkltd0ZGtxTgI8qoXzIKNDOXZbbFD+mpwUHmUUihW9o4JFWklWatKcsWMy5WHgUyIOpwpJ6st+H6jiYoD2EEVSmAYY3qXNL3+q1Ok+CHLsIwMCPKaq2LxndD0UF/tUSxfj03k9bWtJySgOLnRQvwzZRjoQhsmnP+mg7H/rpXdYaXHmgwo38oZJar55CJD2AhZkPuXaTH4MNMn5X7azKFGnpyuqSfqNZSlO42sTp5SjLVFteAxEy9/eCG/Oo2Sr05WE1LlSVHJ7liXMvGnjSG4N0MedJ5qq+BOS3R7fY581qRY27Iy4g/Q9iY/NtBde17MXQRBdJ3NghVdJIgc=</Base64Encoded>
         </Certificate>
@@ -161,12 +161,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -176,10 +176,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-F104CADD12E8C96491EB3F95667AFB7E594162A461F968CE2D488C32E6A18624">
                     <Status>GOOD</Status>
@@ -235,12 +235,12 @@
                     <crlUrl>http://crl.certsign.ro/certsign-rootg2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-1AD6AD77C99C8AD96E3D2950A8896C20D8AEA90680636AAF38C70CB3189F5ED5" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">CERTSIGN S.A.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATRO-18288250</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C670C79BF277AF7E7B34A6AA4FA304441833C6BD01A70A7E9B7A2D94C1C1F926">
                             <ServiceNames><ServiceName lang="en">certSIGN Qualified CA</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -249,10 +249,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>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</Base64Encoded>
         </Certificate>

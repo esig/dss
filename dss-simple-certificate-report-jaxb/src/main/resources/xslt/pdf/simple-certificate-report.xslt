@@ -145,7 +145,9 @@
 									<xsl:attribute name="end-indent">0</xsl:attribute>
 
 									<xsl:apply-templates select="dss:qualificationAtIssuance"/>
+									<xsl:apply-templates select="dss:qualificationDetailsAtIssuance"/>
 									<xsl:apply-templates select="dss:qualificationAtValidation"/>
+									<xsl:apply-templates select="dss:qualificationDetailsAtValidation"/>
 									<xsl:apply-templates select="dss:enactedMRA"/>
 									
 									<fo:table-row>
@@ -221,13 +223,7 @@
 		
     </xsl:template>
 
-	<xsl:template match="dss:QualificationDetails|dss:X509ValidationDetails">
-		<xsl:variable name="header">
-			<xsl:choose>
-				<xsl:when test="name() = 'X509ValidationDetails'">X509 Validation Details</xsl:when>
-				<xsl:when test="name() = 'QualificationDetails'">Qualification Details</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
+	<xsl:template match="dss:X509ValidationDetails">
 		<fo:table-row>
 			<xsl:attribute name="margin-top">1px</xsl:attribute>
 			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
@@ -237,8 +233,25 @@
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
 
 					<xsl:attribute name="font-weight">bold</xsl:attribute>
-					<xsl:value-of select="$header" />:
+					X509 Validation Details:
 				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+
+				<xsl:apply-templates select="dss:Error" />
+				<xsl:apply-templates select="dss:Warning" />
+				<xsl:apply-templates select="dss:Info" />
+
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
+
+	<xsl:template match="dss:qualificationDetailsAtIssuance|dss:qualificationDetailsAtValidation">
+		<fo:table-row>
+			<xsl:attribute name="margin-top">1px</xsl:attribute>
+			<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+			<fo:table-cell>
+				<fo:block/>
 			</fo:table-cell>
 			<fo:table-cell>
 

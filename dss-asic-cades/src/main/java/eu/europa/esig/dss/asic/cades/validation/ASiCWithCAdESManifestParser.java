@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.cades.validation;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -31,10 +30,11 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
@@ -146,13 +146,18 @@ public class ASiCWithCAdESManifestParser {
 	}
 	
 	private static byte[] getDigestValue(Element dataObjectReference) {
-		Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPath.DIGEST_VALUE_PATH);
-		if (digestValueElement != null) {
-			try {
-				return Utils.fromBase64(digestValueElement.getTextContent());
-			} catch (Exception e) {
-				LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
+		try {
+			Element digestValueElement = DomUtils.getElement(dataObjectReference, XMLDSigPath.DIGEST_VALUE_PATH);
+			if (digestValueElement != null) {
+				String digest = digestValueElement.getTextContent();
+				if (Utils.isBase64Encoded(digest)) {
+					return Utils.fromBase64(digestValueElement.getTextContent());
+				} else {
+					LOG.warn("The manifest entry digest value is not base64-encoded!");
+				}
 			}
+		} catch (Exception e) {
+			LOG.warn("Unable to extract DigestValue. Reason : [{}]", e.getMessage());
 		}
 		return null;
 	}

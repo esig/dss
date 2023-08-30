@@ -496,6 +496,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateIssuerNameConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getIssuerName();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getCertificateMaxPathLengthConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -829,19 +838,31 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	@Deprecated
 	public MultiValuesConstraint getTrustedServiceStatusConstraint(Context context) {
+		return getTrustServiceStatusConstraint(context);
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustServiceStatusConstraint(Context context) {
 		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
 		if (sigConstraints != null) {
-			return sigConstraints.getTrustedServiceStatus();
+			return sigConstraints.getTrustServiceStatus();
 		}
 		return null;
 	}
 
 	@Override
+	@Deprecated
 	public MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context) {
+		return getTrustServiceTypeIdentifierConstraint(context);
+	}
+
+	@Override
+	public MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context) {
 		BasicSignatureConstraints sigConstraints = getBasicSignatureConstraintsByContext(context);
 		if (sigConstraints != null) {
-			return sigConstraints.getTrustedServiceTypeIdentifier();
+			return sigConstraints.getTrustServiceTypeIdentifier();
 		}
 		return null;
 	}

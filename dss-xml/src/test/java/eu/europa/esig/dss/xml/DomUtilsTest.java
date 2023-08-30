@@ -23,10 +23,11 @@ package eu.europa.esig.dss.xml;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.xml.DomUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,6 +48,7 @@ public class DomUtilsTest {
 	private static final String XML_TEXT = "<hello><world></world></hello>";
 	private static final String INCORRECT_XML_TEXT = "<hello><world></warld></hello>";
 	private static final String XML_WITH_NAMESPACE = "<m:manifest xmlns:m=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\"><m:file-entry m:media-type=\"text/plain\" m:full-path=\"hello.txt\" /></m:manifest>";
+	private static final String XML_WITH_COMMENTS = "<!-- Comment 1 --><!-- Comment 2 --><hello><!-- Comment 3 --><world></world></hello><!-- Comment 4 -->";
 
 	@Test
 	public void registerNamespaceTest() {
@@ -144,6 +147,41 @@ public class DomUtilsTest {
 		assertTrue(DomUtils.isDOM(new InMemoryDocument(XML_WITH_NAMESPACE.getBytes())));
 		assertFalse(DomUtils.isDOM(new InMemoryDocument(XML_HEADER.getBytes())));
 		assertFalse(DomUtils.isDOM(new InMemoryDocument(INCORRECT_XML_TEXT.getBytes())));
+	}
+
+	public void excludeCommentsTest() {
+		Document document = DomUtils.buildDOM(XML_WITH_COMMENTS);
+		Node noCommentsNode = DomUtils.excludeComments(document);
+		assertNoCommentsRecursively(noCommentsNode);
+	}
+
+	private void assertNoCommentsRecursively(Node node) {
+		NodeList childNodes = node.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			assertNotEquals(Node.COMMENT_NODE, child.getNodeType());
+			if (Node.ELEMENT_NODE == child.getNodeType()) {
+				assertNoCommentsRecursively(child);
+			}
+		}
+	}
+
+	@Test
+	public void getIdTest() {
+		assertEquals("Id", DomUtils.getId("Id"));
+		assertEquals("Id", DomUtils.getId("#Id"));
+		assertEquals("Id", DomUtils.getId("#xpointer(id('Id'))"));
+
+		assertEquals("#Id", DomUtils.getId("##Id"));
+		assertEquals("#xpointer(id('Id')", DomUtils.getId("#xpointer(id('Id')"));
+
+		assertEquals("#xpointer(/)", DomUtils.getId("#xpointer(/)"));
+		assertEquals("#xpointer(idd('Id'))", DomUtils.getId("#xpointer(idd('Id'))"));
+
+		assertEquals("", DomUtils.getId(""));
+		assertEquals(" ", DomUtils.getId(" "));
+
+		assertNull(DomUtils.getId(null));
 	}
 	
 }

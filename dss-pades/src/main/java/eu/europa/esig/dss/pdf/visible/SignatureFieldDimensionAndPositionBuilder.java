@@ -133,7 +133,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
     }
 
     private void initRotation() {
-        int rotation = ImageRotationUtils.getRotation(imageParameters.getRotation(), pageRotation);
+        SignatureFieldParameters fieldParameters = imageParameters.getFieldParameters();
+        int rotation = ImageRotationUtils.getRotation(fieldParameters.getRotation(), pageRotation);
         dimensionAndPosition.setGlobalRotation(rotation);
         if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
             pageBox = ImageRotationUtils.swapDimensions(pageBox);

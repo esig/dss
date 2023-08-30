@@ -108,12 +108,14 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certificateElement = (Element) nodeList.item(ii);
+			String base64EncodedCertificate = certificateElement.getTextContent();
 			try {
-				final byte[] derEncoded = Utils.fromBase64(certificateElement.getTextContent());
+				final byte[] derEncoded = Utils.fromBase64(base64EncodedCertificate);
 				final CertificateToken cert = DSSUtils.loadCertificate(derEncoded);
 				addCertificate(cert, origin);
+
 			} catch (Exception e) {
-				LOG.warn("Unable to parse certificate '{}' : {}", certificateElement.getTextContent(), e.getMessage());
+				LOG.warn("Unable to parse certificate '{}' : {}", certificateElement.getTextContent(), e.getMessage(), e);
 			}
 		}
 	}

@@ -145,12 +145,12 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -161,10 +161,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIDuTCCAxugAwIBAgIQWI7rSeYKmAtbOhssZHXyiDAKBggqhkjOPQQDBDBYMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzETMBEGA1UEAwwKRVNURUlEMjAxODAeFw0xOTA4MzAyMTAwMDBaFw0xOTEwMDQyMTAwMDBaMIGBMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzENMAsGA1UECwwET0NTUDEtMCsGA1UEAwwkRVNURUlEMjAxOCBBSUEgT0NTUCBSRVNQT05ERVIgMjAxOTA5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoyf7mvJYO90nRhVVn9NU458V4Z+JysNj9dWrk2sZTkW6Tkft1yC6E3LWzi8NI5WPpohcrVKB3twtTdI6ETPrbpnUpzFdgUOPT3hh5TQHzntR0rQ8kxypyLITNdjZEP2fJljkSU4b7qdq1xZR7Jy9e5dccssCupX39R0Y2f6m2U7pvs6iGfKfGOO1ZVlXaTHRNcJLUQgkXJpxlE1wP1geisx5/yV3so3QI95qmIGIVewsgvxX+v7fJYJWlWUzh6DCe0rTpNvz4cU9m3gBvl2NCRpqRHjnRmaNDz1bT5EbRts8G9MTf1lFKNPzqSF1VVmb1WcjDdBZxceKs6qF0qvrwIDAQABo4HRMIHOMA4GA1UdDwEB/wQEAwIHgDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCTAdBgNVHQ4EFgQUxAQxcPV/w3uvpAqKI92ocuQJx0UwHwYDVR0jBBgwFoAU2axw219+vpT4oOS+R6LQNK2aKhIwRQYIKwYBBQUHAQEEOTA3MDUGCCsGAQUFBzAChilodHRwOi8vd3d3LnNrLmVlL2NlcnRzL0VTVEVJRDIwMTguZGVyLmNydDAMBgNVHRMBAf8EAjAAMA8GCSsGAQUFBzABBQQCBQAwCgYIKoZIzj0EAwQDgYsAMIGHAkE77sMBvMrXQWov9+dhG0cO5Awp4ABbqCS3XoMIj/0VOSSEEa9c3jFVspNw7l83rr9sJ2b/74xEPpaX/ZtHobU+igJCAZG7ReQAXNTRJdO1XTw9utbvzFrBzlS0OctIym3iTC2LRpUcUp3MeVsPV3L8HOST/iPXtppulNf6HKcMsch1XTHp</Base64Encoded>
         </Certificate>
@@ -209,12 +209,12 @@
                     <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754">
                             <ServiceNames><ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -222,10 +222,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://tsa.sk.ee</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIEFjCCAv6gAwIBAgIQftdGTujTD01cG10EjrASbDANBgkqhkiG9w0BAQsFADB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlMB4XDTE5MDEwMTIxMDAwMFoXDTI0MDEwMTIxMDAwMFowejEnMCUGA1UEAwweU0sgVElNRVNUQU1QSU5HIEFVVEhPUklUWSAyMDE5MRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEMMAoGA1UECwwDVFNBMRswGQYDVQQKDBJTSyBJRCBTb2x1dGlvbnMgQVMxCzAJBgNVBAYTAkVFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqfl9D1lK8LveyTb3tlOJZfc0J+W3uG7czOZuQKigwkxq2JXrqndigVtSZWzNnoO+somaNgXqw0lpu+8P0NdUw+y1a4znJntvf7HK4WNrHO94DcrcxIJRdRkxRH/e3/0SE1FpX8B96IgyjeQj9Y3tgHYAfSMo0Sj2ANYc/NpF59NWf0nBzJ5QvXD80N1ybiVVu4NALKFxTOEHPRmdFdptNNEaipwHyLwaSDpXCtnXxBz6zV/jIsMYCxNl0cXlx+mkD97scmLhGB27rmI8qEPM6Tue0iGp1Tb6hIFdEQF2gZ8VPOsyJl3cpQd5GRkT63bOtHUm54TYCfw/P7NhO7pFLwIDAQABo4GcMIGZMA4GA1UdDwEB/wQEAwIGwDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDAdBgNVHQ4EFgQUnUvt/uXDNtWuqmMvTSBvDyrTJxYwHwYDVR0jBBgwFoAUEvJaPupWHL/NBqzx8SXJqUvUFJkwLwYIKwYBBQUHAQEEIzAhMB8GCCsGAQUFBzABhhNodHRwOi8vYWlhLnNrLmVlL0NBMA0GCSqGSIb3DQEBCwUAA4IBAQApC2BNnwqlgm3KsBMbp0lWw2uGVzUXiu4Cfsol6290Jzn6UftA3HjOG33vg5Dl3SV9Z97AfqgbE4A9Czms8veHwtNRLIaAHuRVm6C/GWa4+nuzNFoAK1pjjBGoPWvfYhud/bAlbYY1qF6nHA50/tFT0GGixrnmI9YsZ0tuXM9pQaoO0YnoCvw8cvMIt68WqIEST+OoCZipgdQRZ5IEJTmvE+LLBDuE87orGfxxswsy+jnOfHX8MLBOhWglrJ7RrXLNdKXOlbvhcU3vXl89gKtWWfr+OdVGdJc+/A3wdtTFhNdy7Ce0VIiZvmEx/UtUmfF41g/y+3lXOb3h6ipk037x</Base64Encoded>
         </Certificate>
@@ -281,12 +281,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -297,10 +297,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
                     <Status>GOOD</Status>
@@ -391,12 +391,12 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
                     <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
                             <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -404,10 +404,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIFVzCCBLigAwIBAgIQdUf6rBR0S4tbo2bU/mZV7TAKBggqhkjOPQQDBDBaMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEVMBMGA1UEAwwMRUUtR292Q0EyMDE4MB4XDTE4MDkyMDA5MjIyOFoXDTMzMDkwNTA5MTEwM1owWDELMAkGA1UEBhMCRUUxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxEzARBgNVBAMMCkVTVEVJRDIwMTgwgZswEAYHKoZIzj0CAQYFK4EEACMDgYYABAHHOBlv7UrRPYP1yHhOb7RA/YBDbtgynSVMqYdxnFrKHUXh6tFkghvHuA1k2DSom1hE5kqhB5VspDembwWDJBOQWQGOI/0t3EtccLYjeM7F9xOPdzUbZaIbpNRHpQgVBpFX0xpLTgW27MpIMhU8DHBWFpeAaNX3eUpD4gC5cvhsK0RFEqOCAx0wggMZMB8GA1UdIwQYMBaAFH4pVuc0knhOd+FvLjMqmHHB/TSfMB0GA1UdDgQWBBTZrHDbX36+lPig5L5HotA0rZoqEjAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADCCAc0GA1UdIASCAcQwggHAMAgGBgQAj3oBAjAJBgcEAIvsQAECMDIGCysGAQQBg5EhAQEBMCMwIQYIKwYBBQUHAgEWFWh0dHBzOi8vd3d3LnNrLmVlL0NQUzANBgsrBgEEAYORIQEBAjANBgsrBgEEAYORfwEBATANBgsrBgEEAYORIQEBBTANBgsrBgEEAYORIQEBBjANBgsrBgEEAYORIQEBBzANBgsrBgEEAYORIQEBAzANBgsrBgEEAYORIQEBBDANBgsrBgEEAYORIQEBCDANBgsrBgEEAYORIQEBCTANBgsrBgEEAYORIQEBCjANBgsrBgEEAYORIQEBCzANBgsrBgEEAYORIQEBDDANBgsrBgEEAYORIQEBDTANBgsrBgEEAYORIQEBDjANBgsrBgEEAYORIQEBDzANBgsrBgEEAYORIQEBEDANBgsrBgEEAYORIQEBETANBgsrBgEEAYORIQEBEjANBgsrBgEEAYORIQEBEzANBgsrBgEEAYORIQEBFDANBgsrBgEEAYORfwEBAjANBgsrBgEEAYORfwEBAzANBgsrBgEEAYORfwEBBDANBgsrBgEEAYORfwEBBTANBgsrBgEEAYORfwEBBjAqBgNVHSUBAf8EIDAeBggrBgEFBQcDCQYIKwYBBQUHAwIGCCsGAQUFBwMEMGoGCCsGAQUFBwEBBF4wXDApBggrBgEFBQcwAYYdaHR0cDovL2FpYS5zay5lZS9lZS1nb3ZjYTIwMTgwLwYIKwYBBQUHMAKGI2h0dHA6Ly9jLnNrLmVlL0VFLUdvdkNBMjAxOC5kZXIuY3J0MBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwMAYDVR0fBCkwJzAloCOgIYYfaHR0cDovL2Muc2suZWUvRUUtR292Q0EyMDE4LmNybDAKBggqhkjOPQQDBAOBjAAwgYgCQgDeuUY4HczUbFKS002HZ88gclgYdztHqglENyTMtXE6dMBRnCbgUmhBCAA0mJSHbyFJ8W9ikLiSyurmkJM0hDE9KgJCASOqA405Ia5nKjTJPNsHQlMi7KZsIcTHOoBccx+54N8ZX1MgBozJmT59rZY/2/OeE163BAwD0UdUQAnMPP6+W3Vd</Base64Encoded>
         </Certificate>
@@ -484,7 +484,7 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIE+DCCBFmgAwIBAgIQMLOwlXoR0oFbj52nmRsnezAKBggqhkjOPQQDBDBaMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEVMBMGA1UEAwwMRUUtR292Q0EyMDE4MB4XDTE4MDkwNTA5MTEwM1oXDTMzMDkwNTA5MTEwM1owWjELMAkGA1UEBhMCRUUxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxFTATBgNVBAMMDEVFLUdvdkNBMjAxODCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAMcb/dmAcVo/b2azEPS6CfW7fEA2KuHKC53D7ShVNvLz4QUjCdTXjds/4u99jUoYEQecluVVzMlgEJR1nkN2eOrLAZYxPjwG5HiI1iZEyW9QKVdeEgyvhzWWTNHGjV3HdZRv7L9o4533PtJAyqJq9OTs6mjsqwFXjH49bfZ6CGmzUJsHo4ICvDCCArgwEgYDVR0TAQH/BAgwBgEB/wIBATAOBgNVHQ8BAf8EBAMCAQYwNAYDVR0lAQH/BCowKAYIKwYBBQUHAwkGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwEwHQYDVR0OBBYEFH4pVuc0knhOd+FvLjMqmHHB/TSfMB8GA1UdIwQYMBaAFH4pVuc0knhOd+FvLjMqmHHB/TSfMIICAAYDVR0gBIIB9zCCAfMwCAYGBACPegECMAkGBwQAi+xAAQIwMgYLKwYBBAGDkSEBAQEwIzAhBggrBgEFBQcCARYVaHR0cHM6Ly93d3cuc2suZWUvQ1BTMA0GCysGAQQBg5EhAQECMA0GCysGAQQBg5F/AQEBMA0GCysGAQQBg5EhAQEFMA0GCysGAQQBg5EhAQEGMA0GCysGAQQBg5EhAQEHMA0GCysGAQQBg5EhAQEDMA0GCysGAQQBg5EhAQEEMA0GCysGAQQBg5EhAQEIMA0GCysGAQQBg5EhAQEJMA0GCysGAQQBg5EhAQEKMA0GCysGAQQBg5EhAQELMA0GCysGAQQBg5EhAQEMMA0GCysGAQQBg5EhAQENMA0GCysGAQQBg5EhAQEOMA0GCysGAQQBg5EhAQEPMA0GCysGAQQBg5EhAQEQMA0GCysGAQQBg5EhAQERMA0GCysGAQQBg5EhAQESMA0GCysGAQQBg5EhAQETMA0GCysGAQQBg5EhAQEUMA0GCysGAQQBg5F/AQECMA0GCysGAQQBg5F/AQEDMA0GCysGAQQBg5F/AQEEMA0GCysGAQQBg5F/AQEFMA0GCysGAQQBg5F/AQEGMDEGCisGAQQBg5EhCgEwIzAhBggrBgEFBQcCARYVaHR0cHM6Ly93d3cuc2suZWUvQ1BTMBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwCgYIKoZIzj0EAwQDgYwAMIGIAkIBk698EqetY9Tt6HwO50CfzdIIjKmlfCI34xKdU7J+wz1tNVu2tHJwEhdsH0e92i969sRDp1RNPlVh4XFJzI3oQFQCQgGVxmcuVnsy7NUscDZ0erwovmbFOsNxELCANxNSWx5xMqzEIhV846opxu10UFDIBBPzkbBenL4h+g/WU7lG78fIhA==</Base64Encoded>
         </Certificate>

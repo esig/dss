@@ -32,7 +32,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundRevocations;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
@@ -1155,21 +1154,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			foundTimestamps.add(foundTimestamp);
 		}
 		return foundTimestamps;
-	}
-
-	/**
-	 * Builds a list of {@code XmlOrphanTokens}
-	 *
-	 * @return {@link XmlOrphanTokens}
-	 */
-	protected XmlOrphanTokens buildXmlOrphanTokens() {
-		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
-			XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
-			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
-			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
-			return xmlOrphanTokens;
-		}
-		return null;
 	}
 
 	private void linkTimestampsAndTimestampsObjects(Set<TimestampToken> timestamps) {

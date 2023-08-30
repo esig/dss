@@ -32,9 +32,11 @@ import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -425,6 +427,7 @@ public final class DSSXMLUtils {
 		return null;
 	}
 
+	// TODO : remove method later and re-use DomUtils.serializeNode(node)
 	/**
 	 * This method performs the serialization of the given node
 	 *
@@ -847,6 +850,65 @@ public final class DSSXMLUtils {
 	public static boolean isSameDocumentReference(String referenceUri) {
 		return Utils.EMPTY_STRING.equals(referenceUri) || DomUtils.startsFromHash(referenceUri);
 	}
+
+	/**
+	 * Gets ds:Object by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Object from
+	 * @param id {@link String} object Id
+	 * @return {@link Element} Object element
+	 */
+	public static Element getObjectById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, objectById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Object element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets ds:Manifest by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Manifest from
+	 * @param id {@link String} manifest Id
+	 * @return {@link Element} Manifest element
+	 */
+	public static Element getManifestById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String manifestById = XMLDSigPath.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, manifestById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Manifest element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Initializes a Manifest object from the provided ds:Manifest element
+	 *
+	 * @param manifestElement {@link Element} ds:Manifest element
+	 * @return {@link Manifest} object
+	 * @throws XMLSecurityException if en error occurs in an attempt to initialize the Manifest object
+	 */
+	public static Manifest initManifest(Element manifestElement) throws XMLSecurityException {
+		return new Manifest(manifestElement, "");
+	}
 	
 	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
@@ -1009,33 +1071,35 @@ public final class DSSXMLUtils {
 	 * @return a byte array, representing a content obtained after transformations
 	 */
 	public static byte[] applyTransforms(final Node node, final List<DSSTransform> transforms) {
-		Node nodeToTransform = node;
+		byte[] bytes = DSSUtils.EMPTY_BYTE_ARRAY;
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			byte[] transformedReferenceBytes = null;
+			DSSTransformOutput output = new DSSTransformOutput(node);
 			Iterator<DSSTransform> iterator = transforms.iterator();
 			while (iterator.hasNext()) {
 				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
+				output = transform.performTransform(output);
+				bytes = output.getBytes();
 				if (iterator.hasNext()) {
-					if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+					if (Utils.isArrayEmpty(bytes)) {
 						throw new IllegalInputException(String.format(
 								"Unable to perform the next transform. The %s produced an empty output!", transform));
 					}
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 				}
 			}
+
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(transformedReferenceBytes != null ? new String(transformedReferenceBytes) : "null");
+				LOG.debug(new String(bytes));
 			}
-			if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+			if (Utils.isArrayEmpty(bytes)) {
 				LOG.warn("The output of reference transforms processing is an empty byte array!");
 			}
-			return transformedReferenceBytes;
+			return bytes;
 			
 		} else {
-			return DomUtils.getNodeBytes(nodeToTransform);
+			bytes = DomUtils.getNodeBytes(node);
 		}
+		return bytes;
 	}
 	/**
 	 * Applies transforms on document content and returns the byte array to be used for a
@@ -1195,7 +1259,7 @@ public final class DSSXMLUtils {
 	 */
 	public static void incorporateTransforms(final Element parentElement, List<DSSTransform> transforms, DSSNamespace namespace) {
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			Document documentDom = parentElement.getOwnerDocument();
+			final Document documentDom = parentElement.getOwnerDocument();
 			final Element transformsDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.TRANSFORMS);
 			parentElement.appendChild(transformsDom);
 			for (final DSSTransform dssTransform : transforms) {
@@ -1221,7 +1285,7 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace} to use
 	 */
 	public static void incorporateDigestMethod(final Element parentElement, DigestAlgorithm digestAlgorithm, DSSNamespace namespace) {
-		Document documentDom = parentElement.getOwnerDocument();
+		final Document documentDom = parentElement.getOwnerDocument();
 		final Element digestMethodDom = DomUtils.addElement(documentDom, parentElement, namespace, XMLDSigElement.DIGEST_METHOD);
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
 	}
@@ -1243,12 +1307,27 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace}
 	 */
 	public static void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes, DSSNamespace namespace) {
-		Document documentDom = parentDom.getOwnerDocument();
+		final Document documentDom = parentDom.getOwnerDocument();
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.DIGEST_VALUE);
 
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		parentDom.appendChild(digestValueDom);
+	}
+
+	/**
+	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 *
+	 * @param params {@link XAdESSignatureParameters}
+	 * @return {@link DigestAlgorithm}
+	 */
+	public static DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		if (digestAlgorithm == null || digestAlgorithm.getUri() == null) {
+			throw new IllegalArgumentException(String.format("The Reference DigestAlgorithm '%s' is not supported for XAdES creation! " +
+					"Define another algorithm within #setReferenceDigestAlgorithm method.", digestAlgorithm));
+		}
+		return digestAlgorithm;
 	}
 
 }

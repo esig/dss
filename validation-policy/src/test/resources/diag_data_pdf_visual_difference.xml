@@ -128,7 +128,7 @@
                     <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-1BF5EF9A4A8F594D7E966780796D278449C84B68B50F5EE6146E5ACECEB7D136">
                     <Status>GOOD</Status>

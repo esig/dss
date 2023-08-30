@@ -461,7 +461,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private CertificateToken getIssuerFromProcessedCertificates(Token token) {
 		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
-		// isSignedBy(...) check is required when a certificates is present in different sources
+		// isSignedBy(...) check is required when a certificate is present in different sources
 		// in order to instantiate a public key of the signer
 		if (issuerCertificateToken != null &&
 				(token.getPublicKeyOfTheSigner() != null || token.isSignedBy(issuerCertificateToken))) {

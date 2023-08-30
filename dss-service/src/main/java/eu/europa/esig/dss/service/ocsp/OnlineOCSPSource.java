@@ -20,6 +20,11 @@
  */
 package eu.europa.esig.dss.service.ocsp;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.StatusAlert;
+import eu.europa.esig.dss.alert.status.MessageStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.DSSException;
@@ -29,6 +34,7 @@ import eu.europa.esig.dss.service.NonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
@@ -52,11 +58,13 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,6 +91,31 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	 * The DigestAlgorithm to be used in hash calculation for CertID on a request building
 	 */
 	private DigestAlgorithm certIDDigestAlgorithm = DigestAlgorithm.SHA1;
+
+	/**
+	 * This variable sets a behavior when an obtained OCSP response's nonce does not match the expected value.
+	 * NOTE: applies only when {@code nonceSource} is defined.
+	 */
+	private StatusAlert alertOnInvalidNonce = new ExceptionOnStatusAlert();
+
+	/**
+	 * This variable sets a behavior when an obtained OCSP response does not contain expected nonce value.
+	 * NOTE: applies only when {@code nonceSource} is defined.
+	 */
+	private StatusAlert alertOnNonexistentNonce = new LogOnStatusAlert(Level.WARN);
+
+	/**
+	 * This variable sets a behavior when the current time is not within the range extracted from
+	 * thisUpdate and nextUpdate fields of the obtained OCSP response.
+	 * NOTE: applies only when nonce validation is not performed.
+	 */
+	private StatusAlert alertOnInvalidUpdateTime = new SilentOnStatusAlert();
+
+	/**
+	 * Clients MAY allow configuration of a small tolerance period for acceptance of responses after
+	 * nextUpdate to handle minor clock differences relative to responders and caches.
+	 */
+	private long nextUpdateTolerancePeriod = 0;
 
 	/**
 	 * Create an OCSP source The default constructor for OnlineOCSPSource. The
@@ -130,6 +163,51 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	public void setCertIDDigestAlgorithm(DigestAlgorithm certIDDigestAlgorithm) {
 		Objects.requireNonNull(certIDDigestAlgorithm, "The certIDDigestAlgorithm must not be null!");
 		this.certIDDigestAlgorithm = certIDDigestAlgorithm;
+	}
+
+	/**
+	 * Sets a behavior when the nonce of the OCSP Response does not match the nonce sent within the request
+	 * Default : ExceptionOnStatusAlert (throws an exception if nonce does not match)
+	 *
+	 * @param alertOnInvalidNonce {@link StatusAlert}
+	 */
+	public void setAlertOnInvalidNonce(StatusAlert alertOnInvalidNonce) {
+		this.alertOnInvalidNonce = alertOnInvalidNonce;
+	}
+
+	/**
+	 * Sets a behavior when the obtained OCSP Response does not contain the nonce even that the nonce has been enforced
+	 * (i.e. {@code nonceSource} is specified).
+	 * Default : LogOnStatusAlert (logs a warning in case the OCSP Response does not contain the nonce)
+	 *
+	 * @param alertOnNonexistentNonce {@link StatusAlert}
+	 */
+	public void setAlertOnNonexistentNonce(StatusAlert alertOnNonexistentNonce) {
+		this.alertOnNonexistentNonce = alertOnNonexistentNonce;
+	}
+
+	/**
+	 * Sets a behavior when the current time is out of the range of thisUpdate and nextUpdate fields extracted 
+	 * from the OCSP Response. The check is executed only when nonce is not checked.
+	 * Default : SilentOnStatusAlert (skips the check validation)
+	 * 
+	 * @param alertOnInvalidUpdateTime {@link StatusAlert}
+	 */
+	public void setAlertOnInvalidUpdateTime(StatusAlert alertOnInvalidUpdateTime) {
+		this.alertOnInvalidUpdateTime = alertOnInvalidUpdateTime;
+	}
+
+	/**
+	 * Clients MAY allow configuration of a small tolerance period for acceptance of responses after
+	 * nextUpdate to handle minor clock differences relative to responders and caches.
+	 * I.e. currentTime shall not be after nextUpdate + nextUpdateTolerancePeriod.
+	 * The setting is applicable only when {@code checkOCSPResponseUpdateTime} is enabled and no nonce is checked.
+	 * Default : 0
+	 *
+	 * @param nextUpdateTolerancePeriod the tolerance period in milliseconds
+	 */
+	public void setNextUpdateTolerancePeriod(long nextUpdateTolerancePeriod) {
+		this.nextUpdateTolerancePeriod = nextUpdateTolerancePeriod;
 	}
 
 	@Override
@@ -190,9 +268,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 																   CertificateToken issuerToken, List<String> ocspUrls) {
 		final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerToken, certIDDigestAlgorithm);
 
-		BigInteger nonce = null;
+		byte[] nonce = null;
 		if (nonceSource != null) {
-			nonce = nonceSource.getNonce();
+			nonce = nonceSource.getNonceValue();
 		}
 
 		final byte[] content = buildOCSPRequest(certId, nonce);
@@ -211,12 +289,13 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 						LOG.trace(String.format("Obtained OCSPResponse binaries from URL '%s' : %s", ocspAccessLocation, Utils.toBase64(ocspRespBytes)));
 					}
 					final OCSPResp ocspResp = new OCSPResp(ocspRespBytes);
-					verifyNonce(ocspResp, nonce);
 
 					OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 					if (OCSPRespStatus.SUCCESSFUL.equals(status)) {
 						BasicOCSPResp basicResponse = (BasicOCSPResp) ocspResp.getResponseObject();
 						SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(basicResponse, certificateToken, issuerToken);
+						assertOCSPResponseValid(basicResponse, latestSingleResponse, nonce);
+
 						OCSPToken ocspToken = new OCSPToken(basicResponse, latestSingleResponse, certificateToken, issuerToken);
 						ocspToken.setSourceURL(ocspAccessLocation);
 						ocspToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
@@ -249,7 +328,15 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		return null;
 	}
 
-	private byte[] buildOCSPRequest(final CertificateID certId, BigInteger nonce) throws DSSException {
+	/**
+	 * This method builds an OCSP Request
+	 *
+	 * @param certId {@link CertificateID}
+	 * @param nonce byte array containing nonce value, when applicable
+	 * @return byte array representing the content of the OCSP Request
+	 * @throws DSSException if an error occurred during the OCSP Request building process
+	 */
+	protected byte[] buildOCSPRequest(final CertificateID certId, byte[] nonce) throws DSSException {
 		try {
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 			ocspReqBuilder.addRequest(certId);
@@ -259,9 +346,9 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			 * extensions SHOULD NOT be flagged as critical
 			 */
 			if (nonce != null) {
-				DEROctetString encodedNonceValue = new DEROctetString(
-						new DEROctetString(nonce.toByteArray()).getEncoded());
-				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false, encodedNonceValue);
+				DEROctetString encodedNonceValue = new DEROctetString(nonce);
+				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
+						new DEROctetString(encodedNonceValue));
 				Extensions extensions = new Extensions(extension);
 				ocspReqBuilder.setRequestExtensions(extensions);
 			}
@@ -272,28 +359,54 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			throw new DSSException("Cannot build OCSP Request", e);
 		}
 	}
-	
-	private void verifyNonce(final OCSPResp ocspResp, final BigInteger expectedNonceValue) {
-		if (expectedNonceValue != null) {
-			BigInteger receivedNonce = getEmbeddedNonceValue(ocspResp);
-			if (!expectedNonceValue.equals(receivedNonce)) {
-				throw new DSSExternalResourceException(String.format("Nonce received from OCSP response '%s' " +
-								"does not match a dispatched nonce '%s'.", receivedNonce, expectedNonceValue));
+
+	protected void assertOCSPResponseValid(final BasicOCSPResp basicOCSPResp, final SingleResp latestSingleResponse,
+										   final byte[] expectedNonce) {
+		/*
+		 * RFC 5019 "4. Ensuring an OCSPResponse Is Fresh"
+		 *
+		 * In general, two mechanisms are available to clients to ensure a
+		 * response is fresh. The first uses nonces, and the second is based on
+		 * time. In order for time-based mechanisms to work, both clients and
+		 * responders MUST have access to an accurate source of time.
+		 *
+		 * Clients that do not include a nonce in the request MUST ignore any
+		 * nonce that may be present in the response.
+		 *
+		 * Clients MUST check for the existence of the nextUpdate field and MUST
+		 * ensure the current time, expressed in GMT time as described in
+		 * Section 2.2.4, falls between the thisUpdate and nextUpdate times. If
+		 * the nextUpdate field is absent, the client MUST reject the response.
+		 */
+		if (expectedNonce != null) {
+			byte[] receivedNonce = getEmbeddedNonceValue(basicOCSPResp);
+			if (receivedNonce == null) {
+				alertOnNonexistentNonce();
+			} else {
+				boolean nonceMatch = Arrays.equals(expectedNonce, receivedNonce);
+				if (nonceMatch) {
+					// good response
+					return;
+				} else {
+					alertOnInvalidNonce(expectedNonce, receivedNonce);
+				}
 			}
 		}
+		assertUpdateTimeValid(latestSingleResponse);
 	}
 	
-	private BigInteger getEmbeddedNonceValue(final OCSPResp ocspResp) {
+	private byte[] getEmbeddedNonceValue(final BasicOCSPResp basicOCSPResp) {
 		try {
-			BasicOCSPResp basicOCSPResp = (BasicOCSPResp)ocspResp.getResponseObject();
-			
 			Extension extension = basicOCSPResp.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
-			ASN1OctetString extnValue = extension.getExtnValue();
-			ASN1Primitive value = fromByteArray(extnValue);
-			if (value instanceof DEROctetString) {
-				return new BigInteger(((DEROctetString) value).getOctets());
+			if (extension != null) {
+				ASN1OctetString extnValue = extension.getExtnValue();
+				ASN1Primitive value = fromByteArray(extnValue);
+				if (value instanceof DEROctetString) {
+					return ((DEROctetString) value).getOctets();
+				}
+				throw new OCSPException("Nonce extension value in OCSP response is not an OCTET STRING");
 			}
-			throw new OCSPException("Nonce extension value in OCSP response is not an OCTET STRING");
+			return null;
 
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Unable to extract the nonce from the OCSPResponse! " +
@@ -307,6 +420,48 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 		} catch (IOException ex) {
 			throw new OCSPException("Invalid encoding of nonce extension value in OCSP response", ex);
 		}
+	}
+
+	private void assertUpdateTimeValid(SingleResp singleResponse) {
+		Date thisUpdate = singleResponse.getThisUpdate();
+		if (thisUpdate == null) {
+			alertOnInvalidUpdateTime("Obtained OCSP Response does not contain thisUpdate field!");
+			return;
+		}
+		Date nextUpdate = singleResponse.getNextUpdate();
+		if (nextUpdate == null) {
+			alertOnInvalidUpdateTime("Obtained OCSP Response does not contain nextUpdate field!");
+			return;
+		}
+		Date currentTime = new Date();
+		long nextUpdateLimit = nextUpdate.getTime() + nextUpdateTolerancePeriod;
+		if (currentTime.before(thisUpdate) || currentTime.after(new Date(nextUpdateLimit))) {
+			alertOnInvalidUpdateTime(currentTime, thisUpdate, nextUpdate);
+		}
+	}
+
+	private void alertOnNonexistentNonce() {
+		MessageStatus status = new MessageStatus();
+		status.setMessage("No nonce has been retrieved from OCSP response!");
+		alertOnNonexistentNonce.alert(status);
+	}
+
+	private void alertOnInvalidNonce(byte[] expectedNonce, byte[] receivedNonce) {
+		MessageStatus status = new MessageStatus();
+		status.setMessage(String.format("Nonce retrieved from OCSP response '#%s' does not match a dispatched nonce '#%s'.",
+				Utils.toHex(receivedNonce), Utils.toHex(expectedNonce)));
+		alertOnInvalidNonce.alert(status);
+	}
+
+	private void alertOnInvalidUpdateTime(String message) {
+		MessageStatus status = new MessageStatus();
+		status.setMessage(message);
+		alertOnInvalidUpdateTime.alert(status);
+	}
+
+	private void alertOnInvalidUpdateTime(Date currentTime, Date thisUpdate, Date nextUpdate) {
+		alertOnInvalidUpdateTime(String.format("The current time '%s' is out of thisUpdate '%s' - nextUpdate '%s' range!",
+				DSSUtils.formatDateToRFC(currentTime), DSSUtils.formatDateToRFC(thisUpdate), DSSUtils.formatDateToRFC(nextUpdate)));
 	}
 
 }

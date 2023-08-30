@@ -26,7 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -47,8 +47,8 @@ import eu.europa.esig.dss.validation.process.qualification.signature.checks.QSCD
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.QualifiedCertificateAtSigningTimeCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -120,7 +120,7 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			List<TrustServiceWrapper> originalTSPs = signingCertificate.getTrustServices();
 			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
@@ -165,57 +165,57 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
 				// 1. filter by service for CAQC
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
-				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
-	
-				filter = TrustedServicesFilterFactory.createFilterByCaQc();
-				List<TrustedServiceWrapper> caqcServices = filter.filter(acceptableServices);
+				TrustServiceFilter filter = TrustServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 	
 				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
-						signingCertificate, caqcServices);
+						signingCertificate, acceptableServices);
 				XmlValidationCertificateQualification certQualAtIssuanceResult = certQualAtIssuanceBlock.execute();
 				result.getValidationCertificateQualification().add(certQualAtIssuanceResult);
 				qualificationAtIssuanceTime = certQualAtIssuanceResult.getCertificateQualification();
 	
 				CertQualificationAtTimeBlock certQualAtSigningTimeBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.BEST_SIGNATURE_TIME, bestSignatureTime,
-						signingCertificate, caqcServices);
+						signingCertificate, acceptableServices);
 				XmlValidationCertificateQualification certQualAtSigningTimeResult = certQualAtSigningTimeBlock.execute();
 				result.getValidationCertificateQualification().add(certQualAtSigningTimeResult);
 				qualificationAtSigningTime = certQualAtSigningTimeResult.getCertificateQualification();
-	
-				// Article 32 :
-				// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
-				// electronic signature complying with Annex I;
-				item = item.setNextItem(qualifiedCertificateAtSigningTime(qualificationAtSigningTime));
 
-				// NOTE: Article 40:
-				// Articles 32, 33 and 34 shall apply mutatis mutandis to the validation and preservation of
-				// qualified electronic seals.
-				item = item.setNextItem(certificateTypeAtSigningTime(qualificationAtSigningTime));
-	
-				// (b) the qualified certificate
-				// 1. was issued by a qualified trust service provider
-				item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuanceTime));
-	
-				// 2. was valid at the time of signing;
-				// covered in isAdES
-	
-				// (c) the signature validation data corresponds to the data provided to the relying party;
-				// covered in isAdES
-	
-				// (d) the unique set of data representing the signatory in the certificate is correctly provided to the
-				// relying party;
-				// covered in isAdES
-	
-				// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
-				// time of signing;
-				// covered in isAdES
-	
-				// (f) the electronic signature was created by a qualified electronic signature creation device;
-				item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
-	
-				// (g) the integrity of the signed data has not been compromised;
-				// covered in isAdES
+				// execute signature qualification determination only when at least one valid trust service is found
+				if (Utils.isCollectionNotEmpty(certQualAtIssuanceBlock.getFilteredServices()) || Utils.isCollectionNotEmpty(certQualAtSigningTimeBlock.getFilteredServices())) {
+					// Article 32 :
+					// (a) the certificate that supports the signature was, at the time of signing, a qualified certificate for
+					// electronic signature complying with Annex I;
+					item = item.setNextItem(qualifiedCertificateAtSigningTime(qualificationAtSigningTime));
+
+					// NOTE: Article 40:
+					// Articles 32, 33 and 34 shall apply mutatis mutandis to the validation and preservation of
+					// qualified electronic seals.
+					item = item.setNextItem(certificateTypeAtSigningTime(qualificationAtSigningTime));
+
+					// (b) the qualified certificate
+					// 1. was issued by a qualified trust service provider
+					item = item.setNextItem(qualifiedCertificateAtIssuance(qualificationAtIssuanceTime));
+
+					// 2. was valid at the time of signing;
+					// covered in isAdES
+
+					// (c) the signature validation data corresponds to the data provided to the relying party;
+					// covered in isAdES
+
+					// (d) the unique set of data representing the signatory in the certificate is correctly provided to the
+					// relying party;
+					// covered in isAdES
+
+					// (e) the use of any pseudonym is clearly indicated to the relying party if a pseudonym was used at the
+					// time of signing;
+					// covered in isAdES
+
+					// (f) the electronic signature was created by a qualified electronic signature creation device;
+					item = item.setNextItem(qscdAtSigningTime(qualificationAtSigningTime));
+
+					// (g) the integrity of the signed data has not been compromised;
+					// covered in isAdES
+				}
 				
 			}
 		}

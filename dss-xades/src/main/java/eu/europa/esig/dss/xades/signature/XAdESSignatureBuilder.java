@@ -20,23 +20,17 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.MimeType;
-import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
 import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -46,23 +40,30 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
+import eu.europa.esig.dss.xades.dataobject.DataObjectFormatBuilder;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
+import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -645,14 +646,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				XMLDSigElement.OBJECT);
 
 		// incorporate content
-		Node objectContentDom;
 		if (DomUtils.isDOM(object.getContent())) {
-			objectContentDom = DomUtils.buildDOM(object.getContent()).getDocumentElement();
-			objectContentDom = documentDom.importNode(objectContentDom, true);
+			Document contentDom = DomUtils.buildDOM(object.getContent());
+			DomUtils.adoptChildren(objectDom, contentDom);
 		} else {
-			objectContentDom = documentDom.createTextNode(new String(DSSUtils.toByteArray(object.getContent())));
+			Node objectContentDom = documentDom.createTextNode(new String(DSSUtils.toByteArray(object.getContent())));
+			objectDom.appendChild(objectContentDom);
 		}
-		objectDom.appendChild(objectContentDom);
 
 		// incorporate Id attribute
 		if (Utils.isStringNotBlank(object.getId())) {
@@ -700,7 +700,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transforms.appendChild(transform);
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), signedPropertiesCanonicalizationMethod);
 
-		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
+		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 
 		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(signedPropertiesCanonicalizationMethod).canonicalize(getNodeToCanonicalize(signedPropertiesDom));
@@ -743,7 +743,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		transforms.appendChild(transform);
 		transform.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), keyInfoCanonicalizationMethod);
 		
-		final DigestAlgorithm digestAlgorithm = getReferenceDigestAlgorithmOrDefault(params);
+		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 		
 		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(keyInfoCanonicalizationMethod).canonicalize(getNodeToCanonicalize(keyInfoDom));
@@ -1112,54 +1112,71 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * </pre>
 	 */
 	private void incorporateDataObjectFormat() {
-		final List<DSSReference> references = params.getReferences();
-		for (final DSSReference reference : references) {
-			
-			if (xadesPath.getCounterSignatureUri().equals(reference.getType())) {
-				/*
-				 * 6.3 Requirements on XAdES signature's elements, qualifying properties and services
-				 * 
-				 * k) Requirement for DataObjectFormat. One DataObjectFormat shall be generated for each signed data
-				 * object, except the SignedProperties element, and except if the signature is a baseline signature
-				 * countersigning a signature. If the signature is a baseline signature countersigning another signature, and if it
-				 * only signs its own signed properties and the countersigned signature, then it shall not include any
-				 * DataObjectFormat signed property. If the signature is a baseline signature countersigning another signature
-				 * and if it signs its own signed properties, the countersigned signature, and other data object(s), then it shall
-				 * include one DataObjectFormat signed property for each of these other signed data object(s) aforementioned. 
-				 */
-				continue;
-			}
+		List<DSSDataObjectFormat> dataObjectFormats = params.getDataObjectFormatList();
+		if (dataObjectFormats == null) {
+			dataObjectFormats = new DataObjectFormatBuilder().setReferences(params.getReferences()).build();
+		}
+		for (final DSSDataObjectFormat dataObjectFormat : dataObjectFormats) {
+			assertDataObjectFormatValid(dataObjectFormat);
 
-			if (Utils.isStringEmpty(reference.getId())) {
-				throw new IllegalArgumentException("A reference shall have a defined Id attribute!");
-			}
-			final String dataObjectFormatObjectReference = DomUtils.toElementReference(reference.getId());
-
-			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
+			// create xades:DataObjectFormat
+			final Element dataObjectFormatDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(),
 					getXadesNamespace(), getCurrentXAdESElements().getElementDataObjectFormat());
-			dataObjectFormatDom.setAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName(), dataObjectFormatObjectReference);
 
-			final Element mimeTypeDom = DomUtils.addElement(documentDom, dataObjectFormatDom, getXadesNamespace(),
-					getCurrentXAdESElements().getElementMimeType());
-			MimeType dataObjectFormatMimeType = getReferenceMimeType(reference);
-			DomUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormatMimeType.getMimeTypeString());
+			// add xades:DataObjectFormat/xades:Description
+			if (dataObjectFormat.getDescription() != null) {
+				final Element descriptionDom = DomUtils.addElement(documentDom, dataObjectFormatDom, getXadesNamespace(),
+						getCurrentXAdESElements().getElementDescription());
+				DomUtils.setTextNode(documentDom, descriptionDom, dataObjectFormat.getDescription());
+			}
+
+			// add xades:DataObjectFormat/xades:ObjectIdentifier
+			if (dataObjectFormat.getObjectIdentifier() != null) {
+				final Element objectIdentifierDom = DomUtils.addElement(documentDom, dataObjectFormatDom, getXadesNamespace(),
+						getCurrentXAdESElements().getElementObjectIdentifier());
+				incorporateObjectIdentifier(objectIdentifierDom, dataObjectFormat.getObjectIdentifier());
+			}
+
+			// add xades:DataObjectFormat/xades:MimeType
+			if (dataObjectFormat.getMimeType() != null) {
+				final Element mimeTypeDom = DomUtils.addElement(documentDom, dataObjectFormatDom, getXadesNamespace(),
+						getCurrentXAdESElements().getElementMimeType());
+				DomUtils.setTextNode(documentDom, mimeTypeDom, dataObjectFormat.getMimeType());
+			}
+
+			// add xades:DataObjectFormat/xades:Encoding
+			if (dataObjectFormat.getEncoding() != null) {
+				final Element encodingDom = DomUtils.addElement(documentDom, dataObjectFormatDom, getXadesNamespace(),
+						getCurrentXAdESElements().getElementEncoding());
+				DomUtils.setTextNode(documentDom, encodingDom, dataObjectFormat.getEncoding());
+			}
+
+			// add xades:DataObjectFormat@ObjectReference
+			if (dataObjectFormat.getObjectReference() != null) {
+				dataObjectFormatDom.setAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName(), dataObjectFormat.getObjectReference());
+			}
 		}
 	}
 
 	/**
-	 * This method returns the mimetype of the given reference
+	 * This method verifies if the DataObjectFormat is conformant to the XAdES specification
 	 *
-	 * @param reference
-	 *            the reference to compute
-	 * @return the {@code MimeType} of the reference or the default value {@code MimeTypeEnum.BINARY}
+	 * @param dataObjectFormat {@link DSSDataObjectFormat} to check
 	 */
-	private MimeType getReferenceMimeType(final DSSReference reference) {
-		MimeType dataObjectFormatMimeType = MimeTypeEnum.BINARY;
-		DSSDocument content = reference.getContents();
-		if (content != null && content.getMimeType() != null) {
-			dataObjectFormatMimeType = content.getMimeType();
+	private void assertDataObjectFormatValid(DSSDataObjectFormat dataObjectFormat) {
+		Objects.requireNonNull(dataObjectFormat, "DataObjectFormat cannot be null!");
+		if (dataObjectFormat.getDescription() == null && dataObjectFormat.getObjectIdentifier() == null
+				&& dataObjectFormat.getMimeType() == null) {
+			throw new IllegalArgumentException("At least one of the Description, ObjectIdentifier or MimeType " +
+					"shall be defined for a DataObjectFormat object!");
 		}
-		return dataObjectFormatMimeType;
+		if (dataObjectFormat.getObjectReference() == null) {
+			throw new IllegalArgumentException("ObjectReference attribute of DataObjectFormat shall be present!");
+		}
+		if (!DomUtils.isElementReference(dataObjectFormat.getObjectReference())) {
+			throw new IllegalArgumentException("ObjectReference attribute of DataObjectFormat " +
+					"shall define a reference to an element within signature (i.e. shall begin with '#')!");
+		}
 	}
 
 	/**
@@ -1310,73 +1327,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		if (Utils.isCollectionNotEmpty(commitmentTypeIndications)) {
 
 			for (final CommitmentType commitmentTypeIndication : commitmentTypeIndications) {
+				assertCommitmentTypeNotNull(commitmentTypeIndication);
+
 				final Element commitmentTypeIndicationDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeIndication());
 
 				final Element commitmentTypeIdDom = DomUtils.addElement(documentDom, commitmentTypeIndicationDom, 
 						getXadesNamespace(), getCurrentXAdESElements().getElementCommitmentTypeId());
-
-				String uri = commitmentTypeIndication.getUri();
-				String oid = commitmentTypeIndication.getOid();
-				ObjectIdentifierQualifier qualifier = commitmentTypeIndication.getQualifier();
-				if (Utils.isStringEmpty(uri)) {
-					if (Utils.isStringEmpty(oid)) {
-						throw new IllegalArgumentException("The URI or OID must be defined for commitmentTypeIndication for XAdES creation!");
-					}
-					if (qualifier == null) {
-						throw new IllegalArgumentException("When using OID as object identifier in XAdES, " +
-								"a Qualifier shall be provided! See EN 319 132-1 for more details.");
-					}
-
-					switch (qualifier) {
-						case OID_AS_URI:
-							if (DSSUtils.isUrnOid(oid)) {
-								throw new IllegalArgumentException(String.format(
-										"Qualifier '%s' shall not be used for URN encoded OID! " +
-												"See EN 319 132-1 for more details.", qualifier));
-							}
-							break;
-
-						case OID_AS_URN:
-							if (!DSSUtils.isUrnOid(oid)) {
-								oid = DSSUtils.toUrnOid(oid);
-							}
-							break;
-
-						default:
-							throw new UnsupportedOperationException(
-									String.format("The Qualifier '%s' is not supported!", qualifier));
-					}
-					uri = oid;
-
-				} else {
-					if (qualifier != null) {
-						throw new IllegalArgumentException("When using URI as object identifier in XAdES, " +
-								"a Qualifier shall not be present! See EN 319 132-1 for more details.");
-					}
-				}
-
-				// add xades:CommitmentTypeId/xades:Identifier
-				final Element identifierDom = DomUtils.addTextElement(documentDom, commitmentTypeIdDom,
-						getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier(), uri);
-
-				// add xades:CommitmentTypeId/xades:Identifier@Qualifier
-				if (qualifier != null) {
-					identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier.getValue());
-				}
-				
-				// add xades:CommitmentTypeId/xades:Description
-				String description = commitmentTypeIndication.getDescription();
-				if (description != null) {
-					DomUtils.addTextElement(documentDom, commitmentTypeIdDom, getXadesNamespace(),
-							getCurrentXAdESElements().getElementDescription(), description);
-				}
-				
-				// add xades:CommitmentTypeId/xades:DocumentationReferences
-				String[] documentationReferences = commitmentTypeIndication.getDocumentationReferences();
-				if (Utils.isArrayNotEmpty(documentationReferences)) {
-					incorporateDocumentationReferences(commitmentTypeIdDom, documentationReferences);
-				}
+				incorporateObjectIdentifier(commitmentTypeIdDom, commitmentTypeIndication);
 
 				String[] signedDataObjects = null;
 				CommitmentQualifier[] commitmentTypeQualifiers = null;
@@ -1432,7 +1390,129 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			}
 		}
 	}
+
+	/**
+	 * This method verifies if the commitment type is not null and contains at least one of the mandatory elements:
+	 * URI or OID
+	 *
+	 * @param commitmentType {@link CommitmentType} to check
+	 */
+	private void assertCommitmentTypeNotNull(CommitmentType commitmentType) {
+		Objects.requireNonNull(commitmentType, "CommitmentType cannot be null!");
+		if (commitmentType.getUri() == null && commitmentType.getOid() == null) {
+			throw new IllegalArgumentException("The URI or OID must be defined for commitmentTypeIndication for XAdES creation!");
+		}
+	}
 	
+	/**
+	 * This method creates the xades:ObjectIdentifierType DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 *     <xsd:complexType name="ObjectIdentifierType">
+	 *         <xsd:sequence>
+	 *             <xsd:element name="Identifier" type="IdentifierType"/>
+	 *             <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+	 *             <xsd:element name="DocumentationReferences" type="DocumentationReferencesType" minOccurs="0"/>
+	 *         </xsd:sequence>
+	 *     </xsd:complexType>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            {@link Element} the parent element
+	 * @param objectIdentifier
+	 *            {@link ObjectIdentifier}
+	 */
+	private void incorporateObjectIdentifier(final Element parentDom, ObjectIdentifier objectIdentifier) {
+		// add xades:Identifier
+		incorporateIdentifier(parentDom, objectIdentifier);
+
+		// add xades:Description
+		String description = objectIdentifier.getDescription();
+		if (description != null) {
+			DomUtils.addTextElement(documentDom, parentDom, getXadesNamespace(),
+					getCurrentXAdESElements().getElementDescription(), description);
+		}
+
+		// add xades:DocumentationReferences
+		String[] documentationReferences = objectIdentifier.getDocumentationReferences();
+		if (Utils.isArrayNotEmpty(documentationReferences)) {
+			incorporateDocumentationReferences(parentDom, documentationReferences);
+		}
+	}
+
+	/**
+	 * This method creates the xades:ObjectIdentifierType DOM object.
+	 *
+	 * <pre>
+	 * {@code
+	 *     <xsd:complexType name="ObjectIdentifierType">
+	 *         <xsd:sequence>
+	 *             <xsd:element name="Identifier" type="IdentifierType"/>
+	 *             <xsd:element name="Description" type="xsd:string" minOccurs="0"/>
+	 *             <xsd:element name="DocumentationReferences" type="DocumentationReferencesType" minOccurs="0"/>
+	 *         </xsd:sequence>
+	 *     </xsd:complexType>
+	 * }
+	 * </pre>
+	 *
+	 * @param parentDom
+	 *            {@link Element} the parent element
+	 * @param objectIdentifier
+	 *            {@link ObjectIdentifier}
+	 */
+	private void incorporateIdentifier(final Element parentDom, ObjectIdentifier objectIdentifier) {
+		String uri = objectIdentifier.getUri();
+		String oid = objectIdentifier.getOid();
+		ObjectIdentifierQualifier qualifier = objectIdentifier.getQualifier();
+		if (Utils.isStringEmpty(uri)) {
+			if (Utils.isStringEmpty(oid)) {
+				throw new IllegalArgumentException("The URI or OID must be defined for XAdES IdentifierType element!");
+			}
+			if (qualifier == null) {
+				throw new IllegalArgumentException("When using OID as object identifier in XAdES, " +
+						"a Qualifier shall be provided! See EN 319 132-1 for more details.");
+			}
+
+			switch (qualifier) {
+				case OID_AS_URI:
+					if (DSSUtils.isUrnOid(oid)) {
+						throw new IllegalArgumentException(String.format(
+								"Qualifier '%s' shall not be used for URN encoded OID! " +
+										"See EN 319 132-1 for more details.", qualifier));
+					}
+					break;
+
+				case OID_AS_URN:
+					if (!DSSUtils.isUrnOid(oid)) {
+						oid = DSSUtils.toUrnOid(oid);
+					}
+					break;
+
+				default:
+					throw new UnsupportedOperationException(
+							String.format("The Qualifier '%s' is not supported!", qualifier));
+			}
+			uri = oid;
+
+		} else {
+			if (qualifier != null) {
+				throw new IllegalArgumentException("When using URI as object identifier in XAdES, " +
+						"a Qualifier shall not be present! See EN 319 132-1 for more details.");
+			}
+		}
+
+		// add xades:Identifier
+		final Element identifierDom = DomUtils.addTextElement(documentDom, parentDom,
+				getXadesNamespace(), getCurrentXAdESElements().getElementIdentifier(), uri);
+
+		// add xades:Identifier@Qualifier
+		if (qualifier != null) {
+			identifierDom.setAttribute(XAdES132Attribute.QUALIFIER.getAttributeName(), qualifier.getValue());
+		}
+	}
+
 	private void incorporateDocumentationReferences(Element parentElement, String[] documentationReferences) {
 		final Element documentReferencesDom = DomUtils.addElement(documentDom, parentElement, 
 				getXadesNamespace(), getCurrentXAdESElements().getElementDocumentationReferences());

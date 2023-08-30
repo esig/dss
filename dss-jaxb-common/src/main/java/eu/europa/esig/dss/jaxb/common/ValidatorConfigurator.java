@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.jaxb.common;
 
 import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.jaxb.common.alert.DSSErrorHandlerAlert;
 import eu.europa.esig.dss.jaxb.common.exception.SecurityConfigurationException;
 import org.xml.sax.ErrorHandler;
 

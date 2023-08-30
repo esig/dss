@@ -47,13 +47,13 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
       "backgroundColor" : null,
       "dpi" : null,
       "image" : null,
-      "rotation" : null,
       "fieldParameters" : {
         "fieldId" : null,
         "originX" : 200.0,
         "originY" : 100.0,
         "width" : 130.0,
         "height" : 50.0,
+        "rotation" : null,
         "page" : 1
       },
       "textParameters" : {
@@ -83,7 +83,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1675669769217,
+      "signingDate" : 1691746323731,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

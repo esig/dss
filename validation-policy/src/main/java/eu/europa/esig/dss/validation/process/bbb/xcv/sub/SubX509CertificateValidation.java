@@ -51,6 +51,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraints
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateForbiddenExtensionsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToLegalPersonCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuedToNaturalPersonCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateIssuerNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcEuRetentionPeriodCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcTransactionLimitCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNameConstraintsCheck;
@@ -212,6 +213,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(ca(currentCertificate, subContext));
 
+		item = item.setNextItem(issuerName(currentCertificate, subContext));
+
 		item = item.setNextItem(maxPathLength(currentCertificate, subContext));
 
 		item = item.setNextItem(keyUsage(currentCertificate, subContext));
@@ -323,6 +326,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> ca(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateCAConstraint(context, subContext);
 		return new BasicConstraintsCACheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> issuerName(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateIssuerNameConstraint(context, subContext);
+		return new CertificateIssuerNameCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> maxPathLength(CertificateWrapper certificate, SubContext subContext) {

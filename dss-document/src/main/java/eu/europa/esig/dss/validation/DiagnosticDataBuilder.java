@@ -49,6 +49,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanTokens;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -58,7 +59,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -371,12 +372,12 @@ public abstract class DiagnosticDataBuilder {
 	private void linkCertificatesAndTrustServices(Set<CertificateToken> certificates) {
 		if (Utils.isCollectionNotEmpty(certificates)) {
 			for (CertificateToken certificateToken : certificates) {
-				List<XmlTrustedServiceProvider> trustedServiceProviders =
-						new XmlTrustedServiceProviderBuilder(xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
+				List<XmlTrustServiceProvider> trustServiceProviders =
+						new XmlTrustServiceProviderBuilder(xmlCertsMap, xmlTrustedListsMap, tlInfoMap)
 						.build(certificateToken, getRelatedTrustServices(certificateToken));
-				if (Utils.isCollectionNotEmpty(trustedServiceProviders)) {
+				if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
 					XmlCertificate xmlCertificate = xmlCertsMap.get(certificateToken.getDSSIdAsString());
-					xmlCertificate.setTrustedServiceProviders(trustedServiceProviders);
+					xmlCertificate.setTrustServiceProviders(trustServiceProviders);
 				}
 			}
 		}
@@ -452,6 +453,21 @@ public abstract class DiagnosticDataBuilder {
 		}
 	}
 
+	/**
+	 * Builds a list of {@code XmlOrphanTokens}
+	 *
+	 * @return {@link XmlOrphanTokens}
+	 */
+	protected XmlOrphanTokens buildXmlOrphanTokens() {
+		if (Utils.isMapNotEmpty(xmlOrphanCertificateTokensMap) || Utils.isMapNotEmpty(xmlOrphanRevocationTokensMap)) {
+			XmlOrphanTokens xmlOrphanTokens = new XmlOrphanTokens();
+			xmlOrphanTokens.getOrphanCertificates().addAll(xmlOrphanCertificateTokensMap.values());
+			xmlOrphanTokens.getOrphanRevocations().addAll(xmlOrphanRevocationTokensMap.values());
+			return xmlOrphanTokens;
+		}
+		return null;
+	}
+
 	private Collection<XmlTrustedList> buildXmlTrustedLists(ListCertificateSource trustedCertificateSources) {
 		List<XmlTrustedList> trustedLists = new ArrayList<>();
 
@@ -513,7 +529,10 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				tlIdentifiers.add(trustProperties.getTLIdentifier());
+				TLInfo tlInfo = trustProperties.getTLInfo();
+				if (tlInfo != null) {
+					tlIdentifiers.add(tlInfo.getDSSId());
+				}
 			}
 		}
 		return tlIdentifiers;
@@ -524,9 +543,9 @@ public abstract class DiagnosticDataBuilder {
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
 			for (TrustProperties trustProperties : trustServices) {
-				Identifier lotlUrl = trustProperties.getLOTLIdentifier();
-				if (lotlUrl != null) {
-					lotlIdentifiers.add(lotlUrl);
+				LOTLInfo lotlInfo = trustProperties.getLOTLInfo();
+				if (lotlInfo != null) {
+					lotlIdentifiers.add(lotlInfo.getDSSId());
 				}
 			}
 		}
@@ -565,7 +584,7 @@ public abstract class DiagnosticDataBuilder {
 			if (validationCacheInfo != null) {
 				result.setWellSigned(validationCacheInfo.isValid());
 			}
-			if (tlInfo.getMra() != null) {
+			if (tlInfo.getOtherTSLPointer() != null && tlInfo.getOtherTSLPointer().getMra() != null) {
 				result.setMra(true);
 			}
 			tlInfoMap.put(id, tlInfo);

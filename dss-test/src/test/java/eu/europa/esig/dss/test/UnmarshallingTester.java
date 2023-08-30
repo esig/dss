@@ -362,7 +362,7 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledCert.getPolicyIds().size(), originalCert.getPolicyIds().size());
 			assertEquals(unmarshalledCert.getCertificateRevocationData().size(), originalCert.getCertificateRevocationData().size());
 			assertEquals(unmarshalledCert.getExtendedKeyUsages().size(), originalCert.getExtendedKeyUsages().size());
-			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());
+			assertEquals(unmarshalledCert.getTrustServices().size(), originalCert.getTrustServices().size());
 			assertEquals(unmarshalledCert.getTrustServiceProviders().size(), originalCert.getTrustServiceProviders().size());
 
 			if (unmarshalledCert.getSigningCertificate() != null && !unmarshalledCert.getId().equals(unmarshalledCert.getSigningCertificate().getId())) {

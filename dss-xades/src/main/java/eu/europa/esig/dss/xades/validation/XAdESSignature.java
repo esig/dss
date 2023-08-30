@@ -772,8 +772,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	public byte[] getSignatureValue() {
 		String signatureValueBase64 = getSignatureValueBase64();
-		if (signatureValueBase64 != null) {
+		if (signatureValueBase64 != null && Utils.isBase64Encoded(signatureValueBase64)) {
 			return Utils.fromBase64(signatureValueBase64);
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("The signature value is not represented by a base64-encoded string! Found value : '{}'", signatureValueBase64);
+			} else {
+				LOG.warn("The signature value is not represented by a base64-encoded string!");
+			}
 		}
 		return null;
 	}
@@ -1074,7 +1080,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 						
 					} else if (isElementReference && reference.typeIsReferenceToManifest()) {
 						validation.setType(DigestMatcherType.MANIFEST);
-						Element manifestElement = getManifestById(uri);
+						Element manifestElement = DSSXMLUtils.getManifestById(signatureElement, uri);
 						found = found && (disableXSWProtection || (manifestElement != null));
 						if (manifestElement != null) {
 							validation.getDependentValidations().addAll(getManifestReferences(manifestElement));
@@ -1084,6 +1090,11 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 					
 					if (found && !isDuplicated) {
 						intact = reference.verify();
+					}
+
+					if (LOG.isTraceEnabled()) {
+						LOG.trace("Reference validation output: ");
+						LOG.trace(new String(reference.getReferencedBytes()));
 					}
 					
 				} catch (Exception e) {

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
@@ -67,6 +69,25 @@ public class OCSPSourceSnippet {
 		// Defines an arbitrary integer used in OCSP source querying in order to prevent a replay attack. 
 		// Default : null (not used by default).
 		onlineOCSPSource.setNonceSource(new SecureRandomNonceSource());
+
+		// Defines behavior on invalid nonce within the OCSP response
+		// (i.e. obtained nonce does not match the value within the request)
+		// Default : ExceptionOnStatusAlert (throws an exception in case of nonce mismatch)
+		onlineOCSPSource.setAlertOnInvalidNonce(new ExceptionOnStatusAlert());
+
+		// Defines behavior in case of OCSP response without nonce (provided the NonceSource is defined)
+		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP response without nonce)
+		onlineOCSPSource.setAlertOnNonexistentNonce(new ExceptionOnStatusAlert());
+
+		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current time is outside
+		// thisUpdate-nextUpdate range extracted from the OCSP response. See RFC 5019 for more information).
+		// Note : executed only when nonce is not checked (not enforced or OCSP responder replies without nonce).
+		// Default : SilentOnStatusAlert (the check is ignored)
+		onlineOCSPSource.setAlertOnInvalidUpdateTime(new SilentOnStatusAlert());
+
+		// Defines a "tolerance period" for accepting the OCSP response after the nextUpdate time (see RFC 5019)
+		// Default : 0 (in milliseconds)
+		onlineOCSPSource.setNextUpdateTolerancePeriod(1000); // 1 second
 		
 		// Defines a DigestAlgorithm being used to generate a CertificateID in order to complete an OCSP request. 
 		// OCSP servers supporting multiple hash functions may produce a revocation response 

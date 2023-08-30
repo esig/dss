@@ -20,22 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.TSLTypeEnum;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
@@ -50,6 +36,22 @@ import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.enums.Assert;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DTOTest {
 	
@@ -74,10 +76,29 @@ public class DTOTest {
 	
 	@Test
 	public void otherTSLPointerDTOTest() {
-		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer("CZ", Arrays.asList(cert), null);
-		assertEquals("CZ", otherTSLPointerDTO.getLocation());
-		assertEquals(1, otherTSLPointerDTO.getCertificates().size());
-		assertEquals(cert, otherTSLPointerDTO.getCertificates().get(0));
+		Map<String, List<String>> schemeOperatorNames = new HashMap<>();
+		schemeOperatorNames.put("en", Collections.singletonList("Digital and Information Agency"));
+		schemeOperatorNames.put("cz", Collections.singletonList("Digitální a informační agentura"));
+
+		Map<String, List<String>> schemeTypeCommunityRules = new HashMap<>();
+		schemeTypeCommunityRules.put("en", Arrays.asList("http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon", "http://uri.etsi.org/TrstSvc/TrustedList/schemerules/CZ"));
+
+		OtherTSLPointer otherTSLPointerDTO = new OtherTSLPointer.OtherTSLPointerBuilder()
+				.setSdiCertificates(Collections.singletonList(cert))
+				.setTslLocation("https://tsl.gov.cz/publ/TSL_CZ.xml")
+				.setTslType(TSLTypeEnum.EUgeneric.getUri())
+				.setSchemeTerritory("CZ")
+				.setMimeType(MimeTypeEnum.XML.getMimeTypeString())
+				.setSchemeOperatorNames(schemeOperatorNames)
+				.setSchemeTypeCommunityRules(schemeTypeCommunityRules)
+				.build();
+		assertEquals(1, otherTSLPointerDTO.getSdiCertificates().size());
+		assertEquals(cert, otherTSLPointerDTO.getSdiCertificates().get(0));
+		assertEquals(TSLTypeEnum.EUgeneric.getUri(), otherTSLPointerDTO.getTslType());
+		assertEquals("CZ", otherTSLPointerDTO.getSchemeTerritory());
+		assertEquals(MimeTypeEnum.XML.getMimeTypeString(), otherTSLPointerDTO.getMimeType());
+		assertEquals(schemeOperatorNames, otherTSLPointerDTO.getSchemeOperatorNames());
+		assertEquals(schemeTypeCommunityRules, otherTSLPointerDTO.getSchemeTypeCommunityRules());
 	}
 	
 	@Test

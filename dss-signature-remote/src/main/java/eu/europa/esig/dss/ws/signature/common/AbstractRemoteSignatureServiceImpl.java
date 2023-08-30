@@ -390,10 +390,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteImageParameters.getImage() != null && remoteImageParameters.getImage().getBytes() != null && remoteImageParameters.getImage().getName() != null) {
 			imageParameters.setImage(new InMemoryDocument(remoteImageParameters.getImage().getBytes(), remoteImageParameters.getImage().getName()));
 		}
-		// rotation
-		if (remoteImageParameters.getRotation() != null) {
-			imageParameters.setRotation(remoteImageParameters.getRotation());
-		}
 		// fieldParameters
 		imageParameters.setFieldParameters(toFieldParameters(remoteImageParameters.getFieldParameters()));
 		// textParameters
@@ -429,6 +425,10 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		}
 		if (remoteFieldParameters.getHeight() != null) {
 			fieldParameters.setHeight(remoteFieldParameters.getHeight());
+		}
+		// rotation
+		if (remoteFieldParameters.getRotation() != null) {
+			fieldParameters.setRotation(remoteFieldParameters.getRotation());
 		}
 		
 		return fieldParameters;

@@ -918,7 +918,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 
 		assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtValidationTime());
 		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrorsAtValidationTime(certId)));
-		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
+		assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarningsAtValidationTime(certId)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfoAtValidationTime(certId)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
@@ -943,6 +943,73 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 			}
 		}
 		assertTrue(qualificationCheckFound);
+	}
+
+	@Test
+	public void untrustedChainOkTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/qcCompliance-tl-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-7DA9241EC8BBAE3FAB9A29AE06C7B185B62C6FDE319DD985E5AA2E6F780C4EAA";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().setRevocationDataAvailable(levelConstraint);
+		executor.setValidationPolicy(validationPolicy);
+
+		executor.setCurrentTime(diagnosticData.getUsedCertificates().get(0).getNotAfter());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+		assertNull(simpleReport.getCertificateSubIndication(certId));
+		assertEquals(0, simpleReport.getX509ValidationErrors(certId).size());
+		assertEquals(0, simpleReport.getX509ValidationWarnings(certId).size());
+		assertEquals(2, simpleReport.getX509ValidationInfo(certId).size());
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
+	}
+
+	@Test
+	public void untrustedChainKeyUsageFailureTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/cert-validation/untrusted-chain-failure.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-3E82BCE56A90B50E81C7C1325A4B1243B44FBC6539AAF26B85D794CCEB97040B";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
+		executor.setValidationPolicy(validationPolicy);
+
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certId));
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getCertificateSubIndication(certId));
+		assertEquals(3, simpleReport.getX509ValidationErrors(certId).size());
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_SUB_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_IRDPFC_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationErrors(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_ISCGKU_ANS_CERT)));
+		assertEquals(0, simpleReport.getX509ValidationWarnings(certId).size());
+		assertEquals(1, simpleReport.getX509ValidationInfo(certId).size());
+		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_ANS)));
 	}
 
 	private void checkReports(CertificateReports reports) {

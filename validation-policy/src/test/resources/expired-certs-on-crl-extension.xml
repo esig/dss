@@ -140,24 +140,24 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-5AA48CC28850A892740CA6DEAA50B97E65DC90857BE9E6EDA7A348EAE26C934F">
                             <ServiceNames><ServiceName lang="en">(105) PostSignum TSA - TSU 1</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                             <StartDate>2018-06-19T22:00:00Z</StartDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-                <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -170,10 +170,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
@@ -221,7 +221,7 @@
                     <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
@@ -277,12 +277,12 @@
                     <crlUrl>http://qcrldp3.ica.cz/rca15_rsa.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -292,8 +292,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
                             <ExpiredCertsRevocationInfo>2018-12-25T12:15:00Z</ExpiredCertsRevocationInfo>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -302,17 +302,17 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2016-06-15T05:55:00Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
@@ -369,12 +369,12 @@
                     <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">The Czech Post, s.p.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -384,8 +384,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -394,17 +394,17 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D35E250CB02E27BB3FC52D1F1A0DFD88FA9813BE1B777320AAE912B54E3B1F02">
                             <ServiceNames><ServiceName lang="en">(57) PostSignum - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2014-03-26T08:01:32Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
@@ -464,12 +464,12 @@
                     <crlUrl>http://qcrldp3.ica.cz/2qca16_rsa.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-ED880E2F50434D1B27ADCA1B81BECD2D86C6267F148A1933A3554DC10766B8F6" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">First certification authority, a.s.</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATCZ-26439395</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-076ABC2269327EEF500A0C57527262BAC831F9D2DF4EF2D439E74CE17036AA3A">
                             <ServiceNames><ServiceName lang="en">(78) I.CA - issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -479,10 +479,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-569d6b69cef8b70b57b3a36d7702f8d95d50eea3a2b614c7fa0ca9f39cfb7fd1789207048a37c0a57b26a1e48b969db26e174520c4f5cf1aa55420a77fd5aedf">
                     <Status>GOOD</Status>
@@ -529,7 +529,7 @@
                     <certificatePolicy>2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>

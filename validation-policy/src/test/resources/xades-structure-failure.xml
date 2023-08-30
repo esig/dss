@@ -120,7 +120,7 @@
                     <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>9b3f9fced4876a560af1c336b6551b45ec75444d</DigestValue>

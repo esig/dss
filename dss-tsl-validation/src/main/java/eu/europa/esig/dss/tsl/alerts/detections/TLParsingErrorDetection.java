@@ -39,7 +39,7 @@ public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 	@Override
 	public boolean detect(TLInfo info) {
 		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		return parsingCacheInfo.isError();
+		return parsingCacheInfo != null && parsingCacheInfo.isError();
 	}
 	
 }

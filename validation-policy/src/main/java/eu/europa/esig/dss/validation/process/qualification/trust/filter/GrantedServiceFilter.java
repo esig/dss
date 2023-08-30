@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
 
 /**
- * Filters TrustedServices by 'granted' status (before and after eIDAS)
+ * Filters TrustServices by 'granted' status (before and after eIDAS)
  *
  */
-public class GrantedServiceFilter extends AbstractTrustedServiceFilter {
+public class GrantedServiceFilter extends AbstractTrustServiceFilter {
 
 	/**
 	 * Default constructor
@@ -38,11 +38,11 @@ public class GrantedServiceFilter extends AbstractTrustedServiceFilter {
 	}
 
 	@Override
-	public boolean isAcceptable(TrustedServiceWrapper service) {
+	public boolean isAcceptable(TrustServiceWrapper service) {
 		if (EIDASUtils.isPostEIDAS(service.getStartDate())) {
-			return TrustedServiceStatus.isAcceptableStatusAfterEIDAS(service.getStatus());
+			return TrustServiceStatus.isAcceptableStatusAfterEIDAS(service.getStatus());
 		} else {
-			return TrustedServiceStatus.isAcceptableStatusBeforeEIDAS(service.getStatus());
+			return TrustServiceStatus.isAcceptableStatusBeforeEIDAS(service.getStatus());
 		}
 	}
 

@@ -117,12 +117,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2043482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
                             <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -132,10 +132,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3e75a50c854182576becbe1128851364e0b0ac909ebed4aca5b38a6fc14fc23d69dd6a7f25f724833c0e8942f96610fe857c01e4cf52ee849c50277627d22b85">
                     <Status>GOOD</Status>
@@ -176,12 +176,12 @@
                     <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2043482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
                             <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -190,10 +190,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIDZTCCAk2gAwIBAgIBCjANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktNS4xLjUxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwNzA1MTMxODM2WhcNMTkwNzA1MTMxODM2WjBQMRIwEAYDVQQDDAlTREktNS4xLjUxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC61vI3gLoQYGtzqhduWIWoqFyvIACpxTTQP9+rwtYKQ/Wsi+nOkGTNvcA+S0joOSmRnS0kjsGEJsu6Kf6+NsQYzwU/WNIZMFmRM4znkGkTwTlwJJGfgYCy/Uzw+BRufhK6vK7e8+CzBbhqsShh+kFIcRycQdErcX9t+ywX3KnhSfkrsbSL+3P2E2VKYtz7l5kHRbGuZwq89lIXpRC2NzmNW82ft7dhq7oRF1XrlGmK9NygmY0i/a8yJ6hMP06JewOVawCZdcGnZuh1Z2ZqTsu5nIOl48H4bTbOd7RKalB5usVM3oQSBfoWK9T640oMZh66ZCZWpg37Z6zlyAVgkXxZAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBTe8p0v22MlmEd/ypIT/QxIci0knTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAqW5VU9RyY8Lq1rdS32eS6GL7/e96wO3i0VwFSlIsgIoxGOXHqNdVzjohya/Hr64W7rIcQAfBOrmz5Rhv0K73xD/In2rtdmS94tefw+KQVW0Y+FCElQI6o6FvyhcEId23+/hTpu42MTZszYHwQsYLxexHRC3fkRGcyfpb0sWsDo2E5VmW+Hj9J/nWOxtlws8GPISh3MwdSFztAcc2OaC9z8jbY+EtiVg0Nnmenpf9y1yLLMco4A42b1mlsCyZW9wSz3isegLJZs7buXAVLdFHtzXgHoKmvwhw94P/ugWfb4x+hhj9GMDoyrrU9vO4AVEGMgnHCwORo/1ovoXk0mDjU</Base64Encoded>
         </Certificate>

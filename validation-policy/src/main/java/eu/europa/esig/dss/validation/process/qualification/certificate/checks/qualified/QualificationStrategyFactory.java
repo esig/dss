@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
 /**
@@ -53,26 +53,26 @@ public final class QualificationStrategyFactory {
 	/**
 	 * Creates {@code QualificationStrategy} from the Trusted Service
 	 *
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param qualifiedInCert {@link QualificationStrategy}
 	 * @return {@link QualificationStrategy}
 	 */
-	public static QualificationStrategy createQualificationFromTL(TrustedServiceWrapper trustedService,
+	public static QualificationStrategy createQualificationFromTL(TrustServiceWrapper trustService,
 																  QualificationStrategy qualifiedInCert) {
-		return new QualificationByTL(trustedService, qualifiedInCert);
+		return new QualificationByTL(trustService, qualifiedInCert);
 	}
 
 	/**
 	 * Creates {@code QualificationStrategy} from the certificate and Trusted Service
 	 *
 	 * @param signingCertificate {@link CertificateWrapper}
-	 * @param caQcTrustedService {@link TrustedServiceWrapper}
+	 * @param caQcTrustService {@link TrustServiceWrapper}
 	 * @return {@link QualificationStrategy}
 	 */
 	public static QualificationStrategy createQualificationFromCertAndTL(CertificateWrapper signingCertificate,
-																		 TrustedServiceWrapper caQcTrustedService) {
+																		 TrustServiceWrapper caQcTrustService) {
 		QualificationStrategy qcFromCert = createQualificationFromCert(signingCertificate);
-		return createQualificationFromTL(caQcTrustedService, qcFromCert);
+		return createQualificationFromTL(caQcTrustService, qcFromCert);
 	}
 
 }

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.spi.tsl;
 
-import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Contains the Trust properties for certificates
@@ -33,10 +33,10 @@ public class TrustProperties implements Serializable {
 	private static final long serialVersionUID = -7460897343036542905L;
 
 	/** The LOTL id */
-	private final Identifier lotlId;
+	private final LOTLInfo lotlInfo;
 
 	/** The TL id */
-	private final Identifier tlId;
+	private final TLInfo tlInfo;
 
 	/** The trustServiceProvider */
 	private final TrustServiceProvider trustServiceProvider;
@@ -47,51 +47,53 @@ public class TrustProperties implements Serializable {
 	/**
 	 * Constructor for extracted information from an "independent" trusted list
 	 * 
-	 * @param tlId
-	 *                             the TL identifier
+	 * @param tlInfo
+	 *                             the TL
 	 * @param trustServiceProvider
 	 *                             the trust service provider information
 	 * @param trustService
 	 *                             the current trust service
 	 */
-	public TrustProperties(Identifier tlId, TrustServiceProvider trustServiceProvider,
+	public TrustProperties(TLInfo tlInfo, TrustServiceProvider trustServiceProvider,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this(null, tlId, trustServiceProvider, trustService);
+		this(null, tlInfo, trustServiceProvider, trustService);
 	}
 
 	/**
-	 * Constructor for extracted information from trusted list which is linked to a
-	 * LOTL with MRA
-	 * 
-	 * @param lotlId               the LOTL identifier
-	 * @param tlId                 the TL identifier
+	 * Constructor to create a TrustProperties object linked to a LOTL with MRA
+	 *
+	 * @param lotlInfo             the LOTL
+	 * @param tlInfo               the TL
 	 * @param trustServiceProvider the trust service provider information
 	 * @param trustService         the current trust service
 	 */
-	public TrustProperties(Identifier lotlId, Identifier tlId, TrustServiceProvider trustServiceProvider,
-			TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
-		this.lotlId = lotlId;
-		this.tlId = tlId;
+	public TrustProperties(LOTLInfo lotlInfo, TLInfo tlInfo, TrustServiceProvider trustServiceProvider,
+						   TimeDependentValues<TrustServiceStatusAndInformationExtensions> trustService) {
+		Objects.requireNonNull(tlInfo, "tlInfo cannot be null!");
+		Objects.requireNonNull(trustServiceProvider, "trustServiceProvider cannot be null!");
+		Objects.requireNonNull(trustService, "trustService cannot be null!");
+		this.lotlInfo = lotlInfo;
+		this.tlInfo = tlInfo;
 		this.trustServiceProvider = trustServiceProvider;
 		this.trustService = trustService;
 	}
 
 	/**
-	 * Gets LOTL Id
+	 * Gets LOTL
 	 *
-	 * @return {@link Identifier}
+	 * @return {@link LOTLInfo}
 	 */
-	public Identifier getLOTLIdentifier() {
-		return lotlId;
+	public LOTLInfo getLOTLInfo() {
+		return lotlInfo;
 	}
 
 	/**
-	 * Gets TL Id
+	 * Gets TL
 	 *
-	 * @return {@link Identifier}
+	 * @return {@link TLInfo}
 	 */
-	public Identifier getTLIdentifier() {
-		return tlId;
+	public TLInfo getTLInfo() {
+		return tlInfo;
 	}
 
 	/**

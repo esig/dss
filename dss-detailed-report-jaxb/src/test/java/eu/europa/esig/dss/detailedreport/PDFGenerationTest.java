@@ -88,7 +88,6 @@ public class PDFGenerationTest {
 		String detailedReportString = facade.marshall(detailedReport);
 
 		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
-
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(detailedReport, result);
@@ -103,7 +102,7 @@ public class PDFGenerationTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(detailedReportString, result);
-			assertTrue(baos.toByteArray().length >= 0);
+			assertTrue(baos.toByteArray().length > 0);
 		}
 		
 	}

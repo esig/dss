@@ -32,7 +32,14 @@
                 <cpsUrl>http://repository.pki.belgium.be</cpsUrl>
             </cpsUrls>
             <qualificationAtIssuance>N/A</qualificationAtIssuance>
+            <qualificationDetailsAtIssuance>
+                <Error>Unable to build a certificate chain up to a trusted list!</Error>
+                <Warning>The certificate is related to a trust service with "CA/PKC" type!</Warning>
+            </qualificationDetailsAtIssuance>
             <qualificationAtValidation>N/A</qualificationAtValidation>
+            <qualificationDetailsAtValidation>
+                <Error>Unable to build a certificate chain up to a trusted list!</Error>
+            </qualificationDetailsAtValidation>
             <revocation>
                 <thisUpdate>2018-01-01T11:00:00</thisUpdate>
             </revocation>

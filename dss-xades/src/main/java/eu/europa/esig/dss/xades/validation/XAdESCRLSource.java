@@ -87,12 +87,12 @@ public class XAdESCRLSource extends OfflineCRLSource {
 			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
 				try {
 					final Element crlValueEl = (Element) crlValueNodes.item(ii);
-					if (crlValueEl != null) {
-						CRLBinary crlBinary = CRLUtils.buildCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()));
-						addBinary(crlBinary, revocationOrigin);
-					}
+					String base64EncodedCRL = crlValueEl.getTextContent();
+					CRLBinary crlBinary = CRLUtils.buildCRLBinary(Utils.fromBase64(base64EncodedCRL));
+					addBinary(crlBinary, revocationOrigin);
+
 				} catch (Exception e) {
-					LOG.warn("Unable to build CRLBinary from an obtained element with origin {}", revocationOrigin);
+					LOG.warn("Unable to build CRLBinary from an obtained element with origin '{}'. Reason : {}", revocationOrigin, e.getMessage(), e);
 				}
 			}
 		}

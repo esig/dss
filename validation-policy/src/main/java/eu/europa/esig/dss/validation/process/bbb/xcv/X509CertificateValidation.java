@@ -29,6 +29,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -37,8 +38,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceStatusCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustedServiceTypeIdentifierCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustServiceStatusCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValidation;
 
 import java.util.Date;
@@ -112,11 +113,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 		ChainItem<XmlXCV> item = firstItem = prospectiveCertificateChain();
 
-		if (currentCertificate.isTrusted() || currentCertificate.isTrustedChain()) {
+		if (currentCertificate.isTrusted() || currentCertificate.isTrustedChain() || !prospectiveCertificateChainCheckEnforced()) {
 
-			item = item.setNextItem(trustedServiceWithExpectedTypeIdentifier());
+			item = item.setNextItem(trustServiceWithExpectedTypeIdentifier());
 
-			item = item.setNextItem(trustedServiceWithExpectedStatus());
+			item = item.setNextItem(trustServiceWithExpectedStatus());
 
 			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider, currentCertificate, validationDate, 
 					context, SubContext.SIGNING_CERT, validationPolicy);
@@ -155,18 +156,23 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		return new ProspectiveCertificateChainCheck<>(i18nProvider, result, currentCertificate, context, constraint);
 	}
 
-	private ChainItem<XmlXCV> trustedServiceWithExpectedTypeIdentifier() {
-		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceTypeIdentifierConstraint(context);
-		return new TrustedServiceTypeIdentifierCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
+	private ChainItem<XmlXCV> trustServiceWithExpectedTypeIdentifier() {
+		MultiValuesConstraint constraint = validationPolicy.getTrustServiceTypeIdentifierConstraint(context);
+		return new TrustServiceTypeIdentifierCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
 	}
 
-	private ChainItem<XmlXCV> trustedServiceWithExpectedStatus() {
-		MultiValuesConstraint constraint = validationPolicy.getTrustedServiceStatusConstraint(context);
-		return new TrustedServiceStatusCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
+	private ChainItem<XmlXCV> trustServiceWithExpectedStatus() {
+		MultiValuesConstraint constraint = validationPolicy.getTrustServiceStatusConstraint(context);
+		return new TrustServiceStatusCheck(i18nProvider, result, currentCertificate, usageTime, context, constraint);
 	}
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVResult) {
 		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint());
+	}
+
+	private boolean prospectiveCertificateChainCheckEnforced() {
+		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
+		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
 	@Override

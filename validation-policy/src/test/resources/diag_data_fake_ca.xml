@@ -134,7 +134,7 @@
                     <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -186,7 +186,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>tYiQyuXEtGRZz+v27rL1/EvH78DO19yWZjDfz3isK8Y=</DigestValue>
@@ -236,7 +236,7 @@
                     <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>vtDxntRtlJANKp/NfG9mC2H/dYjYtxz48nnV+qMCHM8=</DigestValue>

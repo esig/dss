@@ -387,6 +387,16 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	}
 
 	/**
+	 * Returns the signature media type
+	 * NOTE: currently used only in JAdES
+	 *
+	 * @return {@link String}
+	 */
+	public String getSignatureType() {
+		return signature.getSignatureType();
+	}
+
+	/**
 	 * Returns an error message
 	 *
 	 * @return {@link String}

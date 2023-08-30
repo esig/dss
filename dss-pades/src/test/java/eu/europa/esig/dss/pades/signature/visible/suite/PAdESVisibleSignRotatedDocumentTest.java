@@ -95,7 +95,6 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         this.documentToSign.setName("text_" + originalDocName + "_" + rotation.name() + ".pdf");
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
-        imageParameters.setRotation(rotation);
 
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
         textParameters.setText("My signature");
@@ -107,6 +106,7 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         fieldParameters.setOriginY(50);
         fieldParameters.setHeight(50);
         fieldParameters.setWidth(100);
+        fieldParameters.setRotation(rotation);
         imageParameters.setFieldParameters(fieldParameters);
 
         signatureParameters.setImageParameters(imageParameters);
@@ -126,7 +126,6 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setBackgroundColor(Color.PINK);
-        imageParameters.setRotation(rotation);
         imageParameters.setImage(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/signature-image.png")));
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -134,6 +133,7 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         fieldParameters.setOriginY(50);
         fieldParameters.setHeight(50);
         fieldParameters.setWidth(100);
+        fieldParameters.setRotation(rotation);
         imageParameters.setFieldParameters(fieldParameters);
 
         signatureParameters.setImageParameters(imageParameters);

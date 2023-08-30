@@ -212,7 +212,7 @@ public class TextOnlySignatureDrawer extends AbstractITextSignatureDrawer {
 	private Rectangle getTextBoxRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {
 		AnnotationBox signatureFieldAnnotationBox = toAnnotationBox(dimensionAndPosition);
 		// Main field is returned pre-rotated
-		VisualSignatureRotation rotation = parameters.getRotation();
+		VisualSignatureRotation rotation = parameters.getFieldParameters().getRotation();
 		if (ImageRotationUtils.isSwapOfDimensionsRequired(rotation)) {
 			signatureFieldAnnotationBox = ImageRotationUtils.swapDimensions(signatureFieldAnnotationBox);
 		}

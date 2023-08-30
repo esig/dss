@@ -33,6 +33,7 @@ import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -386,15 +387,16 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
      */
     protected String getIdAsStringForTL(TLInfo tlInfo) {
         StringBuilder stringBuilder = new StringBuilder(getTlPrefix(tlInfo));
-        if (tlInfo.getParsingCacheInfo() != null &&
-                Utils.isStringNotBlank(tlInfo.getParsingCacheInfo().getTerritory())) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(getUserFriendlyString(tlInfo.getParsingCacheInfo().getTerritory()));
-        }
-        if (tlInfo.getParsingCacheInfo() != null && tlInfo.getParsingCacheInfo().getIssueDate() != null) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(
-                    tlInfo.getParsingCacheInfo().getIssueDate(), dateFormat));
+        ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
+        if (parsingCacheInfo != null) {
+            if (Utils.isStringNotBlank(parsingCacheInfo.getTerritory())) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(getUserFriendlyString(parsingCacheInfo.getTerritory()));
+            }
+            if (parsingCacheInfo.getIssueDate() != null) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(DSSUtils.formatDateWithCustomFormat(parsingCacheInfo.getIssueDate(), dateFormat));
+            }
         }
         return generateId(stringBuilder, tlInfo.getDSSIdAsString());
     }

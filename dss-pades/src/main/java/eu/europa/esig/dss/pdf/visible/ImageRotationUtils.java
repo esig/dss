@@ -157,5 +157,41 @@ public class ImageRotationUtils {
                 throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
         }
     }
+
+    /**
+     * This method is used to ensure the annotation wrapping box defines correct coordinates relatively the "noRotate" flag
+     *
+     * @param annotationBox {@link AnnotationBox} containing coordinates extracted from PDF document
+     * @param pageRotation the page rotation degree
+     * @return {@link AnnotationBox} with coordinates for the "noRotate" flag annotation relatively the page's rotation
+     */
+    public static AnnotationBox ensureNoRotate(AnnotationBox annotationBox, int pageRotation) {
+        switch (pageRotation) {
+            case ImageRotationUtils.ANGLE_90:
+                return new AnnotationBox(
+                        annotationBox.getMinX(),
+                        annotationBox.getMaxY(),
+                        annotationBox.getMinX() + annotationBox.getHeight(),
+                        annotationBox.getMaxY() + annotationBox.getWidth());
+            case ImageRotationUtils.ANGLE_180:
+                return new AnnotationBox(
+                        annotationBox.getMinX() - annotationBox.getWidth(),
+                        annotationBox.getMaxY(),
+                        annotationBox.getMinX(),
+                        annotationBox.getMaxY() + annotationBox.getHeight());
+            case ImageRotationUtils.ANGLE_270:
+                return new AnnotationBox(
+                        annotationBox.getMinX() - annotationBox.getHeight(),
+                        annotationBox.getMaxY() - annotationBox.getWidth(),
+                        annotationBox.getMinX(),
+                        annotationBox.getMaxY());
+            case ImageRotationUtils.ANGLE_0:
+            case ImageRotationUtils.ANGLE_360:
+                return annotationBox;
+            default:
+                throw new UnsupportedOperationException(
+                        String.format("The rotation degree '%s' is not supported!", pageRotation));
+        }
+    }
     
 }

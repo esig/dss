@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.tsl.function;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.qualification.trust.TrustedServiceStatus;
+import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryInstanceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
@@ -41,22 +41,22 @@ public class GrantedTrustService implements TrustServicePredicate {
     }
 
     @Override
-    public boolean test(TSPServiceType trustedService) {
-        if (trustedService != null) {
-            TSPServiceInformationType serviceInformation = trustedService.getServiceInformation();
+    public boolean test(TSPServiceType trustService) {
+        if (trustService != null) {
+            TSPServiceInformationType serviceInformation = trustService.getServiceInformation();
             
             // Current status
-            if (TrustedServiceStatus.isAcceptableStatusAfterEIDAS(serviceInformation.getServiceStatus())
-                    || TrustedServiceStatus.isAcceptableStatusBeforeEIDAS(serviceInformation.getServiceStatus())) {
+            if (TrustServiceStatus.isAcceptableStatusAfterEIDAS(serviceInformation.getServiceStatus())
+                    || TrustServiceStatus.isAcceptableStatusBeforeEIDAS(serviceInformation.getServiceStatus())) {
                 return true;
             }
             
             // Past
-            ServiceHistoryType serviceHistory = trustedService.getServiceHistory();
+            ServiceHistoryType serviceHistory = trustService.getServiceHistory();
             if (serviceHistory !=null && Utils.isCollectionNotEmpty(serviceHistory.getServiceHistoryInstance())) {
                 for (ServiceHistoryInstanceType serviceHistoryInstance : serviceHistory.getServiceHistoryInstance()) {
-                    if (TrustedServiceStatus.isAcceptableStatusAfterEIDAS(serviceHistoryInstance.getServiceStatus())
-                            || TrustedServiceStatus.isAcceptableStatusBeforeEIDAS(serviceHistoryInstance.getServiceStatus())) {
+                    if (TrustServiceStatus.isAcceptableStatusAfterEIDAS(serviceHistoryInstance.getServiceStatus())
+                            || TrustServiceStatus.isAcceptableStatusBeforeEIDAS(serviceHistoryInstance.getServiceStatus())) {
                         return true;
                     }
                 }

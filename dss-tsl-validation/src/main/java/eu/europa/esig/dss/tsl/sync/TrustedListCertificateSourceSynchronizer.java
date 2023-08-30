@@ -105,17 +105,15 @@ public class TrustedListCertificateSourceSynchronizer {
 	 */
 	public void sync() {
 		try {
-
 			ValidationJobSummaryBuilder summaryBuilder = new ValidationJobSummaryBuilder(cacheAccess, tlSources, lotlSources);
 			TLValidationJobSummary summary = summaryBuilder.build();
+			certificateSource.setSummary(summary);
 
 			if (isCertificateSyncNeeded(summary)) {
 				synchronizeCertificates(summary);
 			}
-
 			syncCache(summary);
 
-			certificateSource.setSummary(summaryBuilder.build());
 		} catch (Exception e) {
 			LOG.error("Unable to synchronize the TrustedListsCertificateSource", e);
 		}
@@ -133,7 +131,7 @@ public class TrustedListCertificateSourceSynchronizer {
 	private boolean isTLParsingDesyncOrError(List<TLInfo> tlInfos) {
 		for (TLInfo tlInfo : tlInfos) {
 			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-			if (parsingCacheInfo.isDesynchronized() || parsingCacheInfo.isError()) {
+			if (parsingCacheInfo == null || parsingCacheInfo.isDesynchronized() || parsingCacheInfo.isError()) {
 				return true;
 			}
 		}
@@ -159,7 +157,7 @@ public class TrustedListCertificateSourceSynchronizer {
 		for (final TLInfo tlInfo : tlInfos) {
 			if (synchronizationStrategy.canBeSynchronized(tlInfo)) {
 				ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-				if (!parsingCacheInfo.isResultExist()) {
+				if (parsingCacheInfo == null || !parsingCacheInfo.isResultExist()) {
 					LOG.warn("No Parsing result for TLInfo with url [{}]", tlInfo.getUrl());
 				} else {
 					final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
@@ -222,10 +220,9 @@ public class TrustedListCertificateSourceSynchronizer {
 	private TrustProperties getTrustProperties(LOTLInfo relatedLOTL, TLInfo tlInfo, TrustServiceProvider detached,
 			TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
 		if (relatedLOTL == null) {
-			return new TrustProperties(tlInfo.getDSSId(), detached, statusAndInformationExtensions);
+			return new TrustProperties(tlInfo, detached, statusAndInformationExtensions);
 		}
-		return new TrustProperties(relatedLOTL.getDSSId(), tlInfo.getDSSId(), detached,
-				statusAndInformationExtensions);
+		return new TrustProperties(relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
 	}
 
 }

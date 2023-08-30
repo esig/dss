@@ -40,7 +40,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
@@ -49,9 +48,9 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -240,9 +239,11 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		PdfDictionary pageDictionary = pdfReader.getPageN(page);
 		PdfArray annots = pageDictionary.getAsArray(PdfName.ANNOTS);
 		if (annots != null) {
-			List<PdfAnnotation> pdfAnnotations = new ArrayList<>(); 
+			List<PdfAnnotation> pdfAnnotations = new ArrayList<>();
+
+			int pageRotation = getPageRotation(page);
 			for (PdfObject pdfObject : annots.getElements()) {
-				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject);
+				PdfAnnotation pdfAnnotation = toPdfAnnotation(pdfObject, pageRotation);
 				if (pdfAnnotation != null) {
 					pdfAnnotations.add(pdfAnnotation);
 				}
@@ -253,17 +254,29 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		return Collections.emptyList();
 	}
 	
-	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject) {
+	private PdfAnnotation toPdfAnnotation(PdfObject pdfObject, int pageRotation) {
 		PdfDictionary annotDictionary = getAnnotDictionary(pdfObject);
 		if (annotDictionary != null) {
 			AnnotationBox annotationBox = getAnnotationBox(annotDictionary);
 			if (annotationBox != null) {
+				if (isNoRotate(annotDictionary)) {
+					annotationBox = ImageRotationUtils.ensureNoRotate(annotationBox, pageRotation);
+				}
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
 				return pdfAnnotation;
 			}
 		}
 		return null;
+	}
+
+	private boolean isNoRotate(PdfDictionary annotDictionary) {
+		PdfNumber pdfNumber = annotDictionary.getAsNumber(PdfName.F);
+		if (pdfNumber != null) {
+			int ff = pdfNumber.intValue();
+			return (ff & com.lowagie.text.pdf.PdfAnnotation.FLAGS_NOROTATE) == com.lowagie.text.pdf.PdfAnnotation.FLAGS_NOROTATE;
+		}
+		return false;
 	}
 	
 	private PdfDictionary getAnnotDictionary(PdfObject pdfObject) {

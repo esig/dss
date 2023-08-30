@@ -176,11 +176,11 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 		SignatureImageParameters imageParams = new SignatureImageParameters();
 		imageParams.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.LEFT);
 		imageParams.setAlignmentVertical(VisualSignatureAlignmentVertical.TOP);
-		imageParams.setRotation(VisualSignatureRotation.AUTOMATIC);
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(71);
 		fieldParameters.setOriginY(71);
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		imageParams.setFieldParameters(fieldParameters);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

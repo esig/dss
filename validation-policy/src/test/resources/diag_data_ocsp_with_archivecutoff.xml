@@ -218,7 +218,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>Cskn4UbGNW7d3ifEy6KKqfJGVxqXzhHPjEgvwxbk4bE=</DigestValue>
@@ -317,7 +317,7 @@
                     <extendedKeyUsageOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qg6DtK4ANmeXA9FgO8fmOggEZKAzrkufRlg4rchcYe0=</DigestValue>
@@ -391,7 +391,7 @@
                     <crlUrl>http://crl.quovadisglobal.com/qvbecag2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-CE158B8B4F9AB2F6A97C126C346FBA0D4DDCCF7A6C19A30FF5D439B2477C0384">
                     <Status>GOOD</Status>
@@ -450,7 +450,7 @@
                     <crlUrl>http://crl.universign.eu/universign_primary_ca_hardware.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>wvdoguqftKgcSyhtWgnkS7ENSzZXLap+rB6FSw4NonE=</DigestValue>
@@ -505,7 +505,7 @@
                     <crlUrl>http://crl.quovadisglobal.com/qventca1g3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>2QtAEyMG0QlGCLG5ovap4jtF/hIf71FKHJ33CoFa2Vw=</DigestValue>
@@ -560,7 +560,7 @@
                     <crlUrl>http://crl.universign.eu/universign_tsa_ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-75CE44E4387A082406313C4341EFC97928675DCC2E85788D97ED46F168A33528">
                     <Status>GOOD</Status>

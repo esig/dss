@@ -39,10 +39,13 @@
 	
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
-			<xs:element name="ValidationProcessTimestamp" type="ValidationProcessTimestamp"  />
+			<xs:element name="ValidationProcessBasicTimestamp" type="ValidationProcessBasicTimestamp" />
+			<xs:element name="ValidationProcessArchivalDataTimestamp" type="ValidationProcessArchivalDataTimestamp" minOccurs="0" />
 			
 			<!-- eIDAS stuffs -->
 			<xs:element name="ValidationTimestampQualification" type="ValidationTimestampQualification" minOccurs="0" />
+
+			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" /> 
 	</xs:complexType>
@@ -150,7 +153,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationProcessTimestamp">	
+	<xs:complexType name="ValidationProcessBasicTimestamp">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:attribute name="Type" type="xs:string" use="required" />
@@ -158,10 +161,29 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="ValidationProcessArchivalDataTimestamp">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<xs:complexType name="ValidationTimestampQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
+				<xs:sequence>
+					<xs:element name="ValidationTimestampQualificationAtTime" type="ValidationTimestampQualificationAtTime" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="ValidationTimestampQualificationAtTime">
+		<xs:complexContent>
+			<xs:extension base="ConstraintsConclusion">
+				<xs:attribute name="DateTime" type="xs:dateTime" />
+				<xs:attribute name="ValidationTime" type="ValidationTime" />
 				<xs:attribute name="TimestampQualification" type="TimestampQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
@@ -376,6 +398,7 @@
 			<xs:enumeration value="PCV" />
 			<xs:enumeration value="VTS" />
 			<xs:enumeration value="TST_PSV" />
+			<xs:enumeration value="TST" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -506,6 +529,8 @@
 			<xs:enumeration value="CERTIFICATE_ISSUANCE_TIME" />
 			<xs:enumeration value="BEST_SIGNATURE_TIME" />
 			<xs:enumeration value="VALIDATION_TIME" />
+			<xs:enumeration value="TIMESTAMP_GENERATION_TIME" />
+			<xs:enumeration value="TIMESTAMP_POE_TIME" />
 		</xs:restriction>
 	</xs:simpleType>
 	

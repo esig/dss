@@ -39,6 +39,7 @@ public class SAMLAssertionUtils extends XSDAbstractUtils {
 	public static final String SAML_DCE_SCHEMA_LOCATION = "/xsd/saml-schema-dce-2.0.xsd";
 	public static final String SAML_ECP_SCHEMA_LOCATION = "/xsd/saml-schema-ecp-2.0.xsd";
 	public static final String SAML_METADATA_SCHEMA_LOCATION = "/xsd/saml-schema-metadata-2.0.xsd";
+	public static final String SAML_METADATA_ALG_SUPPORT_SCHEMA_LOCATION  ="/xsd/sstc-saml-metadata-algsupport-v1.0.xsd";
 	public static final String SAML_PROTOCOL_SCHEMA_LOCATION = "/xsd/saml-schema-protocol-2.0.xsd";
 	public static final String SAML_X500_SCHEMA_LOCATION = "/xsd/saml-schema-x500-2.0.xsd";
 	public static final String SAML_XACML_SCHEMA_LOCATION = "/xsd/saml-schema-xacml-2.0.xsd";
@@ -74,7 +75,8 @@ public class SAMLAssertionUtils extends XSDAbstractUtils {
 		if (jc == null) {
 			jc = JAXBContext.newInstance(ObjectFactory.class, eu.europa.esig.xmlenc.jaxb.ObjectFactory.class,
 					eu.europa.esig.soap.jaxb.envelope.ObjectFactory.class, eu.europa.esig.saml.jaxb.assertion.ObjectFactory.class,
-					eu.europa.esig.saml.jaxb.authn.context.ObjectFactory.class, eu.europa.esig.saml.jaxb.dce.ObjectFactory.class,
+					eu.europa.esig.saml.jaxb.metadata.ObjectFactory.class, eu.europa.esig.saml.jaxb.metadata.algsupport.ObjectFactory.class,
+					eu.europa.esig.saml.jaxb.authn.context.ObjectFactory.class,	eu.europa.esig.saml.jaxb.dce.ObjectFactory.class,
 					eu.europa.esig.saml.jaxb.ecp.ObjectFactory.class, eu.europa.esig.saml.jaxb.protocol.ObjectFactory.class);
 		}
 		return jc;
@@ -91,6 +93,7 @@ public class SAMLAssertionUtils extends XSDAbstractUtils {
 		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_DCE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_ECP_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_METADATA_SCHEMA_LOCATION)));
+		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_METADATA_ALG_SUPPORT_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_X500_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(SAMLAssertionUtils.class.getResourceAsStream(SAML_XACML_SCHEMA_LOCATION)));
 		return xsdSources;

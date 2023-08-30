@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.io.Serializable;
+
 /**
  * Represents an identifier type with the following properties :
  * - identifier (URI for XAdES and/or OID for CAdES);
@@ -28,7 +30,7 @@ package eu.europa.esig.dss.enumerations;
  * - document references;
  *
  */
-public interface ObjectIdentifier extends OidAndUriBasedEnum, OidDescription {
+public interface ObjectIdentifier extends OidAndUriBasedEnum, OidDescription, Serializable {
 	
 	/**
 	 * Returns a list of URI-based references

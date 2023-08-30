@@ -23,7 +23,6 @@ package eu.europa.esig.dss.ws.signature.dto.parameters;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
-import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
@@ -54,9 +53,6 @@ public class RemoteSignatureImageParameters implements Serializable {
     /** The visual signature image document */
     private RemoteDocument image;
 
-    /** The rotation of the signature field */
-	private VisualSignatureRotation rotation;
-
 	/** The signature field parameters */
 	private RemoteSignatureFieldParameters fieldParameters;
 
@@ -70,6 +66,7 @@ public class RemoteSignatureImageParameters implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public RemoteSignatureImageParameters() {
+		// empty
 	}
 
 	/**
@@ -217,24 +214,6 @@ public class RemoteSignatureImageParameters implements Serializable {
     }
 
 	/**
-	 * Gets the signature field rotation
-	 *
-	 * @return {@link VisualSignatureRotation}
-	 */
-	public VisualSignatureRotation getRotation() {
-        return this.rotation;
-    }
-
-	/**
-	 * Sets the signature field rotation
-	 *
-	 * @param rotation {@link VisualSignatureRotation}
-	 */
-	public void setRotation(final VisualSignatureRotation rotation) {
-        this.rotation = rotation;
-    }
-
-	/**
 	 * Gets signature field zoom
 	 *
 	 * @return {@link Integer}
@@ -262,7 +241,6 @@ public class RemoteSignatureImageParameters implements Serializable {
 		result = prime * result + ((dpi == null) ? 0 : dpi.hashCode());
 		result = prime * result + ((fieldParameters == null) ? 0 : fieldParameters.hashCode());
 		result = prime * result + ((image == null) ? 0 : image.hashCode());
-		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
 		result = prime * result + ((textParameters == null) ? 0 : textParameters.hashCode());
 		result = prime * result + ((zoom == null) ? 0 : zoom.hashCode());
 		return result;
@@ -314,9 +292,6 @@ public class RemoteSignatureImageParameters implements Serializable {
 		} else if (!image.equals(other.image)) {
 			return false;
 		}
-		if (rotation != other.rotation) {
-			return false;
-		}
 		if (textParameters == null) {
 			if (other.textParameters != null) {
 				return false;
@@ -338,7 +313,7 @@ public class RemoteSignatureImageParameters implements Serializable {
 	public String toString() {
 		return "RemoteSignatureImageParameters [alignmentHorizontal=" + alignmentHorizontal + ", alignmentVertical="
 				+ alignmentVertical + ", backgroundColor=" + backgroundColor + ", dpi=" + dpi + ", image=" + image
-				+ ", rotation=" + rotation + ", fieldParameters=" + fieldParameters + ", textParameters="
+				 + ", fieldParameters=" + fieldParameters + ", textParameters="
 				+ textParameters + ", zoom=" + zoom + "]";
 	}
 

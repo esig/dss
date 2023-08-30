@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.AdditionalServiceInformation;
 import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * <li>cert type T1 = ASi T2 + QCForXXX T2 (overrule)</li>
  * </ul>
  */
-public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter {
+public class ServiceByCertificateTypeFilter extends AbstractTrustServiceFilter {
 
 	/** Certificate to be checked */
 	private final CertificateWrapper certificate;
@@ -55,7 +55,7 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 	}
 
 	@Override
-	boolean isAcceptable(TrustedServiceWrapper service) {
+	protected boolean isAcceptable(TrustServiceWrapper service) {
 		Date issuance = certificate.getNotBefore();
 
 		if (EIDASUtils.isPostEIDAS(issuance)) {
@@ -65,7 +65,7 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustedServiceFilter
 			boolean asiEseals = AdditionalServiceInformation.isForeSeals(additionalServiceInfos);
 			boolean asiWsa = AdditionalServiceInformation.isForWebAuth(additionalServiceInfos);
 
-			final List<String> capturedQualifiers = service.getCapturedQualifiers();
+			final List<String> capturedQualifiers = service.getCapturedQualifierUris();
 			boolean qcForEsign = ServiceQualification.isQcForEsig(capturedQualifiers);
 			boolean qcForEseals = ServiceQualification.isQcForEseal(capturedQualifiers);
 			boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);

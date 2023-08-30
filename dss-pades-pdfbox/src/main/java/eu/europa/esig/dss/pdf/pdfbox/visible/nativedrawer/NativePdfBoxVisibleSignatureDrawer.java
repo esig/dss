@@ -254,7 +254,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 
 				cs.drawImage(imageXObject, xAxis, yAxis, width, height);
 				cs.transform(Matrix.getRotateInstance(
-						((double) 360 - ImageRotationUtils.getRotation(parameters.getRotation())), width, height));
+						((double) 360 - ImageRotationUtils.getRotation(parameters.getFieldParameters().getRotation())), width, height));
 
 				cs.restoreGraphicsState();
 			}

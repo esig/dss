@@ -31,7 +31,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -39,25 +39,19 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
-import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AcceptableBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.MessageImprintDigestAlgorithmValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
-import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
-import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -91,7 +85,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private final Date currentTime;
 
 	/** The POE container */
-	private final POEExtraction poe = new POEExtraction();
+	private final POEExtraction poe;
 
 	/** Current validation context */
 	private Context context;
@@ -107,10 +101,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	 * @param policy {@link ValidationPolicy}
 	 * @param currentTime {@link Date}
 	 */
-	public ValidationProcessForSignaturesWithArchivalData(I18nProvider i18nProvider, XmlSignature signatureAnalysis,
-														  SignatureWrapper signature, DiagnosticData diagnosticData,
-														  Map<String, XmlBasicBuildingBlocks> bbbs,
-														  ValidationPolicy policy, Date currentTime) {
+	public ValidationProcessForSignaturesWithArchivalData(final I18nProvider i18nProvider, final XmlSignature signatureAnalysis,
+			final SignatureWrapper signature, final DiagnosticData diagnosticData, final Map<String, XmlBasicBuildingBlocks> bbbs,
+			final ValidationPolicy policy, final Date currentTime, final POEExtraction poe) {
 		super(i18nProvider, new XmlValidationProcessArchivalData());
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.xmlTimestamps = signatureAnalysis.getTimestamps();
@@ -119,6 +112,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		this.bbbs = bbbs;
 		this.policy = policy;
 		this.currentTime = currentTime;
+		this.poe = poe;
 	}
 	
 	@Override
@@ -146,7 +140,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * NOTE 1: The set of POE in the input may have been initialized from external sources (e.g. provided from
 		 * an external archiving system). These POEs will be used without additional processing.
 		 */
-		poe.init(diagnosticData, currentTime);
+
+		// POE provided to the validation
 
 		/*
 		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
@@ -191,80 +186,15 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		if (Utils.isCollectionNotEmpty(timestampsList)) {
 			timestampsList.sort(Comparator.comparing(TimestampWrapper::getProductionTime).reversed());
 
-			XmlConclusion latestConclusion = null;
 			for (TimestampWrapper newestTimestamp : timestampsList) {
 				XmlBasicBuildingBlocks bbbTsp = bbbs.get(newestTimestamp.getId());
-				XmlValidationProcessTimestamp timestampValidation = getTimestampValidation(newestTimestamp);
+				XmlValidationProcessArchivalDataTimestamp timestampValidation = getTimestampValidation(newestTimestamp);
 				if (bbbTsp != null && timestampValidation != null) {
-					latestConclusion = timestampValidation.getConclusion();
 
-					item = item.setNextItem(timestampBasicSignatureValidationAcceptable(newestTimestamp, timestampValidation));
+					// steps b) and c) are part of ValidationProcessArchivalDataTimestamp
 
-					if (ValidationProcessUtils.isAllowedBasicTimestampValidation(latestConclusion)) {
+					item = item.setNextItem(timestampValidationConclusive(newestTimestamp, timestampValidation));
 
-						item = item.setNextItem(timestampBasicSignatureValidationConclusive(newestTimestamp, timestampValidation));
-
-						Date lowestPOETime = poe.getLowestPOETime(newestTimestamp.getId());
-						MessageImprintDigestAlgorithmValidation messageImprintValidation =
-								timestampDigestAlgorithmValidation(newestTimestamp, lowestPOETime);
-						XmlSAV davResult = messageImprintValidation.execute();
-
-						/*
-						 * b) If PASSED is returned and the cryptographic hash function used in the time-stamp
-						 * (messageImprint.hashAlgorithm) is considered reliable at the generation time of the time-stamp,
-						 * the long term validation process shall perform the POE extraction process with the signature, the
-						 * time-stamp and the cryptographic constraints as inputs. The long term validation process shall
-						 * add the returned POEs to the set of POEs.
-						 */
-						if (isValid(timestampValidation)) {
-
-							item = item.setNextItem(messageImprintDigestAlgorithm(newestTimestamp, davResult, lowestPOETime));
-
-							if (isValid(davResult)) {
-								item = item.setNextItem(timestampMessageImprint(newestTimestamp));
-								// message-imprint check for POE extraction is executed inside
-								poe.extractPOE(newestTimestamp);
-							}
-						}
-						/*
-						 * c) If the output of the validation is INDETERMINATE/REVOKED_NO_POE,
-						 * INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
-						 * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, the SVA shall perform past
-						 * signature validation process (as per clause 5.6.2.4) with the following inputs: the time-stamp, the
-						 * indication/sub-indication returned by the time-stamp validation process in step 5a, the TSA's certificate,
-						 * the X.509 validation parameters, X.509 validation constraints, cryptographic constraints, certificate
-						 * validation data and the set of POEs.
-						 */
-						else {
-
-							PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, newestTimestamp, bbbs,
-									timestampValidation.getConclusion(), poe, currentTime, policy, Context.TIMESTAMP);
-							XmlPSV psvResult = psv.execute();
-							bbbTsp.setPSV(psvResult);
-
-							latestConclusion = psvResult.getConclusion();
-
-							enrichBBBWithPSVConclusion(bbbTsp, psvResult);
-
-							item = item.setNextItem(pastTimestampValidation(newestTimestamp, psvResult));
-
-							/*
-							 * If it returns PASSED and the cryptographic hash function used in the time-stamp is considered
-							 * reliable at the generation time of the time-stamp, the long term validation process shall
-							 * perform the POE extraction process and shall add the returned POEs to the set of POEs
-							 * continue with step 5a using the next timestamp attribute.
-							 */
-							if (isValid(psvResult)) {
-
-								item = item.setNextItem(messageImprintDigestAlgorithm(newestTimestamp, davResult, lowestPOETime));
-
-								if (isValid(davResult)) {
-									item = item.setNextItem(timestampMessageImprint(newestTimestamp));
-									poe.extractPOE(newestTimestamp);
-								}
-							}
-						}
-					}
 					/*
 					 * d) In all other cases:
 					 * - If no specific constraints mandating the validity of the attribute are specified in the
@@ -274,9 +204,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					 * explanations.
 					 */
 
-				} else { // timestampValidation is null
-					result.setConclusion(latestConclusion);
-					break;
 				}
 				
 			/*
@@ -371,9 +298,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessArchivalData> timestampBasicSignatureValidationAcceptable(
-			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
-		return new AcceptableBasicTimestampValidationCheck(i18nProvider, result, timestampWrapper,
+	private ChainItem<XmlValidationProcessArchivalData> timestampValidationConclusive(
+			TimestampWrapper timestampWrapper, XmlValidationProcessArchivalDataTimestamp timestampValidationResult) {
+		return new TimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
 				timestampValidationResult, getTimestampValidationConstraintLevel());
 	}
 
@@ -383,26 +310,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			constraint = getWarnLevelConstraint();
 		}
 		return constraint;
-	}
-
-	private ChainItem<XmlValidationProcessArchivalData> timestampBasicSignatureValidationConclusive(
-			TimestampWrapper timestampWrapper, XmlValidationProcessTimestamp timestampValidationResult) {
-		return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
-				timestampValidationResult, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationProcessArchivalData> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {
-		return new PastTimestampValidationCheck(i18nProvider, result, timestamp, xmlPSV, getTimestampValidationConstraintLevel());
-	}
-
-	private ChainItem<XmlValidationProcessArchivalData> messageImprintDigestAlgorithm(
-			TimestampWrapper timestampWrapper, XmlSAV davResult, Date poeTime) {
-		return new MessageImprintDigestAlgorithmValidationCheck(i18nProvider, result, timestampWrapper,
-				davResult, poeTime, getWarnLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationProcessArchivalData> timestampMessageImprint(TimestampWrapper timestampWrapper) {
-		return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> tLevelTimeStamp() {
@@ -450,26 +357,18 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		return new POE(xmlProofOfExistence.getTime());
 	}
 
-	private XmlValidationProcessTimestamp getTimestampValidation(TimestampWrapper newestTimestamp) {
+	private XmlValidationProcessArchivalDataTimestamp getTimestampValidation(TimestampWrapper newestTimestamp) {
 		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
 			if (Utils.areStringsEqual(xmlTimestamp.getId(), newestTimestamp.getId())) {
-				return xmlTimestamp.getValidationProcessTimestamp();
+				return xmlTimestamp.getValidationProcessArchivalDataTimestamp();
 			}
 		}
 		return null;
 	}
-	
-	private MessageImprintDigestAlgorithmValidation timestampDigestAlgorithmValidation(
-			TimestampWrapper newestTimestamp, Date poeTime) {
-		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
-		return new MessageImprintDigestAlgorithmValidation(i18nProvider, poeTime,
-				newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicConstraint);
-	}
 
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		if ((XmlBlockType.TST_BBB.equals(constraint.getBlockType()) || XmlBlockType.TST_PSV.equals(constraint.getBlockType())) &&
-				policy.getTimestampValidConstraint() == null) {
+		if (XmlBlockType.TST.equals(constraint.getBlockType()) && policy.getTimestampValidConstraint() == null) {
 			// skip propagating of validation messages for TSTs in default processing
 		} else {
 			super.collectMessages(conclusion, constraint);

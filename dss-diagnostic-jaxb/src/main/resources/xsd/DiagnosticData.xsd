@@ -147,6 +147,7 @@
 					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 					<xs:element name="ClaimedSigningTime" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="SignatureFormat" type="SignatureFormat" />
+					<xs:element name="SignatureType" type="xs:string" minOccurs="0" /> <!-- JAdES only -->
 		
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					
@@ -432,10 +433,10 @@
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
 
-					<xs:element name="TrustedServiceProviders" minOccurs="0">
+					<xs:element name="TrustServiceProviders" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="TrustServiceProvider" type="TrustServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -678,8 +679,15 @@
 
 	<xs:complexType name="MRACertificateMapping">
 		<xs:sequence>
-			<xs:element name="EnactedTrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="TrustServiceEquivalenceInformation" type="TrustServiceEquivalenceInformation" />
 			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryQcStatementsMapping" /> <!-- Values before MRA -->
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="TrustServiceEquivalenceInformation">
+		<xs:sequence>
+			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
+			<xs:element name="CertificateContentEquivalenceList" type="CertificateContentEquivalenceList" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -760,6 +768,17 @@
 			<xs:element name="amount" type="xs:int" />
 			<xs:element name="exponent" type="xs:int" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CertificateContentEquivalenceList">
+		<xs:sequence>
+			<xs:element name="CertificateContentEquivalence" type="CertificateContentEquivalence" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CertificateContentEquivalence">
+		<xs:attribute name="uri" type="xs:string" use="required" />
+		<xs:attribute name="enacted" type="xs:boolean" use="required" />
 	</xs:complexType>
 	
 	<xs:complexType name="CertificatePolicy">
@@ -1468,12 +1487,12 @@
 		<xs:attribute name="mra" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedServiceProvider">
+	<xs:complexType name="TrustServiceProvider">
 		<xs:sequence>
-			<xs:element name="TSPNames">
+			<xs:element name="TSPNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TSPName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="TSPName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1492,10 +1511,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedServices">
+			<xs:element name="TrustServices" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="TrustService" type="TrustService" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1504,12 +1523,12 @@
 		<xs:attribute name="LOTL" type="xs:IDREF" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedService">
+	<xs:complexType name="TrustService">
 		<xs:sequence>
-			<xs:element name="ServiceNames">
+			<xs:element name="ServiceNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="ServiceName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="ServiceName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1552,8 +1571,16 @@
 
 	<xs:complexType name="CapturedQualifiers">
 		<xs:sequence>
-			<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Qualifier">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="critical" type="xs:boolean" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="AdditionalServiceInfoUris">
@@ -1566,11 +1593,12 @@
 		<xs:sequence>
 			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
 			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
-			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
+			<xs:element name="EquivalenceStatusEndingTime" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustServiceMapping" /> <!-- Information in TL before MRA applied -->
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="OriginalThirdCountryTrustedServiceMapping">
+	<xs:complexType name="OriginalThirdCountryTrustServiceMapping">
 		<xs:sequence>
 			<xs:element name="ServiceType" type="xs:string" minOccurs="0" />
 			<xs:element name="Status" type="xs:string" minOccurs="0" />

@@ -60,7 +60,7 @@
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "n/E7rimpFyH1H8cdEClb2jnbYcZFG+n60U4qWW12Fdo="
+    "value" : "Vc+/B+hsfem+qsaN2B0KJmpBfYL7mqcRv/Hsz1LfLdE="
   }
 }
 ----

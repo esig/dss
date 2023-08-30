@@ -24,6 +24,7 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
@@ -35,7 +36,6 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +54,7 @@ public class PDFSignatureServiceTest {
 	}
 	
 	@Test
-	public void alertOnSignatureFieldOverlapTest() throws IOException {
+	public void alertOnSignatureFieldOverlapTest() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 		
 		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
@@ -86,7 +86,64 @@ public class PDFSignatureServiceTest {
 	}
 
 	@Test
-	public void alertOnSignatureFieldOutsidePageDimensions() throws IOException {
+	public void alertOnSignatureFieldOverlapWithRotationTest() {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setFieldId("Signature1");
+		fieldParameters.setOriginX(50);
+		fieldParameters.setOriginY(100);
+		fieldParameters.setHeight(50);
+		fieldParameters.setWidth(100);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		DSSDocument doc90Degrees = service.addNewSignatureField(documentToSign, fieldParameters);
+		assertNotNull(doc90Degrees);
+
+		Exception exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc90Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setFieldId("Signature2");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_180);
+
+		DSSDocument doc180Degrees = service.addNewSignatureField(doc90Degrees, fieldParameters);
+		assertNotNull(doc180Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc180Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setFieldId("Signature3");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_270);
+
+		DSSDocument doc270Degrees = service.addNewSignatureField(doc180Degrees, fieldParameters);
+		assertNotNull(doc270Degrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(doc270Degrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setFieldId("Signature4");
+		fieldParameters.setRotation(VisualSignatureRotation.NONE);
+
+		DSSDocument docZeroDegrees = service.addNewSignatureField(doc270Degrees, fieldParameters);
+		assertNotNull(docZeroDegrees);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docZeroDegrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		fieldParameters.setFieldId("Signature5");
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		exception = assertThrows(AlertException.class,
+				() -> service.addNewSignatureField(docZeroDegrees, fieldParameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
+	@Test
+	public void alertOnSignatureFieldOutsidePageDimensions() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
 		PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
@@ -205,6 +262,52 @@ public class PDFSignatureServiceTest {
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
 		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+	}
+
+	@Test
+	public void alertOnSignatureFieldOutsidePageDimensionsDocWithRotation() {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf"));
+
+		PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new ExceptionOnStatusAlert());
+		service.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+
+		parameters.setRotation(VisualSignatureRotation.NONE);
+		parameters.setWidth(100);
+		parameters.setHeight(200);
+		parameters.setOriginX(50);
+		parameters.setOriginY(100);
+
+		DSSDocument signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setRotation(VisualSignatureRotation.NONE);
+		parameters.setWidth(100);
+		parameters.setHeight(100);
+		parameters.setOriginX(500);
+		parameters.setOriginY(200);
+
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		parameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		signedDoc = service.addNewSignatureField(documentToSign, parameters);
+		assertNotNull(signedDoc);
+
+		parameters.setRotation(VisualSignatureRotation.ROTATE_180);
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(documentToSign, parameters));
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		parameters.setRotation(VisualSignatureRotation.ROTATE_270);
 		signedDoc = service.addNewSignatureField(documentToSign, parameters);
 		assertNotNull(signedDoc);
 	}

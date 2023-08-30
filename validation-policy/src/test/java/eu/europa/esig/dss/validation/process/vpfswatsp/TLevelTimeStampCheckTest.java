@@ -6,7 +6,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
@@ -55,11 +55,11 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.PASSED);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -96,12 +96,12 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.INDETERMINATE);
         tstBasicConclusion.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -138,11 +138,11 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.PASSED);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         timestamp = new XmlTimestamp();
         timestamp.setId("TST-2");
@@ -160,12 +160,12 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestampTwo = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestampTwo.setId("TST-2");
 
-        xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.INDETERMINATE);
         tstBasicConclusion.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestampTwo.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestampTwo.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -202,11 +202,11 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.FAILED);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         timestamp = new XmlTimestamp();
         timestamp.setId("TST-2");
@@ -224,12 +224,12 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestampTwo = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestampTwo.setId("TST-2");
 
-        xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.INDETERMINATE);
         tstBasicConclusion.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestampTwo.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestampTwo.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -272,12 +272,12 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.INDETERMINATE);
         tstBasicConclusion.setSubIndication(SubIndication.OUT_OF_BOUNDS_NO_POE);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -320,12 +320,12 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.INDETERMINATE);
         tstBasicConclusion.setSubIndication(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -362,11 +362,11 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.PASSED);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -404,11 +404,11 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
         eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = new eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp();
         xmlTimestamp.setId(TST_ID);
 
-        XmlValidationProcessTimestamp xmlValidationProcessTimestamp = new XmlValidationProcessTimestamp();
+        XmlValidationProcessBasicTimestamp XmlValidationProcessBasicTimestamp = new XmlValidationProcessBasicTimestamp();
         XmlConclusion tstBasicConclusion = new XmlConclusion();
         tstBasicConclusion.setIndication(Indication.PASSED);
-        xmlValidationProcessTimestamp.setConclusion(tstBasicConclusion);
-        xmlTimestamp.setValidationProcessTimestamp(xmlValidationProcessTimestamp);
+        XmlValidationProcessBasicTimestamp.setConclusion(tstBasicConclusion);
+        xmlTimestamp.setValidationProcessBasicTimestamp(XmlValidationProcessBasicTimestamp);
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);

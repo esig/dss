@@ -54,6 +54,9 @@ public class TLValidationJobSummary implements Serializable {
 	 *                     LOTLs
 	 */
 	public TLValidationJobSummary(final List<LOTLInfo> lotlInfos, final List<TLInfo> otherTLInfos) {
+		if (Utils.isCollectionEmpty(lotlInfos) && Utils.isCollectionEmpty(otherTLInfos)) {
+			throw new IllegalArgumentException("LOTL or TL Info shall be provided!");
+		}
 		this.lotlInfos = lotlInfos;
 		this.otherTLInfos = otherTLInfos;
 	}
@@ -120,9 +123,11 @@ public class TLValidationJobSummary implements Serializable {
 
 		if (Utils.isCollectionNotEmpty(lotlInfos)) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
-				for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
-					if (identifier.equals(tlInfo.getDSSId())) {
-						return tlInfo;
+				if (Utils.isCollectionNotEmpty(lotlInfo.getTLInfos())) {
+					for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
+						if (identifier.equals(tlInfo.getDSSId())) {
+							return tlInfo;
+						}
 					}
 				}
 			}

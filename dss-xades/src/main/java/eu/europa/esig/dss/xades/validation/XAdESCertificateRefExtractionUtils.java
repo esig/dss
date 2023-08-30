@@ -137,13 +137,18 @@ public final class XAdESCertificateRefExtractionUtils {
 		final String textContent = issuerSerialV2Element.getTextContent();
 
 		try {
-			IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
-			return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+			if (Utils.isBase64Encoded(textContent)) {
+				IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
+				return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+			} else {
+				LOG.warn("The IssuerSerialV2 value is not base64-encoded!");
+			}
+
 		} catch (Exception e) {
 			LOG.warn("An error occurred while parsing IssuerSerialV2 from CertIDTypeV2 element! " +
 							"Reason : {}", e.getMessage(), e);
-			return null;
 		}
+		return null;
 	}
 
 }

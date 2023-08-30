@@ -42,7 +42,11 @@ public class LogTLExpirationAlertHandler implements AlertHandler<TLInfo> {
 
 	@Override
 	public void process(TLInfo currentInfo) {
-		LOG.warn("The '{}' TL has expired. Last update : {}", currentInfo.getUrl(), currentInfo.getParsingCacheInfo().getNextUpdateDate());
+		if (currentInfo.getParsingCacheInfo() != null) {
+			LOG.warn("The '{}' TL has expired. Last update : {}", currentInfo.getUrl(), currentInfo.getParsingCacheInfo().getNextUpdateDate());
+		} else {
+			LOG.warn("No parsing result found for a LOTL with URL '{}'", currentInfo.getUrl());
+		}
 	}
 	
 }
