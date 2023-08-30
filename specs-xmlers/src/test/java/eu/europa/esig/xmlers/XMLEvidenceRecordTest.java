@@ -1,6 +1,6 @@
 package eu.europa.esig.xmlers;
 
-import eu.europa.esig.xmldsig.jaxb.SignatureType;
+import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,8 +67,9 @@ public class XMLEvidenceRecordTest {
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         unmarshaller.setSchema(schema);
 
-        JAXBElement<SignatureType> unmarshalled = (JAXBElement<SignatureType>) unmarshaller.unmarshal(xmlersFile);
+        JAXBElement<EvidenceRecordType> unmarshalled = (JAXBElement<EvidenceRecordType>) unmarshaller.unmarshal(xmlersFile);
         assertNotNull(unmarshalled);
+        assertNotNull(unmarshalled.getValue());
 
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setSchema(schema);
@@ -76,10 +77,11 @@ public class XMLEvidenceRecordTest {
         StringWriter sw = new StringWriter();
         marshaller.marshal(unmarshalled, sw);
 
-        String xadesString = sw.toString();
+        String xmlerString = sw.toString();
 
-        JAXBElement<SignatureType> unmarshalled2 = (JAXBElement<SignatureType>) unmarshaller.unmarshal(new StringReader(xadesString));
+        JAXBElement<EvidenceRecordType> unmarshalled2 = (JAXBElement<EvidenceRecordType>) unmarshaller.unmarshal(new StringReader(xmlerString));
         assertNotNull(unmarshalled2);
+        assertNotNull(unmarshalled2.getValue());
     }
 
     @Test

@@ -113,16 +113,16 @@
 		<module>dss-utils-google-guava</module>
 		<module>dss-i18n</module>
 		<module>dss-model</module>
+		<module>dss-xml</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
 		<module>dss-spi</module>
-		<module>dss-xml</module>
+		<module>validation-policy</module>
 		<module>dss-document</module>
 		<module>dss-service</module>
-		<module>dss-test</module>
 		<module>dss-token</module>
-		<module>validation-policy</module>
+		<module>dss-test</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
 		<module>dss-jades</module>
