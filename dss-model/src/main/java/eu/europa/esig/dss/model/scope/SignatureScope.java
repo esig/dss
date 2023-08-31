@@ -25,8 +25,8 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.identifier.DataIdentifier;
+import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 import java.io.Serializable;
@@ -170,11 +170,9 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 	 * @return {@link DataIdentifier}
 	 */
 	public DataIdentifier getDSSId() {
-		if (dssId != null) {
-			return dssId;
+		if (dssId == null) {
+			dssId = new DataIdentifier(name, document);
 		}
-		String uniqueString = name + getDigest(DigestAlgorithm.SHA256);
-		dssId = new DataIdentifier(uniqueString.getBytes());
 		return dssId;
 	}
 	

@@ -964,6 +964,7 @@ public final class DomUtils {
 		switch (node.getNodeType()) {
 			case Node.ELEMENT_NODE:
 			case Node.DOCUMENT_NODE:
+			case Node.COMMENT_NODE:
 				byte[] bytes = serializeNode(node);
 				String str = new String(bytes);
 				// TODO: better
@@ -975,9 +976,10 @@ public final class DomUtils {
 
 			case Node.TEXT_NODE:
 				String textContent = node.getTextContent();
-				if (Utils.isBase64Encoded(textContent)) {
+				// Use try-catch for performance purposes
+				try {
 					return Utils.fromBase64(node.getTextContent());
-				} else {
+				} catch (Exception e) {
 					return textContent.getBytes();
 				}
 

@@ -77,7 +77,10 @@ public abstract class AbstractSignatureScopeFinder {
 	 * @return {@link DSSDocument}
 	 */
 	protected DSSDocument createDigestDocument(Digest digest) {
-		return new DigestDocument(digest.getAlgorithm(), Utils.toBase64(digest.getValue()));
+		if (digest != null) {
+			return new DigestDocument(digest.getAlgorithm(), Utils.toBase64(digest.getValue()));
+		}
+		return null;
 	}
 
 }

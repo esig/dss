@@ -20,6 +20,16 @@
  */
 package eu.europa.esig.dss.model.identifier;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Base64;
+
 /**
  * The DSS identifier for a SignedData
  */
@@ -34,6 +44,58 @@ public final class DataIdentifier extends Identifier {
 	 */
 	public DataIdentifier(final byte[] data) {
 		super("D-", data);
+	}
+
+	/**
+	 * Constructor to build an identifier based on {@code name} and {@code document}
+	 *
+	 * @param name {@link String} name of the document to use
+	 * @param document {@link DSSDocument} to build an identifier for
+	 */
+	public DataIdentifier(final String name, final DSSDocument document) {
+		this(build(name, document));
+	}
+
+	/**
+	 * Builds the data byte array for a {@code document} with given {@code name}
+	 *
+	 * @param name {@link String} name of the document to use
+	 * @param document {@link DSSDocument} which content to use for identifier builder
+	 * @return byte array
+	 */
+	private static byte[] build(String name, DSSDocument document) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
+			if (name != null) {
+				dos.writeChars(name);
+			}
+			Digest dataDigest = getDigest(document);
+			if (dataDigest != null) {
+				dos.write(dataDigest.getValue());
+			}
+			dos.flush();
+
+			return baos.toByteArray();
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to build a JAdESAttributeIdentifier. Reason : %s", e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * Gets digests of the document
+	 *
+	 * @param document {@link DSSDocument}
+	 * @return {@link Digest}
+	 */
+	private static Digest getDigest(DSSDocument document) {
+		if (document != null) {
+			if (document instanceof DigestDocument) {
+				return ((DigestDocument) document).getExistingDigest();
+			} else {
+				return new Digest(DIGEST_ALGO, Base64.getDecoder().decode(document.getDigest(DIGEST_ALGO)));
+			}
+		}
+		return null;
 	}
 
 }

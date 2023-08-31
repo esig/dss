@@ -170,7 +170,7 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestampOrEvidenceRecord().get(0).getIndication());
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
 
@@ -249,7 +249,7 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestampOrEvidenceRecord().get(0).getIndication());
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
 
