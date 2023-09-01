@@ -2,8 +2,7 @@ package eu.europa.esig.dss.pki.repository;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.model.Revocation;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import org.bouncycastle.cert.X509CertificateHolder;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      *
      * @return A list of CertEntity objects that have the trust anchor flag set to true.
      */
-    List<T> getByTrustAnchorTrue();
+    List<T> getTrustAnchors();
 
     /**
      * Retrieves a list of CertEntity objects that have the trust anchor flag set to true and match the specified PKI name.
@@ -61,7 +60,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param name The name of the PKI (Public Key Infrastructure) for which trust anchor certificates are to be retrieved.
      * @return A list of CertEntity objects that have the trust anchor flag set to true and match the specified PKI name.
      */
-    List<T> getByTrustAnchorTrueAndPkiName(String name);
+    List<T> getTrustAnchorsByPkiName(String name);
 
     /**
      * Retrieves a list of CertEntity objects that have the toBeIgnored flag set to true.
@@ -129,13 +128,8 @@ public interface CertEntityRepository<T extends CertEntity> {
      */
     T save(T certEntity);
 
-    /**
-     * Retrieves the certificate entity with the specified ID from the data store.
-     *
-     * @param id The ID of the certificate entity to retrieve.
-     * @return The certificate entity matching the provided ID, or null if not found.
-     */
-    T getCertEntity(String id);
+
+    T getCertEntityBySubject(String subjectName);
 
 
     /**
@@ -168,7 +162,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param parent The parent certificate entity.
      * @return A list containing the revocation entities associated with the parent certificate.
      */
-    Map<T, Revocation> getRevocationList(T parent);
+    Map<T, CertEntityRevocation> getRevocationList(T parent);
 
     /**
      * Retrieves the revocation information for the given certificate entity.
@@ -176,7 +170,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param certEntity The certificate entity .
      * @return The revocation information  .
      */
-    Revocation getRevocation(T certEntity);
+    CertEntityRevocation getRevocation(T certEntity);
 
     /**
      * Retrieves the revocation information for the given certificate token.
@@ -184,7 +178,7 @@ public interface CertEntityRepository<T extends CertEntity> {
      * @param certificateToken The certificate token for which to retrieve revocation information.
      * @return The revocation information .
      */
-    Revocation getRevocation(CertificateToken certificateToken);
+    CertEntityRevocation getRevocation(CertificateToken certificateToken);
 
     /**
      * Retrieves the issuer certificate entity for the given certificate entity.

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 
 public class PAdESExtensionBToLTATest extends AbstractPAdESTestExtension {
 

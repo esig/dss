@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="Test Country">
+
+    <!-- National RootCA certificate-->
+    <certificate>
+        <serialNumber>100000</serialNumber>
+        <subject>Test-National-RootCA-from-ZZ</subject>
+        <issuer serialNumber="100000">Test-National-RootCA-from-ZZ</issuer>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <!-- RootCA oscp-->
+    <certificate>
+        <serialNumber>200000</serialNumber>
+        <subject>ZZ-ocsp-responder</subject>
+        <issuer serialNumber="100000">Test-National-RootCA-from-ZZ</issuer>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <trustAnchor/>
+        <ocspSigning/>
+        <ocspNoCheck/>
+    </certificate>
+
+    <!-- Test QTSP 1 certificates-->
+    <!-- RootCA-->
+    <certificate>
+        <serialNumber>100100</serialNumber>
+        <subject>Test-QTSP-1-RootCA-from-ZZ</subject>
+        <issuer serialNumber="100000">Test-National-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <ocspResponder serialNumber="200000">Test-National-RootCA-from-ZZ</ocspResponder>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+        <crl>Test-National-RootCA-from-ZZ</crl>
+        <aia>Test-National-RootCA-from-ZZ</aia>
+    </certificate>
+
+    <!-- QTSP 1 RootCA oscp -->
+    <certificate>
+        <serialNumber>200001</serialNumber>
+        <subject>ZZ-QTSP1-ocsp-responder</subject>
+        <issuer serialNumber="100100">Test-National-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <trustAnchor/>
+        <ocspSigning/>
+        <ocspNoCheck/>
+    </certificate>
+
+    <!-- CA/QC-->
+    <certificate>
+        <serialNumber>100110</serialNumber>
+        <subject>Test-Qualified-CA1-from-ZZ</subject>
+        <issuer serialNumber="100100">Test-National-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <ocspResponder serialNumber="200001">Test-QTSP-1-RootCA-from-ZZ</ocspResponder>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+        <crl>Test-QTSP-1-RootCA-from-ZZ</crl>
+        <aia>Test-QTSP-1-RootCA-from-ZZ</aia>
+    </certificate>
+
+    <!-- End-Entity Non-Qualified Certificate having qcStatement and qcType (Intended to test the sie:Q validation tool of TL-Manager -->
+    <certificate>
+        <serialNumber>100111</serialNumber>
+        <subject>John Doe</subject>
+        <issuer serialNumber="100110">Test-QTSP-1-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <certificatePolicies>
+            <certificatePolicy>1.3.6.1.4.1.314159.1.2</certificatePolicy>
+        </certificatePolicies>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.1862.1.6.1</qcType>
+        </qcTypes>
+        <qcCClegislation>
+            <CountryName>ZZ</CountryName>
+        </qcCClegislation>
+        <crl>Test-Qualified-CA1-from-ZZ</crl>
+        <ocsp>Test-Qualified-CA1-from-ZZ</ocsp>
+        <aia>Test-Qualified-CA1-from-ZZ</aia>
+    </certificate>
+
+    <!-- End-Entity Qualified Certificate for eSig-->
+    <certificate>
+        <serialNumber>100112</serialNumber>
+        <subject>Jane Doe</subject>
+        <issuer serialNumber="100110">Test-QTSP-1-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <certificatePolicies>
+            <certificatePolicy>1.3.6.1.4.1.314159.1.1</certificatePolicy>
+        </certificatePolicies>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.1862.1.6.1</qcType>
+        </qcTypes>
+        <qcCClegislation>
+            <CountryName>ZZ</CountryName>
+        </qcCClegislation>
+        <crl>Test-Qualified-CA1-from-ZZ</crl>
+        <ocsp>Test-Qualified-CA1-from-ZZ</ocsp>
+        <aia>Test-Qualified-CA1-from-ZZ</aia>
+    </certificate>
+
+    <!-- End-Entity Qualified Certificate for eSig qcStatement but no qcType-->
+    <certificate>
+        <serialNumber>100113</serialNumber>
+        <subject>Bob Doe</subject>
+        <issuer serialNumber="100110">Test-QTSP-1-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <certificatePolicies>
+            <certificatePolicy>1.3.6.1.4.1.314159.1.1</certificatePolicy>
+        </certificatePolicies>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+        </qcStatementIds>
+        <qcCClegislation>
+            <CountryName>ZZ</CountryName>
+        </qcCClegislation>
+        <crl>Test-Qualified-CA1-from-ZZ</crl>
+        <ocsp>Test-Qualified-CA1-from-ZZ</ocsp>
+        <aia>Test-Qualified-CA1-from-ZZ</aia>
+    </certificate>
+
+    <!-- CA/PKC-->
+    <certificate>
+        <serialNumber>100130</serialNumber>
+        <subject>Test-Non-Qualified-CA-from-ZZ</subject>
+        <issuer serialNumber="100100">Test-National-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <ocspResponder serialNumber="200001">Test-QTSP-1-RootCA-from-ZZ</ocspResponder>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+        <crl>Test-QTSP-1-RootCA-from-ZZ</crl>
+        <aia>Test-QTSP-1-RootCA-from-ZZ</aia>
+    </certificate>
+
+    <!-- End-Entity Non-Qualified Certificate having qcType but no qcStatement (Intended to test the validation of non qualified certificates) -->
+    <certificate>
+        <serialNumber>100111</serialNumber>
+        <subject>Alice Doe</subject>
+        <issuer serialNumber="100130">Test-QTSP-1-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <certificatePolicies>
+            <certificatePolicy>1.3.6.1.4.1.314159.1.2</certificatePolicy>
+        </certificatePolicies>
+        <qcTypes>
+            <qcType>0.4.0.1862.1.6.1</qcType>
+        </qcTypes>
+        <qcCClegislation>
+            <CountryName>ZZ</CountryName>
+        </qcCClegislation>
+        <crl>Test-Non-Qualified-CA-from-ZZ</crl>
+        <ocsp>Test-Non-Qualified-CA-from-ZZ</ocsp>
+        <aia>Test-Non-Qualified-CA-from-ZZ</aia>
+    </certificate>
+
+    <!-- TSA-->
+    <certificate>
+        <serialNumber>100140</serialNumber>
+        <subject>Test-Non-Qualified-TSA-from-ZZ</subject>
+        <issuer serialNumber="100100">Test-National-RootCA-from-ZZ</issuer>
+        <organization>Test Qualified Trust Service Provider 1 from ZZ</organization>
+        <country>ZZ</country>
+        <ocspResponder serialNumber="200001">Test-QTSP-1-RootCA-from-ZZ</ocspResponder>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+        <crl>Test-QTSP-1-RootCA-from-ZZ</crl>
+        <aia>Test-QTSP-1-RootCA-from-ZZ</aia>
+    </certificate>
+
+    <!-- ZZ-LOTL signer -->
+    <certificate>
+        <serialNumber>500000</serialNumber>
+        <subject>ZZ-LOTL-signer</subject>
+        <issuer serialNumber="500000">ZZ-LOTL-signer</issuer>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <!-- ZZ-TL signer -->
+    <certificate>
+        <serialNumber>500100</serialNumber>
+        <subject>ZZ-TL-signer</subject>
+        <issuer serialNumber="500100">ZZ-TL-signer</issuer>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+</pki>

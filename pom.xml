@@ -169,7 +169,7 @@
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
         <module>dss-pki-factory</module>
-        <module>dss-pki-manifest</module>
+        <module>dss-pki-factory-jaxb</module>
     </modules>
 
 	<build>
@@ -865,7 +865,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-pki-manifest</artifactId>
+				<artifactId>dss-pki-factory-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Public Dependencies -->

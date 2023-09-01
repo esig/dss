@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="Ed25519-pki">
+
+    <certificate>
+        <serialNumber>1000</serialNumber>
+        <subject>Ed25519-root-ca</subject>
+        <issuer serialNumber="1000">Ed25519-root-ca</issuer>
+
+        <keyAlgo encryption="Ed25519"/>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1001</serialNumber>
+        <subject>Ed25519-ocsp-responder</subject>
+        <issuer serialNumber="1000">Ed25519-root-ca</issuer>
+
+        <keyAlgo encryption="Ed25519"/>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <ocspSigning/>
+        <ocspNoCheck/>
+        <!-- 		<trustAnchor /> -->
+    </certificate>
+
+    <certificate>
+        <serialNumber>1002</serialNumber>
+        <subject>Ed25519-good-ca</subject>
+        <issuer serialNumber="1000">Ed25519-root-ca</issuer>
+        <ocspResponder serialNumber="1001">Ed25519-root-ca</ocspResponder>
+
+        <keyAlgo encryption="Ed25519"/>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>Ed25519-root-ca</crl>
+        <aia>Ed25519-root-ca</aia>
+        <!-- 		<trustAnchor /> -->
+    </certificate>
+
+    <certificate>
+        <serialNumber>1100</serialNumber>
+        <subject>Ed25519-good-user</subject>
+        <issuer serialNumber="1002">Ed25519-root-ca</issuer>
+
+        <keyAlgo encryption="Ed25519"/>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>Ed25519-good-ca</ocsp>
+        <aia>Ed25519-good-ca</aia>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1200</serialNumber>
+        <subject>Ed25519-good-tsa</subject>
+        <issuer serialNumber="1000">Ed25519-root-ca</issuer>
+        <keyAlgo encryption="Ed25519"/>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <tsa/>
+        <crl>Ed25519-root-ca</crl>
+        <aia>Ed25519-root-ca</aia>
+        <!-- 		<trustAnchor /> -->
+    </certificate>
+
+</pki>

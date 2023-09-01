@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -141,8 +140,8 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
-        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
-        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
         service = new PAdESService(certificateVerifier); //FIXME ask Alex about this
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());

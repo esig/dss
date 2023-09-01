@@ -63,8 +63,8 @@ public class ASiCEXAdESLevelLTUnknownTest extends AbstractASiCEXAdESTestSignatur
 	@Override
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
-		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
-		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
 		return certificateVerifier;
 	}
 

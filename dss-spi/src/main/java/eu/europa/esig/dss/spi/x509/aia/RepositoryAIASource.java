@@ -27,7 +27,14 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Abstract repository AIA source
@@ -211,7 +218,7 @@ public abstract class RepositoryAIASource implements AIASource {
     /**
      * This method allows inserting of a certificate into the DB
      *
-     * @param aiaKey           {@link String} AIA key identifying an AIA access URL
+     * @param aiaKey            {@link String} AIA key identifying an AIA access URL
      * @param certificateTokens a collection of {@link CertificateToken}s to insert
      */
     @Deprecated

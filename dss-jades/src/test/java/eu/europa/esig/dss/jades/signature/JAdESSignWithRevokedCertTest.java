@@ -149,8 +149,8 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
-        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
-        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
         service = new JAdESService(certificateVerifier); //FIXME ask Alex about this issue
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());

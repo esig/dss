@@ -6,14 +6,12 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.model.Revocation;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.utils.PKIUtils;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -82,12 +80,11 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     @Override
     public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws NullPointerException, RuntimeException {
         Objects.requireNonNull(certificateToken, "Certificate cannot be null");
-        Objects.requireNonNull(nextUpdate, "NextUpdateDate cannot be null");
         Objects.requireNonNull(issuerCertificateToken, "The issuer of the certificate to be verified cannot be null");
 
         final String dssIdAsString = certificateToken.getDSSIdAsString();
         List<String> cRLAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
-        if (Utils.isCollectionEmpty(cRLAccessUrls) ) {
+        if (Utils.isCollectionEmpty(cRLAccessUrls)) {
             LOG.warn("No CRL location found for {}", dssIdAsString);
             return null;
         }
@@ -120,12 +117,12 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     }
 
 
-    private byte[] generateCRL(final CertEntity certEntity, Date productionTime, Date nextUpdateTime) {
+    private byte[] generateCRL(final CertEntity certEntity, Date productionTime, Date nextUpdate) {
         try {
 
             X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(certEntity.getCertificateToken());
 
-            Map<DBCertEntity, Revocation> revocationList = certEntityRepository.getRevocationList(certEntity);
+            Map<CertEntity, CertEntityRevocation> revocationList = certEntityRepository.getRevocationList(certEntity);
 
             SignatureAlgorithm algorithm = SignatureAlgorithm.getAlgorithm(certEntity.getEncryptionAlgorithm(), digestAlgorithm, maskGenerationFunction);
 
@@ -133,7 +130,9 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
                 productionTime = new Date();
             }
             X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), productionTime);
-            builder.setNextUpdate(nextUpdateTime);
+            if (nextUpdate != null) {
+                builder.setNextUpdate(nextUpdate);
+            }
 
             addRevocationsToCRL(builder, revocationList);
 
@@ -145,7 +144,7 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
             return crl.getEncoded();
         } catch (IOException | OperatorCreationException e) {
             LOG.error("Unable to generate the CRL", e);
-            throw new Error500Exception("Unable to generate the CRL");
+            throw new DSSException("Unable to generate the CRL");
         }
     }
 
@@ -157,10 +156,10 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * @return List of added CRLEntry objects.
      */
 
-    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<DBCertEntity, Revocation> revocationList) {
+    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
         revocationList.forEach((key, value) -> {
             X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
-            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), PKIUtils.getCRLReason(value.getRevocationReason()));
+            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), value.getRevocationReason().getValue());
         });
     }
 
@@ -206,4 +205,5 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     public void setCertEntity(CertEntity certEntity) {
         this.certEntity = certEntity;
     }
+
 }

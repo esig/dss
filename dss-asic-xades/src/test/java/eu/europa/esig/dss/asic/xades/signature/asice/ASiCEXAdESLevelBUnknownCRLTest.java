@@ -22,7 +22,11 @@ package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.enumerations.*;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -66,7 +70,7 @@ public class ASiCEXAdESLevelBUnknownCRLTest extends AbstractASiCEXAdESTestSignat
     @Override
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
         certificateVerifier.setCrlSource(null);
         return certificateVerifier;
     }

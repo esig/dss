@@ -24,234 +24,381 @@ import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
 import java.security.spec.PSSParameterSpec;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * Supported signature algorithms.
- *
  */
 public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
-    /** RSA without digest algorithm */
+    /**
+     * RSA without digest algorithm
+     */
     RSA_RAW(EncryptionAlgorithm.RSA, null),
 
-    /** RSA with SHA-1 */
+    /**
+     * RSA with SHA-1
+     */
     RSA_SHA1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1),
 
-    /** RSA with SHA-224 */
+    /**
+     * RSA with SHA-224
+     */
     RSA_SHA224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224),
 
-    /** RSA with SHA-256 */
+    /**
+     * RSA with SHA-256
+     */
     RSA_SHA256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256),
 
-    /** RSA with SHA-384 */
+    /**
+     * RSA with SHA-384
+     */
     RSA_SHA384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384),
 
-    /** RSA with SHA-512 */
+    /**
+     * RSA with SHA-512
+     */
     RSA_SHA512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512),
 
-    /** RSA with SHA3-224 */
+    /**
+     * RSA with SHA3-224
+     */
     RSA_SHA3_224(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224),
 
-    /** RSA with SHA3-256 */
+    /**
+     * RSA with SHA3-256
+     */
     RSA_SHA3_256(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256),
 
-    /** RSA with SHA3-384 */
+    /**
+     * RSA with SHA3-384
+     */
     RSA_SHA3_384(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384),
 
-    /** RSA with SHA3-512 */
+    /**
+     * RSA with SHA3-512
+     */
     RSA_SHA3_512(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512),
 
-    /** RSA with MGF1 without digest algorithm */
+    /**
+     * RSA with MGF1 without digest algorithm
+     */
     RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSA, null, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA-1 */
+    /**
+     * RSA with MGF1 with SHA-1
+     */
     RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA-224 */
+    /**
+     * RSA with MGF1 with SHA-224
+     */
     RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA-256 */
+    /**
+     * RSA with MGF1 with SHA-256
+     */
     RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA-384 */
+    /**
+     * RSA with MGF1 with SHA-384
+     */
     RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA-512 */
+    /**
+     * RSA with MGF1 with SHA-512
+     */
     RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA3-224 */
+    /**
+     * RSA with MGF1 with SHA3-224
+     */
     RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA3-256 */
+    /**
+     * RSA with MGF1 with SHA3-256
+     */
     RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA3-384 */
+    /**
+     * RSA with MGF1 with SHA3-384
+     */
     RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
 
-    /** RSA with MGF1 with SHA3-512 */
+    /**
+     * RSA with MGF1 with SHA3-512
+     */
     RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
 
-    /** RSA with RIPEMD160 */
+    /**
+     * RSA with RIPEMD160
+     */
     RSA_RIPEMD160(EncryptionAlgorithm.RSA, DigestAlgorithm.RIPEMD160),
 
-    /** RSA with MD2 */
+    /**
+     * RSA with MD2
+     */
     RSA_MD2(EncryptionAlgorithm.RSA, DigestAlgorithm.MD2),
 
-    /** RSA with MD5 */
+    /**
+     * RSA with MD5
+     */
     RSA_MD5(EncryptionAlgorithm.RSA, DigestAlgorithm.MD5),
 
-    /** ECDSA without digest algorithm */
+    /**
+     * ECDSA without digest algorithm
+     */
     ECDSA_RAW(EncryptionAlgorithm.ECDSA, null),
 
-    /** ECDSA with SHA-1 */
+    /**
+     * ECDSA with SHA-1
+     */
     ECDSA_SHA1(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA1),
 
-    /** ECDSA with SHA-224 */
+    /**
+     * ECDSA with SHA-224
+     */
     ECDSA_SHA224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA224),
 
-    /** ECDSA with SHA-256 */
+    /**
+     * ECDSA with SHA-256
+     */
     ECDSA_SHA256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256),
 
-    /** ECDSA with SHA-384 */
+    /**
+     * ECDSA with SHA-384
+     */
     ECDSA_SHA384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA384),
 
-    /** ECDSA with SHA-512 */
+    /**
+     * ECDSA with SHA-512
+     */
     ECDSA_SHA512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA512),
 
-    /** ECDSA with SHA3-224 */
+    /**
+     * ECDSA with SHA3-224
+     */
     ECDSA_SHA3_224(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_224),
 
-    /** ECDSA with SHA3-256 */
+    /**
+     * ECDSA with SHA3-256
+     */
     ECDSA_SHA3_256(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_256),
 
-    /** ECDSA with SHA3-384 */
+    /**
+     * ECDSA with SHA3-384
+     */
     ECDSA_SHA3_384(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_384),
 
-    /** ECDSA with SHA3-512 */
+    /**
+     * ECDSA with SHA3-512
+     */
     ECDSA_SHA3_512(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA3_512),
 
-    /** ECDSA with RIPEMD160 */
+    /**
+     * ECDSA with RIPEMD160
+     */
     ECDSA_RIPEMD160(EncryptionAlgorithm.ECDSA, DigestAlgorithm.RIPEMD160),
 
-    /** PLAIN-ECDSA with SHA-1 */
+    /**
+     * PLAIN-ECDSA with SHA-1
+     */
     PLAIN_ECDSA_SHA1(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA1),
 
-    /** PLAIN-ECDSA with SHA-224 */
+    /**
+     * PLAIN-ECDSA with SHA-224
+     */
     PLAIN_ECDSA_SHA224(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA224),
 
-    /** PLAIN-ECDSA with SHA-256 */
+    /**
+     * PLAIN-ECDSA with SHA-256
+     */
     PLAIN_ECDSA_SHA256(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256),
 
-    /** PLAIN-ECDSA with SHA-384 */
+    /**
+     * PLAIN-ECDSA with SHA-384
+     */
     PLAIN_ECDSA_SHA384(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA384),
 
-    /** PLAIN-ECDSA with SHA-512 */
+    /**
+     * PLAIN-ECDSA with SHA-512
+     */
     PLAIN_ECDSA_SHA512(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA512),
 
-    /** PLAIN-ECDSA with SHA3-224 */
+    /**
+     * PLAIN-ECDSA with SHA3-224
+     */
     PLAIN_ECDSA_SHA3_224(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_224),
 
-    /** PLAIN-ECDSA with SHA3-256 */
+    /**
+     * PLAIN-ECDSA with SHA3-256
+     */
     PLAIN_ECDSA_SHA3_256(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_256),
 
-    /** PLAIN-ECDSA with SHA3-384 */
+    /**
+     * PLAIN-ECDSA with SHA3-384
+     */
     PLAIN_ECDSA_SHA3_384(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_384),
 
-    /** PLAIN-ECDSA with SHA3-512 */
+    /**
+     * PLAIN-ECDSA with SHA3-512
+     */
     PLAIN_ECDSA_SHA3_512(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA3_512),
 
-    /** PLAIN-ECDSA with RIPEMD160 */
+    /**
+     * PLAIN-ECDSA with RIPEMD160
+     */
     PLAIN_ECDSA_RIPEMD160(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.RIPEMD160),
 
-    /** DSA without digest algorithm */
+    /**
+     * DSA without digest algorithm
+     */
     DSA_RAW(EncryptionAlgorithm.DSA, null),
 
-    /** DSA with SHA-1 */
+    /**
+     * DSA with SHA-1
+     */
     DSA_SHA1(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA1),
 
-    /** DSA with SHA-224 */
+    /**
+     * DSA with SHA-224
+     */
     DSA_SHA224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA224),
 
-    /** DSA with SHA-256 */
+    /**
+     * DSA with SHA-256
+     */
     DSA_SHA256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA256),
 
-    /** DSA with SHA-384 */
+    /**
+     * DSA with SHA-384
+     */
     DSA_SHA384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA384),
 
-    /** DSA with SHA-512 */
+    /**
+     * DSA with SHA-512
+     */
     DSA_SHA512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA512),
 
-    /** DSA with SHA3-224 */
+    /**
+     * DSA with SHA3-224
+     */
     DSA_SHA3_224(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_224),
 
-    /** DSA with SHA3-256 */
+    /**
+     * DSA with SHA3-256
+     */
     DSA_SHA3_256(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_256),
 
-    /** DSA with SHA3-384 */
+    /**
+     * DSA with SHA3-384
+     */
     DSA_SHA3_384(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_384),
 
-    /** DSA with SHA3-512 */
+    /**
+     * DSA with SHA3-512
+     */
     DSA_SHA3_512(EncryptionAlgorithm.DSA, DigestAlgorithm.SHA3_512),
 
-    /** HMAC with SHA-1 */
+    /**
+     * HMAC with SHA-1
+     */
     HMAC_SHA1(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA1),
 
-    /** HMAC with SHA-224 */
+    /**
+     * HMAC with SHA-224
+     */
     HMAC_SHA224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA224),
 
-    /** HMAC with SHA-256 */
+    /**
+     * HMAC with SHA-256
+     */
     HMAC_SHA256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA256),
 
-    /** HMAC with SHA-384 */
+    /**
+     * HMAC with SHA-384
+     */
     HMAC_SHA384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA384),
 
-    /** HMAC with SHA-512 */
+    /**
+     * HMAC with SHA-512
+     */
     HMAC_SHA512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA512),
 
-    /** HMAC with SHA3-224 */
+    /**
+     * HMAC with SHA3-224
+     */
     HMAC_SHA3_224(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_224),
 
-    /** HMAC with SHA3-256 */
+    /**
+     * HMAC with SHA3-256
+     */
     HMAC_SHA3_256(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_256),
 
-    /** HMAC with SHA3-384 */
+    /**
+     * HMAC with SHA3-384
+     */
     HMAC_SHA3_384(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_384),
 
-    /** HMAC with SHA3-512 */
+    /**
+     * HMAC with SHA3-512
+     */
     HMAC_SHA3_512(EncryptionAlgorithm.HMAC, DigestAlgorithm.SHA3_512),
 
-    /** HMAC with RIPEMD160 */
+    /**
+     * HMAC with RIPEMD160
+     */
     HMAC_RIPEMD160(EncryptionAlgorithm.HMAC, DigestAlgorithm.RIPEMD160),
 
     // https://tools.ietf.org/html/rfc8419#section-3.1
-    /** EDDSA with SHA512 */
+    /**
+     * EDDSA with SHA512
+     */
     ED25519(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHA512),
 
-    /** EDDSA with SHAKE256-512 */
+    /**
+     * EDDSA with SHAKE256-512
+     */
     ED448(EncryptionAlgorithm.EDDSA, DigestAlgorithm.SHAKE256_512);
 
-    /** The encryption algorithm */
+    /**
+     * The encryption algorithm
+     */
     private final EncryptionAlgorithm encryptionAlgo;
 
-    /** The digest algorithm */
+    /**
+     * The digest algorithm
+     */
     private final DigestAlgorithm digestAlgo;
 
-    /** The mask generation function */
+    /**
+     * The mask generation function
+     */
     private final MaskGenerationFunction maskGenerationFunction;
 
-    /** OID URI (RFC 3061) */
+    /**
+     * OID URI (RFC 3061)
+     */
     private static final String OID_NAMESPACE_PREFIX = "urn:oid:";
 
-    /** Unsupported algorithm error string */
+    /**
+     * Unsupported algorithm error string
+     */
     private static final String UNSUPPORTED_ALGO_MSG = "Unsupported algorithm: %s";
 
-    /** Map of XML algorithm URI with the signature algorithms (http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/) */
+    /**
+     * Map of XML algorithm URI with the signature algorithms (http://www.w3.org/TR/2013/NOTE-xmlsec-algorithms-20130411/)
+     */
     private static final Map<String, SignatureAlgorithm> XML_ALGORITHMS = registerXmlAlgorithms();
 
-    /** Map of signature algorithms with the XML URIs */
+    /**
+     * Map of signature algorithms with the XML URIs
+     */
     private static final Map<SignatureAlgorithm, String> XML_ALGORITHMS_FOR_KEY = registerXmlAlgorithmsForKey();
 
     private static Map<String, SignatureAlgorithm> registerXmlAlgorithms() {
@@ -316,10 +463,14 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         return xmlAlgorithms;
     }
 
-    /** Map of signature algorithm OIDs */
+    /**
+     * Map of signature algorithm OIDs
+     */
     private static final Map<String, SignatureAlgorithm> OID_ALGORITHMS = registerOIDAlgorithms();
 
-    /** Map of signature algorithm OIDs by algorithms */
+    /**
+     * Map of signature algorithm OIDs by algorithms
+     */
     private static final Map<SignatureAlgorithm, String> OID_ALGORITHMS_FOR_KEY = registerOidAlgorithmsForKey();
 
     private static Map<String, SignatureAlgorithm> registerOIDAlgorithms() {
@@ -422,10 +573,14 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         return oidAlgorithms;
     }
 
-    /** Map of JAVA signature algorithm names */
+    /**
+     * Map of JAVA signature algorithm names
+     */
     private static final Map<String, SignatureAlgorithm> JAVA_ALGORITHMS = registerJavaAlgorithms();
 
-    /** Map of JAVA signature algorithm names by algorithm */
+    /**
+     * Map of JAVA signature algorithm names by algorithm
+     */
     private static final Map<SignatureAlgorithm, String> JAVA_ALGORITHMS_FOR_KEY = registerJavaAlgorithmsForKey();
 
     private static Map<String, SignatureAlgorithm> registerJavaAlgorithms() {
@@ -528,10 +683,14 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         return javaAlgorithms;
     }
 
-    /** Map of JWA signature algorithm URIs */
+    /**
+     * Map of JWA signature algorithm URIs
+     */
     private static final Map<String, SignatureAlgorithm> JWA_ALGORITHMS = registerJsonWebAlgorithms();
 
-    /** Map of JWA signature algorithm URIs by algorithm */
+    /**
+     * Map of JWA signature algorithm URIs by algorithm
+     */
     private static final Map<SignatureAlgorithm, String> JWA_ALGORITHMS_FOR_KEY = registerJsonWebAlgorithmsForKey();
 
     private static Map<String, SignatureAlgorithm> registerJsonWebAlgorithms() {
@@ -587,10 +746,8 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
      *
-     * @param xmlName
-     *            XML URI of the given algorithm
-     * @param defaultValue
-     *            the default value to be returned if not found
+     * @param xmlName      XML URI of the given algorithm
+     * @param defaultValue the default value to be returned if not found
      * @return {@code SignatureAlgorithm} or default value
      */
     public static SignatureAlgorithm forXML(final String xmlName, final SignatureAlgorithm defaultValue) {
@@ -614,7 +771,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * Returns a corresponding {@code SignatureAlgorithm} by the OID and signature algorithm parameters
      *
-     * @param oid {@link String}
+     * @param oid          {@link String}
      * @param sigAlgParams a byte array of signature algorithm parameters
      * @return {@link SignatureAlgorithm}
      */
@@ -642,8 +799,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * Returns a corresponding {@code SignatureAlgorithm} by the JWA name
      *
-     * @param jsonWebAlgorithm
-     *            {@link String} JWA algorithm Id
+     * @param jsonWebAlgorithm {@link String} JWA algorithm Id
      * @return {@link SignatureAlgorithm}
      */
     public static SignatureAlgorithm forJWA(String jsonWebAlgorithm) {
@@ -657,10 +813,8 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * This method return the {@code SignatureAlgorithm} or the default value if the algorithm is unknown.
      *
-     * @param jsonWebAlgorithm
-     *            {@link String} JWA algorithm Id
-     * @param defaultValue
-     *            the default value to be returned if not found
+     * @param jsonWebAlgorithm {@link String} JWA algorithm Id
+     * @param defaultValue     the default value to be returned if not found
      * @return {@code SignatureAlgorithm} or default value
      */
     public static SignatureAlgorithm forJWA(String jsonWebAlgorithm, final SignatureAlgorithm defaultValue) {
@@ -680,33 +834,33 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * For given signature algorithm and digest algorithm this function returns the Java form of the signature algorithm
      * Signature Algorithms
-     *
+     * <p>
      * The algorithm names in this section can be specified when generating an instance of Signature.
-     *
+     * <p>
      * NONEwithRSA - The RSA signature algorithm which does not use a digesting algorithm (e.g. MD5/SHA1) before
      * performing the RSA operation. For more information about the RSA
      * Signature algorithms, please see PKCS1.
-     *
+     * <p>
      * MD2withRSA MD5withRSA - The MD2/MD5 with RSA Encryption signature algorithm which uses the MD2/MD5 digest
      * algorithm and RSA to create and verify RSA digital signatures as
      * defined in PKCS1.
-     *
+     * <p>
      * SHA1withRSA SHA256withRSA SHA384withRSA SHA512withRSA - The signature algorithm with SHA-* and the RSA encryption
      * algorithm as defined in the OSI Interoperability Workshop,
      * using the padding conventions described in PKCS1.
-     *
+     * <p>
      * NONEwithDSA - The Digital Signature Algorithm as defined in FIPS PUB 186-2. The data must be exactly 20 bytes in
      * length. This algorithms is also known under the alias name
      * of rawDSA.
-     *
+     * <p>
      * SHA1withDSA - The DSA with SHA-1 signature algorithm which uses the SHA-1 digest algorithm and DSA to create and
      * verify DSA digital signatures as defined in FIPS PUB 186.
-     *
+     * <p>
      * NONEwithECDSA SHA1withECDSA SHA256withECDSA SHA384withECDSA SHA512withECDSA (ECDSA) - The ECDSA signature
      * algorithms as defined in ANSI X9.62. Note:"ECDSA" is an ambiguous
      * name for the "SHA1withECDSA" algorithm and should not be used. The formal name "SHA1withECDSA" should be used
      * instead.
-     *
+     * <p>
      * {@code <digest>with<encryption>} - Use this to form a name for a signature algorithm with a particular message
      * digest
      * (such as MD2 or MD5) and algorithm (such as RSA or DSA), just
@@ -717,8 +871,7 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * {@code <mgf>} should be replaced by a mask generation function
      * such as MGF1. Example: MD5withRSAandMGF1.
      *
-     * @param javaName
-     *            the java name
+     * @param javaName the java name
      * @return the corresponding SignatureAlgorithm
      */
     public static SignatureAlgorithm forJAVA(final String javaName) {
@@ -732,10 +885,8 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
      *
-     * @param encryptionAlgorithm
-     *            the encryption algorithm
-     * @param digestAlgorithm
-     *            the digest algorithm
+     * @param encryptionAlgorithm the encryption algorithm
+     * @param digestAlgorithm     the digest algorithm
      * @return the corresponding combination of both algorithms
      */
     public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
@@ -745,12 +896,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
      *
-     * @param encryptionAlgorithm
-     *            the encryption algorithm
-     * @param digestAlgorithm
-     *            the digest algorithm
-     * @param mgf
-     *            the mask generation function
+     * @param encryptionAlgorithm the encryption algorithm
+     * @param digestAlgorithm     the digest algorithm
+     * @param mgf                 the mask generation function
      * @return the corresponding combination of both algorithms
      */
     public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
@@ -769,10 +917,8 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * The default constructor.
      *
-     * @param encryptionAlgorithm
-     *            the encryption algorithm
-     * @param digestAlgorithm
-     *            the digest algorithm
+     * @param encryptionAlgorithm the encryption algorithm
+     * @param digestAlgorithm     the digest algorithm
      */
     SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
         this.encryptionAlgo = encryptionAlgorithm;
@@ -783,12 +929,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * The default constructor.
      *
-     * @param encryptionAlgorithm
-     *            the encryption algorithm
-     * @param digestAlgorithm
-     *            the digest algorithm
-     * @param maskGenerationFunction
-     *            the mask generation function
+     * @param encryptionAlgorithm    the encryption algorithm
+     * @param digestAlgorithm        the digest algorithm
+     * @param maskGenerationFunction the mask generation function
      */
     SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
                        final MaskGenerationFunction maskGenerationFunction) {

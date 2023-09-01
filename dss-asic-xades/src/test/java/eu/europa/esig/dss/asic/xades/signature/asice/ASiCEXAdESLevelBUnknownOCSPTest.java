@@ -70,7 +70,7 @@ public class ASiCEXAdESLevelBUnknownOCSPTest extends AbstractASiCEXAdESTestSigna
 	@Override
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
+		certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
 		certificateVerifier.setCrlSource(null);
 		return certificateVerifier;
 	}

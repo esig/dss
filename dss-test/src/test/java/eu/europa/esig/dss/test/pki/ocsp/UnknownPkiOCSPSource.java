@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.test.pki.ocsp;
 
-import eu.europa.esig.dss.pki.model.Revocation;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
@@ -14,7 +14,7 @@ public class UnknownPkiOCSPSource extends PKIOCSPSource {
         super(certEntityRepository);
     }
 
-    protected void addRevocationStatusToOCSPResponse(BasicOCSPRespBuilder builder, Req r, Revocation revocation) {
+    protected void addRevocationStatusToOCSPResponse(BasicOCSPRespBuilder builder, Req r, CertEntityRevocation certEntityRevocation) {
         builder.addResponse(r.getCertID(), new UnknownStatus());
     }
 

@@ -34,7 +34,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -67,13 +66,13 @@ public class PAdESWithPSSTest extends AbstractPAdESTestSignature {
         service.setTspSource(getPSSGoodTsa());
     }
 
-    @Override
-    protected CertificateVerifier getCertificateVerifierWithMGF1() {
-        CertificateVerifier certificateVerifier = super.getCertificateVerifierWithMGF1();
-        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getDataBase()));
-        certificateVerifier.setCrlSource(null);
-        return certificateVerifier;
-    }
+//    @Override
+//    protected CertificateVerifier getCertificateVerifierWithMGF1() {
+//        CertificateVerifier certificateVerifier = super.getCertificateVerifierWithMGF1();
+//        certificateVerifier.setOcspSource(new );
+//        certificateVerifier.setCrlSource(null);
+//        return certificateVerifier;
+//    }
 
     @Override
     protected void onDocumentSigned(byte[] byteArray) {

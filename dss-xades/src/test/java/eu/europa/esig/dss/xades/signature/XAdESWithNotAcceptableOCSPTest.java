@@ -32,7 +32,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
-import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -71,7 +70,7 @@ public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
 		certificateVerifier.setOcspSource(null);
-		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getDataBase()));
+		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
 		return certificateVerifier;
 	}
 

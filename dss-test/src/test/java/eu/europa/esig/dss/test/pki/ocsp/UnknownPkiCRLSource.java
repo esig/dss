@@ -1,12 +1,11 @@
 package eu.europa.esig.dss.test.pki.ocsp;
 
-import eu.europa.esig.pki.manifest.RevocationReason;
-import eu.europa.esig.dss.pki.model.DBCertEntity;
-import eu.europa.esig.dss.pki.model.Revocation;
+import eu.europa.esig.dss.pki.model.CertEntity;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
-import eu.europa.esig.dss.pki.utils.PKIUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v2CRLBuilder;
 
@@ -21,10 +20,11 @@ public class UnknownPkiCRLSource extends PKICRLSource {
         super.setNextUpdate(new Date());
     }
 
-    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<DBCertEntity, Revocation> revocationList) {
+    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
         revocationList.forEach((key, value) -> {
             X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
-            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), PKIUtils.getCRLReason(RevocationReason.UNKNOWN));
+
+            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), CRLReason.unspecified);
         });
     }
 

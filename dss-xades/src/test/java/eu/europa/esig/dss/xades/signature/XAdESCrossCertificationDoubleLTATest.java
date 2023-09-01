@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,7 +37,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -68,112 +67,112 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
-	@Test
-	public void test() throws Exception {
-		
-		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
+    @Test
+    public void test() throws Exception {
+
+        DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-        
-        CertificateToken crossCertificate = getCertificateByPrimaryKey("external-ca", 2002);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+
+        CertificateToken crossCertificate = getCertificate("external-ca");
         CommonCertificateSource trustedListsCertificateSource = new CommonCertificateSource();
         trustedListsCertificateSource.addCertificate(crossCertificate);
         trustedListsCertificateSource.addCertificate(getCertificate(ROOT_CA));
-        
+
         CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
         commonTrustedCertificateSource.importAsTrusted(trustedListsCertificateSource);
-        
-        CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
-        PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
-        pkicrlSource.setNextUpdate(new Date());
-        customCertificateVerifier.setCrlSource(pkicrlSource);
+
+        CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getOfflineCertificateVerifier();
+
+        customCertificateVerifier.setCrlSource(pKICRLSource());
+        customCertificateVerifier.setOcspSource(pKIOCSPSource());
         customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
-		
+
         XAdESService service = new XAdESService(customCertificateVerifier);
         service.setTspSource(getGoodTsa());
 
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-        
+
         SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
         validator.setCertificateVerifier(customCertificateVerifier);
         validator.setDetachedContents(Arrays.asList(documentToSign));
         Reports reports = validator.validateDocument();
         // reports.print();
-        
+
         DiagnosticData diagnosticData = reports.getDiagnosticData();
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        
+
         // check no duplicate revocations for a certificate
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper certificateWrapper : usedCertificates) {
-        	List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
-        	List<String> revocationIds = new ArrayList<>();
-        	for (CertificateRevocationWrapper revocationWrapper : certificateRevocationData) {
+            List<CertificateRevocationWrapper> certificateRevocationData = certificateWrapper.getCertificateRevocationData();
+            List<String> revocationIds = new ArrayList<>();
+            for (CertificateRevocationWrapper revocationWrapper : certificateRevocationData) {
                 assertFalse(revocationIds.contains(revocationWrapper.getId()));
-        		revocationIds.add(revocationWrapper.getId());
-        	}
-        	assertEquals(certificateRevocationData.size(), revocationIds.size());
+                revocationIds.add(revocationWrapper.getId());
+            }
+            assertEquals(certificateRevocationData.size(), revocationIds.size());
         }
         assertEquals(7, usedCertificates.size());
-        
+
         List<RelatedCertificateWrapper> relatedCertificatesFirstLTA = signature.foundCertificates().getRelatedCertificates();
         List<RelatedRevocationWrapper> relatedRevocationsFirstLTA = signature.foundRevocations().getRelatedRevocationData();
-        
+
         customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
-        customCertificateVerifier.setCrlSource(pkicrlSource);
+        customCertificateVerifier.setCrlSource(pKICRLSource());
 
         service = new XAdESService(customCertificateVerifier);
         service.setTspSource(getGoodTsa());
-        
+
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Arrays.asList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         DSSDocument doubleLTADoc = service.extendDocument(signedDocument, extendParameters);
         // doubleLTADoc.save("target/doubleLTA.xml");
-        
+
         validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Arrays.asList(documentToSign));
         reports = validator.validateDocument();
         // reports.print();
-        
+
         diagnosticData = reports.getDiagnosticData();
         signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        
+
         List<RelatedCertificateWrapper> relatedCertificatesSecondLTA = signature.foundCertificates().getRelatedCertificates();
         List<RelatedRevocationWrapper> relatedRevocationsSecondLTA = signature.foundRevocations().getRelatedRevocationData();
-        
+
         assertEquals(relatedCertificatesFirstLTA.size(), relatedCertificatesSecondLTA.size());
         assertEquals(relatedRevocationsFirstLTA.size(), relatedRevocationsSecondLTA.size());
-        
+
         Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates()
-        		.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+                .getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataCerts));
-        
+
         Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations()
-        		.getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+                .getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataRevocations));
-        
+
         Document document = DomUtils.buildDOM(doubleLTADoc);
         assertNotNull(document);
-        
-        Element timeStampValidationDataElement = DomUtils.getElement(document, 
-        		new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
-        assertNull(timeStampValidationDataElement);
-		
-	}
 
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER_CROSS_CERTIF;
-	}
+        Element timeStampValidationDataElement = DomUtils.getElement(document,
+                new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
+        assertNull(timeStampValidationDataElement);
+
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return GOOD_USER_CROSS_CERTIF;
+    }
 
 }

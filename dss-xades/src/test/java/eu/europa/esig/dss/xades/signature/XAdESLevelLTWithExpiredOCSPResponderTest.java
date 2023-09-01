@@ -66,7 +66,7 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         trustedCertSource.addCertificate(getCertificate(OCSP_SKIP_CA));
 
         certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new PKIAIASource(getDataBase()));
+        certificateVerifier.setAIASource(new PKIAIASource(getCertEntityRepository()));
         certificateVerifier.addTrustedCertSources(trustedCertSource);
 
         service = new XAdESService(certificateVerifier);
@@ -82,7 +82,7 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
 
         exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
-        PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
+        PKICRLSource pkicrlSource=new PKICRLSource(getCertEntityRepository());
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 6);
         Date nextUpdate = cal.getTime();

@@ -38,9 +38,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ManifestEntry;
@@ -103,14 +101,17 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
     }
 
     private CertificateVerifier getCertificateVerifier() {
-        return super.getCompleteCertificateVerifier();
-//		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-//		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-//		MockCRLDataLoader mockCRLDataLoader = new MockCRLDataLoader();
-//		onlineCRLSource.setDataLoader(mockCRLDataLoader);
-//		completeCertificateVerifier.setCrlSource(onlineCRLSource);
-//		completeCertificateVerifier.setOcspSource(null);
-//		return completeCertificateVerifier;
+        //return super.getCompleteCertificateVerifier();
+        CertificateVerifier completeCertificateVerifier = super.getCompleteCertificateVerifier();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.MINUTE, -1);
+        PKICRLSource pKICRLSource = pKICRLSource();
+        pKICRLSource.setProductionDate(calendar.getTime());
+        completeCertificateVerifier.setCrlSource(pKICRLSource);
+        completeCertificateVerifier.setOcspSource(null);
+        return completeCertificateVerifier;
     }
 
     @Override
@@ -128,7 +129,8 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         assertEquals(1, diagnosticData.getSignatures().size());
         assertEquals(3, diagnosticData.getTimestampList().size());
     }
-//pdcm
+
+    //pdcm
     @Override
     protected void checkValidationContext(SignedDocumentValidator validator) {
         super.checkValidationContext(validator);
@@ -155,10 +157,8 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         super.checkRevocationData(diagnosticData);
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        List<String> sigRevocationIds = signature.foundRevocations().getRelatedRevocationData()
-                .stream().map(r -> r.getId()).collect(Collectors.toList());
-        sigRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
-                .stream().map(r -> r.getId()).collect(Collectors.toList()));
+        List<String> sigRevocationIds = signature.foundRevocations().getRelatedRevocationData().stream().map(r -> r.getId()).collect(Collectors.toList());
+        sigRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData().stream().map(r -> r.getId()).collect(Collectors.toList()));
 
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         if (timestampList.size() == 3) {
@@ -180,30 +180,6 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         }
         assertNotNull(digest);
         return digest;
-    }
-
-    @SuppressWarnings("serial")
-    private static class MockCRLDataLoader extends CommonsDataLoader {
-
-        private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
-
-        @Override
-        public DataAndUrl get(List<String> urlStrings) {
-            if (Utils.isCollectionNotEmpty(urlStrings)) {
-                for (String url : urlStrings) {
-                    if (url.contains("/pki-factory/crl/good-ca.crl")) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(currentDate);
-                        calendar.add(Calendar.MINUTE, -1);
-                        String requestDate = DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DEFAULT_DATE_FORMAT);
-                        String newUrl = url.replace("/pki-factory/crl/good-ca.crl", "/pki-factory/crl/" + requestDate + "/true/good-ca.crl");
-                        return new DataAndUrl(url, super.get(newUrl));
-                    }
-                }
-            }
-            return super.get(urlStrings);
-        }
-
     }
 
     @Override

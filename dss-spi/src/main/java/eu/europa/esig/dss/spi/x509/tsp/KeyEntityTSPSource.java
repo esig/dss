@@ -18,7 +18,12 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.*;
+import org.bouncycastle.tsp.TSPException;
+import org.bouncycastle.tsp.TimeStampRequest;
+import org.bouncycastle.tsp.TimeStampRequestGenerator;
+import org.bouncycastle.tsp.TimeStampResponse;
+import org.bouncycastle.tsp.TimeStampResponseGenerator;
+import org.bouncycastle.tsp.TimeStampTokenGenerator;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,10 +31,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -183,6 +199,9 @@ public class KeyEntityTSPSource implements TSPSource {
      */
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
         // TODO : add Objects.requireNotNull checks
+        Objects.requireNonNull(keyStore,"KeyStore is not defined!");
+        Objects.requireNonNull(alias,"Alias is not defined!");
+        Objects.requireNonNull(keyStore,"key Entry Password is not defined!");
         KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
         this.privateKey = privateKeyEntry.getPrivateKey();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -267,10 +286,6 @@ public class KeyEntityTSPSource implements TSPSource {
         this.enablePSS = enablePSS;
     }
 
-    // TODO : remove setters below
-    public void setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
 
     public void setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
@@ -325,7 +340,7 @@ public class KeyEntityTSPSource implements TSPSource {
 
             ContentSigner signer = new JcaContentSignerBuilder(sigAlgoName).build(privateKey);
 
-            X509CertificateHolder certificateHolder =new X509CertificateHolder(certificateToken.getEncoded());
+            X509CertificateHolder certificateHolder = new X509CertificateHolder(certificateToken.getEncoded());
             SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider()).build(signer, certificateHolder);
 
             AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(digestAlgoOID);
@@ -406,6 +421,7 @@ public class KeyEntityTSPSource implements TSPSource {
     protected BigInteger getTimeStampSerialNumber() {
         return new BigInteger(128, secureRandom);
     }
+
     private static KeyStore.PrivateKeyEntry getPrivateKeyEntry(KeyStore keyStore, String alias, char[] keyEntryPassword) {
         try {
             if (!keyStore.isKeyEntry(alias)) {

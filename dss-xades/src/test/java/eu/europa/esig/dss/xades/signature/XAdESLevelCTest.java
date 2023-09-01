@@ -95,11 +95,11 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	@Override
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
-		PKIOCSPSource ocspSource=new PKIOCSPSource(getDataBase());
+		PKIOCSPSource ocspSource=new PKIOCSPSource(getCertEntityRepository());
 		ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
 		certificateVerifier.setOcspSource(ocspSource);
 
-		PKICRLSource pkicrlSource=new PKICRLSource(getDataBase());
+		PKICRLSource pkicrlSource=new PKICRLSource(getCertEntityRepository());
 		pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, 6);

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
+import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -80,9 +81,9 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		// avoid caching
 		certificateVerifier = getOfflineCertificateVerifier();
-		certificateVerifier.setAIASource(new DefaultAIASource());
-		certificateVerifier.setCrlSource(new OnlineCRLSource());
-		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+		certificateVerifier.setAIASource(pkiAIASource());
+		certificateVerifier.setCrlSource(pKICRLSource());
+		certificateVerifier.setOcspSource(pKIOCSPSource());
 
 		signingAlias = EE_GOOD_USER;
 		

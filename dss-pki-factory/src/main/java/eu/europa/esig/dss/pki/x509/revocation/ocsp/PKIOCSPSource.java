@@ -3,15 +3,13 @@ package eu.europa.esig.dss.pki.x509.revocation.ocsp;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.pki.manifest.RevocationReason;
-import eu.europa.esig.dss.pki.exception.Error500Exception;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.Revocation;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
-import eu.europa.esig.dss.pki.utils.PKIUtils;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -21,7 +19,18 @@ import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.ocsp.*;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.CertificateID;
+import org.bouncycastle.cert.ocsp.CertificateStatus;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPReq;
+import org.bouncycastle.cert.ocsp.OCSPReqBuilder;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.Req;
+import org.bouncycastle.cert.ocsp.RevokedStatus;
+import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
@@ -99,16 +108,19 @@ public class PKIOCSPSource implements OCSPSource {
         try {
 
             // If certEntity is not provided during construction, find it based on issuerCertificateToken and certificateToken
+            CertEntity currentCertEntity;
             if (certEntity == null) {
-                certEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+                currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+            } else {
+                currentCertEntity = certEntity;
             }
-            Objects.requireNonNull(certEntity, "No certification found for the provided CertificateToken.");
+            //Objects.requireNonNull(currentCertEntity, "No certification found for the provided CertificateToken.");
 
             OCSPResp ocspRespBytes;
             OCSPReq ocspReq = buildOCSPRequest(certId);
 
             // Determine the OCSP response based on different scenarios
-            ocspRespBytes = getCustomOCSPResponse(certEntity, certificateToken, ocspReq);
+            ocspRespBytes = getCustomOCSPResponse(currentCertEntity, certificateToken, ocspReq);
 
             // Build the OCSP response and extract the latest single response
 
@@ -136,27 +148,24 @@ public class PKIOCSPSource implements OCSPSource {
         BasicOCSPRespBuilder builder = initBuilder(ocspCertificate);
 
 
-        addStatusToOCSPResponse(certificateToken, builder, Arrays.stream(ocspReq.getRequestList())
-                .findFirst().orElseThrow(() -> new IllegalStateException("The ocsp request does not contain any request!")));
+        addStatusToOCSPResponse(certificateToken, builder, Arrays.stream(ocspReq.getRequestList()).findFirst().orElseThrow(() -> new IllegalStateException("The ocsp request does not contain any request!")));
 
         Date productionDate = this.productionDate == null ? new Date() : this.productionDate;
         return generateOCSPResp(ocspCertificateChain, ocspPrivateKey, builder, productionDate, getCertEntitySignatureAlgorithm(certEntity));
     }
 
     protected void addStatusToOCSPResponse(CertificateToken certificateToken, BasicOCSPRespBuilder builder, Req r) {
-        Revocation revocation = revocationReason != null && revocationDate != null ?
-                new Revocation(revocationDate, revocationReason) :
-                certEntityRepository.getRevocation(certificateToken);
+        CertEntityRevocation certEntityRevocation = revocationReason != null && revocationDate != null ? new CertEntityRevocation(revocationDate, revocationReason) : certEntityRepository.getRevocation(certificateToken);
 
-        addRevocationStatusToOCSPResponse(builder, r, revocation);
+        addRevocationStatusToOCSPResponse(builder, r, certEntityRevocation);
 
     }
 
-    protected void addRevocationStatusToOCSPResponse(BasicOCSPRespBuilder builder, Req r, Revocation revocation) {
-        if (revocation == null || revocation.getRevocationDate() == null) {
+    protected void addRevocationStatusToOCSPResponse(BasicOCSPRespBuilder builder, Req r, CertEntityRevocation certEntityRevocation) {
+        if (certEntityRevocation == null || certEntityRevocation.getRevocationDate() == null) {
             builder.addResponse(r.getCertID(), CertificateStatus.GOOD);
         } else {
-            builder.addResponse(r.getCertID(), new RevokedStatus(revocation.getRevocationDate(), PKIUtils.getCRLReason(revocation.getRevocationReason())));
+            builder.addResponse(r.getCertID(), new RevokedStatus(certEntityRevocation.getRevocationDate(), certEntityRevocation.getRevocationReason().getValue()));
         }
     }
 
@@ -171,7 +180,7 @@ public class PKIOCSPSource implements OCSPSource {
             return ocspResp;
         } catch (OperatorCreationException | OCSPException e) {
             LOG.error("Unable to generate the OCSP Response", e);
-            throw new Error500Exception("Unable to generate the OCSP Response");
+            throw new DSSException("Unable to generate the OCSP Response");
         }
     }
 
@@ -196,7 +205,7 @@ public class PKIOCSPSource implements OCSPSource {
             return new BasicOCSPRespBuilder(info, new BcDigestCalculatorProvider().get(digAlgId));
         } catch (OCSPException | OperatorCreationException e) {
             LOG.error("Unable to init the OCSPRespBuilder", e);
-            throw new Error500Exception("Unable to init the OCSPRespBuilder");
+            throw new DSSException("Unable to init the OCSPRespBuilder");
         }
     }
 
@@ -247,4 +256,5 @@ public class PKIOCSPSource implements OCSPSource {
     public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
         this.digestAlgorithm = digestAlgorithm;
     }
+
 }

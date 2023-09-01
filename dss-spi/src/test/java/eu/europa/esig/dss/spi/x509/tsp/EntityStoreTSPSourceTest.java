@@ -141,9 +141,12 @@ public class EntityStoreTSPSourceTest {
     public void errorTest() throws Exception {
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
 
+        Exception exception1 = assertThrows(NullPointerException.class, () ->new KeyEntityTSPSource((KeyStore) null, null, null));
+        assertEquals("KeyStore is not defined!", exception1.getMessage());
+
         KeyEntityTSPSource tspSource1 = new KeyEntityTSPSource((KeyStore) null, null, null);
         Exception exception = assertThrows(NullPointerException.class, () -> tspSource1.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
-        assertEquals("KeyStore is not defined!", exception.getMessage());
+//        assertEquals("KeyStore is not defined!", exception.getMessage());
 
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
         try (InputStream is = Files.newInputStream(KS_FILE.toPath())) {

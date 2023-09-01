@@ -177,7 +177,7 @@
                         <SchemeServiceDefinitionURI>
                             <URI xml:lang="en">https://www.eparaksts.lv/en/repository</URI>
                             <URI xml:lang="lv">https://www.eparaksts.lv/lv/repozitarijs</URI>
-                            <URI xml:lang="en">https://www.eparaksts.lv/en/repository/certificate-revocation-lists/</URI>
+                            <URI xml:lang="en">https://www.eparaksts.lv/en/repository/certificate-certEntityRevocation-lists/</URI>
                             <URI xml:lang="lv">https://www.eparaksts.lv/lv/repozitarijs/atsaukto-sertifikatu-saraksts-1/</URI>
                         </SchemeServiceDefinitionURI>
                         <TSPServiceDefinitionURI>

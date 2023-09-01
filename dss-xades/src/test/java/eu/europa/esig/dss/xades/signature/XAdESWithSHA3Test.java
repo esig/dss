@@ -56,7 +56,7 @@ public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
-        service = new XAdESService(getOfflineCertificateVerifier());
+        service = new XAdESService(getCertificateVerifierWithSHA3_256());
         service.setTspSource(getSHA3GoodTsa());
     }
 
