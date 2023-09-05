@@ -40,6 +40,9 @@ public enum TimestampedObjectType {
 	/** Timestamp */
 	TIMESTAMP,
 
+	/** Evidence record */
+	EVIDENCE_RECORD,
+
 	/** Not used certificate token */
 	ORPHAN_CERTIFICATE,
 

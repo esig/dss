@@ -515,8 +515,13 @@ public class DetailedReport {
 				return xmlEvidenceRecord;
 			}
 		}
-
-		// TODO : extract evidence records from signatures
+		for (XmlSignature xmlSignature : getSignatures()) {
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlSignature.getEvidenceRecords()) {
+				if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+					return xmlEvidenceRecord;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -688,7 +693,13 @@ public class DetailedReport {
 					return xmlTimestamp;
 				}
 			}
-			// TODO : handle embedded evidence record timestamps
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlSignature.getEvidenceRecords()) {
+				for (XmlTimestamp xmlTimestamp : xmlEvidenceRecord.getTimestamps()) {
+					if (xmlTimestamp.getId().equals(timestampId)) {
+						return xmlTimestamp;
+					}
+				}
+			}
 		}
 
 		List<XmlEvidenceRecord> independentEvidenceRecords = getIndependentEvidenceRecords();

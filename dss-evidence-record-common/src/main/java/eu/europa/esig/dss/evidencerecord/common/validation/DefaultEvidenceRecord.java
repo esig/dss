@@ -1,13 +1,14 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
-import eu.europa.esig.dss.evidencerecord.common.validation.scope.EvidenceRecordScopeFinder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
@@ -54,6 +55,16 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     protected List<String> structureValidationMessages;
 
+    /**
+     * Manifest file associated with the evidence record (used in ASiC)
+     */
+    private ManifestFile manifestFile;
+
+    /**
+     * List of token references covered by the evidence record
+     */
+    private List<TimestampedReference> timestampedReferences;
+
     /** Cached identifier instance */
     private Identifier identifier;
 
@@ -90,6 +101,33 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public void setDetachedContents(final List<DSSDocument> detachedContents) {
         this.detachedContents = detachedContents;
+    }
+
+    @Override
+    public ManifestFile getManifestFile() {
+        return manifestFile;
+    }
+
+    /**
+     * Sets a manifest file associated with the evidence record
+     *
+     * @param manifestFile {@link ManifestFile}
+     */
+    public void setManifestFile(ManifestFile manifestFile) {
+        this.manifestFile = manifestFile;
+    }
+
+    @Override
+    public List<TimestampedReference> getTimestampedReferences() {
+        if (timestampedReferences == null) {
+            timestampedReferences = new ArrayList<>();
+        }
+        return timestampedReferences;
+    }
+
+    @Override
+    public void setTimestampedReferences(List<TimestampedReference> timestampedReferences) {
+        this.timestampedReferences = timestampedReferences;
     }
 
     /**
@@ -171,19 +209,12 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
 
     @Override
     public List<SignatureScope> getEvidenceRecordScopes() {
-        if (evidenceRecordScopes == null) {
-            evidenceRecordScopes = findEvidenceRecordScopes();
-        }
         return evidenceRecordScopes;
     }
 
-    /**
-     * Finds signature scopes
-     *
-     * @return a list of {@link SignatureScope}s
-     */
-    protected List<SignatureScope> findEvidenceRecordScopes() {
-        return new EvidenceRecordScopeFinder().findEvidenceRecordScope(this);
+    @Override
+    public void setEvidenceRecordScopes(List<SignatureScope> evidenceRecordScopes) {
+        this.evidenceRecordScopes = evidenceRecordScopes;
     }
 
     @Override

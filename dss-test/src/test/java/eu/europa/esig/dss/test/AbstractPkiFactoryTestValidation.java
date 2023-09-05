@@ -296,6 +296,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		validator.setTokenExtractionStrategy(getTokenExtractionStrategy());
 		validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
 		validator.setDetachedContents(getDetachedContents());
+		validator.setDetachedEvidenceRecordDocuments(getDetachedEvidenceRecords());
 		validator.setTokenIdentifierProvider(getTokenIdentifierProvider());
 		return validator;
 	}
@@ -313,6 +314,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected List<DSSDocument> getDetachedContents() {
+		return null;
+	}
+
+	protected List<DSSDocument> getDetachedEvidenceRecords() {
 		return null;
 	}
 
@@ -1004,8 +1009,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				timestampWrapper.getType().isDocumentTimestamp() || timestampWrapper.getType().isContainerTimestamp()) {
 			assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
 		} else if (timestampWrapper.getType().isEvidenceRecordTimestamp()) {
-			boolean coversData = timestampWrapper.getDigestMatchers().stream().anyMatch(t -> t.getType().equals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT));
-			assertEquals(coversData, Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
+			assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
 		} else {
 			assertFalse(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes()));
 		}
@@ -2435,11 +2439,13 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<String> tstIds = diagnosticData.getTimestampIdList();
 		for (String tstId : tstIds) {
 			TimestampWrapper timestampById = diagnosticData.getTimestampById(tstId);
-			Set<String> ddTstSignatureScopes = timestampById.getTimestampScopes().stream()
-					.map(s -> s.getSignerData().getId()).collect(Collectors.toSet());
-			Set<String> srTstSignatureScopes = simpleReport.getSignatureScopes(tstId).stream()
-					.map(eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope::getId).collect(Collectors.toSet());
-			assertEquals(ddTstSignatureScopes, srTstSignatureScopes);
+			if (!timestampById.getType().isEvidenceRecordTimestamp()) {
+				Set<String> ddTstSignatureScopes = timestampById.getTimestampScopes().stream()
+						.map(s -> s.getSignerData().getId()).collect(Collectors.toSet());
+				Set<String> srTstSignatureScopes = simpleReport.getSignatureScopes(tstId).stream()
+						.map(eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope::getId).collect(Collectors.toSet());
+				assertEquals(ddTstSignatureScopes, srTstSignatureScopes);
+			}
 		}
 	}
 	

@@ -43,6 +43,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
@@ -58,6 +59,7 @@ import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.definition.xadesen.XAdESENElement;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -282,6 +284,11 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
+	protected boolean isEvidenceRecord(XAdESAttribute unsignedAttribute) {
+		return XAdESENElement.SEALING_EVIDENCE_RECORDS.isSameTagName(unsignedAttribute.getName());
+	}
+
+	@Override
 	protected List<TimestampToken> makeTimestampTokens(XAdESAttribute signatureAttribute, TimestampType timestampType,
 			List<TimestampedReference> references) {
 		final NodeList encapsulatedTimestamps = signatureAttribute
@@ -335,6 +342,11 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
+	protected List<EvidenceRecord> makeEvidenceRecords(XAdESAttribute signatureAttribute, List<TimestampedReference> references) {
+		throw new UnsupportedOperationException("Not implemented!");
+	}
+
+	@Override
 	protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
 		XAdESTimestampScopeFinder timestampScopeFinder = new XAdESTimestampScopeFinder();
 		timestampScopeFinder.setSignature(signature);
@@ -375,8 +387,10 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 	
 	@Override
-	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
-		return getKeyInfoReferences();
+	protected List<TimestampedReference> getArchiveTimestampReferences(List<TimestampToken> previousTimestamps) {
+		List<TimestampedReference> timestampedReferences = super.getArchiveTimestampReferences(previousTimestamps);
+		addReferences(timestampedReferences, getKeyInfoReferences());
+		return timestampedReferences;
 	}
 	
 	@Override

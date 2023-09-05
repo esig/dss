@@ -186,6 +186,14 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+
+					<xs:element name="FoundEvidenceRecords" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 					
 					<xs:element name="SignatureScopes">
 						<xs:complexType>
@@ -866,6 +874,7 @@
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
 			<xs:enumeration value="COUNTER_SIGNATURE" />
+			<xs:enumeration value="SIGNATURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -913,6 +922,7 @@
 			<xs:enumeration value="CERTIFICATE" />
 			<xs:enumeration value="REVOCATION" />
 			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="ORPHAN_CERTIFICATE" />
 			<xs:enumeration value="ORPHAN_REVOCATION" />
 		</xs:restriction>
@@ -1429,6 +1439,10 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="FoundEvidenceRecord">
+		<xs:attribute name="EvidenceRecord" type="xs:IDREF" use="required" />
+	</xs:complexType>
+
 	<xs:complexType name="EvidenceRecord">
 		<xs:complexContent>
 			<xs:extension base="AbstractToken">
@@ -1444,6 +1458,9 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+
+					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
+
 					<xs:element name="EvidenceRecordScopes">
 						<xs:complexType>
 							<xs:sequence>

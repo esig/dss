@@ -50,6 +50,7 @@ import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessE
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.validation.scope.EvidenceRecordScopeFinder;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -627,18 +628,18 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	/**
 	 * Creates and fills the {@code DiagnosticDataBuilder} with a relevant data
 	 * 
-	 * @param validationContext {@link ValidationContext} used for the validation
-	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
-	 * @param evidenceRecords   a list of {@link EvidenceRecord}s to be validated
+	 * @param validationContext       {@link ValidationContext} used for the validation
+	 * @param signatures              a list of {@link AdvancedSignature}s to be validated
+	 * @param detachedEvidenceRecords a list of detached {@link EvidenceRecord}s to be validated
 	 * @return filled {@link DiagnosticDataBuilder}
 	 */
 	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
 																final List<AdvancedSignature> signatures,
-																final List<EvidenceRecord> evidenceRecords) {
+																final List<EvidenceRecord> detachedEvidenceRecords) {
 		return initializeDiagnosticDataBuilder().document(document)
 				.foundSignatures(signatures)
 				.usedTimestamps(validationContext.getProcessedTimestamps())
-				.foundEvidenceRecords(evidenceRecords)
+				.foundEvidenceRecords(getAllEvidenceRecords(signatures, detachedEvidenceRecords))
 				.allCertificateSources(validationContext.getAllCertificateSources())
 				.documentCertificateSource(validationContext.getDocumentCertificateSource())
 				.documentCRLSource(validationContext.getDocumentCRLSource())
@@ -651,6 +652,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.tokenIdentifierProvider(tokenIdentifierProvider)
 				.validationDate(getValidationTime());
+	}
+
+	private List<EvidenceRecord> getAllEvidenceRecords(final List<AdvancedSignature> signatures,
+													   final List<EvidenceRecord> detachedEvidenceRecords) {
+		List<EvidenceRecord> evidenceRecords = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			evidenceRecords.addAll(signature.getEmbeddedEvidenceRecords());
+		}
+		evidenceRecords.addAll(detachedEvidenceRecords);
+		return evidenceRecords;
 	}
 
 	/**
@@ -801,6 +812,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			allSignatureList.add(signature);
 			appendCounterSignatures(allSignatureList, signature);
 		}
+		appendExternalEvidenceRecords(allSignatureList);
 		return allSignatureList;
 	}
 
@@ -817,6 +829,23 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			allSignatureList.add(counterSignature);
 			
 			appendCounterSignatures(allSignatureList, counterSignature);
+		}
+	}
+
+	/**
+	 * Appends detached evidence record provided to the validator to
+	 * the corresponding signatures covering by the evidence record document
+	 *
+	 * @param allSignatureList a list of {@link AdvancedSignature}s
+	 */
+	protected void appendExternalEvidenceRecords(List<AdvancedSignature> allSignatureList) {
+		List<EvidenceRecord> detachedEvidenceRecords = getDetachedEvidenceRecords();
+		if (Utils.isCollectionNotEmpty(detachedEvidenceRecords) && Utils.isCollectionNotEmpty(allSignatureList)) {
+			for (AdvancedSignature signature : allSignatureList) {
+				for (EvidenceRecord evidenceRecord : detachedEvidenceRecords) {
+					signature.addExternalEvidenceRecord(evidenceRecord);
+				}
+			}
 		}
 	}
 	
@@ -872,16 +901,42 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected List<EvidenceRecord> buildDetachedEvidenceRecords() {
 		if (Utils.isCollectionNotEmpty(detachedEvidenceRecordDocuments)) {
 			List<EvidenceRecord> result = new ArrayList<>();
-			for (DSSDocument document : detachedEvidenceRecordDocuments) {
-				EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(document);
-				EvidenceRecord evidenceRecord = evidenceRecordValidator.getEvidenceRecord();
-				if (evidenceRecord != null) {
-					result.add(evidenceRecord);
+			for (DSSDocument evidenceRecordDocument : detachedEvidenceRecordDocuments) {
+				try {
+					EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+					evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
+
+					EvidenceRecord evidenceRecord = evidenceRecordValidator.getEvidenceRecord();
+					if (evidenceRecord != null) {
+						List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
+						evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
+						evidenceRecord.getTimestampedReferences().addAll(getTimestampedReferences(evidenceRecordScopes));
+
+						result.add(evidenceRecord);
+					}
+				} catch (UnsupportedOperationException e) {
+					LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
+							"Please ensure the corresponding module is loaded.", document.getName(), e.getMessage());
+				} catch (Exception e) {
+					LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}",
+							document.getName(), e.getMessage(), e);
 				}
 			}
 			return result;
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Finds evidence record scopes
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 * @return a list of {@link SignatureScope}s
+	 */
+	protected List<SignatureScope> getEvidenceRecordScopes(EvidenceRecord evidenceRecord) {
+		EvidenceRecordScopeFinder evidenceRecordScopeFinder = new EvidenceRecordScopeFinder(evidenceRecord);
+		evidenceRecordScopeFinder.setSignatures(getSignatures());
+		return evidenceRecordScopeFinder.findEvidenceRecordScope();
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 
 import java.util.ArrayList;
@@ -56,6 +57,19 @@ public class EvidenceRecordWrapper {
      */
     public List<XmlDigestMatcher> getDigestMatchers() {
         return evidenceRecord.getDigestMatchers();
+    }
+
+    /**
+     * Returns initial time-stamp of the evidence record
+     *
+     * @return {@link TimestampWrapper}
+     */
+    public TimestampWrapper getFirstTimestamp() {
+        List<TimestampWrapper> timestampList = getTimestampList();
+        if (timestampList != null && timestampList.size() > 0) {
+            return timestampList.get(0);
+        }
+        return null;
     }
 
     /**
@@ -117,6 +131,15 @@ public class EvidenceRecordWrapper {
             return structuralValidation.getMessages();
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns a list of objects covered by the evidence record
+     *
+     * @return a list of {@link XmlTimestampedObject}s
+     */
+    public List<XmlTimestampedObject> getCoveredObjects() {
+        return evidenceRecord.getTimestampedObjects();
     }
 
     /**

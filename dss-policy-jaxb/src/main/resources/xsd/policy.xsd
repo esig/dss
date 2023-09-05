@@ -477,6 +477,11 @@
 		<xsd:complexContent>
 			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
+					<xsd:element name="EvidenceRecordValid" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if validation of evidence record per "5.6.3 Validation Process for Signatures providing Long Term Availability and Integrity of Validation Material" returns a PASSED indication</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="DataObjectExistence" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks the existence of the archival data object</xsd:documentation>

@@ -44,6 +44,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecords;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
@@ -156,8 +157,9 @@ public class SimpleReportBuilder {
 		Set<String> attachedEvidenceRecordIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			attachedTimestampIds.addAll(signature.getTimestampIdsList());
+			attachedEvidenceRecordIds.addAll(signature.getEvidenceRecordIdsList());
+			attachedTimestampIds.addAll(signature.getEvidenceRecordTimestampIds());
 			simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getSignature(signature, containerInfoPresent));
-			// TODO : process signature evidence records
 		}
 
 		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
@@ -317,6 +319,20 @@ public class SimpleReportBuilder {
 
 		xmlSignature.setCertificateChain(getCertChain(signatureId));
 
+		List<EvidenceRecordWrapper> evidenceRecordList = signature.getEvidenceRecords();
+		if (Utils.isCollectionNotEmpty(evidenceRecordList)) {
+			XmlEvidenceRecords xmlEvidenceRecords = new XmlEvidenceRecords();
+			for (EvidenceRecordWrapper evidenceRecord : evidenceRecordList) {
+				Indication erIndication = detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId());
+				if (erIndication != null) {
+					xmlEvidenceRecords.getEvidenceRecord().add(getXmlEvidenceRecord(evidenceRecord));
+				}
+			}
+			if (Utils.isCollectionNotEmpty(xmlEvidenceRecords.getEvidenceRecord())) {
+				xmlSignature.setEvidenceRecords(xmlEvidenceRecords);
+			}
+		}
+
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 		if (Utils.isCollectionNotEmpty(timestampList)) {
 			XmlTimestamps xmlTimestamps = new XmlTimestamps();
@@ -468,7 +484,7 @@ public class SimpleReportBuilder {
 		XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
 		xmlSignatureScope.setId(signatureScope.getSignerData().getId());
 		xmlSignatureScope.setName(signatureScope.getName());
-		xmlSignatureScope.setScope(signatureScope.getScope().name());
+		xmlSignatureScope.setScope(signatureScope.getScope());
 		xmlSignatureScope.setValue(signatureScope.getDescription());
 		return xmlSignatureScope;
 	}

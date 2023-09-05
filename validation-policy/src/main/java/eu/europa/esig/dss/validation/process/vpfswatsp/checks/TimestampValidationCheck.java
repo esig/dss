@@ -32,12 +32,13 @@ public class TimestampValidationCheck<T extends XmlConstraintsConclusion> extend
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link T}
-     * @param timestamp {@link TimestampWrapper}  XmlValidationProcessArchivalDataTimestamp
+     * @param timestamp {@link TimestampWrapper}
+     * @param timestampValidationResult {@link XmlValidationProcessArchivalDataTimestamp}
      * @param constraint {@link LevelConstraint}
      */
     public TimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                     XmlValidationProcessArchivalDataTimestamp timestampValidationResult,
-                                         LevelConstraint constraint) {
+                                    LevelConstraint constraint) {
         super(i18nProvider, result, constraint, timestamp.getId());
         this.timestamp = timestamp;
         this.timestampValidationResult = timestampValidationResult;

@@ -26,6 +26,8 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 
+import java.util.Objects;
+
 /**
  * This signature scope is used to refer a counter-signed SignatureValue
  *
@@ -45,6 +47,7 @@ public class CounterSignatureScope extends SignatureScope {
      */
     public CounterSignatureScope(final AdvancedSignature masterSignature, final DSSDocument originalDocument) {
         super(originalDocument);
+        Objects.requireNonNull(masterSignature, "Master signature cannot be null!");
         this.masterSignature = masterSignature;
     }
 

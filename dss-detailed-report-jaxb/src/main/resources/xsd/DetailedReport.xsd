@@ -412,6 +412,7 @@
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />
 			<xs:enumeration value="REV_CC" />
+			<xs:enumeration value="ER" />
 			<xs:enumeration value="PSV" />
 			<xs:enumeration value="PCV" />
 			<xs:enumeration value="VTS" />

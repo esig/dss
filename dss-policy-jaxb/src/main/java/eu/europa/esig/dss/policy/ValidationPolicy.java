@@ -1057,6 +1057,14 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint();
 
 	/**
+	 * Returns whether the evidence record is valid (passed a complete evidence record validation process).
+	 * If EvidenceRecordValid element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if EvidenceRecordValid element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordValidConstraint();
+
+	/**
 	 * Returns DataObjectExistence constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if DataObjectExistence element is present

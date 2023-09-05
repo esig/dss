@@ -24,15 +24,18 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
@@ -48,6 +51,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.EvidenceRecordValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
@@ -78,6 +82,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	/** List of timestamps */
 	private final List<XmlTimestamp> xmlTimestamps;
 
+	/** List of evidence records */
+	private final List<XmlEvidenceRecord> xmlEvidenceRecords;
+
 	/** Validation policy */
 	private final ValidationPolicy policy;
 
@@ -107,6 +114,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		super(i18nProvider, new XmlValidationProcessArchivalData());
 		this.validationProcessLongTermData = signatureAnalysis.getValidationProcessLongTermData();
 		this.xmlTimestamps = signatureAnalysis.getTimestamps();
+		this.xmlEvidenceRecords = signatureAnalysis.getEvidenceRecords();
 		this.signature = signature;
 		this.diagnosticData = diagnosticData;
 		this.bbbs = bbbs;
@@ -125,14 +133,44 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 		context = signature.isCounterSignature() ? Context.COUNTER_SIGNATURE : Context.SIGNATURE;
 
+		ChainItem<XmlValidationProcessArchivalData> item = null;
+
 		/*
-		 * 5.6.3.4
-		 * 1) If there is one or more evidence records, the long term validation process shall perform the
-		 * evidence record validation process for each of them according to clause 5.6.2.5. If the evidence record
-		 * validation process returns PASSED, the SVA shall go to step 6.
+		 * 5.6.3.4 Processing
+		 *
+		 * 1) If there is one or more Evidence Records (ERs):
+		 *
+		 * a) The process shall take the first ER that was not yet processed.
+		 * b) The process shall verify this ER according to IETF RFC 4998 [i.9] or IETF RFC 6283 [i.10] taking into
+		 * account the following additional requirements when validating a time-stamp token at the time of the
+		 * following Archive Timestamp:
 		 */
-		
-		// not supported
+		// steps b) performed within ValidationProcessEvidenceRecord
+		/*
+		 * c) If step b) found the ER to be valid, the process shall add a POE for every object covered by the ER at
+		 * signing time value of the initial archive time-stamp.
+		 * d) If all ERs have been validated, the process shall continue with step 2).
+		 * e) The process shall continue with step 1)a).
+		 */
+		List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
+		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
+			for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+				XmlValidationProcessEvidenceRecord evidenceRecordValidation = getEvidenceRecordValidation(evidenceRecord);
+				if (evidenceRecordValidation != null) {
+
+					if (item == null) {
+						item = firstItem = evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation);
+					} else {
+						item = item.setNextItem(evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation));
+					}
+
+					if (isValid(evidenceRecordValidation)) {
+						poe.extractPOE(evidenceRecord);
+					}
+
+				}
+			}
+		}
 
 		/*
 		 * 2) POE initialization: the long term validation process shall add a POE for each object in the signature
@@ -160,7 +198,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 *
 		 * - In all other cases, the long term validation process shall fail with returned code and information.
 		 */
-		ChainItem<XmlValidationProcessArchivalData> item = firstItem = longTermValidation();
+		if (item == null) {
+			item = firstItem = longTermValidation();
+		} else {
+			item = item.setNextItem(longTermValidation());
+		}
 		result.setProofOfExistence(validationProcessLongTermData.getProofOfExistence());
 
 		/*
@@ -304,8 +346,22 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 				timestampValidationResult, getTimestampValidationConstraintLevel());
 	}
 
+	private ChainItem<XmlValidationProcessArchivalData> evidenceRecordValidationConclusive(
+			EvidenceRecordWrapper evidenceRecordWrapper, XmlValidationProcessEvidenceRecord erValidationResult) {
+		return new EvidenceRecordValidationCheck<>(i18nProvider, result, evidenceRecordWrapper,
+				erValidationResult, getEvidenceRecordValidationConstraintLevel());
+	}
+
 	private LevelConstraint getTimestampValidationConstraintLevel() {
 		LevelConstraint constraint = policy.getTimestampValidConstraint();
+		if (constraint == null) {
+			constraint = getWarnLevelConstraint();
+		}
+		return constraint;
+	}
+
+	private LevelConstraint getEvidenceRecordValidationConstraintLevel() {
+		LevelConstraint constraint = policy.getEvidenceRecordValidConstraint();
 		if (constraint == null) {
 			constraint = getWarnLevelConstraint();
 		}
@@ -361,6 +417,15 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
 			if (Utils.areStringsEqual(xmlTimestamp.getId(), newestTimestamp.getId())) {
 				return xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+			}
+		}
+		return null;
+	}
+
+	private XmlValidationProcessEvidenceRecord getEvidenceRecordValidation(EvidenceRecordWrapper evidenceRecord) {
+		for (XmlEvidenceRecord xmlEvidenceRecord : xmlEvidenceRecords) {
+			if (Utils.areStringsEqual(xmlEvidenceRecord.getId(), evidenceRecord.getId())) {
+				return xmlEvidenceRecord.getValidationProcessEvidenceRecord();
 			}
 		}
 		return null;

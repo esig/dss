@@ -628,12 +628,27 @@ public class SimpleReport {
 	 *
 	 * @param signatureId
 	 *            the signature id
-	 * @return list if timestamp wrappers
+	 * @return list if timestamps
 	 */
 	public List<XmlTimestamp> getSignatureTimestamps(String signatureId) {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
 		if (xmlSignature != null && xmlSignature.getTimestamps() != null) {
 			return xmlSignature.getTimestamps().getTimestamp();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns a list of evidence record for a signature with the given id
+	 *
+	 * @param signatureId
+	 *            the signature id
+	 * @return list if evidence records
+	 */
+	public List<XmlEvidenceRecord> getSignatureEvidenceRecords(String signatureId) {
+		XmlSignature xmlSignature = getSignatureById(signatureId);
+		if (xmlSignature != null && xmlSignature.getEvidenceRecords() != null) {
+			return xmlSignature.getEvidenceRecords().getEvidenceRecord();
 		}
 		return Collections.emptyList();
 	}

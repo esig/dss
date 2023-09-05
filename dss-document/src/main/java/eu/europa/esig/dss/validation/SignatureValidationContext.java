@@ -47,6 +47,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
@@ -224,6 +225,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<TimestampToken> timestamps = signature.getAllTimestamps();
 		prepareTimestamps(timestamps);
+
+		List<EvidenceRecord> allEvidenceRecords = signature.getAllEvidenceRecords();
+		for (EvidenceRecord evidenceRecord : allEvidenceRecords) {
+			prepareTimestamps(evidenceRecord.getTimestamps());
+		}
 
 		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
 

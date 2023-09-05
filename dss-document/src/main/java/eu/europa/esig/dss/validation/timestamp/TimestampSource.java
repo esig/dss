@@ -18,13 +18,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.spi.x509.tsp;
+package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.io.Serializable;
 import java.util.List;
@@ -98,6 +101,35 @@ public interface TimestampSource extends Serializable {
 	 *            {@link TimestampToken} the timestamp token
 	 */
 	void addExternalTimestamp(TimestampToken timestamp);
+
+	/**
+	 * Returns a list of evidence records embedded to a signature document
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getEmbeddedEvidenceRecords();
+
+	/**
+	 * Returns a list of evidence records detached from a signature document
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getDetachedEvidenceRecords();
+
+	/**
+	 * Returns a list of all evidence records associated with the signature
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getAllEvidenceRecords();
+
+	/**
+	 * This method allows to add an external evidence record. The given evidence record must be processed before.
+	 *
+	 * @param evidenceRecord
+	 *            {@link EvidenceRecord} the evidence record covering the signature file
+	 */
+	void addExternalEvidenceRecord(EvidenceRecord evidenceRecord);
 	
 	/**
 	 * Returns a merged {@code ListCertificateSource} of all embedded timestamp certificate sources

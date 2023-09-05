@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
@@ -280,6 +281,46 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 			if (timestampType.equals(tsp.getType())) {
 				result.add(tsp);
 			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of {@code EvidenceRecordWrapper}s associated with the signature
+	 *
+	 * @return a list of {@code EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		List<EvidenceRecordWrapper> evidenceRecords = new ArrayList<>();
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = signature.getFoundEvidenceRecords();
+		for (XmlFoundEvidenceRecord xmlFoundEvidenceRecord : foundEvidenceRecords) {
+			evidenceRecords.add(new EvidenceRecordWrapper(xmlFoundEvidenceRecord.getEvidenceRecord()));
+		}
+		return evidenceRecords;
+	}
+
+	/**
+	 * Returns a list of associated evidence record identifiers
+	 *
+	 * @return a list of {@link String}
+	 */
+	public List<String> getEvidenceRecordIdsList() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.add(evidenceRecordWrapper.getId());
+		}
+		return result;
+	}
+
+	/**
+	 * Returns identifiers of all embedded evidence record time-stamps
+	 *
+	 * @return a list of {@link String} time-stamp identifiers
+	 */
+	public List<String> getEvidenceRecordTimestampIds() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.addAll(evidenceRecordWrapper.getTimestampIdsList());
 		}
 		return result;
 	}

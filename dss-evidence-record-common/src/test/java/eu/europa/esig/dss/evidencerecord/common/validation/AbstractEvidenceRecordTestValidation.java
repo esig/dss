@@ -8,6 +8,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -63,6 +64,9 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
             }
+
+            List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
+            assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
 
             int tstCounter = 0;
 

@@ -43,6 +43,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -230,6 +231,9 @@ public class UnmarshallingTester {
 					break;
 				case TIMESTAMP:
 					token = new XmlTimestamp();
+					break;
+				case EVIDENCE_RECORD:
+					token = new XmlEvidenceRecord();
 					break;
 				case SIGNED_DATA:
 					token = new XmlSignerData();

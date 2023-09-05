@@ -42,8 +42,9 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.io.Serializable;
@@ -441,6 +442,32 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures
 	 */
 	List<AdvancedSignature> getCounterSignatures();
+
+	/**
+	 * Returns a list of embedded evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getEmbeddedEvidenceRecords();
+
+	/**
+	 * Adds an evidence record covering the signature file
+	 */
+	void addExternalEvidenceRecord(EvidenceRecord evidenceRecord);
+
+	/**
+	 * Returns a list of detached evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getDetachedEvidenceRecords();
+
+	/**
+	 * Returns a list of all evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getAllEvidenceRecords();
 	
 	/**
 	 * This method returns the {@link SignatureIdentifier}.

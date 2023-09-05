@@ -10,6 +10,7 @@ import org.w3c.dom.Node;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -134,6 +135,25 @@ public class XMLCanonicalizer {
      */
     public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
         return canonicalizers.add(c14nAlgorithmURI);
+    }
+
+    /**
+     * This method canonicalizes the given {@code InputStream} using the defined canonicalization method.
+     * NOTE: closes the stream after reading.
+     *
+     * @param inputStream
+     *            {@link InputStream} to canonicalize
+     * @return array of canonicalized bytes
+     * @throws DSSException
+     *             if any error is encountered
+     */
+    public byte[] canonicalize(InputStream inputStream) throws DSSException {
+        try (InputStream is = inputStream) {
+            byte[] byteArray = Utils.toByteArray(is);
+            return canonicalize(byteArray);
+        } catch (Exception e) {
+            throw new DSSException("Cannot canonicalize the InputStream", e);
+        }
     }
 
     /**

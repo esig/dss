@@ -2,10 +2,12 @@ package eu.europa.esig.dss.validation.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 
 import java.util.List;
 
@@ -51,6 +53,13 @@ public interface EvidenceRecord extends IdentifierBasedObject {
     List<SignatureScope> getEvidenceRecordScopes();
 
     /**
+     * Sets a list of covered archival data objects
+     *
+     * @param evidenceRecordScopes a list of {@link SignatureScope}s
+     */
+    void setEvidenceRecordScopes(List<SignatureScope> evidenceRecordScopes);
+
+    /**
      * Returns a message if the structure validation fails
      *
      * @return a list of {@link String} error messages if validation fails,
@@ -64,6 +73,27 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      * @return {@link EvidenceRecordTypeEnum}
      */
     EvidenceRecordTypeEnum getReferenceRecordType();
+
+    /**
+     * Returns a manifest file associated with the evidence record (used in ASiC)
+     *
+     * @return {@link ManifestFile}
+     */
+    ManifestFile getManifestFile();
+
+    /**
+     * Returns a list of references covered by the evidence record
+     *
+     * @return a list of {@link TimestampedReference}s
+     */
+    List<TimestampedReference> getTimestampedReferences();
+
+    /**
+     * Sets references to objects covered by the evidence record
+     *
+     * @param timestampedReferences a list of {@link TimestampedReference}s
+     */
+    void setTimestampedReferences(List<TimestampedReference> timestampedReferences);
 
     /**
      * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.

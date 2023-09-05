@@ -148,6 +148,24 @@ public class POEExtraction {
 		}
 	}
 
+	/**
+	 * Extracts POE for all objects covered by an evidence record
+	 *
+	 * @param evidenceRecord {@link EvidenceRecordWrapper}
+	 */
+	public void extractPOE(EvidenceRecordWrapper evidenceRecord) {
+		List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+		if (Utils.isCollectionNotEmpty(coveredObjects)) {
+			TimestampWrapper firstTimestamp = evidenceRecord.getFirstTimestamp();
+			if (firstTimestamp != null) {
+				POE poe = new POE(firstTimestamp);
+				for (XmlTimestampedObject xmlTimestampedObject : coveredObjects) {
+					addPOE(xmlTimestampedObject.getToken().getId(), poe);
+				}
+			}
+		}
+	}
+
 	private void addPOE(String tokenId, POE proofOfExistence) {
 		if (proofOfExistence != null) {
 			List<POE> poesById = poeMap.computeIfAbsent(tokenId, k -> new ArrayList<>());

@@ -297,6 +297,11 @@
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp" />
         </jaxb:property>
     </jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='FoundEvidenceRecord']//xs:attribute[@name='EvidenceRecord']">
+		<jaxb:property>
+			<jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord" />
+		</jaxb:property>
+	</jaxb:bindings>
     <jaxb:bindings node="//xs:complexType[@name='SignatureScope']//xs:attribute[@name='SignerData']">
         <jaxb:property>
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData" />

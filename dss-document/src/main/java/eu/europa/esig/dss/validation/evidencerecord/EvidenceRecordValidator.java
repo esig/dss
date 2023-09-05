@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.validation.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -63,6 +64,10 @@ public abstract class EvidenceRecordValidator extends SignedDocumentValidator {
     public EvidenceRecord getEvidenceRecord() {
         if (evidenceRecord == null) {
             evidenceRecord = buildEvidenceRecord();
+
+            List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
+            evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
+            evidenceRecord.getTimestampedReferences().addAll(getTimestampedReferences(evidenceRecordScopes));
         }
         return evidenceRecord;
     }

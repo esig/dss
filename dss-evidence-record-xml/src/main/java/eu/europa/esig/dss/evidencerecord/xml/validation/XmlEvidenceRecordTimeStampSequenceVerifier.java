@@ -50,7 +50,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         for (DSSDocument document : evidenceRecord.getDetachedContents()) {
             byte[] documentDigest;
             if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(DSSUtils.toByteArray(document));
+                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
                 documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
             } else {
                 String base64Digest = document.getDigest(digest.getAlgorithm());
