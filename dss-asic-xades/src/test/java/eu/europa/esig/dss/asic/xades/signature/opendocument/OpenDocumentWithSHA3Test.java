@@ -61,11 +61,7 @@ public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentTestSignature 
 		service.setTspSource(getSHA3GoodTsa());
 	}
 
-//	@Override
-//	protected CertificateVerifier getCompleteCertificateVerifier() {
-//		PKIOCSPSource pkiocspSource= new PKIOCSPSource(getDataBase());
-//
-//	}
+
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

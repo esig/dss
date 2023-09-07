@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
@@ -60,8 +61,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.bind.JAXBElement;
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -87,26 +86,11 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_C);
 		signatureParameters.setTokenReferencesDigestAlgorithm(DigestAlgorithm.SHA384);
 		signatureParameters.setEn319132(false);
-
-		service = new XAdESService(getCompleteCertificateVerifier());
+		CertificateVerifier certificateVerifier=getCompleteCertificateVerifier();
+		PKIOCSPSource pkiocspSource=pKIDelegateOCSPSource();
+		certificateVerifier.setOcspSource(pkiocspSource);
+		service = new XAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());
-	}
-
-	@Override
-	protected CertificateVerifier getCompleteCertificateVerifier() {
-		CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
-		PKIOCSPSource ocspSource=new PKIOCSPSource(getCertEntityRepository());
-		ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
-		certificateVerifier.setOcspSource(ocspSource);
-
-		PKICRLSource pkicrlSource=new PKICRLSource(getCertEntityRepository());
-		pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA384);
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MONTH, 6);
-		Date nextUpdate = cal.getTime();
-		pkicrlSource.setNextUpdate(nextUpdate);
-		certificateVerifier.setCrlSource(pkicrlSource);
-		return certificateVerifier;
 	}
 
 	@Override

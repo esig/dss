@@ -2,12 +2,10 @@ package eu.europa.esig.dss.test;
 
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import eu.europa.esig.dss.pki.jaxb.config.PKIJaxbFacade;
-import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.jaxb.service.PKICertificationEntityBuilder;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -26,7 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static eu.europa.esig.dss.pki.jaxb.constant.PKIJaxbConstant.XML_FOLDER;
 
@@ -47,7 +44,7 @@ public class XMLCertificateLoader {
 
     // TODO : instantiate with JaxbCertEntityRepository
 
-   private CertificateSource certificateSource;
+    private CertificateSource certificateSource;
 
     public void setCommonTrustedCertificateSource(CertificateSource certificateSource) {
         this.certificateSource = certificateSource;
@@ -58,22 +55,30 @@ public class XMLCertificateLoader {
             LOG.warn("No CommonTrustedCertificateSource to be synchronized");
             return;
         }
-        repository.getTrustAnchors().stream().map(CertEntity::getCertificateToken)
-                .forEach(certificateToken -> certificateSource.addCertificate(certificateToken));
+        repository.getTrustAnchors().stream().map(CertEntity::getCertificateToken).forEach(certificateToken -> certificateSource.addCertificate(certificateToken));
     }
 
     // return CertEntity
     public CertEntity loadCertificateEntityFromXml(String certificateSubjectName) {
-        ClassLoader classLoader = XMLCertificateLoader.class.getClassLoader();
-        URL resourceFolder = classLoader.getResource(XML_FOLDER);
-        if (resourceFolder == null) {
-            throw new RuntimeException("PKI resource folder not found.");
-        }
-        File folder = new File(resourceFolder.getFile());
+        File folder = getFolder();
         CertEntity dbCertEntity = repository.getCertEntityBySubject(certificateSubjectName);
+        dbCertEntity = getCertEntity(certificateSubjectName, folder, dbCertEntity);
+        return dbCertEntity;
+
+    }
+
+    public CertEntity loadCertificateEntityFromXml(Long serialNumber, String issuerSubjectName) {
+        File folder = getFolder();
+        CertEntity dbCertEntity = repository.getOneBySerialNumberAndParentSubject(serialNumber, issuerSubjectName);
+        dbCertEntity = getCertEntity(issuerSubjectName, folder, dbCertEntity);
+        return dbCertEntity;
+
+    }
+
+    private CertEntity getCertEntity(String certificateSubjectName, File folder, CertEntity dbCertEntity) {
         if (dbCertEntity == null) {
             certificationEntityBuilder.persistPKI(repository, getPki(folder, certificateSubjectName));
-            // TODO : synchronize TrustedCertSource
+
             dbCertEntity = repository.getCertEntityBySubject(certificateSubjectName);
             synchronizeCertificateSource();
         }
@@ -81,7 +86,15 @@ public class XMLCertificateLoader {
             throw new RuntimeException("CertEntity not found");
         }
         return dbCertEntity;
+    }
 
+    private static File getFolder() {
+        ClassLoader classLoader = XMLCertificateLoader.class.getClassLoader();
+        URL resourceFolder = classLoader.getResource(XML_FOLDER);
+        if (resourceFolder == null) {
+            throw new RuntimeException("PKI resource folder not found.");
+        }
+        return new File(resourceFolder.getFile());
     }
 
 

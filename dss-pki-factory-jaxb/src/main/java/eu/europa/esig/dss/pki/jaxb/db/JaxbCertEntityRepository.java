@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class JaxbCertEntityRepository implements CertEntityRepository<DBCertEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(JaxbCertEntityRepository.class);
 
-    private Set<DBCertEntity> certEntities = new HashSet<>();
+    private final Set<DBCertEntity> certEntities = new HashSet<>();
 
     public JaxbCertEntityRepository() {
     }
@@ -157,8 +157,7 @@ public class JaxbCertEntityRepository implements CertEntityRepository<DBCertEnti
 
     @Override
     public Map<DBCertEntity, CertEntityRevocation> getRevocationList(DBCertEntity parent) {
-        return certEntities.stream().
-                filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null && parent.equals(dbCertEntity.getParent())).collect(Collectors.toMap(dbCertEntity -> dbCertEntity, dbCertEntity -> new CertEntityRevocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())));
+        return certEntities.stream().filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null && parent.equals(dbCertEntity.getParent())).collect(Collectors.toMap(dbCertEntity -> dbCertEntity, dbCertEntity -> new CertEntityRevocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())));
     }
 
 

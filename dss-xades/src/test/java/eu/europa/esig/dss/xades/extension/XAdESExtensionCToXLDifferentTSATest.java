@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,22 +49,15 @@ public class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest
     }
 
     @Override
-    protected String getSigningAlias() {
-        return RSA_SHA3_USER;
-    }
-    @Override
-    protected XAdESService getSignatureServiceToSign() {
-        XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-        service.setTspSource(getUsedTSPSourceAtSignatureTime());
-        return service;
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        return getCertificateVerifierWithSHA3_256();
     }
 
     @Override
-    protected XAdESService getSignatureServiceToExtend() {
-        XAdESService service = new XAdESService(getCompleteCertificateVerifier());
-        service.setTspSource(getUsedTSPSourceAtExtensionTime());
-        return service;
+    protected String getSigningAlias() {
+        return RSA_SHA3_USER;
     }
+
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
         super.checkCertificates(diagnosticData);

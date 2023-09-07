@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.x509.revocation.ocsp;
+package eu.europa.esig.dss.test.pki.ocsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -7,13 +7,14 @@ import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.jaxb.model.DBCertEntity;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -43,57 +44,41 @@ import org.slf4j.LoggerFactory;
 import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The PkiOCSPSource class implements the OCSPSource interface for obtaining revocation tokens.
  * It retrieves OCSP responses for a given certificate by sending OCSP requests to a specified OCSP responder.
  */
-public class PKIOCSPSource implements OCSPSource {
+public class PKIDelegateOCSPSource extends PKIOCSPSource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PKIOCSPSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PKIDelegateOCSPSource.class);
 
-
-    private final CertEntityRepository certEntityRepository;
-    private CertEntity certEntity;
     private Date productionDate;
     private Date revocationDate;
     private RevocationReason revocationReason;
 
     private MaskGenerationFunction maskGenerationFunction;
+    private Map<CertificateToken, CertEntity> ocspResponders = new HashMap<>();
 
-
-    /**
-     * The Digest Algorithm of the signature of the created time-stamp token
-     */
     private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
 
-    /**
-     * Constructs a PkiOCSPSource instance with the provided CertEntity.
-     *
-     * @param certEntity The CertEntity for which the OCSP responses will be obtained.
-     */
-    public PKIOCSPSource(CertEntityRepository certEntityRepository, CertEntity certEntity) {
-        this.certEntityRepository = certEntityRepository;
-        this.certEntity = certEntity;
+    public PKIDelegateOCSPSource(CertEntityRepository certEntityRepository, CertEntity certEntity) {
+        super(certEntityRepository, certEntity);
 
     }
 
-    public PKIOCSPSource(CertEntityRepository certEntityRepository) {
-        this.certEntityRepository = certEntityRepository;
-
+    public PKIDelegateOCSPSource(CertEntityRepository certEntityRepository) {
+        super(certEntityRepository);
+        ocspResponders = (Map<CertificateToken, CertEntity>) certEntityRepository.getAll().stream().filter(dbCertEntity -> ((DBCertEntity) dbCertEntity).getOcspResponder() != null).collect(Collectors.toMap(DBCertEntity::getCertificateToken, DBCertEntity::getOcspResponder));
     }
 
-    /**
-     * Retrieves the OCSP token for the revocation status of the given certificate.
-     *
-     * @param certificateToken       The CertificateToken representing the certificate for which the revocation status is to be checked.
-     * @param issuerCertificateToken The CertificateToken representing the issuer certificate of the certificate to be verified.
-     * @return An OCSPToken representing the OCSP response containing the revocation status of the certificate.
-     * @throws RuntimeException If an error occurs during the OCSP request or response processing.
-     */
+
     @Override
     public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         final String dssIdAsString = certificateToken.getDSSIdAsString();
@@ -109,12 +94,13 @@ public class PKIOCSPSource implements OCSPSource {
 
             // If certEntity is not provided during construction, find it based on issuerCertificateToken and certificateToken
             CertEntity currentCertEntity;
-            if (certEntity == null) {
-                currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+            if (!ocspResponders.containsKey(issuerCertificateToken)) {
+                currentCertEntity = super.getCertEntityRepository().getByCertificateToken(issuerCertificateToken);
             } else {
-                currentCertEntity = certEntity;
+                currentCertEntity = ocspResponders.get(issuerCertificateToken);
             }
-            //Objects.requireNonNull(currentCertEntity, "No certification found for the provided CertificateToken.");
+
+            Objects.requireNonNull(currentCertEntity, "No certification found for the provided issuer certificate Token.");
 
             OCSPResp ocspRespBytes;
             OCSPReq ocspReq = buildOCSPRequest(certId);
@@ -141,7 +127,7 @@ public class PKIOCSPSource implements OCSPSource {
 
     protected OCSPResp getCustomOCSPResponse(final CertEntity certEntity, CertificateToken certificateToken, OCSPReq ocspReq) {
         X509CertificateHolder ocspCertificate = DSSASN1Utils.getX509CertificateHolder(certEntity.getCertificateToken());
-        X509CertificateHolder[] ocspCertificateChain = certEntityRepository.getCertificateChain(certEntity);
+        X509CertificateHolder[] ocspCertificateChain = super.getCertEntityRepository().getCertificateChain(certEntity);
 
         PrivateKey ocspPrivateKey = certEntity.getPrivateKeyObject();
 
@@ -155,7 +141,7 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     protected void addStatusToOCSPResponse(CertificateToken certificateToken, BasicOCSPRespBuilder builder, Req r) {
-        CertEntityRevocation certEntityRevocation = revocationReason != null && revocationDate != null ? new CertEntityRevocation(revocationDate, revocationReason) : certEntityRepository.getRevocation(certificateToken);
+        CertEntityRevocation certEntityRevocation = revocationReason != null && revocationDate != null ? new CertEntityRevocation(revocationDate, revocationReason) : super.getCertEntityRepository().getRevocation(certificateToken);
 
         addRevocationStatusToOCSPResponse(builder, r, certEntityRevocation);
 
@@ -257,11 +243,5 @@ public class PKIOCSPSource implements OCSPSource {
         this.digestAlgorithm = digestAlgorithm;
     }
 
-    public void setCertEntity(CertEntity certEntity) {
-        this.certEntity = certEntity;
-    }
 
-    public CertEntityRepository getCertEntityRepository() {
-        return certEntityRepository;
-    }
 }

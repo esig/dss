@@ -54,7 +54,7 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 	public void init() {
 		DSSDocument document = getDocumentToExtend();
 		
-		CertificateVerifier completeCertificateVerifier = getOnlineCompleteCertificateVerifier();
+		CertificateVerifier completeCertificateVerifier = getCompositeCertificateVerifier();
 		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
 		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
 		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));

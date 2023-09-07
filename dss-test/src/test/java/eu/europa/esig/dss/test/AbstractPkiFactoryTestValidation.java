@@ -226,8 +226,8 @@ public abstract class AbstractPkiFactoryTestValidation<SP extends SerializableSi
 		checkSignaturePolicy(signatures);
 
 		Reports reports = validator.validateDocument();
-		// reports.setValidateXml(true);
-		// reports.print();
+		 reports.setValidateXml(true);
+		 reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		verifySourcesAndDiagnosticData(signatures, diagnosticData);

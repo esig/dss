@@ -43,6 +43,7 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     private static final Logger LOG = LoggerFactory.getLogger(PKICRLSource.class);
     private static final long serialVersionUID = 6912729291417315212L;
 
+
     private CertEntity certEntity;
     private Date productionDate;
     private Date nextUpdate;

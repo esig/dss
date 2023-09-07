@@ -32,7 +32,6 @@ public class PKIAIASource implements AIASource {
         Objects.requireNonNull(certEntityRepository, "CertEntity Repository is not provided");
 
 
-
         CertEntity certEntity = certEntityRepository.getByCertificateToken(certificateToken);
         Objects.requireNonNull(certEntity, "No certification found for the provided CertificateToken.");
         List<CertificateToken> certificateChain = certEntity.getCertificateChain();
@@ -44,7 +43,9 @@ public class PKIAIASource implements AIASource {
             CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
             Objects.requireNonNull(certificateToken, "issuer cannot be null!");
             return new HashSet<>(Collections.singleton(issuerCertEntity.getCertificateToken()));
-        } else return new HashSet<>();
+        } else {
+            return new HashSet<>();
+        }
 
     }
 

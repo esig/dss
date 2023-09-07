@@ -34,7 +34,10 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -72,6 +75,13 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setOcspSource(pKIDelegateOCSPSource());
+		return certificateVerifier;
+	}
+
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -196,5 +206,6 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}
+
 
 }

@@ -40,6 +40,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.test.pki.ocsp.PKIDelegateOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -79,7 +80,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 
-        CertificateToken crossCertificate = getCertificate("external-ca");
+        CertificateToken crossCertificate = getCertificateByPrimaryKey(2002, "external-ca");
         CommonCertificateSource trustedListsCertificateSource = new CommonCertificateSource();
         trustedListsCertificateSource.addCertificate(crossCertificate);
         trustedListsCertificateSource.addCertificate(getCertificate(ROOT_CA));
@@ -90,7 +91,8 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getOfflineCertificateVerifier();
 
         customCertificateVerifier.setCrlSource(pKICRLSource());
-        customCertificateVerifier.setOcspSource(pKIOCSPSource());
+        customCertificateVerifier.setOcspSource(pKIDelegateOCSPSource());
+        customCertificateVerifier.setAIASource(pkiAIASource());
         customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
 
         XAdESService service = new XAdESService(customCertificateVerifier);
@@ -104,7 +106,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         validator.setCertificateVerifier(customCertificateVerifier);
         validator.setDetachedContents(Arrays.asList(documentToSign));
         Reports reports = validator.validateDocument();
-        // reports.print();
+        reports.print();
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -153,19 +155,16 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         assertEquals(relatedCertificatesFirstLTA.size(), relatedCertificatesSecondLTA.size());
         assertEquals(relatedRevocationsFirstLTA.size(), relatedRevocationsSecondLTA.size());
 
-        Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates()
-                .getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+        Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataCerts));
 
-        Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations()
-                .getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+        Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataRevocations));
 
         Document document = DomUtils.buildDOM(doubleLTADoc);
         assertNotNull(document);
 
-        Element timeStampValidationDataElement = DomUtils.getElement(document,
-                new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
+        Element timeStampValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
         assertNull(timeStampValidationDataElement);
 
     }
