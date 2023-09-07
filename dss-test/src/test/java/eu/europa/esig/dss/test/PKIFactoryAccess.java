@@ -56,7 +56,7 @@ import eu.europa.esig.dss.spi.x509.aia.CompositeAIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.CompositeSource;
+import eu.europa.esig.dss.spi.x509.CompositeSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
@@ -209,17 +209,6 @@ public abstract class PKIFactoryAccess {
         certificateVerifier.setAIASource(getCompositeAia());
         return certificateVerifier;
     }
-
-
-    protected CertificateVerifier getOnlineCompleteCertificateVerifier() {
-        return getCertificateVerifier(cacheOCSPSource(onlineOcspSource()), cacheCRLSource(onlineCrlSource()), cacheAIASource(onlineAIASource()), getTrustedCertificateSource());
-    }
-
-
-    protected CertificateVerifier getOnlineNoCacheCompleteCertificateVerifier() {
-        return getCertificateVerifier(onlineOcspSource(), onlineCrlSource(), onlineAIASource(), getTrustedCertificateSource());
-    }
-
 
     protected CertificateVerifier getCertificateVerifierWithMGF1() {
         PKICRLSource pkicrlSource = pKICRLSource();

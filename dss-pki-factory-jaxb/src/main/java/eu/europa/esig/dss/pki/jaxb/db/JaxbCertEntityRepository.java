@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// TODO : should not be singleton
+
 public class JaxbCertEntityRepository implements CertEntityRepository<DBCertEntity> {
     private static final Logger LOG = LoggerFactory.getLogger(JaxbCertEntityRepository.class);
 

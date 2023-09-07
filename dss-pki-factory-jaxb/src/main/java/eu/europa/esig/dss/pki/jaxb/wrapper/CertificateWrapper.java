@@ -192,7 +192,7 @@ public class CertificateWrapper {
     }
 
     public CertificatePolicies getCertificatePolicies() {
-        if (cert.getCertificatePolicies() != null && !CollectionUtils.isEmpty(cert.getCertificatePolicies().getCertificatePolicy())) {
+        if (cert.getCertificatePolicies() != null && Utils.isCollectionNotEmpty(cert.getCertificatePolicies().getCertificatePolicy())) {
             PolicyInformation[] policyInformation = new PolicyInformation[cert.getCertificatePolicies().getCertificatePolicy().size()];
             int index = 0;
             for (String certificatePolicyEntry : cert.getCertificatePolicies().getCertificatePolicy()) {
@@ -205,19 +205,19 @@ public class CertificateWrapper {
     }
 
     public ASN1Sequence getQCStatementsIds() {
-        if ((cert.getQcStatementIds() != null && !CollectionUtils.isEmpty(cert.getQcStatementIds().getQcStatement())) || (cert.getQcTypes() != null && !CollectionUtils.isEmpty(cert.getQcTypes().getQcType()))) {
+        if ((cert.getQcStatementIds() != null &&  Utils.isCollectionNotEmpty(cert.getQcStatementIds().getQcStatement())) || (cert.getQcTypes() != null && Utils.isCollectionNotEmpty(cert.getQcTypes().getQcType()))) {
 
             ASN1EncodableVector vector = new ASN1EncodableVector();
 
             // QC Statements IDs
-            if (cert.getQcStatementIds() != null && !CollectionUtils.isEmpty(cert.getQcStatementIds().getQcStatement())) {
+            if (cert.getQcStatementIds() != null && Utils.isCollectionNotEmpty(cert.getQcStatementIds().getQcStatement())) {
                 for (String qcStatement : cert.getQcStatementIds().getQcStatement()) {
                     vector.add(new DERSequence(getOid(qcStatement)));
                 }
             }
 
             // QC Types
-            if (cert.getQcTypes() != null && !CollectionUtils.isEmpty(cert.getQcTypes().getQcType())) {
+            if (cert.getQcTypes() != null && Utils.isCollectionNotEmpty(cert.getQcTypes().getQcType())) {
                 ASN1EncodableVector typeVector = new ASN1EncodableVector();
                 for (String qcTypes : cert.getQcTypes().getQcType()) {
                     typeVector.add(getOid(qcTypes));
@@ -229,7 +229,7 @@ public class CertificateWrapper {
             }
 
             // QC CClegislation
-            if (cert.getQcCClegislation() != null && !CollectionUtils.isEmpty(cert.getQcCClegislation().getCountryName())) {
+            if (cert.getQcCClegislation() != null && Utils.isCollectionNotEmpty(cert.getQcCClegislation().getCountryName())) {
                 ASN1EncodableVector cclegislationVector = new ASN1EncodableVector();
                 for (String qcCClegislation : cert.getQcCClegislation().getCountryName()) {
                     cclegislationVector.add(new DERPrintableString(qcCClegislation));

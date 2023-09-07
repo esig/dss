@@ -58,13 +58,13 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * @param certEntity           The CertEntity for which CRLs will be obtained.
      * @param certEntityRepository The CertEntity for which CRLs will be obtained.
      */
-    public PKICRLSource(CertEntityRepository certEntityRepository, CertEntity certEntity) {
+    public PKICRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository, CertEntity certEntity) {
         this.certEntityRepository = certEntityRepository;
         this.certEntity = certEntity;
     }
 
 
-    public PKICRLSource(CertEntityRepository certEntityRepository) {
+    public PKICRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository) {
         this.certEntityRepository = certEntityRepository;
     }
 

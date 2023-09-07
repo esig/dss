@@ -43,7 +43,7 @@ import java.io.InputStream;
 public final class PKIJaxbXmlDefiner {
 
     /** The location of PKI XSD */
-    private static final String PKI_SCHEMA_LOCATION = "/xsd/PKI.xsd";
+    private static final String PKI_SCHEMA_LOCATION = "/xsd/pki.xsd";
 
     /**
      * Singleton
@@ -103,7 +103,7 @@ public final class PKIJaxbXmlDefiner {
      */
     public static Templates getSvgTemplates() throws TransformerConfigurationException, IOException {
         if (svgTemplates == null) {
-//			svgTemplates = loadTemplates(PKI_XSLT_SVG_LOCATION);
+// 			svgTemplates = loadTemplates(PKI_XSLT_SVG_LOCATION);
         }
         return svgTemplates;
     }

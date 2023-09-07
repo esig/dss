@@ -21,7 +21,7 @@ public class PKIAIASource implements AIASource {
     private CertEntityRepository certEntityRepository;
 
 
-    public PKIAIASource(CertEntityRepository certEntityRepository) {
+    public PKIAIASource(CertEntityRepository<? extends CertEntity> certEntityRepository) {
         this.certEntityRepository = certEntityRepository;
     }
 

@@ -21,7 +21,6 @@
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
-import eu.europa.esig.dss.pki.jaxb.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
@@ -44,7 +43,7 @@ public class PKIAIASourceTest {
 
     private static CertificateToken certificateWithAIA;
     private static CertificateToken goodCaTrusted;
-    private static final CertEntityRepository certEntityRepository = GenericFactory.getInstance().create(JaxbCertEntityRepository.class);
+    private static final CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();
     private static CertEntity certEntity;
 
     @BeforeAll

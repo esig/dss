@@ -23,7 +23,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
-import eu.europa.esig.dss.pki.jaxb.factory.GenericFactory;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
@@ -45,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PKITSPSourceTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(PKITSPSourceTest.class);
-    CertEntityRepository certEntityRepository=new JaxbCertEntityRepository() ;
+    CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();
 
 
     @Test
