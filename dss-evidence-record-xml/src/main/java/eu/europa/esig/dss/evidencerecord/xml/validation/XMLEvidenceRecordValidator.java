@@ -108,6 +108,7 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
         if (evidenceRecordRootElement != null) {
             final XmlEvidenceRecord evidenceRecord = new XmlEvidenceRecord(evidenceRecordRootElement);
             evidenceRecord.setFilename(document.getName());
+            evidenceRecord.setManifestFile(manifestFile);
             evidenceRecord.setDetachedContents(detachedContents);
             return evidenceRecord;
         }

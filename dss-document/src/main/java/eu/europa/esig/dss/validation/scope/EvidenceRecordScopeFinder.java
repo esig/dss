@@ -5,11 +5,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,9 +20,6 @@ public class EvidenceRecordScopeFinder {
     /** The associated evidence record */
     protected final EvidenceRecord evidenceRecord;
 
-    /** List of covered signatures */
-    private List<AdvancedSignature> signatures;
-
     /**
      * Default constructor
      *
@@ -33,15 +28,6 @@ public class EvidenceRecordScopeFinder {
     public EvidenceRecordScopeFinder(final EvidenceRecord evidenceRecord) {
         Objects.requireNonNull(evidenceRecord, "EvidenceRecord shall be provided!");
         this.evidenceRecord = evidenceRecord;
-    }
-
-    /**
-     * Sets a list of signatures covered by the evidence record
-     *
-     * @param signatures a list of {@link AdvancedSignature}s
-     */
-    public void setSignatures(List<AdvancedSignature> signatures) {
-        this.signatures = signatures;
     }
 
     /**
@@ -75,15 +61,8 @@ public class EvidenceRecordScopeFinder {
                         detachedDocument = getDetachedDocument(referenceValidation, detachedContents);
                     }
                     if (detachedDocument != null && !coveredDocuments.contains(detachedDocument)) {
-                        List<AdvancedSignature> associatedSignatures = getAssociatedSignatures(detachedDocument);
-                        if (Utils.isCollectionNotEmpty(associatedSignatures)) {
-                            for (AdvancedSignature signature : associatedSignatures) {
-                                signatureScopes.add(new SignatureSignatureScope(signature, detachedDocument));
-                            }
-                        } else {
-                            signatureScopes.add(new FullSignatureScope(detachedDocument.getName() != null ?
-                                    detachedDocument.getName() : "Full document", detachedDocument));
-                        }
+                        signatureScopes.add(new FullSignatureScope(detachedDocument.getName() != null ?
+                                detachedDocument.getName() : "Full document", detachedDocument));
                         coveredDocuments.add(detachedDocument); // do not add documents with the same digests
                     }
                 }
@@ -101,24 +80,6 @@ public class EvidenceRecordScopeFinder {
             }
         }
         return null;
-    }
-
-    private List<AdvancedSignature> getAssociatedSignatures(DSSDocument document) {
-        if (Utils.isCollectionEmpty(signatures)) {
-            return Collections.emptyList();
-        }
-
-        final List<AdvancedSignature> result = new ArrayList<>();
-        for (AdvancedSignature signature : signatures) {
-            if (document.getName() != null) {
-                if (document.getName().equals(signature.getSignatureFilename())) {
-                    result.add(signature);
-                }
-            } else if (signature.getSignatureFilename() == null) {
-                result.add(signature);
-            }
-        }
-        return result;
     }
 
 }

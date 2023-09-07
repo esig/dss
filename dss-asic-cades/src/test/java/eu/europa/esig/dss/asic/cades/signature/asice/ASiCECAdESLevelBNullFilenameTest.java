@@ -23,14 +23,14 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -69,7 +69,7 @@ public class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSign
 
 		DSSDocument manifest = manifestDocuments.get(0);
 
-		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifest);
+		ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifest);
 		assertNotNull(manifestFile);
 
 		assertNotNull(manifestFile.getFilename());

@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Verifies ArchiveTimeStampSequence for an XML Evidence Record
@@ -45,9 +46,10 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
     @Override
-    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain) {
+    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
+                                              List<DSSDocument> detachedContents) {
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-        for (DSSDocument document : evidenceRecord.getDetachedContents()) {
+        for (DSSDocument document : detachedContents) {
             byte[] documentDigest;
             if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
                 byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());

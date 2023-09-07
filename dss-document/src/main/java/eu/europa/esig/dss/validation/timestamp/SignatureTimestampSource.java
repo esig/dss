@@ -26,11 +26,15 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -39,12 +43,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
-import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignatureAttribute;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
 import org.slf4j.Logger;
@@ -969,7 +969,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     private void incorporateEvidenceRecordEvidenceReferences(List<EvidenceRecord> createdEvidenceRecords,
                                                              List<TimestampToken> previousTimestamps) {
         for (EvidenceRecord evidenceRecord : createdEvidenceRecords) {
-            evidenceRecord.setTimestampedReferences(getArchiveTimestampReferences(previousTimestamps));
+            addReferences(evidenceRecord.getTimestampedReferences(), getArchiveTimestampReferences(previousTimestamps));
             processEvidenceRecordTimestamps(evidenceRecord);
         }
     }
@@ -1206,16 +1206,35 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         addReferences(timestampedReferences, getEncapsulatedReferencesFromTimestamps(getArchiveTimestamps()));
         addReferences(timestampedReferences, getEncapsulatedReferencesFromTimestamps(
                 getTimestampsCoveredByManifest(evidenceRecord.getManifestFile())));
-        evidenceRecord.setTimestampedReferences(timestampedReferences);
+        addReferences(evidenceRecord.getTimestampedReferences(), timestampedReferences);
 
         processEvidenceRecordTimestamps(evidenceRecord);
         populateSources(evidenceRecord.getTimestamps());
     }
 
+    /**
+     * Enriches embedded time-stamp tokens with evidence record references
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     */
     private void processEvidenceRecordTimestamps(EvidenceRecord evidenceRecord) {
         for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
+            ensureOnlyDataTimestampReferencesPresent(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
             addReferences(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
         }
+    }
+
+    /**
+     * This method is a workaround to ensure time-stamps from evidence record do not refer
+     * signature or time-stamp files in addition to token references
+     *
+     * @param referenceList a list of {@link TimestampedReference} from time-stamp token
+     * @param referencesToCheck a list of {@link TimestampedReference} from an evidence record
+     */
+    private void ensureOnlyDataTimestampReferencesPresent(List<TimestampedReference> referenceList, List<TimestampedReference> referencesToCheck) {
+        referenceList.removeIf(timestampedReference ->
+                TimestampedObjectType.SIGNED_DATA.equals(timestampedReference.getCategory()) &&
+                        referencesToCheck.stream().noneMatch(timestampedReference::equals));
     }
 
     /**

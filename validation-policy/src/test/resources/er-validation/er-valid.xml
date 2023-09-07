@@ -32,6 +32,11 @@
                 <FoundTimestamp Timestamp="T-1AAB362B1B904BAB0D4209A952BE0300E50906C253C9478477B042105DC51947"/>
                 <FoundTimestamp Timestamp="T-B914CF2D7E9272E3C1659A1A0EEE59ECBCAD9C4E520ED547B5CE322B18A582"/>
             </EvidenceRecordTimestamps>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-363F8DB32B24C682D1C9E70586C1556401FC7958796E8770A272D9EE08A9DBC0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-3B6FD881058857FE77D1EA99BFD21A035AC54F43F24B75954777C393D866F399" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8FF1DB919A240E374CC8575AEFB232BF8895419EF1048DCAF8BBE88CC73263AD" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
             <EvidenceRecordScopes>
                 <SignatureScope SignerData="D-363F8DB32B24C682D1C9E70586C1556401FC7958796E8770A272D9EE08A9DBC0">
                     <Scope>FULL</Scope>

@@ -21,9 +21,11 @@
 package eu.europa.esig.dss.asic.common.validation;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -34,9 +36,12 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +52,8 @@ import java.util.List;
  */
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerValidator.class);
+
 	/** The container extraction result */
 	protected ASiCContent asicContent;
 
@@ -55,6 +62,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	/** List of timestamp document validators */
 	protected List<DetachedTimestampValidator> timestampValidators;
+
+	/** List of evidence record document validators */
+	protected List<EvidenceRecordValidator> evidenceRecordValidators;
 
 	/** List of manifest files */
 	private List<ManifestFile> manifestFiles;
@@ -276,12 +286,30 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	/**
+	 * Returns a list of embedded evidence record documents
+	 *
+	 * @return a list of evidence record {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordDocuments() {
+		return asicContent.getEvidenceRecordDocuments();
+	}
+
+	/**
 	 * Returns a list of embedded archive manifest documents
 	 *
 	 * @return a list of archive manifest {@link DSSDocument}s
 	 */
 	public List<DSSDocument> getArchiveManifestDocuments() {
 		return asicContent.getArchiveManifestDocuments();
+	}
+
+	/**
+	 * Returns a list of embedded evidence record manifest documents
+	 *
+	 * @return a list of evidence record manifest {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordManifestDocuments() {
+		return asicContent.getEvidenceRecordManifestDocuments();
 	}
 
 	/**
@@ -344,6 +372,88 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			return containerDocuments;
 		}
 		return retrievedDocs;
+	}
+
+	@Override
+	protected List<EvidenceRecord> buildDetachedEvidenceRecords() {
+		final List<EvidenceRecord> detachedEvidenceRecords = new ArrayList<>(super.buildDetachedEvidenceRecords());
+		for (EvidenceRecordValidator evidenceRecordValidator : getEvidenceRecordValidators()) {
+			EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordValidator);
+			if (evidenceRecord != null) {
+				detachedEvidenceRecords.add(evidenceRecord);
+			}
+		}
+		return detachedEvidenceRecords;
+	}
+
+	/**
+	 * Builds and returns a list of evidence record validators
+	 *
+	 * @return a list of {@link EvidenceRecordValidator}
+	 */
+	protected List<EvidenceRecordValidator> getEvidenceRecordValidators() {
+		if (evidenceRecordValidators == null) {
+			evidenceRecordValidators = new ArrayList<>();
+			for (final DSSDocument evidenceRecordDocument : getEvidenceRecordDocuments()) {
+				EvidenceRecordValidator evidenceRecordValidator = getEvidenceRecordValidator(evidenceRecordDocument);
+				if (evidenceRecordValidator != null) {
+					evidenceRecordValidators.add(evidenceRecordValidator);
+				}
+			}
+		}
+		return evidenceRecordValidators;
+	}
+
+	private EvidenceRecordValidator getEvidenceRecordValidator(DSSDocument evidenceRecordDocument) {
+		try {
+			ManifestFile manifestFile = null;
+
+			DSSDocument evidenceRecordManifest = ASiCManifestParser.getLinkedManifest(
+					getAllManifestDocuments(), evidenceRecordDocument.getName());
+			if (evidenceRecordManifest != null) {
+				manifestFile = getValidatedManifestFile(evidenceRecordManifest);
+			}
+			if (manifestFile == null) {
+				LOG.warn("A linked manifest is not found for an evidence record with name [{}]!",
+						evidenceRecordDocument.getName());
+				return null;
+			}
+
+			final EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+			evidenceRecordValidator.setDetachedContents(getAllDocuments());
+			evidenceRecordValidator.setManifestFile(manifestFile);
+			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
+			return evidenceRecordValidator;
+
+		} catch (Exception e) {
+			LOG.warn("Unable to load EvidenceRecordValidator for an evidence record document with name '{}' : {}",
+					evidenceRecordDocument.getName(), e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * Returns a validated {@code ManifestFile} for the given {@code manifest} document
+	 *
+	 * @param manifest {@link DSSDocument}
+	 * @return {@link ManifestFile}
+	 */
+	protected ManifestFile getValidatedManifestFile(DSSDocument manifest) {
+		List<ManifestFile> manifestFiles = getManifestFiles();
+		if (Utils.isCollectionNotEmpty(manifestFiles)) {
+			for (ManifestFile manifestFile : manifestFiles) {
+				if (Utils.areStringsEqual(manifest.getName(), manifestFile.getFilename())) {
+					return manifestFile;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected boolean addReference(SignatureScope signatureScope) {
+		String fileName = signatureScope.getDocumentName();
+		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName));
 	}
 
 }

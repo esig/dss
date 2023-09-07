@@ -31,6 +31,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -117,7 +118,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         boolean textMimeTypeFound = false;
         boolean htmlMimeTypeFound = false;
         for (DSSDocument manifest : manifestDocuments) {
-            ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifest);
+            ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifest);
             assertNotNull(manifestFile);
 
             List<ManifestEntry> entries = manifestFile.getEntries();

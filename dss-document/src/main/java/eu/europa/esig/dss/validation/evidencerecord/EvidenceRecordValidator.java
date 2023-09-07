@@ -67,7 +67,7 @@ public abstract class EvidenceRecordValidator extends SignedDocumentValidator {
 
             List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
             evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
-            evidenceRecord.getTimestampedReferences().addAll(getTimestampedReferences(evidenceRecordScopes));
+            evidenceRecord.setTimestampedReferences(getTimestampedReferences(evidenceRecordScopes));
         }
         return evidenceRecord;
     }

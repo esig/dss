@@ -127,6 +127,16 @@ public final class ZipUtils {
 	}
 
 	/**
+	 * Creates a ZIP-Archive with the given {@code asicContent}, indicating teh current creation time
+	 *
+	 * @param asicContent {@link ASiCContent} to create a new ZIP Archive from
+	 * @return {@link DSSDocument} ZIP-Archive
+	 */
+	public DSSDocument createZipArchive(ASiCContent asicContent) {
+		return createZipArchive(asicContent, new Date());
+	}
+
+	/**
 	 * Creates a ZIP-Archive with the given {@code asicContent}
 	 *
 	 * @param asicContent      {@link ASiCContent} to create a new ZIP Archive from

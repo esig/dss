@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -114,7 +115,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
         for (DSSDocument document : manifestDocuments) {
             boolean signedFileFound = false;
             boolean timestampedSignatureFound = false;
-            ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(document);
+            ManifestFile manifestFile = ASiCManifestParser.getManifestFile(document);
             for (ManifestEntry entry : manifestFile.getEntries()) {
                 if (originalDocument.getName().equals(entry.getFileName())) {
                     assertEquals(MimeTypeEnum.TEXT, entry.getMimeType());

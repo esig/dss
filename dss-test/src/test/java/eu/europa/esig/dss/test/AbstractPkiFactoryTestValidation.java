@@ -73,6 +73,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -89,6 +90,7 @@ import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -1139,6 +1141,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
 		checkEvidenceRecordStructuralValidation(diagnosticData);
+		checkEvidenceRecordScopes(diagnosticData);
+		checkEvidenceRecordTimestampedReferences(diagnosticData);
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
@@ -1150,8 +1154,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 				assertNotNull(digestMatcher.getDigestMethod());
 				assertNotNull(digestMatcher.getDigestValue());
-				assertTrue(digestMatcher.isDataIntact());
 				assertTrue(digestMatcher.isDataFound());
+				assertTrue(digestMatcher.isDataIntact());
 			}
 		}
 	}
@@ -1191,6 +1195,21 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
 				assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
 			}
+		}
+	}
+
+	protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+			assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
+
+			assertEquals(Utils.collectionSize(signatures), coveredObjects.stream()
+					.filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+			assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
+					.filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
 		}
 	}
 	

@@ -46,14 +46,14 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                 List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
                 assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(evidenceRecordScopes));
 
-                boolean sigIdFound = false;
+                boolean sigFileFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                    assertEquals(SignatureScopeType.SIGNATURE, evidenceRecordScope.getScope());
-                    if (signature.getId().equals(evidenceRecordScope.getName())) {
-                        sigIdFound = true;
+                    assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
+                    if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                        sigFileFound = true;
                     }
                 }
-                assertTrue(sigIdFound);
+                assertTrue(sigFileFound);
 
                 boolean coversSignature = false;
                 boolean coversSignedData = false;
@@ -96,14 +96,14 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                     List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
                     assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(timestampScopes));
 
-                    sigIdFound = false;
+                    sigFileFound = false;
                     for (XmlSignatureScope tstScope : timestampScopes) {
-                        assertEquals(SignatureScopeType.SIGNATURE, tstScope.getScope());
-                        if (signature.getId().equals(tstScope.getName())) {
-                            sigIdFound = true;
+                        assertEquals(SignatureScopeType.FULL, tstScope.getScope());
+                        if (signature.getSignatureFilename().equals(tstScope.getName())) {
+                            sigFileFound = true;
                         }
                     }
-                    assertTrue(sigIdFound);
+                    assertTrue(sigFileFound);
 
                     boolean coversEvidenceRecord = false;
                     coversSignature = false;
@@ -182,14 +182,14 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
                 assertEquals(simpleReport.getSignatureIdList().size(), Utils.collectionSize(evidenceRecordScopes));
 
-                boolean sigIdFound = false;
+                boolean sigFileFound = false;
                 for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                    assertEquals(SignatureScopeType.SIGNATURE, evidenceRecordScope.getScope());
-                    if (sigId.equals(evidenceRecordScope.getName())) {
-                        sigIdFound = true;
+                    assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
+                    if (simpleReport.getDocumentFilename().equals(evidenceRecordScope.getName())) {
+                        sigFileFound = true;
                     }
                 }
-                assertTrue(sigIdFound);
+                assertTrue(sigFileFound);
 
                 XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
                 assertNotNull(timestamps);
@@ -201,14 +201,14 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                     List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
                     assertEquals(simpleReport.getSignatureIdList().size(), Utils.collectionSize(timestampScopes));
 
-                    sigIdFound = false;
+                    sigFileFound = false;
                     for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {
-                        assertEquals(SignatureScopeType.SIGNATURE, tstScope.getScope());
-                        if (sigId.equals(tstScope.getName())) {
-                            sigIdFound = true;
+                        assertEquals(SignatureScopeType.FULL, tstScope.getScope());
+                        if (simpleReport.getDocumentFilename().equals(tstScope.getName())) {
+                            sigFileFound = true;
                         }
                     }
-                    assertTrue(sigIdFound);
+                    assertTrue(sigFileFound);
                 }
 
             }

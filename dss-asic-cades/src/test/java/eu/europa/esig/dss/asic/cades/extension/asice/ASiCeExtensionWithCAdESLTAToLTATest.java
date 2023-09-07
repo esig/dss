@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtension;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -36,6 +36,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
@@ -43,8 +45,6 @@ import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.ManifestEntry;
-import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.ArrayList;
@@ -143,7 +143,8 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
 		assertTrue(Utils.isCollectionNotEmpty(archiveManifests));
 
 		for (DSSDocument archiveManifest : archiveManifests) {
-			ManifestFile archiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
+			ManifestFile archiveManifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
+			assertNotNull(archiveManifestFile);
 			Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
 			assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
 		}

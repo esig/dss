@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 
-import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * This class is used for extraction and validation of time-stamps incorporated within an Evidence Record
@@ -150,9 +148,7 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
         if (Utils.isCollectionEmpty(evidenceRecordScopes)) {
             return Collections.emptyList();
         }
-        List<SignatureScope> documentScopes = evidenceRecordScopes.stream()
-                .filter(s -> SignatureScopeType.SIGNATURE != s.getType()).collect(Collectors.toList());
-        return getSignerDataTimestampedReferences(documentScopes);
+        return getSignerDataTimestampedReferences(evidenceRecordScopes);
     }
 
     /**

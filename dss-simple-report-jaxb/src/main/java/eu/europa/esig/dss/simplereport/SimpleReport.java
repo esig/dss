@@ -615,7 +615,7 @@ public class SimpleReport {
 	 *            the evidence record id
 	 * @return the wrapper for the given evidence record id
 	 */
-	private XmlEvidenceRecord getEvidenceRecordById(String evidenceRecordId) {
+	public XmlEvidenceRecord getEvidenceRecordById(String evidenceRecordId) {
 		XmlToken token = getTokenById(evidenceRecordId);
 		if (token instanceof XmlEvidenceRecord) {
 			return (XmlEvidenceRecord) token;

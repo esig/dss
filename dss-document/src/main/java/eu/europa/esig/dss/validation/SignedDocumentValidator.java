@@ -903,20 +903,21 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			List<EvidenceRecord> result = new ArrayList<>();
 			for (DSSDocument evidenceRecordDocument : detachedEvidenceRecordDocuments) {
 				try {
-					EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
-					evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
-
-					EvidenceRecord evidenceRecord = evidenceRecordValidator.getEvidenceRecord();
-					if (evidenceRecord != null) {
-						List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
-						evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
-						evidenceRecord.getTimestampedReferences().addAll(getTimestampedReferences(evidenceRecordScopes));
-
-						result.add(evidenceRecord);
+					EvidenceRecordValidator evidenceRecordValidator = null;
+					try {
+						evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+						evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
+						evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
+					} catch (UnsupportedOperationException e) {
+						LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
+								"Please ensure the corresponding module is loaded.", document.getName(), e.getMessage());
 					}
-				} catch (UnsupportedOperationException e) {
-					LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
-							"Please ensure the corresponding module is loaded.", document.getName(), e.getMessage());
+					if (evidenceRecordValidator != null) {
+						EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordValidator);
+						if (evidenceRecord != null) {
+							result.add(evidenceRecord);
+						}
+					}
 				} catch (Exception e) {
 					LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}",
 							document.getName(), e.getMessage(), e);
@@ -928,15 +929,30 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
+	 * Gets an evidence record from a {@code evidenceRecordValidator}
+	 *
+	 * @param evidenceRecordValidator {@link EvidenceRecordValidator}
+	 * @return {@link EvidenceRecord}
+	 */
+	protected EvidenceRecord getEvidenceRecord(EvidenceRecordValidator evidenceRecordValidator) {
+		EvidenceRecord evidenceRecord = evidenceRecordValidator.getEvidenceRecord();
+		if (evidenceRecord != null) {
+			List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
+			evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
+			evidenceRecord.setTimestampedReferences(getTimestampedReferences(evidenceRecordScopes));
+			return evidenceRecord;
+		}
+		return null;
+	}
+
+	/**
 	 * Finds evidence record scopes
 	 *
 	 * @param evidenceRecord {@link EvidenceRecord}
 	 * @return a list of {@link SignatureScope}s
 	 */
 	protected List<SignatureScope> getEvidenceRecordScopes(EvidenceRecord evidenceRecord) {
-		EvidenceRecordScopeFinder evidenceRecordScopeFinder = new EvidenceRecordScopeFinder(evidenceRecord);
-		evidenceRecordScopeFinder.setSignatures(getSignatures());
-		return evidenceRecordScopeFinder.findEvidenceRecordScope();
+		return new EvidenceRecordScopeFinder(evidenceRecord).findEvidenceRecordScope();
 	}
 
 	@Override
