@@ -46,6 +46,20 @@ public interface EvidenceRecord extends IdentifierBasedObject {
     List<TimestampToken> getTimestamps();
 
     /**
+     * Returns a list of detached evidence records covering the current evidence record.
+     *
+     * @return a list of {@link EvidenceRecord}s
+     */
+    List<EvidenceRecord> getDetachedEvidenceRecords();
+
+    /**
+     * This method allows to add an external evidence record covering the current evidence record.
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     */
+    void addExternalEvidenceRecord(EvidenceRecord evidenceRecord);
+
+    /**
      * Returns a list of covered archival data objects
      *
      * @return a list of {@link SignatureScope}s

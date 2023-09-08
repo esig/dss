@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -383,7 +384,26 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 				detachedEvidenceRecords.add(evidenceRecord);
 			}
 		}
+		attachExternalEvidenceRecords(detachedEvidenceRecords);
 		return detachedEvidenceRecords;
+	}
+
+	/**
+	 * Appends detached evidence record provided to the validator to
+	 * the evidence records covered by the corresponding evidence records
+	 *
+	 * @param evidenceRecordList a list of {@link EvidenceRecord}s
+	 */
+	protected void attachExternalEvidenceRecords(List<EvidenceRecord> evidenceRecordList) {
+		if (Utils.isCollectionNotEmpty(evidenceRecordList)) {
+			for (EvidenceRecord coveredEvidenceRecord : evidenceRecordList) {
+				for (EvidenceRecord coveringEvidenceRecord : evidenceRecordList) {
+					if (coversEvidenceRecord(coveredEvidenceRecord, coveringEvidenceRecord)) {
+						coveredEvidenceRecord.addExternalEvidenceRecord(coveringEvidenceRecord);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -432,6 +452,36 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 		}
 	}
 
+	@Override
+	protected boolean coversSignature(AdvancedSignature signature, EvidenceRecord evidenceRecord) {
+		ManifestFile evidenceRecordManifest = evidenceRecord.getManifestFile();
+		if (evidenceRecordManifest == null) {
+			// not embedded ER
+			return true;
+		}
+		return coversFile(evidenceRecordManifest, signature.getSignatureFilename());
+	}
+
+	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {
+		ManifestFile evidenceRecordManifest = coveringEvidenceRecord.getManifestFile();
+		if (evidenceRecordManifest == null) {
+			// not embedded ER
+			return true;
+		}
+		return coversFile(evidenceRecordManifest, coveredEvidenceRecord.getFilename());
+	}
+
+	private boolean coversFile(ManifestFile manifestFile, String filename) {
+		if (manifestFile != null) {
+			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+				if (Utils.areStringsEqual(filename, manifestEntry.getFileName())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns a validated {@code ManifestFile} for the given {@code manifest} document
 	 *
@@ -453,7 +503,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	@Override
 	protected boolean addReference(SignatureScope signatureScope) {
 		String fileName = signatureScope.getDocumentName();
-		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName));
+		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName) && !ASiCUtils.isEvidenceRecord(fileName));
 	}
 
 }

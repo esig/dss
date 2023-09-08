@@ -208,6 +208,16 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     protected abstract EvidenceRecordTimestampSource<?> buildTimestampSource();
 
     @Override
+    public List<EvidenceRecord> getDetachedEvidenceRecords() {
+        return getTimestampSource().getDetachedEvidenceRecords();
+    }
+
+    @Override
+    public void addExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
+        getTimestampSource().addExternalEvidenceRecord(evidenceRecord);
+    }
+
+    @Override
     public List<SignatureScope> getEvidenceRecordScopes() {
         return evidenceRecordScopes;
     }

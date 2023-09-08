@@ -54,6 +54,11 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
     protected List<TimestampToken> timestamps;
 
     /**
+     * This variable contains the list of detached evidence record tokens covering the evidence record.
+     */
+    protected List<EvidenceRecord> detachedEvidenceRecords;
+
+    /**
      * Default constructor to instantiate a time-stamp source from an evidence record
      *
      * @param evidenceRecord {@link EvidenceRecord}
@@ -76,11 +81,38 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
     }
 
     /**
+     * Returns a list of detached evidence records covering the evidence record
+     *
+     * @return a list of {@link EvidenceRecord}s
+     */
+    public List<EvidenceRecord> getDetachedEvidenceRecords() {
+        if (detachedEvidenceRecords == null) {
+            createAndValidate();
+        }
+        return detachedEvidenceRecords;
+    }
+
+    public void addExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
+        // if timestamp tokens not created yet
+        if (detachedEvidenceRecords == null) {
+            createAndValidate();
+        }
+        processExternalEvidenceRecord(evidenceRecord);
+        detachedEvidenceRecords.add(evidenceRecord);
+    }
+
+    /**
      * Creates and validates all timestamps
      * Must be called only once
      */
     protected void createAndValidate() {
         timestamps = new ArrayList<>();
+        detachedEvidenceRecords = new ArrayList<>();
+
+        // initialize combined revocation sources
+        crlSource = new ListRevocationSource<>(); // TODO : add evidenceRecord.getCRLSource()
+        ocspSource = new ListRevocationSource<>(); // TODO : evidenceRecord.getOCSPSource()
+        certificateSource = new ListCertificateSource(); // TODO : evidenceRecord.getCertificateSource()
 
         final List<TimestampedReference> signerDataReferences = getSignerDataReferences();
 
@@ -106,6 +138,7 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
                 timestampToken.setTimestampScopes(findTimestampScopes(timestampToken));
 
                 // add time-stamp token
+                populateSources(timestampToken);
                 timestamps.add(timestampToken);
 
                 List<TimestampedReference> encapsulatedTimestampReferences = getEncapsulatedReferencesFromTimestamp(timestampToken);
@@ -171,6 +204,31 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
         return new EvidenceRecordTimestampScopeFinder(evidenceRecord).findTimestampScope(timestampToken);
     }
 
+    private void processExternalEvidenceRecord(EvidenceRecord externalEvidenceRecord) {
+        // add reference to the covered evidence record
+        addReference(externalEvidenceRecord.getTimestampedReferences(), getEvidenceRecordReference());
+        // add references from covered evidence record
+        addReferences(externalEvidenceRecord.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
+        // add references from evidence record timestamps
+        addReferences(externalEvidenceRecord.getTimestampedReferences(), getEncapsulatedReferencesFromTimestamps(getTimestamps()));
+        // extract validation data
+        populateSources(externalEvidenceRecord);
+    }
+
+    /**
+     * Returns a list of TimestampedReferences for tokens encapsulated within the list of timestampTokens
+     *
+     * @param timestampTokens a list of {@link TimestampToken} to get references from
+     * @return a list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getEncapsulatedReferencesFromTimestamps(List<TimestampToken> timestampTokens) {
+        final List<TimestampedReference> references = new ArrayList<>();
+        for (TimestampToken timestampToken : timestampTokens) {
+            addReferences(references, getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
+        }
+        return references;
+    }
+
     /**
      * Allows to populate all merged sources with extracted from a timestamp data
      *
@@ -181,6 +239,20 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
             certificateSource.add(timestampToken.getCertificateSource());
             crlSource.add(timestampToken.getCRLSource());
             ocspSource.add(timestampToken.getOCSPSource());
+        }
+    }
+
+    /**
+     * Allows to populate all sources from an external evidence record
+     *
+     * @param externalEvidenceRecord {@link EvidenceRecord} to populate data from
+     */
+    protected void populateSources(EvidenceRecord externalEvidenceRecord) {
+        if (externalEvidenceRecord != null) {
+            // TODO : add extraction of embedded validation data
+            for (TimestampToken timestampToken : externalEvidenceRecord.getTimestamps()) {
+                populateSources(timestampToken);
+            }
         }
     }
 

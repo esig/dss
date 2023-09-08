@@ -1,19 +1,16 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
-import eu.europa.esig.xmlers.definition.XMLERSElement;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmlers.definition.XMLERSNamespace;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Class for validation of an XML Evidence Record (RFC 6283)
@@ -26,9 +23,6 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
     /** The root element of the document to validate */
     private Document rootElement;
 
-    /** The XMLERS namespace */
-    private DSSNamespace xmlersNamespace;
-
     /**
      * The default constructor for XMLEvidenceRecordValidator.
      *
@@ -37,7 +31,6 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
     public XMLEvidenceRecordValidator(final DSSDocument document) {
         super(document);
         this.rootElement = toDomDocument(document);
-        //initialiseSettings();
     }
 
     /**
@@ -56,35 +49,6 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
             return DomUtils.buildDOM(document);
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);
-        }
-    }
-
-    /**
-     * This method is called when creating a new instance of the {@code EvidenceRecord} with unknown schema.
-     */
-    private void initialiseSettings() {
-        //recursiveNamespaceBrowser(rootElement);
-    }
-
-    /**
-     * This method sets the namespace which will determinate the XMLERS Namespace to use.
-     *
-     * @param element {@link Element}
-     */
-    public void recursiveNamespaceBrowser(final Element element) {
-        for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
-            final Node node = element.getChildNodes().item(ii);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                final String prefix = node.getPrefix();
-                final Element childElement = (Element) node;
-                final String namespaceURI = childElement.getNamespaceURI();
-                final String localName = childElement.getLocalName();
-                if (XMLERSElement.EVIDENCE_RECORD.isSameTagName(localName) && XMLERSElement.EVIDENCE_RECORD.getURI().equals(namespaceURI)) {
-                    xmlersNamespace = new DSSNamespace(namespaceURI, prefix);
-                    return;
-                }
-                recursiveNamespaceBrowser(childElement);
-            }
         }
     }
 

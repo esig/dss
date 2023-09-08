@@ -843,10 +843,24 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (Utils.isCollectionNotEmpty(detachedEvidenceRecords) && Utils.isCollectionNotEmpty(allSignatureList)) {
 			for (AdvancedSignature signature : allSignatureList) {
 				for (EvidenceRecord evidenceRecord : detachedEvidenceRecords) {
-					signature.addExternalEvidenceRecord(evidenceRecord);
+					if (coversSignature(signature, evidenceRecord)) {
+						signature.addExternalEvidenceRecord(evidenceRecord);
+					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * Verifies whether an {@code evidenceRecord} covers the {@code signature}
+	 *
+	 * @param signature {@link AdvancedSignature}
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 * @return TRUE if the evidence record covers the signature file, FALSE otherwise
+	 */
+	protected boolean coversSignature(AdvancedSignature signature, EvidenceRecord evidenceRecord) {
+		// return true by default
+		return true;
 	}
 	
 	@Override
