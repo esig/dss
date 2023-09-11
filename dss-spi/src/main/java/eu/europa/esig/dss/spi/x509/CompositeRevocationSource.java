@@ -34,11 +34,11 @@ import java.util.Map.Entry;
  * This class allows to retrieve a RevocationToken with different sources. The composite will try all sources until to get a
  * non-empty response.
  */
-public class CompositeSource<T extends Revocation,R extends RevocationSource<T>> implements RevocationSource<T> {
+public class CompositeRevocationSource<T extends Revocation,R extends RevocationSource<T>> implements RevocationSource<T> {
 
     private static final long serialVersionUID = 948088043702414489L;
 
-    private static final Logger LOG = LoggerFactory.getLogger(CompositeSource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompositeRevocationSource.class);
 
     /**
      * A map of source keys and corresponding  Sources
@@ -48,7 +48,7 @@ public class CompositeSource<T extends Revocation,R extends RevocationSource<T>>
     /**
      * Default constructor instantiating object with null values
      */
-    public CompositeSource() {
+    public CompositeRevocationSource() {
         // empty
     }
 
@@ -74,10 +74,10 @@ public class CompositeSource<T extends Revocation,R extends RevocationSource<T>>
                     return ocspToken;
                 }
             } catch (Exception e) {
-                LOG.warn("Unable to retrieve the revocation token with Source '{}' : {}", sourceKey, e.getMessage());
+                LOG.debug("Unable to retrieve the revocation token with Source '{}' : {}", sourceKey, e.getMessage());
             }
         }
-        LOG.warn("Unable to retrieve the ocsp token (" + compositeRevocationSources.size() + " tries)");
+        LOG.debug("Unable to retrieve the ocsp token (" + compositeRevocationSources.size() + " tries)");
         return null;
     }
 }

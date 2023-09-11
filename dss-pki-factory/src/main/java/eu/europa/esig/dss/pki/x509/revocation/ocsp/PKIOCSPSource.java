@@ -67,7 +67,7 @@ public class PKIOCSPSource implements OCSPSource {
     /**
      * The Digest Algorithm of the signature of the created time-stamp token
      */
-    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+    protected DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
 
     /**
@@ -97,7 +97,7 @@ public class PKIOCSPSource implements OCSPSource {
     @Override
     public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         final String dssIdAsString = certificateToken.getDSSIdAsString();
-        LOG.trace("--> OnlineOCSPSource queried for {}", dssIdAsString);
+        LOG.trace("--> PKIOCSPSource queried for {}", dssIdAsString);
         List<String> ocspAccessUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
         if (Utils.isCollectionEmpty(ocspAccessUrls)) {
             LOG.warn("No OCSP location found for {}", dssIdAsString);
@@ -107,13 +107,7 @@ public class PKIOCSPSource implements OCSPSource {
 
         try {
 
-            // If certEntity is not provided during construction, find it based on issuerCertificateToken and certificateToken
-            CertEntity currentCertEntity;
-            if (certEntity == null) {
-                currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
-            } else {
-                currentCertEntity = certEntity;
-            }
+            CertEntity currentCertEntity = getCertEntity(issuerCertificateToken);
             //Objects.requireNonNull(currentCertEntity, "No certification found for the provided CertificateToken.");
 
             OCSPResp ocspRespBytes;
@@ -136,6 +130,17 @@ public class PKIOCSPSource implements OCSPSource {
         } catch (OCSPException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected CertEntity getCertEntity(CertificateToken issuerCertificateToken) {
+        // If certEntity is not provided during construction, find it based on issuerCertificateToken and certificateToken
+        CertEntity currentCertEntity;
+        if (certEntity == null) {
+            currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+        } else {
+            currentCertEntity = certEntity;
+        }
+        return currentCertEntity;
     }
 
 

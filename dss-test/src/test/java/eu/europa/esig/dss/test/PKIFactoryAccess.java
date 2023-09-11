@@ -56,12 +56,12 @@ import eu.europa.esig.dss.spi.x509.aia.CompositeAIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.CompositeSource;
+import eu.europa.esig.dss.spi.x509.CompositeRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.test.pki.ocsp.PKIDelegateOCSPSource;
+import eu.europa.esig.dss.test.pki.ocsp.PKIDelegatedOCSPSource;
 import eu.europa.esig.dss.test.pki.tsp.PkiTSPFailSource;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.KSPrivateKeyEntry;
@@ -199,7 +199,7 @@ public abstract class PKIFactoryAccess {
     }
 
     protected CertificateVerifier getCompleteCertificateVerifier() {
-        return getCertificateVerifier(cacheOCSPSource(pKIOCSPSource()), cacheCRLSource(pKICRLSource()), cacheAIASource(pkiAIASource()), getTrustedCertificateSource());
+        return getCertificateVerifier(cacheOCSPSource(pKIDelegateOCSPSource()), cacheCRLSource(pKICRLSource()), cacheAIASource(pkiAIASource()), getTrustedCertificateSource());
     }
 
     protected CertificateVerifier getCompositeCertificateVerifier() {
@@ -209,6 +209,12 @@ public abstract class PKIFactoryAccess {
         certificateVerifier.setAIASource(getCompositeAia());
         return certificateVerifier;
     }
+
+
+    protected CertificateVerifier getOnlineCompleteCertificateVerifier() {
+        return getCertificateVerifier(cacheOCSPSource(onlineOcspSource()), cacheCRLSource(onlineCrlSource()), cacheAIASource(onlineAIASource()), getTrustedCertificateSource());
+    }
+
 
     protected CertificateVerifier getCertificateVerifierWithMGF1() {
         PKICRLSource pkicrlSource = pKICRLSource();
@@ -295,7 +301,7 @@ public abstract class PKIFactoryAccess {
         cal.add(Calendar.MONTH, 6);
         Date nextUpdate = cal.getTime();
         pkiCRLSource.setNextUpdate(nextUpdate);
-        pkiCRLSource.setProductionDate(new Date());
+//        pkiCRLSource.setProductionDate(new Date());
         return pkiCRLSource;
     }
 
@@ -317,8 +323,8 @@ public abstract class PKIFactoryAccess {
         return new PKIOCSPSource(getCertEntityRepository());
     }
 
-    protected PKIDelegateOCSPSource pKIDelegateOCSPSource() {
-        return new PKIDelegateOCSPSource(getCertEntityRepository());
+    protected PKIDelegatedOCSPSource pKIDelegateOCSPSource() {
+        return new PKIDelegatedOCSPSource(getCertEntityRepository());
     }
 
     private OnlineOCSPSource onlineOcspSource() {
@@ -434,8 +440,8 @@ public abstract class PKIFactoryAccess {
         return composite;
     }
 
-    protected CompositeSource<CRL, CRLSource> getCompositeCRL() {
-        CompositeSource<CRL, CRLSource> composite = new CompositeSource<>();
+    protected CompositeRevocationSource<CRL, CRLSource> getCompositeCRL() {
+        CompositeRevocationSource<CRL, CRLSource> composite = new CompositeRevocationSource<>();
         LinkedHashMap<String, CRLSource> cRLSources = new LinkedHashMap<>();
         cRLSources.put("PKICRLSource", pKICRLSource());
         cRLSources.put("OnlineCrlSource", onlineCrlSource());
@@ -444,8 +450,8 @@ public abstract class PKIFactoryAccess {
         return composite;
     }
 
-    protected CompositeSource<OCSP, OCSPSource> getCompositeOcsp() {
-        CompositeSource<OCSP, OCSPSource> composite = new CompositeSource<>();
+    protected CompositeRevocationSource<OCSP, OCSPSource> getCompositeOcsp() {
+        CompositeRevocationSource<OCSP, OCSPSource> composite = new CompositeRevocationSource<>();
         LinkedHashMap<String, OCSPSource> oCSPSources = new LinkedHashMap<>();
         oCSPSources.put("PKIOCSPSource", pKIOCSPSource());
         oCSPSources.put("OnlineOCSPSource", onlineOcspSource());

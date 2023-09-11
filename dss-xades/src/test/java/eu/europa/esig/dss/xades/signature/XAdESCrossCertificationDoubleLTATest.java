@@ -37,22 +37,21 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.test.pki.ocsp.PKIDelegateOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +67,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
-    @Test
+    @RepeatedTest(10)
     public void test() throws Exception {
 
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
@@ -81,14 +80,12 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 
         CertificateToken crossCertificate = getCertificateByPrimaryKey(2002, "external-ca");
-        CommonCertificateSource trustedListsCertificateSource = new CommonCertificateSource();
-        trustedListsCertificateSource.addCertificate(crossCertificate);
-        trustedListsCertificateSource.addCertificate(getCertificate(ROOT_CA));
 
         CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
-        commonTrustedCertificateSource.importAsTrusted(trustedListsCertificateSource);
+        commonTrustedCertificateSource.addCertificate(crossCertificate);
+        commonTrustedCertificateSource.addCertificate(getCertificate(ROOT_CA));
 
-        CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getOfflineCertificateVerifier();
+        CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
         customCertificateVerifier.setCrlSource(pKICRLSource());
         customCertificateVerifier.setOcspSource(pKIDelegateOCSPSource());
@@ -96,7 +93,11 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
 
         XAdESService service = new XAdESService(customCertificateVerifier);
-        service.setTspSource(getGoodTsa());
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.SECOND, -1);
+        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -130,9 +131,14 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
         customCertificateVerifier.setCrlSource(pKICRLSource());
+//        customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
 
         service = new XAdESService(customCertificateVerifier);
-        service.setTspSource(getGoodTsa());
+
+        calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.SECOND, 1);
+        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Arrays.asList(documentToSign));
@@ -141,10 +147,11 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         // doubleLTADoc.save("target/doubleLTA.xml");
 
         validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
+
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Arrays.asList(documentToSign));
         reports = validator.validateDocument();
-        // reports.print();
+        reports.print();
 
         diagnosticData = reports.getDiagnosticData();
         signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

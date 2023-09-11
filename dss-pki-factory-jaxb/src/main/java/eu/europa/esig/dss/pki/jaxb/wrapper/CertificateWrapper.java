@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pki.jaxb.wrapper;
 
+import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.pki.jaxb.XmlCRLType;
 import eu.europa.esig.dss.pki.jaxb.XmlCertificateType;
@@ -8,7 +9,6 @@ import eu.europa.esig.dss.pki.jaxb.XmlDigestAlgo;
 import eu.europa.esig.dss.pki.jaxb.XmlEntityKey;
 import eu.europa.esig.dss.pki.jaxb.XmlKeyAlgo;
 import eu.europa.esig.dss.pki.jaxb.XmlKeyUsages;
-import eu.europa.esig.dss.pki.jaxb.dto.CertificatePolicyOids;
 import eu.europa.esig.dss.pki.jaxb.dto.QCStatementOids;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -205,7 +205,7 @@ public class CertificateWrapper {
     }
 
     public ASN1Sequence getQCStatementsIds() {
-        if ((cert.getQcStatementIds() != null &&  Utils.isCollectionNotEmpty(cert.getQcStatementIds().getQcStatement())) || (cert.getQcTypes() != null && Utils.isCollectionNotEmpty(cert.getQcTypes().getQcType()))) {
+        if ((cert.getQcStatementIds() != null && Utils.isCollectionNotEmpty(cert.getQcStatementIds().getQcStatement())) || (cert.getQcTypes() != null && Utils.isCollectionNotEmpty(cert.getQcTypes().getQcType()))) {
 
             ASN1EncodableVector vector = new ASN1EncodableVector();
 
@@ -253,7 +253,7 @@ public class CertificateWrapper {
      */
     private ASN1ObjectIdentifier getPolicyOid(String policy) {
         try {
-            CertificatePolicyOids oid = CertificatePolicyOids.valueOf(policy.toUpperCase());
+            CertificatePolicy oid = CertificatePolicy.valueOf(policy.toUpperCase());
             return new ASN1ObjectIdentifier(oid.getOid());
         } catch (IllegalArgumentException e) {
             return new ASN1ObjectIdentifier(policy);
