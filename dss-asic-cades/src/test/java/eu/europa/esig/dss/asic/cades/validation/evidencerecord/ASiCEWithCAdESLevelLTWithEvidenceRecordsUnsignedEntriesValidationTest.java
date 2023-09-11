@@ -1,11 +1,12 @@
-package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
+package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
-import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -21,53 +22,43 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest extends AbstractASiCEWithXAdESWithEvidenceRecordTestValidation {
+public class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er-multi-data-wrong-er-reference.sce");
-    }
-
-    @Override
-    protected int getNumberOfExpectedEvidenceScopes() {
-        return 4;
+        return new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-er-unsigned-manifest-entries.sce");
     }
 
     @Override
     protected void checkDetachedEvidenceRecords(List<EvidenceRecord> detachedEvidenceRecords) {
-        assertEquals(1, Utils.collectionSize(detachedEvidenceRecords));
+        assertTrue(Utils.isCollectionNotEmpty(detachedEvidenceRecords));
+
         EvidenceRecord evidenceRecord = detachedEvidenceRecords.get(0);
 
-        int validRefsCounter = 0;
-        int invalidRefsCounter = 0;
+        int validEntriesCounter = 0;
+        int invalidEntriesCounter = 0;
         List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
-        assertEquals(4, Utils.collectionSize(referenceValidationList));
         for (ReferenceValidation referenceValidation : referenceValidationList) {
             assertTrue(referenceValidation.isFound());
             if (referenceValidation.isIntact()) {
-                ++validRefsCounter;
+                ++validEntriesCounter;
             } else {
-                ++invalidRefsCounter;
+                ++invalidEntriesCounter;
             }
         }
-        assertEquals(3, validRefsCounter);
-        assertEquals(1, invalidRefsCounter);
-
-        List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
-        assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
+        assertEquals(2, validEntriesCounter);
+        assertEquals(2, invalidEntriesCounter);
 
         int tstCounter = 0;
 
@@ -75,7 +66,7 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest 
         for (TimestampToken timestampToken : timestamps) {
             assertTrue(timestampToken.isProcessed());
             assertTrue(timestampToken.isMessageImprintDataFound());
-            assertFalse(timestampToken.isMessageImprintDataIntact());
+            assertTrue(timestampToken.isMessageImprintDataIntact());
 
             if (tstCounter > 0) {
                 List<ReferenceValidation> tstReferenceValidationList = timestampToken.getReferenceValidations();
@@ -105,35 +96,62 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest 
         }
     }
 
-    @Override
     protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
-        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
 
-        int validRefsCounter = 0;
-        int invalidRefsCounter = 0;
-        List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-        assertEquals(4, Utils.collectionSize(digestMatcherList));
-        for (XmlDigestMatcher digestMatcher : digestMatcherList) {
+        int validEntriesCounter = 0;
+        int invalidEntriesCounter = 0;
+        List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
+        assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
+            assertNotNull(digestMatcher.getDigestMethod());
+            assertNotNull(digestMatcher.getDigestValue());
             assertTrue(digestMatcher.isDataFound());
             if (digestMatcher.isDataIntact()) {
-                ++validRefsCounter;
+                ++validEntriesCounter;
             } else {
-                ++invalidRefsCounter;
+                ++invalidEntriesCounter;
             }
         }
-        assertEquals(3, validRefsCounter);
-        assertEquals(1, invalidRefsCounter);
+        assertEquals(2, validEntriesCounter);
+        assertEquals(2, invalidEntriesCounter);
     }
 
     @Override
-    protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
-        // skip (time-stamp contains multiple sign-cert refs)
+    protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+        XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
+
+        for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+            List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
+            for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+
+                XmlManifestFile erManifest = null;
+                for (XmlManifestFile xmlManifestFile : containerInfo.getManifestFiles()) {
+                    if (xmlManifestFile.getSignatureFilename().equals(evidenceRecord.getFilename())) {
+                        erManifest = xmlManifestFile;
+                    }
+                }
+                assertNotNull(erManifest);
+
+                List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
+
+                boolean sigFileFound = false;
+                for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                    assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
+                    if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                        sigFileFound = true;
+                    }
+                }
+                assertTrue(sigFileFound);
+            }
+        }
     }
 
     @Override
     protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
-        List<String> contentFiles = diagnosticData.getContainerInfo().getContentFiles();
-
         for (SignatureWrapper signature : diagnosticData.getSignatures()) {
             List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
             assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
@@ -145,12 +163,21 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest 
                 List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
                 for (TimestampWrapper timestamp : timestamps) {
                     assertTrue(timestamp.isMessageImprintDataFound());
-                    assertFalse(timestamp.isMessageImprintDataIntact());
+                    assertTrue(timestamp.isMessageImprintDataIntact());
                     assertTrue(timestamp.isSignatureIntact());
-                    assertFalse(timestamp.isSignatureValid());
+                    assertTrue(timestamp.isSignatureValid());
 
                     List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                    assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
+
+                    boolean sigFileFound = false;
+                    for (XmlSignatureScope tstScope : timestampScopes) {
+                        assertEquals(SignatureScopeType.FULL, tstScope.getScope());
+                        if (signature.getSignatureFilename().equals(tstScope.getName())) {
+                            sigFileFound = true;
+                        }
+                    }
+                    assertTrue(sigFileFound);
 
                     boolean coversEvidenceRecord = false;
                     boolean coversSignature = false;
@@ -176,8 +203,8 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest 
                         }
                     }
 
-                    assertEquals(contentFiles.size(), timestampedObjects.stream()
-                            .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).count());
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), timestampedObjects.stream()
+                            .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).count()); // created additional objects for "invalid" sig ref (no POE provided)
 
                     assertTrue(coversEvidenceRecord);
                     assertTrue(coversSignature);
@@ -218,45 +245,54 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest 
         }
     }
 
-    @Override
-    protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
-        // skip
-    }
-
     protected void verifySimpleReport(SimpleReport simpleReport) {
         for (String sigId : simpleReport.getSignatureIdList()) {
             List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);
             assertTrue(Utils.isCollectionNotEmpty(signatureEvidenceRecords));
-            assertEquals(1, Utils.collectionSize(signatureEvidenceRecords));
 
-            XmlEvidenceRecord xmlEvidenceRecord = signatureEvidenceRecords.get(0);
-            assertNotNull(xmlEvidenceRecord.getPOETime());
-            assertEquals(Indication.FAILED, xmlEvidenceRecord.getIndication());
-            assertEquals(SubIndication.HASH_FAILURE, xmlEvidenceRecord.getSubIndication());
+            for (XmlEvidenceRecord xmlEvidenceRecord : signatureEvidenceRecords) {
+                assertNotNull(xmlEvidenceRecord.getPOETime());
+                assertEquals(Indication.FAILED, xmlEvidenceRecord.getIndication());
+                assertEquals(SubIndication.HASH_FAILURE, xmlEvidenceRecord.getSubIndication());
 
-            List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
-            assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
+                List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
-            boolean sigNameFound = false;
-            for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (simpleReport.getTokenFilename(sigId).equals(evidenceRecordScope.getName())) {
-                    sigNameFound = true;
+                boolean sigFileFound = false;
+                for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                    assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
+                    if (simpleReport.getTokenFilename(sigId).equals(evidenceRecordScope.getName())) {
+                        sigFileFound = true;
+                    }
                 }
+                assertTrue(sigFileFound);
+
+                XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
+                assertNotNull(timestamps);
+                assertTrue(Utils.isCollectionNotEmpty(timestamps.getTimestamp()));
+
+                for (XmlTimestamp xmlTimestamp : timestamps.getTimestamp()) {
+                    assertNotEquals(Indication.FAILED, xmlTimestamp.getIndication());
+
+                    List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
+                    assertEquals(Utils.collectionSize(evidenceRecordScopes), Utils.collectionSize(timestampScopes));
+
+                    for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {
+                        assertEquals(SignatureScopeType.FULL, tstScope.getScope());
+                        if (simpleReport.getTokenFilename(sigId).equals(tstScope.getName())) {
+                            sigFileFound = true;
+                        }
+                    }
+                    assertTrue(sigFileFound);
+                }
+
             }
-            assertTrue(sigNameFound);
-
-            XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
-            assertNotNull(timestamps);
-            assertEquals(1, Utils.collectionSize(timestamps.getTimestamp()));
-
-            XmlTimestamp xmlTimestamp = timestamps.getTimestamp().get(0);
-            assertEquals(Indication.FAILED, xmlTimestamp.getIndication());
-            assertEquals(SubIndication.HASH_FAILURE, xmlTimestamp.getSubIndication());
-
-            List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
-            assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
         }
+    }
+
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 4;
     }
 
 }

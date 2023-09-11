@@ -161,6 +161,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                                                                    ArchiveTimeStampChainObject archiveTimeStampChain,
                                                                    List<DSSDocument> detachedContents) {
         final List<ReferenceValidation> result = new ArrayList<>();
+        final List<String> foundManifestEntries = new ArrayList<>();
+
+        ManifestFile manifestFile = evidenceRecord.getManifestFile();
+
+        // process ER data objects at first
         List<byte[]> digestValues = digestValueGroup.getDigestValues();
         for (byte[] hashValue : digestValues) {
             ReferenceValidation referenceValidation = new ReferenceValidation();
@@ -173,11 +178,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, detachedContents);
             ManifestEntry matchingManifestEntry = getMatchingManifestEntry(digest, matchingDocument);
 
-            if (evidenceRecord.getManifestFile() != null) {
+            if (manifestFile != null) {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
+                    referenceValidation.setDigest(matchingManifestEntry.getDigest());
                     referenceValidation.setName(matchingManifestEntry.getFileName());
+                    foundManifestEntries.add(matchingManifestEntry.getFileName());
+
                 } else if (matchingDocument != null) {
                     referenceValidation.setName(matchingDocument.getName());
                 }
@@ -200,6 +208,34 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
             result.add(referenceValidation);
         }
+
+        // create empty ReferenceValidations for not found manifest entries, when applicable
+        if (manifestFile != null && Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundManifestEntries)) {
+            List<ReferenceValidation> failedReferences = result.stream().filter(r -> r.getName() == null).collect(Collectors.toList());
+            if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundManifestEntries) >= Utils.collectionSize(failedReferences)) {
+                // remove failed references
+                for (ReferenceValidation reference : failedReferences) {
+                    result.remove(reference);
+                }
+            }
+            // add references from a manifest
+            for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+                if (!foundManifestEntries.contains(manifestEntry.getFileName())) {
+                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getFileName());
+
+                    DSSDocument matchingDocument = getMatchingDocument(manifestEntry, detachedContents);
+
+                    ReferenceValidation referenceValidation = new ReferenceValidation();
+                    referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
+                    referenceValidation.setDigest(manifestEntry.getDigest());
+                    referenceValidation.setName(manifestEntry.getFileName());
+                    referenceValidation.setFound(matchingDocument != null);
+                    referenceValidation.setIntact(false);
+                    result.add(referenceValidation);
+                }
+            }
+        }
+
         return result;
     }
 
@@ -241,6 +277,22 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             String base64Digest = document.getDigest(digest.getAlgorithm());
             documentDigest = Utils.fromBase64(base64Digest);
             if (Arrays.equals(digest.getValue(), documentDigest)) {
+                return document;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method returns a matching document for the given {@code manifestEntry}
+     *
+     * @param manifestEntry {@link ManifestEntry} to get matching document for
+     * @param detachedContents a list of {@link DSSDocument}s provided within a container
+     * @return {@link DSSDocument} matching document when found, NULL otherwise
+     */
+    protected DSSDocument getMatchingDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedContents) {
+        for (DSSDocument document : detachedContents) {
+            if (manifestEntry.getFileName().equals(document.getName())) {
                 return document;
             }
         }
