@@ -5,12 +5,20 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
+import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
 import eu.europa.esig.xmlers.definition.XMLERSNamespace;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Class for validation of an XML Evidence Record (RFC 6283)
@@ -54,7 +62,16 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
 
     @Override
     public boolean isSupported(DSSDocument dssDocument) {
-        return DomUtils.startsWithXmlPreamble(dssDocument);
+        return DomUtils.startsWithXmlPreamble(dssDocument) && canBuildEvidenceRecord(dssDocument);
+    }
+
+    private boolean canBuildEvidenceRecord(DSSDocument dssDocument) {
+        try (InputStream is = dssDocument.openStream()) {
+            EvidenceRecordType erObject = XMLEvidenceRecordFacade.newFacade().unmarshall(is, false);
+            return erObject != null;
+        } catch (IOException | JAXBException | XMLStreamException | SAXException e) {
+            return false;
+        }
     }
 
     /**

@@ -20,16 +20,17 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.xades.definition.xades122.XAdES122Path;
@@ -101,7 +102,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return DomUtils.startsWithXmlPreamble(dssDocument);
+		return DomUtils.startsWithXmlPreamble(dssDocument) && !EvidenceRecordValidatorFactory.isSupportedDocument(dssDocument);
 	}
 
 	/**

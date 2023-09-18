@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractPDFDocumentValidatorCheckTest extends AbstractTestValidator {
 
@@ -81,6 +80,11 @@ public abstract class AbstractPDFDocumentValidatorCheckTest extends AbstractTest
 	@Override
 	protected DSSDocument getNoSignatureDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+	}
+
+	@Override
+	protected DSSDocument getXmlEvidenceRecordDocument() {
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/evidence-record/evidence-record-ef971596-8f2e-407d-a413-aae9cb9b8e4a.xml"));
 	}
 
 }

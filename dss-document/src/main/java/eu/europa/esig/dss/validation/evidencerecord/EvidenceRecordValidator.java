@@ -8,7 +8,6 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.ServiceLoader;
 
 /**
  * Abstract class containing the basic logic for an Evidence Record validation,
@@ -46,14 +45,7 @@ public abstract class EvidenceRecordValidator extends SignedDocumentValidator {
      * @return returns the specific instance of {@link EvidenceRecordValidator} in terms of the document type
      */
     public static EvidenceRecordValidator fromDocument(final DSSDocument dssDocument) {
-        Objects.requireNonNull(dssDocument, "DSSDocument is null");
-        ServiceLoader<EvidenceRecordValidatorFactory> serviceLoaders = ServiceLoader.load(EvidenceRecordValidatorFactory.class);
-        for (EvidenceRecordValidatorFactory factory : serviceLoaders) {
-            if (factory.isSupported(dssDocument)) {
-                return factory.create(dssDocument);
-            }
-        }
-        throw new UnsupportedOperationException("Document format not recognized/handled");
+        return EvidenceRecordValidatorFactory.fromDocument(dssDocument);
     }
 
     /**
