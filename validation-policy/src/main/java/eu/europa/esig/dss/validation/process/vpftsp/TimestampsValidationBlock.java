@@ -4,10 +4,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -27,10 +28,13 @@ import java.util.Map;
  * as well as to extract POE information for valid entries
  *
  */
-public class AllTimestampValidationBlock {
+public class TimestampsValidationBlock {
 
     /** The i18n provider */
     private final I18nProvider i18nProvider;
+
+    /** List of time-stamps to be validated */
+    protected final List<TimestampWrapper> timestamps;
 
     /** The DiagnosticData to use */
     private final DiagnosticData diagnosticData;
@@ -57,6 +61,7 @@ public class AllTimestampValidationBlock {
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
+     * @param timestamps a list of {@link TimestampWrapper}s to be validated
      * @param diagnosticData {@link DiagnosticData}
      * @param policy {@link ValidationPolicy}
      * @param currentTime {@link Date} validation time
@@ -65,10 +70,11 @@ public class AllTimestampValidationBlock {
      * @param validationLevel {@link ValidationLevel} the target highest level
      * @param poe {@link POEExtraction} to be filled with POE from valid timestamps
      */
-    public AllTimestampValidationBlock(final I18nProvider i18nProvider, final DiagnosticData diagnosticData,
-            final ValidationPolicy policy, final Date currentTime, final Map<String, XmlBasicBuildingBlocks> bbbs,
-            final List<XmlTLAnalysis> tlAnalysis, final ValidationLevel validationLevel, final POEExtraction poe) {
+    public TimestampsValidationBlock(final I18nProvider i18nProvider, final List<TimestampWrapper> timestamps, final DiagnosticData diagnosticData,
+                                     final ValidationPolicy policy, final Date currentTime, final Map<String, XmlBasicBuildingBlocks> bbbs,
+                                     final List<XmlTLAnalysis> tlAnalysis, final ValidationLevel validationLevel, final POEExtraction poe) {
         this.i18nProvider = i18nProvider;
+        this.timestamps = timestamps;
         this.diagnosticData = diagnosticData;
         this.policy = policy;
         this.currentTime = currentTime;
@@ -79,6 +85,33 @@ public class AllTimestampValidationBlock {
     }
 
     /**
+     * Constructor without POE
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param timestamps a list of {@link TimestampWrapper}s to be validated
+     * @param diagnosticData {@link DiagnosticData}
+     * @param policy {@link ValidationPolicy}
+     * @param currentTime {@link Date} validation time
+     * @param bbbs map of {@link XmlBasicBuildingBlocks} to fill the validation result
+     * @param tlAnalysis a list of {@link XmlTLAnalysis}
+     * @param validationLevel {@link ValidationLevel} the target highest level
+     */
+    protected TimestampsValidationBlock(final I18nProvider i18nProvider, final List<TimestampWrapper> timestamps, final DiagnosticData diagnosticData,
+                                     final ValidationPolicy policy, final Date currentTime, final Map<String, XmlBasicBuildingBlocks> bbbs,
+                                     final List<XmlTLAnalysis> tlAnalysis, final ValidationLevel validationLevel) {
+        this.i18nProvider = i18nProvider;
+        this.timestamps = timestamps;
+        this.diagnosticData = diagnosticData;
+        this.policy = policy;
+        this.currentTime = currentTime;
+        this.bbbs = bbbs;
+        this.tlAnalysis = tlAnalysis;
+        this.validationLevel = validationLevel;
+        this.poe = new POEExtraction();
+        this.poe.init(diagnosticData, currentTime);
+    }
+
+    /**
      * This method performs validation of timestamps, but also fills the {@code POEExtraction} object for valid timestamps
      *
      * @return a map of {@link XmlTimestamp} identifiers and their corresponding validations
@@ -86,10 +119,7 @@ public class AllTimestampValidationBlock {
     public Map<String, XmlTimestamp> execute() {
         final Map<String, XmlTimestamp> result = new HashMap<>();
 
-        List<TimestampWrapper> timestampList = new ArrayList<>(diagnosticData.getTimestampList());
-        timestampList.sort(Comparator.comparing(TimestampWrapper::getProductionTime).reversed());
-
-        for (TimestampWrapper newestTimestamp : timestampList) {
+        for (TimestampWrapper newestTimestamp : getTimestamps()) {
             XmlTimestamp xmlTimestamp = buildXmlTimestamp(newestTimestamp, bbbs, tlAnalysis);
             result.put(newestTimestamp.getId(), xmlTimestamp);
         }
@@ -97,10 +127,23 @@ public class AllTimestampValidationBlock {
         return result;
     }
 
+    /**
+     * Returns a list of time-stamp tokens to be validated
+     *
+     * @return a list of {@link TimestampWrapper}s
+     */
+    protected List<TimestampWrapper> getTimestamps() {
+        List<TimestampWrapper> timestampList = new ArrayList<>(timestamps);
+        timestampList.sort(Comparator.comparing(TimestampWrapper::getProductionTime).reversed());
+        return timestampList;
+    }
+
     private XmlTimestamp buildXmlTimestamp(TimestampWrapper timestamp, Map<String, XmlBasicBuildingBlocks> bbbs,
                                            List<XmlTLAnalysis> tlAnalysis) {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setId(timestamp.getId());
+
+        POEExtraction currentPOE = getPoe(timestamp);
 
         TimestampBasicValidationProcess vpftsp = new TimestampBasicValidationProcess(i18nProvider, diagnosticData, timestamp, bbbs);
         XmlValidationProcessBasicTimestamp validationProcessBasicTimestamp = vpftsp.execute();
@@ -111,20 +154,37 @@ public class AllTimestampValidationBlock {
         // Timestamp qualification
         if (policy.isEIDASConstraintPresent()) {
             TimestampQualificationBlock timestampQualificationBlock = new TimestampQualificationBlock(
-                    i18nProvider, timestamp, tlAnalysis, poe);
+                    i18nProvider, timestamp, tlAnalysis, currentPOE);
             xmlTimestamp.setValidationTimestampQualification(timestampQualificationBlock.execute());
         }
 
         if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
             ValidationProcessForTimestampsWithArchivalData vpftspwatst = new ValidationProcessForTimestampsWithArchivalData(
-                    i18nProvider, timestamp, validationProcessBasicTimestamp, bbbs, currentTime, policy, poe);
+                    i18nProvider, timestamp, validationProcessBasicTimestamp, bbbs, currentTime, policy, currentPOE);
             XmlValidationProcessArchivalDataTimestamp validationProcessTimestampArchivalData = vpftspwatst.execute();
+
+            // extract POE for valid time-stamps
+            if (validationProcessTimestampArchivalData.getConclusion() != null &&
+                    Indication.PASSED == validationProcessTimestampArchivalData.getConclusion().getIndication()) {
+                currentPOE.extractPOE(timestamp);
+            }
+
             xmlTimestamp.setValidationProcessArchivalDataTimestamp(validationProcessTimestampArchivalData);
             conclusion = validationProcessTimestampArchivalData.getConclusion();
         }
 
         xmlTimestamp.setConclusion(conclusion);
         return xmlTimestamp;
+    }
+
+    /**
+     * Returns POE object for {@code timestamp} validation
+     *
+     * @param timestamp {@link TimestampWrapper} to be validated
+     * @return {@link POEExtraction}
+     */
+    protected POEExtraction getPoe(TimestampWrapper timestamp) {
+        return poe;
     }
 
 }

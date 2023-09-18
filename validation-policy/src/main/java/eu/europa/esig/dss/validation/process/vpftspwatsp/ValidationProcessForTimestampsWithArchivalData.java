@@ -114,8 +114,6 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
                     item = item.setNextItem(timestampMessageImprint(timestamp));
 
-                    poe.extractPOE(timestamp);
-
                 }
 
             }
@@ -152,8 +150,6 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
                     if (isValid(davResult)) {
 
                         item = item.setNextItem(timestampMessageImprint(timestamp));
-
-                        poe.extractPOE(timestamp);
 
                     }
                 }

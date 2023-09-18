@@ -166,6 +166,23 @@ public class POEExtraction {
 		}
 	}
 
+	/**
+	 * Extracts POE for given timestamped objects
+	 *
+	 * @param timestampedObjects a list of {@link XmlTimestampedObject} to get POE for
+	 * @param poeTime to be provided for timestamped objects
+	 */
+	public void extractPOE(List<XmlTimestampedObject> timestampedObjects, Date poeTime) {
+		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
+			if (poeTime != null) {
+				POE poe = new POE(poeTime);
+				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+					addPOE(xmlTimestampedObject.getToken().getId(), poe);
+				}
+			}
+		}
+	}
+
 	private void addPOE(String tokenId, POE proofOfExistence) {
 		if (proofOfExistence != null) {
 			List<POE> poesById = poeMap.computeIfAbsent(tokenId, k -> new ArrayList<>());

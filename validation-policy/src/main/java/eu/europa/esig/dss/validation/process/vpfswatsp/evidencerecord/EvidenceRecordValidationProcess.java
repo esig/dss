@@ -22,6 +22,7 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCh
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,9 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
     private final EvidenceRecordWrapper evidenceRecord;
 
     /**
-     * List of timestamps
+     * Collection of timestamps
      */
-    private final List<XmlTimestamp> xmlTimestamps;
+    private final Collection<XmlTimestamp> xmlTimestamps;
 
     /**
      * Map of BasicBuildingBlocks
@@ -63,9 +64,13 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
      *
      * @param i18nProvider the access to translations
      * @param evidenceRecord {@link EvidenceRecordWrapper} to be validated
+     * @param xmlTimestamps a collection of {@link XmlTimestamp} validations
+     * @param bbbs a map of performed {@link XmlBasicBuildingBlocks}s
+     * @param validationPolicy {@link ValidationPolicy} to be used
+     * @param currentTime {@link Date} validation time
      */
     public EvidenceRecordValidationProcess(I18nProvider i18nProvider, EvidenceRecordWrapper evidenceRecord,
-                                           List<XmlTimestamp> xmlTimestamps, Map<String, XmlBasicBuildingBlocks> bbbs,
+                                           Collection<XmlTimestamp> xmlTimestamps, Map<String, XmlBasicBuildingBlocks> bbbs,
                                            ValidationPolicy validationPolicy, Date currentTime) {
         super(i18nProvider, new XmlValidationProcessEvidenceRecord());
 
@@ -145,21 +150,21 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
                     // Basic and Past time-stamp validations are performed inside
                     item = item.setNextItem(timestampValidationConclusive(timestamp, timestampValidation));
 
-                    if (isValid(timestampValidation)) {
-                        if (lowestPOE.getTime().after(timestamp.getProductionTime())) {
-                            lowestPOE = toXmlProofOfExistence(timestamp);
-                        }
-                    }
-                    /*
-                     * iv) If step iii) results in PASSED the process shall continue the ER validation, otherwise the building
-                     * block shall fail with the status indication and sub-indication returned from the past signature
-                     * validation process.
-                     */
-                    else {
-                        result.setConclusion(timestampValidation.getConclusion());
-                        break;
-                    }
                 }
+
+                if (!isValid(timestampValidation)) {
+                    result.setConclusion(timestampValidation.getConclusion());
+                    break;
+                }
+            }
+
+            /*
+             * c) If step b) found the ER to be valid, the process shall add a POE for every object covered by the ER at
+             * signing time value of the initial archive time-stamp.
+             */
+            if (result.getConclusion() == null) {
+                // when valid, conclusion is not yet set
+                lowestPOE = toXmlProofOfExistence(timestampsList.get(0));
             }
         }
 

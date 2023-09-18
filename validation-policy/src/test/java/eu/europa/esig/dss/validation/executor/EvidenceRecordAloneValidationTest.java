@@ -204,33 +204,32 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         Reports reports = executor.execute();
 
         SimpleReport simpleReport = reports.getSimpleReport();
-        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
-        assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
         assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId())));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId()),
                 i18nProvider.getMessage(MessageTag.ADEST_IBSVPTADC_ANS)));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstEvidenceRecordId())));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstEvidenceRecordId())));
 
-        boolean indeterminateTstFound = false;
+        boolean validTstFound = false;
         boolean failedTstFound = false;
         for (XmlTimestamp xmlTimestamp : simpleReport.getEvidenceRecordTimestamps(simpleReport.getFirstEvidenceRecordId())) {
-            if (Indication.INDETERMINATE.equals(simpleReport.getIndication(xmlTimestamp.getId()))) {
-                assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(xmlTimestamp.getId()));
-                indeterminateTstFound = true;
+            if (Indication.PASSED.equals(simpleReport.getIndication(xmlTimestamp.getId()))) {
+                validTstFound = true;
             } else if (Indication.FAILED.equals(simpleReport.getIndication(xmlTimestamp.getId()))) {
                 assertEquals(SubIndication.SIG_CRYPTO_FAILURE, simpleReport.getSubIndication(xmlTimestamp.getId()));
                 failedTstFound = true;
             }
         }
-        assertTrue(indeterminateTstFound);
+        assertTrue(validTstFound);
         assertTrue(failedTstFound);
 
         assertEquals(diagnosticData.getValidationDate(), simpleReport.getEvidenceRecordPOE(simpleReport.getFirstEvidenceRecordId()));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Indication.INDETERMINATE, detailedReport.getEvidenceRecordValidationIndication(detailedReport.getFirstEvidenceRecordId()));
-        assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getEvidenceRecordValidationSubIndication(detailedReport.getFirstEvidenceRecordId()));
+        assertEquals(Indication.FAILED, detailedReport.getEvidenceRecordValidationIndication(detailedReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, detailedReport.getEvidenceRecordValidationSubIndication(detailedReport.getFirstEvidenceRecordId()));
 
         List<XmlEvidenceRecord> evidenceRecords = detailedReport.getIndependentEvidenceRecords();
         assertEquals(1, evidenceRecords.size());
@@ -240,8 +239,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
         XmlConclusion conclusion = xmlEvidenceRecord.getConclusion();
         assertNotNull(conclusion);
-        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
-        assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, conclusion.getSubIndication());
+        assertEquals(Indication.FAILED, conclusion.getIndication());
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, conclusion.getSubIndication());
 
         XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
         assertNotNull(validationProcessEvidenceRecord);
@@ -249,8 +248,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
         conclusion = validationProcessEvidenceRecord.getConclusion();
         assertNotNull(conclusion);
-        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
-        assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, conclusion.getSubIndication());
+        assertEquals(Indication.FAILED, conclusion.getIndication());
+        assertEquals(SubIndication.SIG_CRYPTO_FAILURE, conclusion.getSubIndication());
 
         XmlProofOfExistence proofOfExistence = validationProcessEvidenceRecord.getProofOfExistence();
         assertNotNull(proofOfExistence);
@@ -259,7 +258,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
         int dataObjectFoundCheckCounter = 0;
         int dataObjectIntactCheckCounter = 0;
-        int tstCheckCounter = 0;
+        int validTstCheckCounter = 0;
+        int invalidTstCheckCounter = 0;
         int dataObjectCryptoCheckCounter = 0;
         for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
             if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
@@ -269,9 +269,12 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 ++dataObjectIntactCheckCounter;
             } else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
-                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getError().getKey());
-                ++tstCheckCounter;
+                if (XmlStatus.OK == xmlConstraint.getStatus()) {
+                    ++validTstCheckCounter;
+                } else if (XmlStatus.NOT_OK == xmlConstraint.getStatus()) {
+                    assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getError().getKey());
+                    ++invalidTstCheckCounter;
+                }
             } else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 ++dataObjectCryptoCheckCounter;
@@ -279,7 +282,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         }
         assertEquals(3, dataObjectFoundCheckCounter);
         assertEquals(3, dataObjectIntactCheckCounter);
-        assertEquals(1, tstCheckCounter); // first fails
+        assertEquals(1, validTstCheckCounter);
+        assertEquals(1, invalidTstCheckCounter);
         assertEquals(0, dataObjectCryptoCheckCounter); // not executed
 
         List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
@@ -287,7 +291,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
         boolean indeterminateBasicTstFound = false;
         boolean failedBasicTstFound = false;
-        boolean indeterminateLTATstFound = false;
+        boolean passedLTATstFound = false;
         boolean failedLTATstFound = false;
         for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : timestamps) {
             XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
@@ -349,15 +353,14 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
                 assertEquals(SubIndication.SIG_CRYPTO_FAILURE, ltaTimestamp.getConclusion().getSubIndication());
                 failedLTATstFound = true;
 
-            } else if (Indication.INDETERMINATE.equals(ltaTimestamp.getConclusion().getIndication())) {
-                assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, ltaTimestamp.getConclusion().getSubIndication());
-                indeterminateLTATstFound = true;
+            } else if (Indication.PASSED.equals(ltaTimestamp.getConclusion().getIndication())) {
+                passedLTATstFound = true;
             }
 
         }
         assertTrue(indeterminateBasicTstFound);
         assertTrue(failedBasicTstFound);
-        assertTrue(indeterminateLTATstFound);
+        assertTrue(passedLTATstFound);
         assertTrue(failedLTATstFound);
 
         checkReports(reports);

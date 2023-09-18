@@ -34,7 +34,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -54,12 +53,11 @@ import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProce
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.ValidationProcessForSignaturesWithArchivalData;
-import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.EvidenceRecordValidationProcess;
-import eu.europa.esig.dss.validation.process.vpftsp.AllTimestampValidationBlock;
+import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.EvidenceRecordsValidationBlock;
+import eu.europa.esig.dss.validation.process.vpftsp.TimestampsValidationBlock;
 import eu.europa.esig.dss.validation.reports.DSSReportException;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -124,14 +122,22 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		Set<String> attachedTimestamps = new HashSet<>();
 		Set<String> attachedEvidenceRecords = new HashSet<>();
 
-		Map<String, XmlTimestamp> timestampValidations = Collections.emptyMap();
-		if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
-			timestampValidations = executeAllTimestampsValidation(bbbs, tlAnalysis, poe);
+		Map<String, XmlTimestamp> timestampValidations = new HashMap<>();
+		Map<String, XmlEvidenceRecord> evidenceRecordValidations = new HashMap<>();
+
+		if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
+			EvidenceRecordsValidationBlock evidenceRecordsValidationBlock = executeEvidenceRecordsValidations(bbbs, tlAnalysis, poe);
+			evidenceRecordValidations.putAll(evidenceRecordsValidationBlock.getEvidenceRecordValidations());
+
+			Map<String, XmlTimestamp> erTimestampValidations = evidenceRecordsValidationBlock.getTimestampValidations();
+			timestampValidations.putAll(erTimestampValidations);
+
+			attachedTimestamps.addAll(erTimestampValidations.keySet());
 		}
 
-		Map<String, XmlEvidenceRecord> evidenceRecordValidations = Collections.emptyMap();
-		if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
-			evidenceRecordValidations = executeAllEvidenceRecordValidations(timestampValidations, attachedTimestamps, bbbs);
+		if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
+			List<TimestampWrapper> nonEvidenceRecordTimestamps = diagnosticData.getNonEvidenceRecordTimestamps();
+			timestampValidations.putAll(executeTimestampsValidation(nonEvidenceRecordTimestamps, bbbs, tlAnalysis, poe));
 		}
 
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
@@ -214,10 +220,11 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		return bs;
 	}
 
-	private Map<String, XmlTimestamp> executeAllTimestampsValidation(Map<String, XmlBasicBuildingBlocks> bbbs,
-															  List<XmlTLAnalysis> tlAnalysis, POEExtraction poe) {
-		AllTimestampValidationBlock allTimestampValidationBlock = new AllTimestampValidationBlock(
-				i18nProvider, diagnosticData, policy, currentTime, bbbs, tlAnalysis, validationLevel, poe);
+	private Map<String, XmlTimestamp> executeTimestampsValidation(
+			List<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis,
+			POEExtraction poe) {
+		TimestampsValidationBlock allTimestampValidationBlock = new TimestampsValidationBlock(
+				i18nProvider, timestamps, diagnosticData, policy, currentTime, bbbs, tlAnalysis, validationLevel, poe);
 		return allTimestampValidationBlock.execute();
 	}
 
@@ -239,56 +246,40 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 		return vpfswadResult;
 	}
 
-	private Map<String, XmlEvidenceRecord> executeAllEvidenceRecordValidations(
-			Map<String, XmlTimestamp> timestampValidations, Set<String> attachedTimestamps, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		Map<String, XmlEvidenceRecord> evidenceRecordValidations = new HashMap<>();
-		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
-			XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
-			xmlEvidenceRecord.setId(evidenceRecord.getId());
-
-			for (TimestampWrapper sigTimestamp : evidenceRecord.getTimestampList()) {
-				xmlEvidenceRecord.getTimestamps().add(timestampValidations.get(sigTimestamp.getId()));
-				attachedTimestamps.add(sigTimestamp.getId());
-			}
-
-			XmlValidationProcessEvidenceRecord validation = executeEvidenceRecordValidation(xmlEvidenceRecord, evidenceRecord, bbbs);
-			xmlEvidenceRecord.setConclusion(validation.getConclusion());
-
-			evidenceRecordValidations.put(evidenceRecord.getId(), xmlEvidenceRecord);
-		}
-		return evidenceRecordValidations;
-	}
-
-	private XmlValidationProcessEvidenceRecord executeEvidenceRecordValidation(XmlEvidenceRecord evidenceRecordAnalysis,
-																			   EvidenceRecordWrapper evidenceRecord, Map<String, XmlBasicBuildingBlocks> bbbs) {
-		EvidenceRecordValidationProcess ervp = new EvidenceRecordValidationProcess(
-				i18nProvider, evidenceRecord, evidenceRecordAnalysis.getTimestamps(), bbbs, policy, currentTime);
-		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = ervp.execute();
-		evidenceRecordAnalysis.setValidationProcessEvidenceRecord(validationProcessEvidenceRecord);
-		return validationProcessEvidenceRecord;
+	private EvidenceRecordsValidationBlock executeEvidenceRecordsValidations(
+			Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis, POEExtraction poe) {
+		EvidenceRecordsValidationBlock evidenceRecordsValidationBlock = new EvidenceRecordsValidationBlock(
+				i18nProvider, diagnosticData, policy, currentTime, bbbs, tlAnalysis, validationLevel, poe);
+		evidenceRecordsValidationBlock.execute();
+		return evidenceRecordsValidationBlock;
 	}
 
 	private Map<String, XmlBasicBuildingBlocks> executeAllBasicBuildingBlocks() {
 		Map<String, XmlBasicBuildingBlocks> bbbs = new LinkedHashMap<>();
 		switch (validationLevel) {
-		case ARCHIVAL_DATA:
-		case LONG_TERM_DATA:
-			process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
-			process(diagnosticData.getTimestampList(), Context.TIMESTAMP, bbbs);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
-			break;
-		case TIMESTAMPS:
-			process(diagnosticData.getTimestampList(), Context.TIMESTAMP, bbbs);
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
-			break;
-		case BASIC_SIGNATURES:
-			process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
-			process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported validation level " + validationLevel);
+			case ARCHIVAL_DATA:
+				process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
+				process(diagnosticData.getTimestampList(), Context.TIMESTAMP, bbbs);
+				process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+				process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
+				break;
+			case LONG_TERM_DATA:
+				process(diagnosticData.getAllRevocationData(), Context.REVOCATION, bbbs);
+				process(diagnosticData.getNonEvidenceRecordTimestamps(), Context.TIMESTAMP, bbbs);
+				process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+				process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
+				break;
+			case TIMESTAMPS:
+				process(diagnosticData.getNonEvidenceRecordTimestamps(), Context.TIMESTAMP, bbbs);
+				process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+				process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
+				break;
+			case BASIC_SIGNATURES:
+				process(diagnosticData.getAllSignatures(), Context.SIGNATURE, bbbs);
+				process(diagnosticData.getAllCounterSignatures(), Context.COUNTER_SIGNATURE, bbbs);
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported validation level " + validationLevel);
 		}
 		return bbbs;
 	}
