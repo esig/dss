@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 
-<xsl:stylesheet version="2.0" 
-		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-		xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    	xmlns:diag="http://dss.esig.europa.eu/validation/diagnostic"
-		xmlns="http://www.w3.org/2000/svg">
+<xsl:stylesheet version="2.0"
+				xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+				xmlns:diag="http://dss.esig.europa.eu/validation/diagnostic"
+				xmlns="http://www.w3.org/2000/svg">
 		
  <xsl:output
    method="xml"
@@ -60,6 +59,16 @@
 					}
     				return ids;
     			}
+
+    			document.getEvidenceRecordIds = function() {
+    				var ids = new Array();
+    				var evidenceRecords = getEvidenceRecords();
+    				for (var elementIdx = 0; elementIdx < evidenceRecords.length; elementIdx++) {
+						var evidenceRecord = evidenceRecords[elementIdx];
+						ids.push(evidenceRecord.id);
+					}
+    				return ids;
+    			}
     			
     			document.getCertificateIds = function() {
     				var ids = new Array();
@@ -73,12 +82,12 @@
     			}
     			
     			document.initSVG = function(width, height, padding) {
-    				return new Representation(width, height, padding, getTimeline(), getValidationTime(), getCertificates(), getCertificateRevocations(), getSignatures(), getTimestamps());
+    				return new Representation(width, height, padding, getTimeline(), getValidationTime(), getCertificates(), getCertificateRevocations(), getSignatures(), getTimestamps(), getEvidenceRecords());
     			}
     			
     			class Representation {
     			
-    				constructor(width, height, padding, timeline, validationTime, certificates, certificateRevocations, signatures, timestamps) {
+    				constructor(width, height, padding, timeline, validationTime, certificates, certificateRevocations, signatures, timestamps, evidenceRecords) {
     					this.width = width;
     					this.height = height;
     					this.padding = padding;
@@ -88,6 +97,7 @@
 	    				this.certificateRevocations = certificateRevocations;
 	    				this.signatures = signatures;
 	    				this.timestamps = timestamps;
+	    				this.evidenceRecords = evidenceRecords;
 	    			
 	    				this.minDate = null;
 	    				this.maxDate = null;
@@ -96,13 +106,17 @@
 
     				isSignatureOrTimestampPresent() {
     					return (this.signatures !== undefined && this.signatures.length > 0) ||
-    							(this.timestamps !== undefined && this.timestamps.length > 0);
+    							(this.timestamps !== undefined && this.timestamps.length > 0) ||
+    							(this.evidenceRecords !== undefined && this.evidenceRecords.length > 0);
     				}
     				
     				displayFirstSignatureOrTimestamp() {
     					if (this.signatures !== undefined && this.signatures.length > 0) {
     						var currentSignature = this.signatures[0];
     						this.displaySignature(currentSignature);
+    					} else if (this.evidenceRecords !== undefined && this.evidenceRecords.length > 0) {
+    						var currentEvidenceRecord = this.evidenceRecords[0];
+    						this.displayEvidenceRecord(currentEvidenceRecord);
     					} else if (this.timestamps !== undefined && this.timestamps.length > 0) {
     						var currentTimestamp = this.timestamps[0];
     						this.displayTimestamp(currentTimestamp);
@@ -110,7 +124,7 @@
     				}
     				
     				displaySignatureById(signatureId) {
-   						var currentElement  = this.getSignatureById(signatureId);
+   						var currentElement = this.getSignatureById(signatureId);
 						this.displaySignature(currentElement);
     				}
     				
@@ -122,7 +136,7 @@
     				}
 
     				displayTimestampById(timestampId) {
-   						var currentElement  = this.getTimestampById(timestampId);
+   						var currentElement = this.getTimestampById(timestampId);
 						this.displayTimestamp(currentElement);
     				}
 
@@ -132,74 +146,83 @@
 						this.computeRatio(this.collectDatesFromTimestamp(timestamp));
 						this.drawTst(timestamp);
     				}
-    				
+
+    				displayEvidenceRecordById(evidenceRecordId) {
+   						var currentElement = this.getEvidenceRecordById(evidenceRecordId);
+						this.displayEvidenceRecord(currentElement);
+    				}
+
+    				displayEvidenceRecord(evidenceRecord) {
+						this.displayTimestampById(evidenceRecord.timestamps[0]);
+    				}
+
     				displayCertificateChainById(certId) {
-   						var currentCert  = this.getCertificateById(certId);
+   						var currentCert = this.getCertificateById(certId);
 						this.displayCertificateChain(currentCert);
     				}
-    				
+
     				displayCertificateChain(currentCert) {
 						this.hideAll();
 
 						var chain = this.getCompleteCertificateChain(currentCert);
 						this.computeRatio(this.collectDatesFromChain(chain));
-						this.drawChain(chain);						
+						this.drawChain(chain);
     				}
-    				
+
     				getCompleteCertificateChain(cert) {
     					var chain = new Array();
-    					
+
 						var currentCert = cert;
     					do {
 							chain.push(currentCert);
 							currentCert = this.getIssuer(currentCert);
 						} while (currentCert != null) ;
-    					
+
     					return chain;
     				}
-    				
+
     				getIssuer(currentCert) {
     					if (currentCert.signingCertificate !=null) {
     						return this.getCertificateById(currentCert.signingCertificate);
     					}
     					return null;
     				}
-    				
+
     				computeRatio(dates) {
     					this.minDate = getMinDate(dates);
 						this.maxDate = getMaxDate(dates);
 						var range = this.maxDate.getTime() - this.minDate.getTime();
 						this.ratio = (this.width - this.padding) / range;
 					}
-					
+
 					drawSig(signature) {
 						this.drawValidationTime();
 						this.drawTimeline();
-						
+
 						var y = this.height - 70;
-					
+
 						signature.posX(this.getPosX(signature.claimedSigningTime));
 						signature.posY(y);
 						signature.show();
-						
+
 						var cert = this.getCertificateById(signature.signingCertificate);
 						this.drawCert(cert, y);
-						
+
 	    				for (var elementIdx = 0; elementIdx < signature.timestamps.length; elementIdx++) {
 							var timestampId = signature.timestamps[elementIdx];
 							var timestamp = this.getTimestampById(timestampId);
-							
+
 							y = y -15;
 							this.drawTimestamp(timestamp, y);
 						}
 					}
-					
+
 					drawTimestamp(timestamp, y) {
 						if (timestamp != null) {
 							timestamp.posX(this.getPosX(timestamp.productionTime));
 							timestamp.posY(y);
 							timestamp.show();
-							
+
 							var cert = this.getCertificateById(timestamp.signingCertificate);
 							this.drawCert(cert, y);
 						}
@@ -226,32 +249,32 @@
 							this.drawTimestamp(timestamp, y);
 						}
 					}
-					
+
 					drawChain(chain) {
 						this.drawValidationTime();
 						this.drawTimeline();
-					
+
 						var y = this.height - 70;
-					
+
 	    				for (var elementIdx = 0; elementIdx < chain.length; elementIdx++) {
 							var cert = chain[elementIdx];
 							this.drawCert(cert, y);
-						
+
 							y = y -15;
 						}
 					}
-					
+
 					drawValidationTime() {
 						this.validationTime.posX(this.getPosX(this.validationTime.time));
 						this.validationTime.posY(this.height - 30);
 						this.validationTime.show();
 					}
-					
+
 					drawTimeline() {
 						this.timeline.posY(this.height - 50);
 						this.timeline.show();
 					}
-										
+
 					drawCert(cert, y) {
 						if (cert != null) {
 							cert.posX(this.getPosX(cert.notBefore));
@@ -260,7 +283,7 @@
 							cert.addNotBeforeTitle();
 							cert.addNotAfterTitle();
 							cert.show();
-							
+
 							var revocs = this.getRevocationsForCertificate(cert.id);
 	    					for (var elementIdx = 0; elementIdx < revocs.length; elementIdx++) {
 								var certRevoc = revocs[elementIdx];
@@ -268,34 +291,34 @@
 							}
 						}
 					}
-					
+
 					drawCertRevocation(certRevoc, y) {
 						if (certRevoc !=null) {
-						
+
 							if (certRevoc.productionTime !=null) {
 								certRevoc.posX(this.getPosX(certRevoc.productionTime));
 							} else {
 								certRevoc.posX(this.getPosX(certRevoc.revocationDate));
 							}
-						
+
 							certRevoc.posY(y);
 							certRevoc.show();
  						}
 					}
-					
+
 					getPosX(date) {
 						return ((date.getTime() - this.minDate.getTime()) * this.ratio) + (this.padding / 2);
 					}
-					
+
 					getWidth(min, max) {
 						return (max.getTime() - min.getTime()) * this.ratio;
 					}
-    				
+
     				collectDatesFromSignature(signature) {
     					var dates = new Array();
 						dates.push(this.validationTime.time);
 						dates.push(signature.claimedSigningTime);
-						
+
 						var cert = this.getCertificateById(signature.signingCertificate);
 						dates = dates.concat(this.collectDatesForCert(cert));
 
@@ -304,7 +327,7 @@
 							var timestamp = this.getTimestampById(timestampId);
 							dates = dates.concat(this.collectDatesForTimestamp(timestamp));
 						}
-						
+
 						return dates;
 					}
 
@@ -324,50 +347,50 @@
 
 						return dates;
 					}
-					
+
 					collectDatesFromChain(chain) {
     					var dates = new Array();
 						dates.push(this.validationTime.time);
-					
+
 	    				for (var elementIdx = 0; elementIdx < chain.length; elementIdx++) {
 							var cert = chain[elementIdx];
 							dates = dates.concat(this.collectDatesForCert(cert));
 						}
 						return dates;
 					}
-					
+
 					collectDatesForCert(cert) {
     					var dates = new Array();
 						if (cert !=null) {
 	 						dates.push(cert.notBefore);
 							dates.push(cert.notAfter);
-							
+
 							var revocs = this.getRevocationsForCertificate(cert.id);
 	    					for (var elementIdx = 0; elementIdx < revocs.length; elementIdx++) {
 								var certRevoc = revocs[elementIdx];
-							
+
 								if (certRevoc.productionTime !=null) {
 									dates.push(certRevoc.productionTime);
-								}	
+								}
 								if (certRevoc.revocationDate !=null) {
 									dates.push(certRevoc.revocationDate);
-								}	
+								}
 							}
 						}
 						return dates;
 					}
-					
+
 					collectDatesForTimestamp(timestamp) {
     					var dates = new Array();
     					if (timestamp != null) {
 	 						dates.push(timestamp.productionTime);
-		 						
+
 							var cert = this.getCertificateById(timestamp.signingCertificate);
 							dates = dates.concat(this.collectDatesForCert(cert));
 						}
 						return dates;
 					}
-    				
+
     				getCertificateById(certId) {
     					for (var elementIdx = 0; elementIdx < this.certificates.length; elementIdx++) {
 							var currentElement = this.certificates[elementIdx];
@@ -376,7 +399,7 @@
    							}
    						}
     				}
-    				
+
     				getSignatureById(sigId) {
     					for (var elementIdx = 0; elementIdx < this.signatures.length; elementIdx++) {
 							var currentElement = this.signatures[elementIdx];
@@ -385,11 +408,20 @@
    							}
    						}
     				}
-    				
+
     				getTimestampById(tstId) {
     					for (var elementIdx = 0; elementIdx < this.timestamps.length; elementIdx++) {
 							var currentElement = this.timestamps[elementIdx];
 							if (tstId == currentElement.id) {
+								return currentElement;
+   							}
+   						}
+    				}
+
+    				getEvidenceRecordById(erId) {
+    					for (var elementIdx = 0; elementIdx < this.evidenceRecords.length; elementIdx++) {
+							var currentElement = this.evidenceRecords[elementIdx];
+							if (erId == currentElement.id) {
 								return currentElement;
    							}
    						}
@@ -484,6 +516,13 @@
     			 		super(svgElement);
     			 		this.productionTime = productionTime;
     			 		this.signingCertificate = signingCertificate;
+    			 		this.timestamps = timestamps;
+    			 	}
+    			 }
+
+    			 class EvidenceRecord extends GraphicItem {
+    			 	constructor(svgElement, timestamps) {
+    			 		super(svgElement);
     			 		this.timestamps = timestamps;
     			 	}
     			 }
@@ -593,7 +632,7 @@
 						var currentElement = elements[elementIdx];
 						var claimedSigningTime = getUniqueDate(currentElement, "svg-claimed-signing-time");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
-						var timestampIds = getValues(currentElement, "svg-found-timestamp");
+						var timestampIds = getAllSignatureTimestampIds(currentElement);
 						var sig = new Signature(currentElement, claimedSigningTime, signingCertificateId, timestampIds);
 						signatures.push(sig);
 					}
@@ -612,6 +651,18 @@
 						timestamps.push(timestamp);
 					}
 					return timestamps;
+    			}
+
+    			function getEvidenceRecords() {
+					var evidenceRecords = new Array();
+					var elements = document.getElementsByClassName("svg-evidence-record");
+					for (var elementIdx = 0; elementIdx < elements.length; elementIdx++) {
+						var currentElement = elements[elementIdx];
+						var timestampIds = getValues(currentElement, "svg-found-timestamp");
+						var evidenceRecord = new EvidenceRecord(currentElement, timestampIds);
+						evidenceRecords.push(evidenceRecord);
+					}
+					return evidenceRecords;
     			}
 
     			function getCoveringTimestampIds(currentElement) {
@@ -666,6 +717,49 @@
 					}
 					return result;
     			}
+
+    			function getAllSignatureTimestampIds(currentElement) {
+					var timestampIds = getValues(currentElement, "svg-found-timestamp");
+					var evidenceRecordIds = getValues(currentElement, "svg-found-evidence-record");
+					var evidenceRecords = getEvidenceRecords();
+					var evidenceRecordIds = getEvidenceRecordsByIds(evidenceRecordIds, evidenceRecords);
+					var evidenceRecordTimestampIds = getEvidenceRecordsTimestampIds(evidenceRecordIds);
+					timestampIds = timestampIds.concat(evidenceRecordTimestampIds);
+					return timestampIds;
+    			}
+
+				function getEvidenceRecordsByIds(evidenceRecordIds, evidenceRecords) {
+					var result = new Array();
+					if (evidenceRecordIds != null) {
+						for (var elementIdx = 0; elementIdx < evidenceRecordIds.length; elementIdx++) {
+							var evidenceRecordId = evidenceRecordIds[elementIdx];
+							var evidenceRecord = getEvidenceRecordById(evidenceRecordId, evidenceRecords);
+							result.push(evidenceRecord);
+						}
+					}
+					return result;
+				}
+
+				function getEvidenceRecordById(erId, evidenceRecords) {
+					for (var elementIdx = 0; elementIdx < evidenceRecords.length; elementIdx++) {
+						var currentElement = evidenceRecords[elementIdx];
+						if (erId == currentElement.id) {
+							return currentElement;
+						}
+					}
+				}
+
+				function getEvidenceRecordsTimestampIds(evidenceRecords) {
+					var timestampIds = new Array();
+					if (evidenceRecords != null) {
+						for (var elementIdx = 0; elementIdx < evidenceRecords.length; elementIdx++) {
+							var evidenceRecord = evidenceRecords[elementIdx];
+							var timestamps = evidenceRecord.timestamps;
+							timestampIds = timestampIds.concat(timestamps);
+						}
+					}
+					return timestampIds;
+				}
     			
     			function getMinDate(dates) {
 					var minimalDate = null;
@@ -730,6 +824,7 @@
 	  
 		<xsl:apply-templates select="diag:UsedCertificates/diag:Certificate"/>
 		<xsl:apply-templates select="diag:UsedTimestamps/diag:Timestamp"/>
+		<xsl:apply-templates select="diag:EvidenceRecords/diag:EvidenceRecord"/>
 		<xsl:apply-templates select="diag:Signatures/diag:Signature"/>
 		
 		<svg id="svg-global-timeline">
@@ -757,6 +852,8 @@
 			</xsl:if>
 			
 			<xsl:apply-templates select="diag:FoundTimestamps/diag:FoundTimestamp" />
+			<xsl:apply-templates select="diag:FoundEvidenceRecords/diag:FoundEvidenceRecord" />
+
 		</use>
 	</xsl:template>
 	
@@ -790,6 +887,20 @@
 		<text class="svg-timestamped-ref" style="display:none">
 			<xsl:value-of select="@Token" />
 		</text>
+	</xsl:template>
+
+	<xsl:template match="diag:FoundEvidenceRecord">
+		<text class="svg-found-evidence-record" style="display:none">
+			<xsl:value-of select="@EvidenceRecord" />
+		</text>
+	</xsl:template>
+
+	<xsl:template match="diag:EvidenceRecord">
+		<use class="svg-evidence-record">
+			<xsl:attribute name="id"><xsl:value-of select="@Id" /></xsl:attribute>
+
+			<xsl:apply-templates select="diag:EvidenceRecordTimestamps/diag:FoundTimestamp" />
+		</use>
 	</xsl:template>
 	
 	<xsl:template match="diag:Certificate">
