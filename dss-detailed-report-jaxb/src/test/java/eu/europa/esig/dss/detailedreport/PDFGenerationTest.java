@@ -79,6 +79,16 @@ public class PDFGenerationTest {
 	public void generateSigAndTstDetailedReport() throws Exception {
 		createAndValidate("dr-sig-and-tst.xml");
 	}
+
+	@Test
+	public void generateSigAndErDetailedReport() throws Exception {
+		createAndValidate("dr-sig-lt-and-er.xml");
+	}
+
+	@Test
+	public void generateErDetailedReport() throws Exception {
+		createAndValidate("dr-er.xml");
+	}
 	
 	private void createAndValidate(String filename) throws Exception {
 		DetailedReportFacade facade = DetailedReportFacade.newFacade();

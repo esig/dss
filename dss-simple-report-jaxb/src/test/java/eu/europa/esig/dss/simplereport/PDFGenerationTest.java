@@ -76,6 +76,16 @@ public class PDFGenerationTest {
 	}
 
 	@Test
+	public void generateSigAndErSimpleReport() throws Exception {
+		createAndValidate("sr-sig-lt-and-er.xml");
+	}
+
+	@Test
+	public void generateErSimpleReport() throws Exception {
+		createAndValidate("sr-er.xml");
+	}
+
+	@Test
 	public void generateSemantics() throws Exception {
 		createAndValidate("sr-semantics.xml");
 	}

@@ -54,8 +54,8 @@
 
 	<xs:complexType name="EvidenceRecord">
 		<xs:sequence>
-			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ValidationProcessEvidenceRecord" type="ValidationProcessEvidenceRecord"  />
+			<xs:element name="Timestamp" type="Timestamp" minOccurs="0" maxOccurs="unbounded" />
 
 			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
@@ -418,6 +418,7 @@
 			<xs:enumeration value="VTS" />
 			<xs:enumeration value="TST_PSV" />
 			<xs:enumeration value="TST" />
+			<xs:enumeration value="ER" />
 		</xs:restriction>
 	</xs:simpleType>
 
@@ -538,6 +539,7 @@
 			<xs:enumeration value="COUNTER_SIGNATURE" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="REVOCATION" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<!-- For Qualification -->
 			<xs:enumeration value="CERTIFICATE" />
 		</xs:restriction>

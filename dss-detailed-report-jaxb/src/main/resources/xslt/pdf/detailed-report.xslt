@@ -76,10 +76,12 @@
 					
 					<xsl:apply-templates select="dss:Signature"/>
 					<xsl:apply-templates select="dss:Timestamp"/>
+					<xsl:apply-templates select="dss:EvidenceRecord"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
+					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='EVIDENCE_RECORD']"/>
 				    
    					<xsl:apply-templates select="dss:TLAnalysis"/>
 	    			
@@ -208,7 +210,7 @@
 
     </xsl:template>
     
-    <xsl:template match="dss:Signature|dss:Timestamp">
+    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord">
 	    
 		<fo:table table-layout="fixed">
 			<xsl:attribute name="margin-top">4px</xsl:attribute>
@@ -277,11 +279,13 @@
     </xsl:template>
     
 	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessBasicTimestamp|dss:ValidationProcessLongTermData
-			|dss:ValidationProcessArchivalData|dss:ValidationProcessArchivalDataTimestamp|dss:Certificate">
+			|dss:ValidationProcessArchivalData|dss:ValidationProcessArchivalDataTimestamp|dss:ValidationProcessEvidenceRecord
+			|dss:Certificate">
 
 		<xsl:variable name="poeStringValue">
 			<xsl:choose>
-				<xsl:when test="name()='ValidationProcessBasicTimestamp' or name()='ValidationProcessArchivalDataTimestamp'" >Lowest POE</xsl:when>
+				<xsl:when test="name()='ValidationProcessBasicTimestamp' or name()='ValidationProcessArchivalDataTimestamp'
+						or name()='ValidationProcessEvidenceRecord'">Lowest POE</xsl:when>
 				<xsl:otherwise>Best-signature-time</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

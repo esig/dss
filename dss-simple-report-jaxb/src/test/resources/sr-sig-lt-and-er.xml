@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2023-09-18T13:56:51Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validates electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>cades-lt-with-er.sce</DocumentName>
+    <ValidSignaturesCount>1</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <ContainerType>ASiC-E</ContainerType>
+    <Signature SignatureFormat="CAdES-BASELINE-LT" ExtensionPeriodMax="2027-11-14T16:39:38Z" Id="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B">
+        <Filename>META-INF/signature001.p7s</Filename>
+        <CertificateChain>
+            <Certificate Id="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322">
+                <QualifiedName>Aleksandr Beliakov</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" trusted="true">
+                <QualifiedName>LuxTrust Global Qualified CA 3</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5">
+                <QualifiedName>LuxTrust Global Root 2</QualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>TOTAL_PASSED</Indication>
+        <QualificationDetails>
+            <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+        </QualificationDetails>
+        <SigningTime>2023-09-06T10:08:15Z</SigningTime>
+        <BestSignatureTime>2023-09-06T10:08:25Z</BestSignatureTime>
+        <SignedBy>Aleksandr Beliakov</SignedBy>
+        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
+        <SignatureScope Id="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" name="META-INF/ASiCManifest001.xml" scope="FULL">Manifest document</SignatureScope>
+        <SignatureScope Id="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298" name="test.zip" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54" name="empty.zip" scope="FULL">Full document</SignatureScope>
+        <SignatureScope Id="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F" name="test.txt" scope="FULL">Full document</SignatureScope>
+        <Timestamps>
+            <Timestamp Id="T-CE8E646A192A03106FBB24E17B8FA931A84E9E3ED3E2FD78E4000E16FB7009CD">
+                <CertificateChain>
+                    <Certificate Id="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB">
+                        <QualifiedName>APED QTSU A 2022</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662" trusted="true">
+                        <QualifiedName>APED Qualified Timestamping Issuing CA</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F">
+                        <QualifiedName>APED Global Root CA</QualifiedName>
+                    </Certificate>
+                </CertificateChain>
+                <Indication>PASSED</Indication>
+                <QualificationDetails>
+                    <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                </QualificationDetails>
+                <ProductionTime>2023-09-06T10:08:25Z</ProductionTime>
+                <ProducedBy>APED QTSU A 2022</ProducedBy>
+                <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+            </Timestamp>
+        </Timestamps>
+        <EvidenceRecords>
+            <EvidenceRecord Id="ER-3AC9C418A0389EBCE35CFF479CF5FEBB807BFB539CE01E0524098FC586898905">
+                <Filename>META-INF/evidencerecord001.xml</Filename>
+                <Indication>PASSED</Indication>
+                <POETime>2023-09-06T10:43:24Z</POETime>
+                <EvidenceRecordScope Id="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9" name="META-INF/signature001.p7s" scope="FULL">Full document</EvidenceRecordScope>
+                <Timestamps>
+                    <Timestamp Id="T-24284A8C28E7362814D9247159F00F0EEF378AF02DA76E935D7B8095AFFE2BA4">
+                        <CertificateChain>
+                            <Certificate Id="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473">
+                                <QualifiedName>good-tsa</QualifiedName>
+                            </Certificate>
+                            <Certificate Id="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813" trusted="true">
+                                <QualifiedName>root-ca</QualifiedName>
+                            </Certificate>
+                        </CertificateChain>
+                        <Indication>PASSED</Indication>
+                        <QualificationDetails>
+                            <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                        </QualificationDetails>
+                        <ProductionTime>2023-09-06T10:43:24Z</ProductionTime>
+                        <ProducedBy>good-tsa</ProducedBy>
+                        <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+                        <TimestampScope Id="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9" name="META-INF/signature001.p7s" scope="FULL">Full document</TimestampScope>
+                    </Timestamp>
+                </Timestamps>
+            </EvidenceRecord>
+        </EvidenceRecords>
+    </Signature>
+</SimpleReport>
