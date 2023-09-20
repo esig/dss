@@ -40,7 +40,7 @@ public class XmlEvidenceRecordWithUserFriendlyIdentifierValidationTest extends A
         assertEquals(1, evidenceRecords.size());
 
         EvidenceRecordWrapper evidenceRecordWrapper = evidenceRecords.get(0);
-        assertEquals("EVIDENCE-RECORD_er-simple.xml", evidenceRecordWrapper.getId());
+        assertEquals("EVIDENCE-RECORD_Symantec-SHA256-TimeStamping-Signer-G3_20211006-0128", evidenceRecordWrapper.getId());
     }
 
 }

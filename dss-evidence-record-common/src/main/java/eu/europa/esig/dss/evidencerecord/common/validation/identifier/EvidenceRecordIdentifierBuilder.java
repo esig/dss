@@ -5,6 +5,8 @@ import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObjec
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,10 +51,22 @@ public class EvidenceRecordIdentifierBuilder {
             ArchiveTimeStampChainObject archiveTimeStampChainObject = archiveTimeStampSequence.get(0);
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChainObject.getArchiveTimeStamps();
             ArchiveTimeStampObject archiveTimeStampObject = archiveTimeStamps.get(0);
+
             List<? extends DigestValueGroup> hashTree = archiveTimeStampObject.getHashTree();
-            DigestValueGroup digestValueGroup = hashTree.get(0);
-            for (byte[] binaries : digestValueGroup.getDigestValues()) {
-                baos.write(binaries);
+            if (Utils.isCollectionNotEmpty(hashTree)) {
+                for (DigestValueGroup digestValueGroup : hashTree) {
+                    List<byte[]> digestValues = digestValueGroup.getDigestValues();
+                    if (Utils.isCollectionNotEmpty(digestValues)) {
+                        for (byte[] binaries : digestValues) {
+                            baos.write(binaries);
+                        }
+                    }
+                }
+            }
+            List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+            if (Utils.isCollectionNotEmpty(timestamps)) {
+                // first time-stamp identifies the signature
+                baos.write(timestamps.get(0).getEncoded());
             }
             return baos.toByteArray();
 

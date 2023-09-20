@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -471,8 +472,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     protected String getIdAsStringForEvidenceRecordIdentifier(EvidenceRecord evidenceRecord) {
         StringBuilder stringBuilder = new StringBuilder(evidenceRecordPrefix);
         stringBuilder.append(STRING_DELIMITER);
-        if (Utils.isStringNotEmpty(evidenceRecord.getFilename())) {
-            stringBuilder.append(evidenceRecord.getFilename());
+        List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+        if (Utils.isCollectionNotEmpty(timestamps)) {
+            stringBuilder.append(getDeterministicIdPart(timestamps.get(0)));
         } else {
             stringBuilder.append(Utils.toHex(((MultipleDigestIdentifier) evidenceRecord.getDSSId()).getDigestValue(DigestAlgorithm.SHA256)));
         }
@@ -482,6 +484,16 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     private String createIdString(String prefix, X500PrincipalHelper subject, Date creationDate, String dssId) {
         StringBuilder stringBuilder = new StringBuilder(prefix);
         stringBuilder.append(STRING_DELIMITER);
+        stringBuilder.append(getDeterministicIdPart(subject, creationDate));
+        return generateId(stringBuilder, dssId);
+    }
+
+    private String getDeterministicIdPart(Token token) {
+        return getDeterministicIdPart(getTokenSubject(token), token.getCreationDate());
+    }
+
+    private String getDeterministicIdPart(X500PrincipalHelper subject, Date creationDate) {
+        StringBuilder stringBuilder = new StringBuilder();
         if (subject != null) {
             stringBuilder.append(getHumanReadableName(subject));
         } else {
@@ -491,7 +503,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             stringBuilder.append(STRING_DELIMITER);
             stringBuilder.append(DSSUtils.formatDateWithCustomFormat(creationDate, dateFormat));
         }
-        return generateId(stringBuilder, dssId);
+        return stringBuilder.toString();
     }
 
     private String getHumanReadableName(X500PrincipalHelper subject) {
